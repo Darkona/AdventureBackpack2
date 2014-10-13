@@ -13,8 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
@@ -55,11 +53,11 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
 
     //=============================================== GETTERS ========================================================//
     public String getColor() {
-        return this.color;
+        return color;
     }
 
     public String getColorName() {
-        return this.colorName;
+        return colorName;
     }
 
     @Override
@@ -122,79 +120,6 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
         markDirty();
     }
 
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        super.onDataPacket(net, pkt);
-    }
-
-    @Override
-    public boolean canUpdate() {
-        return true;
-    }
-
-    @Override
-    public void updateEntity() {
-        if (!colorName.isEmpty())
-            BackpackAbilities.instance.executeAbility(null, this.worldObj, this);
-        if (checkTime == 0) {
-            int lastLumen = luminosity;
-            int left = (leftTank.getFluid() != null) ? leftTank.getFluid().getFluid().getLuminosity() : 0;
-            int right = (rightTank.getFluid() != null) ? rightTank.getFluid().getFluid().getLuminosity() : 0;
-            luminosity = Math.max(left, right);
-            if (luminosity != lastLumen) {
-                int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-                worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
-                worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
-            }
-            /*if(worldObj.getBlock(sbx, sby, sbz) != ModBlocks.sleepingBag)
-            {
-                sleepingBagDeployed = false;
-            }*/
-            checkTime = 400;
-            //saveChanges();
-        } else {
-            checkTime--;
-        }
-        super.updateEntity();
-    }
-
-    public boolean equip(World world, EntityPlayer player, int x, int y, int z) {
-        ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
-        stacky.setTagCompound(this.writeToNBT());
-        // removeSleepingBag(world);
-
-        if (player.inventory.armorInventory[2] == null) {
-            player.inventory.armorInventory[2] = stacky;
-            return true;
-
-        } else if (player.inventory.addItemStackToInventory(stacky)) {
-            return true;
-        } else {
-            return drop(world, player, x, y, z);
-        }
-    }
-
-    public boolean drop(World world, EntityPlayer player, int x, int y, int z) {
-        // removeSleepingBag(world);
-        if (player.capabilities.isCreativeMode) return true;
-        ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
-        stacky.stackTagCompound = this.writeToNBT();
-
-        float spawnX = x + world.rand.nextFloat();
-        float spawnY = y + world.rand.nextFloat();
-        float spawnZ = z + world.rand.nextFloat();
-
-        EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stacky);
-
-        float mult = 0.05F;
-
-        droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
-        droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
-        droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
-
-        return world.spawnEntityInWorld(droppedItem);
-    }
-
     //================================================== BOOLEANS ====================================================//
     @Override
     public boolean hasCustomInventoryName() {
@@ -211,7 +136,14 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
         return true;
     }
 
+    public boolean isSBDeployed() {
+        return sleepingBagDeployed;
+    }
 
+    @Override
+    public boolean canUpdate() {
+        return true;
+    }
     //====================================================== NBT ======================================================//
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -301,12 +233,13 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
     public NBTTagCompound writeToNBT() {
         NBTTagCompound compound = new NBTTagCompound();
         writeToNBT(compound);
+        compound.removeTag("id");
+        compound.removeTag("x");
+        compound.removeTag("y");
+        compound.removeTag("z");
         return compound;
     }
 
-    public boolean isSBDeployed() {
-        return this.sleepingBagDeployed;
-    }
     // ===================================================== INVENTORY ACTIONS =======================================//
 
     @Override
@@ -409,4 +342,71 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
         return itemstack;
     }
 
+    //============================================== TILE ENTITY ACTIONS =============================================//
+
+    @Override
+    public void updateEntity() {
+        if (!colorName.isEmpty())
+            BackpackAbilities.instance.executeAbility(null, this.worldObj, this);
+        if (checkTime == 0) {
+            int lastLumen = luminosity;
+            int left = (leftTank.getFluid() != null) ? leftTank.getFluid().getFluid().getLuminosity() : 0;
+            int right = (rightTank.getFluid() != null) ? rightTank.getFluid().getFluid().getLuminosity() : 0;
+            luminosity = Math.max(left, right);
+            if (luminosity != lastLumen) {
+                int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+                worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
+                worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
+            }
+            /*if(worldObj.getBlock(sbx, sby, sbz) != ModBlocks.sleepingBag)
+            {
+                sleepingBagDeployed = false;
+            }*/
+            checkTime = 400;
+            //saveChanges();
+        } else {
+            checkTime--;
+        }
+        super.updateEntity();
+    }
+
+    // ==============================                BACKPACK ACTIONS                =================================//
+
+
+    public boolean equipAdvBackpack(World world, EntityPlayer player, int x, int y, int z) {
+        ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
+        stacky.setTagCompound(this.writeToNBT());
+        // removeSleepingBag(world);
+
+        if (player.inventory.armorInventory[2] == null) {
+            player.inventory.armorInventory[2] = stacky;
+            return true;
+
+        } else if (player.inventory.addItemStackToInventory(stacky)) {
+            return true;
+        } else {
+            return dropAdvBackpackInWorld(world, player, x, y, z);
+        }
+    }
+
+    public boolean dropAdvBackpackInWorld(World world, EntityPlayer player, int x, int y, int z) {
+        // removeSleepingBag(world);
+        if (player.capabilities.isCreativeMode) return true;
+        ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
+        stacky.stackTagCompound = this.writeToNBT();
+
+        float spawnX = x + world.rand.nextFloat();
+        float spawnY = y + world.rand.nextFloat();
+        float spawnZ = z + world.rand.nextFloat();
+
+        EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stacky);
+
+        float mult = 0.05F;
+
+        droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
+        droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
+        droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
+
+        return world.spawnEntityInWorld(droppedItem);
+    }
 }

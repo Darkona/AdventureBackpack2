@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.client.render;
 import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackBlock;
 import com.darkona.adventurebackpack.util.Textures;
-import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -11,9 +10,13 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
+
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer {
+
     private final ModelAdventureBackpackBlock model;
 
     public RendererAdventureBackpackBlock() {
@@ -34,8 +37,6 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer {
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.1F, (float) z + 0.5F);
 
         bindTexture(Textures.backpackTexRL(bp));
-
-        // func_110628_a(Utils.getBackpackColor(bp));
 
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);

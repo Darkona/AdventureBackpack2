@@ -185,19 +185,22 @@ public class ModelAdventureBackpackBlock extends ModelBase {
         top.render(f5);
         right.render(f5);
         left.render(f5);
+
+        tanktopright.render(f5);
         tankwallright.render(f5);
-        tankwallleft.render(f5);
         tankwallright2.render(f5);
-        tankwallleft2.render(f5);
-        tankwallleft3.render(f5);
-        tankwallleft4.render(f5);
         tankwallright3.render(f5);
         tankwallright4.render(f5);
         tankbottomright.render(f5);
-        tanktopright.render(f5);
+
         tanktopleft.render(f5);
+        tankwallleft.render(f5);
+        tankwallleft2.render(f5);
+        tankwallleft3.render(f5);
+        tankwallleft4.render(f5);
         tankbottomleft.render(f5);
-        if (sleepingbag == false) {
+
+        if (!sleepingbag) {
             bed.render(f5);
             bedstrapbottomright.render(f5);
             bedstrapsideleft.render(f5);

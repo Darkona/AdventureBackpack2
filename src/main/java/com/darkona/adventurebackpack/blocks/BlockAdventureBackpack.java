@@ -2,16 +2,13 @@ package com.darkona.adventurebackpack.blocks;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.references.ModInfo;
-import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -79,7 +76,6 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     @Override
     public boolean canProvidePower() {
-
         return true;
     }
 
@@ -102,13 +98,13 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-
         FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 0, world, x, y, z);
-
         try {
             AdventureBackpackTileEntity te = (AdventureBackpackTileEntity) world.getTileEntity(x, z, z);
 
         } catch (Exception oops) {
+            LogHelper.error("Exception in onBlockActivated trying to get TileEntity");
+            oops.printStackTrace();
         }
 
         return true;
@@ -233,7 +229,7 @@ public class BlockAdventureBackpack extends BlockContainer {
         TileEntity backpack = world.getTileEntity(x, y, z);
 
         if (backpack instanceof AdventureBackpackTileEntity && !world.isRemote && player != null) {
-            if ((player.isSneaking()) ? ((AdventureBackpackTileEntity) backpack).equip(world, player, x, y, z) : ((AdventureBackpackTileEntity) backpack).drop(world, player, x, y, z)) {
+            if ((player.isSneaking()) ? ((AdventureBackpackTileEntity) backpack).equipAdvBackpack(world, player, x, y, z) : ((AdventureBackpackTileEntity) backpack).dropAdvBackpackInWorld(world, player, x, y, z)) {
                 return world.func_147480_a(x, y, z, false);
             }
         } else {
