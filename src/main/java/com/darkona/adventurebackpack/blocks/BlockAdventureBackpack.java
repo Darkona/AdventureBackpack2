@@ -2,11 +2,17 @@ package com.darkona.adventurebackpack.blocks;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
+import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModItems;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockHardenedClay;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,13 +33,9 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     public BlockAdventureBackpack() {
         super(Material.cloth);
-        setCreativeTab(CreativeTabAB.LMRB_TAB);
+        //setCreativeTab(CreativeTabAB.LMRB_TAB);
     }
 
-    @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-        return new TileAdventureBackpack();
-    }
 
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
@@ -109,16 +111,6 @@ public class BlockAdventureBackpack extends BlockContainer {
         return true;
     }
 
-    //@Override
-    public TileEntity createNewTileEntity(World world) {
-        return new TileAdventureBackpack();
-    }
-
-    @Override
-    public void onBlockAdded(World world, int x, int y, int z) {
-        createNewTileEntity(world);
-    }
-
     @Override
     public boolean hasTileEntity(int meta) {
         return true;
@@ -159,7 +151,7 @@ public class BlockAdventureBackpack extends BlockContainer {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
         int dir = MathHelper.floor_double((player.rotationYaw * 4F) / 360F + 0.5D) & 3;
-        createTileEntity(world, dir);
+        // onBlockAdded(world, x, y, z);
         if (stack != null && stack.stackTagCompound != null && stack.stackTagCompound.hasKey("color")) {
             if (stack.stackTagCompound.getString("color").contains("BlockRedstone"))
                 dir = dir | 8;
@@ -167,13 +159,13 @@ public class BlockAdventureBackpack extends BlockContainer {
                 dir = dir | 4;
         }
         world.setBlockMetadataWithNotify(x, y, z, dir, 3);
+        createNewTileEntity(world, world.getBlockMetadata(x, y, z));
+
     }
 
     @Override
     public boolean canPlaceBlockOnSide(World par1World, int par2, int par3, int par4, int side) {
-        if (ForgeDirection.getOrientation(side) == ForgeDirection.UP)
-            return true;
-        return false;
+        return (ForgeDirection.getOrientation(side) == ForgeDirection.UP);
     }
 
     @Override
@@ -187,28 +179,10 @@ public class BlockAdventureBackpack extends BlockContainer {
         setBlockBoundsBasedOnState(world, x, y, z);
         return super.getSelectedBoundingBoxFromPool(world, x, y, z);
     }
-//
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void registerIcons(IIconRegister register) {
-//        // ULTRA HACK MADSKILLZ
-//        // THIS REGISTERS THE FLUIDS' TEXTURES MUAHAHAHAHA NO NEED FOR FLUID
-//        // BLOCKS
-//       // blockIcon = register.registerIcon(ModInfo. + ":" + Fluids.milk.getUnlocalizedName());
-//       // Fluids.milk.setIcons(blockIcon);
-//        // blockIcon = register.registerIcon(Block.cloth.getItemIconName());
-//    }
-
-    @Override
-    public TileEntity createTileEntity(World world, int metadata) {
-        return super.createTileEntity(world, metadata);
-    }
 
     @Override
     public IIcon getIcon(int par1, int par2) {
-        // Fluids.milk.setIcons(Block.waterMoving.getIcon(par1, par2));
         return null;
-
     }
 
     @Override
@@ -225,22 +199,20 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean harvest) {
-        TileEntity backpack = world.getTileEntity(x, y, z);
+        TileEntity tile = world.getTileEntity(x, y, z);
 
-        if (backpack instanceof TileAdventureBackpack && !world.isRemote && player != null) {
-            if ((player.isSneaking()) ? ((TileAdventureBackpack) backpack).equip(world, player, x, y, z) : ((TileAdventureBackpack) backpack).drop(world, player, x, y, z)) {
-                return world.func_147478_e(x, y, z, false);
-                //destroyBlock(x, y, z, false);
+        if (tile instanceof TileAdventureBackpack && !world.isRemote && player != null) {
+            if ((player.isSneaking()) ? ((TileAdventureBackpack) tile).equip(world, player, x, y, z) : ((TileAdventureBackpack) tile).drop(world, player, x, y, z)) {
+                return world.func_147480_a(x, y, z, false);
             }
         } else {
-            return world.func_147478_e(x, y, z, false);
-            //world.destroyBlock(x, y, z, false);
+            return world.func_147480_a(x, y, z, false);
         }
         return false;
     }
 
-
-    public void breakBlock(World world, int x, int y, int z, int id, int meta) {
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te != null && te instanceof IInventory) {
             IInventory inventory = (IInventory) te;
@@ -266,5 +238,24 @@ public class BlockAdventureBackpack extends BlockContainer {
         }
 
         super.breakBlock(world, x, y, z, world.getBlock(x, y, z), meta);
+    }
+
+    //This one is useless
+
+
+    @Override
+    public TileEntity createTileEntity(World world, int metadata) {
+        return new TileAdventureBackpack();
+    }
+
+   /*@Override
+    public void onBlockAdded(World world, int x, int y, int z) {
+        createNewTileEntity(world, world.getBlockMetadata(x,y,z));
+       super.onBlockAdded(world, x, y, z);
+    }*/
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int metadata) {
+        return createTileEntity(world, metadata);
     }
 }

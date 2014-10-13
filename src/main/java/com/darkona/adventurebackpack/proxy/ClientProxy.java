@@ -20,4 +20,8 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileAdventureBackpack.class, new RendererAdventureBackpackBlock());
     }
 
+    @Override
+    public void init() {
+        initRenderers();
+    }
 }

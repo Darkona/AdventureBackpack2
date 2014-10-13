@@ -177,10 +177,10 @@ public class ModelAdventureBackpackBlock extends ModelBase {
         }
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, FluidTank tankLeft, FluidTank tankRight) {
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, FluidTank tankLeft, FluidTank tankRight, boolean sleepingbag) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        LogHelper.info("Rendering Block");
+
         main.render(f5);
         side.render(f5);
         top.render(f5);
@@ -202,17 +202,17 @@ public class ModelAdventureBackpackBlock extends ModelBase {
         tankbottomleft.render(f5);
 
         // if (!sleepingbag) {
-            bed.render(f5);
-            bedstrapbottomright.render(f5);
-            bedstrapsideleft.render(f5);
-            bedstraptopleft.render(f5);
-            bedstrapbottomleft.render(f5);
-            bedstraptopright.render(f5);
-            bedstrapsideright.render(f5);
-            bedbuttonright.render(f5);
-            bedbuttonleft.render(f5);
-            bedstrapendleft.render(f5);
-            bedstrapendright.render(f5);
+        bed.render(f5);
+        bedstrapbottomright.render(f5);
+        bedstrapsideleft.render(f5);
+        bedstraptopleft.render(f5);
+        bedstrapbottomleft.render(f5);
+        bedstraptopright.render(f5);
+        bedstrapsideright.render(f5);
+        bedbuttonright.render(f5);
+        bedbuttonleft.render(f5);
+        bedstrapendleft.render(f5);
+        bedstrapendright.render(f5);
         // }
 
         if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getIcon() != null) {
@@ -244,12 +244,5 @@ public class ModelAdventureBackpackBlock extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    @Override
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-    }
 
-    public void setLidRotation(float angle) {
-        top.rotateAngleX = angle;
-    }
 }

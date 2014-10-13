@@ -1,12 +1,14 @@
 package com.darkona.adventurebackpack.items;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
+import com.darkona.adventurebackpack.blocks.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackArmor;
+import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.util.Textures;
 import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
@@ -58,13 +60,13 @@ public class ItemAdventureBackpack extends ArmorAB {
             stack.stackTagCompound.setString("colorName", "Standard");
         }
 
-        world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
-        Block backpack = ModBlocks.blockBackpack;
+        //world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
+        BlockAdventureBackpack backpack = ModBlocks.blockBackpack;
 
         if (y <= 0 || y >= 255)
             return false;
         if (backpack.canPlaceBlockOnSide(world, x, y, z, side)) {
-            //    if (world.getBlockMaterial(x, y, z).isSolid())
+            if (world.getBlock(x, y, z).getMaterial().isSolid())
             {
                 switch (side) {
                     case 0:
@@ -92,13 +94,12 @@ public class ItemAdventureBackpack extends ArmorAB {
             if (backpack.canPlaceBlockAt(world, x, y, z)) {
                 if (world.setBlock(x, y, z, ModBlocks.blockBackpack)) {
                     backpack.onBlockPlacedBy(world, x, y, z, player, stack);
-                    // world.playSoundAtEntity(player, Block.soundClothFootstep.getPlaceSound(), 0.5f, 1.0f);
-                    ((TileAdventureBackpack) world.getTileEntity(x, y, z)).readFromNBT(stack.stackTagCompound);
+                    // TODO world.playSoundAtEntity(player, Block.soundClothFootstep.getPlaceSound(), 0.5f, 1.0f);
+                    ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(stack.stackTagCompound);
                     if (from) {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
                     } else {
                         player.inventory.armorInventory[2] = null;
-                        ;
                     }
                     return true;
                 }
@@ -118,7 +119,8 @@ public class ItemAdventureBackpack extends ArmorAB {
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         if (mop == null || mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
             if (world.isRemote) {
-                // ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(PacketHandler.makePacket(2));
+                //GuiBackpackMessage.
+                //      ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(PacketHandler.makePacket(2));
             }
         }
         return stack;

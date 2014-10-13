@@ -6,7 +6,7 @@ package com.darkona.adventurebackpack.proxy;
 public class ServerProxy extends CommonProxy {
 
     @Override
-    public void initRenderers() {
+    public void init() {
 
     }
 }

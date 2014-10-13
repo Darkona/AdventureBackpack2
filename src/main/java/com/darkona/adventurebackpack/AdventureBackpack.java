@@ -47,12 +47,14 @@ public class AdventureBackpack {
 
         ModItems.init();
         ModBlocks.init();
+
+        proxy.init();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
 
-        proxy.initRenderers();
+
         MinecraftForge.EVENT_BUS.register(eventlistener);
         FMLCommonHandler.instance().bus().register(eventlistener);
         guiHandler = new GuiHandler();

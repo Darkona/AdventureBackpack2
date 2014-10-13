@@ -234,7 +234,7 @@ public class InventoryItem implements IAdvBackpack {
     public boolean readFromNBT() {
         if (containerStack != null) {
             NBTTagCompound compound = containerStack.hasTagCompound() ? containerStack.getTagCompound() : new NBTTagCompound();
-            NBTTagList items = compound.getTagList("ABPItems", 1);
+            NBTTagList items = compound.getTagList("ABPItems", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < items.tagCount(); i++) {
                 NBTTagCompound item = (NBTTagCompound) items.getCompoundTagAt(i);
                 byte slot = item.getByte("Slot");

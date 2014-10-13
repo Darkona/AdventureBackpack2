@@ -162,8 +162,8 @@ public class GuiTank {
      * @return
      */
     public boolean inTank(GuiAdvBackpack gui, int mouseX, int mouseY) {
-        //mouseX -= gui.getLeft();
-        // mouseY -= gui.getTop();
+        mouseX -= gui.getLeft();
+        mouseY -= gui.getTop();
         return X <= mouseX && mouseX <= X + W && Y <= mouseY && mouseY <= Y + H;
     }
 

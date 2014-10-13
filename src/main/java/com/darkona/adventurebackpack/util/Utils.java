@@ -140,7 +140,7 @@ public class Utils {
             put("Skull.skeleton", "Skeleton");
             put("Skull.zombie", "Zombie");
             put("Skull.wither", "Wither Skeleton");
-            put("Slimeball", "Slime");
+            put("SlimeBall", "Slime");
             put("MagmaCream", "Magma Cube");
             put("SpiderEye", "Spider");
             put("GhastTear", "Ghast");

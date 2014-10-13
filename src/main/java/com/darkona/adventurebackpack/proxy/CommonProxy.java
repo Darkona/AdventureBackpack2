@@ -5,5 +5,5 @@ package com.darkona.adventurebackpack.proxy;
  */
 public abstract class CommonProxy {
 
-    public abstract void initRenderers();
+    public abstract void init();
 }

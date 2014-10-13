@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -9,6 +10,7 @@ import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemEgg;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -38,8 +40,11 @@ public class BackpackAbilities {
 
         if (backpack instanceof ItemStack) {
             for (String valid : validWearingBackpacks) {
-                if (valid.equals(((ItemStack) backpack).stackTagCompound.getString("colorName"))) {
+                //
+                if (valid.equals(((ItemStack) backpack).getTagCompound().getString("colorName"))) {
                     try {
+
+                        //LogHelper.info("Executing ability of backpack: "+valid);
                         this.getClass().getMethod("item" + valid, EntityPlayer.class, World.class, ItemStack.class).invoke(instance, player, world, backpack);
                     } catch (Exception oops) {
                         // oops.printStackTrace(); Discard silently, nobody
@@ -113,7 +118,7 @@ public class BackpackAbilities {
                 float f1 = world.rand.nextFloat() * 0.5F + 0.5F;
                 float f2 = MathHelper.sin(f) * i * 0.5F * f1;
                 float f3 = MathHelper.cos(f) * i * 0.5F * f1;
-                world.spawnParticle("slime", player.posX + f2, player.boundingBox.minY, player.posZ + f3, 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("slime", player.posX + f2, player.boundingBox.minY, player.posZ + f3, 0.0D, 0.0625D, 0.0D);
             }
             int slimeTime = backpack.stackTagCompound.hasKey("lastTime") ? backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
             if (slimeTime <= 0) {
@@ -130,8 +135,8 @@ public class BackpackAbilities {
             int eggTime = backpack.stackTagCompound.hasKey("lastTime") ? backpack.stackTagCompound.getInteger("lastTime") - 1 : ticks(300);
             if (eggTime <= 0) {
                 player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
-                if (!world.isRemote) player.dropItem(new ItemEgg(), 1);
-                eggTime = ticks(world.rand.nextInt(301) + 300);
+                if (!world.isRemote) player.dropItem(new Items().egg, 1);
+                eggTime = 5;//ticks(world.rand.nextInt(301) + 300);
             }
             backpack.stackTagCompound.setInteger("lastTime", eggTime);
         }
@@ -162,6 +167,7 @@ public class BackpackAbilities {
     }
 
     public void itemCreeper(EntityPlayer player, World world, ItemStack backpack) {
+        //TODO make the player generate an explosion that doesn't hurt him or blocks on proximity to another player
         world.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
     }
 
