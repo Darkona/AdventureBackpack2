@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -16,8 +17,6 @@ public interface IAdvBackpack extends IInventory {
     public void setLeftTank(FluidTank tank);
 
     public void setRightTank(FluidTank tank);
-
-    public boolean readFromNBT();
 
     public NBTTagCompound writeToNBT();
 

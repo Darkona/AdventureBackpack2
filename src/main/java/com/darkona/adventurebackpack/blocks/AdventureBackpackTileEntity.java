@@ -13,6 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
@@ -50,75 +52,96 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
         lastTime = 0;
         checkTime = 0;
     }
-    public void setColorName(String string) {
-        this.colorName = string;
+
+    //=============================================== GETTERS ========================================================//
+    public String getColor() {
+        return this.color;
     }
 
     public String getColorName() {
         return this.colorName;
     }
 
-    public boolean isSBDeployed() {
-        return this.sleepingBagDeployed;
+    @Override
+    public String getInventoryName() {
+        return null;
     }
 
-   /* public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta) {
-       // Block sleepingBag = ModBlocks.sleepingbag;
-        if (world.setBlock(x, y, z, BlockInfo.SLEEPINGBAG_ID, meta, 3))
-        {
-            world.playSoundAtEntity(player, Block.soundClothFootstep.getPlaceSound(), 0.5f, 1.0f);
-            sbx = x;
-            sby = y;
-            sbz = z;
-            sbdir=meta;
-            return sleepingBagDeployed = ((BlockSleepingBag) sleepingBag).placeBlock(world, x,y,z,meta);
-        }
-        return false;
+    public FluidTank getLeftTank() {
+        return this.leftTank;
     }
 
-    public boolean removeSleepingBag(World world) {
-        if (sleepingBagDeployed)
-        {
-            if (world.getBlockId(sbx, sby, sbz) == ABPBlocks.sleepingbag.blockID)
-            {
-                world.setBlock(sbx, sby, sbz, 0);
-                world.removeBlockTileEntity(sbx, sby, sbz);
-                // TODO play a sound here
-                this.sleepingBagDeployed = false;
-                saveChanges();
-                return true;
-            }
-        }else{
-            this.sleepingBagDeployed = false;
-            saveChanges();
+    public FluidTank getRightTank() {
+        return this.rightTank;
+    }
+
+    @Override
+    public int getSizeInventory() {
+        return this.inventory.length;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        return this.inventory[slot];
+    }
+
+    @Override
+    public ItemStack getStackInSlotOnClosing(int i) {
+        return null;
+    }
+
+    @Override
+    public int getInventoryStackLimit() {
+        return 64;
+    }
+
+    //================================================ SETTERS =======================================================//
+    public void setColorName(String string) {
+        this.colorName = string;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setLeftTank(FluidTank leftTank) {
+        this.leftTank = leftTank;
+    }
+
+    public void setRightTank(FluidTank rightTank) {
+        this.rightTank = rightTank;
+
+    }
+
+    @Override
+    public void setInventorySlotContents(int i, ItemStack itemstack) {
+        inventory[i] = itemstack;
+        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
+            itemstack.stackSize = getInventoryStackLimit();
         }
-        return false;
-    }*/
+        markDirty();
+    }
 
-    /*  @Override
-      public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
-          // super.onDataPacket(net, pkt);
-          readFromNBT(pkt.data);
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
+    }
 
-      }
+    @Override
+    public boolean canUpdate() {
+        return true;
+    }
 
-      @Override
-      public Packet getDescriptionPacket() {
-          NBTTagCompound nbt = writeToNBT();
-          return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
-      }
-  */
     @Override
     public void updateEntity() {
         if (!colorName.isEmpty())
             BackpackAbilities.instance.executeAbility(null, this.worldObj, this);
-        if(checkTime == 0){
+        if (checkTime == 0) {
             int lastLumen = luminosity;
             int left = (leftTank.getFluid() != null) ? leftTank.getFluid().getFluid().getLuminosity() : 0;
             int right = (rightTank.getFluid() != null) ? rightTank.getFluid().getFluid().getLuminosity() : 0;
             luminosity = Math.max(left, right);
-            if (luminosity != lastLumen)
-            {
+            if (luminosity != lastLumen) {
                 int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
                 worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
                 worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
@@ -127,9 +150,9 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
             {
                 sleepingBagDeployed = false;
             }*/
-            checkTime = 40;
-            saveChanges();
-        }else{
+            checkTime = 400;
+            //saveChanges();
+        } else {
             checkTime--;
         }
         super.updateEntity();
@@ -137,20 +160,17 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
 
     public boolean equip(World world, EntityPlayer player, int x, int y, int z) {
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
-        stacky.stackTagCompound = this.writeToNBT();
+        stacky.setTagCompound(this.writeToNBT());
         // removeSleepingBag(world);
 
-        if (player.inventory.armorInventory[2] == null)
-        {
+        if (player.inventory.armorInventory[2] == null) {
             player.inventory.armorInventory[2] = stacky;
             return true;
 
-        } else if (player.inventory.addItemStackToInventory(stacky))
-        {
+        } else if (player.inventory.addItemStackToInventory(stacky)) {
             return true;
-        } else
-        {
-            return drop(world,player, x, y, z);
+        } else {
+            return drop(world, player, x, y, z);
         }
     }
 
@@ -175,96 +195,15 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
         return world.spawnEntityInWorld(droppedItem);
     }
 
-    @Override
-    public int getSizeInventory() {
-        return inventory.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int slot) {
-        return inventory[slot];
-    }
-
-    @Override
-    public ItemStack decrStackSize(int i, int count) {
-        ItemStack itemstack = getStackInSlot(i);
-
-        if (itemstack != null) {
-            if (itemstack.stackSize <= count) {
-                setInventorySlotContents(i, null);
-            } else {
-                itemstack = itemstack.splitStack(count);
-                markDirty();
-            }
-        }
-
-        return itemstack;
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int i) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack) {
-
-        inventory[i] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
-            itemstack.stackSize = getInventoryStackLimit();
-        }
-
-        markDirty();
-    }
-
-    @Override
-    public String getInventoryName() {
-        return null;
-    }
-
+    //================================================== BOOLEANS ====================================================//
     @Override
     public boolean hasCustomInventoryName() {
         return false;
     }
-
-    @Override
-    public int getInventoryStackLimit() {
-        return 64;
-    }
-
-    @Override
-    public void markDirty() {
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (i == 6 && inventory[i] != null)
-            {
-                updateTankSlots(getLeftTank(), i);
-            }
-
-            if (i == 8 && inventory[i] != null)
-            {
-                updateTankSlots(getRightTank(), i);
-            }
-        }
-        saveChanges();
-        super.markDirty();
-    }
-
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
         return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) <= 64;
     }
-
-    @Override
-    public void openInventory() {
-
-    }
-
-    @Override
-    public void closeInventory() {
-
-    }
-
     @Override
     public boolean isItemValidForSlot(int i, ItemStack stacky) {
         if (stacky.getItem() instanceof ItemAdventureBackpack) return false;
@@ -272,91 +211,111 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
         return true;
     }
 
+
+    //====================================================== NBT ======================================================//
     @Override
     public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-        sleepingBagDeployed = compound.getBoolean("sleepingbag");
-        sbx = compound.getInteger("sbx");
-        sby = compound.getInteger("sby");
-        sbz = compound.getInteger("sbz");
-        sbdir = compound.getInteger("sbdir");
-        luminosity = compound.getInteger("lumen");
-        loadFromNBT(compound);
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
-        NBTTagCompound tankLeft = new NBTTagCompound();
-        NBTTagCompound tankRight = new NBTTagCompound();
-
-        NBTTagList items = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++) {
-            ItemStack stack = inventory[i];
-            if (stack != null) {
-                NBTTagCompound item = new NBTTagCompound();
-                item.setByte("Slot", (byte) i);
-                stack.writeToNBT(item);
-                items.appendTag(item);
-            }
-        }
-        compound.setTag("ABPItems", items);
-        compound.setBoolean("sleepingbag", sleepingBagDeployed);
-        compound.setInteger("sbx", sbx);
-        compound.setInteger("sby", sby);
-        compound.setInteger("sbz", sbz);
-        compound.setInteger("lumen", luminosity);
-        compound.setInteger("sbdir", sbdir);
-
-        compound.setString("color", color);
-        compound.setString("colorName", colorName);
-        compound.setTag("rightTank", rightTank.writeToNBT(tankRight));
-        compound.setTag("leftTank", leftTank.writeToNBT(tankLeft));
-        compound.setInteger("lastTime", lastTime);
-        markDirty();
-    }
-
-    public void loadFromNBT(NBTTagCompound compound) {
         if (compound != null) {
-            NBTTagList items = compound.getTagList("ABPItems", 0);
-            for (int i = 0; i < items.tagCount(); i++) {
+            //read whatever minecraft is saving here
+            super.readFromNBT(compound);
+
+            //Sleeping bag, if its deployed, the coordinates, and the direction it is facing
+            sleepingBagDeployed = compound.getBoolean("sleepingbag");
+            sbx = compound.getInteger("sbx");
+            sby = compound.getInteger("sby");
+            sbz = compound.getInteger("sbz");
+            sbdir = compound.getInteger("sbdir");
+
+            //TileEntity values to reflect on the block
+            luminosity = compound.getInteger("lumen");
+
+            //Inventory
+            NBTTagList items = compound.getTagList("ABPItems", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < items.tagCount(); ++i) {
                 NBTTagCompound item = (NBTTagCompound) items.getCompoundTagAt(i);
                 byte slot = item.getByte("Slot");
                 if (slot >= 0 && slot < inventory.length) {
                     inventory[slot] = ItemStack.loadItemStackFromNBT(item);
                 }
             }
+
+            //Tanks
             leftTank.readFromNBT(compound.getCompoundTag("leftTank"));
             rightTank.readFromNBT(compound.getCompoundTag("rightTank"));
+
+            //Backpack Appearance
             color = compound.getString("color");
             colorName = compound.getString("colorName");
-            lastTime = compound.getInteger("lastTime");
 
+            //Time for action triggering
+            lastTime = compound.getInteger("lastTime");
         }
     }
 
     @Override
-    public NBTTagCompound writeToNBT() {
+    public void writeToNBT(NBTTagCompound compound) {
 
-        NBTTagCompound compound = new NBTTagCompound();
-        writeToNBT(compound);
-        return compound;
+        //Sleeping bag, if its deployed, the coordinates, and the direction it is facing
+        compound.setBoolean("sleepingbag", sleepingBagDeployed);
+        compound.setInteger("sbx", sbx);
+        compound.setInteger("sby", sby);
+        compound.setInteger("sbz", sbz);
+        compound.setInteger("sbdir", sbdir);
 
-    }
+        //Data for block appearance and behaviour
+        compound.setInteger("lumen", luminosity);
 
-    public void setRightTank(FluidTank rightTank) {
-        this.rightTank = rightTank;
+        //Inventory
+        NBTTagList items = new NBTTagList();
+        for (int i = 0; i < getSizeInventory(); i++) {
+            if (getStackInSlot(i) != null) {
+                NBTTagCompound item = new NBTTagCompound();
+                item.setByte("Slot", (byte) i);
+                getStackInSlot(i).writeToNBT(item);
+                items.appendTag(item);
+            }
+        }
+        compound.setTag("ABPItems", items);
 
+        //Tanks
+        NBTTagCompound tankLeft = new NBTTagCompound();
+        NBTTagCompound tankRight = new NBTTagCompound();
+        compound.setTag("rightTank", rightTank.writeToNBT(tankRight));
+        compound.setTag("leftTank", leftTank.writeToNBT(tankLeft));
+
+        //Backpack Appearance
+        compound.setString("color", color);
+        compound.setString("colorName", colorName);
+
+        //Time for action triggering
+        compound.setInteger("lastTime", lastTime);
+
+        //Write whatever Minecraft wants to save there
+        super.writeToNBT(compound);
+
+        //Mark this TE for saving, supposedly
+        markDirty();
     }
 
     @Override
-    public boolean readFromNBT() {
-        return false;
+    public NBTTagCompound writeToNBT() {
+        NBTTagCompound compound = new NBTTagCompound();
+        writeToNBT(compound);
+        return compound;
     }
 
+    public boolean isSBDeployed() {
+        return this.sleepingBagDeployed;
+    }
+    // ===================================================== INVENTORY ACTIONS =======================================//
 
-    public void setLeftTank(FluidTank leftTank) {
-        this.leftTank = leftTank;
+    @Override
+    public void openInventory() {
+
+    }
+    @Override
+    public void closeInventory() {
+        markDirty();
     }
 
     @Override
@@ -375,37 +334,37 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
                         if (stackOut != null && stackOut.isItemEqual(data.filledContainer) && stackOut.stackSize < stackOut.getMaxStackSize()) {
                             ItemStack newCont = FluidContainerRegistry.fillFluidContainer(data.fluid, stackIn);
                             newCont.stackSize = stackOut.stackSize + 1;
-                            setInventorySlotContentsSafe(slotOut, newCont);
-                            decrStackSizeSafe(slotIn, 1);
+                            setInventorySlotContents(slotOut, newCont);
+                            decrStackSize(slotIn, 1);
                             tank.drain(data.fluid.amount, true);
-                            saveChanges();
+                            //saveChanges();
 
                         } else if (stackOut == null) {
                             ItemStack newCont = FluidContainerRegistry.fillFluidContainer(data.fluid, stackIn);
                             newCont.stackSize = 1;
-                            setInventorySlotContentsSafe(slotOut, newCont);
-                            decrStackSizeSafe(slotIn, 1);
+                            setInventorySlotContents(slotOut, newCont);
+                            decrStackSize(slotIn, 1);
                             tank.drain(data.fluid.amount, true);
-                            saveChanges();
+                            //saveChanges();
 
                         }
                     } else if (stackIn.isItemEqual(data.filledContainer) && tank.fill(data.fluid, false) >= data.fluid.amount) {
 
                         if (stackOut != null && stackOut.isItemEqual(data.emptyContainer) && stackOut.stackSize < stackOut.getMaxStackSize()) {
                             if (Utils.shouldGiveEmpty(data.emptyContainer)) {
-                                setInventorySlotContentsSafe(slotOut, new ItemStack(data.emptyContainer.getItem(), stackOut.stackSize + 1));
+                                setInventorySlotContents(slotOut, new ItemStack(data.emptyContainer.getItem(), stackOut.stackSize + 1));
                             }
-                            decrStackSizeSafe(slotIn, 1);
+                            decrStackSize(slotIn, 1);
                             tank.fill(data.fluid, true);
-                            saveChanges();
+                            //saveChanges();
 
                         } else if (stackOut == null) {
                             if (Utils.shouldGiveEmpty(data.emptyContainer)) {
-                                setInventorySlotContentsSafe(slotOut, new ItemStack(data.emptyContainer.getItem(), 1));
+                                setInventorySlotContents(slotOut, new ItemStack(data.emptyContainer.getItem(), 1));
                             }
-                            decrStackSizeSafe(slotIn, 1);
+                            decrStackSize(slotIn, 1);
                             tank.fill(data.fluid, true);
-                            saveChanges();
+                            //saveChanges();
                         }
                     }
                 }
@@ -416,19 +375,19 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
 
                     if (stackOut != null && stackOut.isItemEqual(data.emptyContainer) && stackOut.stackSize < stackOut.getMaxStackSize()) {
                         if (Utils.shouldGiveEmpty(data.emptyContainer)) {
-                            setInventorySlotContentsSafe(slotOut, new ItemStack(data.emptyContainer.getItem(), stackOut.stackSize + 1));
+                            setInventorySlotContents(slotOut, new ItemStack(data.emptyContainer.getItem(), stackOut.stackSize + 1));
                         }
-                        decrStackSizeSafe(slotIn, 1);
+                        decrStackSize(slotIn, 1);
                         tank.fill(data.fluid, true);
-                        saveChanges();
+                        //saveChanges();
 
                     } else if (stackOut == null) {
                         if (Utils.shouldGiveEmpty(data.emptyContainer)) {
-                            setInventorySlotContentsSafe(slotOut, new ItemStack(data.emptyContainer.getItem(), 1));
+                            setInventorySlotContents(slotOut, new ItemStack(data.emptyContainer.getItem(), 1));
                         }
-                        decrStackSizeSafe(slotIn, 1);
+                        decrStackSize(slotIn, 1);
                         tank.fill(data.fluid, true);
-                        saveChanges();
+                        //saveChanges();
                     }
                 }
             }
@@ -437,47 +396,17 @@ public class AdventureBackpackTileEntity extends TileEntity implements IAdvBackp
         return false;
     }
 
-    public void setInventorySlotContentsSafe(int slot, ItemStack itemstack) {
-        inventory[slot] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
-            itemstack.stackSize = getInventoryStackLimit();
-        }
-    }
-
-    private ItemStack decrStackSizeSafe(int slot, int amount) {
-        ItemStack stack = getStackInSlot(slot);
-
-        if (stack != null) {
-            if (stack.stackSize <= amount) {
-                setInventorySlotContents(slot, null);
+    @Override
+    public ItemStack decrStackSize(int i, int count) {
+        ItemStack itemstack = getStackInSlot(i);
+        if (itemstack != null) {
+            if (itemstack.stackSize <= count) {
+                setInventorySlotContents(i, null);
             } else {
-                stack = stack.splitStack(amount);
+                itemstack = itemstack.splitStack(count);
             }
         }
-        return stack;
+        return itemstack;
     }
 
-    private void saveChanges() {
-        writeToNBT();
-        markDirty();
-    }
-
-    @Override
-    public FluidTank getLeftTank() {
-        return leftTank;
-    }
-
-    @Override
-    public FluidTank getRightTank() {
-        return rightTank;
-    }
-
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
 }

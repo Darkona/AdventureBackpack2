@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.client.gui.GuiCraftAdvBackpack;
 import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -29,6 +30,7 @@ public class GuiHandler implements IGuiHandler {
             case 0:
                 TileEntity te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof AdventureBackpackTileEntity) {
+                    LogHelper.info("Tile  server Container");
                     return new BackpackContainer(player.inventory, (AdventureBackpackTileEntity) te);
                 }
                 break;
@@ -72,6 +74,7 @@ public class GuiHandler implements IGuiHandler {
             case 0:
                 te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof AdventureBackpackTileEntity) {
+                    LogHelper.info("Tile client gui");
                     return new GuiAdvBackpack(player, (AdventureBackpackTileEntity) te);
                 }
                 break;

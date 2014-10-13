@@ -205,7 +205,7 @@ public class Utils {
         return (meta % 2 == 0) ? (meta == 0) ? 2 : 0 : ((meta + 1) % 4) + 1;
     }
 
-    //This is some black magic that returns a block or entity as far as the argument reach goes.
+    //This is some black magic that returns a block or com.darkona.adventurebackpack.entity as far as the argument reach goes.
     public static MovingObjectPosition getMovingObjectPositionFromPlayersHat(World world, EntityPlayer player, boolean flag, double reach) {
         float f = 1.0F;
         float playerPitch = player.prevRotationPitch
@@ -239,7 +239,7 @@ public class Utils {
      * Will return a backpack inventory from a backpack on the player's armor
      * slot if true, or from his hand if false;
      *
-     * @param player  the player entity
+     * @param player  the player com.darkona.adventurebackpack.entity
      * @param wearing boolean flag
      * @return
      */

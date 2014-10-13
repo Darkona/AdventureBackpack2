@@ -33,6 +33,7 @@ public class BlockAdventureBackpack extends BlockContainer {
     public BlockAdventureBackpack() {
         super(Material.cloth);
         setCreativeTab(CreativeTabAB.LMRB_TAB);
+        this.stepSound = soundTypeCloth;
     }
 
     @Override
@@ -49,20 +50,15 @@ public class BlockAdventureBackpack extends BlockContainer {
         return (l1 > l2) ? l1 : l2;
     }
 
-    @Override
+   /* @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
         return ((world.getBlockMetadata(x, y, z) & 8) >= 8) ? 15 : 0;
-    }
+    }*/
 
     @Override
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
         return ((world.getBlockMetadata(x, y, z) & 8) >= 8) ? 15 : 0;
     }
-
-//    @Override
-//    public boolean isAirBlock(World world, int x, int y, int z) {
-//        return false;
-//    }
 
     @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
@@ -97,14 +93,18 @@ public class BlockAdventureBackpack extends BlockContainer {
 //        return false;
 //    }
 //
-//    @Override
-//    public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
-//        return true;
-//    }
+
+
+    @Override
+    public boolean isBlockSolid(IBlockAccess world, int x, int y, int z, int side) {
+        return true;
+    }
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+
         FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 0, world, x, y, z);
+
         try {
             AdventureBackpackTileEntity te = (AdventureBackpackTileEntity) world.getTileEntity(x, z, z);
 
@@ -234,18 +234,16 @@ public class BlockAdventureBackpack extends BlockContainer {
 
         if (backpack instanceof AdventureBackpackTileEntity && !world.isRemote && player != null) {
             if ((player.isSneaking()) ? ((AdventureBackpackTileEntity) backpack).equip(world, player, x, y, z) : ((AdventureBackpackTileEntity) backpack).drop(world, player, x, y, z)) {
-                return world.func_147478_e(x, y, z, false);
-                //destroyBlock(x, y, z, false);
+                return world.func_147480_a(x, y, z, false);
             }
         } else {
-            return world.func_147478_e(x, y, z, false);
-            //world.destroyBlock(x, y, z, false);
+            return world.func_147480_a(x, y, z, false);
         }
         return false;
     }
 
-
-    public void breakBlock(World world, int x, int y, int z, int id, int meta) {
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te != null && te instanceof IInventory) {
             IInventory inventory = (IInventory) te;

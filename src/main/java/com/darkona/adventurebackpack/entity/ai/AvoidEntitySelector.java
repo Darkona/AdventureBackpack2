@@ -1,4 +1,4 @@
-package entity.ai;
+package com.darkona.adventurebackpack.entity.ai;
 
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -14,7 +14,7 @@ public class AvoidEntitySelector implements IEntitySelector {
 
 
     /**
-     * Return whether the specified entity is applicable to this filter.
+     * Return whether the specified com.darkona.adventurebackpack.entity is applicable to this filter.
      */
     public boolean isEntityApplicable(Entity par1Entity) {
         return par1Entity.isEntityAlive() && EntityAIAvoidPlayerWithBackpack.func_98217_a(this.entityAvoiderAI).getEntitySenses().canSee(par1Entity);

@@ -220,8 +220,8 @@ public class Rotation extends Transformation {
     }
 
     /**
-     * @param entity The placing entity, used for obtaining the look vector
-     * @return The side towards which the entity is most directly looking.
+     * @param entity The placing com.darkona.adventurebackpack.entity, used for obtaining the look vector
+     * @return The side towards which the com.darkona.adventurebackpack.entity is most directly looking.
      */
     public static int getSideFromLookAngle(EntityLivingBase entity) {
         Vector3 look = new Vector3(entity.getLook(1));

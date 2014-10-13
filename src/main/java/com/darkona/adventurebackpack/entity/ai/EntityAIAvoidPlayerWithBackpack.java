@@ -1,4 +1,4 @@
-package entity.ai;
+package com.darkona.adventurebackpack.entity.ai;
 
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.command.IEntitySelector;
@@ -23,7 +23,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase {
     public final IEntitySelector field_98218_a = new AvoidEntitySelector(this);
 
     /**
-     * The entity we are attached to
+     * The com.darkona.adventurebackpack.entity we are attached to
      */
     public EntityCreature theEntity;
     private double farSpeed;
@@ -32,17 +32,17 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase {
     private float distanceFromEntity;
 
     /**
-     * The PathEntity of our entity
+     * The PathEntity of our com.darkona.adventurebackpack.entity
      */
     private PathEntity entityPathEntity;
 
     /**
-     * The PathNavigate of our entity
+     * The PathNavigate of our com.darkona.adventurebackpack.entity
      */
     private PathNavigate entityPathNavigate;
 
     /**
-     * The class of the entity we should avoid
+     * The class of the com.darkona.adventurebackpack.entity we should avoid
      */
     private Class targetEntityClass;
 

@@ -3,10 +3,10 @@ package com.darkona.adventurebackpack.client.gui;
 import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
-import com.darkona.adventurebackpack.handlers.PacketHandler;
+
 import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.network.PacketDispatcher;
+
 import com.darkona.adventurebackpack.util.Textures;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.inventory.GuiContainer;

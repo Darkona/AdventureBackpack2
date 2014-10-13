@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidTank;
  * Created by Darkona on 12/10/2014.
  */
 public class InventoryItem implements IAdvBackpack {
+
     public ItemStack[] inventory;
     public FluidTank leftTank;
     public FluidTank rightTank;
@@ -25,6 +26,8 @@ public class InventoryItem implements IAdvBackpack {
     private String color;
     private String colorName;
     private int lastTime = 0;
+
+    //
 
     public InventoryItem(ItemStack stack) {
         containerStack = stack;
@@ -228,7 +231,6 @@ public class InventoryItem implements IAdvBackpack {
         return true;
     }
 
-    @Override
     public boolean readFromNBT() {
         if (containerStack != null) {
             NBTTagCompound compound = containerStack.hasTagCompound() ? containerStack.getTagCompound() : new NBTTagCompound();

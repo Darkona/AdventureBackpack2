@@ -5,5 +5,9 @@ package com.darkona.adventurebackpack.proxy;
  */
 public abstract class CommonProxy implements IProxy {
 
-    public void initRenderers(){};
+
+    public void initServerPacketHandlers() {
+
+
+    }
 }

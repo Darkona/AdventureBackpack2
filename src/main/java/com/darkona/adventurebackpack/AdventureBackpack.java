@@ -44,8 +44,10 @@ public class AdventureBackpack {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID + "_netChannel");
+
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
         ConfigHandler.init(event.getSuggestedConfigurationFile());
+
         ModItems.init();
         ModBlocks.init();
     }

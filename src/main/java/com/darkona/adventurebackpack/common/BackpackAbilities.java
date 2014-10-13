@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.common;
 import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.util.Utils;
-import entity.ai.EntityAIAvoidPlayerWithBackpack;
+import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.monster.EntityCreeper;

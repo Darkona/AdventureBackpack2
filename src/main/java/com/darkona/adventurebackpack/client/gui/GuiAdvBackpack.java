@@ -3,10 +3,8 @@ package com.darkona.adventurebackpack.client.gui;
 import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
-import com.darkona.adventurebackpack.handlers.PacketHandler;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.network.PacketDispatcher;
 import com.darkona.adventurebackpack.util.Textures;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -144,9 +142,9 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {/*
-        if (bedButton.inButton(this, mouseX, mouseY) && source)
-        {/*
+    protected void mouseClicked(int mouseX, int mouseY, int button) {
+       /* if (bedButton.inButton(this, mouseX, mouseY) && source)
+        {
             if (source)
             {
                 PacketDispatcher.sendPacketToServer(PacketHandler.makePacket(5, 0, X, Y, Z));
@@ -165,8 +163,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
                 PacketDispatcher.sendPacketToServer(PacketHandler.makePacket(5, 2, wearing ? 1 : 2));
             }
 
-        }
-        super.mouseClicked(mouseX, mouseY, button);*/
+        }*/
+        super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

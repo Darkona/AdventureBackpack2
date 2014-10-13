@@ -20,4 +20,5 @@ public class ClientProxy extends CommonProxy {
 
         ClientRegistry.bindTileEntitySpecialRenderer(AdventureBackpackTileEntity.class, new RendererAdventureBackpackBlock());
     }
+
 }

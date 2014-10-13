@@ -37,10 +37,9 @@ public class BackpackContainer extends Container {
         inventory.openInventory();
     }
 
-
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return false;
+        return inventory.isUseableByPlayer(player);
     }
 
     private void makeSlots(InventoryPlayer invPlayer) {
@@ -79,14 +78,9 @@ public class BackpackContainer extends Container {
 
     }
 
-
-    public AdventureBackpackTileEntity getTile() {
-        return (AdventureBackpackTileEntity) inventory;
-    }
-
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i) {
-        // TODO Fix the shit don't respecting slot accepting itemstack.
+        // TODO Fix the shit disrespecting slot accepting itemstack.
         Slot slot = getSlot(i);
 
         if (slot != null && slot.getHasStack()) {
@@ -120,12 +114,6 @@ public class BackpackContainer extends Container {
         this.needsUpdate = true;
         super.onContainerClosed(par1EntityPlayer);
     }
-
-    @Override
-    public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer) {
-        return super.slotClick(par1, par2, par3, par4EntityPlayer);
-    }
-
 
     @Override
     protected boolean mergeItemStack(ItemStack stack, int minSlot, int maxSlot, boolean par4) {
@@ -197,12 +185,6 @@ public class BackpackContainer extends Container {
         }
 
         return flag1;
-    }
-
-    public NBTTagCompound getCompound() {
-        this.needsUpdate = false;
-        return ((InventoryItem) inventory).writeToNBT();
-
     }
 
     @Override
