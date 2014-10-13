@@ -184,6 +184,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
     public boolean isSBDeployed() {
         return this.sleepingBagDeployed;
     }
+
     //=======================================================NBT======================================================//
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -336,7 +337,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
     //properly when the custom renderer reads it
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        //super.onDataPacket(net, pkt);
+        super.onDataPacket(net, pkt);
         readFromNBT(pkt.func_148857_g());
     }
 

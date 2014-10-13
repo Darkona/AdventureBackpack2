@@ -11,7 +11,6 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemEgg;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -26,6 +25,7 @@ import java.util.List;
  * Created by Darkona on 12/10/2014.
  */
 public class BackpackAbilities {
+
     public static BackpackAbilities instance = new BackpackAbilities();
 
     public static boolean hasAbility(String colorName) {
@@ -40,11 +40,10 @@ public class BackpackAbilities {
 
         if (backpack instanceof ItemStack) {
             for (String valid : validWearingBackpacks) {
-                //
                 if (valid.equals(((ItemStack) backpack).getTagCompound().getString("colorName"))) {
                     try {
 
-                        //LogHelper.info("Executing ability of backpack: "+valid);
+                        LogHelper.info("Executing ability of backpack: " + valid);
                         this.getClass().getMethod("item" + valid, EntityPlayer.class, World.class, ItemStack.class).invoke(instance, player, world, backpack);
                     } catch (Exception oops) {
                         // oops.printStackTrace(); Discard silently, nobody
@@ -70,7 +69,7 @@ public class BackpackAbilities {
 
     private static String[] validTileBackpacks = {"Cactus"};
 
-    private int ticks(int seconds) {
+    private int secondsToTicks(int seconds) {
         return seconds * 20;
     }
 
@@ -102,10 +101,10 @@ public class BackpackAbilities {
     }
 
     public void itemPig(EntityPlayer player, World world, ItemStack backpack) {
-        int oinkTime = backpack.stackTagCompound.hasKey("lastTime") ? backpack.stackTagCompound.getInteger("lastTime") - 1 : ticks(30);
+        int oinkTime = backpack.stackTagCompound.hasKey("lastTime") ? backpack.stackTagCompound.getInteger("lastTime") - 1 : secondsToTicks(30);
         if (oinkTime <= 0) {
             world.playSoundAtEntity(player, "mob.pig.say", 0.8f, 1f);
-            oinkTime = ticks(world.rand.nextInt(31) + 30);
+            oinkTime = secondsToTicks(world.rand.nextInt(31) + 30);
         }
         backpack.stackTagCompound.setInteger("lastTime", oinkTime);
     }
@@ -132,13 +131,13 @@ public class BackpackAbilities {
     public void itemChicken(EntityPlayer player, World world, ItemStack backpack) {
 
         if (Utils.isWearingBackpack(player)) {
-            int eggTime = backpack.stackTagCompound.hasKey("lastTime") ? backpack.stackTagCompound.getInteger("lastTime") - 1 : ticks(300);
+            int eggTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.getTagCompound().getInteger("lastTime") - 1 : secondsToTicks(300);
             if (eggTime <= 0) {
                 player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
                 if (!world.isRemote) player.dropItem(new Items().egg, 1);
-                eggTime = 5;//ticks(world.rand.nextInt(301) + 300);
+                eggTime = secondsToTicks(world.rand.nextInt(301) + 300);
             }
-            backpack.stackTagCompound.setInteger("lastTime", eggTime);
+            backpack.getTagCompound().setInteger("lastTime", eggTime);
         }
     }
 
