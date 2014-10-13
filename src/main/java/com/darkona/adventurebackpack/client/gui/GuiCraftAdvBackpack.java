@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
 
@@ -8,9 +8,7 @@ import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 
 import com.darkona.adventurebackpack.util.Textures;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -35,7 +33,7 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
 
     private static final ResourceLocation texture = Textures.guiTextures("guiBackpackCraft");
 
-    public GuiCraftAdvBackpack(EntityPlayer player, AdventureBackpackTileEntity tile) {
+    public GuiCraftAdvBackpack(EntityPlayer player, TileAdventureBackpack tile) {
         super(new BackCraftContainer(player, tile));
         this.inventory = tile;
         this.source = true;

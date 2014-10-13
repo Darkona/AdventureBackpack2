@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.proxy;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.render.RendererAdventureBackpackBlock;
 import com.darkona.adventurebackpack.client.render.RendererItemAdventureBackpack;
 import com.darkona.adventurebackpack.client.render.RendererItemAdventureHat;
@@ -13,12 +13,11 @@ import net.minecraftforge.client.MinecraftForgeClient;
  */
 public class ClientProxy extends CommonProxy {
 
-
     public void initRenderers() {
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, new RendererItemAdventureHat());
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureBackpack, new RendererItemAdventureBackpack());
 
-        ClientRegistry.bindTileEntitySpecialRenderer(AdventureBackpackTileEntity.class, new RendererAdventureBackpackBlock());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileAdventureBackpack.class, new RendererAdventureBackpackBlock());
     }
 
 }

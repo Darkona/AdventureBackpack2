@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,7 +21,7 @@ public class BackpackContainer extends Container {
     public boolean needsUpdate;
 
 
-    public BackpackContainer(InventoryPlayer invPlayer, AdventureBackpackTileEntity te) {
+    public BackpackContainer(InventoryPlayer invPlayer, TileAdventureBackpack te) {
         needsUpdate = false;
         inventory = te;
         makeSlots(invPlayer);
@@ -40,6 +40,10 @@ public class BackpackContainer extends Container {
     @Override
     public boolean canInteractWith(EntityPlayer player) {
         return inventory.isUseableByPlayer(player);
+    }
+
+    public TileAdventureBackpack getTile() {
+        return (TileAdventureBackpack) inventory;
     }
 
     private void makeSlots(InventoryPlayer invPlayer) {
@@ -113,6 +117,19 @@ public class BackpackContainer extends Container {
     public void onContainerClosed(EntityPlayer par1EntityPlayer) {
         this.needsUpdate = true;
         super.onContainerClosed(par1EntityPlayer);
+    }
+
+    /**
+     * Looks for changes made in the container, sends them to every listener.
+     */
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+    }
+
+    @Override
+    public Slot getSlotFromInventory(IInventory p_75147_1_, int p_75147_2_) {
+        return super.getSlotFromInventory(p_75147_1_, p_75147_2_);
     }
 
     @Override
@@ -191,5 +208,16 @@ public class BackpackContainer extends Container {
     public void putStackInSlot(int par1, ItemStack par2ItemStack) {
         this.needsUpdate = true;
         super.putStackInSlot(par1, par2ItemStack);
+    }
+
+    public NBTTagCompound getCompound() {
+        this.needsUpdate = false;
+        return ((InventoryItem) inventory).writeToNBT();
+
+    }
+
+    @Override
+    public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer) {
+        return super.slotClick(par1, par2, par3, par4EntityPlayer);
     }
 }

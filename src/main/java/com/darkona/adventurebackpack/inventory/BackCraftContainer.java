@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,7 +21,7 @@ public class BackCraftContainer extends Container {
     public IInventory craftResult = new InventoryCraftResult();
     private World world;
 
-    public BackCraftContainer(EntityPlayer player, AdventureBackpackTileEntity te) {
+    public BackCraftContainer(EntityPlayer player, TileAdventureBackpack te) {
         needsUpdate = false;
         inventory = te;
         makeSlots(player.inventory);

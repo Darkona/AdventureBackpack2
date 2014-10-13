@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.util;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.references.ModInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -28,7 +28,7 @@ public class Textures {
         return new ResourceLocation(TEXTURE_LOCATION, name);
     }
 
-    public static ResourceLocation backpackTexRL(AdventureBackpackTileEntity te) {
+    public static ResourceLocation backpackTexRL(TileAdventureBackpack te) {
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/backpack" + te.getColor() + ".png");
     }
 

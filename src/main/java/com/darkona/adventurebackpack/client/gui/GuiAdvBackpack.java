@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
@@ -38,7 +38,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
     private FluidStack lft;
     private FluidStack rgt;
 
-    public GuiAdvBackpack(EntityPlayer player, AdventureBackpackTileEntity tileBackpack) {
+    public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack) {
         super(new BackpackContainer(player.inventory, tileBackpack));
         this.inventory = tileBackpack;
         this.source = true;

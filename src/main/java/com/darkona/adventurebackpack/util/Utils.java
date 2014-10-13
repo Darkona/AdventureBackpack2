@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.util;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.items.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.items.ItemAdventureHat;
@@ -110,7 +109,7 @@ public class Utils {
         return item.stackTagCompound.getString("colorName");
     }
 
-//    public static String getBackpackColorName(AdventureBackpackTileEntity te) {
+//    public static String getBackpackColorName(TileAdventureBackpack te) {
 //        if (te == null) return "";
 //        if (te.getColorName() == null) {
 //            te.set = new NBTTagCompound();

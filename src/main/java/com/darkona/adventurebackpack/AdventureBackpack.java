@@ -5,7 +5,7 @@ import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModEventListeners;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.proxy.IProxy;
+import com.darkona.adventurebackpack.proxy.CommonProxy;
 import com.darkona.adventurebackpack.references.ModInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -15,9 +15,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.MinecraftForge;
 
 /**
@@ -37,7 +34,7 @@ public class AdventureBackpack {
 
 
     @SidedProxy(clientSide = ModInfo.MOD_CLIENT_PROXY, serverSide = ModInfo.MOD_SERVER_PROXY)
-    public static IProxy proxy;
+    public static CommonProxy proxy;
 
     ModEventListeners eventlistener = new ModEventListeners();
 

@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.items;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
@@ -12,7 +12,6 @@ import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -94,7 +93,7 @@ public class ItemAdventureBackpack extends ArmorAB {
                 if (world.setBlock(x, y, z, ModBlocks.blockBackpack)) {
                     backpack.onBlockPlacedBy(world, x, y, z, player, stack);
                     // world.playSoundAtEntity(player, Block.soundClothFootstep.getPlaceSound(), 0.5f, 1.0f);
-                    ((AdventureBackpackTileEntity) world.getTileEntity(x, y, z)).readFromNBT(stack.stackTagCompound);
+                    ((TileAdventureBackpack) world.getTileEntity(x, y, z)).readFromNBT(stack.stackTagCompound);
                     if (from) {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
                     } else {

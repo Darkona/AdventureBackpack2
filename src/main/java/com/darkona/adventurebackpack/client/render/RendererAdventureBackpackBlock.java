@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackBlock;
 import com.darkona.adventurebackpack.util.Textures;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -11,8 +11,8 @@ import org.lwjgl.opengl.GL12;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer {
@@ -26,11 +26,13 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer {
     @Override
     public void renderTileEntityAt(TileEntity advbackpack, double x, double y, double z, float par8) {
         int dir = advbackpack.getWorldObj().getBlockMetadata(advbackpack.xCoord, advbackpack.yCoord, advbackpack.zCoord);
+        //This is bit operation witchery to get the orientation.
         if ((dir & 8) >= 8)
             dir -= 8;
         if ((dir & 4) >= 4)
             dir -= 4;
-        AdventureBackpackTileEntity bp = (AdventureBackpackTileEntity) advbackpack;
+
+        TileAdventureBackpack bp = (TileAdventureBackpack) advbackpack;
 
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -49,7 +51,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer {
         if (dir % 2 == 0)
             GL11.glRotatef(dir * (-180F), 0.0F, 1.0F, 0.0F);
 
-        model.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F, bp.getLeftTank(), bp.getRightTank(), bp.isSBDeployed());
+        model.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F, bp.getLeftTank(), bp.getRightTank());
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();

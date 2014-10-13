@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCraftAdvBackpack;
 import com.darkona.adventurebackpack.inventory.BackCraftContainer;
@@ -29,9 +29,9 @@ public class GuiHandler implements IGuiHandler {
         switch (ID) {
             case 0:
                 TileEntity te = world.getTileEntity(x, y, z);
-                if (te != null && te instanceof AdventureBackpackTileEntity) {
+                if (te != null && te instanceof TileAdventureBackpack) {
                     LogHelper.info("Tile  server Container");
-                    return new BackpackContainer(player.inventory, (AdventureBackpackTileEntity) te);
+                    return new BackpackContainer(player.inventory, (TileAdventureBackpack) te);
                 }
                 break;
             case 1:
@@ -46,8 +46,8 @@ public class GuiHandler implements IGuiHandler {
                 break;
             case 3:
                 te = world.getTileEntity(x, y, z);
-                if (te != null && te instanceof AdventureBackpackTileEntity) {
-                    return new BackCraftContainer(player, (AdventureBackpackTileEntity) te);
+                if (te != null && te instanceof TileAdventureBackpack) {
+                    return new BackCraftContainer(player, (TileAdventureBackpack) te);
                 }
                 break;
             case 4:
@@ -73,9 +73,9 @@ public class GuiHandler implements IGuiHandler {
         switch (ID) {
             case 0:
                 te = world.getTileEntity(x, y, z);
-                if (te != null && te instanceof AdventureBackpackTileEntity) {
+                if (te != null && te instanceof TileAdventureBackpack) {
                     LogHelper.info("Tile client gui");
-                    return new GuiAdvBackpack(player, (AdventureBackpackTileEntity) te);
+                    return new GuiAdvBackpack(player, (TileAdventureBackpack) te);
                 }
                 break;
             case 1:
@@ -94,8 +94,8 @@ public class GuiHandler implements IGuiHandler {
 
             case 3:
                 te = world.getTileEntity(x, y, z);
-                if (te != null && te instanceof AdventureBackpackTileEntity) {
-                    return new GuiCraftAdvBackpack(player, (AdventureBackpackTileEntity) te);
+                if (te != null && te instanceof TileAdventureBackpack) {
+                    return new GuiCraftAdvBackpack(player, (TileAdventureBackpack) te);
                 }
                 break;
             case 4:

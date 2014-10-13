@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
-import com.darkona.adventurebackpack.blocks.AdventureBackpackTileEntity;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
@@ -47,11 +47,11 @@ public class BackpackAbilities {
                     }
                 }
             }
-        } else if (backpack instanceof AdventureBackpackTileEntity) {
+        } else if (backpack instanceof TileAdventureBackpack) {
             for (String valid : validTileBackpacks) {
-                if (valid.equals(((AdventureBackpackTileEntity) backpack).getColorName())) {
+                if (valid.equals(((TileAdventureBackpack) backpack).getColorName())) {
                     try {
-                        this.getClass().getMethod("tile" + valid, World.class, AdventureBackpackTileEntity.class).invoke(instance, world, backpack);
+                        this.getClass().getMethod("tile" + valid, World.class, TileAdventureBackpack.class).invoke(instance, world, backpack);
                     } catch (Exception oops) {
                         // oops.printStackTrace(); Discard silently, nobody
                         // cares.
@@ -235,7 +235,7 @@ public class BackpackAbilities {
     }
     /* ==================================== TILE ABILITIES ==========================================*/
 
-    public void tileCactus(World world, AdventureBackpackTileEntity backpack) {
+    public void tileCactus(World world, TileAdventureBackpack backpack) {
         if (world.isRaining() && world.canBlockSeeTheSky(backpack.xCoord, backpack.yCoord, backpack.zCoord)) {
             int dropTime = backpack.lastTime - 1;
             if (dropTime <= 0) {

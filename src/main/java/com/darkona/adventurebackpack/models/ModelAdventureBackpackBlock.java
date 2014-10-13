@@ -4,6 +4,7 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
+import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -176,10 +177,10 @@ public class ModelAdventureBackpackBlock extends ModelBase {
         }
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, FluidTank tankLeft, FluidTank tankRight, boolean sleepingbag) {
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, FluidTank tankLeft, FluidTank tankRight) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-
+        LogHelper.info("Rendering Block");
         main.render(f5);
         side.render(f5);
         top.render(f5);
@@ -200,7 +201,7 @@ public class ModelAdventureBackpackBlock extends ModelBase {
         tankwallleft4.render(f5);
         tankbottomleft.render(f5);
 
-        if (!sleepingbag) {
+        // if (!sleepingbag) {
             bed.render(f5);
             bedstrapbottomright.render(f5);
             bedstrapsideleft.render(f5);
@@ -212,7 +213,7 @@ public class ModelAdventureBackpackBlock extends ModelBase {
             bedbuttonleft.render(f5);
             bedstrapendleft.render(f5);
             bedstrapendright.render(f5);
-        }
+        // }
 
         if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getIcon() != null) {
             Vector3 victor = new Vector3((tankbottomleft.rotationPointX * 0.1 - 0.21), (tankwallleft.rotationPointY * 0.1),
