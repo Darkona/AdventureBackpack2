@@ -36,7 +36,7 @@ public class CCRenderState {
      */
     public static interface IVertexOperation {
         /**
-         * Load any required references and add dependencies to the pipeline based on the current model (may be null)
+         * Load any required reference and add dependencies to the pipeline based on the current model (may be null)
          * Return false if this operation is redundant in the pipeline with the given model
          */
         public boolean load();

@@ -10,6 +10,7 @@ public class ModItems {
 
     public static final ItemMachete machete = new ItemMachete();
     public static final ItemComponent component = new ItemComponent();
+    public static final ItemHose hose = new ItemHose();
     public static final ArmorAB adventureHat = new ItemAdventureHat();
     public static final ArmorAB pistonBoots = new ItemPistonBoots();
     public static final ArmorAB adventureSuit = new ItemAdventureSuit();
@@ -22,6 +23,7 @@ public class ModItems {
         GameRegistry.registerItem(pistonBoots, "pistonBoots");
         GameRegistry.registerItem(adventureSuit, "adventureSuit");
         GameRegistry.registerItem(adventureBackpack, "adventureBackpack");
+        GameRegistry.registerItem(hose, "backpackHose");
     }
 
 }

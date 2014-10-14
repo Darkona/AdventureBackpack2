@@ -1,8 +1,7 @@
 package com.darkona.adventurebackpack.items;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.references.ModInfo;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -18,7 +17,7 @@ public class ToolAB extends ItemTool {
 
     public ToolAB(ToolMaterial material, Set breakableBlocks) {
         super(1f, material, breakableBlocks);
-        setCreativeTab(CreativeTabAB.LMRB_TAB);
+        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
     @Override

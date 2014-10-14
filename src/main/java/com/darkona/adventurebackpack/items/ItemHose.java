@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.items;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.common.Actions;
 import com.darkona.adventurebackpack.common.Constants;
@@ -20,7 +19,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -41,22 +39,89 @@ public class ItemHose extends ItemAB {
     IIcon leftIcon;
     IIcon rightIcon;
 
-    public ItemHose(int par1) {
+    public ItemHose() {
         super();
-        setMaxStackSize(1).setFull3D()
-                //.setCreativeTab(CreativeTabs.tabTools)
-                .setNoRepair().setUnlocalizedName("itemHose");
-        setCreativeTab(CreativeTabAB.LMRB_TAB);
+        setMaxStackSize(1);
+        setFull3D();
+        //.setCreativeTab(CreativeTabs.tabTools)
+        setNoRepair();
+        setUnlocalizedName("backpackHose");
+        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+    }
+
+
+    // ================================================ GETTERS  =====================================================//
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(ItemStack stack, int pass) {
+        if (stack.getTagCompound() == null || stack.getTagCompound().getInteger("tank") == -1) return itemIcon;
+        return
+                stack.getTagCompound().getInteger("tank") == 0 ? leftIcon : rightIcon;
+
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register) {
-        leftIcon = register.registerIcon("hoseLeft");
-        rightIcon = register.registerIcon("hoseRight");
-        itemIcon = register.registerIcon("hose");
+    public IIcon getIconFromDamage(int par1) {
+        return itemIcon;
     }
 
+    public static int getHoseMode(ItemStack hose) {
+        return hose.stackTagCompound != null ? hose.stackTagCompound.getInteger("mode") : -1;
+    }
+
+    public static int getHoseTank(ItemStack hose) {
+        return hose.hasTagCompound() ? hose.getTagCompound().getInteger("tank") : -1;
+    }
+
+    @Override
+    public EnumAction getItemUseAction(ItemStack stack) {
+        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("mode")) {
+            return (stack.stackTagCompound.getInteger("mode") == 2) ? EnumAction.drink : EnumAction.none;
+        }
+        return EnumAction.none;
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        String name = "hose." + (getHoseTank(stack) == 0 ? "leftTank" : getHoseTank(stack) == 1 ? "rightTank" : "");
+        switch (getHoseMode(stack)) {
+            case 0:
+                return name + ".suck";
+            case 1:
+                return name + ".spill";
+            case 2:
+                return name + ".drink";
+            default:
+                return "hoseUseless";
+        }
+    }
+
+    @Override
+    public int getMaxItemUseDuration(ItemStack stack) {
+        return 32;
+    }
+
+    @Override
+    public int getMaxDamage() {
+        return Constants.basicTankCapacity;
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return Constants.basicTankCapacity;
+    }
+
+    // ================================================ SETTERS  =====================================================//
+    // ================================================= ICONS  ======================================================//
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister iconRegister) {
+        leftIcon = iconRegister.registerIcon(Textures.iconName("hoseLeft"));
+        rightIcon = iconRegister.registerIcon(Textures.iconName("hoseRight"));
+        itemIcon = iconRegister.registerIcon(Textures.iconName("hoseLeft"));
+    }
+    // ================================================ ACTIONS  =====================================================//
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
@@ -86,20 +151,6 @@ public class ItemHose extends ItemAB {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
-        return itemIcon;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(ItemStack stack, int pass) {
-        if (stack.getTagCompound() == null || stack.getTagCompound().getInteger("tank") == -1) return itemIcon;
-        return stack.getTagCompound().getInteger("tank") == 0 ? leftIcon : rightIcon;
-        //return itemIcon;
-    }
-
-    @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 
         ItemStack backpack = Utils.getWearingBackpack(player);
@@ -113,7 +164,7 @@ public class ItemHose extends ItemAB {
                 case 0: // Suck mode
                     if (tank.fill(((IFluidHandler) te).drain(ForgeDirection.UNKNOWN, Constants.bucket, false), false) >= Constants.bucket) {
                         tank.fill(((IFluidHandler) te).drain(ForgeDirection.UNKNOWN, Constants.bucket, true), true);
-                        inv.onInventoryChanged();
+                        inv.saveChanges();
                         return true;
                     }
                     break;
@@ -121,7 +172,7 @@ public class ItemHose extends ItemAB {
                     if (tank.getFluid() != null) {
                         if (((IFluidHandler) te).fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false) >= Constants.bucket) {
                             ((IFluidHandler) te).fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, true), true);
-                            inv.onInventoryChanged();
+                            inv.saveChanges();
                             return true;
                         }
                     }
@@ -134,50 +185,11 @@ public class ItemHose extends ItemAB {
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
-        ItemStack backpack = Utils.getWearingBackpack(player);
-        if (entity instanceof EntityCow && backpack != null) {
-            InventoryItem inventory = new InventoryItem(backpack);
-            FluidTank tank = getHoseTank(stack) == 0 ? inventory.leftTank : inventory.rightTank;
-            tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
-            inventory.onInventoryChanged();
 
-            ((EntityCow) entity).faceEntity(player, 0.1f, 0.1f);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         return true;
     }
 
-    public static int getHoseMode(ItemStack hose) {
-        return hose.stackTagCompound != null ? hose.stackTagCompound.getInteger("mode") : -1;
-    }
-
-    public static int getHoseTank(ItemStack hose) {
-        return hose.hasTagCompound() ? hose.getTagCompound().getInteger("tank") : -1;
-    }
-
-    /*
-        @Override
-        public String getItemDisplayName(ItemStack stack) {
-            String name = getHoseTank(stack) == 0 ? "Left Tank" : getHoseTank(stack) == 1 ? "Right Tank" : "";
-            switch (getHoseMode(stack))
-            {
-                case 0:
-                    return name + " / Suck";
-                case 1:
-                    return name + " / Spill";
-                case 2:
-                    return name + " / Drink";
-                default:
-                    return "Hose: Useless";
-            }
-        }
-    */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 
@@ -196,17 +208,17 @@ public class ItemHose extends ItemAB {
                         }
                         if (suckEvent.getResult() == Event.Result.ALLOW) {
                             tank.fill(suckEvent.fluidResult, true);
-                            inventory.onInventoryChanged();
+                            inventory.saveChanges();
                         }
                     }
-//					if (mop != null && mop.typeOfHit == EnumMovingObjectType.ENTITY)
-//					{
-//						if (mop.entityHit instanceof EntityCow)
-//						{
-//							tank.fill(new FluidStack(Fluids.milk, Constants.bucket), true);
-//							inventory.onInventoryChanged();
-//						}
-//					}
+                    /*if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
+					{
+						if (mop.entityHit instanceof EntityCow)
+						{
+							tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
+                            inventory.saveChanges();
+						}
+					}*/
                     break;
                 case 1: // If it's in Spill Mode
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
@@ -246,7 +258,7 @@ public class ItemHose extends ItemAB {
                             // off
                             // for debugging
                             tank.drain(spillEvent.fluidResult.amount, true);
-                            inventory.onInventoryChanged();
+                            inventory.saveChanges();
                             // }
                         }
 
@@ -263,32 +275,18 @@ public class ItemHose extends ItemAB {
         return stack;
     }
 
-    @Override
-    public boolean canHarvestBlock(Block block, ItemStack stack) {
-        return Utils.isBlockRegisteredAsFluid(block) > -1;
-    }
 
     @Override
-    public int getMaxDamage() {
-        return Constants.basicTankCapacity;
-    }
-
-    @Override
-    public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
+    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player) {
         return true;
     }
 
     @Override
-    public EnumAction getItemUseAction(ItemStack stack) {
-        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("mode")) {
-            return (stack.stackTagCompound.getInteger("mode") == 2) ? EnumAction.drink : EnumAction.none;
-        }
-        return EnumAction.none;
-    }
-
-    @Override
-    public int getMaxItemUseDuration(ItemStack stack) {
-        return 32;
+    @SideOnly(Side.CLIENT)
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
+        //AdventureBackpack.networkWrapper.sendToServer(new CycleToolMessage(1,((EntityPlayer) entityLiving).inventory.currentItem,false));
+        Actions.switchHose((EntityPlayer) entityLiving, 1, ((EntityPlayer) entityLiving).inventory.currentItem);
+        return false;
     }
 
     @Override
@@ -305,7 +303,7 @@ public class ItemHose extends ItemAB {
             if (backpackTank != null) {
                 if (Actions.setFluidEffect(world, player, backpackTank)) {
                     backpackTank.drain(Constants.bucket, true);
-                    inventory.onInventoryChanged();
+                    inventory.saveChanges();
                 }
             }
         }
@@ -317,8 +315,25 @@ public class ItemHose extends ItemAB {
         return false;
     }
 
+    // ================================================ BOOLEANS =====================================================//
     @Override
-    public int getMaxDamage(ItemStack stack) {
-        return Constants.basicTankCapacity;
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
+        ItemStack backpack = Utils.getWearingBackpack(player);
+        if (entity instanceof EntityCow && backpack != null) {
+            InventoryItem inventory = new InventoryItem(backpack);
+            FluidTank tank = getHoseTank(stack) == 0 ? inventory.leftTank : inventory.rightTank;
+            tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
+            inventory.saveChanges();
+
+            ((EntityCow) entity).faceEntity(player, 0.1f, 0.1f);
+            return true;
+        }
+        return false;
     }
+
+    @Override
+    public boolean canHarvestBlock(Block block, ItemStack stack) {
+        return Utils.isBlockRegisteredAsFluid(block) > -1;
+    }
+
 }

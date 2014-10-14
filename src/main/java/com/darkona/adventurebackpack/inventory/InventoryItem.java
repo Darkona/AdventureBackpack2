@@ -97,6 +97,7 @@ public class InventoryItem implements IAdvBackpack {
         if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
             itemstack.stackSize = getInventoryStackLimit();
         }
+
     }
 
     public void setLeftTank(FluidTank leftTank) {
@@ -199,21 +200,21 @@ public class InventoryItem implements IAdvBackpack {
     }
 
     public void onInventoryChanged() {
-        boolean changed = false;
+
         for (int i = 0; i < inventory.length; i++) {
             if (i == 6 && inventory[i] != null) {
-                changed = updateTankSlots(getLeftTank(), i);
+                updateTankSlots(getLeftTank(), i);
             }
 
             if (i == 8 && inventory[i] != null) {
-                changed = updateTankSlots(getRightTank(), i);
+                updateTankSlots(getRightTank(), i);
             }
         }
-        if (changed) saveChanges();
+        saveChanges();
     }
 
-    private void saveChanges() {
-        this.containerStack.stackTagCompound = writeToNBT();
+    public void saveChanges() {
+        this.containerStack.setTagCompound(writeToNBT());
     }
 
     // ================================================ STACKS ====================================================== //

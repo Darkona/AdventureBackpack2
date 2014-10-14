@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.fluids;
 
+
+import com.darkona.adventurebackpack.client.Icons;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
@@ -18,28 +20,31 @@ public class FluidMilk extends Fluid {
         setLuminosity(0);
     }
 
+
     @Override
     public IIcon getStillIcon() {
-        return super.getStillIcon();
+        return Icons.milkStill;
     }
 
     @Override
     public IIcon getIcon() {
-        return super.getIcon();
+        return Icons.milkStill;
     }
 
     @Override
     public IIcon getFlowingIcon() {
-        return super.getFlowingIcon();
+        return Icons.milkStill;
     }
 
     @Override
     public int getColor(FluidStack stack) {
-        return 0xfffaf0;
+        return 0xFFFAF0;
     }
 
     @Override
     public boolean isGaseous(World world, int x, int y, int z) {
         return false;
     }
+
+
 }

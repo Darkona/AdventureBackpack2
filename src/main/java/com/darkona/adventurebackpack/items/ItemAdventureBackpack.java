@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.items;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.blocks.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
@@ -8,17 +9,15 @@ import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackArmor;
-import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.util.Textures;
 import com.darkona.adventurebackpack.util.Utils;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,7 @@ public class ItemAdventureBackpack extends ArmorAB {
         setUnlocalizedName("adventureBackpack");
         setFull3D();
         setMaxStackSize(1);
-        setCreativeTab(CreativeTabAB.LMRB_TAB);
+        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
     @Override
@@ -66,8 +65,7 @@ public class ItemAdventureBackpack extends ArmorAB {
         if (y <= 0 || y >= 255)
             return false;
         if (backpack.canPlaceBlockOnSide(world, x, y, z, side)) {
-            if (world.getBlock(x, y, z).getMaterial().isSolid())
-            {
+            if (world.getBlock(x, y, z).getMaterial().isSolid()) {
                 switch (side) {
                     case 0:
                         --y;
@@ -118,9 +116,8 @@ public class ItemAdventureBackpack extends ArmorAB {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         if (mop == null || mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
-            if (world.isRemote) {
-                //GuiBackpackMessage.
-                //      ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(PacketHandler.makePacket(2));
+            if (!world.isRemote) {
+                FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 1, world, 0, 0, 0);
             }
         }
         return stack;

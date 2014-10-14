@@ -2,16 +2,14 @@ package com.darkona.adventurebackpack.blocks;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.client.Icons;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockHardenedClay;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -24,6 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -33,9 +32,24 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     public BlockAdventureBackpack() {
         super(Material.cloth);
-        //setCreativeTab(CreativeTabAB.LMRB_TAB);
+        setHardness(0.5f);
     }
 
+    @Override
+    public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+        return false;
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "blockAdventureBackpack";
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        Icons.milkStill = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.milk");
+    }
 
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
@@ -55,11 +69,6 @@ public class BlockAdventureBackpack extends BlockContainer {
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
         return ((world.getBlockMetadata(x, y, z) & 8) >= 8) ? 15 : 0;
     }
-
-//    @Override
-//    public boolean isAirBlock(World world, int x, int y, int z) {
-//        return false;
-//    }
 
     @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {

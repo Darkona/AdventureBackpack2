@@ -30,7 +30,6 @@ public class GuiHandler implements IGuiHandler {
             case 0:
                 TileEntity te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack) {
-                    LogHelper.info("Tile  server Container");
                     return new BackpackContainer(player.inventory, (TileAdventureBackpack) te);
                 }
                 break;
@@ -74,12 +73,10 @@ public class GuiHandler implements IGuiHandler {
             case 0:
                 te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack) {
-                    LogHelper.info("Tile client gui");
                     return new GuiAdvBackpack(player, (TileAdventureBackpack) te);
                 }
                 break;
             case 1:
-
                 inv = Utils.getBackpackInv(player, true);
                 if (inv.containerStack != null) {
                     return new GuiAdvBackpack(player, inv, true);

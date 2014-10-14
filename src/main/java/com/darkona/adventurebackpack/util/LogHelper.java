@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.util;
 
-import com.darkona.adventurebackpack.references.ModInfo;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 

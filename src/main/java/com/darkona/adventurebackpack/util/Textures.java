@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.util;
 
 import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
-import com.darkona.adventurebackpack.references.ModInfo;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -37,7 +37,7 @@ public class Textures {
     }
 
     public static String iconName(String name) {
-        return ModInfo.MOD_ID.toLowerCase() + ":" + name + ".png";
+        return ModInfo.MOD_ID.toLowerCase() + ":" + name;
     }
 
 

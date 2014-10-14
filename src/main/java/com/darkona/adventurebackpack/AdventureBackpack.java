@@ -1,12 +1,17 @@
 package com.darkona.adventurebackpack;
 
+import com.darkona.adventurebackpack.api.FluidEffectRegistry;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
+import com.darkona.adventurebackpack.handlers.EventHandler;
+import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModEventListeners;
+import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.proxy.CommonProxy;
-import com.darkona.adventurebackpack.references.ModInfo;
+import com.darkona.adventurebackpack.network.CycleToolMessage;
+import com.darkona.adventurebackpack.network.GuiBackpackMessage;
+import com.darkona.adventurebackpack.proxy.IProxy;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -15,13 +20,17 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.MinecraftForge;
 
 /**
  * Created by Javier Darkona on 10/10/2014.
  */
 
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, version = ModInfo.MOD_VERSION, guiFactory = ModInfo.GUI_FACTORY_CLASS)
+@Mod(modid = ModInfo.MOD_ID,
+        name = ModInfo.MOD_NAME,
+        version = ModInfo.MOD_VERSION,
+        guiFactory = ModInfo.GUI_FACTORY_CLASS)
 public class AdventureBackpack {
 
     @Mod.Instance(ModInfo.MOD_ID)
@@ -30,35 +39,47 @@ public class AdventureBackpack {
     //Static things
     public static CreativeTabAB creativeTab;
     public static SimpleNetworkWrapper networkWrapper;
-    public static GuiHandler guiHandler;
+    //public static GuiHandler guiHandler;
 
 
     @SidedProxy(clientSide = ModInfo.MOD_CLIENT_PROXY, serverSide = ModInfo.MOD_SERVER_PROXY)
-    public static CommonProxy proxy;
+    public static IProxy proxy;
 
-    ModEventListeners eventlistener = new ModEventListeners();
+    EventHandler eventlistener;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID + "_netChannel");
 
+        //Configuration
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 
+        //NETWORK
+        int messageCounter = 0;
+        networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID + "_netChannel");
+        networkWrapper.registerMessage(CycleToolMessage.CycleToolMessageServerHandler.class, CycleToolMessage.class, messageCounter++, Side.SERVER);
+        networkWrapper.registerMessage(GuiBackpackMessage.GuiBackpackMessageServerHandler.class, GuiBackpackMessage.class, messageCounter++, Side.SERVER);
+
+        //ModStuff
         ModItems.init();
         ModBlocks.init();
+        ModFluids.init();
+        FluidEffectRegistry.init();
 
-        proxy.init();
+        // EVENTS
+        eventlistener = new EventHandler();
+        MinecraftForge.EVENT_BUS.register(eventlistener);
+        FMLCommonHandler.instance().bus().register(eventlistener);
+
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        proxy.init();
+        proxy.registerKeybindings();
 
-
-        MinecraftForge.EVENT_BUS.register(eventlistener);
-        FMLCommonHandler.instance().bus().register(eventlistener);
-        guiHandler = new GuiHandler();
-
+        //GUIs
+        new GuiHandler();
     }
 
     @Mod.EventHandler

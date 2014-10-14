@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.items.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.items.ItemHose;
 import com.darkona.adventurebackpack.util.Utils;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -23,8 +25,6 @@ import net.minecraftforge.fluids.FluidTank;
  * Created by Darkona on 11/10/2014.
  */
 public class Actions {
-    public static boolean cycling = false;
-    public static boolean switching = false;
     public static boolean bedActivated = false;
 
 
@@ -40,10 +40,9 @@ public class Actions {
                 return null;
             if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
                 return null;
-            int fluidID = Utils.isBlockRegisteredAsFluid(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
-            FluidStack fluid = new FluidStack(fluidID, Constants.bucket);
-            // To-do make it dependent on tank name from the hose
-            if (fluidID > -1) {
+            Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
+            if (fluidBlock != null) {
+                FluidStack fluid = new FluidStack(fluidBlock, Constants.bucket);
                 if (tank.getFluid() == null || tank.getFluid().containsFluid(fluid)) {
                     int accepted = tank.fill(fluid, false);
                     if (accepted > 0) {
@@ -54,7 +53,7 @@ public class Actions {
             }
         } catch (Exception oops) {
             System.out.println("Something bad happened while filling the tank D:");
-            oops.printStackTrace();
+            //oops.printStackTrace();
         }
         return null;
     }
@@ -70,7 +69,7 @@ public class Actions {
                     if (!world.isAirBlock(x, y, z) && !flag) {
                         return null;
                     }
-
+                    /* HELL */
                     if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER) { /* HELL */
                         world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F,
                                 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -128,10 +127,6 @@ public class Actions {
     }
 
     public static void switchHose(EntityPlayer player, int direction, int slot) {
-        // player.inventory.currentItem = slot;
-        if (!switching && !cycling) {
-            switching = true;
-
             ItemStack hose = player.inventory.mainInventory[slot];
             NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
             if (direction < 0) {
@@ -144,29 +139,24 @@ public class Actions {
                 tag.setInteger("tank", tank);
             }
             hose.setTagCompound(tag);
-            switching = false;
-        }
-
     }
 
     public static void cycleTool(EntityPlayer player, int direction, int slot) {
-        if (!cycling && !switching) {
-            cycling = true;
-            InventoryItem backpack = Utils.getBackpackInv(player, true);
-            ItemStack current = player.getCurrentEquippedItem();
-            if (direction < 0) {
-                player.inventory.setInventorySlotContents(slot, backpack.getStackInSlot(3));
-                backpack.setInventorySlotContents(3, backpack.getStackInSlot(0));
-                backpack.setInventorySlotContents(0, current);
-            } else {
-                if (direction > 0) {
-                    player.inventory.mainInventory[slot] = backpack.inventory[0];
-                    backpack.setInventorySlotContents(0, backpack.getStackInSlot(3));
-                    backpack.setInventorySlotContents(3, current);
-                }
+        InventoryItem backpack = Utils.getBackpackInv(player, true);
+        ItemStack current = player.getCurrentEquippedItem();
+        if (direction < 0) {
+            player.inventory.mainInventory[slot] = backpack.getStackInSlot(3);//(slot, backpack.getStackInSlot(3));
+            backpack.setInventorySlotContentsSafe(3, backpack.getStackInSlot(0));
+            backpack.setInventorySlotContentsSafe(0, current);
+        } else {
+            if (direction > 0) {
+                player.inventory.mainInventory[slot] = backpack.getStackInSlot(0);
+                //player.inventory.setInventorySlotContents(slot,backpack.getStackInSlot(0));
+                backpack.setInventorySlotContentsSafe(0, backpack.getStackInSlot(3));
+                backpack.setInventorySlotContentsSafe(3, current);
             }
+            backpack.saveChanges();
         }
-        cycling = false;
     }
 
     public static boolean tryPlaceOnDeath(EntityPlayer player) {

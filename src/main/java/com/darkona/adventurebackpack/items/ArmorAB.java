@@ -2,7 +2,7 @@ package com.darkona.adventurebackpack.items;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.init.ModMaterials;
-import com.darkona.adventurebackpack.references.ModInfo;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Textures;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,7 +22,7 @@ public class ArmorAB extends ItemArmor {
      */
     public ArmorAB(int renderIndex, int type) {
         super(ModMaterials.ruggedLeather, renderIndex, type);
-        setCreativeTab(CreativeTabAB.LMRB_TAB);
+        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
 

@@ -5,3 +5,23 @@ item.adventurebackpack:sleepingBag.name=Sleeping Bag
 item.adventurebackpack:backpackTank.name=Backpack Tank
 item.adventurebackpack:hoseHead.name=Hose Headpiece
 item.adventurebackpack:adventureBackpack.name=Adventure Backpack
+item.adventurebackpack:backpackHose.name=Backpack Hose
+
+item.adventurebackpack:hose.leftTank.suck.name=Hose: Left Tank / Suck Mode
+item.adventurebackpack:hose.leftTank.spill=Hose: Left Tank / Spill Mode
+item.adventurebackpack:hose.leftTank.drink=Hose: Left Tank / Drink Mode
+
+
+item.adventurebackpack:hose.rightTank.suck.name=Right Tank / Suck Mode
+item.adventurebackpack:hose.rightTank.spill.name=Right Tank / Spill Mode
+item.adventurebackpack:hose.rightTank.drink.name=Right Tank / Drink Mode
+
+item.adventurebackpack:hoseUseless=Hose: Useless / No Backpack
+
+#Blocks
+block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
+#CreativeTab
+
+#Keybindings
+keys.adventureBackpack.category=Adventure Backpack
+keys.adventureBackpack.openBackpackInventory=Open Backpack Inventory
