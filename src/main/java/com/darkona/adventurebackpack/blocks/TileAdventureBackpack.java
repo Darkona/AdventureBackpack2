@@ -55,11 +55,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         checkTime = 0;
     }
 
-
-
-
-
-
    /* public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta) {
        // Block sleepingBag = ModBlocks.sleepingbag;
         if (world.setBlock(x, y, z, BlockInfo.SLEEPINGBAG_ID, meta, 3))
@@ -301,8 +296,21 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
             itemstack.stackSize = getInventoryStackLimit();
         }
-
+        onInventoryChanged();
         markDirty();
+    }
+
+    public void onInventoryChanged() {
+        boolean changed = false;
+        for (int i = 0; i < inventory.length; i++) {
+            if (i == 6 && inventory[i] != null) {
+                changed = updateTankSlots(getLeftTank(), i);
+            }
+
+            if (i == 8 && inventory[i] != null) {
+                changed = updateTankSlots(getRightTank(), i);
+            }
+        }
     }
 
     public void setInventorySlotContentsSafe(int slot, ItemStack itemstack) {
@@ -324,6 +332,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         }
         return stack;
     }
+
 
     //===================================================TILE ENTITY==================================================//
 
@@ -475,16 +484,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
 
         return world.spawnEntityInWorld(droppedItem);
     }
-
-    /**
-     * Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible for
-     * sending the packet.
-     *
-     * @param net The NetworkManager the packet originated from
-     * @param pkt The data packet
-     */
 
 
 }

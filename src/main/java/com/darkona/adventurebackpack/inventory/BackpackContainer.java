@@ -20,7 +20,6 @@ public class BackpackContainer extends Container {
     public boolean source;
     public boolean needsUpdate;
 
-
     public BackpackContainer(InventoryPlayer invPlayer, TileAdventureBackpack te) {
         needsUpdate = false;
         inventory = te;
@@ -36,6 +35,12 @@ public class BackpackContainer extends Container {
         makeSlots(invPlayer);
         inventory.openInventory();
     }
+
+    // =============================================== GETTERS ====================================================== //
+    // =============================================== SETTERS ====================================================== //
+    // ================================================ ORDER ======================================================= //
+    // ================================================ STACKS ====================================================== //
+
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {

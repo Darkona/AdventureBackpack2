@@ -38,6 +38,7 @@ public class InventoryItem implements IAdvBackpack {
         readFromNBT();
     }
 
+    // =============================================== GETTERS ====================================================== //
     @Override
     public int getSizeInventory() {
         return inventory.length;
@@ -49,38 +50,39 @@ public class InventoryItem implements IAdvBackpack {
     }
 
     @Override
-    public ItemStack decrStackSize(int slot, int amount) {
-        ItemStack stack = getStackInSlot(slot);
-
-        if (stack != null) {
-            if (stack.stackSize <= amount) {
-                setInventorySlotContents(slot, null);
-            } else {
-                stack = stack.splitStack(amount);
-            }
-        }
-        onInventoryChanged();
-        return stack;
-    }
-
-    private ItemStack decrStackSizeSafe(int slot, int amount) {
-        ItemStack stack = getStackInSlot(slot);
-
-        if (stack != null) {
-            if (stack.stackSize <= amount) {
-                setInventorySlotContents(slot, null);
-            } else {
-                stack = stack.splitStack(amount);
-            }
-        }
-        return stack;
-    }
-
-    @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
         return null;
     }
 
+    @Override
+    public String getInventoryName() {
+        return "AdventureBackpack";
+    }
+
+    @Override
+    public int getInventoryStackLimit() {
+        return 64;
+    }
+
+    /**
+     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
+     * hasn't changed and skip it.
+     */
+
+
+    @Override
+    public FluidTank getLeftTank() {
+        //leftTank.readFromNBT(containerStack.stackTagCompound.getCompoundTag("leftTank"));
+        return leftTank;
+    }
+
+    @Override
+    public FluidTank getRightTank() {
+        //rightTank.readFromNBT(containerStack.stackTagCompound.getCompoundTag("rightTank"));
+        return rightTank;
+    }
+
+    // =============================================== SETTERS ====================================================== //
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemstack) {
         inventory[slot] = itemstack;
@@ -90,14 +92,32 @@ public class InventoryItem implements IAdvBackpack {
         onInventoryChanged();
     }
 
+    public void setInventorySlotContentsSafe(int slot, ItemStack itemstack) {
+        inventory[slot] = itemstack;
+        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
+            itemstack.stackSize = getInventoryStackLimit();
+        }
+    }
+
+    public void setLeftTank(FluidTank leftTank) {
+        this.leftTank = leftTank;
+        saveChanges();
+    }
+
+    public void setRightTank(FluidTank rightTank) {
+        this.rightTank = rightTank;
+        saveChanges();
+    }
+
+    // ================================================ ORDER ======================================================= //
     @Override
-    public String getInventoryName() {
-        return "AdventureBackpack";
+    public void openInventory() {
+        readFromNBT();
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
-        return true;
+    public void closeInventory() {
+        saveChanges();
     }
 
     @Override
@@ -178,49 +198,61 @@ public class InventoryItem implements IAdvBackpack {
         return false;
     }
 
-    public void setInventorySlotContentsSafe(int slot, ItemStack itemstack) {
-        inventory[slot] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
-            itemstack.stackSize = getInventoryStackLimit();
-        }
-    }
-
-    public int getInventoryStackLimit() {
-        return 64;
-    }
-
-    public void markDirty() {
-
-    }
-
-    @Override
-    public void openInventory() {
-        readFromNBT();
-    }
-
-    @Override
-    public void closeInventory() {
-        saveChanges();
-    }
-
     public void onInventoryChanged() {
+        boolean changed = false;
         for (int i = 0; i < inventory.length; i++) {
             if (i == 6 && inventory[i] != null) {
-                updateTankSlots(getLeftTank(), i);
-
+                changed = updateTankSlots(getLeftTank(), i);
             }
 
             if (i == 8 && inventory[i] != null) {
-                if (updateTankSlots(getRightTank(), i)) {
-                    containerStack.stackTagCompound = writeToNBT();
-                }
+                changed = updateTankSlots(getRightTank(), i);
             }
         }
-        saveChanges();
+        if (changed) saveChanges();
+    }
+
+    private void saveChanges() {
+        this.containerStack.stackTagCompound = writeToNBT();
+    }
+
+    // ================================================ STACKS ====================================================== //
+    @Override
+    public ItemStack decrStackSize(int slot, int amount) {
+        ItemStack stack = getStackInSlot(slot);
+
+        if (stack != null) {
+            if (stack.stackSize <= amount) {
+                setInventorySlotContents(slot, null);
+            } else {
+                stack = stack.splitStack(amount);
+            }
+        }
+        onInventoryChanged();
+        return stack;
+    }
+
+    private ItemStack decrStackSizeSafe(int slot, int amount) {
+        ItemStack stack = getStackInSlot(slot);
+
+        if (stack != null) {
+            if (stack.stackSize <= amount) {
+                setInventorySlotContents(slot, null);
+            } else {
+                stack = stack.splitStack(amount);
+            }
+        }
+        return stack;
+    }
+
+    // =============================================== BOOLEANS ===================================================== //
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+        return true;
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+    public boolean hasCustomInventoryName() {
         return true;
     }
 
@@ -230,6 +262,7 @@ public class InventoryItem implements IAdvBackpack {
         if (Block.getBlockFromItem(stacky.getItem()) instanceof BlockAdventureBackpack) return false;
         return true;
     }
+    // ================================================ NBT ========================================================= //
 
     public boolean readFromNBT() {
         if (containerStack != null) {
@@ -277,28 +310,7 @@ public class InventoryItem implements IAdvBackpack {
         return compound;
     }
 
-    @Override
-    public FluidTank getLeftTank() {
-        //leftTank.readFromNBT(containerStack.stackTagCompound.getCompoundTag("leftTank"));
-        return leftTank;
-    }
-
-    public void setLeftTank(FluidTank leftTank) {
-        this.leftTank = leftTank;
-        saveChanges();
-    }
-
-    @Override
-    public FluidTank getRightTank() {
-        //rightTank.readFromNBT(containerStack.stackTagCompound.getCompoundTag("rightTank"));
-        return rightTank;
-    }
-
-    public void setRightTank(FluidTank rightTank) {
-        this.rightTank = rightTank;
-        saveChanges();
-    }
-
+    // ============================================== OTHERS ======================================================== //
     public void tellMeLeft() {
         if (leftTank.getFluid() != null) {
             System.out.println("The left tank has" + this.leftTank.getFluidAmount() + " " + this.leftTank.getFluid().getFluid().getName());
@@ -307,8 +319,9 @@ public class InventoryItem implements IAdvBackpack {
         }
     }
 
-    private void saveChanges() {
-        this.containerStack.stackTagCompound = writeToNBT();
+    @Override
+    public void markDirty() {
+
     }
 
 }
