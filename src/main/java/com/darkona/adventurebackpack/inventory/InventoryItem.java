@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.blocks.BlockAdventureBackpack;
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.items.ItemAdventureBackpack;
@@ -197,6 +198,11 @@ public class InventoryItem implements IAdvBackpack {
         }
 
         return false;
+    }
+
+    @Override
+    public TileAdventureBackpack getTile() {
+        return null;
     }
 
     public void onInventoryChanged() {

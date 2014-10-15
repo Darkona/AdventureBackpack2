@@ -6,7 +6,9 @@ item.adventurebackpack:backpackTank.name=Backpack Tank
 item.adventurebackpack:hoseHead.name=Hose Headpiece
 item.adventurebackpack:adventureBackpack.name=Adventure Backpack
 item.adventurebackpack:backpackHose.name=Backpack Hose
-
+item.adventurebackpack:adventureSuit.name=Adventurer's Suit
+item.adventurebackpack:adventureHat.name=Adventurer's Fedora
+item.adventurebackpack:pistonBoots.name=Piston Boots
 item.adventurebackpack:hose.leftTank.suck.name=Hose: Left Tank / Suck Mode
 item.adventurebackpack:hose.leftTank.spill=Hose: Left Tank / Spill Mode
 item.adventurebackpack:hose.leftTank.drink=Hose: Left Tank / Drink Mode

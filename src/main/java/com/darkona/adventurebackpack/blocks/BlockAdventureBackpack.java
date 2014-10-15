@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.blocks;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.client.Icons;
+import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -15,6 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -174,7 +176,7 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     @Override
     public boolean canPlaceBlockOnSide(World par1World, int par2, int par3, int par4, int side) {
-        return (ForgeDirection.getOrientation(side) == ForgeDirection.UP);
+        return !(ForgeDirection.getOrientation(side) == ForgeDirection.DOWN);
     }
 
     @Override
@@ -262,6 +264,11 @@ public class BlockAdventureBackpack extends BlockContainer {
         createNewTileEntity(world, world.getBlockMetadata(x,y,z));
        super.onBlockAdded(world, x, y, z);
     }*/
+
+    @Override
+    public Item getItem(World p_149694_1_, int p_149694_2_, int p_149694_3_, int p_149694_4_) {
+        return ModItems.adventureBackpack;
+    }
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {

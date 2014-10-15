@@ -447,6 +447,11 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         return false;
     }
 
+    @Override
+    public TileAdventureBackpack getTile() {
+        return this;
+    }
+
     //=====================================================BACKPACK===================================================//
     public boolean equip(World world, EntityPlayer player, int x, int y, int z) {
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);

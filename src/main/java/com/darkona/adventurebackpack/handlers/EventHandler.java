@@ -14,14 +14,11 @@ import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -33,11 +30,7 @@ import org.lwjgl.input.Mouse;
  */
 public class EventHandler {
 
-    static int dWheel = 0;
-    static int theSlot = -1;
-    static boolean isHose = false;
-    static boolean isTool = false;
-
+    long systemTime = 0;
     @SubscribeEvent
     public void onTickPassed(LivingEvent.LivingJumpEvent event) {
         if (event.entity != null &&
@@ -59,12 +52,14 @@ public class EventHandler {
         }
     }
 
+    /*
+
+    This is the old way to do it, it messes with the animation and I don't like it, but it works.
+    I'll leave it here for documentation purposes.
+
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-
-
         EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-
         if (event.phase == TickEvent.Phase.START) {
             dWheel = Mouse.getDWheel() / 120;
             if (player != null) {
@@ -114,6 +109,39 @@ public class EventHandler {
             theSlot = -1;
             isHose = false;
             isTool = false;
+        }
+    }
+*/
+
+    @SubscribeEvent
+    public void mouseWheelDetect(MouseEvent event) {
+        /*Special thanks go to Machinemuse, both for inspiration and the event. God bless you girl.*/
+        Minecraft mc = Minecraft.getMinecraft();
+        int dWheel = event.dwheel;
+        if (dWheel != 0) {
+            LogHelper.info("Mouse Wheel moving");
+            EntityClientPlayerMP player = mc.thePlayer;
+            systemTime = mc.getSystemTime() - systemTime;
+
+            if (player != null && !player.isDead && player.isSneaking()) {
+                ItemStack backpack = player.getCurrentArmor(2);
+                if (backpack != null && backpack.getItem() instanceof ItemAdventureBackpack) {
+                    mc.playerController.updateController();
+                    if (player.getCurrentEquippedItem() != null) {
+                        int slot = player.inventory.currentItem;
+                        if (SlotTool.isValidTool(player.getCurrentEquippedItem())) {
+                            AdventureBackpack.networkWrapper.sendToServer(new CycleToolMessage(dWheel, slot, true));
+                            event.setCanceled(true);
+                        }
+                        if (player.getCurrentEquippedItem().getItem() instanceof ItemHose) {
+                            AdventureBackpack.networkWrapper.sendToServer(new CycleToolMessage(-1, slot, false));
+                            event.setCanceled(true);
+                        }
+                    }
+                    mc.gameSettings.noclipRate += (float) event.dwheel * 0.25F;
+                }
+            }
+
         }
     }
 

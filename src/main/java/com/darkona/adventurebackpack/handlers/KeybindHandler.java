@@ -26,7 +26,7 @@ public class KeybindHandler {
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event) {
         Key keypressed = getPressedKeyBinding();
-        LogHelper.info(keypressed);
+        //LogHelper.info(keypressed);
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
         int playerX = (int) player.posX;
@@ -36,8 +36,6 @@ public class KeybindHandler {
 
         if (keypressed == Key.OPEN_BACKPACK_INVENTORY) {
             AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(GuiMessageConstants.NORMAL_GUI, GuiMessageConstants.FROM_KEYBIND));
-
-//            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 1, player.worldObj, playerX, playerY, playerZ);
         }
     }
 }

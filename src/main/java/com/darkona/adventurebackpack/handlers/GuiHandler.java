@@ -28,33 +28,39 @@ public class GuiHandler implements IGuiHandler {
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
             case 0:
+                //ADVENTUREBACKPACK GUI FROM TILE ENTITY
                 TileEntity te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack) {
                     return new BackpackContainer(player.inventory, (TileAdventureBackpack) te);
                 }
                 break;
             case 1:
+                //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
                 InventoryItem inv = Utils.getBackpackInv(player, true);
                 if (inv.containerStack != null)
                     return new BackpackContainer(player.inventory, inv);
                 break;
             case 2:
+                //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
                 inv = Utils.getBackpackInv(player, false);
                 if (inv.containerStack != null)
                     return new BackpackContainer(player.inventory, inv);
                 break;
             case 3:
+                //ADVENTUREBACKPACK CRAFT GUI FROM TILE ENTITY
                 te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack) {
                     return new BackCraftContainer(player, (TileAdventureBackpack) te);
                 }
                 break;
             case 4:
+                //ADVENTUREBACKPACK CRAFT GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Utils.getBackpackInv(player, true);
                 if (inv.containerStack != null)
                     return new BackCraftContainer(player, world, inv);
                 break;
             case 5:
+                //ADVENTUREBACKPACK CRAFT GUI FROM HOLDING BACKPACK / RIGHT CLICK
                 inv = Utils.getBackpackInv(player, false);
                 if (inv.containerStack != null)
                     return new BackCraftContainer(player, world, inv);
@@ -71,37 +77,42 @@ public class GuiHandler implements IGuiHandler {
         TileEntity te;
         switch (ID) {
             case 0:
+                //ADVENTUREBACKPACK GUI FROM TILE ENTITY
                 te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack) {
                     return new GuiAdvBackpack(player, (TileAdventureBackpack) te);
                 }
                 break;
             case 1:
+                //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Utils.getBackpackInv(player, true);
                 if (inv.containerStack != null) {
                     return new GuiAdvBackpack(player, inv, true);
                 }
                 break;
             case 2:
+                //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
                 inv = Utils.getBackpackInv(player, false);
                 if (inv.containerStack != null) {
                     return new GuiAdvBackpack(player, inv, false);
                 }
                 break;
-
             case 3:
+                //ADVENTUREBACKPACK CRAFT GUI FROM TILE ENTITY
                 te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack) {
                     return new GuiCraftAdvBackpack(player, (TileAdventureBackpack) te);
                 }
                 break;
             case 4:
+                //ADVENTUREBACKPACK CRAFT GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Utils.getBackpackInv(player, true);
                 if (inv.containerStack != null) {
                     return new GuiCraftAdvBackpack(player, inv, true);
                 }
                 break;
             case 5:
+                //ADVENTUREBACKPACK CRAFT GUI FROM HOLDING BACKPACK / RIGHT CLICK
                 inv = Utils.getBackpackInv(player, false);
                 if (inv.containerStack != null) {
                     return new GuiCraftAdvBackpack(player, inv, false);

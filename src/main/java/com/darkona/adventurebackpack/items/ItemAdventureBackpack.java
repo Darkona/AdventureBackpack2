@@ -9,8 +9,12 @@ import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackArmor;
+import com.darkona.adventurebackpack.network.CycleToolMessage;
+import com.darkona.adventurebackpack.network.GuiBackpackMessage;
+import com.darkona.adventurebackpack.network.GuiMessageConstants;
 import com.darkona.adventurebackpack.util.Textures;
 import com.darkona.adventurebackpack.util.Utils;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -116,8 +120,8 @@ public class ItemAdventureBackpack extends ArmorAB {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         if (mop == null || mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
-            if (!world.isRemote) {
-                FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 1, world, 0, 0, 0);
+            if (world.isRemote) {
+                AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(GuiMessageConstants.NORMAL_GUI, GuiMessageConstants.FROM_HOLDING));
             }
         }
         return stack;
@@ -126,43 +130,28 @@ public class ItemAdventureBackpack extends ArmorAB {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean isCurrentItem) {
         EntityPlayer player = (EntityPlayer) entity;
-        if (!world.isRemote) {
-            if (player.openContainer != null) {
-                if (player.openContainer instanceof BackpackContainer && !((BackpackContainer) player.openContainer).source) {
+//        if (!world.isRemote) {
+//            if (player.openContainer != null) {
+//                if (player.openContainer instanceof BackpackContainer && !((BackpackContainer) player.openContainer).source) {
+//
+//                    if (((BackpackContainer) player.openContainer).needsUpdate) {
+//                        //((BackpackContainer) player.openContainer).inventory.onInventoryChanged();
+//                        ((BackpackContainer) player.openContainer).needsUpdate = false;
+//
+//                    }
+//                }
+//            }
 
-                    if (((BackpackContainer) player.openContainer).needsUpdate) {
-                        //((BackpackContainer) player.openContainer).inventory.onInventoryChanged();
-                        ((BackpackContainer) player.openContainer).needsUpdate = false;
-
-                    }
-                }
-            }
-
-        }
-
-
+        //}
     }
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 
-        if (!world.isRemote) {
-            if (player.openContainer != null) {
-                if (player.openContainer instanceof BackpackContainer && !((BackpackContainer) player.openContainer).source) {
-                    if (((BackpackContainer) player.openContainer).needsUpdate) {
-                        // ((BackpackContainer) player.openContainer).inventory.onInventoryChanged();
-                        ((BackpackContainer) player.openContainer).needsUpdate = false;
-
-                    }
-                }
-            }
-        }
 
         if (stack.stackTagCompound != null) {
             BackpackAbilities.instance.executeAbility(player, world, stack);
         }
-
-
     }
 
     @Override

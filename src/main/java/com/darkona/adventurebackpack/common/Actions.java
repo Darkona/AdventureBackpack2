@@ -7,6 +7,8 @@ import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.items.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.items.ItemHose;
 import com.darkona.adventurebackpack.util.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -126,6 +128,7 @@ public class Actions {
         return done;
     }
 
+
     public static void switchHose(EntityPlayer player, int direction, int slot) {
             ItemStack hose = player.inventory.mainInventory[slot];
             NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
@@ -141,21 +144,24 @@ public class Actions {
             hose.setTagCompound(tag);
     }
 
+
     public static void cycleTool(EntityPlayer player, int direction, int slot) {
         InventoryItem backpack = Utils.getBackpackInv(player, true);
-        ItemStack current = player.getCurrentEquippedItem();
+        ItemStack current = player.getCurrentEquippedItem().copy();
         if (direction < 0) {
-            player.inventory.mainInventory[slot] = backpack.getStackInSlot(3);//(slot, backpack.getStackInSlot(3));
-            backpack.setInventorySlotContentsSafe(3, backpack.getStackInSlot(0));
+            player.inventory.mainInventory[slot] = backpack.getStackInSlot(3).copy();
+            backpack.setInventorySlotContentsSafe(3, backpack.getStackInSlot(0).copy());
             backpack.setInventorySlotContentsSafe(0, current);
+            backpack.saveChanges();
+            player.inventory.closeInventory();
         } else {
             if (direction > 0) {
-                player.inventory.mainInventory[slot] = backpack.getStackInSlot(0);
-                //player.inventory.setInventorySlotContents(slot,backpack.getStackInSlot(0));
-                backpack.setInventorySlotContentsSafe(0, backpack.getStackInSlot(3));
+                player.inventory.mainInventory[slot] = backpack.getStackInSlot(0).copy();
+                backpack.setInventorySlotContentsSafe(0, backpack.getStackInSlot(3).copy());
                 backpack.setInventorySlotContentsSafe(3, current);
+                backpack.saveChanges();
             }
-            backpack.saveChanges();
+
         }
     }
 

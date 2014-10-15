@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
@@ -7,6 +8,8 @@ import com.darkona.adventurebackpack.config.GeneralConfig;
 import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 
+import com.darkona.adventurebackpack.network.GuiBackpackMessage;
+import com.darkona.adventurebackpack.network.GuiMessageConstants;
 import com.darkona.adventurebackpack.util.Textures;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,7 +68,6 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(texture);
-        // this.mc.func_110434_K().func_110577_a(texture);
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
@@ -82,7 +84,7 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 
-        //this.fontRendererObj.drawString("Crafting Bench", 92, 7, 4210752);
+        this.fontRendererObj.drawString("Crafting Bench", 92, 7, 4210752);
         GuiCraftAdvBackpack.tankLeft.draw(this, inventory.getLeftTank().getFluid());
         GuiCraftAdvBackpack.tankRight.draw(this, inventory.getRightTank().getFluid());
     }
@@ -110,11 +112,13 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) {
         if (backButton.inButton(this, mouseX, mouseY)) {
-            /*if(source){
-                PacketDispatcher.sendPacketToServer(PacketHandler.makePacket(0, X, Y, Z));
-            } else{
-                ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(PacketHandler.makePacket(wearing ? 1 : 2));
-            }*/
+            if (source) {
+                AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(GuiMessageConstants.NORMAL_GUI, GuiMessageConstants.FROM_TILE));
+            } else {
+                AdventureBackpack.networkWrapper
+                        .sendToServer(new GuiBackpackMessage(GuiMessageConstants.NORMAL_GUI, wearing ?
+                                GuiMessageConstants.FROM_KEYBIND : GuiMessageConstants.FROM_HOLDING));
+            }
         }
         super.mouseClicked(mouseX, mouseY, button);
     }

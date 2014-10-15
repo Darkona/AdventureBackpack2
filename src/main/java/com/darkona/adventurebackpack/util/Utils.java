@@ -243,7 +243,7 @@ public class Utils {
      * @return
      */
     public static InventoryItem getBackpackInv(EntityPlayer player, boolean wearing) {
-        return new InventoryItem((wearing) ? player.inventory.armorItemInSlot(2) : player.inventory.getCurrentItem());
+        return new InventoryItem((wearing) ? player.inventory.armorItemInSlot(2) : player.getCurrentEquippedItem());
     }
 
     public static String printCoordinates(int x, int y, int z) {

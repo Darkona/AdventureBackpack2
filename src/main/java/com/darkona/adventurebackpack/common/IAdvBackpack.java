@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,5 +23,5 @@ public interface IAdvBackpack extends IInventory {
 
     public boolean updateTankSlots(FluidTank tank, int slotIN);
 
-
+    public TileAdventureBackpack getTile();
 }

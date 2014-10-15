@@ -42,8 +42,6 @@ public class BackpackAbilities {
             for (String valid : validWearingBackpacks) {
                 if (valid.equals(((ItemStack) backpack).getTagCompound().getString("colorName"))) {
                     try {
-
-                        LogHelper.info("Executing ability of backpack: " + valid);
                         this.getClass().getMethod("item" + valid, EntityPlayer.class, World.class, ItemStack.class).invoke(instance, player, world, backpack);
                     } catch (Exception oops) {
                         // oops.printStackTrace(); Discard silently, nobody
@@ -111,7 +109,7 @@ public class BackpackAbilities {
 
     public void itemSlime(EntityPlayer player, World world, ItemStack backpack) {
         if (player.onGround && player.isSprinting()) {
-            int i = 1;
+            int i = 2;
             for (int j = 0; j < i * 2; ++j) {
                 float f = world.rand.nextFloat() * (float) Math.PI * 2.0F;
                 float f1 = world.rand.nextFloat() * 0.5F + 0.5F;

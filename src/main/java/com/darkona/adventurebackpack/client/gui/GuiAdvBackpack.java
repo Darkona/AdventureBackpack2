@@ -1,10 +1,13 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.network.GuiBackpackMessage;
+import com.darkona.adventurebackpack.network.GuiMessageConstants;
 import com.darkona.adventurebackpack.util.Textures;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -92,18 +95,16 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
         } else {
             craftButton.draw(this, srcX, srcY);
         }
-
+        GL11.glPushMatrix();
+        GL11.glScalef(0.8f, 0.8f, 0.8f);
+        String name = " Adventure Backpack";
+        fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 4, 0x404040);
+        GL11.glPopMatrix();
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 
-
-        GL11.glPushMatrix();
-        GL11.glScalef(0.8f, 0.8f, 0.8f);
-        String name = " Adventure-pack";
-        fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 4, 0x404040);
-        GL11.glPopMatrix();
         inventory.openInventory();
         lft = inventory.getLeftTank().getFluid();
         rgt = inventory.getRightTank().getFluid();
@@ -153,17 +154,19 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
                 PacketDispatcher.sendPacketToServer(PacketHandler.makePacket(5, 1));
             }
 
-        } else if (craftButton.inButton(this, mouseX, mouseY))
-        {
-            if (source)
-            {
-                PacketDispatcher.sendPacketToServer(PacketHandler.makePacket(5, 2, 0, X, Y, Z));
-            } else
-            {
-                PacketDispatcher.sendPacketToServer(PacketHandler.makePacket(5, 2, wearing ? 1 : 2));
+        } else */
+        if (craftButton.inButton(this, mouseX, mouseY)) {
+            if (source) {
+                AdventureBackpack.networkWrapper
+                        .sendToServer(new GuiBackpackMessage(GuiMessageConstants.CRAFT_GUI,
+                                GuiMessageConstants.FROM_TILE));
+            } else {
+                AdventureBackpack.networkWrapper
+                        .sendToServer(new GuiBackpackMessage(GuiMessageConstants.CRAFT_GUI,
+                                wearing ? GuiMessageConstants.FROM_KEYBIND : GuiMessageConstants.FROM_HOLDING));
             }
 
-        }*/
+        }
         super.mouseClicked(mouseX, mouseY, button);
     }
 
