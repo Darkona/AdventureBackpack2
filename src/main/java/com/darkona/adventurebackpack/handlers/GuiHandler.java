@@ -1,14 +1,13 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCraftAdvBackpack;
 import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,13 +35,13 @@ public class GuiHandler implements IGuiHandler {
                 break;
             case 1:
                 //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
-                InventoryItem inv = Utils.getBackpackInv(player, true);
+                InventoryItem inv = Wearing.getBackpackInv(player, true);
                 if (inv.containerStack != null)
                     return new BackpackContainer(player.inventory, inv);
                 break;
             case 2:
                 //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
-                inv = Utils.getBackpackInv(player, false);
+                inv = Wearing.getBackpackInv(player, false);
                 if (inv.containerStack != null)
                     return new BackpackContainer(player.inventory, inv);
                 break;
@@ -55,13 +54,13 @@ public class GuiHandler implements IGuiHandler {
                 break;
             case 4:
                 //ADVENTUREBACKPACK CRAFT GUI FROM WEARING BACKPACK/KEYBIND
-                inv = Utils.getBackpackInv(player, true);
+                inv = Wearing.getBackpackInv(player, true);
                 if (inv.containerStack != null)
                     return new BackCraftContainer(player, world, inv);
                 break;
             case 5:
                 //ADVENTUREBACKPACK CRAFT GUI FROM HOLDING BACKPACK / RIGHT CLICK
-                inv = Utils.getBackpackInv(player, false);
+                inv = Wearing.getBackpackInv(player, false);
                 if (inv.containerStack != null)
                     return new BackCraftContainer(player, world, inv);
                 break;
@@ -85,14 +84,14 @@ public class GuiHandler implements IGuiHandler {
                 break;
             case 1:
                 //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
-                inv = Utils.getBackpackInv(player, true);
+                inv = Wearing.getBackpackInv(player, true);
                 if (inv.containerStack != null) {
                     return new GuiAdvBackpack(player, inv, true);
                 }
                 break;
             case 2:
                 //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
-                inv = Utils.getBackpackInv(player, false);
+                inv = Wearing.getBackpackInv(player, false);
                 if (inv.containerStack != null) {
                     return new GuiAdvBackpack(player, inv, false);
                 }
@@ -106,14 +105,14 @@ public class GuiHandler implements IGuiHandler {
                 break;
             case 4:
                 //ADVENTUREBACKPACK CRAFT GUI FROM WEARING BACKPACK/KEYBIND
-                inv = Utils.getBackpackInv(player, true);
+                inv = Wearing.getBackpackInv(player, true);
                 if (inv.containerStack != null) {
                     return new GuiCraftAdvBackpack(player, inv, true);
                 }
                 break;
             case 5:
                 //ADVENTUREBACKPACK CRAFT GUI FROM HOLDING BACKPACK / RIGHT CLICK
-                inv = Utils.getBackpackInv(player, false);
+                inv = Wearing.getBackpackInv(player, false);
                 if (inv.containerStack != null) {
                     return new GuiCraftAdvBackpack(player, inv, false);
                 }

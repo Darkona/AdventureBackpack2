@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.items;
+package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.common.Actions;
@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.util.Textures;
 import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -127,7 +128,7 @@ public class ItemHose extends ItemAB {
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
 
         NBTTagCompound nbt = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
-        ItemStack backpack = Utils.getWearingBackpack((EntityPlayer) entity);
+        ItemStack backpack = Wearing.getWearingBackpack((EntityPlayer) entity);
         if (backpack != null) {
             if (nbt.getInteger("tank") == -1) nbt.setInteger("tank", 0);
             if (nbt.getInteger("mode") == -1) nbt.setInteger("mode", 0);
@@ -153,10 +154,10 @@ public class ItemHose extends ItemAB {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 
-        ItemStack backpack = Utils.getWearingBackpack(player);
+        ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return false;
 
-        InventoryItem inv = Utils.getBackpackInv(player, true);
+        InventoryItem inv = Wearing.getBackpackInv(player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inv.leftTank : inv.rightTank;
         TileEntity te = world.getTileEntity(x, y, z);
         if (te != null && te instanceof IFluidHandler) {
@@ -193,7 +194,7 @@ public class ItemHose extends ItemAB {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 
-        ItemStack backpack = Utils.getWearingBackpack(player);
+        ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return stack;
         InventoryItem inventory = new InventoryItem(backpack);
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
@@ -212,7 +213,7 @@ public class ItemHose extends ItemAB {
                         }
                     }
                     /*if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
-					{
+                    {
 						if (mop.entityHit instanceof EntityCow)
 						{
 							tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
@@ -298,7 +299,7 @@ public class ItemHose extends ItemAB {
             mode = hose.stackTagCompound.getInteger("mode");
         }
         if (mode == 2 && tank > -1) {
-            InventoryItem inventory = new InventoryItem(Utils.getWearingBackpack(player));
+            InventoryItem inventory = new InventoryItem(Wearing.getWearingBackpack(player));
             FluidTank backpackTank = (tank == 0) ? inventory.getLeftTank() : (tank == 1) ? inventory.getRightTank() : null;
             if (backpackTank != null) {
                 if (Actions.setFluidEffect(world, player, backpackTank)) {
@@ -318,7 +319,7 @@ public class ItemHose extends ItemAB {
     // ================================================ BOOLEANS =====================================================//
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
-        ItemStack backpack = Utils.getWearingBackpack(player);
+        ItemStack backpack = Wearing.getWearingBackpack(player);
         if (entity instanceof EntityCow && backpack != null) {
             InventoryItem inventory = new InventoryItem(backpack);
             FluidTank tank = getHoseTank(stack) == 0 ? inventory.leftTank : inventory.rightTank;

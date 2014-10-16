@@ -296,14 +296,14 @@ public class RenderUtils {
 
 
     /**
-     * Renders items and blocks in the world at 0,0,0 with transformations that size them appropriately
+     * Renders item and blocks in the world at 0,0,0 with transformations that size them appropriately
      */
     public static void renderItemUniform(ItemStack item) {
         renderItemUniform(item, 0);
     }
 
     /**
-     * Renders items and blocks in the world at 0,0,0 with transformations that size them appropriately
+     * Renders item and blocks in the world at 0,0,0 with transformations that size them appropriately
      *
      * @param spin The spin angle of the item around the y axis in degrees
      */

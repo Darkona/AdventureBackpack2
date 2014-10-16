@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.blocks;
+package com.darkona.adventurebackpack.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;

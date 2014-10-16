@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.entity.ai;
 
-import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -73,7 +74,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase {
             }
 
             for (Object player : list) {
-                if (Utils.getBackpackColorName(Utils.getWearingBackpack((EntityPlayer) player)).equals(backpackName)) {
+                if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack((EntityPlayer) player)).equals(backpackName)) {
                     this.closestLivingEntity = (Entity) player;
                 }
             }

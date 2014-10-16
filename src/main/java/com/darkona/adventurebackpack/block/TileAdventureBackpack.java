@@ -1,13 +1,12 @@
-package com.darkona.adventurebackpack.blocks;
+package com.darkona.adventurebackpack.block;
 
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.items.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,11 +28,12 @@ import net.minecraftforge.fluids.FluidTank;
 public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
 
     public ItemStack[] inventory;
-    public FluidTank leftTank;
-    public FluidTank rightTank;
-    public boolean needsUpdate = false;
-    public boolean equipped = false;
-    public boolean sleepingBagDeployed = false;
+    private FluidTank leftTank;
+    private FluidTank rightTank;
+    private boolean needsUpdate = false;
+    private boolean equipped = false;
+    private boolean sleepingBagDeployed = false;
+    private boolean special;
     private int sbdir;
     private int sbx;
     private int sby;
@@ -53,6 +53,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         luminosity = 0;
         lastTime = 0;
         checkTime = 0;
+        special = BackpackAbilities.hasAbility(colorName);
     }
 
    /* public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta) {
@@ -88,25 +89,15 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         return false;
     }*/
 
-    /*  @Override
-      public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
-          // super.onDataPacket(net, pkt);
-          readFromNBT(pkt.data);
-
-      }
-
-      @Override
-      public Packet getDescriptionPacket() {
-          NBTTagCompound nbt = writeToNBT();
-          return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
-      }
-  */
-
-
     //=====================================================GETTERS====================================================//
 
     public String getColorName() {
         return this.colorName;
+    }
+
+    @Override
+    public ItemStack[] getInventory() {
+        return this.inventory;
     }
 
     @Override
@@ -178,6 +169,10 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
 
     public boolean isSBDeployed() {
         return this.sleepingBagDeployed;
+    }
+
+    public boolean isSpecial() {
+        return special;
     }
 
     //=======================================================NBT======================================================//
@@ -352,9 +347,10 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
 
     @Override
     public void updateEntity() {
-        super.updateEntity();
-        if (!colorName.isEmpty())
+        if (isSpecial() && !colorName.isEmpty())
             BackpackAbilities.instance.executeAbility(null, this.worldObj, this);
+
+        //Check for backpack luminosity
         if (checkTime == 0) {
             int lastLumen = luminosity;
             int left = (leftTank.getFluid() != null) ? leftTank.getFluid().getFluid().getLuminosity() : 0;
@@ -369,8 +365,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
             {
                 sleepingBagDeployed = false;
             }*/
-            LogHelper.info("Updating Tile entity at x=" + xCoord + " y=" + yCoord + " z=" + zCoord);
-            checkTime = 400;
+            checkTime = 20;
         } else {
             checkTime--;
         }

@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.client.gui;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
 

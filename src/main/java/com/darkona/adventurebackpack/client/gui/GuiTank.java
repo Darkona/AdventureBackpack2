@@ -136,7 +136,7 @@ public class GuiTank {
                 String fixedName = name.substring(0, name.lastIndexOf(":")) + ":textures/blocks/" + name.substring(name.lastIndexOf(":") + 1) + ".png";
                 iconplace = new ResourceLocation(fixedName);
             } else {
-                iconplace = new ResourceLocation("textures/blocks/" + name + ".png");
+                iconplace = new ResourceLocation("textures/block/" + name + ".png");
             }
             Minecraft.getMinecraft().getTextureManager().bindTexture(iconplace);
             int top = Y + H - (fluid.amount / liquidPerPixel);

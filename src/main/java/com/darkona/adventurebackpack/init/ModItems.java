@@ -1,8 +1,7 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.items.*;
+import com.darkona.adventurebackpack.item.*;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.item.Item;
 
 /**
  * Created by Darkona on 10/10/2014.

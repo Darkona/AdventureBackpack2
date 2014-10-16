@@ -1,10 +1,11 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.blocks.BlockAdventureBackpack;
-import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
+import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
-import com.darkona.adventurebackpack.items.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +28,7 @@ public class InventoryItem implements IAdvBackpack {
     private String color;
     private String colorName;
     private int lastTime = 0;
-
+    private boolean special;
     //
 
     public InventoryItem(ItemStack stack) {
@@ -37,6 +38,7 @@ public class InventoryItem implements IAdvBackpack {
         inventory = new ItemStack[Constants.inventorySize];
         name = "Adventure Backpack";
         readFromNBT();
+        special = BackpackAbilities.hasAbility(getColorName());
     }
 
     // =============================================== GETTERS ====================================================== //
@@ -64,12 +66,6 @@ public class InventoryItem implements IAdvBackpack {
     public int getInventoryStackLimit() {
         return 64;
     }
-
-    /**
-     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
-     * hasn't changed and skip it.
-     */
-
 
     @Override
     public FluidTank getLeftTank() {
@@ -205,6 +201,26 @@ public class InventoryItem implements IAdvBackpack {
         return null;
     }
 
+    @Override
+    public String getColor() {
+        return color;
+    }
+
+    @Override
+    public String getColorName() {
+        return colorName;
+    }
+
+    @Override
+    public ItemStack[] getInventory() {
+        return this.inventory;
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return special;
+    }
+
     public void onInventoryChanged() {
 
         for (int i = 0; i < inventory.length; i++) {
@@ -287,6 +303,7 @@ public class InventoryItem implements IAdvBackpack {
             color = compound.getString("color");
             colorName = compound.getString("colorName");
             lastTime = compound.getInteger("lastTime");
+            special = compound.getBoolean("special");
             return true;
         }
         return false;
@@ -314,6 +331,7 @@ public class InventoryItem implements IAdvBackpack {
         compound.setString("color", color);
         compound.setString("colorName", colorName);
         compound.setInteger("lastTime", lastTime);
+        compound.setBoolean("special", special);
         return compound;
     }
 

@@ -47,13 +47,12 @@ public class CycleToolMessage implements IMessage {
 
         @Override
         public IMessage onMessage(CycleToolMessage message, MessageContext ctx) {
-            LogHelper.info("Packet contains typeOfAction=" + message.typeOfAction +
-                    ", directionOfCycle=" + message.directionOfCycle +
-                    ", slot=" + message.slot);
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
             if (message.typeOfAction) {
+                LogHelper.debug("CycleToolMessage received - Cycle tool");
                 Actions.cycleTool(player, message.directionOfCycle, message.slot);
             } else {
+                LogHelper.debug("CycleToolMessage received - Switch Hose Mode");
                 Actions.switchHose(ctx.getServerHandler().playerEntity, message.directionOfCycle, message.slot);
             }
             return null;

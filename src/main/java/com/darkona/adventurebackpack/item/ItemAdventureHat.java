@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.items;
+package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.models.ModelAdventureHat;
 import cpw.mods.fml.relauncher.Side;

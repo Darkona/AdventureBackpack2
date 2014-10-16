@@ -1,8 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.items.ItemAdventureBackpack;
-import net.minecraft.block.Block;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;

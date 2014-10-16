@@ -1,19 +1,16 @@
 package com.darkona.adventurebackpack.network;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.IAdvBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
-import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 /**
@@ -57,12 +54,12 @@ public class GuiBackpackMessage implements IMessage {
                 World world = player.worldObj;
                 if (message.type == GuiMessageConstants.NORMAL_GUI) {
                     if (message.from == GuiMessageConstants.FROM_KEYBIND) {
-                        if (Utils.isWearingBackpack(player)) {
+                        if (Wearing.isWearingBackpack(player)) {
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 1, world, playerX, playerY, playerZ);
                         }
                     }
                     if (message.from == GuiMessageConstants.FROM_HOLDING) {
-                        if (Utils.isHoldingBackpack(player)) {
+                        if (Wearing.isHoldingBackpack(player)) {
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 2, world, playerX, playerY, playerZ);
                         }
                     }
@@ -70,12 +67,12 @@ public class GuiBackpackMessage implements IMessage {
 
                 if (message.type == GuiMessageConstants.CRAFT_GUI) {
                     if (message.from == GuiMessageConstants.FROM_KEYBIND) {
-                        if (Utils.isWearingBackpack(player)) {
+                        if (Wearing.isWearingBackpack(player)) {
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 4, world, playerX, playerY, playerZ);
                         }
                     }
                     if (message.from == GuiMessageConstants.FROM_HOLDING) {
-                        if (Utils.isHoldingBackpack(player)) {
+                        if (Wearing.isHoldingBackpack(player)) {
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 5, world, playerX, playerY, playerZ);
                         }
                     }

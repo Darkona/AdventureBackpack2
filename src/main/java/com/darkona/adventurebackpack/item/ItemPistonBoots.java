@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.items;
+package com.darkona.adventurebackpack.item;
 
 
 import net.minecraft.entity.player.EntityPlayer;

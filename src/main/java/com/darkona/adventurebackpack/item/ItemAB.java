@@ -1,22 +1,20 @@
-package com.darkona.adventurebackpack.items;
+package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
-
-import java.util.Set;
 
 /**
- * Created by Darkona on 11/10/2014.
+ * Created by Darkona on 10/10/2014.
  */
-public class ToolAB extends ItemTool {
+public class ItemAB extends Item {
 
-    public ToolAB(ToolMaterial material, Set breakableBlocks) {
-        super(1f, material, breakableBlocks);
+    public ItemAB() {
+        super();
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
@@ -28,6 +26,10 @@ public class ToolAB extends ItemTool {
     @Override
     public String getUnlocalizedName() {
         return String.format("item.%s%s", ModInfo.MOD_ID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+    }
+
+    public String getUnlocalizedName(String name) {
+        return String.format("item.%s%s", ModInfo.MOD_ID.toLowerCase() + ":", name);
     }
 
     @Override

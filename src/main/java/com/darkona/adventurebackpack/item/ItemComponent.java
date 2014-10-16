@@ -1,14 +1,12 @@
-package com.darkona.adventurebackpack.items;
+package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.blocks.BlockSleepingBag;
+import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockBed;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;

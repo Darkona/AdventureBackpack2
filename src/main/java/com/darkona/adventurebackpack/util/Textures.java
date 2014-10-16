@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.util;
 
-import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

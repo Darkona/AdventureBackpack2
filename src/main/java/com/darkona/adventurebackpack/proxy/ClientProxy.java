@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.proxy;
 
-import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.render.RendererAdventureBackpackBlock;
 import com.darkona.adventurebackpack.client.render.RendererHose;
 import com.darkona.adventurebackpack.client.render.RendererItemAdventureBackpack;

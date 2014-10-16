@@ -1,9 +1,7 @@
-package com.darkona.adventurebackpack.blocks;
+package com.darkona.adventurebackpack.block;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.client.Icons;
-import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -12,11 +10,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -24,7 +23,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -35,6 +33,123 @@ public class BlockAdventureBackpack extends BlockContainer {
     public BlockAdventureBackpack() {
         super(Material.cloth);
         setHardness(0.5f);
+        setResistance(20f);
+        setHardness(5f);
+        setHarvestLevel(null, 0);
+
+    }
+
+    private String getAssociatedTileColorName(IBlockAccess world, int x, int y, int z) {
+        return ((TileAdventureBackpack) world.getTileEntity(x, y, z)).getColorName();
+    }
+
+    /**
+     * Determines if this block should render in this pass.
+     *
+     * @param pass The pass in question
+     * @return True to render
+     */
+    @Override
+    public boolean canRenderInPass(int pass) {
+        return pass == 1 || pass == 2;
+    }
+
+    @Override
+    public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
+        return false;
+    }
+
+    @Override
+    public float getEnchantPowerBonus(World world, int x, int y, int z) {
+        return getAssociatedTileColorName(world, x, y, z) == "Books" ? 10 : 0;
+    }
+
+    @Override
+    public boolean canBeReplacedByLeaves(IBlockAccess world, int x, int y, int z) {
+        return false;
+    }
+
+    @Override
+    public boolean isWood(IBlockAccess world, int x, int y, int z) {
+        return false;
+    }
+
+    @Override
+    public boolean isLeaves(IBlockAccess world, int x, int y, int z) {
+        return false;
+    }
+
+    @Override
+    public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z) {
+        return false;
+    }
+
+    @Override
+    public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+        return 0;
+    }
+
+    @Override
+    public boolean canHarvestBlock(EntityPlayer player, int meta) {
+        return true;
+    }
+
+    /**
+     * Called after a block is placed
+     *
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     * @param meta
+     */
+    @Override
+    public void onPostBlockPlaced(World world, int x, int y, int z, int meta) {
+        super.onPostBlockPlaced(world, x, y, z, meta);
+    }
+
+    @Override
+    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+        if (getAssociatedTileColorName(world, x, y, z).equals("Cactus")) {
+            entity.attackEntityFrom(DamageSource.cactus, 1.0F);
+        }
+    }
+
+    /**
+     * Called when a player hits the block. Args: world, x, y, z, player
+     *
+     * @param p_149699_1_
+     * @param p_149699_2_
+     * @param p_149699_3_
+     * @param p_149699_4_
+     * @param p_149699_5_
+     */
+    @Override
+    public void onBlockClicked(World p_149699_1_, int p_149699_2_, int p_149699_3_, int p_149699_4_, EntityPlayer p_149699_5_) {
+        super.onBlockClicked(p_149699_1_, p_149699_2_, p_149699_3_, p_149699_4_, p_149699_5_);
+    }
+
+    /**
+     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+     *
+     * @param p_149660_1_
+     * @param p_149660_2_
+     * @param p_149660_3_
+     * @param p_149660_4_
+     * @param p_149660_5_
+     * @param p_149660_6_
+     * @param p_149660_7_
+     * @param p_149660_8_
+     * @param p_149660_9_
+     */
+    @Override
+    public int onBlockPlaced(World p_149660_1_, int p_149660_2_, int p_149660_3_, int p_149660_4_, int p_149660_5_, float p_149660_6_, float p_149660_7_, float p_149660_8_, int p_149660_9_) {
+        return super.onBlockPlaced(p_149660_1_, p_149660_2_, p_149660_3_, p_149660_4_, p_149660_5_, p_149660_6_, p_149660_7_, p_149660_8_, p_149660_9_);
+    }
+
+    @Override
+    public float getExplosionResistance(Entity p_149638_1_) {
+        return 500f;
     }
 
     @Override
@@ -55,70 +170,25 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        int l1 = 0, l2 = ((world.getBlockMetadata(x, y, z) & 4) >= 4) ? 15 : 0;
-        if (world.getTileEntity(x, y, z) instanceof TileAdventureBackpack) {
-            l1 = ((TileAdventureBackpack) world.getTileEntity(x, y, z)).luminosity;
-        }
-        return (l1 > l2) ? l1 : l2;
+        if (getAssociatedTileColorName(world, x, y, z).equals("Glowstone")) {
+            return 15;
+        } else if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack) {
+            return ((TileAdventureBackpack) world.getTileEntity(x, y, z)).luminosity;
+        } else return 0;
     }
 
-    @Override
-    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
-        return ((world.getBlockMetadata(x, y, z) & 8) >= 8) ? 15 : 0;
-    }
-
-    @Override
-    public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
-        return ((world.getBlockMetadata(x, y, z) & 8) >= 8) ? 15 : 0;
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int meta) {
+        return getAssociatedTileColorName(world, x, y, z).equals("Redstone") ? 15 : 0;
     }
 
     @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
-
-        if ((world.getBlockMetadata(x, y, z) & 8) >= 8) {
-            switch (side) {
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                    return true;
-                default:
-                    return false;
-            }
-        } else
-            return false;
+        return getAssociatedTileColorName(world, x, y, z).equals("Redstone");
     }
-
-    @Override
-    public boolean canProvidePower() {
-
-        return true;
-    }
-
-//    @Override
-//    public boolean canDragonDestroy(World world, int x, int y, int z) {
-//        return false;
-//    }
-
-//    @Override
-//    public boolean isFlammable(IBlockAccess world, int x, int y, int z, int metadata, ForgeDirection face) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
-//        return true;
-//    }
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 0, world, x, y, z);
-        try {
-            TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(x, z, z);
-
-        } catch (Exception oops) {
-        }
-
         return true;
     }
 
@@ -176,7 +246,7 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     @Override
     public boolean canPlaceBlockOnSide(World par1World, int par2, int par3, int par4, int side) {
-        return !(ForgeDirection.getOrientation(side) == ForgeDirection.DOWN);
+        return (ForgeDirection.getOrientation(side) == ForgeDirection.UP);
     }
 
     @Override
@@ -213,7 +283,9 @@ public class BlockAdventureBackpack extends BlockContainer {
         TileEntity tile = world.getTileEntity(x, y, z);
 
         if (tile instanceof TileAdventureBackpack && !world.isRemote && player != null) {
-            if ((player.isSneaking()) ? ((TileAdventureBackpack) tile).equip(world, player, x, y, z) : ((TileAdventureBackpack) tile).drop(world, player, x, y, z)) {
+            if ((player.isSneaking()) ?
+                    ((TileAdventureBackpack) tile).equip(world, player, x, y, z) :
+                    ((TileAdventureBackpack) tile).drop(world, player, x, y, z)) {
                 return world.func_147480_a(x, y, z, false);
             }
         } else {
@@ -251,23 +323,9 @@ public class BlockAdventureBackpack extends BlockContainer {
         super.breakBlock(world, x, y, z, world.getBlock(x, y, z), meta);
     }
 
-    //This one is useless
-
-
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
         return new TileAdventureBackpack();
-    }
-
-   /*@Override
-    public void onBlockAdded(World world, int x, int y, int z) {
-        createNewTileEntity(world, world.getBlockMetadata(x,y,z));
-       super.onBlockAdded(world, x, y, z);
-    }*/
-
-    @Override
-    public Item getItem(World p_149694_1_, int p_149694_2_, int p_149694_3_, int p_149694_4_) {
-        return ModItems.adventureBackpack;
     }
 
     @Override

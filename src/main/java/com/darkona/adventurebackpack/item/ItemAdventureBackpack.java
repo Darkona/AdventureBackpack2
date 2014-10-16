@@ -1,21 +1,17 @@
-package com.darkona.adventurebackpack.items;
+package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.blocks.BlockAdventureBackpack;
-import com.darkona.adventurebackpack.blocks.TileAdventureBackpack;
+import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackArmor;
-import com.darkona.adventurebackpack.network.CycleToolMessage;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.GuiMessageConstants;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Textures;
-import com.darkona.adventurebackpack.util.Utils;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
@@ -129,27 +125,11 @@ public class ItemAdventureBackpack extends ArmorAB {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean isCurrentItem) {
-        EntityPlayer player = (EntityPlayer) entity;
-//        if (!world.isRemote) {
-//            if (player.openContainer != null) {
-//                if (player.openContainer instanceof BackpackContainer && !((BackpackContainer) player.openContainer).source) {
-//
-//                    if (((BackpackContainer) player.openContainer).needsUpdate) {
-//                        //((BackpackContainer) player.openContainer).inventory.onInventoryChanged();
-//                        ((BackpackContainer) player.openContainer).needsUpdate = false;
-//
-//                    }
-//                }
-//            }
-
-        //}
     }
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
-
-
-        if (stack.stackTagCompound != null) {
+        if (stack.stackTagCompound != null && stack.getTagCompound().getBoolean("Special")) {
             BackpackAbilities.instance.executeAbility(player, world, stack);
         }
     }
@@ -201,11 +181,11 @@ public class ItemAdventureBackpack extends ArmorAB {
     @SideOnly(Side.CLIENT)
 
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems) {
-        for (String name : Utils.backpackNames) {
+        for (String name : BackpackNames.backpackNames) {
             ItemStack bp = new ItemStack(this, 1, 0);
             NBTTagCompound c = new NBTTagCompound();
             c.setString("color", name);
-            c.setString("colorName", Utils.getDisplayNameForColor(name));
+            c.setString("colorName", BackpackNames.getDisplayNameForColor(name));
             bp.setTagCompound(c);
             subItems.add(bp);
         }

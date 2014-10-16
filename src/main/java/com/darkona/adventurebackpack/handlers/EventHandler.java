@@ -5,11 +5,10 @@ import com.darkona.adventurebackpack.common.Actions;
 import com.darkona.adventurebackpack.events.HoseSpillEvent;
 import com.darkona.adventurebackpack.events.HoseSuckEvent;
 import com.darkona.adventurebackpack.inventory.SlotTool;
-import com.darkona.adventurebackpack.items.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.items.ItemHose;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CycleToolMessage;
 import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -23,10 +22,11 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.input.Mouse;
 
 /**
- * Created by Darkona on 11/10/2014.
+ * Created on 11/10/2014
+ * @author Darkona
+ * @see com.darkona.adventurebackpack.common.Actions
  */
 public class EventHandler {
 
@@ -115,11 +115,11 @@ public class EventHandler {
 
     @SubscribeEvent
     public void mouseWheelDetect(MouseEvent event) {
-        /*Special thanks go to Machinemuse, both for inspiration and the event. God bless you girl.*/
+        /*Special thanks go to MachineMuse, both for inspiration and the event. God bless you girl.*/
         Minecraft mc = Minecraft.getMinecraft();
         int dWheel = event.dwheel;
         if (dWheel != 0) {
-            LogHelper.info("Mouse Wheel moving");
+            LogHelper.debug("Mouse Wheel moving");
             EntityClientPlayerMP player = mc.thePlayer;
             systemTime = mc.getSystemTime() - systemTime;
 
@@ -169,7 +169,7 @@ public class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerDies(LivingDeathEvent event) {
-        if (event.entity instanceof EntityPlayer && Utils.isWearingBackpack((EntityPlayer) event.entity)) {
+        if (event.entity instanceof EntityPlayer && Wearing.isWearingBackpack((EntityPlayer) event.entity)) {
             Actions.tryPlaceOnDeath((EntityPlayer) event.entity);
         }
         event.setResult(Event.Result.ALLOW);
