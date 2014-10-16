@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -34,12 +35,47 @@ public class BlockAdventureBackpack extends BlockContainer {
         super(Material.cloth);
         setHardness(1.5f);
         setStepSound(soundTypeCloth);
+
     }
 
     /**
-     * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
-     * and stop pistons
+     * Pretty effects for the bookshelf ;)
+     *
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     * @param random
      */
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void randomDisplayTick(World world, int x, int y, int z, Random random) {
+        if (!getAssociatedTileColorName(world, x, y, z).equals("Books")) return;
+        for (int i = x - 2; i <= x + 2; ++i) {
+            for (int j = z - 2; j <= z + 2; ++j) {
+                if (i > x - 2 && i < x + 2 && j == z - 1) {
+                    j = z + 2;
+                }
+                if (random.nextInt(8) == 0) {
+                    for (int k = y; k <= y + 1; ++k) {
+                        if (world.getBlock(i, k, j) == Blocks.enchanting_table) {
+                            if (!world.isAirBlock((i - x) / 2 + x, k, (j - z) / 2 + z)) {
+                                break;
+                            }
+                            world.spawnParticle("enchantmenttable",
+                                    (double) i + 0.5D,
+                                    (double) k + 2.0D,
+                                    (double) j + 0.5D,
+                                    (double) ((float) (x - i) + random.nextFloat()) - 0.5D,
+                                    (double) ((float) (y - k) - random.nextFloat() - 1.0F),
+                                    (double) ((float) (z - j) + random.nextFloat()) - 0.5D);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public int getMobilityFlag() {
         return 0;
     }
@@ -81,7 +117,7 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     @Override
     public float getEnchantPowerBonus(World world, int x, int y, int z) {
-        return getAssociatedTileColorName(world, x, y, z) == "Books" ? 10 : 0;
+        return getAssociatedTileColorName(world, x, y, z).equals("Books") ? 20 : 0;
     }
 
     @Override

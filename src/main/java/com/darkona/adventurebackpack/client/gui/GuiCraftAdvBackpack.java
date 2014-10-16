@@ -9,7 +9,7 @@ import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
-import com.darkona.adventurebackpack.network.GuiMessageConstants;
+import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.util.Textures;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -113,11 +113,11 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
     protected void mouseClicked(int mouseX, int mouseY, int button) {
         if (backButton.inButton(this, mouseX, mouseY)) {
             if (source) {
-                AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(GuiMessageConstants.NORMAL_GUI, GuiMessageConstants.FROM_TILE));
+                AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_TILE));
             } else {
                 AdventureBackpack.networkWrapper
-                        .sendToServer(new GuiBackpackMessage(GuiMessageConstants.NORMAL_GUI, wearing ?
-                                GuiMessageConstants.FROM_KEYBIND : GuiMessageConstants.FROM_HOLDING));
+                        .sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, wearing ?
+                                MessageConstants.FROM_KEYBIND : MessageConstants.FROM_HOLDING));
             }
         }
         super.mouseClicked(mouseX, mouseY, button);

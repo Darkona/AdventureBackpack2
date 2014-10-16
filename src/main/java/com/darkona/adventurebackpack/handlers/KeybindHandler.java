@@ -3,9 +3,8 @@ package com.darkona.adventurebackpack.handlers;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
-import com.darkona.adventurebackpack.network.GuiMessageConstants;
+import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.Key;
-import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
@@ -35,7 +34,7 @@ public class KeybindHandler {
 
 
         if (keypressed == Key.OPEN_BACKPACK_INVENTORY) {
-            AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(GuiMessageConstants.NORMAL_GUI, GuiMessageConstants.FROM_KEYBIND));
+            AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_KEYBIND));
         }
     }
 }

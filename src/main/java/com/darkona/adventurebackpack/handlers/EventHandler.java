@@ -2,14 +2,20 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.common.Actions;
+import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.events.HoseSpillEvent;
 import com.darkona.adventurebackpack.events.HoseSuckEvent;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.misc.NyanMovingSound;
 import com.darkona.adventurebackpack.network.CycleToolMessage;
+import com.darkona.adventurebackpack.network.MessageConstants;
+import com.darkona.adventurebackpack.network.PlaySoundMessage;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -17,18 +23,26 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.MovingSound;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import scala.reflect.internal.ReificationSupport;
 
 /**
  * Created on 11/10/2014
@@ -209,5 +223,38 @@ public class EventHandler {
         event.setResult(Event.Result.ALLOW);
     }
 
+    @SubscribeEvent
+    public void eatGoldenApple(PlayerUseItemEvent.Finish event) {
+        EntityPlayer player = event.entityPlayer;
+        if (!player.worldObj.isRemote) {
+            if (event.item.getItem() instanceof ItemAppleGold &&
+                    ((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
+                    Wearing.isWearingBackpack(player) &&
+                    Wearing.getWearingBackpack(player).stackTagCompound.getString("colorName").equals("Nyan")) {
+                String nyanString = "\n" +
+                        EnumChatFormatting.RED + "▒▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█\n" +
+                        EnumChatFormatting.GOLD + "▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█\n" +
+                        EnumChatFormatting.YELLOW + "▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄\n" +
+                        EnumChatFormatting.GREEN + "▒▒▄▀▀▄▄█░▒▒▒▒▒▒▓▒▒▒▒█░░▀▄▄▄▄▄▀░░█\n" +
+                        EnumChatFormatting.DARK_GREEN + "▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█\n" +
+                        EnumChatFormatting.DARK_AQUA + "▒▒▒▀▀▄▄█░▒▒▒▒▓▒▒▒▓▒█░░░█▒░░░░█▒░░█\n" +
+                        EnumChatFormatting.AQUA + "▒▒▒▒▒▒▒█░▒▓▒▒▒▒▓▒▒▒█░░░░░░░▀░░░░░█\n" +
+                        EnumChatFormatting.BLUE + "▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█\n" +
+                        EnumChatFormatting.LIGHT_PURPLE + "▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█\n" +
+                        EnumChatFormatting.DARK_PURPLE + "▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄\n";
 
+                LogHelper.info(nyanString);
+                //player.worldObj.playSoundAtEntity(player, ModInfo.MOD_ID + ":nyan", 10.0f, 1.0f);
+                //ISound nyan = new NyanMovingSound(player);
+                /*Minecraft.getMinecraft().getSoundHandler().playSound(nyan);
+                Wearing.getWearingBackpack(player).getTagCompound().setInteger("lastTime",Utils.secondsToTicks(149));*/
+
+                AdventureBackpack.networkWrapper.sendToServer(new PlaySoundMessage(MessageConstants.PLAY_NYAN,
+                        /*player.posX,
+                        player.posY,
+                        player.posZ,*/
+                        player.getPersistentID().toString()));
+            }
+        }
+    }
 }

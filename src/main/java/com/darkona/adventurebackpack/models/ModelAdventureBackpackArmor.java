@@ -90,35 +90,35 @@ public class ModelAdventureBackpackArmor extends ModelBiped {
         left.setRotationPoint(3F, 9F, -3F);
 
         tankwallright = new ModelRenderer(this, 0, 54);
-        tankwallright.addBox(0F, 0F, 0F, 1, 8, 1);
+        tankwallright.addBox(0F, 0F, 0F, 1, 7, 1);
         tankwallright.setRotationPoint(-6F, 11F, -2.5F);
 
         tankwallleft = new ModelRenderer(this, 0, 54);
-        tankwallleft.addBox(0F, 0F, 0F, 1, 8, 1);
+        tankwallleft.addBox(0F, 0F, 0F, 1, 7, 1);
         tankwallleft.setRotationPoint(5F, 11F, -2.5F);
 
         tankwallright2 = new ModelRenderer(this, 0, 54);
-        tankwallright2.addBox(0F, 0F, 0F, 1, 8, 1);
+        tankwallright2.addBox(0F, 0F, 0F, 1, 7, 1);
         tankwallright2.setRotationPoint(-9F, 11F, -2.5F);
 
         tankwallleft2 = new ModelRenderer(this, 0, 54);
-        tankwallleft2.addBox(0F, 0F, 0F, 1, 8, 1);
+        tankwallleft2.addBox(0F, 0F, 0F, 1, 7, 1);
         tankwallleft2.setRotationPoint(5F, 11F, 0.5F);
 
         tankwallleft3 = new ModelRenderer(this, 0, 54);
-        tankwallleft3.addBox(0F, 0F, 0F, 1, 8, 1);
+        tankwallleft3.addBox(0F, 0F, 0F, 1, 7, 1);
         tankwallleft3.setRotationPoint(8F, 11F, -2.5F);
 
         tankwallleft4 = new ModelRenderer(this, 0, 54);
-        tankwallleft4.addBox(0F, 0F, 0F, 1, 8, 1);
+        tankwallleft4.addBox(0F, 0F, 0F, 1, 7, 1);
         tankwallleft4.setRotationPoint(8F, 11F, 0.5F);
 
         tankwallright3 = new ModelRenderer(this, 0, 54);
-        tankwallright3.addBox(0F, 0F, 0F, 1, 8, 1);
+        tankwallright3.addBox(0F, 0F, 0F, 1, 7, 1);
         tankwallright3.setRotationPoint(-6F, 11F, 0.5F);
 
         tankwallright4 = new ModelRenderer(this, 0, 54);
-        tankwallright4.addBox(0F, 0F, 0F, 1, 8, 1);
+        tankwallright4.addBox(0F, 0F, 0F, 1, 7, 1);
         tankwallright4.setRotationPoint(-9F, 11F, 0.5F);
 
         tankbottomright = new ModelRenderer(this, 0, 59);

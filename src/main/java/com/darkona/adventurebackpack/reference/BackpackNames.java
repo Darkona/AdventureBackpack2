@@ -67,7 +67,7 @@ public class BackpackNames {
             put("BlockGold", "Golden");
             put("BlockIron", "Iron");
             put("NetherStalkSeeds", "Nether");
-            put("Rainbow", "Nyan!");
+            put("Rainbow", "Nyan");
         }
     };
 

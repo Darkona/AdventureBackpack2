@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -92,7 +93,7 @@ public class BackpackAbilities {
     /**
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
-    private static String[] validWearingBackpacks = {"Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper"};
+    private static String[] validWearingBackpacks = {"Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Nyan"};
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -201,16 +202,13 @@ public class BackpackAbilities {
      * @param backpack
      */
     public void itemChicken(EntityPlayer player, World world, ItemStack backpack) {
-
-        if (Wearing.isWearingBackpack(player)) {
-            int eggTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.getTagCompound().getInteger("lastTime") - 1 : Utils.secondsToTicks(300);
-            if (eggTime <= 0) {
-                player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
-                if (!world.isRemote) player.dropItem(new Items().egg, 1);
-                eggTime = Utils.secondsToTicks(20);
-            }
-            backpack.getTagCompound().setInteger("lastTime", eggTime);
+        int eggTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.getTagCompound().getInteger("lastTime") - 1 : Utils.secondsToTicks(300);
+        if (eggTime <= 0) {
+            player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
+            if (!world.isRemote) player.dropItem(new Items().egg, 1);
+            eggTime = Utils.secondsToTicks(20);
         }
+        backpack.getTagCompound().setInteger("lastTime", eggTime);
     }
 
     /**
@@ -395,7 +393,26 @@ public class BackpackAbilities {
         }
         backpack.getTagCompound().setInteger("lastTime", lastCheckTime);
     }
+
+    public void itemNyan(EntityPlayer player, World world, ItemStack backpack) {
+        int noteTime = backpack.getTagCompound().getInteger("lastTime") - 1;
+        if (noteTime >= 0) {
+            int i = 1;
+            for (int j = 0; j < i * 2; ++j) {
+                float f = world.rand.nextFloat() * (float) Math.PI * 2.0F;
+                float f1 = world.rand.nextFloat() * 0.5F + 0.5F;
+                float f2 = MathHelper.sin(f) * i * 0.5F * f1;
+                float f3 = MathHelper.cos(f) * i * 0.5F * f1;
+                world.spawnParticle("note", player.posX + f2, player.boundingBox.minY + 0.8f, player.posZ + f3, (double) world.rand.nextInt(24) / 24.0D, -1.0D, 0.0D);
+
+            }
+        } else {
+            noteTime = 0;
+        }
+        backpack.getTagCompound().setInteger("lastTime", noteTime);
+    }
     /* ==================================== TILE ABILITIES ==========================================*/
+
 
     /**
      * Like real life cactii, this backpack will fill slowly while it's raining with refreshing water.
@@ -415,4 +432,6 @@ public class BackpackAbilities {
             backpack.lastTime = dropTime;
         }
     }
+
+
 }

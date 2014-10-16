@@ -7,7 +7,7 @@ import com.darkona.adventurebackpack.config.GeneralConfig;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
-import com.darkona.adventurebackpack.network.GuiMessageConstants;
+import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.util.Textures;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -158,12 +158,12 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
         if (craftButton.inButton(this, mouseX, mouseY)) {
             if (source) {
                 AdventureBackpack.networkWrapper
-                        .sendToServer(new GuiBackpackMessage(GuiMessageConstants.CRAFT_GUI,
-                                GuiMessageConstants.FROM_TILE));
+                        .sendToServer(new GuiBackpackMessage(MessageConstants.CRAFT_GUI,
+                                MessageConstants.FROM_TILE));
             } else {
                 AdventureBackpack.networkWrapper
-                        .sendToServer(new GuiBackpackMessage(GuiMessageConstants.CRAFT_GUI,
-                                wearing ? GuiMessageConstants.FROM_KEYBIND : GuiMessageConstants.FROM_HOLDING));
+                        .sendToServer(new GuiBackpackMessage(MessageConstants.CRAFT_GUI,
+                                wearing ? MessageConstants.FROM_KEYBIND : MessageConstants.FROM_HOLDING));
             }
 
         }
