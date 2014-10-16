@@ -13,7 +13,18 @@ import net.minecraft.util.ResourceLocation;
  */
 public class NyanMovingSound extends MovingSound {
 
-    private final EntityPlayer player;
+    public static NyanMovingSound instance = new NyanMovingSound();
+
+    public EntityPlayer getPlayer() {
+        return player;
+    }
+
+    public NyanMovingSound setPlayer(EntityPlayer p) {
+        this.player = p;
+        return this;
+    }
+
+    private EntityPlayer player;
     private float aFloat = 0.0F;
 
 
@@ -23,6 +34,9 @@ public class NyanMovingSound extends MovingSound {
         this.player = player;
     }
 
+    public NyanMovingSound() {
+        super(new ResourceLocation(ModInfo.MOD_ID, "nyan"));
+    }
     /**
      * Updates the JList with a new model.
      */
@@ -34,7 +48,6 @@ public class NyanMovingSound extends MovingSound {
             this.xPosF = (float) this.player.posX;
             this.yPosF = (float) this.player.posY;
             this.zPosF = (float) this.player.posZ;
-            //float f = MathHelper.sqrt_double(this.player.motionX * this.player.motionX + this.player.motionZ * this.player.motionZ);
         }
     }
 

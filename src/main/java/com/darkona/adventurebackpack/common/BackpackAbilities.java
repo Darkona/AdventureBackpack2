@@ -5,7 +5,6 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.network.NyanCatMessage;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -261,7 +260,7 @@ public class BackpackAbilities {
      */
 
     //getDistanceSq(entitylivingbase.posX, entitylivingbase.boundingBox.minY, entitylivingbase.posZ);
-    //TODO create something even more evil and devious for this backpack.
+    //TODO create something even more evil and devious for this backpack. - DONE
     public void itemCreeper(EntityPlayer player, World world, ItemStack backpack) {
         //lastTime is in seconds for this ability
         int pssstTime = (backpack.getTagCompound().hasKey("lastTime")) ? backpack.getTagCompound().getInteger("lastTime") - 1 : 20;
@@ -280,7 +279,7 @@ public class BackpackAbilities {
                 }
 
                 for (Entity entity : entities) {
-                    if (entity instanceof EntityWolf) {
+                    if (entity instanceof EntityPlayer) {
                         if (player.getDistanceToEntity(entity) <= 3) {
                             world.playSoundAtEntity(player, "creeper.primed", 1.0F, 0.5F);
                             pssstTime = Utils.secondsToTicks(120);
@@ -398,14 +397,13 @@ public class BackpackAbilities {
 
     public void itemNyan(EntityPlayer player, World world, ItemStack backpack) {
         int noteTime = backpack.getTagCompound().getInteger("lastTime") - 1;
-        if (noteTime >= 0) {
-
+        if (noteTime % 5 == 0 && noteTime >= 0) {
             AdventureBackpack.networkWrapper.sendToAllAround(new NyanCatMessage(MessageConstants.SPAWN_PARTICLE, player.getPersistentID().toString()),
                     new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 30D));
-            noteTime--;
         } else {
             noteTime = 0;
         }
+        noteTime--;
         backpack.getTagCompound().setInteger("lastTime", noteTime);
     }
     /* ==================================== TILE ABILITIES ==========================================*/
