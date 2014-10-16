@@ -2,9 +2,11 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -17,6 +19,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import scala.unchecked;
 
 import java.util.Iterator;
 import java.util.List;
@@ -89,7 +92,7 @@ public class BackpackAbilities {
     /**
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
-    private static String[] validWearingBackpacks = {"Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot"};
+    private static String[] validWearingBackpacks = {"Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper"};
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -204,7 +207,7 @@ public class BackpackAbilities {
             if (eggTime <= 0) {
                 player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
                 if (!world.isRemote) player.dropItem(new Items().egg, 1);
-                eggTime = Utils.secondsToTicks(world.rand.nextInt(301) + 300);
+                eggTime = Utils.secondsToTicks(20);
             }
             backpack.getTagCompound().setInteger("lastTime", eggTime);
         }
@@ -248,19 +251,47 @@ public class BackpackAbilities {
     }
 
     /**
-     * The Creeper Backpack explodes. Because of course it does.
-     * It does so only when the player dies, because that's the only logical thing it could do. Kinda turns you into a
-     * reverse-creeper.
-     * It doesn't hurt blocks.
-     *
+     * Sneaky! Scare your friends! Or your enemies!
+     * Sneak on another player to make them jump in confusion as they think one of those green bastards is behind him/her.
+     * You can only do it once every so often. A couple of minutes. Remember, you must be sneaking.
      * @param player
      * @param world
      * @param backpack
      * @see com.darkona.adventurebackpack.handlers.EventHandler
      */
+
+    //getDistanceSq(entitylivingbase.posX, entitylivingbase.boundingBox.minY, entitylivingbase.posZ);
     //TODO create something even more evil and devious for this backpack.
     public void itemCreeper(EntityPlayer player, World world, ItemStack backpack) {
-        world.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
+        //lastTime is in seconds for this ability
+        int pssstTime = (backpack.getTagCompound().hasKey("lastTime")) ? backpack.getTagCompound().getInteger("lastTime") - 1 : 20;
+
+        if (pssstTime <= 0) {
+            pssstTime = 0;
+            if (player.isSneaking()) {
+                List<Entity> entities = player.worldObj.getEntitiesWithinAABB(
+                        Entity.class,
+                        AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
+                                player.posX + 1.0D, player.posY + 1.0D,
+                                player.posZ + 1.0D).expand(5.0D, 1.0D, 5.0D));
+                if (entities.isEmpty()) {
+                    pssstTime -= 1;
+                    return;
+                }
+
+                for (Entity entity : entities) {
+                    if (entity instanceof EntityWolf) {
+                        if (player.getDistanceToEntity(entity) <= 3) {
+                            world.playSoundAtEntity(player, "creeper.primed", 1.0F, 0.5F);
+                            pssstTime = Utils.secondsToTicks(120);
+                        }
+                    }
+                }
+            }
+        } else {
+            pssstTime--;
+        }
+        backpack.getTagCompound().setInteger("lastTime", pssstTime);
     }
 
     /**

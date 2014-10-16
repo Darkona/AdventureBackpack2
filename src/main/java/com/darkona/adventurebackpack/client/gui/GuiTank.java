@@ -90,7 +90,6 @@ public class GuiTank {
             IIcon icon = fluid.getFluid().getStillIcon();
             int pixelsY = fluid.amount / liquidPerPixel;
             Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-
             int maxY = Y + H;
             for (int i = X; i < X + W; i += resolution) {
                 for (int j = maxY - resolution; j >= maxY - pixelsY; j -= resolution) {
@@ -136,7 +135,7 @@ public class GuiTank {
                 String fixedName = name.substring(0, name.lastIndexOf(":")) + ":textures/blocks/" + name.substring(name.lastIndexOf(":") + 1) + ".png";
                 iconplace = new ResourceLocation(fixedName);
             } else {
-                iconplace = new ResourceLocation("textures/block/" + name + ".png");
+                iconplace = new ResourceLocation("textures/blocks/" + name + ".png");
             }
             Minecraft.getMinecraft().getTextureManager().bindTexture(iconplace);
             int top = Y + H - (fluid.amount / liquidPerPixel);

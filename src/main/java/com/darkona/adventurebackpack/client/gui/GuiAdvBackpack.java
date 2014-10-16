@@ -45,7 +45,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
         super(new BackpackContainer(player.inventory, tileBackpack));
         this.inventory = tileBackpack;
         this.source = true;
-        this.sbstatus = tileBackpack.sleepingBagDeployed;
+        //this.sbstatus = tileBackpack.sleepingBagDeployed;
         xSize = 176;
         ySize = 166;
         this.X = tileBackpack.xCoord;

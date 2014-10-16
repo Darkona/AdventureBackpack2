@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.reference;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.HashMap;
 import java.util.Map;

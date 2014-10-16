@@ -1,19 +1,24 @@
 package com.darkona.adventurebackpack.item;
 
+import codechicken.lib.colour.Colour;
+import codechicken.lib.colour.ColourRGBA;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackArmor;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.GuiMessageConstants;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Textures;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import javafx.animation.ParallelTransitionBuilder;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -22,8 +27,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidTank;
+import scala.io.AnsiColor;
 
 import java.util.List;
 
@@ -40,6 +48,7 @@ public class ItemAdventureBackpack extends ArmorAB {
         setMaxStackSize(1);
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
+
 
     @Override
     public void onCreated(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer) {
@@ -129,7 +138,8 @@ public class ItemAdventureBackpack extends ArmorAB {
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
-        if (stack.stackTagCompound != null && stack.getTagCompound().getBoolean("Special")) {
+        if (stack.stackTagCompound != null &&
+                (stack.getTagCompound().getBoolean("special")) || BackpackAbilities.hasAbility(stack.stackTagCompound.getString("colorName"))) {
             BackpackAbilities.instance.executeAbility(player, world, stack);
         }
     }
@@ -165,21 +175,21 @@ public class ItemAdventureBackpack extends ArmorAB {
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        if (stack.stackTagCompound != null) {
-            if (stack.stackTagCompound.hasKey("colorName")) {
-                list.add(stack.stackTagCompound.getString("colorName"));
-            } else if (stack.stackTagCompound.hasKey("color")) {
-                list.add(stack.stackTagCompound.getString("color"));
+        NBTTagCompound compound = stack.stackTagCompound;
+        if (compound != null) {
+            if (compound.hasKey("colorName")) {
+                list.add(compound.getString("colorName"));
+            } else if (compound.hasKey("color")) {
+                list.add(compound.getString("color"));
             }
         }
-        super.addInformation(stack, player, list, par4);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     @SideOnly(Side.CLIENT)
-
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems) {
         for (String name : BackpackNames.backpackNames) {
             ItemStack bp = new ItemStack(this, 1, 0);
@@ -190,5 +200,4 @@ public class ItemAdventureBackpack extends ArmorAB {
             subItems.add(bp);
         }
     }
-
 }

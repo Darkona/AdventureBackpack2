@@ -32,11 +32,31 @@ public class BlockAdventureBackpack extends BlockContainer {
 
     public BlockAdventureBackpack() {
         super(Material.cloth);
-        setHardness(0.5f);
-        setResistance(20f);
-        setHardness(5f);
-        setHarvestLevel(null, 0);
+        setHardness(1.5f);
+        setStepSound(soundTypeCloth);
+    }
 
+    /**
+     * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
+     * and stop pistons
+     */
+    public int getMobilityFlag() {
+        return 0;
+    }
+
+    @Override
+    public String getHarvestTool(int metadata) {
+        return null;
+    }
+
+    @Override
+    public int getHarvestLevel(int metadata) {
+        return 0;
+    }
+
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return true;
     }
 
     private String getAssociatedTileColorName(IBlockAccess world, int x, int y, int z) {
@@ -92,20 +112,6 @@ public class BlockAdventureBackpack extends BlockContainer {
     @Override
     public boolean canHarvestBlock(EntityPlayer player, int meta) {
         return true;
-    }
-
-    /**
-     * Called after a block is placed
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     * @param meta
-     */
-    @Override
-    public void onPostBlockPlaced(World world, int x, int y, int z, int meta) {
-        super.onPostBlockPlaced(world, x, y, z, meta);
     }
 
     @Override
@@ -232,7 +238,6 @@ public class BlockAdventureBackpack extends BlockContainer {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
         int dir = MathHelper.floor_double((player.rotationYaw * 4F) / 360F + 0.5D) & 3;
-        // onBlockAdded(world, x, y, z);
         if (stack != null && stack.stackTagCompound != null && stack.stackTagCompound.hasKey("color")) {
             if (stack.stackTagCompound.getString("color").contains("BlockRedstone"))
                 dir = dir | 8;

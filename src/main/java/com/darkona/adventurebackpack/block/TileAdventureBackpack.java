@@ -53,7 +53,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         luminosity = 0;
         lastTime = 0;
         checkTime = 0;
-        special = BackpackAbilities.hasAbility(colorName);
+
     }
 
    /* public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta) {
@@ -185,6 +185,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         sbz = compound.getInteger("sbz");
         sbdir = compound.getInteger("sbdir");
         luminosity = compound.getInteger("lumen");
+        special = compound.getBoolean("special");
         loadFromNBT(compound);
     }
 
@@ -216,7 +217,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack {
         compound.setTag("rightTank", rightTank.writeToNBT(tankRight));
         compound.setTag("leftTank", leftTank.writeToNBT(tankLeft));
         compound.setInteger("lastTime", lastTime);
-
+        compound.setBoolean("special", BackpackAbilities.hasAbility(colorName));
         super.writeToNBT(compound);
     }
 

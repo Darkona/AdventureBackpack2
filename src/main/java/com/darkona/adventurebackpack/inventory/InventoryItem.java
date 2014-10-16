@@ -59,7 +59,7 @@ public class InventoryItem implements IAdvBackpack {
 
     @Override
     public String getInventoryName() {
-        return "AdventureBackpack";
+        return "gui.backpackInventory.name";
     }
 
     @Override
@@ -331,7 +331,7 @@ public class InventoryItem implements IAdvBackpack {
         compound.setString("color", color);
         compound.setString("colorName", colorName);
         compound.setInteger("lastTime", lastTime);
-        compound.setBoolean("special", special);
+        compound.setBoolean("special", BackpackAbilities.hasAbility(colorName));
         return compound;
     }
 

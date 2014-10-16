@@ -109,7 +109,6 @@ public class Utils {
     }
 
     /**
-     *
      * @param seconds
      * @return
      */

@@ -197,17 +197,17 @@ public class Actions {
      */
     public static void cycleTool(EntityPlayer player, int direction, int slot) {
         InventoryItem backpack = Wearing.getBackpackInv(player, true);
-        ItemStack current = player.getCurrentEquippedItem().copy();
+        ItemStack current = player.getCurrentEquippedItem();
         if (direction < 0) {
-            player.inventory.mainInventory[slot] = backpack.getStackInSlot(3).copy();
-            backpack.setInventorySlotContentsSafe(3, backpack.getStackInSlot(0).copy());
+            player.inventory.mainInventory[slot] = backpack.getStackInSlot(3);
+            backpack.setInventorySlotContentsSafe(3, backpack.getStackInSlot(0));
             backpack.setInventorySlotContentsSafe(0, current);
             backpack.saveChanges();
             player.inventory.closeInventory();
         } else {
             if (direction > 0) {
-                player.inventory.mainInventory[slot] = backpack.getStackInSlot(0).copy();
-                backpack.setInventorySlotContentsSafe(0, backpack.getStackInSlot(3).copy());
+                player.inventory.mainInventory[slot] = backpack.getStackInSlot(0);
+                backpack.setInventorySlotContentsSafe(0, backpack.getStackInSlot(3));
                 backpack.setInventorySlotContentsSafe(3, current);
                 backpack.saveChanges();
             }
