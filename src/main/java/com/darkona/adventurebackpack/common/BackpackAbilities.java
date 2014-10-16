@@ -1,12 +1,15 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.network.MessageConstants;
+import com.darkona.adventurebackpack.network.NyanCatMessage;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
-import net.minecraft.client.Minecraft;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -20,7 +23,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import scala.unchecked;
 
 import java.util.Iterator;
 import java.util.List;
@@ -397,15 +399,10 @@ public class BackpackAbilities {
     public void itemNyan(EntityPlayer player, World world, ItemStack backpack) {
         int noteTime = backpack.getTagCompound().getInteger("lastTime") - 1;
         if (noteTime >= 0) {
-            int i = 1;
-            for (int j = 0; j < i * 2; ++j) {
-                float f = world.rand.nextFloat() * (float) Math.PI * 2.0F;
-                float f1 = world.rand.nextFloat() * 0.5F + 0.5F;
-                float f2 = MathHelper.sin(f) * i * 0.5F * f1;
-                float f3 = MathHelper.cos(f) * i * 0.5F * f1;
-                world.spawnParticle("note", player.posX + f2, player.boundingBox.minY + 0.8f, player.posZ + f3, (double) world.rand.nextInt(24) / 24.0D, -1.0D, 0.0D);
 
-            }
+            AdventureBackpack.networkWrapper.sendToAllAround(new NyanCatMessage(MessageConstants.SPAWN_PARTICLE, player.getPersistentID().toString()),
+                    new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 30D));
+            noteTime--;
         } else {
             noteTime = 0;
         }

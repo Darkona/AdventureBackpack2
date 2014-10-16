@@ -14,4 +14,5 @@ public class MessageConstants {
     public static final byte CRAFT_GUI = 2;
 
     public static final byte PLAY_NYAN = 0;
+    public static final byte SPAWN_PARTICLE = 1;
 }

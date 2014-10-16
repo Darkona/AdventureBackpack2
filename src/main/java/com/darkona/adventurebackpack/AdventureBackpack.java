@@ -4,13 +4,12 @@ import com.darkona.adventurebackpack.api.FluidEffectRegistry;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.EventHandler;
-import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.network.CycleToolMessage;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
-import com.darkona.adventurebackpack.network.PlaySoundMessage;
+import com.darkona.adventurebackpack.network.NyanCatMessage;
 import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -60,8 +59,8 @@ public class AdventureBackpack {
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID + "ch");
         networkWrapper.registerMessage(CycleToolMessage.CycleToolMessageServerHandler.class, CycleToolMessage.class, messageCounter++, Side.SERVER);
         networkWrapper.registerMessage(GuiBackpackMessage.GuiBackpackMessageServerHandler.class, GuiBackpackMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(PlaySoundMessage.PlaySoundMessageServerHandler.class, PlaySoundMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(PlaySoundMessage.PlaySoundMessageClientHandler.class, PlaySoundMessage.class, messageCounter++, Side.CLIENT);
+        networkWrapper.registerMessage(NyanCatMessage.PlaySoundMessageServerHandler.class, NyanCatMessage.class, messageCounter++, Side.SERVER);
+        networkWrapper.registerMessage(NyanCatMessage.PlaySoundMessageClientHandler.class, NyanCatMessage.class, messageCounter++, Side.CLIENT);
         //ModStuff
         ModItems.init();
         ModBlocks.init();
