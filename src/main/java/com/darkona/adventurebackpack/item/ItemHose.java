@@ -35,12 +35,14 @@ import net.minecraftforge.fluids.IFluidHandler;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class ItemHose extends ItemAB {
+public class ItemHose extends ItemAB
+{
 
     IIcon leftIcon;
     IIcon rightIcon;
 
-    public ItemHose() {
+    public ItemHose()
+    {
         super();
         setMaxStackSize(1);
         setFull3D();
@@ -54,7 +56,8 @@ public class ItemHose extends ItemAB {
     // ================================================ GETTERS  =====================================================//
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(ItemStack stack, int pass) {
+    public IIcon getIcon(ItemStack stack, int pass)
+    {
         if (stack.getTagCompound() == null || stack.getTagCompound().getInteger("tank") == -1) return itemIcon;
         return
                 stack.getTagCompound().getInteger("tank") == 0 ? leftIcon : rightIcon;
@@ -63,30 +66,37 @@ public class ItemHose extends ItemAB {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int par1)
+    {
         return itemIcon;
     }
 
-    public static int getHoseMode(ItemStack hose) {
+    public static int getHoseMode(ItemStack hose)
+    {
         return hose.stackTagCompound != null ? hose.stackTagCompound.getInteger("mode") : -1;
     }
 
-    public static int getHoseTank(ItemStack hose) {
+    public static int getHoseTank(ItemStack hose)
+    {
         return hose.hasTagCompound() ? hose.getTagCompound().getInteger("tank") : -1;
     }
 
     @Override
-    public EnumAction getItemUseAction(ItemStack stack) {
-        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("mode")) {
+    public EnumAction getItemUseAction(ItemStack stack)
+    {
+        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("mode"))
+        {
             return (stack.stackTagCompound.getInteger("mode") == 2) ? EnumAction.drink : EnumAction.none;
         }
         return EnumAction.none;
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getUnlocalizedName(ItemStack stack)
+    {
         String name = "hose." + (getHoseTank(stack) == 0 ? "leftTank" : getHoseTank(stack) == 1 ? "rightTank" : "");
-        switch (getHoseMode(stack)) {
+        switch (getHoseMode(stack))
+        {
             case 0:
                 return name + ".suck";
             case 1:
@@ -99,17 +109,20 @@ public class ItemHose extends ItemAB {
     }
 
     @Override
-    public int getMaxItemUseDuration(ItemStack stack) {
+    public int getMaxItemUseDuration(ItemStack stack)
+    {
         return 32;
     }
 
     @Override
-    public int getMaxDamage() {
+    public int getMaxDamage()
+    {
         return Constants.basicTankCapacity;
     }
 
     @Override
-    public int getMaxDamage(ItemStack stack) {
+    public int getMaxDamage(ItemStack stack)
+    {
         return Constants.basicTankCapacity;
     }
 
@@ -117,7 +130,8 @@ public class ItemHose extends ItemAB {
     // ================================================= ICONS  ======================================================//
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
+    public void registerIcons(IIconRegister iconRegister)
+    {
         leftIcon = iconRegister.registerIcon(Textures.iconName("hoseLeft"));
         rightIcon = iconRegister.registerIcon(Textures.iconName("hoseRight"));
         itemIcon = iconRegister.registerIcon(Textures.iconName("hoseLeft"));
@@ -125,24 +139,29 @@ public class ItemHose extends ItemAB {
     // ================================================ ACTIONS  =====================================================//
 
     @Override
-    public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5)
+    {
 
         NBTTagCompound nbt = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
         ItemStack backpack = Wearing.getWearingBackpack((EntityPlayer) entity);
-        if (backpack != null) {
+        if (backpack != null)
+        {
             if (nbt.getInteger("tank") == -1) nbt.setInteger("tank", 0);
             if (nbt.getInteger("mode") == -1) nbt.setInteger("mode", 0);
             InventoryItem inv = new InventoryItem(backpack);
             inv.readFromNBT();
             FluidTank tank = nbt.getInteger("tank") == 0 ? inv.getLeftTank() : inv.getRightTank();
-            if (tank != null && tank.getFluid() != null) {
+            if (tank != null && tank.getFluid() != null)
+            {
                 nbt.setString("fluid", Utils.capitalize(tank.getFluid().getFluid().getName()));
                 nbt.setInteger("amount", tank.getFluidAmount());
-            } else {
+            } else
+            {
                 nbt.setInteger("amount", 0);
                 nbt.setString("fluid", "Empty");
             }
-        } else {
+        } else
+        {
             nbt.setInteger("amount", 0);
             nbt.setString("fluid", "None");
             nbt.setInteger("mode", -1);
@@ -152,7 +171,8 @@ public class ItemHose extends ItemAB {
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
 
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return false;
@@ -160,18 +180,23 @@ public class ItemHose extends ItemAB {
         InventoryItem inv = Wearing.getBackpackInv(player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inv.getLeftTank() : inv.getRightTank();
         TileEntity te = world.getTileEntity(x, y, z);
-        if (te != null && te instanceof IFluidHandler) {
-            switch (getHoseMode(stack)) {
+        if (te != null && te instanceof IFluidHandler)
+        {
+            switch (getHoseMode(stack))
+            {
                 case 0: // Suck mode
-                    if (tank.fill(((IFluidHandler) te).drain(ForgeDirection.UNKNOWN, Constants.bucket, false), false) >= Constants.bucket) {
+                    if (tank.fill(((IFluidHandler) te).drain(ForgeDirection.UNKNOWN, Constants.bucket, false), false) >= Constants.bucket)
+                    {
                         tank.fill(((IFluidHandler) te).drain(ForgeDirection.UNKNOWN, Constants.bucket, true), true);
                         inv.saveChanges();
                         return true;
                     }
                     break;
                 case 1:// Spill mode
-                    if (tank.getFluid() != null) {
-                        if (((IFluidHandler) te).fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false) >= Constants.bucket) {
+                    if (tank.getFluid() != null)
+                    {
+                        if (((IFluidHandler) te).fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false) >= Constants.bucket)
+                        {
                             ((IFluidHandler) te).fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, true), true);
                             inv.saveChanges();
                             return true;
@@ -187,41 +212,51 @@ public class ItemHose extends ItemAB {
 
     @Override
 
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
+    {
         return true;
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    {
 
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return stack;
         InventoryItem inventory = new InventoryItem(backpack);
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
-        if (tank != null) {
-            switch (getHoseMode(stack)) {
+        if (tank != null)
+        {
+            switch (getHoseMode(stack))
+            {
                 case 0: // If it's in Suck Mode
-                    if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                    if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+                    {
                         HoseSuckEvent suckEvent = new HoseSuckEvent(player, stack, world, mop, tank);
-                        if (MinecraftForge.EVENT_BUS.post(suckEvent)) {
+                        if (MinecraftForge.EVENT_BUS.post(suckEvent))
+                        {
                             return stack;
                         }
-                        if (suckEvent.getResult() == Event.Result.ALLOW) {
+                        if (suckEvent.getResult() == Event.Result.ALLOW)
+                        {
                             tank.fill(suckEvent.fluidResult, true);
                             inventory.saveChanges();
                         }
                     }
                     break;
                 case 1: // If it's in Spill Mode
-                    if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                    if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+                    {
 
                         int x = mop.blockX;
                         int y = mop.blockY;
                         int z = mop.blockZ;
 
-                        if (world.getBlock(x, y, z).isBlockSolid(world, x, y, z, mop.sideHit)) {
-                            switch (mop.sideHit) {
+                        if (world.getBlock(x, y, z).isBlockSolid(world, x, y, z, mop.sideHit))
+                        {
+                            switch (mop.sideHit)
+                            {
                                 case 0:
                                     --y;
                                     break;
@@ -243,11 +278,14 @@ public class ItemHose extends ItemAB {
                             }
                         }
                         HoseSpillEvent spillEvent = new HoseSpillEvent(player, world, x, y, z, tank);
-                        if (MinecraftForge.EVENT_BUS.post(spillEvent)) {
+                        if (MinecraftForge.EVENT_BUS.post(spillEvent))
+                        {
                             return stack;
                         }
-                        if (spillEvent.getResult() == Event.Result.ALLOW) {
-                            if (!player.capabilities.isCreativeMode) {
+                        if (spillEvent.getResult() == Event.Result.ALLOW)
+                        {
+                            if (!player.capabilities.isCreativeMode)
+                            {
                                 tank.drain(spillEvent.fluidResult.amount, true);
                                 inventory.saveChanges();
                             }
@@ -256,7 +294,8 @@ public class ItemHose extends ItemAB {
                     }
                     break;
                 case 2: // If it's in Drink Mode
-                    if (tank.getFluidAmount() > 0) {
+                    if (tank.getFluidAmount() > 0)
+                    {
                         player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
                     }
                 default:
@@ -268,29 +307,36 @@ public class ItemHose extends ItemAB {
 
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player) {
+    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
+    {
         return true;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
+    {
         return true;
     }
 
     @Override
-    public ItemStack onEaten(ItemStack hose, World world, EntityPlayer player) {
+    public ItemStack onEaten(ItemStack hose, World world, EntityPlayer player)
+    {
         int mode = -1;
         int tank = -1;
-        if (hose.stackTagCompound != null) {
+        if (hose.stackTagCompound != null)
+        {
             tank = hose.stackTagCompound.getInteger("tank");
             mode = hose.stackTagCompound.getInteger("mode");
         }
-        if (mode == 2 && tank > -1) {
+        if (mode == 2 && tank > -1)
+        {
             InventoryItem inventory = new InventoryItem(Wearing.getWearingBackpack(player));
             FluidTank backpackTank = (tank == 0) ? inventory.getLeftTank() : (tank == 1) ? inventory.getRightTank() : null;
-            if (backpackTank != null) {
-                if (Actions.setFluidEffect(world, player, backpackTank)) {
+            if (backpackTank != null)
+            {
+                if (Actions.setFluidEffect(world, player, backpackTank))
+                {
                     backpackTank.drain(Constants.bucket, true);
                     inventory.saveChanges();
                 }
@@ -300,15 +346,18 @@ public class ItemHose extends ItemAB {
     }
 
     @Override
-    public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player) {
+    public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
+    {
         return false;
     }
 
     // ================================================ BOOLEANS =====================================================//
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
+    {
         ItemStack backpack = Wearing.getWearingBackpack(player);
-        if (entity instanceof EntityCow && backpack != null) {
+        if (entity instanceof EntityCow && backpack != null)
+        {
             InventoryItem inventory = new InventoryItem(backpack);
             FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
             tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
@@ -321,7 +370,8 @@ public class ItemHose extends ItemAB {
     }
 
     @Override
-    public boolean canHarvestBlock(Block block, ItemStack stack) {
+    public boolean canHarvestBlock(Block block, ItemStack stack)
+    {
         return Utils.isBlockRegisteredAsFluid(block) > -1;
     }
 

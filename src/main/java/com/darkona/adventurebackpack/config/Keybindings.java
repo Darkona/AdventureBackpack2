@@ -9,7 +9,8 @@ import org.lwjgl.input.Keyboard;
  *
  * @author Darkona
  */
-public class Keybindings {
+public class Keybindings
+{
 
     public static KeyBinding openBackpack = new KeyBinding(Names.keys.OPEN_BACKPACK_INVENTORY, Keyboard.KEY_B, Names.keys.CATEGORY);
     public static KeyBinding toggleHose = new KeyBinding(Names.keys.TOGGLE_HOSE_TANK, Keyboard.KEY_Q, Names.keys.CATEGORY);

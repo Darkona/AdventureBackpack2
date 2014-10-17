@@ -11,14 +11,18 @@ import net.minecraftforge.fluids.IFluidContainerItem;
  *
  * @author Darkona
  */
-public class FluidUtils {
+public class FluidUtils
+{
 
-    public static boolean isContainerForFluid(ItemStack container, Fluid fluid) {
-        for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData()) {
+    public static boolean isContainerForFluid(ItemStack container, Fluid fluid)
+    {
+        for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
+        {
             if (
                     (data.fluid.getFluid().getID() == fluid.getID()) &&
                             (data.emptyContainer.getItem().equals(container.getItem()) || data.filledContainer.getItem().equals(container.getItem()))
-                    ) {
+                    )
+            {
                 return true;
             }
         }

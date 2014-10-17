@@ -11,7 +11,8 @@ import net.minecraftforge.fluids.FluidTank;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public interface IAdvBackpack extends IInventory {
+public interface IAdvBackpack extends IInventory
+{
 
     public FluidTank getLeftTank();
 

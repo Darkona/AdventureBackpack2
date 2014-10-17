@@ -12,20 +12,23 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 
-public class Matrix4 extends Transformation implements Copyable<Matrix4> {
+public class Matrix4 extends Transformation implements Copyable<Matrix4>
+{
     private static DoubleBuffer glBuf = ByteBuffer.allocateDirect(16 * 8).order(ByteOrder.nativeOrder()).asDoubleBuffer();
 
     //m<row><column>    
     public double m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
 
-    public Matrix4() {
+    public Matrix4()
+    {
         m00 = m11 = m22 = m33 = 1;
     }
 
     public Matrix4(double d00, double d01, double d02, double d03,
                    double d10, double d11, double d12, double d13,
                    double d20, double d21, double d22, double d23,
-                   double d30, double d31, double d32, double d33) {
+                   double d30, double d31, double d32, double d33)
+    {
         m00 = d00;
         m01 = d01;
         m02 = d02;
@@ -44,18 +47,21 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
         m33 = d33;
     }
 
-    public Matrix4(Matrix4 mat) {
+    public Matrix4(Matrix4 mat)
+    {
         set(mat);
     }
 
-    public Matrix4 setIdentity() {
+    public Matrix4 setIdentity()
+    {
         m00 = m11 = m22 = m33 = 1;
         m01 = m02 = m03 = m10 = m12 = m13 = m20 = m21 = m23 = m30 = m31 = m32 = 0;
 
         return this;
     }
 
-    public Matrix4 translate(Vector3 vec) {
+    public Matrix4 translate(Vector3 vec)
+    {
         m03 += m00 * vec.x + m01 * vec.y + m02 * vec.z;
         m13 += m10 * vec.x + m11 * vec.y + m12 * vec.z;
         m23 += m20 * vec.x + m21 * vec.y + m22 * vec.z;
@@ -64,7 +70,8 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
         return this;
     }
 
-    public Matrix4 scale(Vector3 vec) {
+    public Matrix4 scale(Vector3 vec)
+    {
         m00 *= vec.x;
         m10 *= vec.x;
         m20 *= vec.x;
@@ -81,7 +88,8 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
         return this;
     }
 
-    public Matrix4 rotate(double angle, Vector3 axis) {
+    public Matrix4 rotate(double angle, Vector3 axis)
+    {
         double c = Math.cos(angle);
         double s = Math.sin(angle);
         double mc = 1.0f - c;
@@ -128,12 +136,14 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
         return this;
     }
 
-    public Matrix4 rotate(Rotation rotation) {
+    public Matrix4 rotate(Rotation rotation)
+    {
         rotation.apply(this);
         return this;
     }
 
-    public Matrix4 leftMultiply(Matrix4 mat) {
+    public Matrix4 leftMultiply(Matrix4 mat)
+    {
         double n00 = m00 * mat.m00 + m10 * mat.m01 + m20 * mat.m02 + m30 * mat.m03;
         double n01 = m01 * mat.m00 + m11 * mat.m01 + m21 * mat.m02 + m31 * mat.m03;
         double n02 = m02 * mat.m00 + m12 * mat.m01 + m22 * mat.m02 + m32 * mat.m03;
@@ -171,7 +181,8 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
         return this;
     }
 
-    public Matrix4 multiply(Matrix4 mat) {
+    public Matrix4 multiply(Matrix4 mat)
+    {
         double n00 = m00 * mat.m00 + m01 * mat.m10 + m02 * mat.m20 + m03 * mat.m30;
         double n01 = m00 * mat.m01 + m01 * mat.m11 + m02 * mat.m21 + m03 * mat.m31;
         double n02 = m00 * mat.m02 + m01 * mat.m12 + m02 * mat.m22 + m03 * mat.m32;
@@ -209,7 +220,8 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
         return this;
     }
 
-    public Matrix4 transpose() {
+    public Matrix4 transpose()
+    {
         double n00 = m00;
         double n10 = m01;
         double n20 = m02;
@@ -247,11 +259,13 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
         return this;
     }
 
-    public Matrix4 copy() {
+    public Matrix4 copy()
+    {
         return new Matrix4(this);
     }
 
-    public Matrix4 set(Matrix4 mat) {
+    public Matrix4 set(Matrix4 mat)
+    {
         m00 = mat.m00;
         m01 = mat.m01;
         m02 = mat.m02;
@@ -273,11 +287,13 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
     }
 
     @Override
-    public void apply(Matrix4 mat) {
+    public void apply(Matrix4 mat)
+    {
         mat.multiply(this);
     }
 
-    private void mult3x3(Vector3 vec) {
+    private void mult3x3(Vector3 vec)
+    {
         double x = m00 * vec.x + m01 * vec.y + m02 * vec.z;
         double y = m10 * vec.x + m11 * vec.y + m12 * vec.z;
         double z = m20 * vec.x + m21 * vec.y + m22 * vec.z;
@@ -288,19 +304,22 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
     }
 
     @Override
-    public void apply(Vector3 vec) {
+    public void apply(Vector3 vec)
+    {
         mult3x3(vec);
         vec.add(m03, m13, m23);
     }
 
     @Override
-    public void applyN(Vector3 vec) {
+    public void applyN(Vector3 vec)
+    {
         mult3x3(vec);
         vec.normalize();
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         MathContext cont = new MathContext(4, RoundingMode.HALF_UP);
         return "[" + new BigDecimal(m00, cont) + "," + new BigDecimal(m01, cont) + "," + new BigDecimal(m02, cont) + "," + new BigDecimal(m03, cont) + "]\n" +
                 "[" + new BigDecimal(m10, cont) + "," + new BigDecimal(m11, cont) + "," + new BigDecimal(m12, cont) + "," + new BigDecimal(m13, cont) + "]\n" +
@@ -308,14 +327,16 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
                 "[" + new BigDecimal(m30, cont) + "," + new BigDecimal(m31, cont) + "," + new BigDecimal(m32, cont) + "," + new BigDecimal(m33, cont) + "]";
     }
 
-    public Matrix4 apply(Transformation t) {
+    public Matrix4 apply(Transformation t)
+    {
         t.apply(this);
         return this;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void glApply() {
+    public void glApply()
+    {
         glBuf.put(m00).put(m10).put(m20).put(m30)
                 .put(m01).put(m11).put(m21).put(m31)
                 .put(m02).put(m12).put(m22).put(m32)
@@ -325,7 +346,8 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4> {
     }
 
     @Override
-    public Transformation inverse() {
+    public Transformation inverse()
+    {
         throw new IrreversibleTransformationException(this);//Don't waste your cpu with matrix inverses
     }
 }

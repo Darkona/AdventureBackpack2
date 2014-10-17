@@ -13,15 +13,19 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class RendererItemAdventureBackpack implements IItemRenderer {
+public class RendererItemAdventureBackpack implements IItemRenderer
+{
     private final ModelAdventureBackpackBlock model;
 
-    public RendererItemAdventureBackpack() {
+    public RendererItemAdventureBackpack()
+    {
         model = new ModelAdventureBackpackBlock();
     }
 
-    public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type) {
-        switch (type) {
+    public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type)
+    {
+        switch (type)
+        {
             case INVENTORY:
                 return true;
             case ENTITY:
@@ -36,8 +40,10 @@ public class RendererItemAdventureBackpack implements IItemRenderer {
         return false;
     }
 
-    public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item, IItemRenderer.ItemRendererHelper helper) {
-        switch (type) {
+    public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item, IItemRenderer.ItemRendererHelper helper)
+    {
+        switch (type)
+        {
             case INVENTORY:
                 return true;
             case ENTITY:
@@ -52,10 +58,12 @@ public class RendererItemAdventureBackpack implements IItemRenderer {
         return false;
     }
 
-    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data) {
+    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
+    {
         InventoryItem inv = new InventoryItem(item);
         ResourceLocation modelTexture = Textures.getBackpackTextureResLocFromType(item);
-        switch (type) {
+        switch (type)
+        {
 
             case INVENTORY:
                 Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);

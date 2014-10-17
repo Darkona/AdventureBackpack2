@@ -3,7 +3,8 @@ package com.darkona.adventurebackpack.config;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class GeneralConfig {
+public class GeneralConfig
+{
 
     public static int GUI_TANK_RES;
     public static int GUI_TANK_RENDER = 3;

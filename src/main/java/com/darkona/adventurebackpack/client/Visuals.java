@@ -9,12 +9,15 @@ import net.minecraft.world.World;
  *
  * @author Darkona
  */
-public class Visuals {
+public class Visuals
+{
 
-    public static void NyanParticles(EntityPlayer player) {
+    public static void NyanParticles(EntityPlayer player)
+    {
         World world = player.worldObj;
         int i = 2;
-        for (int j = 0; j < i * 3; ++j) {
+        for (int j = 0; j < i * 3; ++j)
+        {
             float f = world.rand.nextFloat() * (float) Math.PI * 2.0F;
             float f1 = world.rand.nextFloat() * 0.5F + 0.5F;
             float f2 = MathHelper.sin(f) * i * 0.5F * f1;

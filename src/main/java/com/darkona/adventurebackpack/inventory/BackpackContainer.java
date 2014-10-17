@@ -13,14 +13,16 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class BackpackContainer extends Container {
+public class BackpackContainer extends Container
+{
 
     public IAdvBackpack inventory;
     public static boolean SOURCE_TILE = true;
     public static boolean SOURCE_ITEM = false;
     public boolean needsUpdate;
 
-    public BackpackContainer(InventoryPlayer invPlayer, IAdvBackpack backpack, boolean source) {
+    public BackpackContainer(InventoryPlayer invPlayer, IAdvBackpack backpack, boolean source)
+    {
         needsUpdate = false;
         inventory = backpack;
         makeSlots(invPlayer);
@@ -34,22 +36,27 @@ public class BackpackContainer extends Container {
 
 
     @Override
-    public boolean canInteractWith(EntityPlayer player) {
+    public boolean canInteractWith(EntityPlayer player)
+    {
         return inventory.isUseableByPlayer(player);
     }
 
-    private void makeSlots(InventoryPlayer invPlayer) {
+    private void makeSlots(InventoryPlayer invPlayer)
+    {
 
         IInventory sexy = inventory;
 
         // Player's Hotbar
-        for (int x = 0; x < 9; x++) {
+        for (int x = 0; x < 9; x++)
+        {
             addSlotToContainer(new Slot(invPlayer, x, 8 + 18 * x, 142));
         }
 
         // Player's Inventory
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 9; x++) {
+        for (int y = 0; y < 3; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
                 addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (8 + 18 * x), (84 + y * 18)));
             }
         }
@@ -82,23 +89,30 @@ public class BackpackContainer extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i) {
+    public ItemStack transferStackInSlot(EntityPlayer player, int i)
+    {
         // TODO Fix the shit disrespecting slot accepting itemstack.
         Slot slot = getSlot(i);
-        if (slot != null && slot.getHasStack()) {
+        if (slot != null && slot.getHasStack())
+        {
             ItemStack stack = slot.getStack();
             ItemStack result = stack.copy();
-            if (i >= 36) {
-                if (!mergeItemStack(stack, 0, 36, false)) {
+            if (i >= 36)
+            {
+                if (!mergeItemStack(stack, 0, 36, false))
+                {
                     return null;
                 }
-            } else if (!mergeItemStack(stack, 36, 36 + inventory.getSizeInventory(), false)) {
+            } else if (!mergeItemStack(stack, 36, 36 + inventory.getSizeInventory(), false))
+            {
                 return null;
             }
 
-            if (stack.stackSize == 0) {
+            if (stack.stackSize == 0)
+            {
                 slot.putStack(null);
-            } else {
+            } else
+            {
                 slot.onSlotChanged();
             }
 
@@ -110,7 +124,8 @@ public class BackpackContainer extends Container {
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer par1EntityPlayer) {
+    public void onContainerClosed(EntityPlayer par1EntityPlayer)
+    {
         super.onContainerClosed(par1EntityPlayer);
     }
 
@@ -118,42 +133,51 @@ public class BackpackContainer extends Container {
      * Looks for changes made in the container, sends them to every listener.
      */
     @Override
-    public void detectAndSendChanges() {
+    public void detectAndSendChanges()
+    {
         super.detectAndSendChanges();
     }
 
     @Override
-    public Slot getSlotFromInventory(IInventory p_75147_1_, int p_75147_2_) {
+    public Slot getSlotFromInventory(IInventory p_75147_1_, int p_75147_2_)
+    {
         return super.getSlotFromInventory(p_75147_1_, p_75147_2_);
     }
 
     @Override
-    protected boolean mergeItemStack(ItemStack stack, int minSlot, int maxSlot, boolean par4) {
+    protected boolean mergeItemStack(ItemStack stack, int minSlot, int maxSlot, boolean par4)
+    {
         boolean flag1 = false;
         int slotInit = minSlot;
 
-        if (par4) {
+        if (par4)
+        {
             slotInit = maxSlot - 1;
         }
 
         Slot slot;
         ItemStack itemstack1;
 
-        if (stack.isStackable()) {
-            while (stack.stackSize > 0 && (!par4 && slotInit < maxSlot || par4 && slotInit >= minSlot)) {
+        if (stack.isStackable())
+        {
+            while (stack.stackSize > 0 && (!par4 && slotInit < maxSlot || par4 && slotInit >= minSlot))
+            {
                 slot = (Slot) this.inventorySlots.get(slotInit);
                 itemstack1 = slot.getStack();
 
-                if (itemstack1 != null && itemstack1.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, itemstack1)) {
+                if (itemstack1 != null && itemstack1.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, itemstack1))
+                {
 
                     int newStackSize = itemstack1.stackSize + stack.stackSize;
 
-                    if (newStackSize <= stack.getMaxStackSize()) {
+                    if (newStackSize <= stack.getMaxStackSize())
+                    {
                         stack.stackSize = 0;
                         itemstack1.stackSize = newStackSize;
                         slot.onSlotChanged();
                         flag1 = true;
-                    } else if (itemstack1.stackSize < stack.getMaxStackSize()) {
+                    } else if (itemstack1.stackSize < stack.getMaxStackSize())
+                    {
                         stack.stackSize -= stack.getMaxStackSize() - itemstack1.stackSize;
                         itemstack1.stackSize = stack.getMaxStackSize();
                         slot.onSlotChanged();
@@ -161,26 +185,33 @@ public class BackpackContainer extends Container {
                     }
                 }
 
-                if (par4) {
+                if (par4)
+                {
                     --slotInit;
-                } else {
+                } else
+                {
                     ++slotInit;
                 }
             }
         }
 
-        if (stack.stackSize > 0) {
-            if (par4) {
+        if (stack.stackSize > 0)
+        {
+            if (par4)
+            {
                 slotInit = maxSlot - 1;
-            } else {
+            } else
+            {
                 slotInit = minSlot;
             }
 
-            while (!par4 && slotInit < maxSlot || par4 && slotInit >= minSlot) {
+            while (!par4 && slotInit < maxSlot || par4 && slotInit >= minSlot)
+            {
                 slot = (Slot) this.inventorySlots.get(slotInit);
                 itemstack1 = slot.getStack();
 
-                if (itemstack1 == null) {
+                if (itemstack1 == null)
+                {
                     slot.putStack(stack.copy());
                     slot.onSlotChanged();
                     stack.stackSize = 0;
@@ -188,9 +219,11 @@ public class BackpackContainer extends Container {
                     break;
                 }
 
-                if (par4) {
+                if (par4)
+                {
                     --slotInit;
-                } else {
+                } else
+                {
                     ++slotInit;
                 }
             }
@@ -200,18 +233,21 @@ public class BackpackContainer extends Container {
     }
 
     @Override
-    public void putStackInSlot(int par1, ItemStack par2ItemStack) {
+    public void putStackInSlot(int par1, ItemStack par2ItemStack)
+    {
         super.putStackInSlot(par1, par2ItemStack);
     }
 
-    public NBTTagCompound getCompound() {
+    public NBTTagCompound getCompound()
+    {
         this.needsUpdate = false;
         return ((InventoryItem) inventory).writeToNBT();
 
     }
 
     @Override
-    public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer) {
+    public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
+    {
         return super.slotClick(par1, par2, par3, par4EntityPlayer);
     }
 }

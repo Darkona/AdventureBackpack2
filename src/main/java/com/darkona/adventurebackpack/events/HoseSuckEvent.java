@@ -11,12 +11,14 @@ import net.minecraftforge.fluids.FluidTank;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class HoseSuckEvent extends FillBucketEvent {
+public class HoseSuckEvent extends FillBucketEvent
+{
 
     public FluidStack fluidResult;
     public final FluidTank currentTank;
 
-    public HoseSuckEvent(EntityPlayer player, ItemStack current, World world, MovingObjectPosition target, FluidTank tank) {
+    public HoseSuckEvent(EntityPlayer player, ItemStack current, World world, MovingObjectPosition target, FluidTank tank)
+    {
         super(player, current, world, target);
         currentTank = tank;
     }

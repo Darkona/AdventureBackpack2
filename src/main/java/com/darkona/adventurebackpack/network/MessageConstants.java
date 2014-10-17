@@ -5,7 +5,8 @@ package com.darkona.adventurebackpack.network;
  *
  * @author Darkona
  */
-public class MessageConstants {
+public class MessageConstants
+{
     public static final byte FROM_KEYBIND = 0;
     public static final byte FROM_HOLDING = 1;
     public static final byte FROM_TILE = 2;

@@ -10,7 +10,8 @@ import net.minecraft.world.IBlockAccess;
 /**
  * Note that when using the class as a vertex transformer, the vertices are assumed to be within the BB (x, y, z) -> (x+1, y+1, z+1)
  */
-public class LightMatrix implements CCRenderState.IVertexOperation {
+public class LightMatrix implements CCRenderState.IVertexOperation
+{
     public static final int operationIndex = CCRenderState.registerOperation();
     /**
      * The 9 positions in the sample array for each side, sides >= 6 are centered on sample 13 (the block itself)
@@ -69,29 +70,40 @@ public class LightMatrix implements CCRenderState.IVertexOperation {
         System.out.println(Arrays.deepToString(ssamplem));
     }*/
 
-    public static float interpAO(float a, float b, float c, float d) {
+    public static float interpAO(float a, float b, float c, float d)
+    {
         return (a + b + c + d) / 4F;
     }
 
-    public static int interpBrightness(int a, int b, int c, int d) {
+    public static int interpBrightness(int a, int b, int c, int d)
+    {
         if (a == 0)
+        {
             a = d;
+        }
         if (b == 0)
+        {
             b = d;
+        }
         if (c == 0)
+        {
             c = d;
+        }
         return (a + b + c + d) >> 2 & 0xFF00FF;
     }
 
-    public void locate(IBlockAccess a, int x, int y, int z) {
+    public void locate(IBlockAccess a, int x, int y, int z)
+    {
         access = a;
         pos.set(x, y, z);
         computed = 0;
         sampled = 0;
     }
 
-    public void sample(int i) {
-        if ((sampled & 1 << i) == 0) {
+    public void sample(int i)
+    {
+        if ((sampled & 1 << i) == 0)
+        {
             int x = pos.x + (i % 3) - 1;
             int y = pos.y + (i / 9) - 1;
             int z = pos.z + (i / 3 % 3) - 1;
@@ -102,31 +114,40 @@ public class LightMatrix implements CCRenderState.IVertexOperation {
         }
     }
 
-    public int[] brightness(int side) {
+    public int[] brightness(int side)
+    {
         sideSample(side);
         return brightness[side];
     }
 
-    public float[] ao(int side) {
+    public float[] ao(int side)
+    {
         sideSample(side);
         return ao[side];
     }
 
-    public void sideSample(int side) {
-        if ((computed & 1 << side) == 0) {
+    public void sideSample(int side)
+    {
+        if ((computed & 1 << side) == 0)
+        {
             int[] ssample = ssamplem[side];
-            for (int q = 0; q < 4; q++) {
+            for (int q = 0; q < 4; q++)
+            {
                 int[] qsample = qsamplem[q];
                 if (Minecraft.isAmbientOcclusionEnabled())
+                {
                     interp(side, q, ssample[qsample[0]], ssample[qsample[1]], ssample[qsample[2]], ssample[qsample[3]]);
-                else
+                } else
+                {
                     interp(side, q, ssample[4], ssample[4], ssample[4], ssample[4]);
+                }
             }
             computed |= 1 << side;
         }
     }
 
-    private void interp(int s, int q, int a, int b, int c, int d) {
+    private void interp(int s, int q, int a, int b, int c, int d)
+    {
         sample(a);
         sample(b);
         sample(c);
@@ -136,9 +157,12 @@ public class LightMatrix implements CCRenderState.IVertexOperation {
     }
 
     @Override
-    public boolean load() {
+    public boolean load()
+    {
         if (!CCRenderState.computeLighting)
+        {
             return false;
+        }
 
         CCRenderState.pipeline.addDependency(CCRenderState.colourAttrib);
         CCRenderState.pipeline.addDependency(CCRenderState.lightCoordAttrib);
@@ -146,7 +170,8 @@ public class LightMatrix implements CCRenderState.IVertexOperation {
     }
 
     @Override
-    public void operate() {
+    public void operate()
+    {
         LC lc = CCRenderState.lc;
         float[] a = ao(lc.side);
         float f = (a[0] * lc.fa + a[1] * lc.fb + a[2] * lc.fc + a[3] * lc.fd);
@@ -156,7 +181,8 @@ public class LightMatrix implements CCRenderState.IVertexOperation {
     }
 
     @Override
-    public int operationID() {
+    public int operationID()
+    {
         return operationIndex;
     }
 }

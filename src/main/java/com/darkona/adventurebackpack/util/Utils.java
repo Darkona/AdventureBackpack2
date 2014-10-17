@@ -13,9 +13,11 @@ import net.minecraftforge.fluids.FluidRegistry;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class Utils {
+public class Utils
+{
 
-    public static int isBlockRegisteredAsFluid(Block block) {
+    public static int isBlockRegisteredAsFluid(Block block)
+    {
         /*
          * for (Map.Entry<String,Fluid> fluid :
 		 * getRegisteredFluids().entrySet()) { int ID =
@@ -23,29 +25,36 @@ public class Utils {
 		 * : -1; if (ID > 0) return ID; }
 		 */
         int fluidID = -1;
-        for (Fluid fluid : FluidRegistry.getRegisteredFluids().values()) {
+        for (Fluid fluid : FluidRegistry.getRegisteredFluids().values())
+        {
             fluidID = (fluid.getBlock() == block) ? fluid.getID() : -1;
             if (fluidID > 0)
+            {
                 return fluidID;
+            }
         }
         return fluidID;
     }
 
-    public static boolean shouldGiveEmpty(ItemStack cont) {
+    public static boolean shouldGiveEmpty(ItemStack cont)
+    {
         boolean valid = true;
         // System.out.println("Item class name is: "+cont.getItem().getClass().getName());
 
-        try {
+        try
+        {
             // Industrialcraft cells
             // if (apis.ic2.api.item.Items.getItem("cell").getClass().isInstance(cont.getItem()))
             // {
             //     valid = false;
             // }
             // Forestry capsules
-            if (java.lang.Class.forName("forestry.core.items.ItemLiquidContainer").isInstance(cont.getItem())) {
+            if (java.lang.Class.forName("forestry.core.items.ItemLiquidContainer").isInstance(cont.getItem()))
+            {
                 valid = false;
             }
-        } catch (Exception oops) {
+        } catch (Exception oops)
+        {
 
         }
         // Others
@@ -53,10 +62,14 @@ public class Utils {
         return valid;
     }
 
-    public static ChunkCoordinates findBlock(World world, int x, int y, int z, Block block, int range) {
-        for (int i = x - range; i <= x + range; i++) {
-            for (int j = z - range; j <= z + range; j++) {
-                if (world.getBlock(i, y, j) == block) {
+    public static ChunkCoordinates findBlock(World world, int x, int y, int z, Block block, int range)
+    {
+        for (int i = x - range; i <= x + range; i++)
+        {
+            for (int j = z - range; j <= z + range; j++)
+            {
+                if (world.getBlock(i, y, j) == block)
+                {
                     return new ChunkCoordinates(i, y, j);
                 }
             }
@@ -65,17 +78,20 @@ public class Utils {
     }
 
 
-    public static String capitalize(String s) {
+    public static String capitalize(String s)
+    {
         // Character.toUpperCase(itemName.charAt(0)) + itemName.substring(1);
         return s.substring(0, 1).toUpperCase().concat(s.substring(1));
     }
 
-    public static int getOppositeCardinalFromMeta(int meta) {
+    public static int getOppositeCardinalFromMeta(int meta)
+    {
         return (meta % 2 == 0) ? (meta == 0) ? 2 : 0 : ((meta + 1) % 4) + 1;
     }
 
     //This is some black magic that returns a block or entity as far as the argument reach goes.
-    public static MovingObjectPosition getMovingObjectPositionFromPlayersHat(World world, EntityPlayer player, boolean flag, double reach) {
+    public static MovingObjectPosition getMovingObjectPositionFromPlayersHat(World world, EntityPlayer player, boolean flag, double reach)
+    {
         float f = 1.0F;
         float playerPitch = player.prevRotationPitch
                 + (player.rotationPitch - player.prevRotationPitch) * f;
@@ -104,7 +120,8 @@ public class Utils {
         return movingobjectposition;
     }
 
-    public static String printCoordinates(int x, int y, int z) {
+    public static String printCoordinates(int x, int y, int z)
+    {
         return "X= " + x + ", Y= " + y + ", Z= " + z;
     }
 
@@ -112,7 +129,8 @@ public class Utils {
      * @param seconds
      * @return
      */
-    public static int secondsToTicks(int seconds) {
+    public static int secondsToTicks(int seconds)
+    {
         return seconds * 20;
     }
 }

@@ -11,15 +11,18 @@ import net.minecraft.util.ResourceLocation;
  *
  * @author Darkona
  */
-public class NyanMovingSound extends MovingSound {
+public class NyanMovingSound extends MovingSound
+{
 
     public static NyanMovingSound instance = new NyanMovingSound();
 
-    public EntityPlayer getPlayer() {
+    public EntityPlayer getPlayer()
+    {
         return player;
     }
 
-    public NyanMovingSound setPlayer(EntityPlayer p) {
+    public NyanMovingSound setPlayer(EntityPlayer p)
+    {
         this.player = p;
         return this;
     }
@@ -28,23 +31,29 @@ public class NyanMovingSound extends MovingSound {
     private float aFloat = 0.0F;
 
 
-    public NyanMovingSound(EntityPlayer player) {
+    public NyanMovingSound(EntityPlayer player)
+    {
         super(new ResourceLocation(ModInfo.MOD_ID, "nyan"));
         this.volume = 1.0f;
         this.player = player;
     }
 
-    public NyanMovingSound() {
+    public NyanMovingSound()
+    {
         super(new ResourceLocation(ModInfo.MOD_ID, "nyan"));
     }
+
     /**
      * Updates the JList with a new model.
      */
     @Override
-    public void update() {
-        if (this.player.isDead) {
+    public void update()
+    {
+        if (this.player.isDead)
+        {
             this.donePlaying = true;
-        } else {
+        } else
+        {
             this.xPosF = (float) this.player.posX;
             this.yPosF = (float) this.player.posY;
             this.zPosF = (float) this.player.posZ;
@@ -52,47 +61,56 @@ public class NyanMovingSound extends MovingSound {
     }
 
     @Override
-    public ResourceLocation getPositionedSoundLocation() {
+    public ResourceLocation getPositionedSoundLocation()
+    {
         return super.getPositionedSoundLocation();
     }
 
     @Override
-    public boolean canRepeat() {
+    public boolean canRepeat()
+    {
         return false;
     }
 
     @Override
-    public int getRepeatDelay() {
+    public int getRepeatDelay()
+    {
         return super.getRepeatDelay();
     }
 
     @Override
-    public float getVolume() {
+    public float getVolume()
+    {
         return super.getVolume();
     }
 
     @Override
-    public float getPitch() {
+    public float getPitch()
+    {
         return super.getPitch();
     }
 
     @Override
-    public float getXPosF() {
+    public float getXPosF()
+    {
         return super.getXPosF();
     }
 
     @Override
-    public float getYPosF() {
+    public float getYPosF()
+    {
         return super.getYPosF();
     }
 
     @Override
-    public float getZPosF() {
+    public float getZPosF()
+    {
         return super.getZPosF();
     }
 
     @Override
-    public AttenuationType getAttenuationType() {
+    public AttenuationType getAttenuationType()
+    {
         return AttenuationType.LINEAR;
     }
 }

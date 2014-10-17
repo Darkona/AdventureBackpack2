@@ -6,22 +6,29 @@ import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TransformationList extends Transformation {
+public class TransformationList extends Transformation
+{
     private ArrayList<Transformation> transformations = new ArrayList<Transformation>();
     private Matrix4 mat;
 
-    public TransformationList(Transformation... transforms) {
+    public TransformationList(Transformation... transforms)
+    {
         for (Transformation t : transforms)
             if (t instanceof TransformationList)
+            {
                 transformations.addAll(((TransformationList) t).transformations);
-            else
+            } else
+            {
                 transformations.add(t);
+            }
 
         compact();
     }
 
-    public Matrix4 compile() {
-        if (mat == null) {
+    public Matrix4 compile()
+    {
+        if (mat == null)
+        {
             mat = new Matrix4();
             for (int i = transformations.size() - 1; i >= 0; i--)
                 transformations.get(i).apply(mat);
@@ -34,7 +41,8 @@ public class TransformationList extends Transformation {
      *
      * @return
      */
-    public Matrix4 reverseCompile() {
+    public Matrix4 reverseCompile()
+    {
         Matrix4 mat = new Matrix4();
         for (Transformation t : transformations)
             t.apply(mat);
@@ -42,103 +50,141 @@ public class TransformationList extends Transformation {
     }
 
     @Override
-    public void apply(Vector3 vec) {
+    public void apply(Vector3 vec)
+    {
         if (mat != null)
+        {
             mat.apply(vec);
-        else
+        } else
+        {
             for (int i = 0; i < transformations.size(); i++)
                 transformations.get(i).apply(vec);
+        }
     }
 
     @Override
-    public void applyN(Vector3 normal) {
+    public void applyN(Vector3 normal)
+    {
         if (mat != null)
+        {
             mat.applyN(normal);
-        else
+        } else
+        {
             for (int i = 0; i < transformations.size(); i++)
                 transformations.get(i).applyN(normal);
+        }
     }
 
     @Override
-    public void apply(Matrix4 mat) {
+    public void apply(Matrix4 mat)
+    {
         mat.multiply(compile());
     }
 
     @Override
-    public TransformationList with(Transformation t) {
+    public TransformationList with(Transformation t)
+    {
         if (t.isRedundant())
+        {
             return this;
+        }
 
         mat = null;//matrix invalid
         if (t instanceof TransformationList)
+        {
             transformations.addAll(((TransformationList) t).transformations);
-        else
+        } else
+        {
             transformations.add(t);
+        }
 
         compact();
         return this;
     }
 
-    public TransformationList prepend(Transformation t) {
+    public TransformationList prepend(Transformation t)
+    {
         if (t.isRedundant())
+        {
             return this;
+        }
 
         mat = null;//matrix invalid
         if (t instanceof TransformationList)
+        {
             transformations.addAll(0, ((TransformationList) t).transformations);
-        else
+        } else
+        {
             transformations.add(0, t);
+        }
 
         compact();
         return this;
     }
 
-    private void compact() {
+    private void compact()
+    {
         ArrayList<Transformation> newList = new ArrayList<Transformation>(transformations.size());
         Iterator<Transformation> iterator = transformations.iterator();
         Transformation prev = null;
-        while (iterator.hasNext()) {
+        while (iterator.hasNext())
+        {
             Transformation t = iterator.next();
             if (t.isRedundant())
+            {
                 continue;
+            }
 
-            if (prev != null) {
+            if (prev != null)
+            {
                 Transformation m = prev.merge(t);
                 if (m == null)
+                {
                     newList.add(prev);
-                else if (m.isRedundant())
+                } else if (m.isRedundant())
+                {
                     t = null;
-                else
+                } else
+                {
                     t = m;
+                }
             }
             prev = t;
         }
         if (prev != null)
+        {
             newList.add(prev);
+        }
 
-        if (newList.size() < transformations.size()) {
+        if (newList.size() < transformations.size())
+        {
             transformations = newList;
             mat = null;
         }
 
         if (transformations.size() > 3 && mat == null)
+        {
             compile();
+        }
     }
 
     @Override
-    public boolean isRedundant() {
+    public boolean isRedundant()
+    {
         return transformations.size() == 0;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void glApply() {
+    public void glApply()
+    {
         for (int i = transformations.size() - 1; i >= 0; i--)
             transformations.get(i).glApply();
     }
 
     @Override
-    public Transformation inverse() {
+    public Transformation inverse()
+    {
         TransformationList rev = new TransformationList();
         for (int i = transformations.size() - 1; i >= 0; i--)
             rev.with(transformations.get(i).inverse());
@@ -146,7 +192,8 @@ public class TransformationList extends Transformation {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         String s = "";
         for (Transformation t : transformations)
             s += "\n" + t.toString();

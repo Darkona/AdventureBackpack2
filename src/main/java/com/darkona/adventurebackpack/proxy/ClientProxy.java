@@ -18,20 +18,23 @@ import net.minecraftforge.client.MinecraftForgeClient;
 /**
  * Created by Darkona on 10/10/2014.
  */
-public class ClientProxy implements IProxy {
+public class ClientProxy implements IProxy
+{
 
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;
     public static KeybindHandler keybindHandler;
 
-    public void init() {
+    public void init()
+    {
         initRenderers();
         registerKeybindings();
     }
 
 
-    public void initRenderers() {
+    public void initRenderers()
+    {
         rendererItemAdventureBackpack = new RendererItemAdventureBackpack();
         rendererItemAdventureHat = new RendererItemAdventureHat();
         rendererHose = new RendererHose();
@@ -44,7 +47,8 @@ public class ClientProxy implements IProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileAdventureBackpack.class, new RendererAdventureBackpackBlock());
     }
 
-    public void registerKeybindings() {
+    public void registerKeybindings()
+    {
         ClientRegistry.registerKeyBinding(Keybindings.openBackpack);
         ClientRegistry.registerKeyBinding(Keybindings.toggleHose);
         FMLCommonHandler.instance().bus().register(new KeybindHandler());

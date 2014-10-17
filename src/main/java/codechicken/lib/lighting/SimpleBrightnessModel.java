@@ -8,7 +8,8 @@ import net.minecraft.world.IBlockAccess;
 /**
  * Faster precomputed version of LightModel that only works for axis planar sides
  */
-public class SimpleBrightnessModel implements CCRenderState.IVertexOperation {
+public class SimpleBrightnessModel implements CCRenderState.IVertexOperation
+{
     public static final int operationIndex = CCRenderState.registerOperation();
     public static SimpleBrightnessModel instance = new SimpleBrightnessModel();
 
@@ -19,14 +20,17 @@ public class SimpleBrightnessModel implements CCRenderState.IVertexOperation {
     private int[] samples = new int[6];
     private BlockCoord c = new BlockCoord();
 
-    public void locate(IBlockAccess a, int x, int y, int z) {
+    public void locate(IBlockAccess a, int x, int y, int z)
+    {
         access = a;
         pos.set(x, y, z);
         sampled = 0;
     }
 
-    public int sample(int side) {
-        if ((sampled & 1 << side) == 0) {
+    public int sample(int side)
+    {
+        if ((sampled & 1 << side) == 0)
+        {
             c.set(pos).offset(side);
             Block block = access.getBlock(c.x, c.y, c.z);
             samples[side] = access.getLightBrightnessForSkyBlocks(c.x, c.y, c.z, block.getLightValue(access, c.x, c.y, c.z));
@@ -36,18 +40,21 @@ public class SimpleBrightnessModel implements CCRenderState.IVertexOperation {
     }
 
     @Override
-    public boolean load() {
+    public boolean load()
+    {
         CCRenderState.pipeline.addDependency(CCRenderState.sideAttrib);
         return true;
     }
 
     @Override
-    public void operate() {
+    public void operate()
+    {
         CCRenderState.setBrightness(sample(CCRenderState.side));
     }
 
     @Override
-    public int operationID() {
+    public int operationID()
+    {
         return operationIndex;
     }
 }

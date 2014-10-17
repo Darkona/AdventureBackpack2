@@ -12,7 +12,8 @@ import net.minecraftforge.fluids.FluidTank;
  *
  * @author Darkona
  */
-public class InventoryActions {
+public class InventoryActions
+{
 
     /**
      * What a complicated mess. I hated every minute of coding this.
@@ -26,27 +27,33 @@ public class InventoryActions {
      * @param slotIn   The slot in which the fluid container item must be to update the tank.
      * @return True if the tank was filled and the resulting filled or empty container item was placed in the other slot.
      */
-    public static boolean transferContainerTank(IAdvBackpack backpack, FluidTank tank, int slotIn) {
+    public static boolean transferContainerTank(IAdvBackpack backpack, FluidTank tank, int slotIn)
+    {
         ItemStack stackIn = backpack.getStackInSlot(slotIn);
         //Set slot out for whatever number the output slot should be.
         int slotOut = slotIn + 1;
         if (tank == null || stackIn == null) return false;
 
         //CONTAINER ===========> TANK
-        if (FluidContainerRegistry.isFilledContainer(stackIn)) {
+        if (FluidContainerRegistry.isFilledContainer(stackIn))
+        {
             int fill = tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), false);
 
-            if (fill > 0) {
+            if (fill > 0)
+            {
                 ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
 
-                if (backpack.getStackInSlot(slotOut) == null || stackOut == null) {
+                if (backpack.getStackInSlot(slotOut) == null || stackOut == null)
+                {
                     backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
                     tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
                     backpack.decrStackSizeNoSave(slotIn, 1);
                     return true;
-                } else if (backpack.getStackInSlot(slotOut).getItem() == stackOut.getItem()) {
+                } else if (backpack.getStackInSlot(slotOut).getItem() == stackOut.getItem())
+                {
                     int maxStack = backpack.getStackInSlot(slotOut).getMaxStackSize();
-                    if (maxStack > 1 && (backpack.getStackInSlot(slotOut).stackSize + 1) <= maxStack) {
+                    if (maxStack > 1 && (backpack.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
+                    {
                         backpack.getStackInSlot(slotOut).stackSize++;
                         tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
                         backpack.decrStackSizeNoSave(slotIn, 1);
@@ -57,20 +64,25 @@ public class InventoryActions {
         }
 
         //TANK =====> CONTAINER
-        if (tank.getFluid() != null && FluidContainerRegistry.isEmptyContainer(stackIn)) {
+        if (tank.getFluid() != null && FluidContainerRegistry.isEmptyContainer(stackIn))
+        {
             int amount = FluidContainerRegistry.getContainerCapacity(tank.getFluid(), stackIn);
             FluidStack drain = tank.drain(amount, false);
             ItemStack stackOut = FluidContainerRegistry.fillFluidContainer(drain, stackIn);
 
-            if (drain.amount > 0) {
-                if (backpack.getStackInSlot(slotOut) == null) {
+            if (drain.amount > 0)
+            {
+                if (backpack.getStackInSlot(slotOut) == null)
+                {
                     backpack.decrStackSizeNoSave(slotIn, 1);
                     tank.drain(amount, true);
                     backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
                     return true;
-                } else if (stackOut.getItem() == backpack.getStackInSlot(slotOut).getItem()) {
+                } else if (stackOut.getItem() == backpack.getStackInSlot(slotOut).getItem())
+                {
                     int maxStack = backpack.getStackInSlot(slotOut).getMaxStackSize();
-                    if (maxStack > 1 && (backpack.getStackInSlot(slotOut).stackSize + 1) <= maxStack) {
+                    if (maxStack > 1 && (backpack.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
+                    {
                         backpack.decrStackSizeNoSave(slotIn, 1);
                         tank.drain(amount, true);
                         backpack.getStackInSlot(slotOut).stackSize++;
@@ -83,21 +95,29 @@ public class InventoryActions {
         return false;
     }
 
-    public static void consumeItemInBackpack(IAdvBackpack backpack, Item item) {
+    public static void consumeItemInBackpack(IAdvBackpack backpack, Item item)
+    {
         ItemStack[] inventory = backpack.getInventory();
-        for (int i = 0; i < inventory.length; i++) {
-            if (inventory[i] != null && inventory[i].getItem().equals(item)) {
+        for (int i = 0; i < inventory.length; i++)
+        {
+            if (inventory[i] != null && inventory[i].getItem().equals(item))
+            {
                 inventory[i] = backpack.decrStackSize(i, 1);
                 return;
             }
         }
     }
 
-    public static boolean hasItem(IAdvBackpack backpack, Item item) {
+    public static boolean hasItem(IAdvBackpack backpack, Item item)
+    {
         ItemStack[] inventory = backpack.getInventory();
-        for (int i = 0; i < inventory.length; i++) {
+        for (int i = 0; i < inventory.length; i++)
+        {
             if (inventory[i] != null &&
-                    inventory[i].getItem().equals(item)) return true;
+                    inventory[i].getItem().equals(item))
+            {
+                return true;
+            }
         }
         return false;
     }

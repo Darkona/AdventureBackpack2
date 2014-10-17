@@ -4,11 +4,13 @@ import codechicken.lib.lighting.LC;
 import codechicken.lib.render.CCRenderState.VertexAttribute;
 import codechicken.lib.vec.Cuboid6;
 
-public class BlockRenderer {
+public class BlockRenderer
+{
     public static FullBlock fullBlock = new FullBlock();
     private static BlockFace face = new BlockFace();
 
-    public static void renderFullBlock(int sideMask) {
+    public static void renderFullBlock(int sideMask)
+    {
         CCRenderState.setModel(fullBlock);
         renderFaces(sideMask);
     }
@@ -18,10 +20,12 @@ public class BlockRenderer {
      *
      * @param sideMask A mask of faces not to render
      */
-    public static void renderFaces(int sideMask) {
+    public static void renderFaces(int sideMask)
+    {
         if (sideMask == 0x3F) return;
         for (int s = 0; s < 6; s++)
-            if ((sideMask & 1 << s) == 0) {
+            if ((sideMask & 1 << s) == 0)
+            {
                 CCRenderState.setVertexRange(s * 4, (s + 1) * 4);
                 CCRenderState.render();
             }
@@ -33,45 +37,54 @@ public class BlockRenderer {
      * @param bounds   The bounding cuboid to render
      * @param sideMask A mask of faces not to render
      */
-    public static void renderCuboid(Cuboid6 bounds, int sideMask) {
+    public static void renderCuboid(Cuboid6 bounds, int sideMask)
+    {
         if (sideMask == 0x3F) return;
 
         CCRenderState.setModel(face);
         for (int s = 0; s < 6; s++)
-            if ((sideMask & 1 << s) == 0) {
+            if ((sideMask & 1 << s) == 0)
+            {
                 face.loadCuboidFace(bounds, s);
                 CCRenderState.render();
             }
     }
 
-    public static class BlockFace implements CCRenderState.IVertexSource {
+    public static class BlockFace implements CCRenderState.IVertexSource
+    {
         public Vertex5[] verts = new Vertex5[]{new Vertex5(), new Vertex5(), new Vertex5(), new Vertex5()};
         public LC[] lightCoords = new LC[]{new LC(), new LC(), new LC(), new LC()};
         public boolean lcComputed = false;
         public int side;
 
         @Override
-        public Vertex5[] getVertices() {
+        public Vertex5[] getVertices()
+        {
             return verts;
         }
 
         @Override
-        public <T> T getAttributes(CCRenderState.VertexAttribute<T> attr) {
+        public <T> T getAttributes(CCRenderState.VertexAttribute<T> attr)
+        {
             return attr == CCRenderState.lightCoordAttrib && lcComputed ? (T) lightCoords : null;
         }
 
         @Override
-        public boolean hasAttribute(CCRenderState.VertexAttribute<?> attr) {
+        public boolean hasAttribute(CCRenderState.VertexAttribute<?> attr)
+        {
             return attr == CCRenderState.sideAttrib || attr == CCRenderState.lightCoordAttrib && lcComputed;
         }
 
         @Override
-        public void prepareVertex() {
+        public void prepareVertex()
+        {
             CCRenderState.side = side;
         }
 
-        public BlockFace computeLightCoords() {
-            if (!lcComputed) {
+        public BlockFace computeLightCoords()
+        {
+            if (!lcComputed)
+            {
                 for (int i = 0; i < 4; i++)
                     lightCoords[i].compute(verts[i].vec, side);
                 lcComputed = true;
@@ -79,7 +92,8 @@ public class BlockRenderer {
             return this;
         }
 
-        public BlockFace loadCuboidFace(Cuboid6 c, int side) {
+        public BlockFace loadCuboidFace(Cuboid6 c, int side)
+        {
             double x1 = c.min.x;
             double x2 = c.max.x;
             double y1 = c.min.y;
@@ -93,7 +107,8 @@ public class BlockRenderer {
             this.side = side;
             lcComputed = false;
 
-            switch (side) {
+            switch (side)
+            {
                 case 0:
                     u1 = x1;
                     v1 = z1;
@@ -158,32 +173,38 @@ public class BlockRenderer {
         }
     }
 
-    public static class FullBlock implements CCRenderState.IVertexSource {
+    public static class FullBlock implements CCRenderState.IVertexSource
+    {
         public Vertex5[] verts = CCModel.quadModel(24).generateBlock(0, Cuboid6.full).verts;
         public LC[] lightCoords = new LC[24];
 
-        public FullBlock() {
+        public FullBlock()
+        {
             for (int i = 0; i < 24; i++)
                 lightCoords[i] = new LC().compute(verts[i].vec, i / 4);
         }
 
         @Override
-        public Vertex5[] getVertices() {
+        public Vertex5[] getVertices()
+        {
             return verts;
         }
 
         @Override
-        public <T> T getAttributes(VertexAttribute<T> attr) {
+        public <T> T getAttributes(VertexAttribute<T> attr)
+        {
             return attr == CCRenderState.lightCoordAttrib ? (T) lightCoords : null;
         }
 
         @Override
-        public boolean hasAttribute(VertexAttribute<?> attr) {
+        public boolean hasAttribute(VertexAttribute<?> attr)
+        {
             return attr == CCRenderState.sideAttrib || attr == CCRenderState.lightCoordAttrib;
         }
 
         @Override
-        public void prepareVertex() {
+        public void prepareVertex()
+        {
             CCRenderState.side = CCRenderState.vertexIndex >> 2;
         }
     }

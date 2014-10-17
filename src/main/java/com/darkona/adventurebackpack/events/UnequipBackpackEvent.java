@@ -10,11 +10,13 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
  *
  * @author Darkona
  */
-public class UnequipBackpackEvent extends PlayerEvent {
+public class UnequipBackpackEvent extends PlayerEvent
+{
 
     public ItemStack backpack;
 
-    public UnequipBackpackEvent(EntityPlayer player, ItemStack theBackpack) {
+    public UnequipBackpackEvent(EntityPlayer player, ItemStack theBackpack)
+    {
         super(player);
         backpack = theBackpack;
     }

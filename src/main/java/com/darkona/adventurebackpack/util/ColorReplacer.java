@@ -14,15 +14,19 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-public class ColorReplacer {
+public class ColorReplacer
+{
 
-    public static BufferedImage colorImage(int colour, BufferedImage image) {
+    public static BufferedImage colorImage(int colour, BufferedImage image)
+    {
         int width = image.getWidth();
         int height = image.getHeight();
         WritableRaster raster = image.getRaster();
 
-        for (int xx = 0; xx < width; xx++) {
-            for (int yy = 0; yy < height; yy++) {
+        for (int xx = 0; xx < width; xx++)
+        {
+            for (int yy = 0; yy < height; yy++)
+            {
                 int[] pixels = raster.getPixel(xx, yy, (int[]) null);
                 pixels[0] = colour;
                 pixels[1] = colour;

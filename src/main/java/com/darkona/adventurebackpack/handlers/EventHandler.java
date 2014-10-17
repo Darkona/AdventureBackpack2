@@ -47,30 +47,37 @@ import net.minecraftforge.fluids.FluidTank;
 /**
  * Created on 11/10/2014
  * Handle ALL the events!
+ *
  * @author Darkona
  * @see com.darkona.adventurebackpack.common.Actions
  */
-public class EventHandler {
+public class EventHandler
+{
 
     /**
      * Makes the tool tips of the backpacks have the Tank information displayed below.
      */
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void toolTips(ItemTooltipEvent event) {
-        if (event.itemStack.getItem() instanceof ItemAdventureBackpack) {
+    public void toolTips(ItemTooltipEvent event)
+    {
+        if (event.itemStack.getItem() instanceof ItemAdventureBackpack)
+        {
             NBTTagCompound compound = event.itemStack.stackTagCompound;
             FluidTank tank = new FluidTank(Constants.basicTankCapacity);
             String tankInfo = "";
-            if (compound != null) {
-                if (compound.hasKey("leftTank")) {
+            if (compound != null)
+            {
+                if (compound.hasKey("leftTank"))
+                {
                     tank.readFromNBT(compound.getCompoundTag("leftTank"));
                     String name = tank.getFluid() == null ? "" : tank.getFluid().getLocalizedName();
                     tankInfo = EnumChatFormatting.BLUE + "Left Tank: " + tank.getFluidAmount() + "/" + tank.getCapacity() + " " + name;
 
                     event.toolTip.add(tankInfo);
                 }
-                if (compound.hasKey("rightTank")) {
+                if (compound.hasKey("rightTank"))
+                {
                     tank.readFromNBT(compound.getCompoundTag("rightTank"));
                     String name = tank.getFluid() == null ? "" : tank.getFluid().getLocalizedName();
                     tankInfo = EnumChatFormatting.RED + "Right Tank: " + tank.getFluidAmount() + "/" + tank.getCapacity() + " " + name;
@@ -87,26 +94,31 @@ public class EventHandler {
      * @param event
      */
     @SubscribeEvent
-    public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+    public void onPlayerJump(LivingEvent.LivingJumpEvent event)
+    {
         if (event.entity != null &&
                 event.entityLiving instanceof EntityPlayer &&
                 ((EntityPlayer) event.entityLiving).onGround &&
                 Wearing.isWearingBoots(((EntityPlayer) event.entityLiving))
-                ) {
+                )
+        {
             Actions.pistonBootsJump(((EntityPlayer) event.entityLiving));
         }
     }
 
     /**
      * Used by the Piston boots to lessen the fall damage. It's hacky, but I don't care.
+     *
      * @param event
      */
     @SubscribeEvent
-    public void onFall(LivingFallEvent event) {
+    public void onFall(LivingFallEvent event)
+    {
         if (event.entity != null &&
                 event.entityLiving instanceof EntityPlayer &&
                 Wearing.isWearingBoots(((EntityPlayer) event.entityLiving)) &&
-                event.distance < 8) {
+                event.distance < 8)
+        {
             event.setCanceled(true);
         }
     }
@@ -173,28 +185,34 @@ public class EventHandler {
 
 
     /**
-     *
      * @param event
      */
     @SubscribeEvent
-    public void mouseWheelDetect(MouseEvent event) {
+    public void mouseWheelDetect(MouseEvent event)
+    {
         /*Special thanks go to MachineMuse, both for inspiration and the event. God bless you girl.*/
         Minecraft mc = Minecraft.getMinecraft();
         int dWheel = event.dwheel;
-        if (dWheel != 0) {
+        if (dWheel != 0)
+        {
             LogHelper.debug("Mouse Wheel moving");
             EntityClientPlayerMP player = mc.thePlayer;
-            if (player != null && !player.isDead && player.isSneaking()) {
+            if (player != null && !player.isDead && player.isSneaking())
+            {
                 ItemStack backpack = player.getCurrentArmor(2);
-                if (backpack != null && backpack.getItem() instanceof ItemAdventureBackpack) {
-                    if (player.getCurrentEquippedItem() != null) {
+                if (backpack != null && backpack.getItem() instanceof ItemAdventureBackpack)
+                {
+                    if (player.getCurrentEquippedItem() != null)
+                    {
                         int slot = player.inventory.currentItem;
 
-                        if (SlotTool.isValidTool(player.inventory.getStackInSlot(player.inventory.currentItem))) {
+                        if (SlotTool.isValidTool(player.inventory.getStackInSlot(player.inventory.currentItem)))
+                        {
                             ModNetwork.networkWrapper.sendToServer(new CycleToolMessage(dWheel, slot, MessageConstants.CYCLE_TOOL_ACTION));
                             event.setCanceled(true);
                         }
-                        if (player.getCurrentEquippedItem().getItem() instanceof ItemHose) {
+                        if (player.getCurrentEquippedItem().getItem() instanceof ItemHose)
+                        {
                             ModNetwork.networkWrapper.sendToServer(new CycleToolMessage(dWheel, slot, MessageConstants.SWITCH_HOSE_ACTION));
                             event.setCanceled(true);
                         }
@@ -207,43 +225,51 @@ public class EventHandler {
 
     /**
      * For detecting when the hose is performing the suction of fluids from the world. Slurp!
+     *
      * @param event
      */
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void suck(HoseSuckEvent event) {
+    public void suck(HoseSuckEvent event)
+    {
         FluidStack result = Actions.attemptFill(event.world, event.target, event.entityPlayer, event.currentTank);
-        if (result != null) {
+        if (result != null)
+        {
             event.fluidResult = result;
             event.setResult(Event.Result.ALLOW);
-        } else {
+        } else
+        {
             event.setResult(Event.Result.DENY);
         }
     }
 
     /**
-     *
      * @param event
      */
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void spill(HoseSpillEvent event) {
+    public void spill(HoseSpillEvent event)
+    {
         FluidStack result = Actions.attemptPour(event.player, event.world, event.x, event.y, event.z, event.currentTank);
-        if (result != null) {
+        if (result != null)
+        {
             event.fluidResult = result;
             event.setResult(Event.Result.ALLOW);
-        } else {
+        } else
+        {
             event.setResult(Event.Result.DENY);
         }
     }
 
     /**
-     *
      * @param event
      */
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void playerDies(LivingDeathEvent event) {
-        if (event.entity instanceof EntityPlayer && Wearing.isWearingBackpack((EntityPlayer) event.entity)) {
+    public void playerDies(LivingDeathEvent event)
+    {
+        if (event.entity instanceof EntityPlayer && Wearing.isWearingBackpack((EntityPlayer) event.entity))
+        {
             EntityPlayer player = ((EntityPlayer) event.entity);
-            if (Wearing.getWearingBackpack(player).getTagCompound().getString("colorName").equals("Creeper")) {
+            if (Wearing.getWearingBackpack(player).getTagCompound().getString("colorName").equals("Creeper"))
+            {
                 player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
             }
             Actions.tryPlaceOnDeath(player);
@@ -252,18 +278,20 @@ public class EventHandler {
     }
 
     /**
-     *
      * @param event
      */
     @SubscribeEvent
-    public void eatGoldenApple(PlayerUseItemEvent.Finish event) {
+    public void eatGoldenApple(PlayerUseItemEvent.Finish event)
+    {
         EntityPlayer player = event.entityPlayer;
 
         if (event.item.getItem() instanceof ItemAppleGold &&
                 //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
                 Wearing.isWearingBackpack(player) &&
-                Wearing.getWearingBackpack(player).stackTagCompound.getString("colorName").equals("Nyan")) {
-            if (!player.worldObj.isRemote) {
+                Wearing.getWearingBackpack(player).stackTagCompound.getString("colorName").equals("Nyan"))
+        {
+            if (!player.worldObj.isRemote)
+            {
                 String nyanString =
                         EnumChatFormatting.RED + "N" +
                                 EnumChatFormatting.GOLD + "Y" +
@@ -297,12 +325,15 @@ public class EventHandler {
      * @param event
      */
     @SubscribeEvent
-    public void stopMusic(UnequipBackpackEvent event) {
+    public void stopMusic(UnequipBackpackEvent event)
+    {
         EntityPlayer player = event.entityPlayer;
-        if (event.backpack.getTagCompound().getString("colorName").equals("Nyan")) {
+        if (event.backpack.getTagCompound().getString("colorName").equals("Nyan"))
+        {
             event.backpack.getTagCompound().setInteger("lastTime", 0);
             if (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(NyanMovingSound.instance) &&
-                    NyanMovingSound.instance.getPlayer() == player) {
+                    NyanMovingSound.instance.getPlayer() == player)
+            {
                 Minecraft.getMinecraft().getSoundHandler().stopSound(NyanMovingSound.instance);
                 ModNetwork.networkWrapper.sendToAllAround(
                         new NyanCatMessage(
@@ -322,17 +353,22 @@ public class EventHandler {
      * @param event
      */
     @SubscribeEvent
-    public void detectLightning(EntityStruckByLightningEvent event) {
-        if (event.entity instanceof EntityPlayer) {
+    public void detectLightning(EntityStruckByLightningEvent event)
+    {
+        if (event.entity instanceof EntityPlayer)
+        {
             Actions.electrify((EntityPlayer) event.entity);
         }
     }
 
     @SubscribeEvent
-    public void detectBow(ArrowNockEvent event) {
-        if (Wearing.isWearingBackpack(event.entityPlayer)) {
+    public void detectBow(ArrowNockEvent event)
+    {
+        if (Wearing.isWearingBackpack(event.entityPlayer))
+        {
             InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(event.entityPlayer));
-            if (backpack.getColorName().equals("Skeleton") && backpack.hasItem(Items.arrow)) {
+            if (backpack.getColorName().equals("Skeleton") && backpack.hasItem(Items.arrow))
+            {
                 event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration());
                 event.setCanceled(true);
             }
@@ -340,10 +376,13 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public void detectArrow(ArrowLooseEvent event) {
-        if (Wearing.isWearingBackpack(event.entityPlayer)) {
+    public void detectArrow(ArrowLooseEvent event)
+    {
+        if (Wearing.isWearingBackpack(event.entityPlayer))
+        {
             InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(event.entityPlayer));
-            if (backpack.getColorName().equals("Skeleton") && backpack.hasItem(Items.arrow)) {
+            if (backpack.getColorName().equals("Skeleton") && backpack.hasItem(Items.arrow))
+            {
                 Actions.leakArrow(event.entityPlayer, event.bow, event.charge);
                 event.setCanceled(true);
             }

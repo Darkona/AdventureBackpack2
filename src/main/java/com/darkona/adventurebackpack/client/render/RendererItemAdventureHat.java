@@ -16,16 +16,20 @@ import org.lwjgl.opengl.GL11;
  */
 
 
-public class RendererItemAdventureHat implements IItemRenderer {
+public class RendererItemAdventureHat implements IItemRenderer
+{
 
     private final ModelAdventureHat model;
 
-    public RendererItemAdventureHat() {
+    public RendererItemAdventureHat()
+    {
         model = ModelAdventureHat.instance;
     }
 
-    public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type) {
-        switch (type) {
+    public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type)
+    {
+        switch (type)
+        {
             case INVENTORY:
                 return true;
             case ENTITY:
@@ -40,8 +44,10 @@ public class RendererItemAdventureHat implements IItemRenderer {
         return false;
     }
 
-    public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item, IItemRenderer.ItemRendererHelper helper) {
-        switch (type) {
+    public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item, IItemRenderer.ItemRendererHelper helper)
+    {
+        switch (type)
+        {
             case INVENTORY:
                 return true;
             case ENTITY:
@@ -56,10 +62,12 @@ public class RendererItemAdventureHat implements IItemRenderer {
         return false;
     }
 
-    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data) {
+    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
+    {
         ResourceLocation modelTexture = Textures.resourceRL("textures/models/adventureHat_texture.png");
         Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
-        switch (type) {
+        switch (type)
+        {
             case INVENTORY:
 
             {

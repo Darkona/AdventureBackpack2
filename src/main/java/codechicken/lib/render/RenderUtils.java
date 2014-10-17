@@ -22,16 +22,20 @@ import org.lwjgl.opengl.GL11;
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
-public class RenderUtils {
+public class RenderUtils
+{
     static Vector3[] vectors = new Vector3[8];
-    static RenderItem uniformRenderItem = new RenderItem() {
-        public boolean shouldBob() {
+    static RenderItem uniformRenderItem = new RenderItem()
+    {
+        public boolean shouldBob()
+        {
             return false;
         }
     };
     static EntityItem entityItem;
 
-    static {
+    static
+    {
         for (int i = 0; i < vectors.length; i++)
             vectors[i] = new Vector3();
 
@@ -41,7 +45,8 @@ public class RenderUtils {
         entityItem.hoverStart = 0;
     }
 
-    public static void renderFluidQuad(Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4, IIcon icon, double res) {
+    public static void renderFluidQuad(Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4, IIcon icon, double res)
+    {
         renderFluidQuad(point2, vectors[0].set(point4).subtract(point1), vectors[1].set(point1).subtract(point2), icon, res);
     }
 
@@ -53,7 +58,8 @@ public class RenderUtils {
      * @param high The left side of the quad
      * @param res  Units per icon
      */
-    public static void renderFluidQuad(Vector3 base, Vector3 wide, Vector3 high, IIcon icon, double res) {
+    public static void renderFluidQuad(Vector3 base, Vector3 wide, Vector3 high, IIcon icon, double res)
+    {
         Tessellator t = Tessellator.instance;
 
         double u1 = icon.getMinU();
@@ -65,16 +71,22 @@ public class RenderUtils {
         double hlen = high.mag();
 
         double x = 0;
-        while (x < wlen) {
+        while (x < wlen)
+        {
             double rx = wlen - x;
             if (rx > res)
+            {
                 rx = res;
+            }
 
             double y = 0;
-            while (y < hlen) {
+            while (y < hlen)
+            {
                 double ry = hlen - y;
                 if (ry > res)
+                {
                     ry = res;
+                }
 
                 Vector3 dx1 = vectors[2].set(wide).multiply(x / wlen);
                 Vector3 dx2 = vectors[3].set(wide).multiply((x + rx) / wlen);
@@ -93,7 +105,8 @@ public class RenderUtils {
         }
     }
 
-    public static void translateToWorldCoords(Entity entity, float frame) {
+    public static void translateToWorldCoords(Entity entity, float frame)
+    {
         double interpPosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * frame;
         double interpPosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * frame;
         double interpPosZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * frame;
@@ -101,7 +114,8 @@ public class RenderUtils {
         GL11.glTranslated(-interpPosX, -interpPosY, -interpPosZ);
     }
 
-    public static void drawCuboidOutline(Cuboid6 c) {
+    public static void drawCuboidOutline(Cuboid6 c)
+    {
         Tessellator var2 = Tessellator.instance;
         var2.startDrawing(3);
         var2.addVertex(c.min.x, c.min.y, c.min.z);
@@ -129,7 +143,8 @@ public class RenderUtils {
         var2.draw();
     }
 
-    public static void renderFluidCuboid(Cuboid6 bound, IIcon tex, double res) {
+    public static void renderFluidCuboid(Cuboid6 bound, IIcon tex, double res)
+    {
         renderFluidQuad(//bottom
                 new Vector3(bound.min.x, bound.min.y, bound.min.z),
                 new Vector3(bound.max.x, bound.min.y, bound.min.z),
@@ -168,11 +183,13 @@ public class RenderUtils {
                 tex, res);
     }
 
-    public static void renderBlockOverlaySide(int x, int y, int z, int side, double tx1, double tx2, double ty1, double ty2) {
+    public static void renderBlockOverlaySide(int x, int y, int z, int side, double tx1, double tx2, double ty1, double ty2)
+    {
         double[] points = new double[]{x - 0.009, x + 1.009, y - 0.009, y + 1.009, z - 0.009, z + 1.009};
 
         Tessellator tessellator = Tessellator.instance;
-        switch (side) {
+        switch (side)
+        {
             case 0:
                 tessellator.addVertexWithUV(points[0], points[2], points[4], tx1, ty1);
                 tessellator.addVertexWithUV(points[1], points[2], points[4], tx2, ty1);
@@ -212,7 +229,8 @@ public class RenderUtils {
         }
     }
 
-    public static boolean shouldRenderFluid(FluidStack stack) {
+    public static boolean shouldRenderFluid(FluidStack stack)
+    {
         return stack.amount > 0 && stack.getFluid() != null;
     }
 
@@ -220,7 +238,8 @@ public class RenderUtils {
      * @param stack The fluid stack to render
      * @return The icon of the fluid
      */
-    public static IIcon prepareFluidRender(FluidStack stack, int alpha) {
+    public static IIcon prepareFluidRender(FluidStack stack, int alpha)
+    {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -234,12 +253,14 @@ public class RenderUtils {
     /**
      * Re-enables lighting and disables blending.
      */
-    public static void postFluidRender() {
+    public static void postFluidRender()
+    {
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public static double fluidDensityToAlpha(double density) {
+    public static double fluidDensityToAlpha(double density)
+    {
         return Math.pow(density, 0.4);
     }
 
@@ -254,15 +275,21 @@ public class RenderUtils {
      * @param density The volume of fluid / the capacity of the tank. For gases this determines the alpha, for liquids this determines the height.
      * @param res     The resolution to render at.
      */
-    public static void renderFluidCuboid(FluidStack stack, Cuboid6 bound, double density, double res) {
+    public static void renderFluidCuboid(FluidStack stack, Cuboid6 bound, double density, double res)
+    {
         if (!shouldRenderFluid(stack))
+        {
             return;
+        }
 
         int alpha = 255;
         if (stack.getFluid().isGaseous())
+        {
             alpha = (int) (fluidDensityToAlpha(density) * 255);
-        else
+        } else
+        {
             bound.max.y = bound.min.y + (bound.max.y - bound.min.y) * density;
+        }
 
         IIcon tex = prepareFluidRender(stack, alpha);
         CCRenderState.startDrawing();
@@ -271,14 +298,19 @@ public class RenderUtils {
         postFluidRender();
     }
 
-    public static void renderFluidGauge(FluidStack stack, Rectangle4i rect, double density, double res) {
+    public static void renderFluidGauge(FluidStack stack, Rectangle4i rect, double density, double res)
+    {
         if (!shouldRenderFluid(stack))
+        {
             return;
+        }
 
         int alpha = 255;
         if (stack.getFluid().isGaseous())
+        {
             alpha = (int) (fluidDensityToAlpha(density) * 255);
-        else {
+        } else
+        {
             int height = (int) (rect.h * density);
             rect.y += rect.h - height;
             rect.h = height;
@@ -298,7 +330,8 @@ public class RenderUtils {
     /**
      * Renders item and blocks in the world at 0,0,0 with transformations that size them appropriately
      */
-    public static void renderItemUniform(ItemStack item) {
+    public static void renderItemUniform(ItemStack item)
+    {
         renderItemUniform(item, 0);
     }
 
@@ -307,22 +340,27 @@ public class RenderUtils {
      *
      * @param spin The spin angle of the item around the y axis in degrees
      */
-    public static void renderItemUniform(ItemStack item, double spin) {
+    public static void renderItemUniform(ItemStack item, double spin)
+    {
         IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer(item, ENTITY);
         boolean is3D = customRenderer != null && customRenderer.shouldUseRenderHelper(ENTITY, item, BLOCK_3D);
 
         boolean larger = false;
-        if (item.getItem() instanceof ItemBlock && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(item.getItem()).getRenderType())) {
+        if (item.getItem() instanceof ItemBlock && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(item.getItem()).getRenderType()))
+        {
             int renderType = Block.getBlockFromItem(item.getItem()).getRenderType();
             larger = !(renderType == 1 || renderType == 19 || renderType == 12 || renderType == 2);
-        } else if (is3D) {
+        } else if (is3D)
+        {
             larger = true;
         }
 
         double d = 2;
         double d1 = 1 / d;
         if (larger)
+        {
             GL11.glScaled(d, d, d);
+        }
 
         GL11.glColor4f(1, 1, 1, 1);
 
@@ -330,6 +368,8 @@ public class RenderUtils {
         uniformRenderItem.doRender(entityItem, 0, larger ? 0.09 : 0.06, 0, 0, (float) (spin * 9 / Math.PI));
 
         if (larger)
+        {
             GL11.glScaled(d1, d1, d1);
+        }
     }
 }

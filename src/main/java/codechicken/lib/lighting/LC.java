@@ -5,18 +5,21 @@ import codechicken.lib.util.Copyable;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 
-public class LC implements Copyable<LC> {
+public class LC implements Copyable<LC>
+{
     public int side;
     public float fa;
     public float fb;
     public float fc;
     public float fd;
 
-    public LC() {
+    public LC()
+    {
         this(0, 0, 0, 0, 0);
     }
 
-    public LC(int s, float a, float b, float c, float d) {
+    public LC(int s, float a, float b, float c, float d)
+    {
         side = s;
         fa = a;
         fb = b;
@@ -24,7 +27,8 @@ public class LC implements Copyable<LC> {
         fd = d;
     }
 
-    public LC set(int s, float a, float b, float c, float d) {
+    public LC set(int s, float a, float b, float c, float d)
+    {
         side = s;
         fa = a;
         fb = b;
@@ -33,20 +37,26 @@ public class LC implements Copyable<LC> {
         return this;
     }
 
-    public LC set(LC lc) {
+    public LC set(LC lc)
+    {
         return set(lc.side, lc.fa, lc.fb, lc.fc, lc.fd);
     }
 
-    public LC compute(Vector3 vec, Vector3 normal) {
+    public LC compute(Vector3 vec, Vector3 normal)
+    {
         int side = CCModel.findSide(normal);
         if (side < 0)
+        {
             return set(12, 1, 0, 0, 0);
+        }
         return compute(vec, side);
     }
 
-    public LC compute(Vector3 vec, int side) {
+    public LC compute(Vector3 vec, int side)
+    {
         boolean offset = false;
-        switch (side) {
+        switch (side)
+        {
             case 0:
                 offset = vec.y <= 0;
                 break;
@@ -67,11 +77,14 @@ public class LC implements Copyable<LC> {
                 break;
         }
         if (!offset)
+        {
             side += 6;
+        }
         return computeO(vec, side);
     }
 
-    public LC computeO(Vector3 vec, int side) {
+    public LC computeO(Vector3 vec, int side)
+    {
         Vector3 v1 = Rotation.axes[((side & 0xE) + 3) % 6];
         Vector3 v2 = Rotation.axes[((side & 0xE) + 5) % 6];
         float d1 = (float) vec.scalarProject(v1);
@@ -82,7 +95,8 @@ public class LC implements Copyable<LC> {
     }
 
     @Override
-    public LC copy() {
+    public LC copy()
+    {
         return new LC(side, fa, fb, fc, fd);
     }
 }

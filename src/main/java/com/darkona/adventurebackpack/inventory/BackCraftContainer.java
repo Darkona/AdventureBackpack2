@@ -12,7 +12,8 @@ import net.minecraft.world.World;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class BackCraftContainer extends Container {
+public class BackCraftContainer extends Container
+{
 
     public IAdvBackpack inventory;
     public boolean source;
@@ -21,7 +22,8 @@ public class BackCraftContainer extends Container {
     public IInventory craftResult = new InventoryCraftResult();
     private World world;
 
-    public BackCraftContainer(EntityPlayer player, TileAdventureBackpack te) {
+    public BackCraftContainer(EntityPlayer player, TileAdventureBackpack te)
+    {
         needsUpdate = false;
         inventory = te;
         makeSlots(player.inventory);
@@ -29,7 +31,8 @@ public class BackCraftContainer extends Container {
         world = te.getWorldObj();
     }
 
-    public BackCraftContainer(EntityPlayer player, World world, InventoryItem item) {
+    public BackCraftContainer(EntityPlayer player, World world, InventoryItem item)
+    {
         needsUpdate = false;
         inventory = item;
         source = false;
@@ -38,25 +41,31 @@ public class BackCraftContainer extends Container {
         this.world = world;
     }
 
-    private void makeSlots(InventoryPlayer invPlayer) {
+    private void makeSlots(InventoryPlayer invPlayer)
+    {
 
         IInventory sexy = this.craftMatrix;
 
         // Player's Hotbar
-        for (int x = 0; x < 9; x++) {
+        for (int x = 0; x < 9; x++)
+        {
             addSlotToContainer(new Slot(invPlayer, x, 8 + 18 * x, 142));
         }
 
         // Player's Inventory
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 9; x++) {
+        for (int y = 0; y < 3; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
                 addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (8 + 18 * x), (84 + y * 18)));
             }
         }
 
         // Backpack Crafting Grif Inventory
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < 3; y++)
+        {
+            for (int x = 0; x < 3; x++)
+            {
                 addSlotToContainer(new Slot(sexy, (x + y * 3), (31 + 18 * x), (7 + y * 18)));
             }
         }
@@ -67,24 +76,30 @@ public class BackCraftContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer entityplayer) {
+    public boolean canInteractWith(EntityPlayer entityplayer)
+    {
         return inventory.isUseableByPlayer(entityplayer);
     }
 
     @Override
-    public void onCraftMatrixChanged(IInventory par1IInventory) {
+    public void onCraftMatrixChanged(IInventory par1IInventory)
+    {
         this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.world));
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer par1EntityPlayer) {
+    public void onContainerClosed(EntityPlayer par1EntityPlayer)
+    {
         super.onContainerClosed(par1EntityPlayer);
 
-        if (!this.world.isRemote) {
-            for (int i = 0; i < 9; ++i) {
+        if (!this.world.isRemote)
+        {
+            for (int i = 0; i < 9; ++i)
+            {
                 ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
 
-                if (itemstack != null) {
+                if (itemstack != null)
+                {
                     par1EntityPlayer.dropItem(itemstack.getItem(), 1);
                 }
             }
@@ -92,44 +107,57 @@ public class BackCraftContainer extends Container {
     }
 
     @Override
-    public boolean func_94530_a(ItemStack par1ItemStack, Slot par2Slot) {
+    public boolean func_94530_a(ItemStack par1ItemStack, Slot par2Slot)
+    {
         return par2Slot.inventory != this.craftResult && super.func_94530_a(par1ItemStack, par2Slot);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+    {
         ItemStack itemstack = null;
         Slot slot = (Slot) this.inventorySlots.get(par2);
 
-        if (slot != null && slot.getHasStack()) {
+        if (slot != null && slot.getHasStack())
+        {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
 
-            if (par2 == 0) {
-                if (!this.mergeItemStack(itemstack1, 10, 46, true)) {
+            if (par2 == 0)
+            {
+                if (!this.mergeItemStack(itemstack1, 10, 46, true))
+                {
                     return null;
                 }
 
                 slot.onSlotChange(itemstack1, itemstack);
-            } else if (par2 >= 10 && par2 < 37) {
-                if (!this.mergeItemStack(itemstack1, 37, 46, false)) {
+            } else if (par2 >= 10 && par2 < 37)
+            {
+                if (!this.mergeItemStack(itemstack1, 37, 46, false))
+                {
                     return null;
                 }
-            } else if (par2 >= 37 && par2 < 46) {
-                if (!this.mergeItemStack(itemstack1, 10, 37, false)) {
+            } else if (par2 >= 37 && par2 < 46)
+            {
+                if (!this.mergeItemStack(itemstack1, 10, 37, false))
+                {
                     return null;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 10, 46, false)) {
+            } else if (!this.mergeItemStack(itemstack1, 10, 46, false))
+            {
                 return null;
             }
 
-            if (itemstack1.stackSize == 0) {
+            if (itemstack1.stackSize == 0)
+            {
                 slot.putStack((ItemStack) null);
-            } else {
+            } else
+            {
                 slot.onSlotChanged();
             }
 
-            if (itemstack1.stackSize == itemstack.stackSize) {
+            if (itemstack1.stackSize == itemstack.stackSize)
+            {
                 return null;
             }
 

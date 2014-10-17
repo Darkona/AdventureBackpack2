@@ -14,28 +14,35 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Created by Darkona on 11/10/2014.
  */
-public class KeybindHandler {
+public class KeybindHandler
+{
 
-    private static Key getPressedKeyBinding() {
-        if (Keybindings.openBackpack.isPressed()) {
+    private static Key getPressedKeyBinding()
+    {
+        if (Keybindings.openBackpack.isPressed())
+        {
             return Key.OPEN_BACKPACK_INVENTORY;
         }
-        if (Keybindings.toggleHose.isPressed()) {
+        if (Keybindings.toggleHose.isPressed())
+        {
             return Key.TOGGLE_HOSE_TANK;
         }
         return Key.UNKNOWN;
     }
 
     @SubscribeEvent
-    public void handleKeyInputEvent(InputEvent.KeyInputEvent event) {
+    public void handleKeyInputEvent(InputEvent.KeyInputEvent event)
+    {
         Key keypressed = getPressedKeyBinding();
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
-        if (keypressed == Key.OPEN_BACKPACK_INVENTORY) {
+        if (keypressed == Key.OPEN_BACKPACK_INVENTORY)
+        {
             ModNetwork.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_KEYBIND));
         }
 
-        if (keypressed == Key.TOGGLE_HOSE_TANK) {
+        if (keypressed == Key.TOGGLE_HOSE_TANK)
+        {
             ModNetwork.networkWrapper.sendToServer(new CycleToolMessage(0, (player).inventory.currentItem, MessageConstants.TOGGLE_HOSE_TANK));
         }
     }

@@ -13,7 +13,8 @@ import net.minecraftforge.fluids.FluidTank;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class ModelAdventureBackpackBlock extends ModelBase {
+public class ModelAdventureBackpackBlock extends ModelBase
+{
     // fields
     ModelRenderer main;
     ModelRenderer side;
@@ -44,7 +45,8 @@ public class ModelAdventureBackpackBlock extends ModelBase {
     ModelRenderer bedstrapendleft;
     ModelRenderer bedstrapendright;
 
-    public ModelAdventureBackpackBlock() {
+    public ModelAdventureBackpackBlock()
+    {
         textureWidth = 128;
         textureHeight = 64;
 
@@ -167,17 +169,21 @@ public class ModelAdventureBackpackBlock extends ModelBase {
                 tankwallright3, tankwallright4, tankbottomright, tanktopright, tanktopleft, tankbottomleft, bed, bedstrapbottomright, bedstrapsideleft,
                 bedstraptopleft, bedstrapbottomleft, bedstraptopright, bedstrapsideright, bedbuttonright, bedbuttonleft, bedstrapendleft, bedstrapendright};
 
-        try {
-            for (ModelRenderer part : meh) {
+        try
+        {
+            for (ModelRenderer part : meh)
+            {
                 part.setTextureSize(128, 64);
                 part.mirror = false;
             }
-        } catch (Exception oops) {
+        } catch (Exception oops)
+        {
             oops.printStackTrace();
         }
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, FluidTank tankLeft, FluidTank tankRight, boolean sleepingbag) {
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, FluidTank tankLeft, FluidTank tankRight, boolean sleepingbag)
+    {
         super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
@@ -215,7 +221,8 @@ public class ModelAdventureBackpackBlock extends ModelBase {
         bedstrapendright.render(f5);
         // }
 
-        if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getIcon() != null) {
+        if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getIcon() != null)
+        {
             Vector3 victor = new Vector3((tankbottomleft.rotationPointX * 0.1 - 0.21), (tankwallleft.rotationPointY * 0.1),
                     (tankbottomleft.rotationPointZ * 0.1 + 0.125));
             CCRenderState.reset();
@@ -226,7 +233,8 @@ public class ModelAdventureBackpackBlock extends ModelBase {
 
         }
 
-        if (tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getFluid().getIcon() != null) {
+        if (tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getFluid().getIcon() != null)
+        {
             Vector3 victor = new Vector3((tankbottomright.rotationPointX * 0.1 + 0.5), (tankwallleft.rotationPointY * 0.1),
                     (tankbottomright.rotationPointZ * 0.1 + 0.125));
             CCRenderState.reset();
@@ -238,7 +246,8 @@ public class ModelAdventureBackpackBlock extends ModelBase {
 
     }
 
-    public void setRotation(ModelRenderer model, float x, float y, float z) {
+    public void setRotation(ModelRenderer model, float x, float y, float z)
+    {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;

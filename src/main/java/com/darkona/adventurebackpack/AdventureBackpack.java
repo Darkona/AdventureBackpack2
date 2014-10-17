@@ -32,7 +32,8 @@ import net.minecraftforge.common.MinecraftForge;
         name = ModInfo.MOD_NAME,
         version = ModInfo.MOD_VERSION,
         guiFactory = ModInfo.GUI_FACTORY_CLASS)
-public class AdventureBackpack {
+public class AdventureBackpack
+{
 
     @Mod.Instance(ModInfo.MOD_ID)
     public static AdventureBackpack instance;
@@ -46,7 +47,8 @@ public class AdventureBackpack {
     EventHandler eventlistener;
 
     @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event)
+    {
 
         //Configuration
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
@@ -69,7 +71,8 @@ public class AdventureBackpack {
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event)
+    {
         proxy.init();
         //proxy.registerKeybindings();
 
@@ -78,7 +81,8 @@ public class AdventureBackpack {
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent event)
+    {
 
     }
 

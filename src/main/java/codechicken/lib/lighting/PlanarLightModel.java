@@ -6,19 +6,24 @@ import codechicken.lib.render.CCRenderState;
 /**
  * Faster precomputed version of LightModel that only works for axis planar sides
  */
-public class PlanarLightModel implements CCRenderState.IVertexOperation {
+public class PlanarLightModel implements CCRenderState.IVertexOperation
+{
     public static PlanarLightModel standardLightModel = LightModel.standardLightModel.reducePlanar();
 
     public int[] colours;
 
-    public PlanarLightModel(int[] colours) {
+    public PlanarLightModel(int[] colours)
+    {
         this.colours = colours;
     }
 
     @Override
-    public boolean load() {
+    public boolean load()
+    {
         if (!CCRenderState.computeLighting)
+        {
             return false;
+        }
 
         CCRenderState.pipeline.addDependency(CCRenderState.sideAttrib);
         CCRenderState.pipeline.addDependency(CCRenderState.colourAttrib);
@@ -26,12 +31,14 @@ public class PlanarLightModel implements CCRenderState.IVertexOperation {
     }
 
     @Override
-    public void operate() {
+    public void operate()
+    {
         CCRenderState.setColour(ColourRGBA.multiply(CCRenderState.colour, colours[CCRenderState.side]));
     }
 
     @Override
-    public int operationID() {
+    public int operationID()
+    {
         return LightModel.operationIndex;
     }
 }

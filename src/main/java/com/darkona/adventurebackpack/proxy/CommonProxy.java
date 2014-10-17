@@ -8,15 +8,18 @@ import com.darkona.adventurebackpack.init.ModItems;
 /**
  * Created by Darkona on 10/10/2014.
  */
-public class CommonProxy implements IProxy {
+public class CommonProxy implements IProxy
+{
 
-    public void init() {
+    public void init()
+    {
         //NOOP
 
     }
 
     @Override
-    public void registerKeybindings() {
+    public void registerKeybindings()
+    {
         //NOOP
     }
 

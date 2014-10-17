@@ -10,9 +10,11 @@ import net.minecraftforge.common.config.Configuration;
 /**
  * Created by Darkona on 10/10/2014.
  */
-public class ModGuiConfig extends GuiConfig {
+public class ModGuiConfig extends GuiConfig
+{
 
-    public ModGuiConfig(GuiScreen guiScreen) {
+    public ModGuiConfig(GuiScreen guiScreen)
+    {
         super(guiScreen,
                 new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
                 ModInfo.MOD_ID,

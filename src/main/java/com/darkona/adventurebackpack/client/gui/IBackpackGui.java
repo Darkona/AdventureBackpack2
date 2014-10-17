@@ -5,7 +5,8 @@ import net.minecraft.util.IIcon;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public interface IBackpackGui {
+public interface IBackpackGui
+{
 
     public void drawTexturedModelRectFromIcon(int i, int j, IIcon icon, int h, int w);
 

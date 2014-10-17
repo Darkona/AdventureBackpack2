@@ -12,7 +12,8 @@ import java.util.Map;
  *
  * @author Darkona
  */
-public class BackpackNames {
+public class BackpackNames
+{
 
 
     public static String[] backpackNames = {
@@ -28,7 +29,8 @@ public class BackpackNames {
     /**
      * Remember to use these for Abilities
      */
-    public static HashMap<String, String> itemNames = new HashMap<String, String>() {
+    public static HashMap<String, String> itemNames = new HashMap<String, String>()
+    {
         {
             put("BlazeRod", "Blaze");
             put("BeefRaw", "Cow");
@@ -70,21 +72,27 @@ public class BackpackNames {
         }
     };
 
-    public static String getBackpackColorName(ItemStack item) {
+    public static String getBackpackColorName(ItemStack item)
+    {
         if (item == null) return "";
-        if (item.stackTagCompound == null) {
+        if (item.stackTagCompound == null)
+        {
             item.stackTagCompound = new NBTTagCompound();
         }
-        if (!item.stackTagCompound.hasKey("color") || item.stackTagCompound.getString("color").isEmpty()) {
+        if (!item.stackTagCompound.hasKey("color") || item.stackTagCompound.getString("color").isEmpty())
+        {
             item.stackTagCompound.setString("color", "Standard");
             item.stackTagCompound.setString("colorName", "Standard");
         }
         return item.stackTagCompound.getString("colorName");
     }
 
-    public static String getDisplayNameForColor(String color) {
-        for (Map.Entry entry : itemNames.entrySet()) {
-            if (((String) entry.getKey()).equals(color)) {
+    public static String getDisplayNameForColor(String color)
+    {
+        for (Map.Entry entry : itemNames.entrySet())
+        {
+            if (((String) entry.getKey()).equals(color))
+            {
                 return (String) entry.getValue();
             }
         }

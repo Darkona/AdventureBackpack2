@@ -19,7 +19,8 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
+public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
+{
     protected IAdvBackpack inventory;
     protected boolean source;
     private boolean wearing;
@@ -36,7 +37,8 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
 
     private static final ResourceLocation texture = Textures.guiTextures("guiBackpackCraft");
 
-    public GuiCraftAdvBackpack(EntityPlayer player, TileAdventureBackpack tile) {
+    public GuiCraftAdvBackpack(EntityPlayer player, TileAdventureBackpack tile)
+    {
         super(new BackCraftContainer(player, tile));
         this.inventory = tile;
         this.source = true;
@@ -47,7 +49,8 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
         Z = tile.zCoord;
     }
 
-    public GuiCraftAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing) {
+    public GuiCraftAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing)
+    {
         super(new BackCraftContainer(player, player.worldObj, item));
         this.inventory = item;
         this.player = player;
@@ -58,14 +61,18 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
     }
 
     @Override
-    public void onGuiClosed() {
+    public void onGuiClosed()
+    {
         if (inventory != null)
+        {
             inventory.closeInventory();
+        }
         super.onGuiClosed();
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
+    {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(texture);
         int k = (this.width - this.xSize) / 2;
@@ -74,15 +81,18 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
         int srcX = 177;
         int srcY = 111;
 
-        if (backButton.inButton(this, mouseX, mouseY)) {
+        if (backButton.inButton(this, mouseX, mouseY))
+        {
             backButton.draw(this, srcX + 19, srcY);
-        } else {
+        } else
+        {
             backButton.draw(this, srcX, srcY);
         }
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+    protected void drawGuiContainerForegroundLayer(int par1, int par2)
+    {
 
         this.fontRendererObj.drawString("Crafting Bench", 92, 7, 4210752);
         GuiCraftAdvBackpack.tankLeft.draw(this, inventory.getLeftTank().getFluid());
@@ -90,31 +100,39 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
     }
 
     @Override
-    public void initGui() {
+    public void initGui()
+    {
         super.initGui();
     }
 
     @Override
-    public int getLeft() {
+    public int getLeft()
+    {
         return guiLeft;
     }
 
     @Override
-    public int getTop() {
+    public int getTop()
+    {
         return guiTop;
     }
 
     @Override
-    public float getZLevel() {
+    public float getZLevel()
+    {
         return this.zLevel;
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
-        if (backButton.inButton(this, mouseX, mouseY)) {
-            if (source) {
+    protected void mouseClicked(int mouseX, int mouseY, int button)
+    {
+        if (backButton.inButton(this, mouseX, mouseY))
+        {
+            if (source)
+            {
                 ModNetwork.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_TILE));
-            } else {
+            } else
+            {
                 ModNetwork.networkWrapper
                         .sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, wearing ?
                                 MessageConstants.FROM_KEYBIND : MessageConstants.FROM_HOLDING));

@@ -11,15 +11,18 @@ import net.minecraft.util.ResourceLocation;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SpriteSheetManager {
+public class SpriteSheetManager
+{
     private static HashMap<String, SpriteSheet> spriteSheets = new HashMap<String, SpriteSheet>();
 
-    public static SpriteSheet getSheet(ResourceLocation resource) {
+    public static SpriteSheet getSheet(ResourceLocation resource)
+    {
         return getSheet(16, 16, resource);
     }
 
     @SideOnly(Side.CLIENT)
-    public static class SpriteSheet implements IIconSelfRegister {
+    public static class SpriteSheet implements IIconSelfRegister
+    {
         public int atlasIndex;
         private int tilesX;
         private int tilesY;
@@ -30,35 +33,44 @@ public class SpriteSheetManager {
         private int spriteWidth;
         private int spriteHeight;
 
-        private SpriteSheet(int tilesX, int tilesY, ResourceLocation textureFile) {
+        private SpriteSheet(int tilesX, int tilesY, ResourceLocation textureFile)
+        {
             this.tilesX = tilesX;
             this.tilesY = tilesY;
             this.resource = textureFile;
             sprites = new TextureSpecial[tilesX * tilesY];
         }
 
-        public void requestIndicies(int... indicies) {
+        public void requestIndicies(int... indicies)
+        {
             for (int i : indicies)
                 setupSprite(i);
         }
 
-        public void registerIcons(IIconRegister register) {
+        public void registerIcons(IIconRegister register)
+        {
             TextureMap textureMap = (TextureMap) register;
 
-            if (TextureUtils.refreshTexture(textureMap, resource.getResourcePath())) {
+            if (TextureUtils.refreshTexture(textureMap, resource.getResourcePath()))
+            {
                 reloadTexture();
                 for (TextureSpecial sprite : sprites)
                     if (sprite != null)
+                    {
                         textureMap.setTextureEntry(sprite.getIconName(), sprite);
-            } else {
+                    }
+            } else
+            {
                 for (int i : newSprites)
                     textureMap.setTextureEntry(sprites[i].getIconName(), sprites[i]);
             }
             newSprites.clear();
         }
 
-        public TextureSpecial setupSprite(int i) {
-            if (sprites[i] == null) {
+        public TextureSpecial setupSprite(int i)
+        {
+            if (sprites[i] == null)
+            {
                 String name = resource + "_" + i;
                 sprites[i] = new TextureSpecial(name).baseFromSheet(this, i);
                 newSprites.add(i);
@@ -66,20 +78,25 @@ public class SpriteSheetManager {
             return sprites[i];
         }
 
-        private void reloadTexture() {
+        private void reloadTexture()
+        {
             texture = TextureUtils.loadTexture(resource);
             spriteWidth = texture.width / tilesX;
             spriteHeight = texture.height / tilesY;
         }
 
-        public IIcon getSprite(int index) {
+        public IIcon getSprite(int index)
+        {
             IIcon i = sprites[index];
             if (i == null)
+            {
                 throw new IllegalArgumentException("Sprite at index: " + index + " from texture file " + resource + " was not preloaded.");
+            }
             return i;
         }
 
-        public TextureDataHolder createSprite(int spriteIndex) {
+        public TextureDataHolder createSprite(int spriteIndex)
+        {
             int sx = spriteIndex % tilesX;
             int sy = spriteIndex / tilesX;
             TextureDataHolder sprite = new TextureDataHolder(spriteWidth, spriteHeight);
@@ -89,34 +106,42 @@ public class SpriteSheetManager {
             return sprite;
         }
 
-        public int spriteWidth() {
+        public int spriteWidth()
+        {
             return spriteWidth;
         }
 
-        public int spriteHeight() {
+        public int spriteHeight()
+        {
             return spriteHeight;
         }
 
-        public TextureSpecial bindTextureFX(int i, TextureFX textureFX) {
+        public TextureSpecial bindTextureFX(int i, TextureFX textureFX)
+        {
             return setupSprite(i).addTextureFX(textureFX);
         }
 
-        public SpriteSheet selfRegister(int atlas) {
+        public SpriteSheet selfRegister(int atlas)
+        {
             TextureUtils.addIconRegistrar(this);
             return this;
         }
 
         @Override
-        public int atlasIndex() {
+        public int atlasIndex()
+        {
             return atlasIndex;
         }
     }
 
 
-    static SpriteSheet getSheet(int tilesX, int tilesY, ResourceLocation resource) {
+    static SpriteSheet getSheet(int tilesX, int tilesY, ResourceLocation resource)
+    {
         SpriteSheet sheet = spriteSheets.get(resource.toString());
         if (sheet == null)
+        {
             spriteSheets.put(resource.toString(), sheet = new SpriteSheet(tilesX, tilesY, resource));
+        }
         return sheet;
     }
 }

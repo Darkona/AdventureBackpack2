@@ -15,19 +15,24 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public final class RenderUtils {
+public final class RenderUtils
+{
 
     private static final ResourceLocation glint = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
-    private RenderUtils() {
+    private RenderUtils()
+    {
     }
 
-    public static void renderItemIn3d(ItemStack stack) {
+    public static void renderItemIn3d(ItemStack stack)
+    {
 
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         // Not sure why but this can be null when the world loads.
         if (textureManager == null)
+        {
             return;
+        }
         Item item = stack.getItem();
 
         GL11.glPushMatrix();
@@ -38,7 +43,8 @@ public final class RenderUtils {
         GL11.glTranslatef(-0.5F, -0.5F, 1 / 32.0F);
 
         int passes = item.getRenderPasses(stack.getItemDamage());
-        for (int pass = 0; pass < passes; pass++) {
+        for (int pass = 0; pass < passes; pass++)
+        {
             textureManager.bindTexture(((stack.getItemSpriteNumber() == 0) ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture));
             IIcon icon = item.getIcon(stack, pass);
             float minU = icon.getMinU();
@@ -49,7 +55,8 @@ public final class RenderUtils {
             ItemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
         }
 
-        if (stack.hasEffect(0)) {
+        if (stack.hasEffect(0))
+        {
             GL11.glDepthFunc(GL11.GL_EQUAL);
             GL11.glDisable(GL11.GL_LIGHTING);
             textureManager.bindTexture(glint);
@@ -85,14 +92,16 @@ public final class RenderUtils {
 
     }
 
-    public static void setColorFromInt(int color) {
+    public static void setColorFromInt(int color)
+    {
         float r = (color >> 16 & 255) / 255.0F;
         float g = (color >> 8 & 255) / 255.0F;
         float b = (color & 255) / 255.0F;
         GL11.glColor4f(r, g, b, 1.0F);
     }
 
-    public static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height, float zLevel, int textureWidth, int textureHeight) {
+    public static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height, float zLevel, int textureWidth, int textureHeight)
+    {
         float xScale = 1.0F / textureWidth;
         float yScale = 1.0F / textureHeight;
         Tessellator tess = Tessellator.instance;

@@ -6,7 +6,8 @@ package codechicken.lib.vec;
  * @param <Vector>         The vector type
  * @param <Transformation> The transformation type
  */
-public abstract class ITransformation<Vector, Transformation extends ITransformation> {
+public abstract class ITransformation<Vector, Transformation extends ITransformation>
+{
     /**
      * Applies this transformation to vec
      */
@@ -27,14 +28,16 @@ public abstract class ITransformation<Vector, Transformation extends ITransforma
     /**
      * Returns a simplified transformation that performs this, followed by next. If such a transformation does not exist, returns null
      */
-    public Transformation merge(Transformation next) {
+    public Transformation merge(Transformation next)
+    {
         return null;
     }
 
     /**
      * Returns true if this transformation is redundant, eg. Scale(1, 1, 1), Translation(0, 0, 0) or Rotation(0, a, b, c)
      */
-    public boolean isRedundant() {
+    public boolean isRedundant()
+    {
         return false;
     }
 
@@ -43,7 +46,8 @@ public abstract class ITransformation<Vector, Transformation extends ITransforma
     /**
      * Scala ++ operator
      */
-    public Transformation $plus$plus(Transformation t) {
+    public Transformation $plus$plus(Transformation t)
+    {
         return with(t);
     }
 }

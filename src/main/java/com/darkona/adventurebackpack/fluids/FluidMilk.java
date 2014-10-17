@@ -10,9 +10,11 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class FluidMilk extends Fluid {
+public class FluidMilk extends Fluid
+{
 
-    public FluidMilk() {
+    public FluidMilk()
+    {
         super("milk");
         setDensity(1200);
         setViscosity(1200);
@@ -22,27 +24,32 @@ public class FluidMilk extends Fluid {
 
 
     @Override
-    public IIcon getStillIcon() {
+    public IIcon getStillIcon()
+    {
         return Icons.milkStill;
     }
 
     @Override
-    public IIcon getIcon() {
+    public IIcon getIcon()
+    {
         return Icons.milkStill;
     }
 
     @Override
-    public IIcon getFlowingIcon() {
+    public IIcon getFlowingIcon()
+    {
         return Icons.milkStill;
     }
 
     @Override
-    public int getColor(FluidStack stack) {
+    public int getColor(FluidStack stack)
+    {
         return 0xFFFAF0;
     }
 
     @Override
-    public boolean isGaseous(World world, int x, int y, int z) {
+    public boolean isGaseous(World world, int x, int y, int z)
+    {
         return false;
     }
 

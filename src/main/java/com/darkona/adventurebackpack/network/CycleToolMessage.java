@@ -13,16 +13,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
  *
  * @
  */
-public class CycleToolMessage implements IMessage {
+public class CycleToolMessage implements IMessage
+{
 
     private int directionOfCycle;
     private int slot;
     private byte typeOfAction;
 
-    public CycleToolMessage() {
+    public CycleToolMessage()
+    {
     }
 
-    public CycleToolMessage(int directionOfCycle, int slot, byte typeOfAction) {
+    public CycleToolMessage(int directionOfCycle, int slot, byte typeOfAction)
+    {
         this.typeOfAction = typeOfAction;
         this.directionOfCycle = directionOfCycle;
         this.slot = slot;
@@ -30,25 +33,30 @@ public class CycleToolMessage implements IMessage {
     }
 
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         this.typeOfAction = buf.readByte();
         this.directionOfCycle = buf.readInt();
         this.slot = buf.readInt();
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         buf.writeByte(typeOfAction);
         buf.writeInt(directionOfCycle);
         buf.writeInt(slot);
     }
 
-    public static class CycleToolMessageServerHandler implements IMessageHandler<CycleToolMessage, IMessage> {
+    public static class CycleToolMessageServerHandler implements IMessageHandler<CycleToolMessage, IMessage>
+    {
 
         @Override
-        public IMessage onMessage(CycleToolMessage message, MessageContext ctx) {
+        public IMessage onMessage(CycleToolMessage message, MessageContext ctx)
+        {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-            switch (message.typeOfAction) {
+            switch (message.typeOfAction)
+            {
                 case MessageConstants.CYCLE_TOOL_ACTION:
                     Actions.cycleTool(player, message.directionOfCycle, message.slot);
                     break;
@@ -63,10 +71,12 @@ public class CycleToolMessage implements IMessage {
         }
     }
 
-    public static class CycleToolMessageClientHandler implements IMessageHandler<CycleToolMessage, IMessage> {
+    public static class CycleToolMessageClientHandler implements IMessageHandler<CycleToolMessage, IMessage>
+    {
 
         @Override
-        public IMessage onMessage(CycleToolMessage message, MessageContext ctx) {
+        public IMessage onMessage(CycleToolMessage message, MessageContext ctx)
+        {
             return null;
         }
     }

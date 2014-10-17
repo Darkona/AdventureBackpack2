@@ -5,7 +5,8 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 /**
  * Created by Darkona on 11/10/2014.
  */
-public class Constants {
+public class Constants
+{
 
     public static final int inventorySize = 10;
     public static final int bucket = FluidContainerRegistry.BUCKET_VOLUME;

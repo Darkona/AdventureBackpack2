@@ -20,7 +20,8 @@ import java.util.Set;
 /**
  * Created by Darkona on 10/10/2014.
  */
-public class ItemMachete extends ToolAB {
+public class ItemMachete extends ToolAB
+{
     private static final Set breakableBlocks = Sets.newHashSet(new Block[]{
             Blocks.pumpkin,
             Blocks.web,
@@ -47,7 +48,8 @@ public class ItemMachete extends ToolAB {
             Blocks.wool});
     private float field_150934_a;
 
-    public ItemMachete() {
+    public ItemMachete()
+    {
         super(ModMaterials.ruggedIron, breakableBlocks);
         setMaxDamage(Items.iron_sword.getMaxDamage() + 250);
         this.field_150934_a = ModMaterials.ruggedIron.getDamageVsEntity();
@@ -55,12 +57,14 @@ public class ItemMachete extends ToolAB {
     }
 
     @Override
-    public float func_150893_a(ItemStack stack, Block block) {
+    public float func_150893_a(ItemStack stack, Block block)
+    {
         Material material = block.getMaterial();
         if (material == Material.wood) return 4F;
         if (block == Blocks.melon_block) return 2F;
         if (block == Blocks.web) return 10F;
-        for (ItemStack stacky : OreDictionary.getOres("treeLeaves")) {
+        for (ItemStack stacky : OreDictionary.getOres("treeLeaves"))
+        {
             if (stacky.getItem() == Item.getItemFromBlock(block)) return 15F;
         }
         return material == Material.plants || material == Material.vine || material == Material.coral || material == Material.gourd || material == Material.leaves || material == Material.cloth ? 12.0F : 0.5F;
@@ -72,22 +76,27 @@ public class ItemMachete extends ToolAB {
      * the damage on the stack.
      */
     @Override
-    public boolean hitEntity(ItemStack p_77644_1_, EntityLivingBase p_77644_2_, EntityLivingBase p_77644_3_) {
+    public boolean hitEntity(ItemStack p_77644_1_, EntityLivingBase p_77644_2_, EntityLivingBase p_77644_3_)
+    {
         p_77644_1_.damageItem(1, p_77644_3_);
         return true;
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase entityLivingBase) {
-        if (block != Blocks.vine && !(block instanceof IShearable)) {
+    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase entityLivingBase)
+    {
+        if (block != Blocks.vine && !(block instanceof IShearable))
+        {
             return super.onBlockDestroyed(stack, world, block, x, y, z, entityLivingBase);
-        } else {
+        } else
+        {
             return true;
         }
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
+    public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
+    {
         /*
         if (player.worldObj.isRemote)
         {

@@ -18,7 +18,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
-public class TextureSpecial extends TextureAtlasSprite implements IIconSelfRegister {
+public class TextureSpecial extends TextureAtlasSprite implements IIconSelfRegister
+{
     public int atlasIndex;
     //sprite sheet fields
     private int spriteIndex;
@@ -32,40 +33,52 @@ public class TextureSpecial extends TextureAtlasSprite implements IIconSelfRegis
     private ArrayList<TextureDataHolder> baseTextures;
     private boolean selfRegister;
 
-    protected TextureSpecial(String par1) {
+    protected TextureSpecial(String par1)
+    {
         super(par1);
     }
 
-    public TextureSpecial addTexture(TextureDataHolder t) {
+    public TextureSpecial addTexture(TextureDataHolder t)
+    {
         if (baseTextures == null)
+        {
             baseTextures = new ArrayList<TextureDataHolder>();
+        }
         baseTextures.add(t);
         return this;
     }
 
-    public TextureSpecial baseFromSheet(SpriteSheet spriteSheet, int spriteIndex) {
+    public TextureSpecial baseFromSheet(SpriteSheet spriteSheet, int spriteIndex)
+    {
         this.spriteSheet = spriteSheet;
         this.spriteIndex = spriteIndex;
         return this;
     }
 
-    public TextureSpecial addTextureFX(TextureFX fx) {
+    public TextureSpecial addTextureFX(TextureFX fx)
+    {
         textureFX = fx;
         return this;
     }
 
     @Override
-    public void initSprite(int sheetWidth, int sheetHeight, int originX, int originY, boolean rotated) {
+    public void initSprite(int sheetWidth, int sheetHeight, int originX, int originY, boolean rotated)
+    {
         super.initSprite(sheetWidth, sheetHeight, originX, originY, rotated);
         if (textureFX != null)
+        {
             textureFX.onTextureDimensionsUpdate(rawWidth, rawHeight);
+        }
     }
 
     @Override
-    public void updateAnimation() {
-        if (textureFX != null) {
+    public void updateAnimation()
+    {
+        if (textureFX != null)
+        {
             textureFX.update();
-            if (textureFX.changed()) {
+            if (textureFX.changed())
+            {
                 int[][] mipmaps = new int[mipmapLevels + 1][];
                 mipmaps[0] = textureFX.imageData;
                 mipmaps = prepareAnisotropicFiltering(mipmaps);
@@ -79,16 +92,21 @@ public class TextureSpecial extends TextureAtlasSprite implements IIconSelfRegis
     /**
      * Copy paste mojang code because it's private, and CCL can't have access transformers or reflection
      */
-    public int[][] prepareAnisotropicFiltering(int[][] mipmaps) {
-        if (Minecraft.getMinecraft().gameSettings.anisotropicFiltering <= 1) {
+    public int[][] prepareAnisotropicFiltering(int[][] mipmaps)
+    {
+        if (Minecraft.getMinecraft().gameSettings.anisotropicFiltering <= 1)
+        {
             return mipmaps;
-        } else {
+        } else
+        {
             int[][] aint1 = new int[mipmaps.length][];
 
-            for (int k = 0; k < mipmaps.length; ++k) {
+            for (int k = 0; k < mipmaps.length; ++k)
+            {
                 int[] aint2 = mipmaps[k];
 
-                if (aint2 != null) {
+                if (aint2 != null)
+                {
                     int[] aint3 = new int[(rawWidth + 16 >> k) * (rawHeight + 16 >> k)];
                     System.arraycopy(aint2, 0, aint3, 0, aint2.length);
                     aint1[k] = TextureUtil.prepareAnisotropicData(aint3, rawWidth >> k, rawHeight >> k, 8 >> k);
@@ -100,24 +118,28 @@ public class TextureSpecial extends TextureAtlasSprite implements IIconSelfRegis
     }
 
     @Override
-    public void loadSprite(BufferedImage[] images, AnimationMetadataSection animationMeta, boolean anisotropicFiltering) {
+    public void loadSprite(BufferedImage[] images, AnimationMetadataSection animationMeta, boolean anisotropicFiltering)
+    {
         rawWidth = images[0].getWidth();
         rawHeight = images[0].getHeight();
         super.loadSprite(images, animationMeta, anisotropicFiltering);
     }
 
     @Override
-    public void generateMipmaps(int p_147963_1_) {
+    public void generateMipmaps(int p_147963_1_)
+    {
         super.generateMipmaps(p_147963_1_);
         mipmapLevels = p_147963_1_;
     }
 
     @Override
-    public boolean hasCustomLoader(IResourceManager manager, ResourceLocation location) {
+    public boolean hasCustomLoader(IResourceManager manager, ResourceLocation location)
+    {
         return true;
     }
 
-    public void addFrame(int[] data, int width, int height) {
+    public void addFrame(int[] data, int width, int height)
+    {
         GameSettings settings = Minecraft.getMinecraft().gameSettings;
         BufferedImage[] images = new BufferedImage[settings.mipmapLevels + 1];
         images[0] = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -127,55 +149,71 @@ public class TextureSpecial extends TextureAtlasSprite implements IIconSelfRegis
     }
 
     @Override
-    public boolean load(IResourceManager manager, ResourceLocation location) {
-        if (baseTextures != null) {
+    public boolean load(IResourceManager manager, ResourceLocation location)
+    {
+        if (baseTextures != null)
+        {
             for (TextureDataHolder tex : baseTextures)
                 addFrame(tex.data, tex.width, tex.height);
-        } else if (spriteSheet != null) {
+        } else if (spriteSheet != null)
+        {
             TextureDataHolder tex = spriteSheet.createSprite(spriteIndex);
             addFrame(tex.data, tex.width, tex.height);
-        } else if (blankSize > 0) {
+        } else if (blankSize > 0)
+        {
             addFrame(new int[blankSize * blankSize], blankSize, blankSize);
         }
 
         if (framesTextureData.isEmpty())
+        {
             throw new RuntimeException("No base frame for texture: " + getIconName());
+        }
 
         return false;
     }
 
     @Override
-    public boolean hasAnimationMetadata() {
+    public boolean hasAnimationMetadata()
+    {
         return textureFX != null || super.hasAnimationMetadata();
     }
 
     @Override
-    public int getFrameCount() {
+    public int getFrameCount()
+    {
         if (textureFX != null)
+        {
             return 1;
+        }
 
         return super.getFrameCount();
     }
 
-    public TextureSpecial blank(int size) {
+    public TextureSpecial blank(int size)
+    {
         blankSize = size;
         return this;
     }
 
-    public TextureSpecial selfRegister() {
+    public TextureSpecial selfRegister()
+    {
         selfRegister = true;
         TextureUtils.addIconRegistrar(this);
         return this;
     }
 
     @Override
-    public void registerIcons(IIconRegister register) {
+    public void registerIcons(IIconRegister register)
+    {
         if (selfRegister)
+        {
             ((TextureMap) register).setTextureEntry(getIconName(), this);
+        }
     }
 
     @Override
-    public int atlasIndex() {
+    public int atlasIndex()
+    {
         return atlasIndex;
     }
 }

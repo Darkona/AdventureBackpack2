@@ -5,5 +5,6 @@ import com.darkona.adventurebackpack.api.FluidEffect;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class MelonJuiceEffect extends FluidEffect {
+public class MelonJuiceEffect extends FluidEffect
+{
 }

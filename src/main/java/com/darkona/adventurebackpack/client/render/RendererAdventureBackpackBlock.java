@@ -15,21 +15,28 @@ import org.lwjgl.opengl.GL12;
  * @author Darkona
  */
 
-public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer {
+public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
+{
 
     private final ModelAdventureBackpackBlock model;
 
-    public RendererAdventureBackpackBlock() {
+    public RendererAdventureBackpackBlock()
+    {
         this.model = new ModelAdventureBackpackBlock();
     }
 
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float par8) {
+    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float par8)
+    {
         int dir = tileEntity.getBlockMetadata(/*advbackpack.xCoord, advbackpack.yCoord, advbackpack.zCoord*/);
         if ((dir & 8) >= 8)
+        {
             dir -= 8;
+        }
         if ((dir & 4) >= 4)
+        {
             dir -= 4;
+        }
 
         TileAdventureBackpack bp = (TileAdventureBackpack) tileEntity;
 
@@ -45,11 +52,17 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer {
 
         GL11.glPushMatrix();
         if (dir == 0)
+        {
             GL11.glRotatef(-180F, 0.0F, 1.0F, 0.0F);
+        }
         if (dir % 2 != 0)
+        {
             GL11.glRotatef(dir * (-90F), 0.0F, 1.0F, 0.0F);
+        }
         if (dir % 2 == 0)
+        {
             GL11.glRotatef(dir * (-180F), 0.0F, 1.0F, 0.0F);
+        }
         bindTexture(Textures.backpackTexRL(bp));
         model.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F, bp.getLeftTank(), bp.getRightTank(), bp.isSBDeployed());
 

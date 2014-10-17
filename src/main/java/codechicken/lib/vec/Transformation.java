@@ -7,7 +7,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 /**
  * Abstract supertype for any 3D vector transformation
  */
-public abstract class Transformation extends ITransformation<Vector3, Transformation> implements CCRenderState.IVertexOperation {
+public abstract class Transformation extends ITransformation<Vector3, Transformation> implements CCRenderState.IVertexOperation
+{
     public static final int operationIndex = CCRenderState.registerOperation();
 
     /**
@@ -24,11 +25,13 @@ public abstract class Transformation extends ITransformation<Vector3, Transforma
      */
     public abstract void apply(Matrix4 mat);
 
-    public Transformation at(Vector3 point) {
+    public Transformation at(Vector3 point)
+    {
         return new TransformationList(new Translation(-point.x, -point.y, -point.z), this, point.translation());
     }
 
-    public TransformationList with(Transformation t) {
+    public TransformationList with(Transformation t)
+    {
         return new TransformationList(this, t);
     }
 
@@ -36,20 +39,25 @@ public abstract class Transformation extends ITransformation<Vector3, Transforma
     public abstract void glApply();
 
     @Override
-    public boolean load() {
+    public boolean load()
+    {
         CCRenderState.pipeline.addRequirement(CCRenderState.normalAttrib.operationID());
         return !isRedundant();
     }
 
     @Override
-    public void operate() {
+    public void operate()
+    {
         apply(CCRenderState.vert.vec);
         if (CCRenderState.normalAttrib.active)
+        {
             applyN(CCRenderState.normal);
+        }
     }
 
     @Override
-    public int operationID() {
+    public int operationID()
+    {
         return operationIndex;
     }
 }

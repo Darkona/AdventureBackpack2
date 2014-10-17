@@ -1,11 +1,14 @@
 package codechicken.lib.vec;
 
-public class AxisCycle {
+public class AxisCycle
+{
     public static Transformation[] cycles = new Transformation[]{
             new RedundantTransformation(),
-            new VariableTransformation(new Matrix4(0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1)) {
+            new VariableTransformation(new Matrix4(0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1))
+            {
                 @Override
-                public void apply(Vector3 vec) {
+                public void apply(Vector3 vec)
+                {
                     double d0 = vec.x;
                     double d1 = vec.y;
                     double d2 = vec.z;
@@ -15,13 +18,16 @@ public class AxisCycle {
                 }
 
                 @Override
-                public Transformation inverse() {
+                public Transformation inverse()
+                {
                     return cycles[2];
                 }
             },
-            new VariableTransformation(new Matrix4(0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1)) {
+            new VariableTransformation(new Matrix4(0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1))
+            {
                 @Override
-                public void apply(Vector3 vec) {
+                public void apply(Vector3 vec)
+                {
                     double d0 = vec.x;
                     double d1 = vec.y;
                     double d2 = vec.z;
@@ -31,7 +37,8 @@ public class AxisCycle {
                 }
 
                 @Override
-                public Transformation inverse() {
+                public Transformation inverse()
+                {
                     return cycles[1];
                 }
             }};

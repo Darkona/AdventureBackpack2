@@ -10,13 +10,16 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class SlotBackpack extends Slot {
-    public SlotBackpack(IInventory inventory, int id, int x, int y) {
+public class SlotBackpack extends Slot
+{
+    public SlotBackpack(IInventory inventory, int id, int x, int y)
+    {
         super(inventory, id, x, y);
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
+    public boolean isItemValid(ItemStack stack)
+    {
         return (!(stack.getItem() instanceof ItemAdventureBackpack) && !(stack.getItem() == Item.getItemFromBlock(ModBlocks.blockBackpack)));
     }
 }

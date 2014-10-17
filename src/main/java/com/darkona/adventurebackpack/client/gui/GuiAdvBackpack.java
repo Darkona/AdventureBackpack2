@@ -21,7 +21,8 @@ import org.lwjgl.opengl.GL11;
  * Created by Darkona on 12/10/2014.
  */
 @SideOnly(Side.CLIENT)
-public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
+public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
+{
 
     protected IAdvBackpack inventory;
     protected boolean source;
@@ -41,7 +42,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
     private FluidStack lft;
     private FluidStack rgt;
 
-    public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack) {
+    public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
+    {
         super(new BackpackContainer(player.inventory, tileBackpack, BackpackContainer.SOURCE_TILE));
         this.inventory = tileBackpack;
         this.source = true;
@@ -54,7 +56,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
         this.player = player;
     }
 
-    public GuiAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing) {
+    public GuiAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing)
+    {
         super(new BackpackContainer(player.inventory, item, BackpackContainer.SOURCE_ITEM));
         this.inventory = item;
         this.wearing = wearing;
@@ -65,14 +68,18 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
     }
 
     @Override
-    public void onGuiClosed() {
+    public void onGuiClosed()
+    {
         if (inventory != null)
+        {
             inventory.closeInventory();
+        }
         super.onGuiClosed();
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
+    {
         GL11.glColor4f(1, 1, 1, 1);
 
         this.mc.getTextureManager().bindTexture(texture);
@@ -81,18 +88,23 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
         // Buttons and button highlight
         int srcX = 177;
         int srcY = 35;
-        if (source) {
-            if (bedButton.inButton(this, mouseX, mouseY)) {
+        if (source)
+        {
+            if (bedButton.inButton(this, mouseX, mouseY))
+            {
                 bedButton.draw(this, srcX + 19, srcY + 19);
 
-            } else {
+            } else
+            {
                 bedButton.draw(this, srcX, srcY + 19);
             }
         }
 
-        if (craftButton.inButton(this, mouseX, mouseY)) {
+        if (craftButton.inButton(this, mouseX, mouseY))
+        {
             craftButton.draw(this, srcX + 19, srcY);
-        } else {
+        } else
+        {
             craftButton.draw(this, srcX, srcY);
         }
         GL11.glPushMatrix();
@@ -103,7 +115,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    {
 
         inventory.openInventory();
         lft = inventory.getLeftTank().getFluid();
@@ -112,38 +125,45 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
         tankLeft.draw(this, lft);
         tankRight.draw(this, rgt);
 
-        if (tankLeft.inTank(this, mouseX, mouseY)) {
+        if (tankLeft.inTank(this, mouseX, mouseY))
+        {
             drawHoveringText(tankLeft.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
         }
 
-        if (tankRight.inTank(this, mouseX, mouseY)) {
+        if (tankRight.inTank(this, mouseX, mouseY))
+        {
             drawHoveringText(tankRight.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
         }
 
     }
 
     @Override
-    public float getZLevel() {
+    public float getZLevel()
+    {
         return this.zLevel;
     }
 
     @Override
-    public void initGui() {
+    public void initGui()
+    {
         super.initGui();
     }
 
     @Override
-    public int getLeft() {
+    public int getLeft()
+    {
         return guiLeft;
     }
 
     @Override
-    public int getTop() {
+    public int getTop()
+    {
         return guiTop;
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
+    protected void mouseClicked(int mouseX, int mouseY, int button)
+    {
        /* if (bedButton.inButton(this, mouseX, mouseY) && source)
         {
             if (source)
@@ -155,12 +175,15 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
             }
 
         } else */
-        if (craftButton.inButton(this, mouseX, mouseY)) {
-            if (source) {
+        if (craftButton.inButton(this, mouseX, mouseY))
+        {
+            if (source)
+            {
                 ModNetwork.networkWrapper
                         .sendToServer(new GuiBackpackMessage(MessageConstants.CRAFT_GUI,
                                 MessageConstants.FROM_TILE));
-            } else {
+            } else
+            {
                 ModNetwork.networkWrapper
                         .sendToServer(new GuiBackpackMessage(MessageConstants.CRAFT_GUI,
                                 wearing ? MessageConstants.FROM_KEYBIND : MessageConstants.FROM_HOLDING));
@@ -171,7 +194,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
     }
 
     @Override
-    protected void mouseMovedOrUp(int mouseX, int mouseY, int par3) {
+    protected void mouseMovedOrUp(int mouseX, int mouseY, int par3)
+    {
 
         super.mouseMovedOrUp(mouseX, mouseY, par3);
     }

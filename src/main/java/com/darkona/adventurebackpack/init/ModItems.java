@@ -6,7 +6,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 /**
  * Created by Darkona on 10/10/2014.
  */
-public class ModItems {
+public class ModItems
+{
 
     public static final ItemMachete machete = new ItemMachete();
     public static final ItemComponent component = new ItemComponent();
@@ -16,7 +17,8 @@ public class ModItems {
     public static final ArmorAB adventureSuit = new ItemAdventureSuit();
     public static final ArmorAB adventureBackpack = new ItemAdventureBackpack();
 
-    public static void init() {
+    public static void init()
+    {
         GameRegistry.registerItem(component, "backpackComponent");
         GameRegistry.registerItem(machete, "machete");
         GameRegistry.registerItem(adventureHat, "adventureHat");

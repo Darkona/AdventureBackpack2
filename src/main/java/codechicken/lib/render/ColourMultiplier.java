@@ -2,23 +2,28 @@ package codechicken.lib.render;
 
 import codechicken.lib.colour.ColourRGBA;
 
-public class ColourMultiplier implements CCRenderState.IVertexOperation {
+public class ColourMultiplier implements CCRenderState.IVertexOperation
+{
     public static final int operationIndex = CCRenderState.registerOperation();
     private static ColourMultiplier instance = new ColourMultiplier(-1);
     public int colour;
 
-    public ColourMultiplier(int colour) {
+    public ColourMultiplier(int colour)
+    {
         this.colour = colour;
     }
 
-    public static ColourMultiplier instance(int colour) {
+    public static ColourMultiplier instance(int colour)
+    {
         instance.colour = colour;
         return instance;
     }
 
     @Override
-    public boolean load() {
-        if (colour == -1) {
+    public boolean load()
+    {
+        if (colour == -1)
+        {
             CCRenderState.setColour(-1);
             return false;
         }
@@ -28,12 +33,14 @@ public class ColourMultiplier implements CCRenderState.IVertexOperation {
     }
 
     @Override
-    public void operate() {
+    public void operate()
+    {
         CCRenderState.setColour(ColourRGBA.multiply(CCRenderState.colour, colour));
     }
 
     @Override
-    public int operationID() {
+    public int operationID()
+    {
         return operationIndex;
     }
 }

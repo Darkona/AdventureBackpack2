@@ -16,37 +16,44 @@ import scala.collection.parallel.ParIterableLike;
  *
  * @author Darkona
  */
-public class RendererHose implements IItemRenderer {
+public class RendererHose implements IItemRenderer
+{
 
     private static RenderItem renderHose = new RenderItem();
     private FontRenderer fontRenderer;
     private Tessellator tessellator = Tessellator.instance;
 
     @Override
-    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
+    public boolean handleRenderType(ItemStack item, ItemRenderType type)
+    {
         return type == ItemRenderType.INVENTORY;
     }
 
     @Override
-    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
+    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
+    {
         return false;
     }
 
     @SuppressWarnings("incomplete-switch")
     @Override
-    public void renderItem(ItemRenderType type, ItemStack hose, Object... data) {
+    public void renderItem(ItemRenderType type, ItemStack hose, Object... data)
+    {
         fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        switch (type) {
+        switch (type)
+        {
             case INVENTORY:
 
                 // ====================Render the item===================== //
                 IIcon icon = hose.getItem().getIcon(hose, 1);
                 renderHose.renderIcon(0, 0, icon, 16, 16);
-                if (hose.hasTagCompound()) {
+                if (hose.hasTagCompound())
+                {
                     String amount = Integer.toString(hose.getTagCompound().getInteger("amount"));
                     String name = hose.getTagCompound().getString("fluid");
                     String mode;
-                    switch (hose.getTagCompound().getInteger("mode")) {
+                    switch (hose.getTagCompound().getInteger("mode"))
+                    {
                         case 0:
                             mode = "Suck";
                             break;
@@ -84,7 +91,8 @@ public class RendererHose implements IItemRenderer {
 
                     GL11.glPushMatrix();
                     GL11.glScalef(0.5f, 0.5f, 0.5f);
-                    if (fontRenderer != null) {
+                    if (fontRenderer != null)
+                    {
                         fontRenderer.drawStringWithShadow(mode, 0, 0, 0xFFFFFF);
                         fontRenderer.drawStringWithShadow(amount, 0, 18, 0xFFFFFF);
                         fontRenderer.drawStringWithShadow(name, 0, 24, 0xFFFFFF);

@@ -12,11 +12,13 @@ import cpw.mods.fml.relauncher.Side;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class ModNetwork {
+public class ModNetwork
+{
 
     public static SimpleNetworkWrapper networkWrapper;
 
-    public static void init() {
+    public static void init()
+    {
 
         int messageCounter = 0;
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID + "ch");

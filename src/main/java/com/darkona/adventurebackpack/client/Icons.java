@@ -7,7 +7,8 @@ import net.minecraft.util.IIcon;
  *
  * @author Darkona
  */
-public class Icons {
+public class Icons
+{
     public static IIcon milkFlowing;
     public static IIcon milkStill;
 }

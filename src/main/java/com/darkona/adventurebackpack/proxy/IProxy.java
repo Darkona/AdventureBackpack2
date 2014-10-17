@@ -5,7 +5,8 @@ package com.darkona.adventurebackpack.proxy;
  *
  * @author Darkona
  */
-public interface IProxy {
+public interface IProxy
+{
 
     public void init();
 
