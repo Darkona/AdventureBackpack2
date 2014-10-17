@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.network;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
+import com.darkona.adventurebackpack.client.Visuals;
 import com.darkona.adventurebackpack.misc.NyanMovingSound;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
@@ -13,6 +14,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -49,47 +51,43 @@ public class NyanCatMessage implements IMessage {
         ByteBufUtils.writeUTF8String(buf, playerID);
     }
 
-    public static class PlaySoundMessageServerHandler implements IMessageHandler<NyanCatMessage, NyanCatMessage> {
+    public static class NyanCatMessageServerHandler implements IMessageHandler<NyanCatMessage, NyanCatMessage> {
 
         @Override
         public NyanCatMessage onMessage(NyanCatMessage message, MessageContext ctx) {
-            //LogHelper.info("Message Received on Server for Nyan, player UUID is" + message.playerID);
-            // LogHelper.info(message);
             EntityPlayer player = ctx.getServerHandler().playerEntity;
-            AdventureBackpack.networkWrapper.sendToAllAround(new NyanCatMessage(message.soundCode, message.playerID),
-                    new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 30D));
+            World world = player.getEntityWorld();
+            if (message.soundCode == MessageConstants.PLAY_NYAN) {
+                Wearing.getWearingBackpack(player).getTagCompound().setInteger("lastTime", Utils.secondsToTicks(150));
+            }
             return null;
         }
+
+
     }
 
-    public static class PlaySoundMessageClientHandler implements IMessageHandler<NyanCatMessage, NyanCatMessage> {
+    public static class NyanCatMessageClientHandler implements IMessageHandler<NyanCatMessage, NyanCatMessage> {
 
         @Override
         public NyanCatMessage onMessage(NyanCatMessage message, MessageContext ctx) {
-            // LogHelper.info("Message Received on Client for Nyan, player UUID is" + message.playerID);
-            // LogHelper.info(message);
             EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerID));
-            World world = player.worldObj;
+            SoundHandler snd = Minecraft.getMinecraft().getSoundHandler();
+            NyanMovingSound nyaaan = new NyanMovingSound(player);
             if (message.soundCode == MessageConstants.PLAY_NYAN) {
                 /*ISound nyan = new NyanMovingSound(player);*/
-                Minecraft.getMinecraft().getSoundHandler().stopSounds();
-                Minecraft.getMinecraft().getSoundHandler().playSound(NyanMovingSound.instance.setPlayer(player));
+
+                if (snd.isSoundPlaying(nyaaan)) {
+                    snd.stopSound(nyaaan);
+                }
+
+                snd.playSound(nyaaan);
+            }
+            if (message.soundCode == MessageConstants.STOP_NYAN) {
+                if (snd.isSoundPlaying(nyaaan))
+                    snd.stopSound(nyaaan);
             }
             if (message.soundCode == MessageConstants.SPAWN_PARTICLE) {
-                int i = 1;
-                for (int j = 0; j < i * 2; ++j) {
-                    float f = world.rand.nextFloat() * (float) Math.PI * 2.0F;
-                    float f1 = world.rand.nextFloat() * 0.5F + 0.5F;
-                    float f2 = MathHelper.sin(f) * i * 0.5F * f1;
-                    float f3 = MathHelper.cos(f) * i * 0.5F * f1;
-                    player.worldObj.spawnParticle("note",
-                            player.posX + f2,
-                            player.boundingBox.minY + 0.8f,
-                            player.posZ + f3,
-                            (double) world.rand.nextInt(12) / 24.0D,
-                            -1.0D,
-                            0.0D);
-                }
+                Visuals.NyanParticles(player);
             }
             return null;
         }

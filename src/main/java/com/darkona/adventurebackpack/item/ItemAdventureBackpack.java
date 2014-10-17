@@ -1,11 +1,12 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.events.UnequipBackpackEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackArmor;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
@@ -24,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
 
@@ -100,6 +102,8 @@ public class ItemAdventureBackpack extends ArmorAB {
                     } else {
                         player.inventory.armorInventory[2] = null;
                     }
+                    UnequipBackpackEvent event = new UnequipBackpackEvent(player, stack);
+                    MinecraftForge.EVENT_BUS.post(event);
                     return true;
                 }
             }
@@ -118,7 +122,7 @@ public class ItemAdventureBackpack extends ArmorAB {
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         if (mop == null || mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
             if (world.isRemote) {
-                AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_HOLDING));
+                ModNetwork.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_HOLDING));
             }
         }
         return stack;

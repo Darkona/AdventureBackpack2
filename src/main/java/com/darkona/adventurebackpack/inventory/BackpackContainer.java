@@ -16,25 +16,16 @@ import net.minecraft.nbt.NBTTagCompound;
 public class BackpackContainer extends Container {
 
     public IAdvBackpack inventory;
-
-    public boolean source;
+    public static boolean SOURCE_TILE = true;
+    public static boolean SOURCE_ITEM = false;
     public boolean needsUpdate;
 
-    public BackpackContainer(InventoryPlayer invPlayer, TileAdventureBackpack te) {
+    public BackpackContainer(InventoryPlayer invPlayer, IAdvBackpack backpack, boolean source) {
         needsUpdate = false;
-        inventory = te;
+        inventory = backpack;
         makeSlots(invPlayer);
-        source = true;
     }
 
-    public BackpackContainer(InventoryPlayer invPlayer, InventoryItem inventoryItem) {
-
-        needsUpdate = false;
-        inventory = inventoryItem;
-        source = false;
-        makeSlots(invPlayer);
-        inventory.openInventory();
-    }
 
     // =============================================== GETTERS ====================================================== //
     // =============================================== SETTERS ====================================================== //
@@ -45,10 +36,6 @@ public class BackpackContainer extends Container {
     @Override
     public boolean canInteractWith(EntityPlayer player) {
         return inventory.isUseableByPlayer(player);
-    }
-
-    public TileAdventureBackpack getTile() {
-        return (TileAdventureBackpack) inventory;
     }
 
     private void makeSlots(InventoryPlayer invPlayer) {
@@ -69,33 +56,38 @@ public class BackpackContainer extends Container {
         int thing = 0;
 
         // Backpack Inventory
-        addSlotToContainer(new SlotTool(sexy, thing++, 62, 37));// Upper Tool -0
+
+        //Upper Tool Slot
+        addSlotToContainer(new SlotTool(sexy, thing++, 62, 37));// Upper Tool 0
+
         addSlotToContainer(new SlotBackpack(sexy, thing++, 80, 37));// 1
         addSlotToContainer(new SlotBackpack(sexy, thing++, 98, 37));// 2
-        addSlotToContainer(new SlotTool(sexy, thing++, 62, 55));// Lower Tool -3
+
+        //Lower Tool slot
+        addSlotToContainer(new SlotTool(sexy, thing++, 62, 55));// Lower Tool 3
+
         addSlotToContainer(new SlotBackpack(sexy, thing++, 80, 55));// 4
         addSlotToContainer(new SlotBackpack(sexy, thing++, 98, 55));// 5
 
-        addSlotToContainer(new SlotFluid(sexy, thing++, 7, 25));// bucket left
-        // -6
-        addSlotToContainer(new SlotFluid(sexy, thing++, 7, 55));// bucket out
-        // left -7
-        addSlotToContainer(new SlotFluid(sexy, thing++, 153, 25));// bucket
-        // right -8
-        addSlotToContainer(new SlotFluid(sexy, thing++, 153, 55));// bucket out
-        // right -9
+        //Bucket Slots
 
+        // bucket left 6
+        addSlotToContainer(new SlotFluid(sexy, thing++, 7, 25));
+        // bucket out left 7
+        addSlotToContainer(new SlotFluid(sexy, thing++, 7, 55));
+        // bucket right out 8
+        addSlotToContainer(new SlotFluid(sexy, thing++, 153, 25));
+        // bucket right out 9
+        addSlotToContainer(new SlotFluid(sexy, thing++, 153, 55));
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i) {
         // TODO Fix the shit disrespecting slot accepting itemstack.
         Slot slot = getSlot(i);
-
         if (slot != null && slot.getHasStack()) {
             ItemStack stack = slot.getStack();
             ItemStack result = stack.copy();
-
             if (i >= 36) {
                 if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
@@ -114,13 +106,11 @@ public class BackpackContainer extends Container {
 
             return result;
         }
-
         return null;
     }
 
     @Override
     public void onContainerClosed(EntityPlayer par1EntityPlayer) {
-        this.needsUpdate = true;
         super.onContainerClosed(par1EntityPlayer);
     }
 
@@ -211,7 +201,6 @@ public class BackpackContainer extends Container {
 
     @Override
     public void putStackInSlot(int par1, ItemStack par2ItemStack) {
-        this.needsUpdate = true;
         super.putStackInSlot(par1, par2ItemStack);
     }
 

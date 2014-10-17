@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.handlers.EventHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.CycleToolMessage;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.NyanCatMessage;
@@ -38,9 +39,6 @@ public class AdventureBackpack {
 
     //Static things
     public static CreativeTabAB creativeTab;
-    public static SimpleNetworkWrapper networkWrapper;
-    //public static GuiHandler guiHandler;
-
 
     @SidedProxy(clientSide = ModInfo.MOD_CLIENT_PROXY, serverSide = ModInfo.MOD_SERVER_PROXY)
     public static IProxy proxy;
@@ -55,12 +53,8 @@ public class AdventureBackpack {
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 
         //NETWORK
-        int messageCounter = 0;
-        networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID + "ch");
-        networkWrapper.registerMessage(CycleToolMessage.CycleToolMessageServerHandler.class, CycleToolMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(GuiBackpackMessage.GuiBackpackMessageServerHandler.class, GuiBackpackMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(NyanCatMessage.PlaySoundMessageServerHandler.class, NyanCatMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(NyanCatMessage.PlaySoundMessageClientHandler.class, NyanCatMessage.class, messageCounter++, Side.CLIENT);
+        ModNetwork.init();
+
         //ModStuff
         ModItems.init();
         ModBlocks.init();
@@ -77,7 +71,7 @@ public class AdventureBackpack {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         proxy.init();
-        proxy.registerKeybindings();
+        //proxy.registerKeybindings();
 
         //GUIs
         new GuiHandler();

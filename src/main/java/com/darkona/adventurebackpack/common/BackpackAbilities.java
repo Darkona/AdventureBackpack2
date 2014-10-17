@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.network.NyanCatMessage;
@@ -17,6 +18,8 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -94,7 +97,8 @@ public class BackpackAbilities {
     /**
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
-    private static String[] validWearingBackpacks = {"Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Nyan"};
+    private static String[] validWearingBackpacks = {
+            "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Nyan"};
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -140,9 +144,9 @@ public class BackpackAbilities {
         if (lastDropTime <= 0 && drops > 0) {
             InventoryItem inv = Wearing.getBackpackInv(player, true);
             FluidStack raindrop = new FluidStack(FluidRegistry.WATER, drops);
-            inv.leftTank.fill(raindrop, true);
-            inv.rightTank.fill(raindrop, true);
-            inv.onInventoryChanged();
+            inv.getLeftTank().fill(raindrop, true);
+            inv.getRightTank().fill(raindrop, true);
+            inv.saveChanges();
             lastDropTime = 5;
         }
         backpack.stackTagCompound.setInteger("lastTime", lastDropTime);
@@ -231,9 +235,9 @@ public class BackpackAbilities {
         if (lastDropTime <= 0 && drops > 0) {
             InventoryItem inv = Wearing.getBackpackInv(player, true);
             FluidStack raindrop = new FluidStack(FluidRegistry.getFluid("melonJuice"), drops);
-            inv.leftTank.fill(raindrop, true);
-            inv.rightTank.fill(raindrop, true);
-            inv.onInventoryChanged();
+            inv.getLeftTank().fill(raindrop, true);
+            inv.getRightTank().fill(raindrop, true);
+            inv.saveChanges();
             lastDropTime = 5;
         }
         backpack.stackTagCompound.setInteger("lastTime", lastDropTime);
@@ -309,9 +313,9 @@ public class BackpackAbilities {
      * The Wolf Backpack is a handy one if you're out in the wild. It checks around for any wolves that may lurk around.
      * If any of them gets mad at you, it will smell the scent of it's kin on you and promptly forget about the whole
      * deal. Smelling like dog is awesome.
-     * @param player
-     * @param world
-     * @param backpack
+     * @param player the player
+     * @param world the world
+     * @param backpack the backpack
      */
     @SuppressWarnings("unchecked")
     public void itemWolf(EntityPlayer player, World world, ItemStack backpack) {
@@ -397,13 +401,17 @@ public class BackpackAbilities {
 
     public void itemNyan(EntityPlayer player, World world, ItemStack backpack) {
         int noteTime = backpack.getTagCompound().getInteger("lastTime") - 1;
-        if (noteTime % 5 == 0 && noteTime >= 0) {
-            AdventureBackpack.networkWrapper.sendToAllAround(new NyanCatMessage(MessageConstants.SPAWN_PARTICLE, player.getPersistentID().toString()),
-                    new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 30D));
-        } else {
-            noteTime = 0;
+        int i = 2;
+        if (noteTime >= 0 && noteTime < Utils.secondsToTicks(147)) {
+            player.setSprinting(true);
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, 2));
+            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 1, 2));
+            if (noteTime % 2 == 0) {
+                ModNetwork.networkWrapper.sendToAllAround(
+                        new NyanCatMessage(MessageConstants.SPAWN_PARTICLE, player.getPersistentID().toString()),
+                        new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 30D));
+            }
         }
-        noteTime--;
         backpack.getTagCompound().setInteger("lastTime", noteTime);
     }
     /* ==================================== TILE ABILITIES ==========================================*/
@@ -422,7 +430,7 @@ public class BackpackAbilities {
                 backpack.getRightTank().fill(raindrop, true);
                 backpack.getLeftTank().fill(raindrop, true);
                 dropTime = 5;
-                backpack.onInventoryChanged();
+                backpack.markDirty();
             }
             backpack.lastTime = dropTime;
         }

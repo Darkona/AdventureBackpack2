@@ -134,7 +134,7 @@ public class ItemHose extends ItemAB {
             if (nbt.getInteger("mode") == -1) nbt.setInteger("mode", 0);
             InventoryItem inv = new InventoryItem(backpack);
             inv.readFromNBT();
-            FluidTank tank = nbt.getInteger("tank") == 0 ? inv.leftTank : inv.rightTank;
+            FluidTank tank = nbt.getInteger("tank") == 0 ? inv.getLeftTank() : inv.getRightTank();
             if (tank != null && tank.getFluid() != null) {
                 nbt.setString("fluid", Utils.capitalize(tank.getFluid().getFluid().getName()));
                 nbt.setInteger("amount", tank.getFluidAmount());
@@ -158,7 +158,7 @@ public class ItemHose extends ItemAB {
         if (backpack == null) return false;
 
         InventoryItem inv = Wearing.getBackpackInv(player, true);
-        FluidTank tank = getHoseTank(stack) == 0 ? inv.leftTank : inv.rightTank;
+        FluidTank tank = getHoseTank(stack) == 0 ? inv.getLeftTank() : inv.getRightTank();
         TileEntity te = world.getTileEntity(x, y, z);
         if (te != null && te instanceof IFluidHandler) {
             switch (getHoseMode(stack)) {
@@ -198,7 +198,7 @@ public class ItemHose extends ItemAB {
         if (backpack == null) return stack;
         InventoryItem inventory = new InventoryItem(backpack);
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
-        FluidTank tank = getHoseTank(stack) == 0 ? inventory.leftTank : inventory.rightTank;
+        FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
         if (tank != null) {
             switch (getHoseMode(stack)) {
                 case 0: // If it's in Suck Mode
@@ -212,14 +212,6 @@ public class ItemHose extends ItemAB {
                             inventory.saveChanges();
                         }
                     }
-                    /*if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
-                    {
-						if (mop.entityHit instanceof EntityCow)
-						{
-							tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
-                            inventory.saveChanges();
-						}
-					}*/
                     break;
                 case 1: // If it's in Spill Mode
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
@@ -255,12 +247,10 @@ public class ItemHose extends ItemAB {
                             return stack;
                         }
                         if (spillEvent.getResult() == Event.Result.ALLOW) {
-                            // if(!player.capabilities.isCreativeMode){ this is
-                            // off
-                            // for debugging
-                            tank.drain(spillEvent.fluidResult.amount, true);
-                            inventory.saveChanges();
-                            // }
+                            if (!player.capabilities.isCreativeMode) {
+                                tank.drain(spillEvent.fluidResult.amount, true);
+                                inventory.saveChanges();
+                            }
                         }
 
                     }
@@ -285,9 +275,7 @@ public class ItemHose extends ItemAB {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
-        //AdventureBackpack.networkWrapper.sendToServer(new CycleToolMessage(1,((EntityPlayer) entityLiving).inventory.currentItem,false));
-        Actions.switchHose((EntityPlayer) entityLiving, 1, ((EntityPlayer) entityLiving).inventory.currentItem);
-        return false;
+        return true;
     }
 
     @Override
@@ -322,7 +310,7 @@ public class ItemHose extends ItemAB {
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (entity instanceof EntityCow && backpack != null) {
             InventoryItem inventory = new InventoryItem(backpack);
-            FluidTank tank = getHoseTank(stack) == 0 ? inventory.leftTank : inventory.rightTank;
+            FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
             tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
             inventory.saveChanges();
 

@@ -30,20 +30,20 @@ public class GuiHandler implements IGuiHandler {
                 //ADVENTUREBACKPACK GUI FROM TILE ENTITY
                 TileEntity te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack) {
-                    return new BackpackContainer(player.inventory, (TileAdventureBackpack) te);
+                    return new BackpackContainer(player.inventory, (TileAdventureBackpack) te, BackpackContainer.SOURCE_TILE);
                 }
                 break;
             case 1:
                 //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
                 InventoryItem inv = Wearing.getBackpackInv(player, true);
-                if (inv.containerStack != null)
-                    return new BackpackContainer(player.inventory, inv);
+                if (inv.getInventoryItem() != null)
+                    return new BackpackContainer(player.inventory, inv, BackpackContainer.SOURCE_ITEM);
                 break;
             case 2:
                 //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
-                if (inv.containerStack != null)
-                    return new BackpackContainer(player.inventory, inv);
+                if (inv.getInventoryItem() != null)
+                    return new BackpackContainer(player.inventory, inv, BackpackContainer.SOURCE_ITEM);
                 break;
             case 3:
                 //ADVENTUREBACKPACK CRAFT GUI FROM TILE ENTITY
@@ -55,13 +55,13 @@ public class GuiHandler implements IGuiHandler {
             case 4:
                 //ADVENTUREBACKPACK CRAFT GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
-                if (inv.containerStack != null)
+                if (inv.getInventoryItem() != null)
                     return new BackCraftContainer(player, world, inv);
                 break;
             case 5:
                 //ADVENTUREBACKPACK CRAFT GUI FROM HOLDING BACKPACK / RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
-                if (inv.containerStack != null)
+                if (inv.getInventoryItem() != null)
                     return new BackCraftContainer(player, world, inv);
                 break;
         }
@@ -85,14 +85,14 @@ public class GuiHandler implements IGuiHandler {
             case 1:
                 //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
-                if (inv.containerStack != null) {
+                if (inv.getInventoryItem() != null) {
                     return new GuiAdvBackpack(player, inv, true);
                 }
                 break;
             case 2:
                 //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
-                if (inv.containerStack != null) {
+                if (inv.getInventoryItem() != null) {
                     return new GuiAdvBackpack(player, inv, false);
                 }
                 break;
@@ -106,14 +106,14 @@ public class GuiHandler implements IGuiHandler {
             case 4:
                 //ADVENTUREBACKPACK CRAFT GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
-                if (inv.containerStack != null) {
+                if (inv.getInventoryItem() != null) {
                     return new GuiCraftAdvBackpack(player, inv, true);
                 }
                 break;
             case 5:
                 //ADVENTUREBACKPACK CRAFT GUI FROM HOLDING BACKPACK / RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
-                if (inv.containerStack != null) {
+                if (inv.getInventoryItem() != null) {
                     return new GuiCraftAdvBackpack(player, inv, false);
                 }
                 break;

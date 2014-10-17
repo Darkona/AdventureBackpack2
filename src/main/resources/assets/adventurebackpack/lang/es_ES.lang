@@ -1,2 +1,31 @@
 # Items
 item.adventurebackpack:machete.name=Machete
+item.adventurebackpack:backpackComponent.name=Componente de Mochila
+item.adventurebackpack:sleepingBag.name=Bolsa de dormir
+item.adventurebackpack:backpackTank.name=Tanque de Mochila
+item.adventurebackpack:macheteHandle=Empuñadura de Machete
+item.adventurebackpack:hoseHead.name=Boquilla de Manquera
+item.adventurebackpack:adventureBackpack.name=Mochila de Aventura
+item.adventurebackpack:backpackHose.name=Manquera de Mochila
+item.adventurebackpack:adventureSuit.name=Traje de Aventurero
+item.adventurebackpack:adventureHat.name=Fedora de Aventurero
+item.adventurebackpack:pistonBoots.name=Botas Pistón
+item.adventurebackpack:hose.leftTank.suck.name=Manquera: Tanque Izq. / Modo Succión
+item.adventurebackpack:hose.leftTank.spill=Manguera: Tanque Izq. / Modo Vertir
+item.adventurebackpack:hose.leftTank.drink=Manguera: Tanque Izq. / Modo Beber
+
+
+item.adventurebackpack:hose.rightTank.suck.name=Manguera: Tanque Der. / Modo Succión
+item.adventurebackpack:hose.rightTank.spill.name=Manguera: Tanque Der. / Modo Vertir
+item.adventurebackpack:hose.rightTank.drink.name=Manguera: Tanque Der. / Modo Beber
+
+item.adventurebackpack:hoseUseless=Hose: Inútil / Sin Mochila
+
+#Blocks
+block.adventurebackpack:blockAdventureBackpack.name=Mochila de Aventura Base
+#CreativeTab
+
+#Keybindings
+keys.adventureBackpack.category=Mochila de Aventura
+keys.adventureBackpack.openBackpackInventory=Abrir Inventario de Mochila
+keys.adventureBackpack.switchHoseTank=Cambiar Tanque de Manguera

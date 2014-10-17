@@ -9,17 +9,21 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.block.material.Material;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.*;
+import sun.util.resources.LocaleNames_hi;
+
+import java.util.Random;
 
 /**
  * Created on 11/10/2014
@@ -31,6 +35,8 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class Actions {
 
+    public static final boolean HOSE_SWITCH = false;
+    public static final boolean HOSE_TOGGLE = true;
     /**
      * Adds vertical inertia to the movement in the Y axis of the player, and makes Newton's Laws cry.
      * In other words, makes you jump higher.
@@ -64,7 +70,7 @@ public class Actions {
                 return null;
             Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
             if (fluidBlock != null) {
-                FluidStack fluid = new FluidStack(fluidBlock, Constants.bucket);
+                FluidStack fluid = new FluidStack(fluidBlock, FluidContainerRegistry.BUCKET_VOLUME);
                 if (tank.getFluid() == null || tank.getFluid().containsFluid(fluid)) {
                     int accepted = tank.fill(fluid, false);
                     if (accepted > 0) {
@@ -170,16 +176,24 @@ public class Actions {
     /**
      * @param player    Duh!
      * @param direction The direction in which the hose modes will switch.
+     * @param action The type of the action to be performed on the hose.
+     *               Can be HOSE_SWITCH for mode or HOSE_TOGGLE for tank
      * @param slot      The slot in which the hose gleefully frolicks in the inventory.
      */
-    public static void switchHose(EntityPlayer player, int direction, int slot) {
+    public static void switchHose(EntityPlayer player, boolean action, int direction, int slot) {
         ItemStack hose = player.inventory.mainInventory[slot];
         NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
-        if (direction < 0) {
+        if (action == Actions.HOSE_SWITCH) {
             int mode = ItemHose.getHoseMode(hose);
-            mode = (mode + 1) % 3;
+            if (direction > 0) {
+                mode = (mode + 1) % 3;
+            } else if (direction < 0) {
+                mode = (mode - 1 < 0) ? 2 : mode - 1;
+            }
             tag.setInteger("mode", mode);
-        } else {
+        }
+
+        if (action == Actions.HOSE_TOGGLE) {
             int tank = ItemHose.getHoseTank(hose);
             tank = (tank + 1) % 2;
             tag.setInteger("tank", tank);
@@ -200,15 +214,15 @@ public class Actions {
         ItemStack current = player.getCurrentEquippedItem();
         if (direction < 0) {
             player.inventory.mainInventory[slot] = backpack.getStackInSlot(3);
-            backpack.setInventorySlotContentsSafe(3, backpack.getStackInSlot(0));
-            backpack.setInventorySlotContentsSafe(0, current);
+            backpack.setInventorySlotContentsNoSave(3, backpack.getStackInSlot(0));
+            backpack.setInventorySlotContentsNoSave(0, current);
             backpack.saveChanges();
             player.inventory.closeInventory();
         } else {
             if (direction > 0) {
                 player.inventory.mainInventory[slot] = backpack.getStackInSlot(0);
-                backpack.setInventorySlotContentsSafe(0, backpack.getStackInSlot(3));
-                backpack.setInventorySlotContentsSafe(3, current);
+                backpack.setInventorySlotContentsNoSave(0, backpack.getStackInSlot(3));
+                backpack.setInventorySlotContentsNoSave(3, current);
                 backpack.saveChanges();
             }
 
@@ -292,15 +306,75 @@ public class Actions {
     public static void electrify(EntityPlayer player) {
         ItemStack stack = Wearing.getWearingBackpack(player);
         if (stack.stackTagCompound != null) {
-            if (stack.stackTagCompound.hasKey("color") && stack.stackTagCompound.getString("color").contains("PorkchopRaw")) {
+            if (stack.stackTagCompound.hasKey("colorName") && stack.stackTagCompound.getString("colorName").equals("Pig")) {
                 stack.stackTagCompound.setString("color", "Pigman");
                 stack.stackTagCompound.setString("colorName", "Zombie Pigman");
-            } else if (stack.stackTagCompound.hasKey("color") && !stack.stackTagCompound.getString("color").contains("Pigman")) {
+            } else if (stack.stackTagCompound.hasKey("colorName") && !stack.stackTagCompound.getString("colorName").equals("BlockDiamond")) {
                 player.inventory.armorInventory[2].stackTagCompound.setString("color", "Electric");
                 stack.stackTagCompound.setString("colorName", "Electric");
             }
         }
     }
 
+    public static void leakArrow(EntityPlayer player, ItemStack bow, int charge) {
+        World world = player.worldObj;
+        Random itemRand = new Random();
+        InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(player));
 
+        //this is all vanilla code for the bow
+        boolean flag = player.capabilities.isCreativeMode
+                || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) > 0;
+
+        if (flag || backpack.hasItem(Items.arrow)) {
+            float f = (float) charge / 20.0F;
+            f = (f * f + f * 2.0F) / 3.0F;
+            if ((double) f < 0.1D) {
+                return;
+            }
+            if (f > 1.0F) {
+                f = 1.0F;
+            }
+            EntityArrow entityarrow = new EntityArrow(world, player, f * 2.0F);
+            if (f == 1.0F) {
+                entityarrow.setIsCritical(true);
+            }
+            int power = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, bow);
+            if (power > 0) {
+                entityarrow.setDamage(entityarrow.getDamage() + (double) power * 0.5D + 0.5D);
+            }
+            int punch = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, bow);
+            if (punch > 0) {
+                entityarrow.setKnockbackStrength(punch);
+            }
+            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, bow) > 0) {
+                entityarrow.setFire(100);
+            }
+
+            bow.damageItem(1, player);
+            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+
+            if (flag) {
+                entityarrow.canBePickedUp = 2;
+            } else {
+                /*
+                * From here, instead of leaking an arrow to the player inventory, which may be full and then it would be
+                * pointless, leak an arrow straight from the backpack ^_^
+                *
+                * It could be possible to switch a whole stack with the player inventory, fire the arrow, and then
+                * switch back, but that's stupid.
+                *
+                * That's how you make a quiver (for vanilla bows at least, or anything that uses the events and vanilla
+                * arrows) Until we have an event that fires when a player consumes items in his/her inventory.
+                *
+                * I should make a pull request. Too lazy, though.
+                * */
+                backpack.consumeInventoryItem(Items.arrow);
+            }
+
+            if (!world.isRemote) {
+                world.spawnEntityInWorld(entityarrow);
+                LogHelper.info("Fired an arrow!");
+            }
+        }
+    }
 }

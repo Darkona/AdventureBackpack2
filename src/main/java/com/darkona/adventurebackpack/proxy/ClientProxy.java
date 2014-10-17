@@ -21,26 +21,32 @@ import net.minecraftforge.client.MinecraftForgeClient;
 public class ClientProxy implements IProxy {
 
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
+    public static RendererItemAdventureHat rendererItemAdventureHat;
+    public static RendererHose rendererHose;
     public static KeybindHandler keybindHandler;
 
     public void init() {
         initRenderers();
+        registerKeybindings();
     }
 
-    ;
 
     public void initRenderers() {
         rendererItemAdventureBackpack = new RendererItemAdventureBackpack();
-        MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, new RendererItemAdventureHat());
+        rendererItemAdventureHat = new RendererItemAdventureHat();
+        rendererHose = new RendererHose();
+
+
+        MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, rendererItemAdventureHat);
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureBackpack, rendererItemAdventureBackpack);
-        //MinecraftForgeClient.registerItemRenderer(new ItemStack(ModBlocks.blockBackpack).getItem(), new RendererItemAdventureBackpack());
-        MinecraftForgeClient.registerItemRenderer(ModItems.hose, new RendererHose());
+        MinecraftForgeClient.registerItemRenderer(ModItems.hose, rendererHose);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileAdventureBackpack.class, new RendererAdventureBackpackBlock());
     }
 
     public void registerKeybindings() {
         ClientRegistry.registerKeyBinding(Keybindings.openBackpack);
+        ClientRegistry.registerKeyBinding(Keybindings.toggleHose);
         FMLCommonHandler.instance().bus().register(new KeybindHandler());
 
     }

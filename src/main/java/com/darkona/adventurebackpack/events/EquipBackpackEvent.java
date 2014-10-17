@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.events;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /**
@@ -9,10 +10,11 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
  * @author Darkona
  */
 public class EquipBackpackEvent extends PlayerEvent {
+    ItemStack backpack;
 
-    public EquipBackpackEvent(EntityPlayer player) {
+    public EquipBackpackEvent(EntityPlayer player, ItemStack theBackpack) {
         super(player);
+        backpack = theBackpack;
     }
-
 
 }

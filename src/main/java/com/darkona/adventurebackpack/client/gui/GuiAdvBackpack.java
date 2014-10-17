@@ -1,9 +1,9 @@
 package com.darkona.adventurebackpack.client.gui;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
+import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
@@ -42,7 +42,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
     private FluidStack rgt;
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack) {
-        super(new BackpackContainer(player.inventory, tileBackpack));
+        super(new BackpackContainer(player.inventory, tileBackpack, BackpackContainer.SOURCE_TILE));
         this.inventory = tileBackpack;
         this.source = true;
         //this.sbstatus = tileBackpack.sleepingBagDeployed;
@@ -55,7 +55,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
     }
 
     public GuiAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing) {
-        super(new BackpackContainer(player.inventory, item));
+        super(new BackpackContainer(player.inventory, item, BackpackContainer.SOURCE_ITEM));
         this.inventory = item;
         this.wearing = wearing;
         this.source = false;
@@ -157,11 +157,11 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui {
         } else */
         if (craftButton.inButton(this, mouseX, mouseY)) {
             if (source) {
-                AdventureBackpack.networkWrapper
+                ModNetwork.networkWrapper
                         .sendToServer(new GuiBackpackMessage(MessageConstants.CRAFT_GUI,
                                 MessageConstants.FROM_TILE));
             } else {
-                AdventureBackpack.networkWrapper
+                ModNetwork.networkWrapper
                         .sendToServer(new GuiBackpackMessage(MessageConstants.CRAFT_GUI,
                                 wearing ? MessageConstants.FROM_KEYBIND : MessageConstants.FROM_HOLDING));
             }

@@ -1,7 +1,8 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.config.Keybindings;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.network.CycleToolMessage;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.Key;
@@ -19,22 +20,23 @@ public class KeybindHandler {
         if (Keybindings.openBackpack.isPressed()) {
             return Key.OPEN_BACKPACK_INVENTORY;
         }
+        if (Keybindings.toggleHose.isPressed()) {
+            return Key.TOGGLE_HOSE_TANK;
+        }
         return Key.UNKNOWN;
     }
 
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event) {
         Key keypressed = getPressedKeyBinding();
-        //LogHelper.info(keypressed);
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
-        int playerX = (int) player.posX;
-        int playerY = (int) player.posY;
-        int playerZ = (int) player.posZ;
-
-
         if (keypressed == Key.OPEN_BACKPACK_INVENTORY) {
-            AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_KEYBIND));
+            ModNetwork.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_KEYBIND));
+        }
+
+        if (keypressed == Key.TOGGLE_HOSE_TANK) {
+            ModNetwork.networkWrapper.sendToServer(new CycleToolMessage(0, (player).inventory.currentItem, MessageConstants.TOGGLE_HOSE_TANK));
         }
     }
 }

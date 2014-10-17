@@ -1,10 +1,10 @@
 package com.darkona.adventurebackpack.client.gui;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
 
+import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 
@@ -113,9 +113,9 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui {
     protected void mouseClicked(int mouseX, int mouseY, int button) {
         if (backButton.inButton(this, mouseX, mouseY)) {
             if (source) {
-                AdventureBackpack.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_TILE));
+                ModNetwork.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_TILE));
             } else {
-                AdventureBackpack.networkWrapper
+                ModNetwork.networkWrapper
                         .sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, wearing ?
                                 MessageConstants.FROM_KEYBIND : MessageConstants.FROM_HOLDING));
             }

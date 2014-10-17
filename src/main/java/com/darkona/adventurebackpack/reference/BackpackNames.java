@@ -61,7 +61,6 @@ public class BackpackNames {
             put("Cloth", "Sheep");
             put("Lightgem", "Glowstone");
             put("EnchantmentTable", "Deluxe");
-            put("Rainbow", "Nyan!");
             put("EnderPearl", "Enderman");
             put("MushroomStew", "Mooshroom");
             put("BlockGold", "Golden");

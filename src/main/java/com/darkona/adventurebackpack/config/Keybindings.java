@@ -12,6 +12,5 @@ import org.lwjgl.input.Keyboard;
 public class Keybindings {
 
     public static KeyBinding openBackpack = new KeyBinding(Names.keys.OPEN_BACKPACK_INVENTORY, Keyboard.KEY_B, Names.keys.CATEGORY);
-
-
+    public static KeyBinding toggleHose = new KeyBinding(Names.keys.TOGGLE_HOSE_TANK, Keyboard.KEY_Q, Names.keys.CATEGORY);
 }

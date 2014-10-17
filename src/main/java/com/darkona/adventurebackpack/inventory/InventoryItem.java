@@ -6,13 +6,12 @@ import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 /**
@@ -20,11 +19,11 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class InventoryItem implements IAdvBackpack {
 
-    public ItemStack[] inventory;
-    public FluidTank leftTank;
-    public FluidTank rightTank;
+    private ItemStack[] inventory;
+    private FluidTank leftTank;
+    private FluidTank rightTank;
     private String name;
-    public ItemStack containerStack;
+    private ItemStack containerStack;
     private String color;
     private String colorName;
     private int lastTime = 0;
@@ -54,6 +53,13 @@ public class InventoryItem implements IAdvBackpack {
 
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
+        switch (slot) {
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                return inventory[slot];
+        }
         return null;
     }
 
@@ -79,6 +85,12 @@ public class InventoryItem implements IAdvBackpack {
         return rightTank;
     }
 
+    @Override
+    public ItemStack getInventoryItem() {
+        return containerStack;
+    }
+
+
     // =============================================== SETTERS ====================================================== //
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemstack) {
@@ -89,12 +101,12 @@ public class InventoryItem implements IAdvBackpack {
         onInventoryChanged();
     }
 
-    public void setInventorySlotContentsSafe(int slot, ItemStack itemstack) {
+    @Override
+    public void setInventorySlotContentsNoSave(int slot, ItemStack itemstack) {
         inventory[slot] = itemstack;
         if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
             itemstack.stackSize = getInventoryStackLimit();
         }
-
     }
 
     public void setLeftTank(FluidTank leftTank) {
@@ -119,86 +131,8 @@ public class InventoryItem implements IAdvBackpack {
     }
 
     @Override
-    public boolean updateTankSlots(FluidTank tank, int slotIn) {
-
-        int slotOut = slotIn + 1;
-        ItemStack stackIn = getStackInSlot(slotIn);
-        ItemStack stackOut = getStackInSlot(slotOut);
-
-        if (tank.getFluid() != null) {
-            for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData()) {
-                if (data.fluid.isFluidEqual(tank.getFluid())) {
-
-                    if (stackIn.isItemEqual(data.emptyContainer) && tank.drain(data.fluid.amount, false).amount >= data.fluid.amount) {
-
-                        if (stackOut != null && stackOut.isItemEqual(data.filledContainer) && stackOut.stackSize < stackOut.getMaxStackSize()) {
-                            ItemStack newCont = FluidContainerRegistry.fillFluidContainer(data.fluid, stackIn);
-                            newCont.stackSize = stackOut.stackSize + 1;
-                            setInventorySlotContentsSafe(slotOut, newCont);
-                            decrStackSizeSafe(slotIn, 1);
-                            tank.drain(data.fluid.amount, true);
-                            saveChanges();
-
-                        } else if (stackOut == null) {
-                            ItemStack newCont = FluidContainerRegistry.fillFluidContainer(data.fluid, stackIn);
-                            newCont.stackSize = 1;
-                            setInventorySlotContentsSafe(slotOut, newCont);
-                            decrStackSizeSafe(slotIn, 1);
-                            tank.drain(data.fluid.amount, true);
-                            saveChanges();
-
-                        }
-                    } else if (stackIn.isItemEqual(data.filledContainer) && tank.fill(data.fluid, false) >= data.fluid.amount) {
-
-                        if (stackOut != null && stackOut.isItemEqual(data.emptyContainer) && stackOut.stackSize < stackOut.getMaxStackSize()) {
-                            if (Utils.shouldGiveEmpty(data.emptyContainer)) {
-                                setInventorySlotContentsSafe(slotOut, new ItemStack(data.emptyContainer.getItem(), stackOut.stackSize + 1));
-                            }
-                            decrStackSizeSafe(slotIn, 1);
-                            tank.fill(data.fluid, true);
-                            saveChanges();
-
-                        } else if (stackOut == null) {
-                            if (Utils.shouldGiveEmpty(data.emptyContainer)) {
-                                setInventorySlotContentsSafe(slotOut, new ItemStack(data.emptyContainer.getItem(), 1));
-                            }
-                            decrStackSizeSafe(slotIn, 1);
-                            tank.fill(data.fluid, true);
-                            saveChanges();
-                        }
-                    }
-                }
-            }
-        } else if (tank.getFluid() == null) {
-            for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData()) {
-                if (stackIn.isItemEqual(data.filledContainer) && tank.fill(data.fluid, false) >= data.fluid.amount) {
-
-                    if (stackOut != null && stackOut.isItemEqual(data.emptyContainer) && stackOut.stackSize < stackOut.getMaxStackSize()) {
-                        if (Utils.shouldGiveEmpty(data.emptyContainer)) {
-                            setInventorySlotContentsSafe(slotOut, new ItemStack(data.emptyContainer.getItem(), stackOut.stackSize + 1));
-                        }
-                        decrStackSizeSafe(slotIn, 1);
-                        tank.fill(data.fluid, true);
-                        saveChanges();
-
-                    } else if (stackOut == null) {
-                        if (Utils.shouldGiveEmpty(data.emptyContainer)) {
-                            setInventorySlotContentsSafe(slotOut, new ItemStack(data.emptyContainer.getItem(), 1));
-                        }
-                        decrStackSizeSafe(slotIn, 1);
-                        tank.fill(data.fluid, true);
-                        saveChanges();
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public TileAdventureBackpack getTile() {
-        return null;
+    public void updateTankSlots(FluidTank tank, int slotIn) {
+        InventoryActions.transferContainerTank(this, tank, slotIn);
     }
 
     @Override
@@ -221,8 +155,8 @@ public class InventoryItem implements IAdvBackpack {
         return special;
     }
 
+    @Override
     public void onInventoryChanged() {
-
         for (int i = 0; i < inventory.length; i++) {
             if (i == 6 && inventory[i] != null) {
                 updateTankSlots(getLeftTank(), i);
@@ -255,9 +189,9 @@ public class InventoryItem implements IAdvBackpack {
         return stack;
     }
 
-    private ItemStack decrStackSizeSafe(int slot, int amount) {
+    @Override
+    public ItemStack decrStackSizeNoSave(int slot, int amount) {
         ItemStack stack = getStackInSlot(slot);
-
         if (stack != null) {
             if (stack.stackSize <= amount) {
                 setInventorySlotContents(slot, null);
@@ -266,6 +200,16 @@ public class InventoryItem implements IAdvBackpack {
             }
         }
         return stack;
+    }
+
+    @Override
+    public boolean hasItem(Item item) {
+        return InventoryActions.hasItem(this, item);
+    }
+
+    @Override
+    public void consumeInventoryItem(Item item) {
+        InventoryActions.consumeItemInBackpack(this, item);
     }
 
     // =============================================== BOOLEANS ===================================================== //
@@ -336,18 +280,19 @@ public class InventoryItem implements IAdvBackpack {
     }
 
     // ============================================== OTHERS ======================================================== //
-    public void tellMeLeft() {
-        if (leftTank.getFluid() != null) {
-            System.out.println("The left tank has" + this.leftTank.getFluidAmount() + " " + this.leftTank.getFluid().getFluid().getName());
-        } else {
-            System.out.println("The left tank is empty");
-        }
-    }
 
+    /**
+     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
+     * hasn't changed and skip it.
+     */
     @Override
     public void markDirty() {
 
     }
 
+    @Override
+    public TileAdventureBackpack getTile() {
+        return null;
+    }
 }
 

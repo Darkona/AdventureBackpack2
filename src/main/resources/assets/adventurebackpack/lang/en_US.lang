@@ -3,7 +3,8 @@ item.adventurebackpack:machete.name=Machete
 item.adventurebackpack:backpackComponent.name=Backpack Component Item
 item.adventurebackpack:sleepingBag.name=Sleeping Bag
 item.adventurebackpack:backpackTank.name=Backpack Tank
-item.adventurebackpack:hoseHead.name=Hose Headpiece
+item.adventurebackpack:macheteHandle=Machete Handle
+item.adventurebackpack:hoseHead.name=Hose Nozzle
 item.adventurebackpack:adventureBackpack.name=Adventure Backpack
 item.adventurebackpack:backpackHose.name=Backpack Hose
 item.adventurebackpack:adventureSuit.name=Adventurer's Suit
@@ -27,3 +28,4 @@ block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
 #Keybindings
 keys.adventureBackpack.category=Adventure Backpack
 keys.adventureBackpack.openBackpackInventory=Open Backpack Inventory
+keys.adventureBackpack.switchHoseTank=Switch Hose Tank

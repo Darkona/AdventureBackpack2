@@ -17,12 +17,12 @@ public class CycleToolMessage implements IMessage {
 
     private int directionOfCycle;
     private int slot;
-    private boolean typeOfAction;
+    private byte typeOfAction;
 
     public CycleToolMessage() {
     }
 
-    public CycleToolMessage(int directionOfCycle, int slot, boolean typeOfAction) {
+    public CycleToolMessage(int directionOfCycle, int slot, byte typeOfAction) {
         this.typeOfAction = typeOfAction;
         this.directionOfCycle = directionOfCycle;
         this.slot = slot;
@@ -31,14 +31,14 @@ public class CycleToolMessage implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.typeOfAction = buf.readBoolean();
+        this.typeOfAction = buf.readByte();
         this.directionOfCycle = buf.readInt();
         this.slot = buf.readInt();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeBoolean(typeOfAction);
+        buf.writeByte(typeOfAction);
         buf.writeInt(directionOfCycle);
         buf.writeInt(slot);
     }
@@ -48,12 +48,16 @@ public class CycleToolMessage implements IMessage {
         @Override
         public IMessage onMessage(CycleToolMessage message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-            if (message.typeOfAction) {
-                LogHelper.debug("CycleToolMessage received - Cycle tool");
-                Actions.cycleTool(player, message.directionOfCycle, message.slot);
-            } else {
-                LogHelper.debug("CycleToolMessage received - Switch Hose Mode");
-                Actions.switchHose(ctx.getServerHandler().playerEntity, message.directionOfCycle, message.slot);
+            switch (message.typeOfAction) {
+                case MessageConstants.CYCLE_TOOL_ACTION:
+                    Actions.cycleTool(player, message.directionOfCycle, message.slot);
+                    break;
+                case MessageConstants.TOGGLE_HOSE_TANK:
+                    Actions.switchHose(player, Actions.HOSE_TOGGLE, message.directionOfCycle, message.slot);
+                    break;
+                case MessageConstants.SWITCH_HOSE_ACTION:
+                    Actions.switchHose(player, Actions.HOSE_SWITCH, message.directionOfCycle, message.slot);
+                    break;
             }
             return null;
         }
