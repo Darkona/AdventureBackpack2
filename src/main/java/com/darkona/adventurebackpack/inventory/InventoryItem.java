@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -20,7 +21,7 @@ import net.minecraftforge.fluids.FluidTank;
 public class InventoryItem implements IAdvBackpack
 {
 
-    private ItemStack[] inventory;
+    public ItemStack[] inventory;
     private FluidTank leftTank;
     private FluidTank rightTank;
     private String name;
@@ -29,7 +30,52 @@ public class InventoryItem implements IAdvBackpack
     private String colorName;
     private int lastTime = 0;
     private boolean special;
-    //
+    private NBTTagCompound extendedProperties;
+
+    public NBTTagCompound getExtendedProperties()
+    {
+        return extendedProperties;
+    }
+
+    public void setExtendedProperties(NBTTagCompound extendedProperties)
+    {
+        this.extendedProperties = extendedProperties;
+    }
+
+    public int getLastTime()
+    {
+        return lastTime;
+    }
+
+    public void setLastTime(int lastTime)
+    {
+        this.lastTime = lastTime;
+    }
+
+    public void setSpecial(boolean special)
+    {
+        this.special = special;
+    }
+
+    public void setColorName(String colorName)
+    {
+        this.colorName = colorName;
+    }
+
+    public void setColor(String color)
+    {
+        this.color = color;
+    }
+
+    public ItemStack getContainerStack()
+    {
+        return containerStack;
+    }
+
+    public void setContainerStack(ItemStack containerStack)
+    {
+        this.containerStack = containerStack;
+    }
 
     public InventoryItem(ItemStack stack)
     {
@@ -84,14 +130,12 @@ public class InventoryItem implements IAdvBackpack
     @Override
     public FluidTank getLeftTank()
     {
-        //leftTank.readFromNBT(containerStack.stackTagCompound.getCompoundTag("leftTank"));
         return leftTank;
     }
 
     @Override
     public FluidTank getRightTank()
     {
-        //rightTank.readFromNBT(containerStack.stackTagCompound.getCompoundTag("rightTank"));
         return rightTank;
     }
 
@@ -106,10 +150,15 @@ public class InventoryItem implements IAdvBackpack
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemstack)
     {
-        inventory[slot] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+        if (slot >= inventory.length)
         {
-            itemstack.stackSize = getInventoryStackLimit();
+            return;
+        }
+        inventory[slot] = itemstack;
+
+        if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit())
+        {
+            itemstack.stackSize = this.getInventoryStackLimit();
         }
         onInventoryChanged();
     }
@@ -117,10 +166,15 @@ public class InventoryItem implements IAdvBackpack
     @Override
     public void setInventorySlotContentsNoSave(int slot, ItemStack itemstack)
     {
-        inventory[slot] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+        if (slot >= inventory.length)
         {
-            itemstack.stackSize = getInventoryStackLimit();
+            return;
+        }
+        inventory[slot] = itemstack;
+
+        if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit())
+        {
+            itemstack.stackSize = this.getInventoryStackLimit();
         }
     }
 
@@ -197,6 +251,7 @@ public class InventoryItem implements IAdvBackpack
         saveChanges();
     }
 
+    @Override
     public void saveChanges()
     {
         this.containerStack.setTagCompound(writeToNBT());
@@ -206,37 +261,37 @@ public class InventoryItem implements IAdvBackpack
     @Override
     public ItemStack decrStackSize(int slot, int amount)
     {
-        ItemStack stack = getStackInSlot(slot);
-
-        if (stack != null)
+        if (slot < inventory.length && inventory[slot] != null)
         {
-            if (stack.stackSize <= amount)
+            if (inventory[slot].stackSize > amount)
             {
-                setInventorySlotContents(slot, null);
-            } else
-            {
-                stack = stack.splitStack(amount);
+                ItemStack result = inventory[slot].splitStack(amount);
+                saveChanges();
+                LogHelper.info("Saved in decrStackSize");
+                return result;
             }
+            ItemStack stack = inventory[slot];
+            setInventorySlotContents(slot, null);
+            return stack;
         }
-        onInventoryChanged();
-        return stack;
+        return null;
     }
 
     @Override
     public ItemStack decrStackSizeNoSave(int slot, int amount)
     {
-        ItemStack stack = getStackInSlot(slot);
-        if (stack != null)
+        if (slot < inventory.length && inventory[slot] != null)
         {
-            if (stack.stackSize <= amount)
+            if (inventory[slot].stackSize > amount)
             {
-                setInventorySlotContents(slot, null);
-            } else
-            {
-                stack = stack.splitStack(amount);
+                ItemStack result = inventory[slot].splitStack(amount);
+                return result;
             }
+            ItemStack stack = inventory[slot];
+            setInventorySlotContentsNoSave(slot, null);
+            return stack;
         }
-        return stack;
+        return null;
     }
 
     @Override
@@ -294,6 +349,7 @@ public class InventoryItem implements IAdvBackpack
             colorName = compound.getString("colorName");
             lastTime = compound.getInteger("lastTime");
             special = compound.getBoolean("special");
+            extendedProperties = compound.getCompoundTag("extended");
             return true;
         }
         return false;
@@ -303,8 +359,6 @@ public class InventoryItem implements IAdvBackpack
     public NBTTagCompound writeToNBT()
     {
         NBTTagCompound compound = new NBTTagCompound();
-        NBTTagCompound tankLeft = new NBTTagCompound();
-        NBTTagCompound tankRight = new NBTTagCompound();
 
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
@@ -319,12 +373,14 @@ public class InventoryItem implements IAdvBackpack
             }
         }
         compound.setTag("ABPItems", items);
-        compound.setTag("rightTank", rightTank.writeToNBT(tankRight));
-        compound.setTag("leftTank", leftTank.writeToNBT(tankLeft));
+        compound.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
+        compound.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
         compound.setString("color", color);
         compound.setString("colorName", colorName);
         compound.setInteger("lastTime", lastTime);
         compound.setBoolean("special", BackpackAbilities.hasAbility(colorName));
+        compound.setTag("extended", extendedProperties);
+
         return compound;
     }
 

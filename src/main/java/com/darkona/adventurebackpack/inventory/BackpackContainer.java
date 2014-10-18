@@ -19,11 +19,9 @@ public class BackpackContainer extends Container
     public IAdvBackpack inventory;
     public static boolean SOURCE_TILE = true;
     public static boolean SOURCE_ITEM = false;
-    public boolean needsUpdate;
 
     public BackpackContainer(InventoryPlayer invPlayer, IAdvBackpack backpack, boolean source)
     {
-        needsUpdate = false;
         inventory = backpack;
         makeSlots(invPlayer);
     }
@@ -238,16 +236,12 @@ public class BackpackContainer extends Container
         super.putStackInSlot(par1, par2ItemStack);
     }
 
-    public NBTTagCompound getCompound()
-    {
-        this.needsUpdate = false;
-        return ((InventoryItem) inventory).writeToNBT();
-
-    }
-
     @Override
     public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
     {
+        this.inventory.openInventory();
         return super.slotClick(par1, par2, par3, par4EntityPlayer);
     }
+
+
 }

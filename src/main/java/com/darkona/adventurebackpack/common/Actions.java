@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.block.material.Material;
@@ -360,17 +361,15 @@ public class Actions
     public static void electrify(EntityPlayer player)
     {
         ItemStack stack = Wearing.getWearingBackpack(player);
-        if (stack.stackTagCompound != null)
+        if (BackpackNames.getBackpackColorName(stack).equals("Pig"))
         {
-            if (stack.stackTagCompound.hasKey("colorName") && stack.stackTagCompound.getString("colorName").equals("Pig"))
-            {
-                stack.stackTagCompound.setString("color", "Pigman");
-                stack.stackTagCompound.setString("colorName", "Zombie Pigman");
-            } else if (stack.stackTagCompound.hasKey("colorName") && !stack.stackTagCompound.getString("colorName").equals("BlockDiamond"))
-            {
-                player.inventory.armorInventory[2].stackTagCompound.setString("color", "Electric");
-                stack.stackTagCompound.setString("colorName", "Electric");
-            }
+            stack.stackTagCompound.setString("color", "Pigman");
+            stack.stackTagCompound.setString("colorName", "Zombie Pigman");
+        }
+        if (BackpackNames.getBackpackColorName(stack).equals("BlockDiamond"))
+        {
+            stack.stackTagCompound.setString("color", "Electric");
+            stack.stackTagCompound.setString("colorName", "Electric");
         }
     }
 

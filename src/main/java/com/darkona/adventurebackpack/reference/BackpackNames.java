@@ -15,7 +15,6 @@ import java.util.Map;
 public class BackpackNames
 {
 
-
     public static String[] backpackNames = {
             "BeefRaw", "Black", "BlazeRod", "BlockCoal", "BlockDiamond", "BlockEmerald", "BlockGold", "BlockIron", "BlockLapis",
             "BlockRedstone", "Blue", "Bone", "BookShelf", "Brown", "Cactus", "Cake", "Chest", "Cloth", "Cookie", "Cyan", "DragonEgg",

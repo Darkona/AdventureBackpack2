@@ -2,6 +2,8 @@ package com.darkona.adventurebackpack;
 
 import com.darkona.adventurebackpack.api.FluidEffectRegistry;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.handlers.BackpackEventHandler;
+import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.EventHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
@@ -45,6 +47,8 @@ public class AdventureBackpack
     public static IProxy proxy;
 
     EventHandler eventlistener;
+    ClientEventHandler clientEventHandler;
+    BackpackEventHandler backpackEventHandler;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -65,6 +69,11 @@ public class AdventureBackpack
 
         // EVENTS
         eventlistener = new EventHandler();
+        backpackEventHandler = new BackpackEventHandler();
+        clientEventHandler = new ClientEventHandler();
+        MinecraftForge.EVENT_BUS.register(backpackEventHandler);
+        MinecraftForge.EVENT_BUS.register(clientEventHandler);
+
         MinecraftForge.EVENT_BUS.register(eventlistener);
         FMLCommonHandler.instance().bus().register(eventlistener);
 

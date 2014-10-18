@@ -98,12 +98,31 @@ public class InventoryActions
     public static void consumeItemInBackpack(IAdvBackpack backpack, Item item)
     {
         ItemStack[] inventory = backpack.getInventory();
-        for (int i = 0; i < inventory.length; i++)
+        /*for (int i = 0; i < inventory.length; i++)
         {
             if (inventory[i] != null && inventory[i].getItem().equals(item))
             {
-                inventory[i] = backpack.decrStackSize(i, 1);
+                backpack.decrStackSize(i, 1);
                 return;
+            }
+        }*/
+
+        int i = -1;
+        for (int j = 0; j < inventory.length; ++j)
+        {
+            if (backpack.getInventory()[j] != null && backpack.getInventory()[j].getItem() == item)
+            {
+                i = j;
+            }
+        }
+        if (i < 0)
+        {
+            return;
+        } else
+        {
+            if (--inventory[i].stackSize <= 0)
+            {
+                inventory[i] = null;
             }
         }
     }
@@ -122,17 +141,4 @@ public class InventoryActions
         return false;
     }
 
-   /* FluidStack drain = tank.drain(FluidContainerRegistry.getContainerCapacity(tank.getFluid(),stackIn),false);
-    if(drain.amount > 0){
-        for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData()){
-            if(data.fluid.getFluid() == drain.getFluid()){
-                if(data.emptyContainer.getItem() == stackIn.getItem()){
-                    tank.drain(drain.amount,true);
-                    stackOut = data.filledContainer.copy();
-                    return stackOut;
-                }
-            }
-        }
-    }
-    */
 }

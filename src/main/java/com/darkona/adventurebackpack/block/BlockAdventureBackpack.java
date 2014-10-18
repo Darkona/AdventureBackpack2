@@ -250,7 +250,7 @@ public class BlockAdventureBackpack extends BlockContainer
             return 15;
         } else if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack)
         {
-            return ((TileAdventureBackpack) world.getTileEntity(x, y, z)).luminosity;
+            return ((TileAdventureBackpack) world.getTileEntity(x, y, z)).getLuminosity();
         } else
         {
             return 0;

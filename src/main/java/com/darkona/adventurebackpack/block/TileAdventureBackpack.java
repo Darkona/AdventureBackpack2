@@ -43,9 +43,41 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     private int sbz;
     private int checkTime = 0;
     private String color;
+
+    public int getLuminosity()
+    {
+        return luminosity;
+    }
+
+    public void setLuminosity(int luminosity)
+    {
+        this.luminosity = luminosity;
+    }
+
     private String colorName;
-    public int lastTime;
-    public int luminosity;
+    private int lastTime;
+    private int luminosity;
+    private NBTTagCompound extendedProperties;
+
+    public int getLastTime()
+    {
+        return lastTime;
+    }
+
+    public void setLastTime(int lastTime)
+    {
+        this.lastTime = lastTime;
+    }
+
+    public NBTTagCompound getExtendedProperties()
+    {
+        return extendedProperties;
+    }
+
+    public void setExtendedProperties(NBTTagCompound extendedProperties)
+    {
+        this.extendedProperties = extendedProperties;
+    }
 
     public TileAdventureBackpack()
     {
@@ -243,6 +275,8 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         compound.setTag("leftTank", leftTank.writeToNBT(tankLeft));
         compound.setInteger("lastTime", lastTime);
         compound.setBoolean("special", BackpackAbilities.hasAbility(colorName));
+
+        compound.setTag("extended", extendedProperties);
         super.writeToNBT(compound);
     }
 
@@ -265,6 +299,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
             color = compound.getString("color");
             colorName = compound.getString("colorName");
             lastTime = compound.getInteger("lastTime");
+            extendedProperties = compound.getCompoundTag("extended");
         }
     }
 
@@ -360,6 +395,12 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         {
             itemstack.stackSize = getInventoryStackLimit();
         }
+    }
+
+    @Override
+    public void saveChanges()
+    {
+        markDirty();
     }
 
     @Override

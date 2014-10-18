@@ -42,6 +42,8 @@ public interface IAdvBackpack extends IInventory
 
     public void setInventorySlotContentsNoSave(int slot, ItemStack stack);
 
+    void saveChanges();
+
     public ItemStack decrStackSizeNoSave(int slot, int amount);
 
     public boolean hasItem(Item item);
