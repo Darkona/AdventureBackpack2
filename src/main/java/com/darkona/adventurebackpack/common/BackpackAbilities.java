@@ -1,8 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.fluids.FluidMilk;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
@@ -309,7 +307,7 @@ public class BackpackAbilities
      * @param player
      * @param world
      * @param backpack
-     * @see com.darkona.adventurebackpack.handlers.EventHandler
+     * @see com.darkona.adventurebackpack.handlers.PlayerEventHandler
      */
     public void itemCreeper(EntityPlayer player, World world, ItemStack backpack)
     {

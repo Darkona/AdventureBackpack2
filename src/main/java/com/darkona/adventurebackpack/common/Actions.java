@@ -9,7 +9,6 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
-import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,11 +17,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
-import sun.util.resources.LocaleNames_hi;
 
 import java.util.Random;
 
@@ -30,7 +27,7 @@ import java.util.Random;
  * Created on 11/10/2014
  *
  * @author Darkona
- * @see com.darkona.adventurebackpack.handlers.EventHandler
+ * @see com.darkona.adventurebackpack.handlers.PlayerEventHandler
  * @see com.darkona.adventurebackpack.api.FluidEffectRegistry
  * @see com.darkona.adventurebackpack.common.BackpackAbilities
  */
@@ -54,124 +51,6 @@ public class Actions
         player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
         player.motionY += 0.35;
         player.jumpMovementFactor += 0.3;
-    }
-
-    /**
-     * Attempts to fill a tank with a fluid from the world.
-     *
-     * @param world  theWORLD is the intro song of the popular anime Death Note.
-     *               It goes like: Hirogaru yami no naka kawashiatta kakumei no chigiri...
-     * @param mop    A moving object position you have to get from somewhere. Probably where the player is looking.
-     * @param player A player.
-     * @param tank   The tank that will be attempted to be filled.
-     * @return A FluidStack of the fluid that was removed from the world. One whole bucket worth of it, oh yeah.
-     */
-    public static FluidStack attemptFill(World world, MovingObjectPosition mop, EntityPlayer player, FluidTank tank)
-    {
-        try
-        {
-            if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
-            {
-                return null;
-            }
-            if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
-            {
-                return null;
-            }
-            Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
-            if (fluidBlock != null)
-            {
-                FluidStack fluid = new FluidStack(fluidBlock, FluidContainerRegistry.BUCKET_VOLUME);
-                if (tank.getFluid() == null || tank.getFluid().containsFluid(fluid))
-                {
-                    int accepted = tank.fill(fluid, false);
-                    if (accepted > 0)
-                    {
-                        world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
-                        return fluid;
-                    }
-                }
-            }
-        } catch (Exception oops)
-        {
-            LogHelper.error("Something bad happened while filling the tank OMG. Send the following to your grandma:");
-            oops.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * Attempts to perform the placement of a fluid in the desired coordinates.
-     *
-     * @param player The player attempting to perform the pouring.
-     * @param world  The world.
-     * @param x      X coordinate of the block.
-     * @param y      Y coordinate of the block.
-     * @param z      Z coordinate of the block.
-     * @param tank   The tank that holds the fluid that will be attempted to be poured.
-     * @return Returns a FluidStack with the amount of fluid that was drained from the tank.
-     */
-    public static FluidStack attemptPour(EntityPlayer player, World world, int x, int y, int z, FluidTank tank)
-    {
-        //TODO control for other fluids if they can or cannot be replaced.
-        try
-        {
-            FluidStack fluid = tank.getFluid();
-            if (fluid != null)
-            {
-                if (fluid.getFluid().canBePlacedInWorld())
-                {
-                    Material material = world.getBlock(x, y, z).getMaterial();
-                    boolean flag = !material.isSolid();
-
-                    if (!world.isAirBlock(x, y, z) && !flag)
-                    {
-                        return null;
-                    }
-                    /* IN HELL DIMENSION*/
-                    if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER)
-                    {
-                        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F,
-                                2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-                        for (int l = 0; l < 12; ++l)
-                        {
-                            world.spawnParticle("largesmoke", x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
-                        }
-                    } else
-                    {
-                        /* NOT IN HELL DIMENSION. No, I won't let you put water in the nether. You freak*/
-                        FluidStack drainedFluid = tank.drain(Constants.bucket, false);
-                        if (drainedFluid != null && drainedFluid.amount >= Constants.bucket)
-                        {
-                            if (!world.isRemote && flag && !material.isLiquid())
-                            {
-                                world.func_147480_a(x, y, z, true);
-                            }
-                            if (fluid.getFluid() == FluidRegistry.WATER)
-                            {
-                                world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3);
-                            } else
-                            {
-                                if (fluid.getFluid() == FluidRegistry.LAVA)
-                                {
-                                    world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3);
-                                } else
-                                {
-                                    world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3);
-                                }
-                            }
-                            return drainedFluid;
-                        }
-                    }
-                }
-            }
-
-        } catch (Exception oops)
-        {
-            LogHelper.error("Something bad happened when spilling fluid into the world OMG. Here's the stack trace, send it to the author:");
-            oops.printStackTrace();
-        }
-        return null;
     }
 
     /**

@@ -5,14 +5,11 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.BackpackEventHandler;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
-import com.darkona.adventurebackpack.handlers.EventHandler;
+import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.network.CycleToolMessage;
-import com.darkona.adventurebackpack.network.GuiBackpackMessage;
-import com.darkona.adventurebackpack.network.NyanCatMessage;
 import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -21,9 +18,6 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.MinecraftForge;
 
 /**
@@ -46,7 +40,7 @@ public class AdventureBackpack
     @SidedProxy(clientSide = ModInfo.MOD_CLIENT_PROXY, serverSide = ModInfo.MOD_SERVER_PROXY)
     public static IProxy proxy;
 
-    EventHandler eventlistener;
+    PlayerEventHandler eventlistener;
     ClientEventHandler clientEventHandler;
     BackpackEventHandler backpackEventHandler;
 
@@ -68,7 +62,7 @@ public class AdventureBackpack
         FluidEffectRegistry.init();
 
         // EVENTS
-        eventlistener = new EventHandler();
+        eventlistener = new PlayerEventHandler();
         backpackEventHandler = new BackpackEventHandler();
         clientEventHandler = new ClientEventHandler();
         MinecraftForge.EVENT_BUS.register(backpackEventHandler);

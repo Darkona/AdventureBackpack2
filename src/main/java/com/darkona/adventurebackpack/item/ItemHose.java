@@ -14,6 +14,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,9 +29,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -40,6 +39,9 @@ public class ItemHose extends ItemAB
 
     IIcon leftIcon;
     IIcon rightIcon;
+    final byte HOSE_SUCK_MODE = 0;
+    final byte HOSE_SPILL_MODE = 1;
+    final byte HOSE_DRINK_MODE = 2;
 
     public ItemHose()
     {
@@ -171,40 +173,39 @@ public class ItemHose extends ItemAB
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
 
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return false;
-
         InventoryItem inv = Wearing.getBackpackInv(player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inv.getLeftTank() : inv.getRightTank();
+
         TileEntity te = world.getTileEntity(x, y, z);
         if (te != null && te instanceof IFluidHandler)
         {
+            IFluidHandler exTank = (IFluidHandler) te;
+            int accepted = 0;
             switch (getHoseMode(stack))
             {
-                case 0: // Suck mode
-                    if (tank.fill(((IFluidHandler) te).drain(ForgeDirection.UNKNOWN, Constants.bucket, false), false) >= Constants.bucket)
+                case HOSE_SUCK_MODE: // Suck mode
+                    accepted = tank.fill(exTank.drain(ForgeDirection.UNKNOWN, Constants.bucket, false), false);
+                    if (accepted > 0)
                     {
-                        tank.fill(((IFluidHandler) te).drain(ForgeDirection.UNKNOWN, Constants.bucket, true), true);
+                        tank.fill(exTank.drain(ForgeDirection.UNKNOWN, accepted, true), true);
                         inv.saveChanges();
                         return true;
                     }
                     break;
-                case 1:// Spill mode
-                    if (tank.getFluid() != null)
+                case HOSE_SPILL_MODE:// Spill mode
+                    accepted = exTank.fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false);
+                    if (accepted > 0)
                     {
-                        if (((IFluidHandler) te).fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false) >= Constants.bucket)
-                        {
-                            ((IFluidHandler) te).fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, true), true);
-                            inv.saveChanges();
-                            return true;
-                        }
+                        exTank.fill(ForgeDirection.UNKNOWN, tank.drain(accepted, true), true);
+                        inv.saveChanges();
+                        return true;
                     }
                     break;
-                default:
-                    return false;
             }
         }
         return false;
@@ -217,42 +218,62 @@ public class ItemHose extends ItemAB
         return true;
     }
 
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     *
+     * @param stack
+     * @param world
+     * @param player
+     */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return stack;
         InventoryItem inventory = new InventoryItem(backpack);
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
+
         if (tank != null)
         {
             switch (getHoseMode(stack))
             {
-                case 0: // If it's in Suck Mode
+                case HOSE_SUCK_MODE: // If it's in Suck Mode
+
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
-                        HoseSuckEvent suckEvent = new HoseSuckEvent(player, stack, world, mop, tank);
-                        if (MinecraftForge.EVENT_BUS.post(suckEvent))
+                        if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
                         {
-                            return stack;
+                            return null;
                         }
-                        if (suckEvent.getResult() == Event.Result.ALLOW)
+                        if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
                         {
-                            tank.fill(suckEvent.fluidResult, true);
-                            inventory.saveChanges();
+                            return null;
                         }
+                        Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
+                        if (fluidBlock != null)
+                        {
+                            FluidStack fluid = new FluidStack(fluidBlock, Constants.bucket);
+                            if (tank.getFluid() == null || tank.getFluid().containsFluid(fluid))
+                            {
+                                int accepted = tank.fill(fluid, false);
+                                if (accepted > 0)
+                                {
+                                    world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
+                                    tank.fill(new FluidStack(fluidBlock, accepted), true);
+                                }
+                            }
+                        }
+                        inventory.saveChanges();
                     }
                     break;
-                case 1: // If it's in Spill Mode
+
+                case HOSE_SPILL_MODE: // If it's in Spill Mode
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
-
                         int x = mop.blockX;
                         int y = mop.blockY;
                         int z = mop.blockZ;
-
                         if (world.getBlock(x, y, z).isBlockSolid(world, x, y, z, mop.sideHit))
                         {
                             switch (mop.sideHit)
@@ -277,34 +298,57 @@ public class ItemHose extends ItemAB
                                     break;
                             }
                         }
-                        HoseSpillEvent spillEvent = new HoseSpillEvent(player, world, x, y, z, tank);
-                        if (MinecraftForge.EVENT_BUS.post(spillEvent))
+                        if (tank.getFluidAmount() > 0)
                         {
-                            return stack;
-                        }
-                        if (spillEvent.getResult() == Event.Result.ALLOW)
-                        {
-                            if (!player.capabilities.isCreativeMode)
+                            FluidStack fluid = tank.getFluid();
+                            if (fluid != null)
                             {
-                                tank.drain(spillEvent.fluidResult.amount, true);
-                                inventory.saveChanges();
+                                if (fluid.getFluid().canBePlacedInWorld())
+                                {
+                                    Material material = world.getBlock(x, y, z).getMaterial();
+                                    boolean flag = !material.isSolid();
+                                    if (!world.isAirBlock(x, y, z) && !flag)
+                                    {
+                                        return null;
+                                    }
+                                /* IN HELL DIMENSION No, I won't let you put water in the nether. You freak*/
+                                    if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER)
+                                    {
+                                        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F,
+                                                2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                                        for (int l = 0; l < 12; ++l)
+                                        {
+                                            world.spawnParticle("largesmoke", x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
+                                        }
+                                    } else
+                                    {
+                                    /* NOT IN HELL DIMENSION. */
+                                        FluidStack drainedFluid = tank.drain(Constants.bucket, false);
+                                        if (drainedFluid != null && drainedFluid.amount >= Constants.bucket)
+                                        {
+                                            tank.drain(Constants.bucket, true);
+                                            if (!world.isRemote && flag && !material.isLiquid())
+                                            {
+                                                world.func_147480_a(x, y, z, true);
+                                            }
+                                            world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3);
+                                        }
+                                    }
+                                }
                             }
                         }
-
+                        inventory.saveChanges();
                     }
                     break;
-                case 2: // If it's in Drink Mode
-                    if (tank.getFluidAmount() > 0)
-                    {
-                        player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-                    }
+                case HOSE_DRINK_MODE:
+                    player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+                    break;
                 default:
                     return stack;
             }
         }
         return stack;
     }
-
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
@@ -313,7 +357,6 @@ public class ItemHose extends ItemAB
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
     {
         return true;
@@ -372,7 +415,7 @@ public class ItemHose extends ItemAB
     @Override
     public boolean canHarvestBlock(Block block, ItemStack stack)
     {
-        return Utils.isBlockRegisteredAsFluid(block) > -1;
+        return FluidRegistry.lookupFluidForBlock(block) != null;
     }
 
 }
