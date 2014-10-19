@@ -4,8 +4,9 @@ import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.common.Actions;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModFluids;
+import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.util.Textures;
+import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.relauncher.Side;
@@ -27,6 +28,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+import scala.collection.immutable.Stream;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -131,18 +133,22 @@ public class ItemHose extends ItemAB
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister)
     {
-        leftIcon = iconRegister.registerIcon(Textures.iconName("hoseLeft"));
-        rightIcon = iconRegister.registerIcon(Textures.iconName("hoseRight"));
-        itemIcon = iconRegister.registerIcon(Textures.iconName("hoseLeft"));
+        leftIcon = iconRegister.registerIcon(Resources.getIconString("hoseLeft"));
+        rightIcon = iconRegister.registerIcon(Resources.getIconString("hoseRight"));
+        itemIcon = iconRegister.registerIcon(Resources.getIconString("hoseLeft"));
     }
     // ================================================ ACTIONS  =====================================================//
 
     @Override
-    public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5)
+    public void onUpdate(ItemStack stack, World world, Entity entity, int inv_slot, boolean isCurrent)
     {
 
+        EntityPlayer player = (EntityPlayer) entity;
+        if (player.getItemInUse() != null && player.getItemInUse().equals(stack)) return;
+
+
         NBTTagCompound nbt = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
-        ItemStack backpack = Wearing.getWearingBackpack((EntityPlayer) entity);
+        ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack != null)
         {
             if (nbt.getInteger("tank") == -1) nbt.setInteger("tank", 0);
@@ -357,7 +363,10 @@ public class ItemHose extends ItemAB
                     }
                     break;
                 case HOSE_DRINK_MODE:
-                    player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+                    if (tank.getFluid() != null && tank.getFluidAmount() >= Constants.bucket)
+                    {
+                        player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+                    }
                     break;
                 default:
                     return stack;
@@ -385,20 +394,18 @@ public class ItemHose extends ItemAB
         int tank = -1;
         if (hose.stackTagCompound != null)
         {
-            tank = hose.stackTagCompound.getInteger("tank");
-            mode = hose.stackTagCompound.getInteger("mode");
+            tank = getHoseTank(hose);
+            mode = getHoseMode(hose);
         }
-        if (mode == 2 && tank > -1)
+        if (mode == HOSE_DRINK_MODE && tank > -1)
         {
             InventoryItem inventory = new InventoryItem(Wearing.getWearingBackpack(player));
             FluidTank backpackTank = (tank == 0) ? inventory.getLeftTank() : (tank == 1) ? inventory.getRightTank() : null;
             if (backpackTank != null)
             {
-                if (Actions.setFluidEffect(world, player, backpackTank))
-                {
-                    backpackTank.drain(Constants.bucket, true);
-                    inventory.saveChanges();
-                }
+                Actions.setFluidEffect(world, player, backpackTank);
+                backpackTank.drain(Constants.bucket, true);
+                inventory.saveChanges();
             }
         }
         return hose;

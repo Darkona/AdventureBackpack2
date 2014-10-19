@@ -11,4 +11,7 @@ public class Icons
 {
     public static IIcon milkFlowing;
     public static IIcon milkStill;
+
+    public static IIcon melonJuiceFlowing;
+    public static IIcon melonJuiceStill;
 }

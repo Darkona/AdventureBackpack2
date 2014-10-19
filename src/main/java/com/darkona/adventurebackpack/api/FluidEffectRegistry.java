@@ -19,8 +19,6 @@ public class FluidEffectRegistry
     public static final FluidEffect WATER_EFFECT = new WaterEffect();
     public static final FluidEffect LAVA_EFFECT = new LavaEffect();
     public static final FluidEffect MILK_EFFECT = new MilkEffect();
-    public static final FluidEffect OIL_EFFECT = new OilEffect();
-    public static final FluidEffect FUEL_EFFECT = new FuelEffect();
     public static final FluidEffect MELON_EFFECT = new MelonJuiceEffect();
 
     static int effectID = 0;
@@ -35,9 +33,7 @@ public class FluidEffectRegistry
         registerFluidEffect(LAVA_EFFECT);
         registerFluidEffect(WATER_EFFECT);
         registerFluidEffect(MILK_EFFECT);
-        registerFluidEffect(OIL_EFFECT);
-        registerFluidEffect(FUEL_EFFECT);
-        // registerFluidEffect(MELON_EFFECT);
+        registerFluidEffect(MELON_EFFECT);
     }
 
     public static int registerFluidEffect(FluidEffect effect)

@@ -65,25 +65,30 @@ public class Actions
     {
         FluidStack drained = tank.drain(Constants.bucket, false);
         boolean done = false;
-        // Map<Integer, FluidEffect> lol =
-        // FluidEffectRegistry.getRegisteredFluidEffects();
         if (drained != null && drained.amount >= Constants.bucket)
         {
-
-            for (FluidEffect effect : FluidEffectRegistry.getEffectsForFluid(drained.getFluid()))
-            {
-                if (effect != null)
-                {
-                    effect.affectDrinker(world, player);
-                    if (world.isRemote)
-                    {
-                        //player.sendChatToPlayer(ChatMessageComponent.createFromText(effect.msg));
-                    }
-                    done = true;
-                }
-            }
+            setFluidEffect(world, player, drained.getFluid());
         }
         return done;
+    }
+
+    public static boolean setFluidEffect(World world, EntityPlayer player, Fluid fluid)
+    {
+
+        boolean done = false;
+        for (FluidEffect effect : FluidEffectRegistry.getEffectsForFluid(fluid))
+        {
+            if (effect != null)
+            {
+                effect.affectDrinker(world, player);
+                if (world.isRemote)
+                {
+                    //player.sendChatToPlayer(ChatMessageComponent.createFromText(effect.msg));
+                }
+                done = true;
+            }
+        }
+        return true;
     }
 
     /**
@@ -315,6 +320,7 @@ public class Actions
                 * I should make a pull request. Too lazy, though.
                 * */
                 backpack.consumeInventoryItem(Items.arrow);
+                backpack.saveChanges();
             }
 
             if (!world.isRemote)

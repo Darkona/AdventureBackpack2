@@ -3,12 +3,13 @@ package com.darkona.adventurebackpack.client.gui;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
+import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
-import com.darkona.adventurebackpack.util.Textures;
+import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -34,7 +35,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
     @SuppressWarnings("unused")
     private EntityPlayer player;
-    private static final ResourceLocation texture = Textures.guiTextures("guiBackpack");
+    private static final ResourceLocation texture = Resources.guiTextures("guiBackpack");
     private static GuiImageButton bedButton = new GuiImageButton(71, 15, 18, 18);
     private static GuiImageButton craftButton = new GuiImageButton(90, 15, 18, 18);
     private static GuiTank tankLeft = new GuiTank(26, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
@@ -107,11 +108,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         {
             craftButton.draw(this, srcX, srcY);
         }
-        GL11.glPushMatrix();
-        GL11.glScalef(0.8f, 0.8f, 0.8f);
-        String name = " Adventure Backpack";
-        fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 4, 0x404040);
-        GL11.glPopMatrix();
+
     }
 
     @Override
@@ -135,6 +132,11 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
             drawHoveringText(tankRight.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
         }
 
+        GL11.glPushMatrix();
+        GL11.glScalef(0.8f, 0.8f, 0.8f);
+        String name = " Adventure Backpack";
+        fontRendererObj.drawString(name, ((xSize - fontRendererObj.getStringWidth(name)) / 2), 4, 0x404040);
+        GL11.glPopMatrix();
     }
 
     @Override
@@ -164,7 +166,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-       /* if (bedButton.inButton(this, mouseX, mouseY) && source)
+       /*if (bedButton.inButton(this, mouseX, mouseY) && source)
         {
             if (source)
             {
@@ -200,4 +202,22 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         super.mouseMovedOrUp(mouseX, mouseY, par3);
     }
 
+    @Override
+    protected void keyTyped(char key, int keycode)
+    {
+        if (keycode == Keybindings.openBackpack.getKeyCode())
+        {
+            player.closeScreen();
+        }
+        super.keyTyped(key, keycode);
+    }
+
+    /**
+     * Called from the main game loop to update the screen.
+     */
+    @Override
+    public void updateScreen()
+    {
+        super.updateScreen();
+    }
 }

@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.events.EquipBackpackEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -22,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 /**
@@ -92,38 +94,16 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
 
     }
 
-   /* public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta) {
-       // Block sleepingBag = ModBlocks.sleepingbag;
-        if (world.setBlock(x, y, z, BlockInfo.SLEEPINGBAG_ID, meta, 3))
-        {
-            world.playSoundAtEntity(player, Block.soundClothFootstep.getPlaceSound(), 0.5f, 1.0f);
-            sbx = x;
-            sby = y;
-            sbz = z;
-            sbdir=meta;
-            return sleepingBagDeployed = ((BlockSleepingBag) sleepingBag).placeBlock(world, x,y,z,meta);
-        }
+    public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta)
+    {
+
         return false;
     }
 
     public boolean removeSleepingBag(World world) {
-        if (sleepingBagDeployed)
-        {
-            if (world.getBlockId(sbx, sby, sbz) == ABPBlocks.sleepingbag.blockID)
-            {
-                world.setBlock(sbx, sby, sbz, 0);
-                world.removeBlockTileEntity(sbx, sby, sbz);
-                // TODO play a sound here
-                this.sleepingBagDeployed = false;
-                saveChanges();
-                return true;
-            }
-        }else{
-            this.sleepingBagDeployed = false;
-            saveChanges();
-        }
+
         return false;
-    }*/
+    }
 
     //=====================================================GETTERS====================================================//
 
@@ -311,6 +291,12 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         return compound;
     }
 
+    @Override
+    public void readFromNBT()
+    {
+
+    }
+
     //====================================================INVENTORY===================================================//
     @Override
     public void openInventory()
@@ -325,11 +311,18 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack stacky)
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if (stacky.getItem() instanceof ItemAdventureBackpack) return false;
-        if (Block.getBlockFromItem(stacky.getItem()) instanceof BlockAdventureBackpack) return false;
-        return true;
+        if (stack.getItem() instanceof ItemAdventureBackpack || Block.getBlockFromItem(stack.getItem()) instanceof BlockAdventureBackpack)
+        {
+            return false;
+        }
+        if (slot == 6 || slot == 8)
+        {
+            return FluidContainerRegistry.isContainer(stack);
+        }
+
+        return !(slot == 0 || slot == 3) || SlotTool.isValidTool(stack);
     }
 
     @Override
@@ -352,8 +345,12 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i)
+    public ItemStack getStackInSlotOnClosing(int slot)
     {
+        if (slot == 6 || slot == 7 || slot == 8 || slot == 9)
+        {
+            return inventory[slot];
+        }
         return null;
     }
 
@@ -487,6 +484,18 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     public void updateTankSlots(FluidTank tank, int slotIn)
     {
         InventoryActions.transferContainerTank(this, tank, slotIn);
+    }
+
+    @Override
+    public void saveTanks()
+    {
+
+    }
+
+    @Override
+    public void loadTanks()
+    {
+
     }
 
     @Override

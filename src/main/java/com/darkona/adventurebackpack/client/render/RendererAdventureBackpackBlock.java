@@ -2,7 +2,7 @@ package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackBlock;
-import com.darkona.adventurebackpack.util.Textures;
+import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -63,7 +63,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         {
             GL11.glRotatef(dir * (-180F), 0.0F, 1.0F, 0.0F);
         }
-        bindTexture(Textures.backpackTexRL(bp));
+        bindTexture(Resources.backpackTexRL(bp));
         model.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F, bp.getLeftTank(), bp.getRightTank(), bp.isSBDeployed());
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);

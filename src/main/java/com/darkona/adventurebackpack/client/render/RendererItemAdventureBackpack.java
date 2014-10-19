@@ -2,7 +2,7 @@ package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackBlock;
-import com.darkona.adventurebackpack.util.Textures;
+import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -61,7 +61,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
     {
         InventoryItem inv = new InventoryItem(item);
-        ResourceLocation modelTexture = Textures.getBackpackTextureResLocFromType(item);
+        ResourceLocation modelTexture = Resources.backpackTextureFromColor(item);
         switch (type)
         {
 

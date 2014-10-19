@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.IAdvBackpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -15,7 +14,7 @@ import net.minecraft.world.World;
 public class BackCraftContainer extends Container
 {
 
-    public IAdvBackpack inventory;
+    public IInventory inventory;
     public boolean source;
     public Boolean needsUpdate;
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
@@ -61,7 +60,7 @@ public class BackCraftContainer extends Container
             }
         }
 
-        // Backpack Crafting Grif Inventory
+        // Backpack Crafting Grid Inventory
         for (int y = 0; y < 3; y++)
         {
             for (int x = 0; x < 3; x++)
@@ -72,7 +71,6 @@ public class BackCraftContainer extends Container
 
         addSlotToContainer(new SlotCrafting(invPlayer.player, this.craftMatrix, this.craftResult, 0, 91, 25));
         this.onCraftMatrixChanged(this.craftMatrix);
-
     }
 
     @Override
@@ -90,8 +88,6 @@ public class BackCraftContainer extends Container
     @Override
     public void onContainerClosed(EntityPlayer par1EntityPlayer)
     {
-        super.onContainerClosed(par1EntityPlayer);
-
         if (!this.world.isRemote)
         {
             for (int i = 0; i < 9; ++i)
@@ -100,7 +96,7 @@ public class BackCraftContainer extends Container
 
                 if (itemstack != null)
                 {
-                    par1EntityPlayer.dropItem(itemstack.getItem(), 1);
+                    par1EntityPlayer.dropPlayerItemWithRandomChoice(itemstack, false);
                 }
             }
         }

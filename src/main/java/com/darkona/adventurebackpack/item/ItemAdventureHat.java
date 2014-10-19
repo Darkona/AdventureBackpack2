@@ -25,5 +25,7 @@ public class ItemAdventureHat extends ArmorAB
     {
         return ModelAdventureHat.instance;
     }
+
+
 }
 

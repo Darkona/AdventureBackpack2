@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  *
  * @author Darkona
  */
-public class FluidEffect
+public abstract class FluidEffect
 {
     public Fluid fluid;
     public int time;
@@ -72,7 +72,6 @@ public class FluidEffect
      * @param world  The World.
      * @param player The Player.
      */
-    public void affectDrinker(World world, EntityPlayer player)
-    {
-    }
+    public abstract void affectDrinker(World world, EntityPlayer player);
+
 }

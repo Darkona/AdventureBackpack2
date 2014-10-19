@@ -10,7 +10,7 @@ import com.darkona.adventurebackpack.inventory.InventoryItem;
 
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
-import com.darkona.adventurebackpack.util.Textures;
+import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +35,7 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
     /* Buttons */
     private static GuiImageButton backButton = new GuiImageButton(114, 24, 18, 18);
 
-    private static final ResourceLocation texture = Textures.guiTextures("guiBackpackCraft");
+    private static final ResourceLocation texture = Resources.guiTextures("guiBackpackCraft");
 
     public GuiCraftAdvBackpack(EntityPlayer player, TileAdventureBackpack tile)
     {

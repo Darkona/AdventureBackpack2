@@ -2,7 +2,7 @@ package com.darkona.adventurebackpack.client.render;
 
 
 import com.darkona.adventurebackpack.models.ModelAdventureHat;
-import com.darkona.adventurebackpack.util.Textures;
+import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -64,7 +64,7 @@ public class RendererItemAdventureHat implements IItemRenderer
 
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
     {
-        ResourceLocation modelTexture = Textures.resourceRL("textures/models/adventureHat_texture.png");
+        ResourceLocation modelTexture = Resources.resourceRL("textures/models/adventureHat_texture.png");
         Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
         switch (type)
         {

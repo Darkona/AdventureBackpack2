@@ -115,7 +115,7 @@ public class BackpackAbilities
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static String[] validWearingBackpacks = {
-            "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Nyan"};
+            "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Nyan", "Melon"};
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -255,7 +255,7 @@ public class BackpackAbilities
 
     /**
      * The Melon Backpack, like his cousin the Cactus Backpack, will fill itself, but with delicious
-     * and refreshing Melon Juice, whenever the player it gets wet.
+     * and refreshing Melon Juice, if there's watermelon in the inventory.
      *
      * @param player
      * @param world
@@ -278,10 +278,10 @@ public class BackpackAbilities
         if (lastDropTime <= 0 && drops > 0)
         {
             InventoryItem inv = Wearing.getBackpackInv(player, true);
-            FluidStack raindrop = new FluidStack(FluidRegistry.getFluid("melonJuice"), drops);
+            FluidStack raindrop = new FluidStack(ModFluids.melonJuice, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
-            inv.saveChanges();
+            inv.onInventoryChanged();
             lastDropTime = 5;
         }
         backpack.stackTagCompound.setInteger("lastTime", lastDropTime);
@@ -390,6 +390,7 @@ public class BackpackAbilities
                 ++wheatConsumed;
                 eatTime = Utils.secondsToTicks(/*15 + player.worldObj.rand.nextInt(15)*/1);
                 LogHelper.info("Eat Time! Wheat consumed so far: " + wheatConsumed);
+                inv.markDirty();
                 inv.saveChanges();
             }
         }

@@ -22,11 +22,7 @@ public interface IAdvBackpack extends IInventory
 
     public void setRightTank(FluidTank tank);
 
-    void onInventoryChanged();
-
-    public NBTTagCompound writeToNBT();
-
-    public void updateTankSlots(FluidTank tank, int slotIN);
+    public ItemStack[] getInventory();
 
     public TileAdventureBackpack getTile();
 
@@ -36,17 +32,33 @@ public interface IAdvBackpack extends IInventory
 
     public String getColorName();
 
-    public ItemStack[] getInventory();
+    public int getLastTime();
+
+    public NBTTagCompound getExtendedProperties();
+
+    public void setExtendedProperties(NBTTagCompound properties);
 
     public boolean isSpecial();
 
     public void setInventorySlotContentsNoSave(int slot, ItemStack stack);
 
-    void saveChanges();
-
     public ItemStack decrStackSizeNoSave(int slot, int amount);
+
+    public void updateTankSlots(FluidTank tank, int slotIN);
+
+    public void saveTanks();
+
+    public void loadTanks();
+
+    public NBTTagCompound writeToNBT();
+
+    public void readFromNBT();
 
     public boolean hasItem(Item item);
 
     void consumeInventoryItem(Item item);
+
+    void onInventoryChanged();
+
+    void saveChanges();
 }

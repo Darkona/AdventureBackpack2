@@ -13,7 +13,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 public class UnequipBackpackEvent extends PlayerEvent
 {
 
-    public ItemStack backpack;
+    private final ItemStack backpack;
 
     public UnequipBackpackEvent(EntityPlayer player, ItemStack theBackpack)
     {

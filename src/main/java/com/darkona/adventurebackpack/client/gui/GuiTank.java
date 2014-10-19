@@ -1,7 +1,10 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import codechicken.lib.render.TextureUtils;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.GeneralConfig;
+import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -143,34 +146,31 @@ public class GuiTank
     {
         if (fluid != null)
         {
-            IIcon icon = fluid.getFluid().getStillIcon();
-            String name = icon.getIconName();
-            ResourceLocation iconplace;
-            if (name.lastIndexOf(":") > -1)
+            try
             {
-                String fixedName = name.substring(0, name.lastIndexOf(":")) + ":textures/blocks/" + name.substring(name.lastIndexOf(":") + 1) + ".png";
-                iconplace = new ResourceLocation(fixedName);
-            } else
-            {
-                iconplace = new ResourceLocation("textures/blocks/" + name + ".png");
-            }
-            Minecraft.getMinecraft().getTextureManager().bindTexture(iconplace);
-            int top = Y + H - (fluid.amount / liquidPerPixel);
-            for (int j = Y + H - 1; j >= top; j--)
-            {
-                for (int i = X; i <= X + W - 1; i++)
+                IIcon icon = fluid.getFluid().getStillIcon();
+                TextureUtils.bindAtlas(fluid.getFluid().getSpriteNumber());
+                int top = Y + H - (fluid.amount / liquidPerPixel);
+                for (int j = Y + H - 1; j >= top; j--)
                 {
-                    GL11.glEnable(GL11.GL_BLEND);
-                    if (j >= top + 4)
+                    for (int i = X; i <= X + W - 1; i++)
                     {
-                        GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
-                    } else
-                    {
-                        GL11.glColor4f(1, 1, 1, 1);
+                        GL11.glEnable(GL11.GL_BLEND);
+                        if (j >= top + 4)
+                        {
+                            GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
+                        } else
+                        {
+                            GL11.glColor4f(1, 1, 1, 1);
+                        }
+                        drawFluidPixelFromIcon(i, j, icon, 1, 1, 0, 0, 0, 0);
+                        GL11.glDisable(GL11.GL_BLEND);
                     }
-                    drawFluidPixelFromIcon(i, j, icon, 1, 1, 0, 0, 0, 0);
-                    GL11.glDisable(GL11.GL_BLEND);
                 }
+            } catch (Exception oops)
+            {
+                LogHelper.error("Exception while trying to render the fluid in the GUI");
+                //oops.printStackTrace();
             }
         }
     }

@@ -25,17 +25,15 @@ public class WaterEffect extends FluidEffect
     @Override
     public void affectDrinker(World world, EntityPlayer player)
     {
-        if (world.provider.isHellWorld
-                || world.getBiomeGenForCoords((int) player.posX, (int) player.posZ) instanceof BiomeGenDesert)
+        if (world.provider.isHellWorld ||
+                world.provider.isSurfaceWorld() && world.provider.getBiomeGenForCoords(player.serverPosX, player.serverPosZ).biomeName.toLowerCase().contains("desert"))
         {
-            Potion.heal.performEffect(player, 2);
+            player.getFoodStats().addStats(1, 0.1f);
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.id, time * 20, -1, false));
         }
-        player.getFoodStats().addStats(1, 0.1f);
-        player.addPotionEffect(new PotionEffect(Potion.regeneration.id, time * 20, -1, false));
         if (player.isBurning())
         {
             player.extinguish();
-            player.curePotionEffects(new ItemStack(new ItemBucketMilk(), 1));
         }
     }
 }

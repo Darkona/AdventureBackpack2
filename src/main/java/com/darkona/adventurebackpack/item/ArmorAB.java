@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.item;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.init.ModMaterials;
 import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.Textures;
+import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -58,7 +58,7 @@ public class ArmorAB extends ItemArmor
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String uName = this.getUnlocalizedName();
-        return Textures.modelTextureResourceString(uName.substring(uName.indexOf(":") + 1)) + "_texture.png";
+        return Resources.modelTextureResourceString(uName.substring(uName.indexOf(":") + 1)) + "_texture.png";
         //return Textures.modelTextureName(getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
     }
 

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,24 +31,30 @@ public class InventoryActions
     public static boolean transferContainerTank(IAdvBackpack backpack, FluidTank tank, int slotIn)
     {
         ItemStack stackIn = backpack.getStackInSlot(slotIn);
+        if (tank == null || stackIn == null) return false;
+
         //Set slot out for whatever number the output slot should be.
         int slotOut = slotIn + 1;
-        if (tank == null || stackIn == null) return false;
+
 
         //CONTAINER ===========> TANK
         if (FluidContainerRegistry.isFilledContainer(stackIn))
         {
+            //See if the tank can accept moar fluid.
             int fill = tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), false);
 
-            if (fill > 0)
+            if (fill > 0)//If can accept the fluid
             {
+                //Get the empty container for the input, if there's any.
                 ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
 
+                //
                 if (backpack.getStackInSlot(slotOut) == null || stackOut == null)
                 {
                     backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
                     tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
                     backpack.decrStackSizeNoSave(slotIn, 1);
+                    backpack.markDirty();
                     return true;
                 } else if (backpack.getStackInSlot(slotOut).getItem() == stackOut.getItem())
                 {
@@ -57,6 +64,7 @@ public class InventoryActions
                         backpack.getStackInSlot(slotOut).stackSize++;
                         tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
                         backpack.decrStackSizeNoSave(slotIn, 1);
+                        backpack.markDirty();
                         return true;
                     }
                 }
@@ -64,13 +72,16 @@ public class InventoryActions
         }
 
         //TANK =====> CONTAINER
-        if (tank.getFluid() != null && FluidContainerRegistry.isEmptyContainer(stackIn))
+        if (tank.getFluid() != null && tank.getFluidAmount() > 0 && FluidContainerRegistry.isEmptyContainer(stackIn))
         {
+            //How much fluid can this container hold.
             int amount = FluidContainerRegistry.getContainerCapacity(tank.getFluid(), stackIn);
+            //Let's see how much can we drain this tank
             FluidStack drain = tank.drain(amount, false);
+
             ItemStack stackOut = FluidContainerRegistry.fillFluidContainer(drain, stackIn);
 
-            if (drain.amount > 0)
+            if (drain.amount >= amount)
             {
                 if (backpack.getStackInSlot(slotOut) == null)
                 {
@@ -78,7 +89,7 @@ public class InventoryActions
                     tank.drain(amount, true);
                     backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
                     return true;
-                } else if (stackOut.getItem() == backpack.getStackInSlot(slotOut).getItem())
+                } else if (stackOut.getItem() != null && stackOut.getItem() == backpack.getStackInSlot(slotOut).getItem())
                 {
                     int maxStack = backpack.getStackInSlot(slotOut).getMaxStackSize();
                     if (maxStack > 1 && (backpack.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
@@ -89,7 +100,6 @@ public class InventoryActions
                         return true;
                     }
                 }
-
             }
         }
         return false;
@@ -98,21 +108,13 @@ public class InventoryActions
     public static void consumeItemInBackpack(IAdvBackpack backpack, Item item)
     {
         ItemStack[] inventory = backpack.getInventory();
-        /*for (int i = 0; i < inventory.length; i++)
-        {
-            if (inventory[i] != null && inventory[i].getItem().equals(item))
-            {
-                backpack.decrStackSize(i, 1);
-                return;
-            }
-        }*/
-
         int i = -1;
         for (int j = 0; j < inventory.length; ++j)
         {
             if (backpack.getInventory()[j] != null && backpack.getInventory()[j].getItem() == item)
             {
                 i = j;
+
             }
         }
         if (i < 0)

@@ -28,11 +28,13 @@ public class GuiHandler implements IGuiHandler
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
+        InventoryItem inv;
+        TileEntity te;
         switch (ID)
         {
             case 0:
                 //ADVENTUREBACKPACK GUI FROM TILE ENTITY
-                TileEntity te = world.getTileEntity(x, y, z);
+                te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack)
                 {
                     return new BackpackContainer(player.inventory, (TileAdventureBackpack) te, BackpackContainer.SOURCE_TILE);
@@ -40,7 +42,7 @@ public class GuiHandler implements IGuiHandler
                 break;
             case 1:
                 //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
-                InventoryItem inv = Wearing.getBackpackInv(player, true);
+                inv = Wearing.getBackpackInv(player, true);
                 if (inv.getInventoryItem() != null)
                 {
                     return new BackpackContainer(player.inventory, inv, BackpackContainer.SOURCE_ITEM);
@@ -77,6 +79,9 @@ public class GuiHandler implements IGuiHandler
                 {
                     return new BackCraftContainer(player, world, inv);
                 }
+                break;
+            default:
+                player.closeScreen();
                 break;
         }
 
@@ -138,6 +143,9 @@ public class GuiHandler implements IGuiHandler
                 {
                     return new GuiCraftAdvBackpack(player, inv, false);
                 }
+                break;
+            default:
+                player.closeScreen();
                 break;
         }
         return null;

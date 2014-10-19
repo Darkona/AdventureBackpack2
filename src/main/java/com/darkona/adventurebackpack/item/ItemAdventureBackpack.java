@@ -7,12 +7,13 @@ import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.events.UnequipBackpackEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.models.ModelAdventureBackpackArmor;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.Textures;
+import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
@@ -157,6 +158,10 @@ public class ItemAdventureBackpack extends ArmorAB
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
     {
+        if (player.openContainer instanceof BackpackContainer)
+        {
+            player.openContainer.detectAndSendChanges();
+        }
         if (stack.stackTagCompound != null &&
                 (stack.getTagCompound().getBoolean("special")) || BackpackAbilities.hasAbility(stack.stackTagCompound.getString("colorName")))
         {
@@ -189,7 +194,7 @@ public class ItemAdventureBackpack extends ArmorAB
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
-        return Textures.getBackpackTextureStringFromType(stack);
+        return Resources.backpackTexturesStringFromColor(stack);
     }
 
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ,

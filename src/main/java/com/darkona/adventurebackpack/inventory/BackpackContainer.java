@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -9,6 +10,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -24,6 +26,7 @@ public class BackpackContainer extends Container
     {
         inventory = backpack;
         makeSlots(invPlayer);
+
     }
 
 
@@ -76,13 +79,13 @@ public class BackpackContainer extends Container
 
         //Bucket Slots
 
-        // bucket left 6
+        // bucket in left 6
         addSlotToContainer(new SlotFluid(sexy, thing++, 7, 25));
         // bucket out left 7
         addSlotToContainer(new SlotFluid(sexy, thing++, 7, 55));
-        // bucket right out 8
+        // bucket in right  8
         addSlotToContainer(new SlotFluid(sexy, thing++, 153, 25));
-        // bucket right out 9
+        // bucket out right 9
         addSlotToContainer(new SlotFluid(sexy, thing++, 153, 55));
     }
 
@@ -115,16 +118,31 @@ public class BackpackContainer extends Container
             }
 
             slot.onPickupFromSlot(player, stack);
-
+            inventory.onInventoryChanged();
             return result;
         }
         return null;
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer par1EntityPlayer)
+    public void onContainerClosed(EntityPlayer player)
     {
-        super.onContainerClosed(par1EntityPlayer);
+        super.onContainerClosed(player);
+        if (!player.worldObj.isRemote)
+        {
+            for (int i = 0; i < inventory.getSizeInventory(); ++i)
+            {
+                if (i == 6 || i == 7 || i == 8 || i == 9)
+                {
+                    ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
+                    if (itemstack != null)
+                    {
+                        inventory.setInventorySlotContents(i, null);
+                        player.dropPlayerItemWithRandomChoice(itemstack, false);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -133,7 +151,17 @@ public class BackpackContainer extends Container
     @Override
     public void detectAndSendChanges()
     {
-        super.detectAndSendChanges();
+        for (int i = 0; i < inventory.getInventory().length; ++i)
+        {
+            ItemStack itemstack = ((Slot) this.inventorySlots.get(i)).getStack();
+            ItemStack itemstack1 = this.inventory.getInventory()[i];
+
+            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack))
+            {
+                itemstack1 = itemstack == null ? null : itemstack.copy();
+                this.inventoryItemStacks.set(i, itemstack1);
+            }
+        }
     }
 
     @Override
@@ -231,17 +259,16 @@ public class BackpackContainer extends Container
     }
 
     @Override
-    public void putStackInSlot(int par1, ItemStack par2ItemStack)
+    public void putStackInSlot(int slot, ItemStack stack)
     {
-        super.putStackInSlot(par1, par2ItemStack);
+        super.putStackInSlot(slot, stack);
     }
 
     @Override
-    public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
+    public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer player)
     {
-        this.inventory.openInventory();
-        return super.slotClick(par1, par2, par3, par4EntityPlayer);
+        inventory.onInventoryChanged();
+        return super.slotClick(par1, par2, par3, player);
     }
-
 
 }

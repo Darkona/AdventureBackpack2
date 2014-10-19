@@ -6,9 +6,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Created by Darkona on 10/10/2014.
+ * Created on 10/10/2014
+ *
+ * @author Darkona
  */
-public class Textures
+public class Resources
 {
 
     public static final String TEXTURE_LOCATION = ModInfo.MOD_ID.toLowerCase();
@@ -18,12 +20,12 @@ public class Textures
         return new ResourceLocation(TEXTURE_LOCATION, "textures/models/" + name).toString();
     }
 
-    public static String getBackpackTextureStringFromType(ItemStack backpack)
+    public static String backpackTexturesStringFromColor(ItemStack backpack)
     {
-        return getBackpackTextureResLocFromType(backpack).toString();
+        return backpackTextureFromColor(backpack).toString();
     }
 
-    public static ResourceLocation getBackpackTextureResLocFromType(ItemStack backpack)
+    public static ResourceLocation backpackTextureFromColor(ItemStack backpack)
     {
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/backpack" + backpack.getTagCompound().getString("color") + ".png");
     }
@@ -43,9 +45,29 @@ public class Textures
         return new ResourceLocation(TEXTURE_LOCATION, "textures/gui/" + name + ".png");
     }
 
-    public static String iconName(String name)
+    public static ResourceLocation itemTextures(String name)
     {
-        return ModInfo.MOD_ID.toLowerCase() + ":" + name;
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/items/" + name + ".png");
+    }
+
+    public static ResourceLocation blockTextures(String name)
+    {
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/blocks/" + name + ".png");
+    }
+
+    public static ResourceLocation fluidTextures(String name)
+    {
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/blocks/fluid." + name + ".png");
+    }
+
+    public static ResourceLocation modelTextures(String name)
+    {
+        return new ResourceLocation(TEXTURE_LOCATION, "models/" + name + ".png");
+    }
+
+    public static String getIconString(String name)
+    {
+        return TEXTURE_LOCATION + ":" + name;
     }
 
 

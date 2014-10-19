@@ -240,6 +240,8 @@ public class BlockAdventureBackpack extends BlockContainer
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         Icons.milkStill = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.milk");
+        Icons.melonJuiceStill = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.melonJuiceStill");
+        Icons.melonJuiceFlowing = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.melonJuiceFlowing");
     }
 
     @Override

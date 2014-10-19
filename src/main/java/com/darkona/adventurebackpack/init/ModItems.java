@@ -16,6 +16,7 @@ public class ModItems
     public static final ArmorAB pistonBoots = new ItemPistonBoots();
     public static final ArmorAB adventureSuit = new ItemAdventureSuit();
     public static final ArmorAB adventureBackpack = new ItemAdventureBackpack();
+    public static final ItemJuiceBottle melonJuiceBottle = new ItemJuiceBottle();
 
     public static void init()
     {
@@ -26,6 +27,7 @@ public class ModItems
         GameRegistry.registerItem(adventureSuit, "adventureSuit");
         GameRegistry.registerItem(adventureBackpack, "adventureBackpack");
         GameRegistry.registerItem(hose, "backpackHose");
+        GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
     }
 
 }
