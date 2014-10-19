@@ -3,14 +3,11 @@ package com.darkona.adventurebackpack.item;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.common.Actions;
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.events.HoseSpillEvent;
-import com.darkona.adventurebackpack.events.HoseSuckEvent;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.util.Textures;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
-import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -20,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +25,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -233,7 +230,6 @@ public class ItemHose extends ItemAB
         InventoryItem inventory = new InventoryItem(backpack);
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
-
         if (tank != null)
         {
             switch (getHoseMode(stack))
@@ -274,8 +270,12 @@ public class ItemHose extends ItemAB
                         int x = mop.blockX;
                         int y = mop.blockY;
                         int z = mop.blockZ;
+                        int newX;
+                        int newY;
+                        int newZ;
                         if (world.getBlock(x, y, z).isBlockSolid(world, x, y, z, mop.sideHit))
                         {
+
                             switch (mop.sideHit)
                             {
                                 case 0:
@@ -314,6 +314,7 @@ public class ItemHose extends ItemAB
                                 /* IN HELL DIMENSION No, I won't let you put water in the nether. You freak*/
                                     if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER)
                                     {
+                                        tank.drain(Constants.bucket, true);
                                         world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F,
                                                 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
                                         for (int l = 0; l < 12; ++l)
@@ -326,12 +327,27 @@ public class ItemHose extends ItemAB
                                         FluidStack drainedFluid = tank.drain(Constants.bucket, false);
                                         if (drainedFluid != null && drainedFluid.amount >= Constants.bucket)
                                         {
-                                            tank.drain(Constants.bucket, true);
                                             if (!world.isRemote && flag && !material.isLiquid())
                                             {
                                                 world.func_147480_a(x, y, z, true);
                                             }
-                                            world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3);
+
+                                            if (fluid.getFluid().getBlock() == Blocks.water)
+                                            {
+                                                if (world.setBlock(x, y, z, Blocks.flowing_water, 0, 3))
+                                                {
+                                                    tank.drain(Constants.bucket, true);
+                                                }
+                                            } else if (fluid.getFluid().getBlock() == Blocks.lava)
+                                            {
+                                                if (world.setBlock(x, y, z, Blocks.flowing_lava, 0, 3))
+                                                {
+                                                    tank.drain(Constants.bucket, true);
+                                                }
+                                            } else if (world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3))
+                                            {
+                                                tank.drain(Constants.bucket, true);
+                                            }
                                         }
                                     }
                                 }
