@@ -92,7 +92,8 @@ public class ItemComponent extends ItemAB
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int meta, float f1, float f2, float f3)
     {
-        if (itemStack.getItemDamage() != 1) return true;
+        return false;
+        /*if (itemStack.getItemDamage() != 1) return true;
         if (world.isRemote)
         {
             return true;
@@ -101,7 +102,7 @@ public class ItemComponent extends ItemAB
             return false;
         } else
         {
-            ++y;
+           /* ++y;
             BlockSleepingBag blockbed = ModBlocks.blockSleepingBag;
             int i1 = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
             byte b0 = 0;
@@ -148,6 +149,6 @@ public class ItemComponent extends ItemAB
             {
                 return false;
             }
-        }
+        }*/
     }
 }

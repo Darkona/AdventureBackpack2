@@ -35,7 +35,7 @@ public class BlockAdventureBackpack extends BlockContainer
     public BlockAdventureBackpack()
     {
         super(Material.cloth);
-        setHardness(1.5f);
+        setHardness(1.0f);
         setStepSound(soundTypeCloth);
 
     }

@@ -61,4 +61,6 @@ public interface IAdvBackpack extends IInventory
     void onInventoryChanged();
 
     void saveChanges();
+
+    boolean isSBDeployed();
 }

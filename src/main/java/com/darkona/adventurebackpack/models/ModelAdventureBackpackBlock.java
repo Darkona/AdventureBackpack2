@@ -4,6 +4,8 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -182,9 +184,14 @@ public class ModelAdventureBackpackBlock extends ModelBase
         }
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, FluidTank tankLeft, FluidTank tankRight, boolean sleepingbag)
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, IAdvBackpack backpack)
     {
-        super.render(entity, f, f1, f2, f3, f4, f5);
+        FluidTank tankLeft = backpack.getLeftTank();
+        FluidTank tankRight = backpack.getRightTank();
+        boolean sleepingbag = backpack.isSBDeployed();
+
+
+        //super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
         main.render(f5);
@@ -207,19 +214,20 @@ public class ModelAdventureBackpackBlock extends ModelBase
         tankwallleft4.render(f5);
         tankbottomleft.render(f5);
 
-        // if (!sleepingbag) {
-        bed.render(f5);
-        bedstrapbottomright.render(f5);
-        bedstrapsideleft.render(f5);
-        bedstraptopleft.render(f5);
-        bedstrapbottomleft.render(f5);
-        bedstraptopright.render(f5);
-        bedstrapsideright.render(f5);
-        bedbuttonright.render(f5);
-        bedbuttonleft.render(f5);
-        bedstrapendleft.render(f5);
-        bedstrapendright.render(f5);
-        // }
+        if (!sleepingbag)
+        {
+            bed.render(f5);
+            bedstrapbottomright.render(f5);
+            bedstrapsideleft.render(f5);
+            bedstraptopleft.render(f5);
+            bedstrapbottomleft.render(f5);
+            bedstraptopright.render(f5);
+            bedstrapsideright.render(f5);
+            bedbuttonright.render(f5);
+            bedbuttonleft.render(f5);
+            bedstrapendleft.render(f5);
+            bedstrapendright.render(f5);
+        }
 
         if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getIcon() != null)
         {

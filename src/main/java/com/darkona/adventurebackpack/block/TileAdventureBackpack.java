@@ -37,7 +37,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     public ItemStack[] inventory;
     private FluidTank leftTank;
     private FluidTank rightTank;
-    private boolean sleepingBagDeployed = false;
+    public boolean sleepingBagDeployed;
     private boolean special;
     private int sbdir;
     private int sbx;
@@ -86,6 +86,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         leftTank = new FluidTank(Constants.basicTankCapacity);
         rightTank = new FluidTank(Constants.basicTankCapacity);
         inventory = new ItemStack[Constants.inventorySize];
+        sleepingBagDeployed = false;
         setColor("Standard");
         setColorName("Standard");
         luminosity = 0;
@@ -105,7 +106,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
             sby = y;
             sbz = z;
             sbdir = meta;
-            switch (meta)
+            switch (meta & 3)
             {
                 case 0:
                     ++z;
@@ -121,7 +122,8 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
                     break;
             }
             sleepingBagDeployed = world.setBlock(x, y, z, sleepingBag, meta + 8, 3);
-            LogHelper.info("deploySleepingBag() => SleepingBagDeployed is: " + sleepingBagDeployed);
+            //LogHelper.info("deploySleepingBag() => SleepingBagDeployed is: " + sleepingBagDeployed);
+            world.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             return sleepingBagDeployed;
         }
         return false;
@@ -140,7 +142,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
             {
                 world.func_147480_a(sbx, sby, sbz, false);
                 this.sleepingBagDeployed = false;
-                LogHelper.info("removeSleepingBag() ==> SleepingBagDeployed is:" + sleepingBagDeployed);
+                //LogHelper.info("removeSleepingBag() ==> SleepingBagDeployed is:" + sleepingBagDeployed);
                 saveChanges();
                 return true;
             }
@@ -499,12 +501,13 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     @Override
     public void updateEntity()
     {
+        //Execute this backpack's ability. No, seriously. You might not infer that from the code. Just sayin'
         if (isSpecial() && !colorName.isEmpty())
         {
             BackpackAbilities.instance.executeAbility(null, this.worldObj, this);
         }
 
-        //Check for backpack luminosity
+        //Check for backpack luminosity and a deployed sleeping bag, just in case because i'm super paranoid.
         if (checkTime == 0)
         {
             int lastLumen = luminosity;
@@ -517,10 +520,10 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
                 worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
                 worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
             }
-            /*if(worldObj.getBlock(sbx, sby, sbz) != ModBlocks.sleepingBag)
+            if (worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
             {
                 sleepingBagDeployed = false;
-            }*/
+            }
             checkTime = 20;
         } else
         {

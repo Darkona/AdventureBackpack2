@@ -19,6 +19,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -348,7 +349,6 @@ public class Actions
     public static void toggleSleepingBag(EntityPlayer player, int coordX, int coordY, int coordZ)
     {
         World world = player.worldObj;
-        //PacketDispatcher.sendPacketToPlayer(PacketHandler.makePacket(5, 0, coordX, coordY, coordZ), (Player) player);
         if (world.getTileEntity(coordX, coordY, coordZ) instanceof TileAdventureBackpack)
         {
             TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
@@ -361,9 +361,9 @@ public class Actions
                     {
                         player.closeScreen();
                     }
-                } else if (!world.isRemote)
+                } else if (world.isRemote)
                 {
-                    // player.addChatMessage("Can't deploy the sleeping bag");
+                    player.addChatComponentMessage(new ChatComponentText("Can't deploy the sleeping bag! Check the surrounding area."));
                 }
             } else
             {
@@ -383,7 +383,7 @@ public class Actions
         if (!te.isSBDeployed())
         {
             int meta = world.getBlockMetadata(coordX, coordY, coordZ);
-            switch (meta)
+            switch (meta & 3)
             {
                 case 0:
                     --coordZ;

@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL12;
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
 
-    private final ModelAdventureBackpackBlock model;
+    private ModelAdventureBackpackBlock model;
 
     public RendererAdventureBackpackBlock()
     {
@@ -26,9 +26,9 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
     }
 
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float par8)
+    public void renderTileEntityAt(TileEntity te, double x, double y, double z, float par8)
     {
-        int dir = tileEntity.getBlockMetadata(/*advbackpack.xCoord, advbackpack.yCoord, advbackpack.zCoord*/);
+        int dir = te.getBlockMetadata();
         if ((dir & 8) >= 8)
         {
             dir -= 8;
@@ -38,14 +38,9 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
             dir -= 4;
         }
 
-        TileAdventureBackpack bp = (TileAdventureBackpack) tileEntity;
-
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.1F, (float) z + 0.5F);
-
-
-        // func_110628_a(Utils.getBackpackColor(bp));
 
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -63,13 +58,13 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         {
             GL11.glRotatef(dir * (-180F), 0.0F, 1.0F, 0.0F);
         }
-        bindTexture(Resources.backpackTexRL(bp));
-        model.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F, bp.getLeftTank(), bp.getRightTank(), bp.isSBDeployed());
-
+        bindTexture(Resources.backpackTexRL((TileAdventureBackpack) te));
+        model.render(null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F, (TileAdventureBackpack) te);
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
+
 
 }

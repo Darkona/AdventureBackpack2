@@ -80,7 +80,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glPushMatrix();
                 GL11.glScalef(1.9f, 1.9f, 1.9f);
 
-                model.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F, inv.getLeftTank(), inv.getRightTank(), false);
+                model.render(null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F, inv);
 
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();
@@ -104,7 +104,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glPushMatrix();
                 GL11.glScalef(1.2f, 1.2f, 1.2f);
 
-                model.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F, inv.getLeftTank(), inv.getRightTank(), false);
+                model.render(null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F, inv);
 
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();
@@ -123,7 +123,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glTranslatef(0.8f, 1f, 0.0f);
 
                 GL11.glPushMatrix();
-                GL11.glScalef(0.6f, 0.6f, 0.6f);
+                GL11.glScalef(0.9f, 0.9f, 0.9f);
 
                 GL11.glPushMatrix();
                 GL11.glRotatef(180, 0, 0, 1);
@@ -131,7 +131,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
 
                 GL11.glPushMatrix();
                 GL11.glRotatef(-45, 0, 1, 0);
-                model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.05f, inv.getLeftTank(), inv.getRightTank(), false);
+                model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.05f, inv);
 
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();
@@ -157,7 +157,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
 
                 GL11.glPushMatrix();
                 GL11.glRotatef(180, 0, 1, 0);
-                model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.05f, inv.getLeftTank(), inv.getRightTank(), false);
+                model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.05f, inv);
 
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();

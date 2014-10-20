@@ -19,8 +19,8 @@ import net.minecraftforge.fluids.FluidTank;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class InventoryItem implements IAdvBackpack
 {
@@ -263,6 +263,12 @@ public class InventoryItem implements IAdvBackpack
     public void saveChanges()
     {
         this.containerStack.setTagCompound(writeToNBT());
+    }
+
+    @Override
+    public boolean isSBDeployed()
+    {
+        return false;
     }
 
     @Override
