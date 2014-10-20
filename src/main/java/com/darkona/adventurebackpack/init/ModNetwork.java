@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.network.CycleToolMessage;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.NyanCatMessage;
+import com.darkona.adventurebackpack.network.SleepingBagMessage;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -26,5 +27,6 @@ public class ModNetwork
         networkWrapper.registerMessage(GuiBackpackMessage.GuiBackpackMessageServerHandler.class, GuiBackpackMessage.class, messageCounter++, Side.SERVER);
         networkWrapper.registerMessage(NyanCatMessage.NyanCatMessageServerHandler.class, NyanCatMessage.class, messageCounter++, Side.SERVER);
         networkWrapper.registerMessage(NyanCatMessage.NyanCatMessageClientHandler.class, NyanCatMessage.class, messageCounter++, Side.CLIENT);
+        networkWrapper.registerMessage(SleepingBagMessage.SleepingBagMessageServerHandler.class, SleepingBagMessage.class, messageCounter++, Side.SERVER);
     }
 }

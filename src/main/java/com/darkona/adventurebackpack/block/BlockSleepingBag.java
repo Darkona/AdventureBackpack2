@@ -1,14 +1,23 @@
 package com.darkona.adventurebackpack.block;
 
+import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Resources;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Direction;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -26,9 +35,32 @@ public class BlockSleepingBag extends BlockDirectional
 
     public static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
 
+    @SideOnly(Side.CLIENT)
+    private IIcon[] endIcons;
+    @SideOnly(Side.CLIENT)
+    private IIcon[] sideIcons;
+    @SideOnly(Side.CLIENT)
+    private IIcon[] topIcons;
+
     public BlockSleepingBag()
     {
         super(Material.cloth);
+        this.func_149978_e();
+    }
+
+
+    /**
+     * Returns the unlocalized name of the block with "tile." appended to the front.
+     */
+    @Override
+    public String getUnlocalizedName()
+    {
+        return "sleepingBag";
+    }
+
+    private void func_149978_e()
+    {
+        this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.1F, 1.0F);
     }
 
     /**
@@ -179,18 +211,19 @@ public class BlockSleepingBag extends BlockDirectional
 
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        this.unknown();
+        this.blockBoundsForRender();
     }
 
-    private void unknown()
+    private void blockBoundsForRender()
     {
-        this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5625F, 1.0F);
+        this.func_149978_e();
     }
 
     public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
     {
-        return isBlockHeadOfBed(p_149650_1_) ? Item.getItemById(0) : Item.getItemById(0);
+        return null;
     }
+
 
     public static ChunkCoordinates func_149977_a(World world, int x, int y, int z, int whatever)
     {
@@ -224,13 +257,14 @@ public class BlockSleepingBag extends BlockDirectional
         return null;
     }
 
+    @Override
     public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
     {
+        int direction = getDirection(meta);
         if (player.capabilities.isCreativeMode && isBlockHeadOfBed(meta))
         {
-            int i1 = getDirection(meta);
-            x -= footBlockToHeadBlockMap[i1][0];
-            z -= footBlockToHeadBlockMap[i1][1];
+            x -= footBlockToHeadBlockMap[direction][0];
+            z -= footBlockToHeadBlockMap[direction][1];
 
             if (world.getBlock(x, y, z) == this)
             {
@@ -239,9 +273,128 @@ public class BlockSleepingBag extends BlockDirectional
         }
     }
 
+
+    @Override
+    public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion boom)
+    {
+        this.onBlockDestroyedByPlayer(world, x, y, z, world.getBlockMetadata(x, y, z));
+    }
+
+    @Override
+    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
+    {
+        //LogHelper.info("onBlockDestroyedByPlayer() : BlockSleepingBag");
+        int direction = getDirection(meta);
+        int tileZ = z;
+        int tileX = x;
+        switch (meta)
+        {
+            case 0:
+                tileZ--;
+                break;
+            case 1:
+                tileX++;
+                break;
+            case 2:
+                tileZ++;
+                break;
+            case 3:
+                tileX--;
+                break;
+        }
+        //LogHelper.info("onBlockDestroyedByPlayer() Looking for tile entity in x=" +tileX+" y="+y+" z="+tileZ+" while breaking the block in x= "+x+" y="+y+" z="+z);
+        if (world.getTileEntity(tileX, y, tileZ) != null && world.getTileEntity(tileX, y, tileZ) instanceof TileAdventureBackpack)
+        {
+            // LogHelper.info("onBlockDestroyedByPlayer() Found the tile entity in x=" +tileX+" y="+y+" z="+z+" while breaking the block in x= "+x+" y="+y+" z="+z+" ...removing.");
+            ((TileAdventureBackpack) world.getTileEntity(tileX, y, tileZ)).setSleepingBagDeployed(false);
+        }
+    }
+
     @Override
     public boolean isBed(IBlockAccess world, int x, int y, int z, EntityLivingBase player)
     {
         return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta)
+    {
+        if (side == 0)
+        {
+            return Blocks.planks.getBlockTextureFromSide(side);
+        } else
+        {
+            int k = getDirection(meta);
+            int l = Direction.bedDirection[k][side];
+            int isHead = isBlockHeadOfBed(meta) ? 1 : 0;
+            return (isHead != 1 || l != 2) && (isHead != 0 || l != 3) ? (l != 5 && l != 4 ? this.topIcons[isHead] : this.sideIcons[isHead]) : this.endIcons[isHead];
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister)
+    {
+        this.topIcons = new IIcon[]{
+                iconRegister.registerIcon(Resources.blockTextures("sleepingBag_feet_top").toString()),
+                iconRegister.registerIcon(Resources.blockTextures("sleepingBag_head_top").toString())
+        };
+
+        this.endIcons = new IIcon[]{
+                iconRegister.registerIcon(Resources.blockTextures("sleepingBag_feet_end").toString()),
+                iconRegister.registerIcon(Resources.blockTextures("sleepingBag_head_end").toString())
+        };
+
+        this.sideIcons = new IIcon[]{
+                iconRegister.registerIcon(Resources.blockTextures("sleepingBag_feet_side").toString()),
+                iconRegister.registerIcon(Resources.blockTextures("sleepingBag_head_side").toString())
+        };
+    }
+
+    public int getRenderType()
+    {
+        return 14;
+    }
+
+    @Override
+    public boolean isNormalCube()
+    {
+        return false;
+    }
+
+    /**
+     * Indicate if a material is a normal solid opaque cube
+     */
+    @Override
+    public boolean isBlockNormalCube()
+    {
+        return false;
+    }
+
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    @Override
+    public boolean renderAsNormalBlock()
+    {
+        return false;
+    }
+
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    @Override
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
+
+    /**
+     * Returns if this block is collidable (only used by Fire). Args: x, y, z
+     */
+    @Override
+    public boolean isCollidable()
+    {
+        return super.isCollidable();
     }
 }

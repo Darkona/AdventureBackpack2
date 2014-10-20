@@ -255,7 +255,7 @@ public class BackpackAbilities
 
     /**
      * The Melon Backpack, like his cousin the Cactus Backpack, will fill itself, but with delicious
-     * and refreshing Melon Juice, if there's watermelon in the inventory.
+     * and refreshing Melon Juice, if the backpack is wet in any way.
      *
      * @param player
      * @param world
@@ -573,5 +573,22 @@ public class BackpackAbilities
         }
     }
 
+
+    public void tileMelon(World world, TileAdventureBackpack backpack)
+    {
+        if (world.isRaining() && world.canBlockSeeTheSky(backpack.xCoord, backpack.yCoord, backpack.zCoord))
+        {
+            int dropTime = backpack.getLastTime() - 1;
+            if (dropTime <= 0)
+            {
+                FluidStack raindrop = new FluidStack(ModFluids.melonJuice, 2);
+                backpack.getRightTank().fill(raindrop, true);
+                backpack.getLeftTank().fill(raindrop, true);
+                dropTime = 5;
+                backpack.markDirty();
+            }
+            backpack.setLastTime(dropTime);
+        }
+    }
 
 }

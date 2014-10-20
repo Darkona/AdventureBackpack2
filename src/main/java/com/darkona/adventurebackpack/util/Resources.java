@@ -47,12 +47,12 @@ public class Resources
 
     public static ResourceLocation itemTextures(String name)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/items/" + name + ".png");
+        return new ResourceLocation(TEXTURE_LOCATION, name);
     }
 
     public static ResourceLocation blockTextures(String name)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/blocks/" + name + ".png");
+        return new ResourceLocation(TEXTURE_LOCATION, name);
     }
 
     public static ResourceLocation fluidTextures(String name)

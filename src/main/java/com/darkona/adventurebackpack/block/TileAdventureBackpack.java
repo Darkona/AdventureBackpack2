@@ -9,9 +9,11 @@ import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,8 +37,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     public ItemStack[] inventory;
     private FluidTank leftTank;
     private FluidTank rightTank;
-    private boolean needsUpdate = false;
-    private boolean equipped = false;
     private boolean sleepingBagDeployed = false;
     private boolean special;
     private int sbdir;
@@ -96,14 +96,62 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
 
     public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta)
     {
-
+        if (world.isRemote) return false;
+        Block sleepingBag = ModBlocks.blockSleepingBag;
+        if (world.setBlock(x, y, z, sleepingBag, meta, 3))
+        {
+            world.playSoundAtEntity(player, Block.soundTypeCloth.func_150496_b(), 0.5f, 1.0f);
+            sbx = x;
+            sby = y;
+            sbz = z;
+            sbdir = meta;
+            switch (meta)
+            {
+                case 0:
+                    ++z;
+                    break;
+                case 1:
+                    --x;
+                    break;
+                case 2:
+                    --z;
+                    break;
+                case 3:
+                    ++x;
+                    break;
+            }
+            sleepingBagDeployed = world.setBlock(x, y, z, sleepingBag, meta + 8, 3);
+            LogHelper.info("deploySleepingBag() => SleepingBagDeployed is: " + sleepingBagDeployed);
+            return sleepingBagDeployed;
+        }
         return false;
     }
 
-    public boolean removeSleepingBag(World world) {
+    public void setSleepingBagDeployed(boolean state)
+    {
+        this.sleepingBagDeployed = state;
+    }
 
+    public boolean removeSleepingBag(World world)
+    {
+        if (sleepingBagDeployed)
+        {
+            if (world.getBlock(sbx, sby, sbz) == ModBlocks.blockSleepingBag)
+            {
+                world.func_147480_a(sbx, sby, sbz, false);
+                this.sleepingBagDeployed = false;
+                LogHelper.info("removeSleepingBag() ==> SleepingBagDeployed is:" + sleepingBagDeployed);
+                saveChanges();
+                return true;
+            }
+        } else
+        {
+            this.sleepingBagDeployed = false;
+            saveChanges();
+        }
         return false;
     }
+
 
     //=====================================================GETTERS====================================================//
 
@@ -515,7 +563,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     {
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
         stacky.setTagCompound(this.writeToNBT());
-        // removeSleepingBag(world);
+        removeSleepingBag(world);
         boolean response = false;
         if (player.inventory.armorInventory[2] == null)
         {
@@ -538,7 +586,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
 
     public boolean drop(World world, EntityPlayer player, int x, int y, int z)
     {
-        // removeSleepingBag(world);
+        removeSleepingBag(world);
         if (player.capabilities.isCreativeMode) return true;
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
         stacky.setTagCompound(this.writeToNBT());

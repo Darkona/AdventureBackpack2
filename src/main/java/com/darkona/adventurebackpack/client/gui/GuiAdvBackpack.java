@@ -9,7 +9,9 @@ import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
+import com.darkona.adventurebackpack.network.SleepingBagMessage;
 import com.darkona.adventurebackpack.util.Resources;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -166,18 +168,11 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-       /*if (bedButton.inButton(this, mouseX, mouseY) && source)
+        if (bedButton.inButton(this, mouseX, mouseY) && source)
         {
-            if (source)
-            {
-                PacketDispatcher.sendPacketToServer(PacketHandler.makePacket(5, 0, X, Y, Z));
-            } else
-            {
-                PacketDispatcher.sendPacketToServer(PacketHandler.makePacket(5, 1));
-            }
-
-        } else */
-        if (craftButton.inButton(this, mouseX, mouseY))
+            TileAdventureBackpack te = (TileAdventureBackpack) inventory;
+            ModNetwork.networkWrapper.sendToServer(new SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
+        } else if (craftButton.inButton(this, mouseX, mouseY))
         {
             if (source)
             {

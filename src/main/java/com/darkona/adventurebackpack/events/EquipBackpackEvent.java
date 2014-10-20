@@ -11,7 +11,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
  */
 public class EquipBackpackEvent extends PlayerEvent
 {
-    private final ItemStack backpack;
+    public final ItemStack backpack;
 
     public EquipBackpackEvent(EntityPlayer player, ItemStack theBackpack)
     {

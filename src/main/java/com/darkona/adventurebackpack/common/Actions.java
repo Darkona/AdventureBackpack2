@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.api.FluidEffect;
 import com.darkona.adventurebackpack.api.FluidEffectRegistry;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
@@ -9,6 +10,7 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +18,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -257,6 +260,11 @@ public class Actions
         }
     }
 
+    /**
+     * @param player
+     * @param bow
+     * @param charge
+     */
     public static void leakArrow(EntityPlayer player, ItemStack bow, int charge)
     {
         World world = player.worldObj;
@@ -329,5 +337,99 @@ public class Actions
                 LogHelper.info("Fired an arrow!");
             }
         }
+    }
+
+    /**
+     * @param player
+     * @param coordX
+     * @param coordY
+     * @param coordZ
+     */
+    public static void toggleSleepingBag(EntityPlayer player, int coordX, int coordY, int coordZ)
+    {
+        World world = player.worldObj;
+        //PacketDispatcher.sendPacketToPlayer(PacketHandler.makePacket(5, 0, coordX, coordY, coordZ), (Player) player);
+        if (world.getTileEntity(coordX, coordY, coordZ) instanceof TileAdventureBackpack)
+        {
+            TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
+            if (!te.isSBDeployed())
+            {
+                int can[] = canDeploySleepingBag(coordX, coordY, coordZ);
+                if (can[0] > -1)
+                {
+                    if (te.deploySleepingBag(player, world, can[1], can[2], can[3], can[0]))
+                    {
+                        player.closeScreen();
+                    }
+                } else if (!world.isRemote)
+                {
+                    // player.addChatMessage("Can't deploy the sleeping bag");
+                }
+            } else
+            {
+                te.removeSleepingBag(world);
+            }
+            player.closeScreen();
+        }
+
+    }
+
+    public static int[] canDeploySleepingBag(int coordX, int coordY, int coordZ)
+    {
+        World world = Minecraft.getMinecraft().theWorld;
+        TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
+        int newMeta = -1;
+
+        if (!te.isSBDeployed())
+        {
+            int meta = world.getBlockMetadata(coordX, coordY, coordZ);
+            switch (meta)
+            {
+                case 0:
+                    --coordZ;
+                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
+                    {
+                        if (world.isAirBlock(coordX, coordY, coordZ - 1) && world.getBlock(coordX, coordY - 1, coordZ - 1).getMaterial().isSolid())
+                        {
+                            newMeta = 2;
+                        }
+                    }
+                    break;
+                case 1:
+                    ++coordX;
+                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
+                    {
+                        if (world.isAirBlock(coordX + 1, coordY, coordZ) && world.getBlock(coordX + 1, coordY - 1, coordZ).getMaterial().isSolid())
+                        {
+                            newMeta = 3;
+                        }
+                    }
+                    break;
+                case 2:
+                    ++coordZ;
+                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
+                    {
+                        if (world.isAirBlock(coordX, coordY, coordZ + 1) && world.getBlock(coordX, coordY - 1, coordZ + 1).getMaterial().isSolid())
+                        {
+                            newMeta = 0;
+                        }
+                    }
+                    break;
+                case 3:
+                    --coordX;
+                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
+                    {
+                        if (world.isAirBlock(coordX - 1, coordY, coordZ) && world.getBlock(coordX - 1, coordY - 1, coordZ).getMaterial().isSolid())
+                        {
+                            newMeta = 1;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        int result[] = {newMeta, coordX, coordY, coordZ};
+        return result;
     }
 }
