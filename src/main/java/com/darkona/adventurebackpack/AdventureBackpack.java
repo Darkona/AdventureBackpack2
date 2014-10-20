@@ -6,10 +6,7 @@ import com.darkona.adventurebackpack.handlers.BackpackEventHandler;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
-import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModFluids;
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.init.*;
 import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -60,6 +57,7 @@ public class AdventureBackpack
         ModBlocks.init();
         ModFluids.init();
         FluidEffectRegistry.init();
+        ModRecipes.init();
 
         // EVENTS
         eventlistener = new PlayerEventHandler();

@@ -30,6 +30,7 @@ public class ItemComponent extends ItemAB
     {
         setNoRepair();
         setHasSubtypes(true);
+        setMaxStackSize(1);
         this.setUnlocalizedName("backpackComponent");
     }
 
@@ -43,6 +44,23 @@ public class ItemComponent extends ItemAB
         hoseHeadIcon = iconRegister.registerIcon(super.getUnlocalizedName("hoseHead").substring(this.getUnlocalizedName().indexOf(".") + 1));
         macheteHandleIcon = iconRegister.registerIcon(super.getUnlocalizedName("macheteHandle").substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
+
+    /**
+     * Player, Render pass, and item usage sensitive version of getIconIndex.
+     *
+     * @param stack        The item stack to get the icon for. (Usually this, and usingItem will be the same if usingItem is not null)
+     * @param renderPass   The pass to get the icon for, 0 is default.
+     * @param player       The player holding the item
+     * @param usingItem    The item the player is actively using. Can be null if not using anything.
+     * @param useRemaining The ticks remaining for the active item.
+     * @return The icon index
+     */
+    @Override
+    public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
+    {
+        return super.getIcon(stack, renderPass, player, usingItem, useRemaining);
+    }
+
 
     @Override
     @SideOnly(Side.CLIENT)

@@ -28,8 +28,6 @@ public interface IAdvBackpack extends IInventory
 
     public ItemStack getInventoryItem();
 
-    public String getColor();
-
     public String getColorName();
 
     public int getLastTime();

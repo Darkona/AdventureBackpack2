@@ -28,7 +28,9 @@ public class ItemJuiceBottle extends ItemAB
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
         setFull3D();
         setUnlocalizedName("melonJuiceBottle");
+        setMaxStackSize(1);
     }
+
 
     @Override
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)

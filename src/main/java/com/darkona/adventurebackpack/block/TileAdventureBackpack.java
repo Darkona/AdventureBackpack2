@@ -44,7 +44,10 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     private int sby;
     private int sbz;
     private int checkTime = 0;
-    private String color;
+    private String colorName;
+    private int lastTime;
+    private int luminosity;
+    private NBTTagCompound extendedProperties;
 
     public int getLuminosity()
     {
@@ -55,11 +58,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     {
         this.luminosity = luminosity;
     }
-
-    private String colorName;
-    private int lastTime;
-    private int luminosity;
-    private NBTTagCompound extendedProperties;
 
     public int getLastTime()
     {
@@ -87,7 +85,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         rightTank = new FluidTank(Constants.basicTankCapacity);
         inventory = new ItemStack[Constants.inventorySize];
         sleepingBagDeployed = false;
-        setColor("Standard");
         setColorName("Standard");
         luminosity = 0;
         lastTime = 0;
@@ -192,11 +189,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         return 64;
     }
 
-    public String getColor()
-    {
-        return color;
-    }
-
     @Override
     public FluidTank getLeftTank()
     {
@@ -226,12 +218,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     public void setRightTank(FluidTank rightTank)
     {
         this.rightTank = rightTank;
-        markDirty();
-    }
-
-    public void setColor(String color)
-    {
-        this.color = color;
         markDirty();
     }
 
@@ -298,8 +284,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         compound.setInteger("sbz", sbz);
         compound.setInteger("lumen", luminosity);
         compound.setInteger("sbdir", sbdir);
-
-        compound.setString("color", color);
         compound.setString("colorName", colorName);
         compound.setTag("rightTank", rightTank.writeToNBT(tankRight));
         compound.setTag("leftTank", leftTank.writeToNBT(tankLeft));
@@ -326,7 +310,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
             }
             leftTank.readFromNBT(compound.getCompoundTag("leftTank"));
             rightTank.readFromNBT(compound.getCompoundTag("rightTank"));
-            color = compound.getString("color");
             colorName = compound.getString("colorName");
             lastTime = compound.getInteger("lastTime");
             extendedProperties = compound.getCompoundTag("extended");
