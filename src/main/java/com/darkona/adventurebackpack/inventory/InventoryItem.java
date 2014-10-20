@@ -88,12 +88,6 @@ public class InventoryItem implements IAdvBackpack
     }
 
     @Override
-    public String getColor()
-    {
-        return color;
-    }
-
-    @Override
     public String getColorName()
     {
         return colorName;

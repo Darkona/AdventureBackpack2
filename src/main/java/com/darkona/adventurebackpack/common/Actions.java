@@ -251,12 +251,10 @@ public class Actions
         ItemStack stack = Wearing.getWearingBackpack(player);
         if (BackpackNames.getBackpackColorName(stack).equals("Pig"))
         {
-            stack.stackTagCompound.setString("color", "Pigman");
-            stack.stackTagCompound.setString("colorName", "Zombie Pigman");
+            stack.stackTagCompound.setString("colorName", "ZombiePigman");
         }
         if (BackpackNames.getBackpackColorName(stack).equals("BlockDiamond"))
         {
-            stack.stackTagCompound.setString("color", "Electric");
             stack.stackTagCompound.setString("colorName", "Electric");
         }
     }

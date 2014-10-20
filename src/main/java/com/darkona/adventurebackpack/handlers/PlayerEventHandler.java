@@ -1,11 +1,16 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.Actions;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -70,6 +75,20 @@ public class PlayerEventHandler
             Actions.tryPlaceOnDeath(player);
         }
         event.setResult(Event.Result.ALLOW);
+    }
+
+    @SubscribeEvent
+    public void playerCraftsBackpack(PlayerEvent.ItemCraftedEvent event)
+    {
+        if (event.crafting.getItem() == ModItems.adventureBackpack)
+        {
+            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + event.crafting.getTagCompound().getString("colorName"));
+            if (event.crafting.getTagCompound().getString("colorName").equals("Dragon"))
+            {
+                event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);
+                event.player.playSound("mob.enderdragon.growl", 1.0f, 5.0f);
+            }
+        }
     }
 }
 

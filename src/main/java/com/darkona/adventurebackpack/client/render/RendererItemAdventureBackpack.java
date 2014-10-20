@@ -61,7 +61,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
     {
         InventoryItem inv = new InventoryItem(item);
-        ResourceLocation modelTexture = Resources.backpackTextureFromColor(item);
+        ResourceLocation modelTexture = Resources.backpackTextureFromColor(inv);
         switch (type)
         {
 

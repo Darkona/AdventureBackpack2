@@ -53,9 +53,9 @@ public class ItemAdventureBackpack extends ArmorAB
 
         super.onCreated(stack, par2World, par3EntityPlayer);
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        if (!stack.stackTagCompound.hasKey("color") || stack.stackTagCompound.getString("color").isEmpty())
+        //PARANOIA EVERYWHERE
+        if (!stack.stackTagCompound.hasKey("colorName"))
         {
-            stack.stackTagCompound.setString("color", "Standard");
             stack.stackTagCompound.setString("colorName", "Standard");
         }
     }
@@ -63,9 +63,8 @@ public class ItemAdventureBackpack extends ArmorAB
     public boolean placeBackpack(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, boolean from)
     {
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        if (!stack.stackTagCompound.hasKey("color") || stack.stackTagCompound.getString("color").isEmpty())
+        if (!stack.stackTagCompound.hasKey("colorName") || stack.stackTagCompound.getString("colorName").isEmpty())
         {
-            stack.stackTagCompound.setString("color", "Standard");
             stack.stackTagCompound.setString("colorName", "Standard");
         }
 
@@ -214,9 +213,6 @@ public class ItemAdventureBackpack extends ArmorAB
             if (compound.hasKey("colorName"))
             {
                 list.add(compound.getString("colorName"));
-            } else if (compound.hasKey("color"))
-            {
-                list.add(compound.getString("color"));
             }
         }
     }
@@ -230,8 +226,7 @@ public class ItemAdventureBackpack extends ArmorAB
         {
             ItemStack bp = new ItemStack(this, 1, 0);
             NBTTagCompound c = new NBTTagCompound();
-            c.setString("color", name);
-            c.setString("colorName", BackpackNames.getDisplayNameForColor(name));
+            c.setString("colorName", name);
             bp.setTagCompound(c);
             subItems.add(bp);
         }

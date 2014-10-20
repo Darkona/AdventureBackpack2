@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.util;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -22,12 +23,12 @@ public class Resources
 
     public static String backpackTexturesStringFromColor(ItemStack backpack)
     {
-        return backpackTextureFromColor(backpack).toString();
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + backpack.getTagCompound().getString("colorName") + ".png").toString();
     }
 
-    public static ResourceLocation backpackTextureFromColor(ItemStack backpack)
+    public static ResourceLocation backpackTextureFromColor(IAdvBackpack backpack)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/backpack" + backpack.getTagCompound().getString("color") + ".png");
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + backpack.getColorName() + ".png");
     }
 
     public static ResourceLocation resourceRL(String name)
@@ -37,7 +38,7 @@ public class Resources
 
     public static ResourceLocation backpackTexRL(TileAdventureBackpack te)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/backpack" + te.getColor() + ".png");
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + te.getColorName() + ".png");
     }
 
     public static ResourceLocation guiTextures(String name)

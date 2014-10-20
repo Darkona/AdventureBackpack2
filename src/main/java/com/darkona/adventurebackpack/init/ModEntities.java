@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.entity;
+package com.darkona.adventurebackpack.init;
 
 /**
  * Created by Darkona on 12/10/2014.
