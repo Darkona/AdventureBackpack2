@@ -125,7 +125,6 @@ public class ItemAdventureBackpack extends ArmorAB
                 }
             }
         }
-
         return false;
     }
 

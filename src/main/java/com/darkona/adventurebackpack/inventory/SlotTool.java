@@ -9,7 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ *
+ * @author Darkona
  */
 public class SlotTool extends Slot
 {
@@ -31,11 +33,11 @@ public class SlotTool extends Slot
         boolean valid = false;
 
         String[] validToolNames = {
-                "wrench", "hammer", "axe", "shovel", "grafter", "scoop"
+                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar"
         };
 
         String[] invalidToolNames = {
-                "bucket"
+                "bucket", "sword", "dagger"
         };
 
         if (stack != null && stack.getMaxStackSize() == 1)
@@ -55,28 +57,6 @@ public class SlotTool extends Slot
                 return false;
             }
 
-
-           /*  // BuildCraft
-            if (item instanceof IToolWrench)
-            {
-                return true;
-            }
-            // IndustrialCraft
-            if (item instanceof ISpecialElectricItem || item instanceof ICustomElectricItem)
-            {
-                return true;
-            }
-            // Railcraft
-            if (item instanceof IToolCrowbar)
-            {
-                return true;
-            }
-            // Forestry
-            if (item instanceof IToolScoop)
-            {
-                return true;
-            }*/
-
             // Just for extra compatibility and/or security and/or less annoyance
             for (String toolName : validToolNames)
             {
@@ -89,21 +69,28 @@ public class SlotTool extends Slot
                 String a = toolName;
                 if (name.contains(toolName)) return false;
             }
+
+            //And also this because I'm a badass
             try
             {
                 // Tinker's Construct
-                if (java.lang.Class.forName("tconstruct.library.tools.ToolCore").isInstance(item))
-                {
-                    return true;
-                }
-                if (java.lang.Class.forName(" buildcraft.api.tools.IToolWrench").isInstance(item))
-                {
-                    return true;
-                }
+                if (java.lang.Class.forName("tconstruct.library.tools.HarvestTool").isInstance(item)) return true;
+
+                //Buildcraft
+                if (java.lang.Class.forName("buildcraft.api.tools.IToolWrench").isInstance(item)) return true;
+
+                //IndustrialCraft
+                if (java.lang.Class.forName("ic2.api.item.IElectricItem").isInstance(item)) return true;
+
+                //Thaumcraft
 
 
             } catch (Exception oops)
             {
+
+            } finally
+            {
+                return valid;
             }
 
         }
