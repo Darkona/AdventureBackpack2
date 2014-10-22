@@ -70,7 +70,8 @@ public class AbstractBackpackRecipe implements IRecipe
     public ItemStack makeBackpack(ItemStack backpackIn, String colorName)
     {
         if (backpackIn == null) return null;
-        ItemStack newBackpack = backpackIn.copy();
+
+        ItemStack newBackpack = backpackIn.copy(); //new ItemStack(ModItems.adventureBackpack,1);
         if (backpackIn.stackTagCompound == null)
         {
             backpackIn.setTagCompound(new NBTTagCompound());

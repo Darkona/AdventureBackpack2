@@ -116,7 +116,7 @@ public class BackpackRecipes
                 "WaW",
                 "ccc",
                 'c', Items.cookie,
-                'C', new ItemStack(Items.dye, 1, 12),
+                'C', new ItemStack(Items.dye, 1, 3),
                 'W', Items.wheat,
                 'a', ModItems.adventureBackpack
         );

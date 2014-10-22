@@ -32,8 +32,10 @@ public class ModRecipes
 
         //Sleeping Bag - temporal recipe
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 1),
-                "XXX",
-                'X', Blocks.wool
+                "  X",
+                "CCC",
+                'X', Blocks.wool,
+                'C', Blocks.carpet
         );
 
         //Backpack Tank
