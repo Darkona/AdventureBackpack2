@@ -46,6 +46,11 @@ public class ItemAdventureBackpack extends ArmorAB
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
+    {
+        return "Adventure Backpack - " + stack.getTagCompound().getString("colorName");
+    }
 
     @Override
     public void onCreated(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer)
@@ -57,6 +62,7 @@ public class ItemAdventureBackpack extends ArmorAB
         if (!stack.stackTagCompound.hasKey("colorName"))
         {
             stack.stackTagCompound.setString("colorName", "Standard");
+
         }
     }
 

@@ -2,7 +2,9 @@ package com.darkona.adventurebackpack.init.recipes;
 
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -37,10 +39,7 @@ public class AbstractBackpackRecipe implements IRecipe
         {
             return true;
         } else if (stack1 != null && stack2 != null)
-        {/*
-            if(stack1.stackSize != stack2.stackSize){
-                return false;
-            }else*/
+        {
             if (stack1.getItem() != stack2.getItem())
             {
                 return false;
@@ -55,36 +54,42 @@ public class AbstractBackpackRecipe implements IRecipe
     public AbstractBackpackRecipe()
     {
         recipes = new HashMap<String, ItemStack[]>();
+        int i = 0;
         for (Field field : BackpackRecipes.class.getFields())
         {
             try
             {
-                int i = 0;
                 if (field.getType() == ItemStack[].class)
                 {
                     recipes.put(field.getName(), (ItemStack[]) field.get(br));
                     i++;
                 }
-                LogHelper.info("Loaded " + i + " recipes for backpack coloration.");
             } catch (Exception oops)
             {
-                LogHelper.info("La cagaste en Reflection");
+                LogHelper.error("Huge mistake during reflection. Some bad things might happen.");
             }
         }
+        LogHelper.info("Loaded " + i + " recipes for backpack coloration.");
     }
 
-    private HashMap<String, ItemStack[]> recipes;
+    public HashMap<String, ItemStack[]> recipes;
 
 
     public ItemStack makeBackpack(ItemStack backpackIn, String colorName)
     {
         if (backpackIn == null) return null;
         ItemStack newBackpack = backpackIn.copy();
+        if (backpackIn.stackTagCompound == null)
+        {
+            backpackIn.setTagCompound(new NBTTagCompound());
+            backpackIn.stackTagCompound.setString("colorName", "Standard");
+        }
         NBTTagCompound compound = (NBTTagCompound) backpackIn.getTagCompound().copy();
         newBackpack.setTagCompound(compound);
         newBackpack.stackTagCompound.setString("colorName", colorName);
         return newBackpack;
     }
+
 
     public boolean match(ItemStack[] model, InventoryCrafting invC)
     {
@@ -96,6 +101,13 @@ public class AbstractBackpackRecipe implements IRecipe
             if (!compareStacksForColor(m, c))
             {
                 return false;
+            }
+            if (i == 4)
+            {
+                if (BackpackNames.getBackpackColorName(c) != "Standard")
+                {
+                    return false;
+                }
             }
         }
 
@@ -125,8 +137,19 @@ public class AbstractBackpackRecipe implements IRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting invC)
     {
-
-        return result.copy();
+        //result = null;
+        if (invC != null)
+        {
+            for (Map.Entry<String, ItemStack[]> recipe : recipes.entrySet())
+            {
+                if (match(recipe.getValue(), invC))
+                {
+                    return makeBackpack(invC.getStackInSlot(4), recipe.getKey());
+                }
+            }
+        }
+        return this.result;
+        // return result.copy();
     }
 
     /**
@@ -135,13 +158,16 @@ public class AbstractBackpackRecipe implements IRecipe
     @Override
     public int getRecipeSize()
     {
-        return 10;
+        return 9;
     }
 
     @Override
     public ItemStack getRecipeOutput()
     {
-        return result;
+        ItemStack backpack = new ItemStack(ModItems.adventureBackpack, 1);
+        backpack.setTagCompound(new NBTTagCompound());
+        backpack.stackTagCompound.setString("colorName", "Standard");
+        return backpack;
     }
 
 

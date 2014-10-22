@@ -20,8 +20,7 @@ public class ModRecipes
     {
         ItemStack backpack = new ItemStack(ModItems.adventureBackpack);
         backpack.setTagCompound(new NBTTagCompound());
-        backpack.getTagCompound().setString("color", color);
-        backpack.getTagCompound().setString("colorName", colorName);
+        backpack.stackTagCompound.setString("colorName", colorName);
         return backpack;
     }
 
@@ -33,8 +32,6 @@ public class ModRecipes
 
         //Sleeping Bag - temporal recipe
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 1),
-                "   ",
-                "   ",
                 "XXX",
                 'X', Blocks.wool
         );
@@ -115,6 +112,17 @@ public class ModRecipes
                 "  G",
                 'N', new ItemStack(ModItems.component, 1, 3),
                 'G', new ItemStack(Items.dye, 1, 2)
+        );
+
+        GameRegistry.addRecipe(a,
+                "LGL",
+                "TCT",
+                "LSL",
+                'L', Items.leather,
+                'G', Items.gold_ingot,
+                'T', new ItemStack(ModItems.component, 1, 2),
+                'S', new ItemStack(ModItems.component, 1, 1),
+                'C', Blocks.chest
         );
 
         GameRegistry.addRecipe(new AbstractBackpackRecipe());

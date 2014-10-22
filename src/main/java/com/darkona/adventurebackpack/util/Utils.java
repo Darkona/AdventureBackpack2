@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.util;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -132,5 +134,20 @@ public class Utils
     public static int secondsToTicks(int seconds)
     {
         return seconds * 20;
+    }
+
+    public static String whereTheHellAmI()
+    {
+        Side side = FMLCommonHandler.instance().getEffectiveSide();
+        if (side == Side.SERVER)
+        {
+            return "Server";
+        } else if (side == Side.CLIENT)
+        {
+            return "Client";
+        } else
+        {
+            return "I don't know";
+        }
     }
 }

@@ -39,10 +39,6 @@ public abstract class FluidEffect
 
     public FluidEffect(Fluid fluid, int time, String msg)
     {
-        if (!FluidRegistry.isFluidRegistered(fluid))
-        {
-            FluidRegistry.registerFluid(fluid);
-        }
         this.time = time;
         this.fluid = fluid;
         this.msg = msg;
@@ -52,15 +48,10 @@ public abstract class FluidEffect
     public FluidEffect(String fluidName, int time, String msg)
     {
         Fluid fluid = FluidRegistry.getFluid(fluidName);
-        if (!FluidRegistry.isFluidRegistered(fluid))
-        {
-            FluidRegistry.registerFluid(fluid);
-        }
         this.time = time;
         this.fluid = fluid;
         this.msg = msg;
         this.timeInTicks = this.time * 20;
-
     }
 
     /**

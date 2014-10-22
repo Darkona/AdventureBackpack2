@@ -58,6 +58,7 @@ public class AdventureBackpack
         ModFluids.init();
         FluidEffectRegistry.init();
         ModRecipes.init();
+        ModEntities.init();
 
         // EVENTS
         eventlistener = new PlayerEventHandler();

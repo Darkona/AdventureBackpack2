@@ -38,7 +38,6 @@ public class FluidEffectRegistry
 
     public static int registerFluidEffect(FluidEffect effect)
     {
-
         if (effect.effectID != -1 && !effects.containsKey(effect.effectID))
         {
             effects.put(++effectID, effect);
