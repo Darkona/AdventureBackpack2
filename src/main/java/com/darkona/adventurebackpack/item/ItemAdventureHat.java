@@ -23,7 +23,7 @@ public class ItemAdventureHat extends ArmorAB
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
     {
-        return ModelAdventureHat.instance;
+        return new ModelAdventureHat();
     }
 
 

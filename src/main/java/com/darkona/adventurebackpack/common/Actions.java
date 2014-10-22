@@ -54,7 +54,7 @@ public class Actions
         //TODO add configuration for the playing of the sound effect.
         //TODO Maybe configurable jump height too, because why not.
         player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
-        player.motionY += 0.35;
+        player.motionY += 0.30;
         player.jumpMovementFactor += 0.3;
     }
 
@@ -105,28 +105,32 @@ public class Actions
      */
     public static void switchHose(EntityPlayer player, boolean action, int direction, int slot)
     {
-        ItemStack hose = player.inventory.mainInventory[slot];
-        NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
-        if (action == Actions.HOSE_SWITCH)
-        {
-            int mode = ItemHose.getHoseMode(hose);
-            if (direction > 0)
-            {
-                mode = (mode + 1) % 3;
-            } else if (direction < 0)
-            {
-                mode = (mode - 1 < 0) ? 2 : mode - 1;
-            }
-            tag.setInteger("mode", mode);
-        }
 
-        if (action == Actions.HOSE_TOGGLE)
+        ItemStack hose = player.inventory.mainInventory[slot];
+        if (hose != null && hose.getItem() instanceof ItemHose)
         {
-            int tank = ItemHose.getHoseTank(hose);
-            tank = (tank + 1) % 2;
-            tag.setInteger("tank", tank);
+            NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
+            if (action == Actions.HOSE_SWITCH)
+            {
+                int mode = ItemHose.getHoseMode(hose);
+                if (direction > 0)
+                {
+                    mode = (mode + 1) % 3;
+                } else if (direction < 0)
+                {
+                    mode = (mode - 1 < 0) ? 2 : mode - 1;
+                }
+                tag.setInteger("mode", mode);
+            }
+
+            if (action == Actions.HOSE_TOGGLE)
+            {
+                int tank = ItemHose.getHoseTank(hose);
+                tank = (tank + 1) % 2;
+                tag.setInteger("tank", tank);
+            }
+            hose.setTagCompound(tag);
         }
-        hose.setTagCompound(tag);
     }
 
     /**
