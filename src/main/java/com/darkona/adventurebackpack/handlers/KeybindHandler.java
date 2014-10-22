@@ -1,14 +1,11 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
-import com.darkona.adventurebackpack.client.gui.GuiCraftAdvBackpack;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.CycleToolMessage;
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.Key;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;

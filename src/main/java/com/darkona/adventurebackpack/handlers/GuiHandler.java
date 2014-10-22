@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCraftAdvBackpack;
@@ -9,7 +8,6 @@ import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -22,7 +20,6 @@ public class GuiHandler implements IGuiHandler
 
     public GuiHandler()
     {
-        NetworkRegistry.INSTANCE.registerGuiHandler(AdventureBackpack.instance, this);
     }
 
     @Override

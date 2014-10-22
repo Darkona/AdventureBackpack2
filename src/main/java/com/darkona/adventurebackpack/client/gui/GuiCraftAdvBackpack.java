@@ -3,11 +3,10 @@ package com.darkona.adventurebackpack.client.gui;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.GeneralConfig;
-
+import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-
 import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.util.Resources;
@@ -17,7 +16,9 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ *
+ * @author Darkona
  */
 public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
 {
@@ -29,12 +30,13 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
     protected int Z;
     protected EntityPlayer player;
     /* Tanks */
-    private static GuiTank tankLeft = new GuiTank(8, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
-    private static GuiTank tankRight = new GuiTank(153, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
+    private static GuiTankCraft tankLeft = new GuiTankCraft(8, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
+    private static GuiTankCraft tankRight = new GuiTankCraft(153, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
+    public int lefties;
+    public int topsies;
 
     /* Buttons */
-    private static GuiImageButton backButton = new GuiImageButton(114, 24, 18, 18);
-
+    private static GuiImageButtonCraft backButton = new GuiImageButtonCraft(114, 24, 18, 18);
     private static final ResourceLocation texture = Resources.guiTextures("guiBackpackCraft");
 
     public GuiCraftAdvBackpack(EntityPlayer player, TileAdventureBackpack tile)
@@ -47,17 +49,21 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
         X = tile.xCoord;
         Y = tile.yCoord;
         Z = tile.zCoord;
+        this.lefties = guiLeft;
+        this.topsies = guiTop;
     }
 
     public GuiCraftAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing)
     {
         super(new BackCraftContainer(player, player.worldObj, item));
-        this.inventory = item;
+        inventory = item;
         this.player = player;
         this.wearing = wearing;
-        this.source = false;
+        source = false;
         xSize = 176;
         ySize = 166;
+        lefties = guiLeft;
+        topsies = guiTop;
     }
 
     @Override
@@ -74,10 +80,12 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(texture);
-        int k = (this.width - this.xSize) / 2;
-        int l = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+
+        this.mc.renderEngine.bindTexture(texture);
+
+        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+
+        //Buttons
         int srcX = 177;
         int srcY = 111;
 
@@ -91,12 +99,21 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int par1, int par2)
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
 
         this.fontRendererObj.drawString("Crafting Bench", 92, 7, 4210752);
         GuiCraftAdvBackpack.tankLeft.draw(this, inventory.getLeftTank().getFluid());
         GuiCraftAdvBackpack.tankRight.draw(this, inventory.getRightTank().getFluid());
+        if (tankLeft.inTank(this, mouseX, mouseY))
+        {
+            drawHoveringText(tankLeft.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
+        }
+
+        if (tankRight.inTank(this, mouseX, mouseY))
+        {
+            drawHoveringText(tankRight.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
+        }
     }
 
     @Override
@@ -140,4 +157,15 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
         }
         super.mouseClicked(mouseX, mouseY, button);
     }
+
+    @Override
+    protected void keyTyped(char key, int keycode)
+    {
+        if (keycode == Keybindings.openBackpack.getKeyCode())
+        {
+            player.closeScreen();
+        }
+        super.keyTyped(key, keycode);
+    }
+
 }

@@ -1,16 +1,9 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.api.FluidEffectRegistry;
 import com.darkona.adventurebackpack.fluids.FluidMelonJuice;
 import com.darkona.adventurebackpack.fluids.FluidMilk;
-import com.darkona.adventurebackpack.fluids.effects.MelonJuiceEffect;
-import com.darkona.adventurebackpack.fluids.effects.MilkEffect;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 

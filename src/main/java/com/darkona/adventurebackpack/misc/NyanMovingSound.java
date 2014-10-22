@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.misc;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 /**

@@ -1,16 +1,13 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.api.FluidEffectRegistry;
 import com.darkona.adventurebackpack.common.Actions;
-import com.darkona.adventurebackpack.fluids.effects.MelonJuiceEffect;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 

@@ -11,7 +11,6 @@ import com.darkona.adventurebackpack.network.GuiBackpackMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.network.SleepingBagMessage;
 import com.darkona.adventurebackpack.util.Resources;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -30,33 +29,34 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     protected IAdvBackpack inventory;
     protected boolean source;
     private boolean wearing;
-    protected boolean sbstatus;
     protected int X;
     protected int Y;
     protected int Z;
-
-    @SuppressWarnings("unused")
     private EntityPlayer player;
     private static final ResourceLocation texture = Resources.guiTextures("guiBackpack");
-    private static GuiImageButton bedButton = new GuiImageButton(71, 15, 18, 18);
-    private static GuiImageButton craftButton = new GuiImageButton(90, 15, 18, 18);
+    private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(71, 15, 18, 18);
+    private static GuiImageButtonNormal craftButton = new GuiImageButtonNormal(90, 15, 18, 18);
     private static GuiTank tankLeft = new GuiTank(26, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
     private static GuiTank tankRight = new GuiTank(134, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
     private FluidStack lft;
     private FluidStack rgt;
+    public int lefties;
+    public int topsies;
+
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {
         super(new BackpackContainer(player.inventory, tileBackpack, BackpackContainer.SOURCE_TILE));
         this.inventory = tileBackpack;
         this.source = true;
-        //this.sbstatus = tileBackpack.sleepingBagDeployed;
         xSize = 176;
         ySize = 166;
         this.X = tileBackpack.xCoord;
         this.Y = tileBackpack.yCoord;
         this.Z = tileBackpack.zCoord;
         this.player = player;
+        this.lefties = guiLeft;
+        this.topsies = guiTop;
     }
 
     public GuiAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing)
@@ -68,6 +68,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         xSize = 176;
         ySize = 166;
         this.player = player;
+        this.lefties = guiLeft;
+        this.topsies = guiTop;
     }
 
     @Override
@@ -85,7 +87,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     {
         GL11.glColor4f(1, 1, 1, 1);
 
-        this.mc.getTextureManager().bindTexture(texture);
+        this.mc.renderEngine.bindTexture(texture);
+
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Buttons and button highlight
@@ -134,11 +137,11 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
             drawHoveringText(tankRight.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
         }
 
-        GL11.glPushMatrix();
-        GL11.glScalef(0.8f, 0.8f, 0.8f);
-        String name = " Adventure Backpack";
+        /*GL11.glPushMatrix();
+        GL11.glScalef(0.8f, 0.8f, 0.8f);*/
+        String name = "Adventure Backpack";
         fontRendererObj.drawString(name, ((xSize - fontRendererObj.getStringWidth(name)) / 2), 4, 0x404040);
-        GL11.glPopMatrix();
+        /*GL11.glPopMatrix();*/
     }
 
     @Override
@@ -151,6 +154,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     public void initGui()
     {
         super.initGui();
+
     }
 
     @Override
@@ -205,14 +209,5 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
             player.closeScreen();
         }
         super.keyTyped(key, keycode);
-    }
-
-    /**
-     * Called from the main game loop to update the screen.
-     */
-    @Override
-    public void updateScreen()
-    {
-        super.updateScreen();
     }
 }

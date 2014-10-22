@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.network;
 
 import com.darkona.adventurebackpack.common.Actions;
-import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;

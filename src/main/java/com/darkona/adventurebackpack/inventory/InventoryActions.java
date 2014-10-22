@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

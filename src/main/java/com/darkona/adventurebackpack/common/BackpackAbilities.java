@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
@@ -9,7 +10,6 @@ import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.network.NyanCatMessage;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.Entity;

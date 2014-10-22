@@ -1,9 +1,9 @@
 package com.darkona.adventurebackpack.init;
 
 
+import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**

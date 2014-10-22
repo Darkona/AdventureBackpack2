@@ -1,6 +1,9 @@
 package com.darkona.adventurebackpack.api;
 
-import com.darkona.adventurebackpack.fluids.effects.*;
+import com.darkona.adventurebackpack.fluids.effects.LavaEffect;
+import com.darkona.adventurebackpack.fluids.effects.MelonJuiceEffect;
+import com.darkona.adventurebackpack.fluids.effects.MilkEffect;
+import com.darkona.adventurebackpack.fluids.effects.WaterEffect;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;

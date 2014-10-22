@@ -5,14 +5,11 @@ import com.darkona.adventurebackpack.client.render.RendererAdventureBackpackBloc
 import com.darkona.adventurebackpack.client.render.RendererHose;
 import com.darkona.adventurebackpack.client.render.RendererItemAdventureBackpack;
 import com.darkona.adventurebackpack.client.render.RendererItemAdventureHat;
-
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.handlers.KeybindHandler;
-
 import com.darkona.adventurebackpack.init.ModItems;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-
 import net.minecraftforge.client.MinecraftForgeClient;
 
 /**

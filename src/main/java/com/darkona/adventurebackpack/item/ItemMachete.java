@@ -18,12 +18,13 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.Set;
 
 /**
- * Created by Darkona on 10/10/2014.
+ * Created on 10/10/2014
+ * @author Darkona
+ *
  */
 public class ItemMachete extends ToolAB
 {
-    private static final Set breakableBlocks = Sets.newHashSet(new Block[]{
-            Blocks.pumpkin,
+    private static final Set breakableBlocks = Sets.newHashSet(Blocks.pumpkin,
             Blocks.web,
             Blocks.leaves,
             Blocks.leaves2,
@@ -45,7 +46,7 @@ public class ItemMachete extends ToolAB
             Blocks.yellow_flower,
             Blocks.waterlily,
             Blocks.wheat,
-            Blocks.wool});
+            Blocks.wool);
     private float field_150934_a;
 
     public ItemMachete()

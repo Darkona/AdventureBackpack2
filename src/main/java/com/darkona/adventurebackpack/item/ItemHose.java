@@ -4,7 +4,6 @@ import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.common.Actions;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModFluids;
-import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
@@ -28,7 +27,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
-import scala.collection.immutable.Stream;
 
 /**
  * Created by Darkona on 12/10/2014.

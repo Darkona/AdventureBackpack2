@@ -3,7 +3,9 @@ package com.darkona.adventurebackpack.client.gui;
 import net.minecraft.util.IIcon;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ *
+ * @author Darkona
  */
 public interface IBackpackGui
 {
@@ -14,7 +16,7 @@ public interface IBackpackGui
 
     public int getTop();
 
-    public void drawTexturedModalRect(int i, int j, int srcX, int srcY, int w, int h);
+    //public void drawTexturedModalRect(int i, int j, int srcX, int srcY, int w, int h);
 
     public float getZLevel();
 }

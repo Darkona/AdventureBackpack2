@@ -6,13 +6,8 @@ package com.darkona.adventurebackpack.util;
  * @author Darkona
  */
 
-import codechicken.lib.colour.Colour;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class ColorReplacer
 {

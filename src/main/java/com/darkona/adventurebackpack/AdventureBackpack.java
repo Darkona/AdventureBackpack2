@@ -15,6 +15,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraftforge.common.MinecraftForge;
 
 /**
@@ -32,14 +33,15 @@ public class AdventureBackpack
     public static AdventureBackpack instance;
 
     //Static things
-    public static CreativeTabAB creativeTab;
+    public static CreativeTabAB creativeTab = new CreativeTabAB();
 
     @SidedProxy(clientSide = ModInfo.MOD_CLIENT_PROXY, serverSide = ModInfo.MOD_SERVER_PROXY)
     public static IProxy proxy;
 
-    PlayerEventHandler eventlistener;
+    PlayerEventHandler playerEventHandler;
     ClientEventHandler clientEventHandler;
     BackpackEventHandler backpackEventHandler;
+    GuiHandler guiHandler;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -61,14 +63,14 @@ public class AdventureBackpack
         ModEntities.init();
 
         // EVENTS
-        eventlistener = new PlayerEventHandler();
+        playerEventHandler = new PlayerEventHandler();
         backpackEventHandler = new BackpackEventHandler();
         clientEventHandler = new ClientEventHandler();
         MinecraftForge.EVENT_BUS.register(backpackEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
 
-        MinecraftForge.EVENT_BUS.register(eventlistener);
-        FMLCommonHandler.instance().bus().register(eventlistener);
+        MinecraftForge.EVENT_BUS.register(playerEventHandler);
+        FMLCommonHandler.instance().bus().register(playerEventHandler);
 
     }
 
@@ -76,10 +78,10 @@ public class AdventureBackpack
     public void init(FMLInitializationEvent event)
     {
         proxy.init();
-        //proxy.registerKeybindings();
 
         //GUIs
-        new GuiHandler();
+        guiHandler = new GuiHandler();
+        NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);
     }
 
     @Mod.EventHandler

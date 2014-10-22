@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class GuiTank
+public class GuiTankCraft
 {
     private int H;
     private int W;
@@ -41,7 +41,7 @@ public class GuiTank
      *                   8, 16. Other values are untested, but i guess they should
      *                   always be integer divisors of the width, with modulus 0;
      */
-    public GuiTank(int X, int Y, int H, int W, int resolution)
+    public GuiTankCraft(int X, int Y, int H, int W, int resolution)
     {
         this.X = X;
         this.Y = Y;
@@ -65,7 +65,7 @@ public class GuiTank
      * @param gui
      * @param theFluid
      */
-    public void draw(GuiAdvBackpack gui, FluidStack theFluid)
+    public void draw(GuiCraftAdvBackpack gui, FluidStack theFluid)
     {
         fluid = theFluid;
         this.zLevel = gui.getZLevel();
@@ -91,7 +91,7 @@ public class GuiTank
      * @param gui
      * @param
      */
-    private void drawMethodOne(GuiAdvBackpack gui)
+    private void drawMethodOne(GuiCraftAdvBackpack gui)
     {
         if (fluid != null)
         {
@@ -114,7 +114,7 @@ public class GuiTank
      * @param gui
      * @param
      */
-    private void drawMethodTwo(GuiAdvBackpack gui)
+    private void drawMethodTwo(GuiCraftAdvBackpack gui)
     {
         if (fluid != null)
         {
@@ -140,7 +140,7 @@ public class GuiTank
      * @param gui
      * @param
      */
-    private void drawMethodThree(IBackpackGui gui)
+    private void drawMethodThree(GuiCraftAdvBackpack gui)
     {
         if (fluid != null)
         {
@@ -179,7 +179,7 @@ public class GuiTank
      * @param mouseY
      * @return
      */
-    public boolean inTank(GuiAdvBackpack gui, int mouseX, int mouseY)
+    public boolean inTank(GuiCraftAdvBackpack gui, int mouseX, int mouseY)
     {
         mouseX -= gui.getLeft();
         mouseY -= gui.getTop();
