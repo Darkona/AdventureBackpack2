@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.models.FullArmorModel;
+import com.darkona.adventurebackpack.client.models.FullArmorModel;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

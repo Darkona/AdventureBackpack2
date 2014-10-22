@@ -1,28 +1,21 @@
-package com.darkona.adventurebackpack.models;
-
-/**
- * Created by Darkona on 11/10/2014.
- */
+package com.darkona.adventurebackpack.client.models;
 
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
-import com.darkona.adventurebackpack.client.render.RendererStack;
-import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.util.LogHelper;
-import net.minecraft.client.model.ModelBiped;
+import com.darkona.adventurebackpack.common.IAdvBackpack;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fluids.FluidTank;
 
-
-public class ModelAdventureBackpackArmor extends ModelBiped
+/**
+ * Created by Darkona on 12/10/2014.
+ */
+public class ModelAdventureBackpackBlock extends ModelBase
 {
-    public static final ModelAdventureBackpackArmor instance = new ModelAdventureBackpackArmor();
+    // fields
     ModelRenderer main;
     ModelRenderer side;
     ModelRenderer top;
@@ -51,25 +44,14 @@ public class ModelAdventureBackpackArmor extends ModelBiped
     ModelRenderer bedbuttonleft;
     ModelRenderer bedstrapendleft;
     ModelRenderer bedstrapendright;
-    RendererStack lowerTool;
-    RendererStack upperTool;
-    private FluidStack tankLeft;
-    private FluidStack tankRight;
-    private ItemStack stackUp;
-    private ItemStack stackBottom;
-    private float scale = -1;
 
-    public ModelAdventureBackpackArmor()
+    public ModelAdventureBackpackBlock()
     {
-
         textureWidth = 128;
         textureHeight = 64;
 
-        lowerTool = new RendererStack(this, true);
-        upperTool = new RendererStack(this, false);
-
-        bipedBody.offsetY = -0.45F;
-        bipedBody.offsetZ = 10F;
+        // lowerTool = new RendererStack(this, true);
+        // upperTool = new RendererStack(this, false);
 
         main = new ModelRenderer(this, 0, 8);
         main.addBox(-5F, 0F, -3F, 10, 9, 5);
@@ -193,111 +175,81 @@ public class ModelAdventureBackpackArmor extends ModelBiped
             {
                 part.setTextureSize(128, 64);
                 part.mirror = false;
-                bipedBody.addChild(part);
             }
-
-            bipedBody.addChild(lowerTool);
-            bipedBody.addChild(upperTool);
-
         } catch (Exception oops)
         {
             oops.printStackTrace();
         }
-
     }
 
-    public ModelAdventureBackpackArmor setTanks(FluidStack tankLeft, FluidStack tankRight)
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, IAdvBackpack backpack)
     {
-        this.tankLeft = tankLeft;
-        this.tankRight = tankRight;
-       /* this.tankLeft = new FluidStack(FluidRegistry.LAVA,1000);
-        this.tankLeft = new FluidStack(FluidRegistry.WATER,1000);*/
+        FluidTank tankLeft = backpack.getLeftTank();
+        FluidTank tankRight = backpack.getRightTank();
+        boolean sleepingbag = backpack.isSBDeployed();
 
-        return instance;
-    }
 
-    public ModelAdventureBackpackArmor setItems(ItemStack stackUp, ItemStack stackBottom)
-    {
-        this.stackUp = stackUp;
-        this.stackBottom = stackBottom;
-        return instance;
-    }
-
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-    {
-
-        upperTool.offsetY = 0.6F;
-        upperTool.offsetZ = .2F;
-        lowerTool.setRotationPoint(-.5F, .10F, .3F);
-        lowerTool.offsetX = -.28F;
-        lowerTool.offsetY = 1.25F;
-        lowerTool.offsetZ = -.1F;
-
+        //super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
-        GL11.glPushMatrix();
-        GL11.glColor4f(1, 1, 1, 1);
-        if (scale > -1)
+        main.render(f5);
+        side.render(f5);
+        top.render(f5);
+        right.render(f5);
+        left.render(f5);
+
+        tanktopright.render(f5);
+        tankwallright.render(f5);
+        tankwallright2.render(f5);
+        tankwallright3.render(f5);
+        tankwallright4.render(f5);
+        tankbottomright.render(f5);
+
+        tanktopleft.render(f5);
+        tankwallleft.render(f5);
+        tankwallleft2.render(f5);
+        tankwallleft3.render(f5);
+        tankwallleft4.render(f5);
+        tankbottomleft.render(f5);
+
+        if (!sleepingbag)
         {
-            bipedBody.render(scale);
-        } else
-        {
-            bipedBody.render(1 / 20.0F);
-        }
-        lowerTool.stack = stackBottom;
-        upperTool.stack = stackUp;
-        GL11.glPopMatrix();
-
-        CCRenderState.reset();
-        CCRenderState.pullLightmap();
-        CCRenderState.useNormals = true;
-
-        if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getIcon() != null)
-        {
-
-            Vector3 victor = new Vector3((bipedBody.offsetX + tankbottomleft.rotationPointX * 0.1 - 0.21),
-                    (bipedBody.offsetY + tankwallleft.rotationPointY * 0.1), (bipedBody.offsetZ + tankbottomleft.rotationPointZ * 0.1 + 0.125));
-
-            Cuboid6 left = new Cuboid6(0, -0.205, 0.18, 0.15, -0.555, 0.02).add(victor);
-
-            if (isSneak)
-            {
-                Vector3 victoria = new Vector3(0, 0, .2);
-                left.add(victoria);
-                left.min.y += .1;
-                left.max.y += .03;
-                GL11.glPushMatrix();
-                GL11.glRotatef(30F, 1, 0, 0);
-            }
-            RenderUtils.renderFluidCuboid(tankLeft, left, ((1.0F * tankLeft.amount) / (1.0F * Constants.basicTankCapacity)), 0.2);
-            if (isSneak)
-            {
-                GL11.glPopMatrix();
-            }
+            bed.render(f5);
+            bedstrapbottomright.render(f5);
+            bedstrapsideleft.render(f5);
+            bedstraptopleft.render(f5);
+            bedstrapbottomleft.render(f5);
+            bedstraptopright.render(f5);
+            bedstrapsideright.render(f5);
+            bedbuttonright.render(f5);
+            bedbuttonleft.render(f5);
+            bedstrapendleft.render(f5);
+            bedstrapendright.render(f5);
         }
 
-        if (tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getIcon() != null)
+        if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getIcon() != null)
         {
+            Vector3 victor = new Vector3((tankbottomleft.rotationPointX * 0.1 - 0.21), (tankwallleft.rotationPointY * 0.1),
+                    (tankbottomleft.rotationPointZ * 0.1 + 0.125));
+            CCRenderState.reset();
+            CCRenderState.pullLightmap();
+            CCRenderState.useNormals = true;
+            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), new Cuboid6(0, -0.205, 0.18, 0.15, -0.555, 0.02).add(victor),
+                    ((1.0F * tankLeft.getFluidAmount()) / (1.0F * tankLeft.getCapacity())), 0.8);
 
-            Vector3 victor = new Vector3((bipedBody.offsetX + tankbottomright.rotationPointX * 0.1 + 0.5),
-                    (bipedBody.offsetY + tankwallleft.rotationPointY * 0.1), (bipedBody.offsetZ + tankbottomright.rotationPointZ * 0.1 + 0.125));
-            Cuboid6 right = new Cuboid6(-0.04, -0.205, 0.18, 0.15, -0.555, 0.02).add(victor);
-            if (isSneak)
-            {
-                Vector3 victoria = new Vector3(0, 0, .2);
-                right.add(victoria);
-                right.min.y += .1;
-                right.max.y += .03;
-                GL11.glPushMatrix();
-                GL11.glRotatef(30F, 1, 0, 0);
-            }
-            RenderUtils.renderFluidCuboid(tankRight, right, ((1.0F * tankRight.amount) / (1.0F * Constants.basicTankCapacity)), 1);
-            if (isSneak)
-            {
-                GL11.glPopMatrix();
-            }
         }
+
+        if (tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getFluid().getIcon() != null)
+        {
+            Vector3 victor = new Vector3((tankbottomright.rotationPointX * 0.1 + 0.5), (tankwallleft.rotationPointY * 0.1),
+                    (tankbottomright.rotationPointZ * 0.1 + 0.125));
+            CCRenderState.reset();
+            CCRenderState.pullLightmap();
+            CCRenderState.useNormals = true;
+            RenderUtils.renderFluidCuboid(tankRight.getFluid(), new Cuboid6(-0.04, -0.205, 0.18, 0.15, -0.555, 0.02).add(victor),
+                    ((1.0F * tankRight.getFluidAmount()) / (1.0F * tankRight.getCapacity())), 1);
+        }
+
     }
 
     public void setRotation(ModelRenderer model, float x, float y, float z)
@@ -307,26 +259,5 @@ public class ModelAdventureBackpackArmor extends ModelBiped
         model.rotateAngleZ = z;
     }
 
-    @Override
-    public void setRotationAngles(float v1, float v2, float v3, float v4, float v5, float v6, Entity entity)
-    {
-        // Copyboy: For some reason this is not properly updated.
-        isSneak = ((entity != null) ? ((EntityLivingBase) entity).isSneaking() : false);
-        bipedBody.offsetZ = (isSneak) ? 0 : .3F;
-        super.setRotationAngles(v1, v2, v3, v4, v5, v6, entity);
-    }
-
-    @Override
-    public void setLivingAnimations(EntityLivingBase entity, float par2, float par3, float partialTicks)
-    {
-        float angle = 0;
-        top.rotateAngleX = (float) (angle * Math.PI / 4.0);
-    }
-
-    public ModelAdventureBackpackArmor setScale(float scale)
-    {
-        this.scale = scale;
-        return this;
-    }
 
 }

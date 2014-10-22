@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.client.render;
 
 
-import com.darkona.adventurebackpack.models.ModelAdventureHat;
+import com.darkona.adventurebackpack.client.models.ModelAdventureHat;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

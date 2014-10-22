@@ -5,7 +5,7 @@
 // - ZeuX
 
 
-package com.darkona.adventurebackpack.models;
+package com.darkona.adventurebackpack.client.models;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;

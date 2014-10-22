@@ -1,10 +1,9 @@
 package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.models.ModelAdventureBackpackBlock;
+import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackBlock;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;

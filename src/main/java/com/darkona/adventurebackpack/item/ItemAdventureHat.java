@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.models.ModelAdventureHat;
+import com.darkona.adventurebackpack.client.models.ModelAdventureHat;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;

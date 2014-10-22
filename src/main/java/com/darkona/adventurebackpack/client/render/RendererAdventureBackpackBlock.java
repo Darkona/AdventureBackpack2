@@ -1,11 +1,9 @@
 package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.models.ModelAdventureBackpackBlock;
+import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackBlock;
 import com.darkona.adventurebackpack.util.Resources;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;

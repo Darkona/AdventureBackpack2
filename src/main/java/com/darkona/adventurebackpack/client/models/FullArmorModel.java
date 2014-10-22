@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.models;
+package com.darkona.adventurebackpack.client.models;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.player.EntityPlayer;

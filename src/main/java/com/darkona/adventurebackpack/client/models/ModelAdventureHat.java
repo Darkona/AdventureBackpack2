@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.models;
+package com.darkona.adventurebackpack.client.models;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
@@ -55,9 +55,12 @@ public class ModelAdventureHat extends ModelBiped
             ((ModelRenderer) part).rotateAngleY = bipedHead.rotateAngleY;
             ((ModelRenderer) part).rotateAngleZ = bipedHead.rotateAngleZ;
         }
+        GL11.glPushMatrix();
+        GL11.glScalef(1.2f, 1.2f, 1.2f);
         wing.render(f5);
         thing.render(f5);
         top.render(f5);
+        GL11.glPopMatrix();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z)
