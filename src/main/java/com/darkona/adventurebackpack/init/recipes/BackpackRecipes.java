@@ -491,13 +491,14 @@ public class BackpackRecipes
         );
 
         WitherSkeleton = reviewRecipe(
-                "BSB",
+                "BsB",
                 "SaS",
                 "CBC",
                 'B', Items.bone,
                 'S', Items.stone_sword,
                 'a', ModItems.adventureBackpack,
-                'C', Items.coal
+                'C', Items.coal,
+                's', new ItemStack(Items.skull, 1, 1)
         );
 
         Wolf = reviewRecipe(
