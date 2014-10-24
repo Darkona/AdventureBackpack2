@@ -49,7 +49,7 @@ public class ItemAdventureBackpack extends ArmorAB
     @Override
     public String getItemStackDisplayName(ItemStack stack)
     {
-        return "Adventure Backpack - " + stack.getTagCompound().getString("colorName");
+        return "Adventure Backpack";// + stack.getTagCompound().getString("colorName");
     }
 
     @Override

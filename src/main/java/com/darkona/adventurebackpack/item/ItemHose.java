@@ -93,17 +93,17 @@ public class ItemHose extends ItemAB
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        String name = "hose." + (getHoseTank(stack) == 0 ? "leftTank" : getHoseTank(stack) == 1 ? "rightTank" : "");
+        String name = "hose_" + (getHoseTank(stack) == 0 ? "leftTank" : getHoseTank(stack) == 1 ? "rightTank" : "");
         switch (getHoseMode(stack))
         {
             case 0:
-                return name + ".suck";
+                return super.getUnlocalizedName(name + "_suck");
             case 1:
-                return name + ".spill";
+                return super.getUnlocalizedName(name + "_spill");
             case 2:
-                return name + ".drink";
+                return super.getUnlocalizedName(name + "_drink");
             default:
-                return "hoseUseless";
+                return super.getUnlocalizedName("hoseUseless");
         }
     }
 
