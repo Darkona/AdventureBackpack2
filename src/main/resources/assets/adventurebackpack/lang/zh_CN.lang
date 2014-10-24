@@ -10,14 +10,15 @@ item.adventurebackpack:backpackHose.name=背包软管
 item.adventurebackpack:adventureSuit.name=探险者外套
 item.adventurebackpack:adventureHat.name=探险者软呢帽
 item.adventurebackpack:pistonBoots.name=活塞靴子
-item.adventurebackpack:hose.leftTank.suck.name=软管:左侧储水箱 / 吸取模式
-item.adventurebackpack:hose.leftTank.spill=软管:左侧储水箱 / 喷洒模式
-item.adventurebackpack:hose.leftTank.drink=软管:左侧储水箱 / 饮水模式
+
+item.adventurebackpack:hose_leftTank_suck.name=软管:左侧储水箱 / 吸取模式
+item.adventurebackpack:hose_leftTank_spill.name=软管:左侧储水箱 / 喷洒模式
+item.adventurebackpack:hose_leftTank_drink.name=软管:左侧储水箱 / 饮水模式
 
 
-item.adventurebackpack:hose.rightTank.suck.name=右侧储水箱 / 吸取模式
-item.adventurebackpack:hose.rightTank.spill.name=右侧储水箱 / 喷洒模式
-item.adventurebackpack:hose.rightTank.drink.name=右侧储水箱 / 饮水模式
+item.adventurebackpack:hose_rightTank_suck.name=右侧储水箱 / 吸取模式
+item.adventurebackpack:hose_rightTank_spill.name=右侧储水箱 / 喷洒模式
+item.adventurebackpack:hose_rightTank_drink.name=右侧储水箱 / 饮水模式
 
 item.adventurebackpack:hoseUseless=软管:无法使用 / 没有储水箱
 

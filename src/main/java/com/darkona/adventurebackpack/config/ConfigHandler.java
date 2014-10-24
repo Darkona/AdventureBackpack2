@@ -14,7 +14,7 @@ public class ConfigHandler
 {
 
     public static Configuration config;
-    public static boolean testValue = false;
+    public static boolean backpackSlot = false;
     public static int GUI_TANK_RENDER = 2;
 
     public static void init(File configFile)
@@ -29,7 +29,7 @@ public class ConfigHandler
 
     private static void loadConfiguration()
     {
-        testValue = config.getBoolean("testValue", config.CATEGORY_GENERAL, false, "This is a test configuration value");
+        backpackSlot = config.getBoolean("testValue", config.CATEGORY_GENERAL, false, "Use backpacks in armor slot?");
         GUI_TANK_RENDER = config.getInt("TankRenderType", config.CATEGORY_GENERAL, 3, 1, 3, "1,2,3 for different rendering of fluids in the Backpack GUI");
         if (config.hasChanged())
         {
