@@ -47,12 +47,12 @@ public class BackpackEventHandler
             {
                 String nyanString =
                         EnumChatFormatting.RED + "N" +
-                                EnumChatFormatting.GOLD + "Y" +
-                                EnumChatFormatting.YELLOW + "A" +
-                                EnumChatFormatting.GREEN + "N" +
-                                EnumChatFormatting.AQUA + "C" +
-                                EnumChatFormatting.BLUE + "A" +
-                                EnumChatFormatting.DARK_PURPLE + "T";
+                        EnumChatFormatting.GOLD + "Y" +
+                        EnumChatFormatting.YELLOW + "A" +
+                        EnumChatFormatting.GREEN + "N" +
+                        EnumChatFormatting.AQUA + "C" +
+                        EnumChatFormatting.BLUE + "A" +
+                        EnumChatFormatting.DARK_PURPLE + "T";
 
                 LogHelper.info(nyanString);
                 player.addChatComponentMessage(new ChatComponentText(nyanString));
@@ -117,7 +117,9 @@ public class BackpackEventHandler
     /**
      * @param event
      */
-    @SubscribeEvent
+    /*@SubscribeEvent
+
+
     public void stopMusic(UnequipBackpackEvent event)
     {
         EntityPlayer player = event.entityPlayer;
@@ -140,5 +142,5 @@ public class BackpackEventHandler
                                 30.0D));
             }
         }
-    }
+    }*/
 }
