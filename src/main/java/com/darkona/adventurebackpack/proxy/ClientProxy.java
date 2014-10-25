@@ -8,8 +8,11 @@ import com.darkona.adventurebackpack.client.render.RendererItemAdventureHat;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.network.NyanCatMessage;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 /**
@@ -27,6 +30,8 @@ public class ClientProxy implements IProxy
     {
         initRenderers();
         registerKeybindings();
+        int messageCounter = 10;
+        ModNetwork.networkWrapper.registerMessage(NyanCatMessage.NyanCatMessageClientHandler.class, NyanCatMessage.class, messageCounter++, Side.CLIENT);
     }
 
 

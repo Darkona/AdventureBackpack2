@@ -25,7 +25,6 @@ public class ModNetwork
         networkWrapper.registerMessage(CycleToolMessage.CycleToolMessageServerHandler.class, CycleToolMessage.class, messageCounter++, Side.SERVER);
         networkWrapper.registerMessage(GuiBackpackMessage.GuiBackpackMessageServerHandler.class, GuiBackpackMessage.class, messageCounter++, Side.SERVER);
         networkWrapper.registerMessage(NyanCatMessage.NyanCatMessageServerHandler.class, NyanCatMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(NyanCatMessage.NyanCatMessageClientHandler.class, NyanCatMessage.class, messageCounter++, Side.CLIENT);
         networkWrapper.registerMessage(SleepingBagMessage.SleepingBagMessageServerHandler.class, SleepingBagMessage.class, messageCounter++, Side.SERVER);
     }
 }

@@ -40,8 +40,9 @@ public class BackpackEventHandler
 
         if (event.item.getItem() instanceof ItemAppleGold &&
                 //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
-                BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Nyan"))
+                BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow"))
         {
+            if (Wearing.getWearingBackpack(player).stackTagCompound.getInteger("lastTime") > 0) return;
             if (!player.worldObj.isRemote)
             {
                 String nyanString =

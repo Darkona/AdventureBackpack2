@@ -115,7 +115,7 @@ public class BackpackAbilities
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static String[] validWearingBackpacks = {
-            "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Nyan", "Melon"};
+            "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon"};
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -529,7 +529,7 @@ public class BackpackAbilities
         backpack.getTagCompound().setInteger("lastTime", lastCheckTime);
     }
 
-    public void itemNyan(EntityPlayer player, World world, ItemStack backpack)
+    public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
     {
         int noteTime = backpack.getTagCompound().getInteger("lastTime") - 1;
         int i = 2;
