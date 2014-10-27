@@ -108,7 +108,7 @@ public class BackpackEventHandler
     @SubscribeEvent
     public void detectLightning(EntityStruckByLightningEvent event)
     {
-        if (event.entity instanceof EntityPlayer)
+        if (event.entity !=null && event.entity instanceof EntityPlayer)
         {
             Actions.electrify((EntityPlayer) event.entity);
         }
