@@ -20,6 +20,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -74,7 +75,7 @@ public class ItemAdventureBackpack extends ArmorAB
             stack.stackTagCompound.setString("colorName", "Standard");
         }
 
-        //world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
+        world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
         BlockAdventureBackpack backpack = ModBlocks.blockBackpack;
 
         if (y <= 0 || y >= 255)

@@ -253,14 +253,14 @@ public class Actions
      */
     public static void electrify(EntityPlayer player)
     {
-        ItemStack stack = Wearing.getWearingBackpack(player);
-        if (BackpackNames.getBackpackColorName(stack).equals("Pig"))
+        ItemStack backpack = Wearing.getWearingBackpack(player);
+        if (BackpackNames.getBackpackColorName(backpack).equals("Pig"))
         {
-            stack.stackTagCompound.setString("colorName", "ZombiePigman");
+            BackpackNames.setBackpackColorName(backpack, "Pigman");
         }
-        if (BackpackNames.getBackpackColorName(stack).equals("BlockDiamond"))
+        if (BackpackNames.getBackpackColorName(backpack).equals("Diamond"))
         {
-            stack.stackTagCompound.setString("colorName", "Electric");
+            BackpackNames.setBackpackColorName(backpack, "Electric");
         }
     }
 

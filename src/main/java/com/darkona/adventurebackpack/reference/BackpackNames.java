@@ -30,12 +30,19 @@ public class BackpackNames
         {
             item.stackTagCompound = new NBTTagCompound();
         }
-        if (!item.stackTagCompound.getString("color").isEmpty())
+        if (item.stackTagCompound.getString("colorName").isEmpty())
         {
             item.stackTagCompound.setString("colorName", "Standard");
         }
         return item.stackTagCompound.getString("colorName");
     }
 
-
+    public static void setBackpackColorName(ItemStack item, String newName){
+        if(item!=null){
+            if(item.stackTagCompound == null){
+                item.setTagCompound(new NBTTagCompound());
+            }
+            item.stackTagCompound.setString("colorName", newName);
+        }
+    }
 }
