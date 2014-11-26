@@ -75,7 +75,7 @@ public class ItemAdventureBackpack extends ArmorAB
             stack.stackTagCompound.setString("colorName", "Standard");
         }
 
-        world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
+       // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
         BlockAdventureBackpack backpack = ModBlocks.blockBackpack;
 
         if (y <= 0 || y >= 255)

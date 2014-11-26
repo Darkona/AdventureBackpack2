@@ -53,7 +53,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-        if (!getAssociatedTileColorName(world, x, y, z).equals("Books")) return;
+        if (!getAssociatedTileColorName(world, x, y, z).equals("Bookshelf")) return;
         for (int i = x - 2; i <= x + 2; ++i)
         {
             for (int j = z - 2; j <= z + 2; ++j)
@@ -135,7 +135,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public float getEnchantPowerBonus(World world, int x, int y, int z)
     {
-        return getAssociatedTileColorName(world, x, y, z).equals("Books") ? 20 : 0;
+        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 20 : 0;
     }
 
     @Override
