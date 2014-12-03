@@ -1,0 +1,34 @@
+# Items
+item.adventurebackpack:machete.name=Мачете
+item.adventurebackpack:backpackComponent.name=Backpack Component Item
+item.adventurebackpack:sleepingBag.name=Спальный мешок
+item.adventurebackpack:backpackTank.name=Резервуар для жидкости рюкзака
+item.adventurebackpack:macheteHandle=Ручка от мачете
+item.adventurebackpack:hoseHead.name=Наконечник для трубки
+item.adventurebackpack:adventureBackpack.name=Рюкзак искателя приключений
+item.adventurebackpack:backpackHose.name=Трубка для жидкостей рюкзака
+item.adventurebackpack:adventureSuit.name=Костюм искателя приключений
+item.adventurebackpack:adventureHat.name=Фетровая шляпа искателя приключений
+item.adventurebackpack:pistonBoots.name=Поршневые ботинки
+
+
+item.adventurebackpack:hose_leftTank_suck.name=Трубка для жидкостей: Левая ёмкость / Режим закачивания
+item.adventurebackpack:hose_leftTank_spill.name=Трубка для жидкостей: Левая ёмкость / Режим откачивания
+item.adventurebackpack:hose_leftTank_drink.name=Трубка для жидкостей: Левая ёмкость / Режим питья
+
+
+item.adventurebackpack:hose_rightTank_suck.name=Трубка для жидкостей: Правая ёмкость / Режим закачивания
+item.adventurebackpack:hose_rightTank_spill.name=Трубка для жидкостей: Правая ёмкость / Режим откачивания
+item.adventurebackpack:hose_rightTank_drink.name=Трубка для жидкостей: Правая ёмкость / Режим питья
+
+item.adventurebackpack:hoseUseless=Трубка для жидкостей: Не используется / Нет рюкзака
+
+#Blocks
+block.adventurebackpack:blockAdventureBackpack.name=Рюкзак искателя приключений
+
+#CreativeTab
+
+#Keybindings
+keys.adventureBackpack.category=Рюкзак искателя приключений
+keys.adventureBackpack.openBackpackInventory=Открыть инвентарь рюкзака
+keys.adventureBackpack.switchHoseTank=Сменить используемый резервуар
