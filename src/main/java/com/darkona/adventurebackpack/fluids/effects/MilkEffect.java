@@ -24,6 +24,7 @@ public class MilkEffect extends FluidEffect
         {
             world.playSoundAtEntity(player, "mob.cow.say", 0.3F, 1);
         }
-        player.curePotionEffects(new ItemStack(new ItemBucketMilk()));
+        player.clearActivePotions();
+        //player.curePotionEffects(new ItemStack(new ItemBucketMilk()));
     }
 }
