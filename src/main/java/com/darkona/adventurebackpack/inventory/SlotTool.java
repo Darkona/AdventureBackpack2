@@ -33,7 +33,7 @@ public class SlotTool extends Slot
         boolean valid = false;
 
         String[] validToolNames = {
-                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar"
+                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill","hatchet"
         };
 
         String[] invalidToolNames = {
