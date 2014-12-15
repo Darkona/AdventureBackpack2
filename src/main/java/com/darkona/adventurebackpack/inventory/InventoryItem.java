@@ -300,7 +300,7 @@ public class InventoryItem implements IAdvBackpack
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-        if (slot == 6 || slot == 7 || slot == 8 || slot == 9)
+        if (slot == Constants.bucketInLeft || slot == Constants.bucketInRight || slot == Constants.bucketOutLeft || slot == Constants.bucketOutRight)
         {
             return inventory[slot];
         }
