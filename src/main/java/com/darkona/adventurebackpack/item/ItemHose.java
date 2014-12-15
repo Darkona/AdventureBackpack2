@@ -189,20 +189,25 @@ public class ItemHose extends ItemAB
             int accepted = 0;
             switch (getHoseMode(stack))
             {
-                case HOSE_SUCK_MODE: // Suck mode
+                case HOSE_SUCK_MODE:
+
                     accepted = tank.fill(exTank.drain(ForgeDirection.UNKNOWN, Constants.bucket, false), false);
                     if (accepted > 0)
                     {
                         tank.fill(exTank.drain(ForgeDirection.UNKNOWN, accepted, true), true);
+                        te.markDirty();
                         inv.saveChanges();
                         return true;
                     }
                     break;
-                case HOSE_SPILL_MODE:// Spill mode
+
+                case HOSE_SPILL_MODE:
+
                     accepted = exTank.fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false);
                     if (accepted > 0)
                     {
                         exTank.fill(ForgeDirection.UNKNOWN, tank.drain(accepted, true), true);
+                        te.markDirty();
                         inv.saveChanges();
                         return true;
                     }
