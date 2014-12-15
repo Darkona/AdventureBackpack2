@@ -239,12 +239,12 @@ public class InventoryItem implements IAdvBackpack
         boolean changed = false;
         for (int i = 0; i < inventory.length; i++)
         {
-            if (i == 6 && inventory[i] != null)
+            if (i == Constants.bucketInLeft && inventory[i] != null)
             {
                 updateTankSlots(getLeftTank(), i);
             }
 
-            if (i == 8 && inventory[i] != null)
+            if (i == Constants.bucketInRight && inventory[i] != null)
             {
                 updateTankSlots(getRightTank(), i);
             }

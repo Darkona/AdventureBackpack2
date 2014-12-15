@@ -147,18 +147,18 @@ public class Actions
         ItemStack current = player.getCurrentEquippedItem();
         if (direction < 0)
         {
-            player.inventory.mainInventory[slot] = backpack.getStackInSlot(3);
-            backpack.setInventorySlotContentsNoSave(3, backpack.getStackInSlot(0));
-            backpack.setInventorySlotContentsNoSave(0, current);
+            player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
+            backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
+            backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
             backpack.saveChanges();
             player.inventory.closeInventory();
         } else
         {
             if (direction > 0)
             {
-                player.inventory.mainInventory[slot] = backpack.getStackInSlot(0);
-                backpack.setInventorySlotContentsNoSave(0, backpack.getStackInSlot(3));
-                backpack.setInventorySlotContentsNoSave(3, current);
+                player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
+                backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
+                backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
                 backpack.saveChanges();
             }
 

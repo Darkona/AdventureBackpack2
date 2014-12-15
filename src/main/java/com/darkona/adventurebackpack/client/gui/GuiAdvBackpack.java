@@ -34,10 +34,10 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     protected int Z;
     private EntityPlayer player;
     private static final ResourceLocation texture = Resources.guiTextures("guiBackpack");
-    private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(71, 15, 18, 18);
-    private static GuiImageButtonNormal craftButton = new GuiImageButtonNormal(90, 15, 18, 18);
-    private static GuiTank tankLeft = new GuiTank(26, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
-    private static GuiTank tankRight = new GuiTank(134, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
+    private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(153, 6, 18, 18);
+    private static GuiImageButtonNormal craftButton = new GuiImageButtonNormal(5, 6, 18, 18);
+    private static GuiTank tankLeft = new GuiTank(25, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
+    private static GuiTank tankRight = new GuiTank(135, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
     private FluidStack lft;
     private FluidStack rgt;
     public int lefties;
@@ -93,7 +93,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
         // Buttons and button highlight
         int srcX = 177;
-        int srcY = 35;
+        int srcY = 20;
         if (source)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
@@ -129,7 +129,9 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
         if (tankLeft.inTank(this, mouseX, mouseY))
         {
+            GL11.glPushMatrix();
             drawHoveringText(tankLeft.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
+            GL11.glPopMatrix();
         }
 
         if (tankRight.inTank(this, mouseX, mouseY))
@@ -138,10 +140,10 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         }
 
         /*GL11.glPushMatrix();
-        GL11.glScalef(0.8f, 0.8f, 0.8f);*/
+        GL11.glScalef(0.8f, 0.8f, 0.8f);
         String name = "Adventure Backpack";
         fontRendererObj.drawString(name, ((xSize - fontRendererObj.getStringWidth(name)) / 2), 4, 0x404040);
-        /*GL11.glPopMatrix();*/
+        GL11.glPopMatrix();*/
     }
 
     @Override

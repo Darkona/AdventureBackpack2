@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.events.UnequipBackpackEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -191,8 +192,8 @@ public class ItemAdventureBackpack extends ArmorAB
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
         InventoryItem inv = new InventoryItem(stack);
-        return ModelAdventureBackpackArmor.instance.setTanks(inv.getLeftTank().getFluid(), inv.getRightTank().getFluid()).setItems(inv.getStackInSlot(3),
-                inv.getStackInSlot(0));
+        return ModelAdventureBackpackArmor.instance.setTanks(inv.getLeftTank().getFluid(), inv.getRightTank().getFluid()).setItems(inv.getStackInSlot(Constants.upperTool),
+                inv.getStackInSlot(Constants.lowerTool));
     }
 
     @SideOnly(Side.CLIENT)

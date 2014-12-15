@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -22,7 +23,6 @@ public class BackpackContainer extends Container
     {
         inventory = backpack;
         makeSlots(invPlayer);
-
     }
 
 
@@ -61,28 +61,31 @@ public class BackpackContainer extends Container
 
         // Backpack Inventory
 
+        int startX = 62;
+        int startY = 7;
+        for(int i = 0; i < 4; i++){
+            for (int j = 0; j < 4; j++){
+                int offsetX = startX + (18 * j);
+                int offsetY = startY + (18 * i);
+                addSlotToContainer(new SlotBackpack(sexy, thing++, offsetX, offsetY));// 0
+            }
+        }
+
         //Upper Tool Slot
-        addSlotToContainer(new SlotTool(sexy, thing++, 62, 37));// Upper Tool 0
-
-        addSlotToContainer(new SlotBackpack(sexy, thing++, 80, 37));// 1
-        addSlotToContainer(new SlotBackpack(sexy, thing++, 98, 37));// 2
-
+        addSlotToContainer(new SlotTool(sexy, Constants.upperTool, 44, 25));// Upper Tool 16
         //Lower Tool slot
-        addSlotToContainer(new SlotTool(sexy, thing++, 62, 55));// Lower Tool 3
-
-        addSlotToContainer(new SlotBackpack(sexy, thing++, 80, 55));// 4
-        addSlotToContainer(new SlotBackpack(sexy, thing++, 98, 55));// 5
+        addSlotToContainer(new SlotTool(sexy, Constants.lowerTool, 44, 43));// Lower Tool 17
 
         //Bucket Slots
 
-        // bucket in left 6
-        addSlotToContainer(new SlotFluid(sexy, thing++, 7, 25));
-        // bucket out left 7
-        addSlotToContainer(new SlotFluid(sexy, thing++, 7, 55));
-        // bucket in right  8
-        addSlotToContainer(new SlotFluid(sexy, thing++, 153, 25));
-        // bucket out right 9
-        addSlotToContainer(new SlotFluid(sexy, thing++, 153, 55));
+        // bucket in left 18
+        addSlotToContainer(new SlotFluid(sexy, Constants.bucketInLeft, 6, 25));
+        // bucket out left 19
+        addSlotToContainer(new SlotFluid(sexy, Constants.bucketOutLeft, 6, 55));
+        // bucket in right  20
+        addSlotToContainer(new SlotFluid(sexy, Constants.bucketInRight, 153, 25));
+        // bucket out right 21
+        addSlotToContainer(new SlotFluid(sexy, Constants.bucketOutRight, 153, 55));
     }
 
     @Override
@@ -128,7 +131,7 @@ public class BackpackContainer extends Container
         {
             for (int i = 0; i < inventory.getSizeInventory(); ++i)
             {
-                if (i == 6 || i == 7 || i == 8 || i == 9)
+                if (i == Constants.bucketInRight || i == Constants.bucketInLeft || i == Constants.bucketOutLeft || i == Constants.bucketOutRight)
                 {
                     ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
                     if (itemstack != null)
