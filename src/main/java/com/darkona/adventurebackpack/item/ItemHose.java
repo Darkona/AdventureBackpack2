@@ -110,7 +110,7 @@ public class ItemHose extends ItemAB
     @Override
     public int getMaxItemUseDuration(ItemStack stack)
     {
-        return 32;
+        return 24;
     }
 
     @Override
@@ -216,7 +216,7 @@ public class ItemHose extends ItemAB
 
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
     {
-        return true;
+        return false;
     }
 
     /**
@@ -376,13 +376,13 @@ public class ItemHose extends ItemAB
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
     {
-        return true;
+        return false;
     }
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
     {
-        return true;
+        return false;
     }
 
     @Override
