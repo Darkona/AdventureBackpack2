@@ -174,7 +174,7 @@ public class ItemHose extends ItemAB
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
 
         ItemStack backpack = Wearing.getWearingBackpack(player);
@@ -213,7 +213,6 @@ public class ItemHose extends ItemAB
     }
 
     @Override
-
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
     {
         return false;
