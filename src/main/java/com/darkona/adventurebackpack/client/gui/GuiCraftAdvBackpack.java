@@ -102,7 +102,7 @@ public class GuiCraftAdvBackpack extends GuiContainer implements IBackpackGui
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
 
-        this.fontRendererObj.drawString("Crafting Bench", 92, 7, 4210752);
+       // this.fontRendererObj.drawString("Crafting Bench", 92, 7, 4210752);
         GuiCraftAdvBackpack.tankLeft.draw(this, inventory.getLeftTank().getFluid());
         GuiCraftAdvBackpack.tankRight.draw(this, inventory.getRightTank().getFluid());
         if (tankLeft.inTank(this, mouseX, mouseY))
