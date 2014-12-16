@@ -1,7 +1,10 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.Actions;
+import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.BackpackContainer;
+import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -12,6 +15,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -113,5 +117,7 @@ public class PlayerEventHandler
             event.setResult(Event.Result.ALLOW);
         }
     }
+
+
 }
 

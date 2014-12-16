@@ -40,7 +40,7 @@ public class GuiHandler implements IGuiHandler
             case 1:
                 //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
-                if (inv.getInventoryItem() != null)
+                if (inv.getParentItemStack() != null)
                 {
                     return new BackpackContainer(player.inventory, inv, BackpackContainer.SOURCE_ITEM);
                 }
@@ -48,7 +48,7 @@ public class GuiHandler implements IGuiHandler
             case 2:
                 //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
-                if (inv.getInventoryItem() != null)
+                if (inv.getParentItemStack() != null)
                 {
                     return new BackpackContainer(player.inventory, inv, BackpackContainer.SOURCE_ITEM);
                 }
@@ -64,7 +64,7 @@ public class GuiHandler implements IGuiHandler
             case 4:
                 //ADVENTUREBACKPACK CRAFT GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
-                if (inv.getInventoryItem() != null)
+                if (inv.getParentItemStack() != null)
                 {
                     return new BackCraftContainer(player, world, inv);
                 }
@@ -72,7 +72,7 @@ public class GuiHandler implements IGuiHandler
             case 5:
                 //ADVENTUREBACKPACK CRAFT GUI FROM HOLDING BACKPACK / RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
-                if (inv.getInventoryItem() != null)
+                if (inv.getParentItemStack() != null)
                 {
                     return new BackCraftContainer(player, world, inv);
                 }
@@ -104,7 +104,7 @@ public class GuiHandler implements IGuiHandler
             case 1:
                 //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
-                if (inv.getInventoryItem() != null)
+                if (inv.getParentItemStack() != null)
                 {
                     return new GuiAdvBackpack(player, inv, true);
                 }
@@ -112,7 +112,7 @@ public class GuiHandler implements IGuiHandler
             case 2:
                 //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
-                if (inv.getInventoryItem() != null)
+                if (inv.getParentItemStack() != null)
                 {
                     return new GuiAdvBackpack(player, inv, false);
                 }
@@ -128,7 +128,7 @@ public class GuiHandler implements IGuiHandler
             case 4:
                 //ADVENTUREBACKPACK CRAFT GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
-                if (inv.getInventoryItem() != null)
+                if (inv.getParentItemStack() != null)
                 {
                     return new GuiCraftAdvBackpack(player, inv, true);
                 }
@@ -136,7 +136,7 @@ public class GuiHandler implements IGuiHandler
             case 5:
                 //ADVENTUREBACKPACK CRAFT GUI FROM HOLDING BACKPACK / RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
-                if (inv.getInventoryItem() != null)
+                if (inv.getParentItemStack() != null)
                 {
                     return new GuiCraftAdvBackpack(player, inv, false);
                 }

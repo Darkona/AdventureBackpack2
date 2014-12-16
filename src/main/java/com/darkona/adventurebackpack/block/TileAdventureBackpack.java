@@ -537,7 +537,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     }
 
     @Override
-    public ItemStack getInventoryItem()
+    public ItemStack getParentItemStack()
     {
         return null;
     }

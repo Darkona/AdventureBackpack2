@@ -25,7 +25,7 @@ public interface IAdvBackpack extends IInventory
 
     public TileAdventureBackpack getTile();
 
-    public ItemStack getInventoryItem();
+    public ItemStack getParentItemStack();
 
     public String getColorName();
 

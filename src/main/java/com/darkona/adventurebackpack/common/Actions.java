@@ -161,7 +161,6 @@ public class Actions
                 backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
                 backpack.saveChanges();
             }
-
         }
     }
 
@@ -190,6 +189,8 @@ public class Actions
                 {
                     return true;
                 }
+            }else{
+                //TODO Spawn the item entity for the backpack like everything else :(
             }
         }
         return false;
@@ -338,7 +339,7 @@ public class Actions
             if (!world.isRemote)
             {
                 world.spawnEntityInWorld(entityarrow);
-                LogHelper.info("Fired an arrow!");
+                //LogHelper.info("Fired an arrow!");
             }
         }
     }

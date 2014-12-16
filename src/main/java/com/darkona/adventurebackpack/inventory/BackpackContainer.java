@@ -38,11 +38,7 @@ public class BackpackContainer extends Container
         return inventory.isUseableByPlayer(player);
     }
 
-    private void makeSlots(InventoryPlayer invPlayer)
-    {
-
-        IInventory sexy = inventory;
-
+    private void bindPlayerInventory(InventoryPlayer invPlayer){
         // Player's Hotbar
         for (int x = 0; x < 9; x++)
         {
@@ -57,6 +53,12 @@ public class BackpackContainer extends Container
                 addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (8 + 18 * x), (84 + y * 18)));
             }
         }
+    }
+
+    private void makeSlots(InventoryPlayer invPlayer)
+    {
+
+        bindPlayerInventory(invPlayer);
         int thing = 0;
 
         // Backpack Inventory
@@ -67,25 +69,25 @@ public class BackpackContainer extends Container
             for (int j = 0; j < 4; j++){
                 int offsetX = startX + (18 * j);
                 int offsetY = startY + (18 * i);
-                addSlotToContainer(new SlotBackpack(sexy, thing++, offsetX, offsetY));// 0
+                addSlotToContainer(new SlotBackpack(inventory, thing++, offsetX, offsetY));// 0
             }
         }
 
         //Upper Tool Slot
-        addSlotToContainer(new SlotTool(sexy, Constants.upperTool, 44, 25));// Upper Tool 16
+        addSlotToContainer(new SlotTool(inventory, Constants.upperTool, 44, 25));// Upper Tool 16
         //Lower Tool slot
-        addSlotToContainer(new SlotTool(sexy, Constants.lowerTool, 44, 43));// Lower Tool 17
+        addSlotToContainer(new SlotTool(inventory, Constants.lowerTool, 44, 43));// Lower Tool 17
 
         //Bucket Slots
 
         // bucket in left 18
-        addSlotToContainer(new SlotFluid(sexy, Constants.bucketInLeft, 6, 25));
+        addSlotToContainer(new SlotFluid(inventory, Constants.bucketInLeft, 6, 25));
         // bucket out left 19
-        addSlotToContainer(new SlotFluid(sexy, Constants.bucketOutLeft, 6, 55));
+        addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutLeft, 6, 55));
         // bucket in right  20
-        addSlotToContainer(new SlotFluid(sexy, Constants.bucketInRight, 153, 25));
+        addSlotToContainer(new SlotFluid(inventory, Constants.bucketInRight, 153, 25));
         // bucket out right 21
-        addSlotToContainer(new SlotFluid(sexy, Constants.bucketOutRight, 153, 55));
+        addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutRight, 153, 55));
     }
 
     @Override
@@ -150,6 +152,7 @@ public class BackpackContainer extends Container
     @Override
     public void detectAndSendChanges()
     {
+        super.detectAndSendChanges();
         for (int i = 0; i < inventory.getInventory().length; ++i)
         {
             ItemStack itemstack = ((Slot) this.inventorySlots.get(i)).getStack();

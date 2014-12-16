@@ -72,13 +72,16 @@ public class BlockAdventureBackpack extends BlockContainer
                             {
                                 break;
                             }
-                            world.spawnParticle("enchantmenttable",
-                                    (double) i + 0.5D,
-                                    (double) k + 2.0D,
-                                    (double) j + 0.5D,
-                                    (double) ((float) (x - i) + random.nextFloat()) - 0.5D,
-                                    (double) ((float) (y - k) - random.nextFloat() - 1.0F),
-                                    (double) ((float) (z - j) + random.nextFloat()) - 0.5D);
+                            for(int o = 0; o < 2; o++)
+                            {
+                                world.spawnParticle("enchantmenttable",
+                                        (double) i + 0.5D,
+                                        (double) k + 2.0D,
+                                        (double) j + 0.5D,
+                                        (double) ((float) (x - i) + random.nextFloat()) - 0.5D,
+                                        (double) ((float) (y - k) - random.nextFloat() - 1.0F),
+                                        (double) ((float) (z - j) + random.nextFloat()) - 0.5D);
+                            }
                         }
                     }
                 }

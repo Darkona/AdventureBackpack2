@@ -35,7 +35,6 @@ public class InventoryActions
         //Set slot out for whatever number the output slot should be.
         int slotOut = slotIn + 1;
 
-
         //CONTAINER ===========> TANK
         if (FluidContainerRegistry.isFilledContainer(stackIn))
         {
@@ -47,7 +46,6 @@ public class InventoryActions
                 //Get the empty container for the input, if there's any.
                 ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
 
-                //
                 if (backpack.getStackInSlot(slotOut) == null || stackOut == null)
                 {
                     backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
@@ -113,7 +111,7 @@ public class InventoryActions
             if (backpack.getInventory()[j] != null && backpack.getInventory()[j].getItem() == item)
             {
                 i = j;
-
+                break;
             }
         }
         if (i < 0)
@@ -121,7 +119,7 @@ public class InventoryActions
             return;
         } else
         {
-            if (--inventory[i].stackSize <= 0)
+           if (--inventory[i].stackSize <= 0)
             {
                 inventory[i] = null;
             }

@@ -1,10 +1,8 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.Actions;
-import com.darkona.adventurebackpack.events.UnequipBackpackEvent;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.misc.NyanMovingSound;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.network.NyanCatMessage;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -12,9 +10,6 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;
@@ -82,7 +77,7 @@ public class BackpackEventHandler
         if (Wearing.isWearingBackpack(event.entityPlayer))
         {
             InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(event.entityPlayer));
-            if (BackpackNames.getBackpackColorName(backpack.getInventoryItem()).equals("Skeleton") && backpack.hasItem(Items.arrow))
+            if (BackpackNames.getBackpackColorName(backpack.getParentItemStack()).equals("Skeleton") && backpack.hasItem(Items.arrow))
             {
                 event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration());
                 event.setCanceled(true);
@@ -96,7 +91,7 @@ public class BackpackEventHandler
         if (Wearing.isWearingBackpack(event.entityPlayer))
         {
             InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(event.entityPlayer));
-            if (BackpackNames.getBackpackColorName(backpack.getInventoryItem()).equals("Skeleton") && backpack.hasItem(Items.arrow))
+            if (BackpackNames.getBackpackColorName(backpack.getParentItemStack()).equals("Skeleton") && backpack.hasItem(Items.arrow))
             {
                 Actions.leakArrow(event.entityPlayer, event.bow, event.charge);
                 event.setCanceled(true);

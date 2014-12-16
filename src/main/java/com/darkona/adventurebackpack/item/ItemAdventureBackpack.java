@@ -159,15 +159,20 @@ public class ItemAdventureBackpack extends ArmorAB
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean isCurrentItem)
     {
+        if(entity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            if (player.openContainer instanceof BackpackContainer)
+            {
+                player.openContainer.detectAndSendChanges();
+            }
+        }
     }
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
     {
-        if (player.openContainer instanceof BackpackContainer)
-        {
-            player.openContainer.detectAndSendChanges();
-        }
+
         if (stack.stackTagCompound != null &&
                 (stack.getTagCompound().getBoolean("special")) || BackpackAbilities.hasAbility(stack.stackTagCompound.getString("colorName")))
         {

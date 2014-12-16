@@ -4,11 +4,11 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.network.NyanCatMessage;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -18,7 +18,10 @@ import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -192,11 +195,11 @@ public class BackpackAbilities
     {
         //lastTime is in seconds for this backpack.
         int oinkTime = backpack.stackTagCompound.hasKey("lastTime") ?
-                backpack.stackTagCompound.getInteger("lastTime") - 1 : Utils.secondsToTicks(30);
+                backpack.stackTagCompound.getInteger("lastTime") - 1 : Utils.secondsToTicks(5);
         if (oinkTime <= 0)
         {
             world.playSoundAtEntity(player, "mob.pig.say", 0.8f, 1f);
-            oinkTime = Utils.secondsToTicks(world.rand.nextInt(31) + 30);
+            oinkTime = Utils.secondsToTicks(world.rand.nextInt(61));
         }
         backpack.stackTagCompound.setInteger("lastTime", oinkTime);
     }
@@ -243,12 +246,12 @@ public class BackpackAbilities
      */
     public void itemChicken(EntityPlayer player, World world, ItemStack backpack)
     {
-        int eggTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.getTagCompound().getInteger("lastTime") - 1 : Utils.secondsToTicks(300);
+        int eggTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.getTagCompound().getInteger("lastTime") - 1 : Utils.secondsToTicks(5);
         if (eggTime <= 0)
         {
             player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
             if (!world.isRemote) player.dropItem(new Items().egg, 1);
-            eggTime = Utils.secondsToTicks(20);
+            eggTime = Utils.secondsToTicks(200 + 10 * world.rand.nextInt(10));
         }
         backpack.getTagCompound().setInteger("lastTime", eggTime);
     }
@@ -319,8 +322,7 @@ public class BackpackAbilities
             pssstTime = 0;
             if (player.isSneaking())
             {
-                List<Entity> entities = player.worldObj.getEntitiesWithinAABB(
-                        Entity.class,
+                List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity(player,
                         AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
                                 player.posX + 1.0D, player.posY + 1.0D,
                                 player.posZ + 1.0D).expand(5.0D, 1.0D, 5.0D));
@@ -360,15 +362,31 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        InventoryItem inv = new InventoryItem(backpack);
-        FluidStack milk = new FluidStack(ModFluids.milk, 1);
-        if (inv.getLeftTank().fill(milk, false) <= 0 && inv.getRightTank().fill(milk, false) <= 0) return;
+        //if(world.isRemote)return;
+
+        IAdvBackpack inv = new InventoryItem(backpack);
+        BackpackContainer cont = null;
+        if(player.openContainer != null && player.openContainer instanceof BackpackContainer){
+            cont = (BackpackContainer)player.openContainer;
+            if (cont.inventory instanceof InventoryItem && ((InventoryItem)cont.inventory).getParentItemStack().equals(backpack)){
+                inv = cont.inventory;
+            }
+        }
+
+
+       // inv = new InventoryItem(backpack);
+
+        FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
+
+        if (inv.getLeftTank().fill(milkStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0) return;
+
 
         int eatTime = inv.getLastTime() - 1;
         int wheatConsumed = 0;
-        int milkTime = -1;
+        int milkTime = - 1;
         NBTTagCompound cowProperties;
 
+        //Set Cow Properties
         if (inv.getExtendedProperties() != null)
         {
             cowProperties = inv.getExtendedProperties();
@@ -382,44 +400,61 @@ public class BackpackAbilities
             cowProperties = new NBTTagCompound();
         }
 
-        if (eatTime <= 0 && milkTime <= 0)
-        {
-            if (inv.hasItem(Items.wheat))
-            {
-                InventoryActions.consumeItemInBackpack(inv, Items.wheat);
-                ++wheatConsumed;
-                eatTime = Utils.secondsToTicks(/*15 + player.worldObj.rand.nextInt(15)*/1);
-                LogHelper.info("Eat Time! Wheat consumed so far: " + wheatConsumed);
-                inv.markDirty();
-                inv.saveChanges();
-            }
-        }
-        if (wheatConsumed == 16)
-        {
-            wheatConsumed = 0;
-            milkTime = 999;
-            world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
-        }
 
-        if (milkTime >= 0 && (milkTime % 1 == 0))
-        {
-            if (inv.getLeftTank().fill(milk, true) <= 0)
-            {
-                if (inv.getRightTank().fill(milk, true) > 0) inv.saveChanges();
-            } else
-            {
-                inv.saveChanges();
-            }
-        }
-        if (milkTime < 0)
-        {
-            milkTime = 0;
-        }
+        //Fun time! - not
 
-        cowProperties.setInteger("wheatConsumed", wheatConsumed);
-        cowProperties.setInteger("milkTime", milkTime);
-        backpack.stackTagCompound.setTag("extended", cowProperties);
-        backpack.stackTagCompound.setInteger("lastTime", eatTime);
+
+            //Eat the wheat
+            if (eatTime <= 0 && milkTime <= 0)
+            {
+                if (inv.hasItem(Items.wheat))
+                {
+                    if(!world.isRemote)
+                    {
+                        InventoryActions.consumeItemInBackpack(inv, Items.wheat);
+                    }
+                    ++wheatConsumed;
+                    eatTime = Utils.secondsToTicks(/*15 + player.worldObj.rand.nextInt(15)*/1);
+                    inv.saveChanges();
+
+                }
+            }
+            int factor = 1;
+            //Belly full, set the cycle
+            if (wheatConsumed == 16)
+            {
+                wheatConsumed = 0;
+                milkTime = (1000 * factor) - factor;
+                world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
+            }
+
+            //Make milk
+            if (milkTime >= 0 && (milkTime % factor == 0))
+            {
+                if (inv.getLeftTank().fill(milkStack, true) > 0)
+                {
+                    inv.saveChanges();
+                } else if (inv.getRightTank().fill(milkStack, true) > 0)
+                {
+                    inv.saveChanges();
+                }
+            }
+            if (milkTime < 0)
+            {
+                milkTime = 0;
+            }
+
+                if (cont != null) cont.detectAndSendChanges();
+                //Set the properties for the next cycle
+                cowProperties.setInteger("wheatConsumed", wheatConsumed);
+                cowProperties.setInteger("milkTime", milkTime);
+                inv.setExtendedProperties(cowProperties);
+                backpack.stackTagCompound.setInteger("lastTime", eatTime);
+                EntityPlayerMP playerMP = null;
+                if(player instanceof EntityPlayerMP){
+                    playerMP = (EntityPlayerMP)player;
+                }
+                if(playerMP != null)playerMP.sendContainerToPlayer(cont);
 
     }
 
@@ -549,6 +584,20 @@ public class BackpackAbilities
     }
     /* ==================================== TILE ABILITIES ==========================================*/
 
+    private void fillWithRain(World world, TileAdventureBackpack backpack, FluidStack fluid, int time){
+        if (world.isRaining() && world.canBlockSeeTheSky(backpack.xCoord, backpack.yCoord, backpack.zCoord))
+        {
+            int dropTime = backpack.getLastTime() - 1;
+            if (dropTime <= 0)
+            {
+                backpack.getRightTank().fill(fluid, true);
+                backpack.getLeftTank().fill(fluid, true);
+                dropTime = time;
+                backpack.markDirty();
+            }
+            backpack.setLastTime(dropTime);
+        }
+    }
 
     /**
      * Like real life cactii, this backpack will fill slowly while it's raining with refreshing water.
@@ -558,37 +607,13 @@ public class BackpackAbilities
      */
     public void tileCactus(World world, TileAdventureBackpack backpack)
     {
-        if (world.isRaining() && world.canBlockSeeTheSky(backpack.xCoord, backpack.yCoord, backpack.zCoord))
-        {
-            int dropTime = backpack.getLastTime() - 1;
-            if (dropTime <= 0)
-            {
-                FluidStack raindrop = new FluidStack(FluidRegistry.WATER, 2);
-                backpack.getRightTank().fill(raindrop, true);
-                backpack.getLeftTank().fill(raindrop, true);
-                dropTime = 5;
-                backpack.markDirty();
-            }
-            backpack.setLastTime(dropTime);
-        }
+       fillWithRain(world, backpack,new FluidStack(FluidRegistry.WATER, 2), 5 );
     }
 
 
     public void tileMelon(World world, TileAdventureBackpack backpack)
     {
-        if (world.isRaining() && world.canBlockSeeTheSky(backpack.xCoord, backpack.yCoord, backpack.zCoord))
-        {
-            int dropTime = backpack.getLastTime() - 1;
-            if (dropTime <= 0)
-            {
-                FluidStack raindrop = new FluidStack(ModFluids.melonJuice, 2);
-                backpack.getRightTank().fill(raindrop, true);
-                backpack.getLeftTank().fill(raindrop, true);
-                dropTime = 5;
-                backpack.markDirty();
-            }
-            backpack.setLastTime(dropTime);
-        }
+        fillWithRain(world, backpack,new FluidStack(ModFluids.melonJuice, 2), 5 );
     }
 
 }

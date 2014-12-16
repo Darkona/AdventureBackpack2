@@ -82,7 +82,7 @@ public class InventoryItem implements IAdvBackpack
     }
 
     @Override
-    public ItemStack getInventoryItem()
+    public ItemStack getParentItemStack()
     {
         return this.containerStack;
     }
@@ -122,7 +122,6 @@ public class InventoryItem implements IAdvBackpack
     {
         if (slot > inventory.length) return;
         inventory[slot] = stack;
-
         if (stack != null && stack.stackSize > this.getInventoryStackLimit())
         {
             stack.stackSize = this.getInventoryStackLimit();
@@ -137,8 +136,6 @@ public class InventoryItem implements IAdvBackpack
             if (inventory[slot].stackSize > amount)
             {
                 ItemStack result = inventory[slot].splitStack(amount);
-                saveChanges();
-                LogHelper.info("Saved in decrStackSize");
                 return result;
             }
             ItemStack stack = inventory[slot];
@@ -249,7 +246,6 @@ public class InventoryItem implements IAdvBackpack
                 updateTankSlots(getRightTank(), i);
             }
         }
-        markDirty();
         saveChanges();
     }
 
@@ -291,9 +287,9 @@ public class InventoryItem implements IAdvBackpack
             } else
             {
                 itemstack = itemstack.splitStack(quantity);
+                onInventoryChanged();
             }
         }
-        onInventoryChanged();
         return itemstack;
     }
 
