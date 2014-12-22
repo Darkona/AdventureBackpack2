@@ -2,7 +2,6 @@ package com.darkona.adventurebackpack.network;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.inventory.BackCraftContainer;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -78,36 +77,10 @@ public class GuiBackpackMessage implements IMessage
                     }
                 }
 
-                if (message.type == MessageConstants.CRAFT_GUI)
-                {
-                    if (message.from == MessageConstants.FROM_KEYBIND)
-                    {
-                        if (Wearing.isWearingBackpack(player))
-                        {
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 4, world, playerX, playerY, playerZ);
-                        }
-                    }
-                    if (message.from == MessageConstants.FROM_HOLDING)
-                    {
-                        if (Wearing.isHoldingBackpack(player))
-                        {
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 5, world, playerX, playerY, playerZ);
-                        }
-                    }
-                }
-
                 if (message.from == MessageConstants.FROM_TILE)
                 {
 
                     if (message.type == MessageConstants.NORMAL_GUI)
-                    {
-                        if (player.openContainer instanceof BackCraftContainer)
-                        {
-                            TileAdventureBackpack te = (TileAdventureBackpack) ((BackCraftContainer) player.openContainer).inventory;
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 0, world, te.xCoord, te.yCoord, te.zCoord);
-                        }
-                    }
-                    if (message.type == MessageConstants.CRAFT_GUI)
                     {
                         if (player.openContainer instanceof BackpackContainer)
                         {

@@ -7,8 +7,6 @@ import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.network.GuiBackpackMessage;
-import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.network.SleepingBagMessage;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
@@ -20,7 +18,9 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
@@ -33,11 +33,10 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     protected int Y;
     protected int Z;
     private EntityPlayer player;
-    private static final ResourceLocation texture = Resources.guiTextures("guiBackpack");
-    private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(153, 6, 18, 18);
-    private static GuiImageButtonNormal craftButton = new GuiImageButtonNormal(5, 6, 18, 18);
-    private static GuiTank tankLeft = new GuiTank(25, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
-    private static GuiTank tankRight = new GuiTank(135, 7, 64, 16, GeneralConfig.GUI_TANK_RES);
+    private static final ResourceLocation texture = Resources.guiTextures("guiBackpackNew");
+    private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
+    private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, GeneralConfig.GUI_TANK_RES);
+    private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, GeneralConfig.GUI_TANK_RES);
     private FluidStack lft;
     private FluidStack rgt;
     public int lefties;
@@ -46,11 +45,11 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {
-        super(new BackpackContainer(player.inventory, tileBackpack, BackpackContainer.SOURCE_TILE));
+        super(new BackpackContainer(player, tileBackpack, BackpackContainer.SOURCE_TILE));
         this.inventory = tileBackpack;
         this.source = true;
-        xSize = 176;
-        ySize = 166;
+        xSize = 248;
+        ySize = 207;
         this.X = tileBackpack.xCoord;
         this.Y = tileBackpack.yCoord;
         this.Z = tileBackpack.zCoord;
@@ -61,12 +60,12 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
     public GuiAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing)
     {
-        super(new BackpackContainer(player.inventory, item, BackpackContainer.SOURCE_ITEM));
+        super(new BackpackContainer(player, item, BackpackContainer.SOURCE_ITEM));
         this.inventory = item;
         this.wearing = wearing;
         this.source = false;
-        xSize = 176;
-        ySize = 166;
+        xSize = 248;
+        ySize = 207;
         this.player = player;
         this.lefties = guiLeft;
         this.topsies = guiTop;
@@ -92,58 +91,87 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Buttons and button highlight
-        int srcX = 177;
-        int srcY = 20;
+        int srcX = 1;
+        int srcY = 227;
         if (source)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {
-                bedButton.draw(this, srcX + 19, srcY + 19);
+                bedButton.draw(this, srcX + 19, srcY);
 
             } else
             {
-                bedButton.draw(this, srcX, srcY + 19);
+                bedButton.draw(this, srcX, srcY);
             }
         }
-
-        if (craftButton.inButton(this, mouseX, mouseY))
-        {
-            craftButton.draw(this, srcX + 19, srcY);
-        } else
-        {
-            craftButton.draw(this, srcX, srcY);
-        }
-
-    }
-
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
 
         inventory.openInventory();
         lft = inventory.getLeftTank().getFluid();
         rgt = inventory.getRightTank().getFluid();
 
-        tankLeft.draw(this, lft);
-        tankRight.draw(this, rgt);
 
+
+     /*   zLevel +=1;
         if (tankLeft.inTank(this, mouseX, mouseY))
         {
-            GL11.glPushMatrix();
+            drawHoveringText(tankLeft.getTankTooltip(), mouseX, mouseY, fontRendererObj);
+        }
+
+        if (tankRight.inTank(this, mouseX, mouseY))
+        {
+            drawHoveringText(tankRight.getTankTooltip(), mouseX, mouseY, fontRendererObj);
+        }*/
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    {
+       GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_BLEND);
+        inventory.openInventory();
+        lft = inventory.getLeftTank().getFluid();
+        rgt = inventory.getRightTank().getFluid();
+        tankLeft.draw(this, lft);
+        tankRight.draw(this, rgt);
+/*
+        if (tankLeft.inTank(this, mouseX, mouseY))
+        {
             drawHoveringText(tankLeft.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
-            GL11.glPopMatrix();
         }
 
         if (tankRight.inTank(this, mouseX, mouseY))
         {
             drawHoveringText(tankRight.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
         }
+*/
 
-        /*GL11.glPushMatrix();
-        GL11.glScalef(0.8f, 0.8f, 0.8f);
-        String name = "Adventure Backpack";
-        fontRendererObj.drawString(name, ((xSize - fontRendererObj.getStringWidth(name)) / 2), 4, 0x404040);
-        GL11.glPopMatrix();*/
+        GL11.glPushMatrix();
+        //GL11.glTranslatef(8f,64f,0f);
+        GL11.glScalef(0.6f, 0.6f, 0.6f);
+        String name = (lft != null) ? lft.getLocalizedName() : "None";
+        String amount = (lft != null ? lft.amount : "Empty").toString();
+        String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
+        int offsetY = 32;
+        int offsetX = 8;
+        fontRendererObj.drawString(getFirstWord(name), 1 + offsetX , 64 + offsetY,0x373737 ,false);
+        fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737,false);
+        fontRendererObj.drawString(capacity , 1 + offsetX, 94 + offsetY, 0x373737,false);
+
+        name = (rgt != null) ? rgt.getLocalizedName() : "None";
+        amount = (rgt != null ? rgt.amount : "Empty").toString();
+        fontRendererObj.drawString(getFirstWord(name), 369 + offsetX , 64 + offsetY, 0x373737,false);
+        fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737,false);
+        fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737,false);
+
+        GL11.glPopMatrix();
+    }
+
+    private String getFirstWord(String text) {
+        if (text.indexOf(' ') > -1) { // Check if there is more than one word.
+            return text.substring(0, text.indexOf(' ')); // Extract first word.
+        } else {
+            return text; // Text is the first word itself.
+        }
     }
 
     @Override
@@ -178,20 +206,6 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         {
             TileAdventureBackpack te = (TileAdventureBackpack) inventory;
             ModNetwork.networkWrapper.sendToServer(new SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
-        } else if (craftButton.inButton(this, mouseX, mouseY))
-        {
-            if (source)
-            {
-                ModNetwork.networkWrapper
-                        .sendToServer(new GuiBackpackMessage(MessageConstants.CRAFT_GUI,
-                                MessageConstants.FROM_TILE));
-            } else
-            {
-                ModNetwork.networkWrapper
-                        .sendToServer(new GuiBackpackMessage(MessageConstants.CRAFT_GUI,
-                                wearing ? MessageConstants.FROM_KEYBIND : MessageConstants.FROM_HOLDING));
-            }
-
         }
         super.mouseClicked(mouseX, mouseY, button);
     }

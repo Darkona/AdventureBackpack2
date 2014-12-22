@@ -303,6 +303,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
                 byte slot = item.getByte("Slot");
                 if (slot >= 0 && slot < inventory.length)
                 {
+
                     inventory[slot] = ItemStack.loadItemStackFromNBT(item);
                 }
             }

@@ -149,6 +149,7 @@ public class Actions
         {
             player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
             backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
+            LogHelper.info("Item of class " + backpack.getStackInSlot(Constants.lowerTool).getItem().getClass().getName());
             backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
             backpack.saveChanges();
             player.inventory.closeInventory();
@@ -177,23 +178,40 @@ public class Actions
         if (backpack != null)
         {
             World world = player.worldObj;
-            if (backpack.stackTagCompound.getString("colorName").equals("Creeper"))
-            {
-                BackpackAbilities.instance.itemCreeper(player, world, backpack);
-            }
-            ChunkCoordinates spawn = getNearestEmptyChunkCoordinates(world, (int) player.posX, (int) player.posY, (int) player.posZ, 10, false);
-            if (spawn != null)
-            {
-                if (((ItemAdventureBackpack) ModItems.adventureBackpack).placeBackpack(player.inventory.armorInventory[2], player, world, spawn.posX, spawn.posY, spawn.posZ,
-                        ForgeDirection.UP.ordinal(), false))
+
+           /* for(int i = (int)player.posY - 5; i <= player.posY + 5; i+)
+            {*/
+                ChunkCoordinates spawn = getNearestEmptyChunkCoordinates(world, (int) player.posX, (int) player.posZ,(int) player.posX, (int) player.posY, (int) player.posZ, 12, false, 1,(byte) 0);
+
+                if (spawn != null)
                 {
-                    return true;
+                    if (((ItemAdventureBackpack) ModItems.adventureBackpack).placeBackpack(player.inventory.armorInventory[2], player, world, spawn.posX, spawn.posY, spawn.posZ,
+                            ForgeDirection.UP.ordinal(), false))
+                    {
+                        return true;
+                    }
                 }
-            }else{
-                //TODO Spawn the item entity for the backpack like everything else :(
-            }
+            /*}*/
         }
         return false;
+    }
+
+
+
+    private static ChunkCoordinates checkCoords(World world, int origX, int origZ, int X,int Y, int Z, boolean except)
+    {
+        //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
+        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
+        {
+            //LogHelper.info("Found spot with the exception of the death point");
+            return new ChunkCoordinates(X, Y, Z);
+        }
+        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z))
+        {
+            //LogHelper.info("Found spot without exceptions");
+            return new ChunkCoordinates(X, Y, Z);
+        }
+        return null;
     }
 
     /**
@@ -201,21 +219,102 @@ public class Actions
      * that a: can have stuff placed on it and b: has space above it.
      *
      * @param world  The world object.
-     * @param x
-     * @param y
-     * @param z      The coordinates of the central point of the search.
+     * @param origX Original X coordinate
+     * @param origZ Original Z coordinate
+     * @param X
+     * @param Y
+     * @param Z      The coordinates of the central point of the search.
      * @param radius The radius of the search. If set to higher numbers, will create a ton of lag
      * @param except Wheter or not to include the origin of the search as a valid block.
-     * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer.
+     * @param steps number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
+     * @param pass Pass switch for the witchcraft I can't quite explain.
+     * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
      */
-    public static ChunkCoordinates getNearestEmptyChunkCoordinates(World world, int x, int y, int z, int radius, boolean except)
+    public static ChunkCoordinates getNearestEmptyChunkCoordinates(World world, int origX, int origZ, int X,int Y, int Z, int radius, boolean except, int steps, byte pass)
     {
+        //Spiral search, because I'm awesome :)
+        //This is so the backpack tries to get placed near the death point first
+        //And then goes looking farther away at each step
+       // Steps mod 2 == 0 => X++, Z--
+        //Steps mod 2 == 1 => X--, Z++
 
-        for (int i = x; i <= x + radius; ++i)
+        //
+        if(steps >= radius) return null;
+        int i = X, j = Z;
+        if (steps % 2 == 0)
         {
-            for (int j = y; j <= y + (radius / 2); ++j)
+            if(pass == 0)
             {
-                for (int k = z; k <= z + (radius); ++k)
+                for(;i <= X + steps; i++){
+                    ChunkCoordinates coords = checkCoords(world, origX, origZ, X, Y, Z, except);
+                    if(coords != null)
+                    {
+                        return coords;
+                    }
+                }
+                pass++;
+                return getNearestEmptyChunkCoordinates(world, origX,origZ,i,Y,j,radius,except,steps,pass);
+            }
+            if(pass == 1)
+            {
+                for(;j >= Z - steps; j--){
+                    ChunkCoordinates coords = checkCoords(world, origX, origZ, X, Y, Z, except);
+                    if(coords != null)
+                    {
+                        return coords;
+                    }
+                }
+                pass--;
+                steps++;
+                return getNearestEmptyChunkCoordinates(world, origX,origZ,i,Y,j,radius,except,steps,pass);
+            }
+        }
+
+        if(steps % 2 == 1)
+        {
+            if(pass == 0)
+            {
+                for(;i >= X - steps; i--){
+                    ChunkCoordinates coords = checkCoords(world, origX, origZ, X, Y, Z, except);
+                    if(coords != null)
+                    {
+                        return coords;
+                    }
+                }
+                pass++;
+                return getNearestEmptyChunkCoordinates(world, origX,origZ,i,Y,j,radius,except,steps,pass);
+            }
+            if(pass == 1)
+            {
+                for(;j <= Z + steps; j++){
+                    ChunkCoordinates coords = checkCoords(world, origX, origZ, X, Y, Z, except);
+                    if(coords != null)
+                    {
+                        return coords;
+                    }
+                }
+                pass--;
+                steps++;
+                return getNearestEmptyChunkCoordinates(world, origX,origZ,i,Y,j,radius,except,steps,pass);
+            }
+        }
+       /* if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(x, y, z, X, Y, Z))
+        {
+            return new ChunkCoordinates(X, Y, Z);
+        }
+        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z))
+        {
+            return new ChunkCoordinates(X, Y, Z);
+        }*/
+
+
+
+       /* Old code. Still works, though.
+       for (int i = x - radius; i <= x + radius; i++)
+        {
+            for (int j = y - (radius / 2); j <= y + (radius / 2); j++)
+            {
+                for (int k = z + radius; k <= z + (radius); k++)
                 {
                     if (except && world.isSideSolid(i, j - 1, k, ForgeDirection.UP) && world.isAirBlock(i, j, k) && !areCoordinatesTheSame(x, y, z, i, j, k))
                     {
@@ -227,9 +326,10 @@ public class Actions
                     }
                 }
             }
-        }
+        }*/
         return null;
     }
+
 
     /**
      * Compares two coordinates. Heh.

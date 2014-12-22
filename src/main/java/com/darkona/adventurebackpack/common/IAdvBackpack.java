@@ -60,4 +60,6 @@ public interface IAdvBackpack extends IInventory
     void saveChanges();
 
     boolean isSBDeployed();
+
+    void setLastTime(int time);
 }

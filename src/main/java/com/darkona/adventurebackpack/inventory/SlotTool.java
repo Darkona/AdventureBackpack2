@@ -1,12 +1,10 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 
 /**
  * Created on 12/10/2014
@@ -33,11 +31,11 @@ public class SlotTool extends Slot
         boolean valid = false;
 
         String[] validToolNames = {
-                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill","hatchet"
+                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill",/*"hatchet","excavator","chisel"*/
         };
 
         String[] invalidToolNames = {
-                "bucket", "sword", "dagger"
+                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip"
         };
 
         if (stack != null && stack.getMaxStackSize() == 1)
@@ -46,13 +44,13 @@ public class SlotTool extends Slot
             String name = item.getUnlocalizedName().toLowerCase();
 
             // Vanilla
-            if (item instanceof ItemTool || item instanceof ItemHoe)
+            if (item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemShears || item instanceof ItemFishingRod || item instanceof ItemFlintAndSteel)
             {
                 return true;
             }
 
             //Adventure Backpack duh!
-            if (item instanceof ItemHose)
+            if (item instanceof ItemHose || item instanceof ItemAdventureBackpack)
             {
                 return false;
             }
@@ -74,20 +72,36 @@ public class SlotTool extends Slot
             try
             {
                 // Tinker's Construct
-                if (java.lang.Class.forName("tconstruct.library.tools.HarvestTool").isInstance(item)) return true;
-
-                //Buildcraft
-                if (java.lang.Class.forName("buildcraft.api.tools.IToolWrench").isInstance(item)) return true;
-
-                //IndustrialCraft
-                if (java.lang.Class.forName("ic2.api.item.IElectricItem").isInstance(item)) return true;
-
-                //Thaumcraft
-
-
+                if ( item.getClass().getName().contains("tconstruct.items.tools") ) return true;
             } catch (Exception oops)
             {
-
+              //  oops.printStackTrace();
+            }
+            try
+            {
+                //Buildcraft
+                if (java.lang.Class.forName("buildcraft.api.tools.IToolWrench").isInstance(item)) return true;
+            } catch (Exception oops)
+            {
+              //  oops.printStackTrace();
+            }
+            try
+            {
+               //IndustrialCraft
+                if (java.lang.Class.forName("ic2.api.item.IElectricItem").isInstance(item)) return true;
+            } catch (Exception oops)
+            {
+              //  oops.printStackTrace();
+            }
+                //Thaumcraft
+            try
+            {
+                //Thermal Expansion
+                if (java.lang.Class.forName("cofh.core.item.tool").isInstance(item)) return true;
+                if (java.lang.Class.forName("thermalexpansion.item.tool").isInstance(item)) return true;
+            } catch (Exception oops)
+            {
+               // oops.printStackTrace();
             } finally
             {
                 return valid;

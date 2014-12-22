@@ -1,9 +1,5 @@
 package com.darkona.adventurebackpack.client.models;
 
-/**
- * Created by Darkona on 11/10/2014.
- */
-
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Cuboid6;
@@ -18,7 +14,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-
+/**
+ * Created on 11/10/2014
+ * @author Darkona
+ *
+ */
 public class ModelAdventureBackpackArmor extends ModelBiped
 {
     public static final ModelAdventureBackpackArmor instance = new ModelAdventureBackpackArmor();
@@ -311,7 +311,7 @@ public class ModelAdventureBackpackArmor extends ModelBiped
     {
         // Copyboy: For some reason this is not properly updated.
         isSneak = ((entity != null) ? ((EntityLivingBase) entity).isSneaking() : false);
-        bipedBody.offsetZ = (isSneak) ? 0 : .3F;
+        bipedBody.offsetZ = (isSneak) ? 0 : -.3F;
         super.setRotationAngles(v1, v2, v3, v4, v5, v6, entity);
     }
 

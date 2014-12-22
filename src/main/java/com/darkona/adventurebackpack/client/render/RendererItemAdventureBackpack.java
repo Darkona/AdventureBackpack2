@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackBlock;
+import com.darkona.adventurebackpack.client.models.ModelNew;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
@@ -14,11 +15,11 @@ import org.lwjgl.opengl.GL11;
  */
 public class RendererItemAdventureBackpack implements IItemRenderer
 {
-    private final ModelAdventureBackpackBlock model;
+    private final ModelNew model;
 
     public RendererItemAdventureBackpack()
     {
-        model = new ModelAdventureBackpackBlock();
+        model = new ModelNew();
     }
 
     public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type)
@@ -71,7 +72,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glColor4f(1, 1, 1, 128);
 
                 GL11.glPushMatrix();
-                GL11.glTranslatef(-0.5f, 1.0f, -0.5f);
+                GL11.glTranslatef(-0.5f, 0f, -0.5f);
 
                 GL11.glPushMatrix();
                 GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -95,7 +96,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glColor4f(1, 1, 1, 128);
 
                 GL11.glPushMatrix();
-                GL11.glTranslatef(0f, 1.5f, 0f);
+                GL11.glTranslatef(0f, 1f, 0f);
 
                 GL11.glPushMatrix();
                 GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -119,7 +120,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glColor4f(1, 1, 1, 128);
 
                 GL11.glPushMatrix();
-                GL11.glTranslatef(0.8f, 1f, 0.0f);
+                GL11.glTranslatef(0.8f, 0.8f, 0.0f);
 
                 GL11.glPushMatrix();
                 GL11.glScalef(0.9f, 0.9f, 0.9f);
@@ -146,7 +147,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glColor4f(1, 1, 1, 128);
 
                 GL11.glPushMatrix();
-                GL11.glTranslatef(1f, 1.5f, 0.8f);
+                GL11.glTranslatef(1f, 0.8f, 0.8f);
 
                 GL11.glPushMatrix();
                 GL11.glScalef(1.5f, 1.5f, 1.5f);

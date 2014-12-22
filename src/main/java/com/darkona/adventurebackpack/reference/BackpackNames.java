@@ -12,14 +12,14 @@ public class BackpackNames
 {
 
     public static String[] backpackNames = {
-            "Cow", "Black", "Blaze", "Coal", "Diamond", "Emerald", "Gold", "Iron", "Lapis",
+            "Cow", "Bat", "Black", "Blaze", "Carrot", "Coal", "Diamond", "Emerald", "Gold", "Iron", "IronGolem","Lapis",
             "Redstone", "Blue", "Bookshelf", "Brown", "Cactus", "Cake", "Chest",
             "Cookie", "Cyan", "Dragon", "Egg", "Electric", "Deluxe", "Enderman", "End", "Chicken",
-            "Ocelot", "Ghast", "Gray", "Green", "Haybale", "Leather", "LightBlue", "Glowstone",
+            "Ocelot", "Ghast", "Gray", "Green", "Haybale", "Horse","Leather", "LightBlue", "Glowstone",
             "LightGray", "Lime", "Magenta", "MagmaCube", "Melon", "BrownMushroom", "RedMushroom",
-            "Mooshroom", "Nether", "Wither", "Obsidian", "Orange", "Pigman", "Pink", "Pig", "Pumpkin",
-            "Purple", "Quartz", "Rainbow", "Red", "Sandstone", "Sheep", "Silver", "Creeper", "Skeleton",
-            "WitherSkeleton", "Zombie", "Slime", "Snow", "Spider", "Sponge", "Standard", "White", "Wolf", "Yellow"
+            "Mooshroom", "Nether", "Wither", "Obsidian", "Orange","Overworld", "Pigman", "Pink", "Pig", "Pumpkin",
+            "Purple", "Quartz", "Rainbow", "Red", "Sandstone", "Sheep", "Silver", "Squid", "Sunflower", "Creeper", "Skeleton",
+            "WitherSkeleton", "Zombie", "Slime", "Snow", "Spider", "Sponge", "Standard", "Villager", "White", "Wolf", "Yellow"
     };
 
 

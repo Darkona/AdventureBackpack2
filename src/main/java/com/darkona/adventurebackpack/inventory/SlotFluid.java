@@ -16,6 +16,10 @@ public class SlotFluid extends Slot
         super(inventory, id, x, y);
     }
 
+    public static boolean valid(ItemStack stack){
+        return ((stack != null) && (FluidContainerRegistry.isContainer(stack)));
+    }
+
     @Override
     public boolean isItemValid(ItemStack stack)
     {

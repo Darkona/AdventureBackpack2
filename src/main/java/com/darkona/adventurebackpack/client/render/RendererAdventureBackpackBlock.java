@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackBlock;
+import com.darkona.adventurebackpack.client.models.ModelNew;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -18,11 +19,12 @@ import org.lwjgl.opengl.GL12;
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
 
-    private ModelAdventureBackpackBlock model;
+//    private ModelAdventureBackpackBlock model;
+private ModelNew model;
 
     public RendererAdventureBackpackBlock()
     {
-        this.model = new ModelAdventureBackpackBlock();
+        this.model = new ModelNew();//new ModelAdventureBackpackBlock();
     }
 
     @Override
@@ -40,7 +42,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glTranslatef((float) x + 0.5F, (float) y + 1.1F, (float) z + 0.5F);
+        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5f , (float) z + 0.5F);
 
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -60,7 +62,8 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         }
         ResourceLocation modelTexture = Resources.backpackTextureFromColor((TileAdventureBackpack) te);
         bindTexture(modelTexture);
-        model.render(null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F, (TileAdventureBackpack) te);
+        model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1 / 20F, (TileAdventureBackpack) te);
+
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
         GL11.glPopMatrix();

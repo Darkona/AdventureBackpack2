@@ -5,10 +5,11 @@ import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
-import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.network.CowAbilityMessage;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.network.NyanCatMessage;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -20,8 +21,6 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -250,7 +249,7 @@ public class BackpackAbilities
         if (eggTime <= 0)
         {
             player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
-            if (!world.isRemote) player.dropItem(new Items().egg, 1);
+            if (!world.isRemote) player.dropItem(Items.egg, 1);
             eggTime = Utils.secondsToTicks(200 + 10 * world.rand.nextInt(10));
         }
         backpack.getTagCompound().setInteger("lastTime", eggTime);
@@ -338,7 +337,7 @@ public class BackpackAbilities
                     {
                         if (player.getDistanceToEntity(entity) <= 3)
                         {
-                            world.playSoundAtEntity(player, "creeper.primed", 1.0F, 0.5F);
+                            world.playSoundAtEntity(player, "creeper.primed", 1.2F, 0.5F);
                             pssstTime = Utils.secondsToTicks(120);
                         }
                     }
@@ -362,9 +361,8 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        //if(world.isRemote)return;
-
         IAdvBackpack inv = new InventoryItem(backpack);
+        FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
         BackpackContainer cont = null;
         if(player.openContainer != null && player.openContainer instanceof BackpackContainer){
             cont = (BackpackContainer)player.openContainer;
@@ -372,21 +370,15 @@ public class BackpackAbilities
                 inv = cont.inventory;
             }
         }
-
-
-       // inv = new InventoryItem(backpack);
-
-        FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
-
-        if (inv.getLeftTank().fill(milkStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0) return;
-
-
-        int eatTime = inv.getLastTime() - 1;
+        inv.openInventory();
+        if (inv.getLeftTank().fill(milkStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0)
+        {
+            return;
+        }
+        //Set Cow Properties
+        NBTTagCompound cowProperties;
         int wheatConsumed = 0;
         int milkTime = - 1;
-        NBTTagCompound cowProperties;
-
-        //Set Cow Properties
         if (inv.getExtendedProperties() != null)
         {
             cowProperties = inv.getExtendedProperties();
@@ -400,62 +392,44 @@ public class BackpackAbilities
             cowProperties = new NBTTagCompound();
         }
 
+        int eatTime = inv.getLastTime() == 0 ? Utils.secondsToTicks(1) : inv.getLastTime() - 1;
 
-        //Fun time! - not
-
-
-            //Eat the wheat
-            if (eatTime <= 0 && milkTime <= 0)
+        if(inv.hasItem(Items.wheat) && eatTime == 0 && milkTime <= 0)
+        {
+            LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
+            inv.consumeInventoryItem(Items.wheat);
+            if(!world.isRemote)
             {
-                if (inv.hasItem(Items.wheat))
-                {
-                    if(!world.isRemote)
-                    {
-                        InventoryActions.consumeItemInBackpack(inv, Items.wheat);
-                    }
-                    ++wheatConsumed;
-                    eatTime = Utils.secondsToTicks(/*15 + player.worldObj.rand.nextInt(15)*/1);
-                    inv.saveChanges();
-
-                }
+                EntityPlayerMP playerMP = (EntityPlayerMP) player;
+                ModNetwork.networkWrapper.sendTo(new CowAbilityMessage(player.getPersistentID().toString(),CowAbilityMessage.CONSUME_WHEAT),playerMP);
             }
-            int factor = 1;
-            //Belly full, set the cycle
-            if (wheatConsumed == 16)
+            wheatConsumed++;
+        }
+
+        int factor = 1;
+        if(wheatConsumed == 16)
+        {
+
+            wheatConsumed = 0;
+            milkTime = (1000 * factor) - factor;
+            world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
+        }
+
+        if (milkTime >= 0 && (milkTime % factor == 0))
+        {
+            if (inv.getLeftTank().fill(milkStack, true) <= 0)
             {
-                wheatConsumed = 0;
-                milkTime = (1000 * factor) - factor;
-                world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
+               inv.getRightTank().fill(milkStack, true);
             }
+        }
 
-            //Make milk
-            if (milkTime >= 0 && (milkTime % factor == 0))
-            {
-                if (inv.getLeftTank().fill(milkStack, true) > 0)
-                {
-                    inv.saveChanges();
-                } else if (inv.getRightTank().fill(milkStack, true) > 0)
-                {
-                    inv.saveChanges();
-                }
-            }
-            if (milkTime < 0)
-            {
-                milkTime = 0;
-            }
-
-                if (cont != null) cont.detectAndSendChanges();
-                //Set the properties for the next cycle
-                cowProperties.setInteger("wheatConsumed", wheatConsumed);
-                cowProperties.setInteger("milkTime", milkTime);
-                inv.setExtendedProperties(cowProperties);
-                backpack.stackTagCompound.setInteger("lastTime", eatTime);
-                EntityPlayerMP playerMP = null;
-                if(player instanceof EntityPlayerMP){
-                    playerMP = (EntityPlayerMP)player;
-                }
-                if(playerMP != null)playerMP.sendContainerToPlayer(cont);
-
+        cowProperties.setInteger("wheatConsumed", wheatConsumed);
+        cowProperties.setInteger("milkTime", milkTime);
+        inv.setExtendedProperties(cowProperties);
+        inv.setExtendedProperties(cowProperties);
+        inv.setLastTime(eatTime);
+        if(player.openContainer!=null)player.openContainer.detectAndSendChanges();
+        inv.saveChanges();
     }
 
     /**

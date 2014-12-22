@@ -19,6 +19,17 @@ public class CreativeTabAB
             return ModItems.machete;
         }
 
+        @Override
+        public String getTranslatedTabLabel()
+        {
+            return super.getTranslatedTabLabel();
+        }
+
+        @Override
+        public String getTabLabel()
+        {
+            return ModInfo.MOD_ID.toLowerCase();
+        }
 
     };
 

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -74,11 +75,11 @@ public class InventoryActions
             //How much fluid can this container hold.
             int amount = FluidContainerRegistry.getContainerCapacity(tank.getFluid(), stackIn);
             //Let's see how much can we drain this tank
-            FluidStack drain = tank.drain(amount, false);
+            FluidStack drain = tank.drain(Constants.bucket, false);
 
             ItemStack stackOut = FluidContainerRegistry.fillFluidContainer(drain, stackIn);
 
-            if (drain.amount >= amount)
+            if (drain.amount == amount)
             {
                 if (backpack.getStackInSlot(slotOut) == null)
                 {
@@ -106,7 +107,7 @@ public class InventoryActions
     {
         ItemStack[] inventory = backpack.getInventory();
         int i = -1;
-        for (int j = 0; j < inventory.length; ++j)
+        for (int j = 0; j < Constants.inventorySize-7; ++j)
         {
             if (backpack.getInventory()[j] != null && backpack.getInventory()[j].getItem() == item)
             {

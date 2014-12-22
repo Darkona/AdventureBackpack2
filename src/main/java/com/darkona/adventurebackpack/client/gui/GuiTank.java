@@ -4,7 +4,6 @@ import codechicken.lib.render.TextureUtils;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -53,7 +52,7 @@ public class GuiTank
 
     public List<String> getTankTooltip()
     {
-        String fluidName = (fluid != null) ? Utils.capitalize(fluid.getFluid().getName()) : "None";
+        String fluidName = (fluid != null) ? fluid.getLocalizedName() : "None";
         String fluidAmount = (fluid != null) ? fluid.amount + "/" + Constants.basicTankCapacity : "Empty";
         ArrayList<String> tankTips = new ArrayList<String>();
         tankTips.add(fluidName);
@@ -103,8 +102,10 @@ public class GuiTank
             {
                 for (int j = maxY - resolution; j >= maxY - pixelsY; j -= resolution)
                 {
-                    GL11.glColor4f(1, 1, 1, 128);
+                    GL11.glPushMatrix();
+                    GL11.glColor4f(1, 1, 1, 1);
                     gui.drawTexturedModelRectFromIcon(i, j, icon, resolution, resolution);
+                    GL11.glPopMatrix();
                 }
             }
         }
@@ -128,9 +129,11 @@ public class GuiTank
                 int iconY = 7;
                 for (int j = maxY; j >= top; j--)
                 {
+                    GL11.glPushMatrix();
                     GL11.glColor4f(1, 1, 1, 1);
                     drawFluidPixelFromIcon(i, j, icon, resolution, 1, 0, iconY, resolution, 0);
                     iconY = (iconY == 0) ? 7 : iconY - 1;
+                    GL11.glPopMatrix();
                 }
             }
         }
@@ -140,7 +143,7 @@ public class GuiTank
      * @param gui
      * @param
      */
-    private void drawMethodThree(IBackpackGui gui)
+    private void drawMethodThree(GuiAdvBackpack gui)
     {
         if (fluid != null)
         {
@@ -153,8 +156,9 @@ public class GuiTank
                 {
                     for (int i = X; i <= X + W - 1; i++)
                     {
-                        GL11.glEnable(GL11.GL_BLEND);
-                        if (j >= top + 4)
+                        GL11.glPushMatrix();
+                        //GL11.glEnable(GL11.GL_BLEND);
+                        if (j >= top + 5)
                         {
                             GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
                         } else
@@ -162,7 +166,8 @@ public class GuiTank
                             GL11.glColor4f(1, 1, 1, 1);
                         }
                         drawFluidPixelFromIcon(i, j, icon, 1, 1, 0, 0, 0, 0);
-                        GL11.glDisable(GL11.GL_BLEND);
+                        //GL11.glDisable(GL11.GL_BLEND);
+                        GL11.glPopMatrix();
                     }
                 }
             } catch (Exception oops)
@@ -226,5 +231,7 @@ public class GuiTank
         tessellator.addVertexWithUV(x + w, y, zLevel, newMaxU, newMinV);
         tessellator.addVertexWithUV(x, y, zLevel, newMinU, newMinV);
         tessellator.draw();
+
+
     }
 }

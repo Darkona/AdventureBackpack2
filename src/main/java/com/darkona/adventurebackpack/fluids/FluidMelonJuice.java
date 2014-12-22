@@ -39,7 +39,7 @@ public class FluidMelonJuice extends Fluid
     @Override
     public int getColor(FluidStack stack)
     {
-        return 0xFFFAF0;
+        return 0xc31d08;
     }
 
     @Override

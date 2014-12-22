@@ -262,6 +262,12 @@ public class InventoryItem implements IAdvBackpack
     }
 
     @Override
+    public void setLastTime(int time)
+    {
+        this.lastTime = time;
+    }
+
+    @Override
     public int getSizeInventory()
     {
         return inventory.length;

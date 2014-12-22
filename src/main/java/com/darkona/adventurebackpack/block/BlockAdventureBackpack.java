@@ -126,7 +126,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public boolean canRenderInPass(int pass)
     {
-        return pass == 1 || pass == 2;
+        return true;
     }
 
     @Override
@@ -138,7 +138,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public float getEnchantPowerBonus(World world, int x, int y, int z)
     {
-        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 20 : 0;
+        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 10 : 0;
     }
 
     @Override

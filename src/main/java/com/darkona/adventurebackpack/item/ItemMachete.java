@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.init.ModMaterials;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
@@ -51,7 +52,9 @@ public class ItemMachete extends ToolAB
 
     public ItemMachete()
     {
+
         super(ModMaterials.ruggedIron, breakableBlocks);
+        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
         setMaxDamage(Items.iron_sword.getMaxDamage() + 250);
         this.field_150934_a = ModMaterials.ruggedIron.getDamageVsEntity();
         this.setUnlocalizedName("machete");
@@ -136,4 +139,5 @@ public class ItemMachete extends ToolAB
          */
         return new ItemStack(new ItemShears()).getItem().onBlockStartBreak(itemstack, x, y, z, player);
     }
+
 }

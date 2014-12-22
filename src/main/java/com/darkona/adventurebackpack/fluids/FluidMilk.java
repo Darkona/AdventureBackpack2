@@ -44,7 +44,7 @@ public class FluidMilk extends Fluid
     @Override
     public int getColor(FluidStack stack)
     {
-        return 0xFFFAF0;
+        return 0xffffff;
     }
 
     @Override

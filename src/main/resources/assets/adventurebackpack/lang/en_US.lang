@@ -10,7 +10,7 @@ item.adventurebackpack:backpackHose.name=Backpack Hose
 item.adventurebackpack:adventureSuit.name=Adventurer's Suit
 item.adventurebackpack:adventureHat.name=Adventurer's Fedora
 item.adventurebackpack:pistonBoots.name=Piston Boots
-
+item.adventurebackpack:melonJuiceBottle.name=Melon Juice Bottle
 
 item.adventurebackpack:hose_leftTank_suck.name=Hose: Left Tank / Suck Mode
 item.adventurebackpack:hose_leftTank_spill.name=Hose: Left Tank / Spill Mode
@@ -27,8 +27,13 @@ item.adventurebackpack:hoseUseless=Hose: Useless / No Backpack
 block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
 
 #CreativeTab
+itemGroup.adventurebackpack=Adventure Backpack
 
 #Keybindings
 keys.adventureBackpack.category=Adventure Backpack
 keys.adventureBackpack.openBackpackInventory=Open Backpack Inventory
 keys.adventureBackpack.switchHoseTank=Switch Hose Tank
+
+#Fluids
+fluid.melonJuice=Melon Juice
+fluid.milk=Milk

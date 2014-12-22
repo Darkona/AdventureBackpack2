@@ -1,13 +1,16 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.world.World;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -18,31 +21,41 @@ public class BackpackContainer extends Container
     public IAdvBackpack inventory;
     public static boolean SOURCE_TILE = true;
     public static boolean SOURCE_ITEM = false;
+    public boolean source;
+    public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
+    public IInventory craftResult = new InventoryCraftResult();
+    private World world;
 
-    public BackpackContainer(InventoryPlayer invPlayer, IAdvBackpack backpack, boolean source)
+
+    private final int
+            PLAYER_HOT_START = 0,
+            PLAYER_HOT_END = PLAYER_HOT_START + 8,
+            PLAYER_INV_START = PLAYER_HOT_END + 1,
+            PLAYER_INV_END = PLAYER_INV_START + 26,
+            BACK_INV_START = PLAYER_INV_END + 1,
+            BACK_INV_END = BACK_INV_START + 38,
+            TOOL_START = BACK_INV_END + 1,
+            TOOL_END = TOOL_START + 1,
+            BUCKET_LEFT = TOOL_END + 1,
+            BUCKET_RIGHT = BUCKET_LEFT +2;
+
+    public BackpackContainer(EntityPlayer player, IAdvBackpack backpack, boolean source)
     {
         inventory = backpack;
-        makeSlots(invPlayer);
+        makeSlots(player.inventory);
+        inventory.openInventory();
+        this.source = source;
     }
 
-
-    // =============================================== GETTERS ====================================================== //
-    // =============================================== SETTERS ====================================================== //
-    // ================================================ ORDER ======================================================= //
-    // ================================================ STACKS ====================================================== //
-
-
-    @Override
-    public boolean canInteractWith(EntityPlayer player)
+    private void bindPlayerInventory(InventoryPlayer invPlayer)
     {
-        return inventory.isUseableByPlayer(player);
-    }
+        int startX = 44;
+        int startY = 125;
 
-    private void bindPlayerInventory(InventoryPlayer invPlayer){
         // Player's Hotbar
         for (int x = 0; x < 9; x++)
         {
-            addSlotToContainer(new Slot(invPlayer, x, 8 + 18 * x, 142));
+            addSlotToContainer(new Slot(invPlayer, x, startX + 18 * x, 183));
         }
 
         // Player's Inventory
@@ -50,44 +63,110 @@ public class BackpackContainer extends Container
         {
             for (int x = 0; x < 9; x++)
             {
-                addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (8 + 18 * x), (84 + y * 18)));
+                addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (startX + 18 * x), (startY + y * 18)));
             }
         }
+        //Total 36 slots
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
 
         bindPlayerInventory(invPlayer);
-        int thing = 0;
+
 
         // Backpack Inventory
 
         int startX = 62;
         int startY = 7;
-        for(int i = 0; i < 4; i++){
-            for (int j = 0; j < 4; j++){
+        int slot = 0;
+
+        // 24 Slots
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
                 int offsetX = startX + (18 * j);
                 int offsetY = startY + (18 * i);
-                addSlotToContainer(new SlotBackpack(inventory, thing++, offsetX, offsetY));// 0
+                addSlotToContainer(new SlotBackpack(inventory, slot++, offsetX, offsetY));
             }
         }
 
+        // 15 Slots
+        startY = 61;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                int offsetX = startX + (18 * j);
+                int offsetY = startY + (18 * i);
+                addSlotToContainer(new SlotBackpack(inventory, slot++, offsetX, offsetY));
+            }
+        }
+
+        LogHelper.info("Created " + slot + " slots in backpack Inventory");
+
+
         //Upper Tool Slot
-        addSlotToContainer(new SlotTool(inventory, Constants.upperTool, 44, 25));// Upper Tool 16
+        addSlotToContainer(new SlotTool(inventory, Constants.upperTool, 44, 79));// Upper Tool 16
         //Lower Tool slot
-        addSlotToContainer(new SlotTool(inventory, Constants.lowerTool, 44, 43));// Lower Tool 17
+        addSlotToContainer(new SlotTool(inventory, Constants.lowerTool, 44, 97));// Lower Tool 17
 
         //Bucket Slots
 
         // bucket in left 18
-        addSlotToContainer(new SlotFluid(inventory, Constants.bucketInLeft, 6, 25));
+        addSlotToContainer(new SlotFluid(inventory, Constants.bucketInLeft, 6, 7));
         // bucket out left 19
-        addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutLeft, 6, 55));
+        addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutLeft, 6, 37));
         // bucket in right  20
-        addSlotToContainer(new SlotFluid(inventory, Constants.bucketInRight, 153, 25));
+        addSlotToContainer(new SlotFluid(inventory, Constants.bucketInRight, 226, 7));
         // bucket out right 21
-        addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutRight, 153, 55));
+        addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutRight, 226, 37));
+
+
+        //Craft Matrix
+        startX = 152;
+        for (int y = 0; y < 3; y++)
+        {
+            for (int x = 0; x < 3; x++)
+            {
+                int offsetX = startX + (18 * x);
+                int offsetY = startY + (18 * y);
+                addSlotToContainer(new Slot(craftMatrix, (x + y * 3), offsetX, offsetY));
+            }
+        }
+        addSlotToContainer(new SlotCrafting(invPlayer.player, craftMatrix, craftResult, 0, 226, 97));
+        this.onCraftMatrixChanged(craftMatrix);
+        //LogHelper.info("List of slots is " +  this.inventorySlots.size() + " in size");
+
+    }
+
+    /**
+     * places itemstacks in first x slots, x being aitemstack.lenght
+     *
+     * @param itemStacks
+     */
+
+    @Override
+    public void putStacksInSlots(ItemStack[] itemStacks)
+    {
+        for (int i = 0; i < itemStacks.length; i++)
+        {
+            this.getSlot(i).putStack(itemStacks[i]);
+        }
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer player)
+    {
+        return inventory.isUseableByPlayer(player);
+    }
+
+
+    @Override
+    public void onCraftMatrixChanged(IInventory par1IInventory)
+    {
+        this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.world));
     }
 
     @Override
@@ -95,21 +174,52 @@ public class BackpackContainer extends Container
     {
         // TODO Fix the shit disrespecting slot accepting itemstack.
         Slot slot = getSlot(i);
+        ItemStack result = null;
         if (slot != null && slot.getHasStack())
         {
             ItemStack stack = slot.getStack();
-            ItemStack result = stack.copy();
+            result = stack.copy();
+            if(player.getCurrentEquippedItem().equals(player.getItemInUse()) && player.getEquipmentInSlot(i).equals(player.getCurrentEquippedItem()))return null;
             if (i >= 36)
             {
-                if (!mergeItemStack(stack, 0, 36, false))
+                if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
                 {
                     return null;
                 }
-            } else if (!mergeItemStack(stack, 36, 36 + inventory.getSizeInventory(), false))
-            {
-                return null;
             }
+            if (i < 36)
+            {
+                if (SlotTool.isValidTool(stack))
+                {
+                    if (!mergeItemStack(stack, TOOL_START, TOOL_END + 1, false))
+                    {
+                        if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                        {
+                            return null;
+                        }
+                    }
+                } else if (SlotFluid.valid(stack))
+                {
+                    if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
+                    {
+                        if(!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
+                        {
+                            if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                            {
+                                return null;
+                            }
+                        }
+                    }
 
+
+                } else if (!(stack.getItem() instanceof ItemAdventureBackpack))
+                {
+                    if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                    {
+                        return null;
+                    }
+                }
+            }
             if (stack.stackSize == 0)
             {
                 slot.putStack(null);
@@ -118,12 +228,16 @@ public class BackpackContainer extends Container
                 slot.onSlotChanged();
             }
 
+            if (stack.stackSize == result.stackSize)
+            {
+                return null;
+            }
             slot.onPickupFromSlot(player, stack);
             inventory.onInventoryChanged();
-            return result;
         }
-        return null;
+        return result;
     }
+
 
     @Override
     public void onContainerClosed(EntityPlayer player)
@@ -131,7 +245,7 @@ public class BackpackContainer extends Container
         super.onContainerClosed(player);
         if (!player.worldObj.isRemote)
         {
-            for (int i = 0; i < inventory.getSizeInventory(); ++i)
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
             {
                 if (i == Constants.bucketInRight || i == Constants.bucketInLeft || i == Constants.bucketOutLeft || i == Constants.bucketOutRight)
                 {
@@ -143,7 +257,19 @@ public class BackpackContainer extends Container
                     }
                 }
             }
+
+            for (int i = 0; i < 9; ++i)
+            {
+                ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
+
+                if (itemstack != null)
+                {
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
+                }
+            }
         }
+
+
     }
 
     /**
@@ -153,23 +279,12 @@ public class BackpackContainer extends Container
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-        for (int i = 0; i < inventory.getInventory().length; ++i)
-        {
-            ItemStack itemstack = ((Slot) this.inventorySlots.get(i)).getStack();
-            ItemStack itemstack1 = this.inventory.getInventory()[i];
-
-            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack))
-            {
-                itemstack1 = itemstack == null ? null : itemstack.copy();
-                this.inventoryItemStacks.set(i, itemstack1);
-            }
-        }
     }
 
     @Override
-    public Slot getSlotFromInventory(IInventory p_75147_1_, int p_75147_2_)
+    public Slot getSlotFromInventory(IInventory iInventory, int index)
     {
-        return super.getSlotFromInventory(p_75147_1_, p_75147_2_);
+        return super.getSlotFromInventory(iInventory, index);
     }
 
     @Override
@@ -267,10 +382,14 @@ public class BackpackContainer extends Container
     }
 
     @Override
-    public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer player)
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem()) {
+            return null;
+        }
         inventory.onInventoryChanged();
-        return super.slotClick(par1, par2, par3, player);
+        return super.slotClick(slot, button, flag, player);
     }
+
 
 }
