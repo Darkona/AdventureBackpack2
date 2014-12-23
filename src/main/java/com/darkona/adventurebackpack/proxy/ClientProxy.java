@@ -8,11 +8,8 @@ import com.darkona.adventurebackpack.client.render.RendererItemAdventureHat;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.network.NyanCatMessage;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 /**
@@ -24,16 +21,19 @@ public class ClientProxy implements IProxy
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;
-    public static KeybindHandler keybindHandler;
 
     public void init()
     {
         initRenderers();
         registerKeybindings();
-        int messageCounter = 10;
-        ModNetwork.networkWrapper.registerMessage(NyanCatMessage.NyanCatMessageClientHandler.class, NyanCatMessage.class, messageCounter++, Side.CLIENT);
     }
 
+    public void initNetwork()
+    {
+//
+//        ModNetwork.networkWrapper.registerMessage(NyanCatMessage.NyanCatMessageClientHandler.class, NyanCatMessage.class, ModNetwork.messages++, Side.CLIENT);
+//        ModNetwork.networkWrapper.registerMessage(CowAbilityPacket.CowAbilityMessageClientHandler.class, CowAbilityPacket.class, ModNetwork.messages++, Side.CLIENT);
+    }
 
     public void initRenderers()
     {

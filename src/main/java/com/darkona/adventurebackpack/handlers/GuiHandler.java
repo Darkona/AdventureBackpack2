@@ -41,7 +41,7 @@ public class GuiHandler implements IGuiHandler
                 inv = Wearing.getBackpackInv(player, true);
                 if (inv.getParentItemStack() != null)
                 {
-                    return new BackpackContainer(player, inv, BackpackContainer.SOURCE_ITEM);
+                    return new BackpackContainer(player, inv, BackpackContainer.SOURCE_WEARING);
                 }
                 break;
             case 2:
@@ -49,7 +49,7 @@ public class GuiHandler implements IGuiHandler
                 inv = Wearing.getBackpackInv(player, false);
                 if (inv.getParentItemStack() != null)
                 {
-                    return new BackpackContainer(player, inv, BackpackContainer.SOURCE_ITEM);
+                    return new BackpackContainer(player, inv, BackpackContainer.SOURCE_HOLDING);
                 }
                 break;
             default:

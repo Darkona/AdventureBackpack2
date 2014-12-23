@@ -15,41 +15,13 @@ import net.minecraft.world.World;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class GuiBackpackMessage implements IMessage
+public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage,IMessage>
 {
 
-    private byte from;
-    private byte type;
-
-    public GuiBackpackMessage()
-    {
-    }
-
-    public GuiBackpackMessage(byte type, byte from)
-    {
-        this.type = type;
-        this.from = from;
-    }
-
     @Override
-    public void fromBytes(ByteBuf buf)
+    public IMessage onMessage(GUImessage message, MessageContext ctx)
     {
-        this.type = buf.readByte();
-        this.from = buf.readByte();
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeByte(type);
-        buf.writeByte(from);
-    }
-
-    public static class GuiBackpackMessageServerHandler implements IMessageHandler<GuiBackpackMessage, IMessage>
-    {
-
-        @Override
-        public IMessage onMessage(GuiBackpackMessage message, MessageContext ctx)
+        if(ctx.side.isServer())
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
@@ -82,27 +54,46 @@ public class GuiBackpackMessage implements IMessage
 
                     if (message.type == MessageConstants.NORMAL_GUI)
                     {
+
                         if (player.openContainer instanceof BackpackContainer)
                         {
                             TileAdventureBackpack te = (TileAdventureBackpack) ((BackpackContainer) player.openContainer).inventory;
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 3, world, te.xCoord, te.yCoord, te.zCoord);
+                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 0, world, te.xCoord, te.yCoord, te.zCoord);
                         }
                     }
                 }
             }
-
-
-            return null;
         }
+        return null;
     }
 
-    public static class GuiBackpackMessageClientHandler implements IMessageHandler<GuiBackpackMessage, IMessage>
+    public static class GUImessage implements IMessage
     {
+        private byte from;
+        private byte type;
+
+        public GUImessage()
+        {
+        }
+
+        public GUImessage(byte type, byte from)
+        {
+            this.type = type;
+            this.from = from;
+        }
 
         @Override
-        public IMessage onMessage(GuiBackpackMessage message, MessageContext ctx)
+        public void fromBytes(ByteBuf buf)
         {
-            return null;
+            this.type = buf.readByte();
+            this.from = buf.readByte();
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            buf.writeByte(type);
+            buf.writeByte(from);
         }
     }
 }

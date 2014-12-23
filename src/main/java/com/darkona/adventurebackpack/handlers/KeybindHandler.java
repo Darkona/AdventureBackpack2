@@ -2,8 +2,8 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.network.CycleToolMessage;
-import com.darkona.adventurebackpack.network.GuiBackpackMessage;
+import com.darkona.adventurebackpack.network.CycleToolPacket;
+import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.Key;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -40,13 +40,13 @@ public class KeybindHandler
         {
             if (mc.inGameHasFocus)
             {
-                ModNetwork.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_KEYBIND));
+                ModNetwork.net.sendToServer(new GUIPacket.GUImessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_KEYBIND));
             }
         }
 
         if (keypressed == Key.TOGGLE_HOSE_TANK)
         {
-            ModNetwork.networkWrapper.sendToServer(new CycleToolMessage(0, (player).inventory.currentItem, MessageConstants.TOGGLE_HOSE_TANK));
+            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
         }
     }
 }

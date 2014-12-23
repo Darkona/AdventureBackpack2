@@ -1,8 +1,9 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.common.Actions;
+import com.darkona.adventurebackpack.api.FluidEffectRegistry;
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.util.Resources;
@@ -405,9 +406,13 @@ public class ItemHose extends ItemAB
             FluidTank backpackTank = (tank == 0) ? inventory.getLeftTank() : (tank == 1) ? inventory.getRightTank() : null;
             if (backpackTank != null)
             {
-                Actions.setFluidEffect(world, player, backpackTank);
-                backpackTank.drain(Constants.bucket, true);
-                inventory.saveChanges();
+                if(FluidEffectRegistry.hasFluidEffect(backpackTank.getFluid().getFluid()))
+                {
+                    ServerActions.setFluidEffect(world, player, backpackTank);
+                    backpackTank.drain(Constants.bucket, true);
+                    inventory.saveChanges();
+                }
+                else return null;
             }
         }
         return hose;

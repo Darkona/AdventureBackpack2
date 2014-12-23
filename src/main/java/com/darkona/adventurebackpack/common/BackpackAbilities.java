@@ -1,18 +1,16 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.client.Visuals;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.network.CowAbilityMessage;
-import com.darkona.adventurebackpack.network.MessageConstants;
-import com.darkona.adventurebackpack.network.NyanCatMessage;
+import com.darkona.adventurebackpack.network.CowAbilityPacket;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -401,7 +399,7 @@ public class BackpackAbilities
             if(!world.isRemote)
             {
                 EntityPlayerMP playerMP = (EntityPlayerMP) player;
-                ModNetwork.networkWrapper.sendTo(new CowAbilityMessage(player.getPersistentID().toString(),CowAbilityMessage.CONSUME_WHEAT),playerMP);
+                ModNetwork.net.sendTo(new CowAbilityPacket.CowAbilityMessage(player.getPersistentID().toString(), CowAbilityPacket.CONSUME_WHEAT),playerMP);
             }
             wheatConsumed++;
         }
@@ -549,9 +547,10 @@ public class BackpackAbilities
             player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 1, 2));
             if (noteTime % 2 == 0)
             {
-                ModNetwork.networkWrapper.sendToAllAround(
+                Visuals.NyanParticles(player, world);
+                /*ModNetwork.networkWrapper.sendToAllAround(
                         new NyanCatMessage(MessageConstants.SPAWN_PARTICLE, player.getPersistentID().toString()),
-                        new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 30D));
+                        new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 30D));*/
             }
         }
         backpack.getTagCompound().setInteger("lastTime", noteTime);

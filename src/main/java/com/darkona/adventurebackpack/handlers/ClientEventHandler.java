@@ -1,12 +1,12 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
-import com.darkona.adventurebackpack.network.CycleToolMessage;
-import com.darkona.adventurebackpack.network.MessageConstants;
+import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -77,7 +77,7 @@ public class ClientEventHandler
         int dWheel = event.dwheel;
         if (dWheel != 0)
         {
-            LogHelper.debug("Mouse Wheel moving");
+            //LogHelper.debug("Mouse Wheel moving");
             EntityClientPlayerMP player = mc.thePlayer;
             if (player != null && !player.isDead && player.isSneaking())
             {
@@ -92,15 +92,16 @@ public class ClientEventHandler
                         if (SlotTool.isValidTool(heldItem) ||
                                 (BackpackNames.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
                         {
-                            ModNetwork.networkWrapper.sendToServer(new CycleToolMessage(dWheel, slot, MessageConstants.CYCLE_TOOL_ACTION));
+                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
+                            ServerActions.cycleTool(player,dWheel,slot);
                             event.setCanceled(true);
                         }
                         if (player.getCurrentEquippedItem().getItem() instanceof ItemHose)
                         {
-                            ModNetwork.networkWrapper.sendToServer(new CycleToolMessage(dWheel, slot, MessageConstants.SWITCH_HOSE_ACTION));
+                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
+                            ServerActions.cycleTool(player,dWheel,slot);
                             event.setCanceled(true);
                         }
-
                     }
                 }
             }

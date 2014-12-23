@@ -10,7 +10,7 @@ import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.network.GuiBackpackMessage;
+import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
@@ -148,7 +148,7 @@ public class ItemAdventureBackpack extends ArmorAB
         {
             if (world.isRemote)
             {
-                ModNetwork.networkWrapper.sendToServer(new GuiBackpackMessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_HOLDING));
+                ModNetwork.net.sendToServer(new GUIPacket.GUImessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_HOLDING));
             }
         }
         return stack;

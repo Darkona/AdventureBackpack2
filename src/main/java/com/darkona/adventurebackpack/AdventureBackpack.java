@@ -9,6 +9,8 @@ import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
 import com.darkona.adventurebackpack.init.*;
 import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.calendar.ChineseCalendar;
+import com.darkona.adventurebackpack.util.calendar.JewishCalendar;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -16,7 +18,10 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.util.Calendar;
 
 /**
  * Created by Javier Darkona on 10/10/2014.
@@ -37,6 +42,8 @@ public class AdventureBackpack
 
     @SidedProxy(clientSide = ModInfo.MOD_CLIENT_PROXY, serverSide = ModInfo.MOD_SERVER_PROXY)
     public static IProxy proxy;
+    public boolean chineseNewYear;
+    public boolean hannukah;
 
     PlayerEventHandler playerEventHandler;
     ClientEventHandler clientEventHandler;
@@ -47,12 +54,12 @@ public class AdventureBackpack
     public void preInit(FMLPreInitializationEvent event)
     {
 
+        int year = Calendar.getInstance().get(Calendar.YEAR), month = Calendar.getInstance().get(Calendar.MONTH), day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         //Configuration
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-
-        //NETWORK
-        ModNetwork.init();
+        chineseNewYear = ChineseCalendar.isChineseNewYear(year,month,day);
+        hannukah = JewishCalendar.isHannukah(year, month, day);
 
         //ModStuff
         ModItems.init();
@@ -61,14 +68,14 @@ public class AdventureBackpack
         FluidEffectRegistry.init();
         ModRecipes.init();
         ModEntities.init();
-
+        ModNetwork.init();
+        proxy.initNetwork();
         // EVENTS
         playerEventHandler = new PlayerEventHandler();
         backpackEventHandler = new BackpackEventHandler();
         clientEventHandler = new ClientEventHandler();
         MinecraftForge.EVENT_BUS.register(backpackEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
-
         MinecraftForge.EVENT_BUS.register(playerEventHandler);
         FMLCommonHandler.instance().bus().register(playerEventHandler);
 
@@ -77,6 +84,7 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
+
         proxy.init();
 
         //GUIs

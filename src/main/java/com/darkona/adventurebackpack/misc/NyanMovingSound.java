@@ -14,7 +14,6 @@ public class NyanMovingSound extends MovingSound
 {
 
     public static NyanMovingSound instance = new NyanMovingSound();
-
     public EntityPlayer getPlayer()
     {
         return player;
@@ -42,9 +41,11 @@ public class NyanMovingSound extends MovingSound
         super(new ResourceLocation(ModInfo.MOD_ID, "nyan"));
     }
 
-    /**
-     * Updates the JList with a new model.
-     */
+    public void setDonePlaying()
+    {
+        this.donePlaying = true;
+    }
+
     @Override
     public void update()
     {

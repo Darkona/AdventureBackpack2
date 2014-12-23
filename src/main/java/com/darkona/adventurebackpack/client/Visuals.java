@@ -12,9 +12,9 @@ import net.minecraft.world.World;
 public class Visuals
 {
 
-    public static void NyanParticles(EntityPlayer player)
+    public static void NyanParticles(EntityPlayer player, World world)
     {
-        World world = player.worldObj;
+       // World world = player.worldObj;
         int i = 2;
         for (int j = 0; j < i * 3; ++j)
         {

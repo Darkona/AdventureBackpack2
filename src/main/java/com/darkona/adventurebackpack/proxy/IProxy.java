@@ -11,4 +11,6 @@ public interface IProxy
     public void init();
 
     public void registerKeybindings();
+
+    void initNetwork();
 }

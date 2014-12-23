@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.reference;
 
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -23,6 +24,9 @@ public class BackpackNames
     };
 
 
+    public static String getBackpackColorName(TileAdventureBackpack te){
+        return te.getColorName();
+    }
     public static String getBackpackColorName(ItemStack item)
     {
         if (item == null) return "";

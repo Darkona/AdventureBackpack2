@@ -11,18 +11,22 @@ import cpw.mods.fml.relauncher.Side;
  */
 public class ModNetwork
 {
+    public static SimpleNetworkWrapper net;
+    public static int messages = 0;
 
-    public static SimpleNetworkWrapper networkWrapper;
+    public static void init(){
+        net = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_CHANNEL);
+        registerMessage(CycleToolPacket.class,CycleToolPacket.CycleToolMessage.class);
+        registerMessage(GUIPacket.class, GUIPacket.GUImessage.class);
+        registerMessage(NyanCatPacket.class, NyanCatPacket.NyanCatMessage.class);
+        registerMessage(SleepingBagPacket.class, SleepingBagPacket.SleepingBagMessage.class );
+        registerMessage(CowAbilityPacket.class, CowAbilityPacket.CowAbilityMessage.class);
+    }
 
-    public static void init()
+    private static void registerMessage(Class handler, Class message)
     {
-
-        int messageCounter = 0;
-        networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID + "ch");
-        networkWrapper.registerMessage(CycleToolMessage.CycleToolMessageServerHandler.class, CycleToolMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(GuiBackpackMessage.GuiBackpackMessageServerHandler.class, GuiBackpackMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(NyanCatMessage.NyanCatMessageServerHandler.class, NyanCatMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(SleepingBagMessage.SleepingBagMessageServerHandler.class, SleepingBagMessage.class, messageCounter++, Side.SERVER);
-        networkWrapper.registerMessage(CowAbilityMessage.CowAbilityMessageClientHandler.class, CowAbilityMessage.class, messageCounter++, Side.CLIENT);
+        net.registerMessage(handler, message, messages, Side.CLIENT);
+        net.registerMessage(handler, message, messages, Side.SERVER);
+        messages++;
     }
 }

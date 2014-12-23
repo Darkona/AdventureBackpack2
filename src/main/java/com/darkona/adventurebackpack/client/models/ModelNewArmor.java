@@ -246,7 +246,7 @@ public class ModelNewArmor extends ModelBiped
         GL11.glDisable(GL11.GL_BLEND);
        // GL11.glPopMatrix();
     }
-    private void renderBackpack(Float f5){
+    private void renderBackpack(Float scale){
         String color = backpack.getColorName();
         for(ModelRenderer model : (List<ModelRenderer>)bipedBody.childModels)
         {
@@ -262,18 +262,18 @@ public class ModelNewArmor extends ModelBiped
 
         if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow")){
             startBlending();
-            this.mainBody.render(f5);
+            this.mainBody.render(scale);
             stopBlending();
         }else{
-            this.mainBody.render(f5);
+            this.mainBody.render(scale);
         }
 
         GL11.glPushMatrix();
 
-        tankLeftTop.render(f5);
-        tankRightTop.render(f5);
+        tankLeftTop.render(scale);
+        tankRightTop.render(scale);
 
-        bed.render(f5);
+        bed.render(scale);
         if(color.equals("Pig") || color.equals("Horse")){
             pigNose.render(scale);
         }
@@ -287,15 +287,15 @@ public class ModelNewArmor extends ModelBiped
 
 
         GL11.glPushMatrix();
-        renderFluidInTank(backpack.getLeftTank(), scale, -.17f, .1f, .13f, tankLeftTop);
+        renderFluidInTank(backpack.getLeftTank(), -.17f, .1f, .13f, tankLeftTop);
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
-        renderFluidInTank(backpack.getRightTank(), scale, .41f, .1f, .13f, tankRightTop);
+        renderFluidInTank(backpack.getRightTank(), .41f, .1f, .13f, tankRightTop);
         GL11.glPopMatrix();
     }
 
-    private void renderFluidInTank(FluidTank tank, float scale, float offsetX, float offsetY, float offsetZ, ModelRenderer parent){
+    private void renderFluidInTank(FluidTank tank,  float offsetX, float offsetY, float offsetZ, ModelRenderer parent){
         //Side true is left, false is right
         if (tank != null && tank.getFluid() != null && tank.getFluid().getFluid().getIcon() != null)
         {
@@ -312,11 +312,6 @@ public class ModelNewArmor extends ModelBiped
                         (parent.rotationPointX * 0.1f + offsetX), //
                         (parent.rotationPointY * 0.1f + offsetY),
                         (parent.rotationPointZ * 0.1f + offsetZ));
-
-            //ChickenStuff
-            /*CCRenderState.reset();
-            CCRenderState.pullLightmap();
-            CCRenderState.useNormals = true;*/
 
             Cuboid6 cat = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
             //Thanks Chickenbones!

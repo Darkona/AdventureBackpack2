@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.common.Actions;
+import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -23,7 +23,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
  * Handle ALL the events!
  *
  * @author Darkona
- * @see com.darkona.adventurebackpack.common.Actions
+ * @see com.darkona.adventurebackpack.common.ClientActions
  */
 public class PlayerEventHandler
 {
@@ -43,7 +43,7 @@ public class PlayerEventHandler
 
             if (Wearing.isWearingBoots(player) && player.onGround)
             {
-                Actions.pistonBootsJump(player);
+                ServerActions.pistonBootsJump(player);
             }
         }
     }
@@ -79,7 +79,7 @@ public class PlayerEventHandler
             {
                 player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
             }
-            if(!Actions.tryPlaceOnDeath(player)){
+            if(!ServerActions.tryPlaceOnDeath(player)){
                 Wearing.getWearingBackpack(player).getItem().onDroppedByPlayer(Wearing.getWearingBackpack(player),player);
             }
         }

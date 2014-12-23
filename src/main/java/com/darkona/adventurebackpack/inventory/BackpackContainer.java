@@ -19,9 +19,10 @@ public class BackpackContainer extends Container
 {
 
     public IAdvBackpack inventory;
-    public static boolean SOURCE_TILE = true;
-    public static boolean SOURCE_ITEM = false;
-    public boolean source;
+    public static byte SOURCE_TILE = 0;
+    public static byte SOURCE_WEARING = 1;
+    public static byte SOURCE_HOLDING = 1;
+    public byte source;
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
     public IInventory craftResult = new InventoryCraftResult();
     private World world;
@@ -39,7 +40,7 @@ public class BackpackContainer extends Container
             BUCKET_LEFT = TOOL_END + 1,
             BUCKET_RIGHT = BUCKET_LEFT +2;
 
-    public BackpackContainer(EntityPlayer player, IAdvBackpack backpack, boolean source)
+    public BackpackContainer(EntityPlayer player, IAdvBackpack backpack, byte source)
     {
         inventory = backpack;
         makeSlots(player.inventory);
@@ -179,7 +180,6 @@ public class BackpackContainer extends Container
         {
             ItemStack stack = slot.getStack();
             result = stack.copy();
-            if(player.getCurrentEquippedItem().equals(player.getItemInUse()) && player.getEquipmentInSlot(i).equals(player.getCurrentEquippedItem()))return null;
             if (i >= 36)
             {
                 if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
@@ -384,7 +384,7 @@ public class BackpackContainer extends Container
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem()) {
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING) {
             return null;
         }
         inventory.onInventoryChanged();

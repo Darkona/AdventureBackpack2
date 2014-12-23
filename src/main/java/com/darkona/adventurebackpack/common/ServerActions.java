@@ -29,109 +29,14 @@ import net.minecraftforge.fluids.FluidTank;
 import java.util.Random;
 
 /**
- * Created on 11/10/2014
+ * Created on 23/12/2014
  *
  * @author Darkona
- * @see com.darkona.adventurebackpack.handlers.PlayerEventHandler
- * @see com.darkona.adventurebackpack.api.FluidEffectRegistry
- * @see com.darkona.adventurebackpack.common.BackpackAbilities
  */
-public class Actions
+public class ServerActions
 {
-
     public static final boolean HOSE_SWITCH = false;
     public static final boolean HOSE_TOGGLE = true;
-
-    /**
-     * Adds vertical inertia to the movement in the Y axis of the player, and makes Newton's Laws cry.
-     * In other words, makes you jump higher.
-     * Also it plays a nice sound effect that will probably get annoying after a while.
-     *
-     * @param player - The player performing the jump.
-     */
-    public static void pistonBootsJump(EntityPlayer player)
-    {
-        //TODO add configuration for the playing of the sound effect.
-        //TODO Maybe configurable jump height too, because why not.
-        player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
-        player.motionY += 0.30;
-        player.jumpMovementFactor += 0.3;
-    }
-
-    /**
-     * @param world  The world. Like, the WHOLE world. That's a lot of stuff. Do stuff with it, like detecting biomes
-     *               or whatever.
-     * @param player Is a player. To whom  the nice or evil effects you're going to apply will affect.
-     *               See? I know the proper use of the words "effect" & "affect".
-     * @param tank   The tank that holds the fluid, whose effect will affect the player that's in the world.
-     * @return If the effect can be applied, and it is actually applied, returns true.
-     */
-    public static boolean setFluidEffect(World world, EntityPlayer player, FluidTank tank)
-    {
-        FluidStack drained = tank.drain(Constants.bucket, false);
-        boolean done = false;
-        if (drained != null && drained.amount >= Constants.bucket)
-        {
-            setFluidEffect(world, player, drained.getFluid());
-        }
-        return done;
-    }
-
-    public static boolean setFluidEffect(World world, EntityPlayer player, Fluid fluid)
-    {
-
-        boolean done = false;
-        for (FluidEffect effect : FluidEffectRegistry.getEffectsForFluid(fluid))
-        {
-            if (effect != null)
-            {
-                effect.affectDrinker(world, player);
-                if (world.isRemote)
-                {
-                    //player.sendChatToPlayer(ChatMessageComponent.createFromText(effect.msg));
-                }
-                done = true;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param player    Duh!
-     * @param direction The direction in which the hose modes will switch.
-     * @param action    The type of the action to be performed on the hose.
-     *                  Can be HOSE_SWITCH for mode or HOSE_TOGGLE for tank
-     * @param slot      The slot in which the hose gleefully frolicks in the inventory.
-     */
-    public static void switchHose(EntityPlayer player, boolean action, int direction, int slot)
-    {
-
-        ItemStack hose = player.inventory.mainInventory[slot];
-        if (hose != null && hose.getItem() instanceof ItemHose)
-        {
-            NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
-            if (action == Actions.HOSE_SWITCH)
-            {
-                int mode = ItemHose.getHoseMode(hose);
-                if (direction > 0)
-                {
-                    mode = (mode + 1) % 3;
-                } else if (direction < 0)
-                {
-                    mode = (mode - 1 < 0) ? 2 : mode - 1;
-                }
-                tag.setInteger("mode", mode);
-            }
-
-            if (action == Actions.HOSE_TOGGLE)
-            {
-                int tank = ItemHose.getHoseTank(hose);
-                tank = (tank + 1) % 2;
-                tag.setInteger("tank", tank);
-            }
-            hose.setTagCompound(tag);
-        }
-    }
 
     /**
      * Cycles tools. In a cycle. The tool in your hand with the tools in the special tool slots of the backpack, to be precise.
@@ -143,27 +48,36 @@ public class Actions
      */
     public static void cycleTool(EntityPlayer player, int direction, int slot)
     {
-        InventoryItem backpack = Wearing.getBackpackInv(player, true);
-        ItemStack current = player.getCurrentEquippedItem();
-        if (direction < 0)
+        try
         {
-            player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
-            backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
-            LogHelper.info("Item of class " + backpack.getStackInSlot(Constants.lowerTool).getItem().getClass().getName());
-            backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
-            backpack.saveChanges();
-            player.inventory.closeInventory();
-        } else
-        {
-            if (direction > 0)
+            InventoryItem backpack = Wearing.getBackpackInv(player, true);
+            ItemStack current = player.getCurrentEquippedItem();
+            backpack.openInventory();
+            if (direction < 0)
             {
-                player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
-                backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
-                backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
+                //LogHelper.info("Item of class " + backpack.getStackInSlot(Constants.lowerTool).getItem().getClass().getName());
+                player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
+                backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
+                backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
+
+            } else
+            {
+                if (direction > 0)
+                {
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
+                    backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
+                    backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
+                }
                 backpack.saveChanges();
+                player.inventory.closeInventory();
             }
+        }catch(Exception oops)
+        {
+            LogHelper.debug("Exception trying to cycle tools.");
+            oops.printStackTrace();
         }
     }
+
 
     /**
      * Tries, i stress, TRIES to place a backpack in the world. Called when the player dies what was probaby
@@ -179,9 +93,9 @@ public class Actions
         {
             World world = player.worldObj;
 
-           /* for(int i = (int)player.posY - 5; i <= player.posY + 5; i+)
-            {*/
-                ChunkCoordinates spawn = getNearestEmptyChunkCoordinates(world, (int) player.posX, (int) player.posZ,(int) player.posX, (int) player.posY, (int) player.posZ, 12, false, 1,(byte) 0);
+           for(int i = (int)player.posY - 7; i <= player.posY + 7; i++)
+            {
+                ChunkCoordinates spawn = getNearestEmptyChunkCoordinates(world, (int) player.posX, (int) player.posZ, (int) player.posX, (int) player.posY, (int) player.posZ, 12, false, 1, (byte) 0);
 
                 if (spawn != null)
                 {
@@ -191,12 +105,10 @@ public class Actions
                         return true;
                     }
                 }
-            /*}*/
+            }
         }
         return false;
     }
-
-
 
     private static ChunkCoordinates checkCoords(World world, int origX, int origZ, int X,int Y, int Z, boolean except)
     {
@@ -330,7 +242,6 @@ public class Actions
         return null;
     }
 
-
     /**
      * Compares two coordinates. Heh.
      *
@@ -345,6 +256,81 @@ public class Actions
     private static boolean areCoordinatesTheSame(int X1, int Y1, int Z1, int X2, int Y2, int Z2)
     {
         return (X1 == X2 && Y1 == Y2 && Z1 == Z2);
+    }
+
+    /**
+     * @param world  The world. Like, the WHOLE world. That's a lot of stuff. Do stuff with it, like detecting biomes
+     *               or whatever.
+     * @param player Is a player. To whom  the nice or evil effects you're going to apply will affect.
+     *               See? I know the proper use of the words "effect" & "affect".
+     * @param tank   The tank that holds the fluid, whose effect will affect the player that's in the world.
+     * @return If the effect can be applied, and it is actually applied, returns true.
+     */
+    public static boolean setFluidEffect(World world, EntityPlayer player, FluidTank tank)
+    {
+        FluidStack drained = tank.drain(Constants.bucket, false);
+        boolean done = false;
+        if (drained != null && drained.amount >= Constants.bucket)
+        {
+            setFluidEffect(world, player, drained.getFluid());
+        }
+        return done;
+    }
+
+    public static boolean setFluidEffect(World world, EntityPlayer player, Fluid fluid)
+    {
+
+        boolean done = false;
+        for (FluidEffect effect : FluidEffectRegistry.getEffectsForFluid(fluid))
+        {
+            if (effect != null)
+            {
+                effect.affectDrinker(world, player);
+                if (world.isRemote)
+                {
+                    //player.sendChatToPlayer(ChatMessageComponent.createFromText(effect.msg));
+                }
+                done = true;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param player    Duh!
+     * @param direction The direction in which the hose modes will switch.
+     * @param action    The type of the action to be performed on the hose.
+     *                  Can be HOSE_SWITCH for mode or HOSE_TOGGLE for tank
+     * @param slot      The slot in which the hose gleefully frolicks in the inventory.
+     */
+    public static void switchHose(EntityPlayer player, boolean action, int direction, int slot)
+    {
+
+        ItemStack hose = player.inventory.mainInventory[slot];
+        if (hose != null && hose.getItem() instanceof ItemHose)
+        {
+            NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
+            if (action == HOSE_SWITCH)
+            {
+                int mode = ItemHose.getHoseMode(hose);
+                if (direction > 0)
+                {
+                    mode = (mode + 1) % 3;
+                } else if (direction < 0)
+                {
+                    mode = (mode - 1 < 0) ? 2 : mode - 1;
+                }
+                tag.setInteger("mode", mode);
+            }
+
+            if (action == HOSE_TOGGLE)
+            {
+                int tank = ItemHose.getHoseTank(hose);
+                tank = (tank + 1) % 2;
+                tag.setInteger("tank", tank);
+            }
+            hose.setTagCompound(tag);
+        }
     }
 
     /**
@@ -458,7 +444,7 @@ public class Actions
             TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
             if (!te.isSBDeployed())
             {
-                int can[] = canDeploySleepingBag(coordX, coordY, coordZ);
+                int can[] = canDeploySleepingBag(world, coordX, coordY, coordZ);
                 if (can[0] > -1)
                 {
                     if (te.deploySleepingBag(player, world, can[1], can[2], can[3], can[0]))
@@ -478,9 +464,8 @@ public class Actions
 
     }
 
-    public static int[] canDeploySleepingBag(int coordX, int coordY, int coordZ)
+    public static int[] canDeploySleepingBag(World world, int coordX, int coordY, int coordZ)
     {
-        World world = Minecraft.getMinecraft().theWorld;
         TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
         int newMeta = -1;
 
@@ -537,5 +522,19 @@ public class Actions
         return result;
     }
 
-
+    /**
+     * Adds vertical inertia to the movement in the Y axis of the player, and makes Newton's Laws cry.
+     * In other words, makes you jump higher.
+     * Also it plays a nice sound effect that will probably get annoying after a while.
+     *
+     * @param player - The player performing the jump.
+     */
+    public static void pistonBootsJump(EntityPlayer player)
+    {
+        //TODO add configuration for the playing of the sound effect.
+        //TODO Maybe configurable jump height too, because why not.
+        player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
+        player.motionY += 0.30;
+        player.jumpMovementFactor += 0.3;
+    }
 }

@@ -1,10 +1,9 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.common.Actions;
+import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.network.MessageConstants;
-import com.darkona.adventurebackpack.network.NyanCatMessage;
+import com.darkona.adventurebackpack.network.NyanCatPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -53,18 +52,11 @@ public class BackpackEventHandler
 
                 LogHelper.info(nyanString);
                 player.addChatComponentMessage(new ChatComponentText(nyanString));
-                ModNetwork.networkWrapper
-                        .sendToServer(new NyanCatMessage(MessageConstants.PLAY_NYAN, player.getPersistentID().toString()));
-                ModNetwork.networkWrapper.sendToAllAround(
-                        new NyanCatMessage(
-                                MessageConstants.PLAY_NYAN,
-                                player.getPersistentID().toString()),
-                        new NetworkRegistry.TargetPoint(
-                                player.dimension,
-                                player.posX,
-                                player.posY,
-                                player.posZ,
-                                30.0D));
+                NyanCatPacket.NyanCatMessage msg = new NyanCatPacket.NyanCatMessage( NyanCatPacket.PLAY_NYAN, player.getPersistentID().toString());
+                ModNetwork.net.sendToAllAround(msg, new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY,player.posZ,30.0D));
+            }else
+            {
+                ModNetwork.net.sendToServer( new NyanCatPacket.NyanCatMessage( NyanCatPacket.PLAY_NYAN, player.getPersistentID().toString()));
             }
 
         }
@@ -93,7 +85,7 @@ public class BackpackEventHandler
             InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(event.entityPlayer));
             if (BackpackNames.getBackpackColorName(backpack.getParentItemStack()).equals("Skeleton") && backpack.hasItem(Items.arrow))
             {
-                Actions.leakArrow(event.entityPlayer, event.bow, event.charge);
+                ServerActions.leakArrow(event.entityPlayer, event.bow, event.charge);
                 event.setCanceled(true);
             }
         }
@@ -107,7 +99,7 @@ public class BackpackEventHandler
     {
         if (event.entity !=null && event.entity instanceof EntityPlayer)
         {
-            Actions.electrify((EntityPlayer) event.entity);
+            ServerActions.electrify((EntityPlayer) event.entity);
         }
     }
 

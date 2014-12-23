@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.util;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
@@ -12,12 +13,97 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
+import java.util.Calendar;
+
 /**
  * Created by Darkona on 12/10/2014.
  */
 public class Utils
 {
 
+
+    public static int[] calculateEaster(int year){
+
+
+        int     a = year % 19,
+                b = year / 100,
+                c = year % 100,
+                d = b / 4,
+                e = b % 4,
+                g = (8 * b + 13) / 25,
+                h = (19 * a + b - d - g + 15) % 30,
+                j = c / 4,
+                k = c % 4,
+                m = (a + 11 * h) / 319,
+                r = (2 * e + 2 * j - k - h + m + 32) % 7,
+                n = (h - m + r + 90) / 25,
+                p = (h - m + r + n + 19) % 32;
+
+        int[] result = {n, p};
+        return result ;
+    }
+
+    public static String getHoliday(){
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR),
+                month = calendar.get(Calendar.MONTH),
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        if(AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear";
+        if(AdventureBackpack.instance.hannukah) return "Hannukah";
+        if (month == Utils.calculateEaster(year)[0] && day == Utils.calculateEaster(year)[1])return "Easter";
+        if(month == 1)
+        {
+            if (day == 1) return "NewYear";
+            if (day == 28) return "Challenger";
+        }
+        if (month == 2)
+        {
+            if(day == 1) return "Columbia";
+            if(day == 14)return "Valentines";
+            if(day == 23)return "Fatherland";
+        }
+        if (month == 3){
+            if (day == 17) return "Patrick";
+        }
+        if (month == 4)
+        {
+            if (day == 1) return "Fools";
+            if (day == 25) return "Italy";
+        }
+        if (month == 5)
+        {
+            if(day == 8 || day == 9 || day == 10) return "Liberation";
+        }
+        if (month == 6){}
+        if (month == 7)
+        {
+            if (day == 4) return "USA";
+            if (day == 24) return "Bolivar";
+            if (day == 14) return "Bastille";
+        }
+        if (month == 8){}
+        if (month == 9)
+        {
+            if (day == 19) return "Pirate";
+        }
+        if (month == 10)
+        {
+            if (day == 3) return "Germany";
+            if (day == 12) return "Columbus";
+            if (day == 31) return "Halloween";
+        }
+        if (month == 11)
+        {
+            if (day == 2) return "Muertos";
+        }
+        if (month == 12)
+        {
+            if(day >=22 && day <= 26) return "Christmas";
+            if (day == 31) return "OldYear";
+        }
+        return "Standard";
+    }
     public static int isBlockRegisteredAsFluid(Block block)
     {
         /*

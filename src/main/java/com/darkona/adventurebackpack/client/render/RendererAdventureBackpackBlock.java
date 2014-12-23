@@ -3,12 +3,16 @@ package com.darkona.adventurebackpack.client.render;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackBlock;
 import com.darkona.adventurebackpack.client.models.ModelNew;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import java.util.Calendar;
 
 /**
  * Created on 12/10/2014
@@ -20,11 +24,13 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
 
 //    private ModelAdventureBackpackBlock model;
-private ModelNew model;
+    private ModelNew model;
+    private String holiday;
 
     public RendererAdventureBackpackBlock()
     {
-        this.model = new ModelNew();//new ModelAdventureBackpackBlock();
+        this.model = new ModelNew();
+        holiday = Utils.getHoliday();
     }
 
     @Override
@@ -60,7 +66,16 @@ private ModelNew model;
         {
             GL11.glRotatef(dir * (-180F), 0.0F, 1.0F, 0.0F);
         }
-        ResourceLocation modelTexture = Resources.backpackTextureFromColor((TileAdventureBackpack) te);
+        ResourceLocation modelTexture;
+        if(BackpackNames.getBackpackColorName((TileAdventureBackpack) te).equals("Standard"))
+        {
+            modelTexture = Resources.backpackTextureFromString(Utils.getHoliday());
+        }
+        else
+        {
+            modelTexture = Resources.backpackTextureFromColor((TileAdventureBackpack) te);
+        }
+
         bindTexture(modelTexture);
         model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1 / 20F, (TileAdventureBackpack) te);
 

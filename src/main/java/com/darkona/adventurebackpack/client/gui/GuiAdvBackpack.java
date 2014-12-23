@@ -7,7 +7,7 @@ import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.network.SleepingBagMessage;
+import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -60,7 +60,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
     public GuiAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing)
     {
-        super(new BackpackContainer(player, item, BackpackContainer.SOURCE_ITEM));
+        super(new BackpackContainer(player, item, wearing ?  BackpackContainer.SOURCE_WEARING : BackpackContainer.SOURCE_HOLDING));
         this.inventory = item;
         this.wearing = wearing;
         this.source = false;
@@ -168,7 +168,9 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
     private String getFirstWord(String text) {
         if (text.indexOf(' ') > -1) { // Check if there is more than one word.
-            return text.substring(0, text.indexOf(' ')); // Extract first word.
+            String firstWord =  text.substring(0, text.indexOf(' '));
+            String secondWord = text.substring(text.indexOf(' ')+1);
+            return firstWord.equals("Molten") ? secondWord : firstWord;// Extract first word.
         } else {
             return text; // Text is the first word itself.
         }
@@ -205,7 +207,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         if (bedButton.inButton(this, mouseX, mouseY) && source)
         {
             TileAdventureBackpack te = (TileAdventureBackpack) inventory;
-            ModNetwork.networkWrapper.sendToServer(new SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
+            ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
         }
         super.mouseClicked(mouseX, mouseY, button);
     }

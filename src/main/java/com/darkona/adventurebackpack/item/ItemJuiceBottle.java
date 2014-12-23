@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.common.Actions;
+import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -32,7 +32,7 @@ public class ItemJuiceBottle extends ItemAB
     @Override
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
     {
-        Actions.setFluidEffect(world, player, ModFluids.melonJuice);
+        ServerActions.setFluidEffect(world, player, ModFluids.melonJuice);
         return new ItemStack(Items.glass_bottle, 1);
     }
 

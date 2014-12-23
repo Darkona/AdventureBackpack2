@@ -18,56 +18,15 @@ import java.util.UUID;
  *
  * @author Darkona
  */
-public class CowAbilityMessage implements IMessage
+public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbilityMessage, IMessage>
 {
 
-    private byte action;
-    private String playerID;
     public static final byte CONSUME_WHEAT = 0;
 
-    public CowAbilityMessage()
-    {
-    }
-
-    public CowAbilityMessage(String playerID, byte action)
-    {
-        this.playerID = playerID;
-        this.action = action;
-    }
-
     @Override
-    public void fromBytes(ByteBuf buf)
+    public IMessage onMessage(CowAbilityMessage message, MessageContext ctx)
     {
-
-        playerID = ByteBufUtils.readUTF8String(buf);
-        action = buf.readByte();
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        ByteBufUtils.writeUTF8String(buf, playerID);
-        buf.writeByte(action);
-    }
-
-    public static class CowAbilityMessageServerHandler implements IMessageHandler<CowAbilityMessage, CowAbilityMessage>
-    {
-
-        @Override
-        public CowAbilityMessage onMessage(CowAbilityMessage message, MessageContext ctx)
-        {
-
-            return null;
-        }
-
-
-    }
-
-    public static class CowAbilityMessageClientHandler implements IMessageHandler<CowAbilityMessage, CowAbilityMessage>
-    {
-
-        @Override
-        public CowAbilityMessage onMessage(CowAbilityMessage message, MessageContext ctx)
+        if(ctx.side.isClient())
         {
             EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerID));
 
@@ -84,8 +43,40 @@ public class CowAbilityMessage implements IMessage
                 inv.onInventoryChanged();
                 inv.saveChanges();
             }
+        }
+        return null;
+    }
 
-            return null;
+    public static class CowAbilityMessage implements IMessage
+    {
+
+        private byte action;
+        private String playerID;
+
+        public CowAbilityMessage()
+        {
+        }
+
+        public CowAbilityMessage(String playerID, byte action)
+        {
+            this.playerID = playerID;
+            this.action = action;
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+
+            playerID = ByteBufUtils.readUTF8String(buf);
+            action = buf.readByte();
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            ByteBufUtils.writeUTF8String(buf, playerID);
+            buf.writeByte(action);
         }
     }
+
 }
