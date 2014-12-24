@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
 import com.darkona.adventurebackpack.init.*;
 import com.darkona.adventurebackpack.proxy.IProxy;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.calendar.ChineseCalendar;
@@ -20,6 +21,9 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Calendar;
@@ -88,10 +92,11 @@ public class AdventureBackpack
 
         proxy.init();
         ModRecipes.init();
-
+        ModWorldGen.init();
         //GUIs
         guiHandler = new GuiHandler();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);
+
     }
 
     @Mod.EventHandler

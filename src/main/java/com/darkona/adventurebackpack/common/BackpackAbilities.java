@@ -12,6 +12,8 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -117,7 +119,7 @@ public class BackpackAbilities
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static String[] validWearingBackpacks = {
-            "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon"};
+            "Bat","Squid","Pigman","Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon"};
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -140,6 +142,30 @@ public class BackpackAbilities
                 MathHelper.floor_double(player.posZ))
                 || player.worldObj.canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY + player.height),
                 MathHelper.floor_double(player.posZ));
+    }
+
+    public void itemBat(EntityPlayer player, World world, ItemStack backpack)
+    {
+        player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 1, 2));
+    }
+
+    public void itemSquid(EntityPlayer player, World world, ItemStack backpack)
+    {
+        if(player.isInWater())
+        {
+            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, 2));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 1, 2));
+        }
+    }
+
+    public void itemIronGolem(EntityPlayer player, World world, ItemStack backpack)
+    {
+
+    }
+
+    public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
+    {
+        player.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), 1, 0));
     }
 
     /**
@@ -291,7 +317,10 @@ public class BackpackAbilities
      */
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
-
+        player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 1, 1));
+        player.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), 1, 0));
+        player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, 0));
+        player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 1, 0));
     }
 
     /**
