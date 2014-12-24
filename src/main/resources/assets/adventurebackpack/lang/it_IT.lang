@@ -1,0 +1,104 @@
+# Items
+item.adventurebackpack:machete.name=Machete
+item.adventurebackpack:backpackComponent.name=Componente dello zaino
+item.adventurebackpack:sleepingBag.name=Sacco a pelo
+item.adventurebackpack:backpackTank.name=Serbatoio
+item.adventurebackpack:macheteHandle=Manico del machete
+item.adventurebackpack:hoseHead.name=Beccuccio
+item.adventurebackpack:adventureBackpack.name=Zaino dell'avventuriero
+item.adventurebackpack:backpackHose.name=Tubo da viaggio
+item.adventurebackpack:adventureSuit.name=Completo dell'avventuriero
+item.adventurebackpack:adventureHat.name=Cappellaccio dell'avventuriero
+item.adventurebackpack:pistonBoots.name=Stivali a pistone
+
+
+item.adventurebackpack:hose_leftTank_suck.name=Tubo: Serbatoio sinistro / Mod. risucchio
+item.adventurebackpack:hose_leftTank_spill.name=Tubo: Serbatoio sinistro / Mod. spruzzata
+item.adventurebackpack:hose_leftTank_drink.name=Tubo: Serbatoio sinistro / Mod. bevuta
+
+
+item.adventurebackpack:hose_rightTank_suck.name=Tubo: Serbatoio destro / Mod. risucchio
+item.adventurebackpack:hose_rightTank_spill.name=Tubo: Serbatoio destro / Mod. spruzzata
+item.adventurebackpack:hose_rightTank_drink.name=Tubo: Serbatoio destro / Mod. bevuta
+
+item.adventurebackpack:hoseUseless=Tubo: Inutilizzabile / Nessuno zaino equipaggiato
+
+#Blocks
+block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
+
+#CreativeTab
+
+#Keybindings
+keys.adventureBackpack.category=Zaini dell'avventuriero
+keys.adventureBackpack.openBackpackInventory=Apri lo zaino
+keys.adventureBackpack.switchHoseTank=Cambia serbatoio per il tubo
+
+#FREDDYHAIR: Italian names (they follow NEI's order); @lines 75-76 I didn't stick literally to the literal translation
+Cow = Mucca
+Black = Nero
+Blaze = Vampo
+Coal = Carbone
+Diamond = Diamante
+Emerald = Smeraldo
+Gold = Oro
+Iron = Ferro
+Lapis = Lapislazzuli
+Redstone = Pietrarossa
+Blue = Blu
+Bookshelf = Libreria
+Brown = Marrone
+Cactus = Cactus
+Cake = Torta
+Chest = Baule
+Cookie = Biscotto
+Cyan = Ciano
+Dragon = Drago
+Egg = Uovo
+Electric = Elettrico
+Deluxe = Deluxe
+Enderman = Enderman
+End = End
+Chicken = Gallina
+Ocelot = Gattopardo
+Ghast = Spettro
+Gray = Grigio
+Green = Verde
+Haybale = Balla di fieno
+Leather = Cuoio
+LightBlue = Azzurro
+Glowstone = Luminite
+LightGray = Grigio chiaro
+Lime = Lime
+Magenta = Magenta
+MagmaCube = Cubo di magma
+Melon = Anguria
+BrownMushroom = Porcino
+RedMushroom = Amanita Muscaria
+Mooshroom = Muucelio
+Nether = Inferi
+Wither = Wither
+Obsidian = Ossidiana
+Orange = Arancione
+Pigman = Zombi suino
+Pink = Rosa
+Pig = Maiale
+Pumpkin = Zucca
+Purple = Viola
+Quartz = Quarzo
+Rainbow = Arcobaleno
+Red = Rosso
+Sandstone = Arenaria
+Sheep = Pecora
+Silver = Argento
+Creeper = Creeper
+Skeleton = Scheletro
+WitherSkeleton = Scheletro Wither
+Zombie = Zombi
+Slime = Gelatina
+Snow = Neve
+Spider = Ragno
+Sponge = Spugna
+Standard = Standard
+White = Bianco
+Wolf = Lupo
+Yellow = Giallo
