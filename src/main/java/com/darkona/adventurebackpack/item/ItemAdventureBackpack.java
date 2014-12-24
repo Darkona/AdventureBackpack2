@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
@@ -14,17 +15,21 @@ import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -39,11 +44,57 @@ public class ItemAdventureBackpack extends ArmorAB
     public ItemAdventureBackpack()
     {
         super(0, 1);
-        //setCreativeTab(CreativeTabs.tabTools);
         setUnlocalizedName("adventureBackpack");
         setFull3D();
         setMaxStackSize(1);
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+    }
+
+    /**
+     * Return the enchantability factor of the item, most of the time is based on material.
+     */
+    @Override
+    public int getItemEnchantability()
+    {
+        return 0;
+    }
+
+    /**
+     * Return whether this item is repairable in an anvil.
+     *
+     * @param p_82789_1_
+     * @param p_82789_2_
+     */
+    @Override
+    public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_)
+    {
+        return false;
+    }
+
+    /**
+     * Determines if the durability bar should be rendered for this item.
+     * Defaults to vanilla stack.isDamaged behavior.
+     * But modders can use this for any data they wish.
+     *
+     * @param stack The current Item Stack
+     * @return True if it should render the 'durability' bar.
+     */
+    @Override
+    public boolean showDurabilityBar(ItemStack stack)
+    {
+        return false;
+    }
+
+    /**
+     * Queries the percentage of the 'Durability' bar that should be drawn.
+     *
+     * @param stack The current ItemStack
+     * @return 1.0 for 100% 0 for 0%
+     */
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack)
+    {
+        return super.getDurabilityForDisplay(stack);
     }
 
     @Override
@@ -57,13 +108,7 @@ public class ItemAdventureBackpack extends ArmorAB
     {
 
         super.onCreated(stack, par2World, par3EntityPlayer);
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        //PARANOIA EVERYWHERE
-        if (!stack.stackTagCompound.hasKey("colorName"))
-        {
-            stack.stackTagCompound.setString("colorName", "Standard");
-
-        }
+        BackpackNames.setBackpackColorNameFromDamage(stack, stack.getItemDamage());
     }
 
     public boolean placeBackpack(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, boolean from)
@@ -116,7 +161,7 @@ public class ItemAdventureBackpack extends ArmorAB
                 if (world.setBlock(x, y, z, ModBlocks.blockBackpack))
                 {
                     backpack.onBlockPlacedBy(world, x, y, z, player, stack);
-                    // TODO world.playSoundAtEntity(player, Block.soundClothFootstep.getPlaceSound(), 0.5f, 1.0f);
+                     world.playSoundAtEntity(player, BlockAdventureBackpack.soundTypeCloth.getStepResourcePath(), 0.5f, 1.0f);
                     ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(stack.stackTagCompound);
                     if (from)
                     {
@@ -202,7 +247,16 @@ public class ItemAdventureBackpack extends ArmorAB
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
-        return Resources.backpackTexturesStringFromColor(stack);
+        String modelTexture;
+        if(BackpackNames.getBackpackColorName(stack).equals("Standard"))
+        {
+            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday).toString();
+        }
+        else
+        {
+            modelTexture = Resources.backpackTexturesStringFromColor(stack);
+        }
+        return modelTexture;
     }
 
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ,
@@ -231,13 +285,18 @@ public class ItemAdventureBackpack extends ArmorAB
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems)
     {
-        for (String name : BackpackNames.backpackNames)
+        for(int i = 0; i < BackpackNames.backpackNames.length; i++)
         {
             ItemStack bp = new ItemStack(this, 1, 0);
+            bp.setItemDamage(i);
             NBTTagCompound c = new NBTTagCompound();
-            c.setString("colorName", name);
+            c.setString("colorName", BackpackNames.backpackNames[i]);
             bp.setTagCompound(c);
             subItems.add(bp);
         }
+        /*for (String name : BackpackNames.backpackNames)
+        {
+
+        }*/
     }
 }

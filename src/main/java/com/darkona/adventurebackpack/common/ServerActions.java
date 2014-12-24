@@ -68,9 +68,9 @@ public class ServerActions
                     backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
                     backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
                 }
-                backpack.saveChanges();
-                player.inventory.closeInventory();
             }
+            backpack.saveChanges();
+            player.inventory.closeInventory();
         }catch(Exception oops)
         {
             LogHelper.debug("Exception trying to cycle tools.");

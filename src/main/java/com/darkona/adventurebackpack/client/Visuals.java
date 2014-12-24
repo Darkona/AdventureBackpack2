@@ -31,4 +31,17 @@ public class Visuals
                     0.0D);
         }
     }
+
+    public static void SlimeParticles(EntityPlayer player, World world)
+    {
+        int i = 2;
+        for (int j = 0; j < i * 2; ++j)
+        {
+            float f = world.rand.nextFloat() * (float) Math.PI * 2.0F;
+            float f1 = world.rand.nextFloat() * 0.5F + 0.5F;
+            float f2 = MathHelper.sin(f) * i * 0.5F * f1;
+            float f3 = MathHelper.cos(f) * i * 0.5F * f1;
+            world.spawnParticle("slime", player.posX + f2, player.boundingBox.minY, player.posZ + f3, 0.0D, 0.0625D, 0.0D);
+        }
+    }
 }

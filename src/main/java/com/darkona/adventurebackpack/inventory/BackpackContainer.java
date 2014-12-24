@@ -21,7 +21,7 @@ public class BackpackContainer extends Container
     public IAdvBackpack inventory;
     public static byte SOURCE_TILE = 0;
     public static byte SOURCE_WEARING = 1;
-    public static byte SOURCE_HOLDING = 1;
+    public static byte SOURCE_HOLDING = 2;
     public byte source;
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
     public IInventory craftResult = new InventoryCraftResult();

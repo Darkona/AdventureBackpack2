@@ -1,13 +1,19 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.init.recipes.AbstractBackpackRecipe;
+import com.darkona.adventurebackpack.init.recipes.AbstractBackpackRecipeTwo;
+import com.darkona.adventurebackpack.init.recipes.BackpackRecipes;
+import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.RecipeSorter;
+
+import java.lang.reflect.Field;
 
 /**
  * Created on 20/10/2014
@@ -16,19 +22,13 @@ import net.minecraftforge.oredict.RecipeSorter;
  */
 public class ModRecipes
 {
-    private static ItemStack bc(String color, String colorName)
+    private static ItemStack bc(int damage)
     {
-        ItemStack backpack = new ItemStack(ModItems.adventureBackpack);
-        backpack.setTagCompound(new NBTTagCompound());
-        backpack.stackTagCompound.setString("colorName", colorName);
-        return backpack;
+        return BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack),damage);
     }
-
-    public static AbstractBackpackRecipe backpackRecipe;
 
     public static void init()
     {
-        ItemStack a = bc("standard", "Standard");
 
         //Sleeping Bag - temporal recipe
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 1),
@@ -116,7 +116,7 @@ public class ModRecipes
                 'G', new ItemStack(Items.dye, 1, 2)
         );
 
-        GameRegistry.addRecipe(a,
+        /*GameRegistry.addRecipe(a,
                 "LGL",
                 "TCT",
                 "LSL",
@@ -125,9 +125,51 @@ public class ModRecipes
                 'T', new ItemStack(ModItems.component, 1, 2),
                 'S', new ItemStack(ModItems.component, 1, 1),
                 'C', Blocks.chest
-        );
+        );*/
 
-        GameRegistry.addRecipe(new AbstractBackpackRecipe());
-        RecipeSorter.register(ModInfo.MOD_ID + "adventureBackpack", AbstractBackpackRecipe.class, RecipeSorter.Category.UNKNOWN, "after:minecraft:shapeless");
+        BackpackRecipesList br = new BackpackRecipesList();
+        int counter = 0;
+        for (int i = 0; i < BackpackNames.backpackNames.length; i++)
+        {
+            for (Field field : BackpackRecipesList.class.getFields())
+            {
+                try
+                {
+                    if (field.getName().equals((BackpackNames.backpackNames[i])))
+                    {
+                        GameRegistry.addRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack),i), (Object[]) field.get(br));
+                        counter++;
+                    }
+                } catch (Exception oops)
+                {
+                    LogHelper.error("Huge mistake during reflection. Some bad things might happen: " + oops.getClass().getName());
+                }
+            }
+
+        }
+        LogHelper.info("Loaded " + counter + " backpack recipes.");
+
+            //GameRegistry.addRecipe(new AbstractBackpackRecipe());
+        /*BackpackRecipes br = new BackpackRecipes();
+        int i = 0;
+        for (Field field : BackpackRecipes.class.getFields())
+        {
+            try
+            {
+                if (field.getType() == ItemStack[].class)
+                {
+                    AbstractBackpackRecipeTwo recipe = new AbstractBackpackRecipeTwo(field.getName(), (ItemStack[]) field.get(br));
+                    GameRegistry.addRecipe(recipe);
+                    //LogHelper.info("Loaded recipe for " + field.getName() + " backpack.");
+                    i++;
+                }
+            } catch (Exception oops)
+            {
+                LogHelper.error("Huge mistake during reflection. Some bad things might happen.");
+            }
+        }
+        LogHelper.info("Loaded " + i + " backpack recipes.");
+        RecipeSorter.register(ModInfo.MOD_ID + ":adventureBackpack", AbstractBackpackRecipeTwo.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless");
+        */
     }
 }

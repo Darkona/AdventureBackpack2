@@ -23,6 +23,7 @@ public class AbstractBackpackRecipe implements IRecipe
 
     BackpackRecipes br = new BackpackRecipes();
     private ItemStack result;
+    private ItemStack[] recipe;
 
     public boolean compareStacksForColor(ItemStack stack1, ItemStack stack2)
     {
@@ -42,6 +43,8 @@ public class AbstractBackpackRecipe implements IRecipe
         }
         return false;
     }
+
+
 
     public AbstractBackpackRecipe()
     {
@@ -118,6 +121,7 @@ public class AbstractBackpackRecipe implements IRecipe
                 if (match(recipe.getValue(), invC))
                 {
                     result = makeBackpack(invC.getStackInSlot(4), recipe.getKey());
+                    break;
                 }
             }
         }

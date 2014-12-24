@@ -12,6 +12,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+
     }
 }
 
@@ -33,7 +34,11 @@ dependencies {
     //compile "some.group:artifact:version"
 
     // real examples
-    compile 'com.mod-buildcraft:buildcraft:6.0.18:dev'  // adds buildcraft to the dev env
+    compile 'com.mod-buildcraft:buildcraft:6.0.18:dev'
+    compile 'lib/CodeChickenLib-1.7.10-1.1.1.99-dev.jar'
+    compile 'lib/CodeChickenCore-1.7.10-1.0.4.29-dev.jar'
+    compile 'lib/NotEnoughItems-1.7.10-1.0.3.74-dev.jar'
+
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
 
     // for more info...

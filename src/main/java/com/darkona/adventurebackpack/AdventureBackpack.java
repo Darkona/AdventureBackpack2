@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
 import com.darkona.adventurebackpack.init.*;
 import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.calendar.ChineseCalendar;
 import com.darkona.adventurebackpack.util.calendar.JewishCalendar;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -44,7 +45,7 @@ public class AdventureBackpack
     public static IProxy proxy;
     public boolean chineseNewYear;
     public boolean hannukah;
-
+    public String Holiday;
     PlayerEventHandler playerEventHandler;
     ClientEventHandler clientEventHandler;
     BackpackEventHandler backpackEventHandler;
@@ -60,7 +61,7 @@ public class AdventureBackpack
         ConfigHandler.init(event.getSuggestedConfigurationFile());
         chineseNewYear = ChineseCalendar.isChineseNewYear(year,month,day);
         hannukah = JewishCalendar.isHannukah(year, month, day);
-
+        Holiday = Utils.getHoliday();
         //ModStuff
         ModItems.init();
         ModBlocks.init();

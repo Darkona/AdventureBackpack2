@@ -96,7 +96,7 @@ public class ClientEventHandler
                             ServerActions.cycleTool(player,dWheel,slot);
                             event.setCanceled(true);
                         }
-                        if (player.getCurrentEquippedItem().getItem() instanceof ItemHose)
+                        if (theItem instanceof ItemHose)
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
                             ServerActions.cycleTool(player,dWheel,slot);

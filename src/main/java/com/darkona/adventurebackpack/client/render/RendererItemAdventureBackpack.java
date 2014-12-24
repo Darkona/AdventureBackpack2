@@ -1,9 +1,13 @@
 package com.darkona.adventurebackpack.client.render;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackBlock;
 import com.darkona.adventurebackpack.client.models.ModelNew;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +20,6 @@ import org.lwjgl.opengl.GL11;
 public class RendererItemAdventureBackpack implements IItemRenderer
 {
     private final ModelNew model;
-
     public RendererItemAdventureBackpack()
     {
         model = new ModelNew();
@@ -61,7 +64,15 @@ public class RendererItemAdventureBackpack implements IItemRenderer
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
     {
         InventoryItem inv = new InventoryItem(item);
-        ResourceLocation modelTexture = Resources.backpackTextureFromColor(inv);
+        ResourceLocation modelTexture;
+        if(BackpackNames.getBackpackColorName(item).equals("Standard"))
+        {
+            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
+        }
+        else
+        {
+            modelTexture = Resources.backpackTextureFromColor(inv);
+        }
         switch (type)
         {
 

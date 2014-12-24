@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.reference;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -13,16 +14,97 @@ public class BackpackNames
 {
 
     public static String[] backpackNames = {
-            "Cow", "Bat", "Black", "Blaze", "Carrot", "Coal", "Diamond", "Emerald", "Gold", "Iron", "IronGolem","Lapis",
-            "Redstone", "Blue", "Bookshelf", "Brown", "Cactus", "Cake", "Chest",
-            "Cookie", "Cyan", "Dragon", "Egg", "Electric", "Deluxe", "Enderman", "End", "Chicken",
-            "Ocelot", "Ghast", "Gray", "Green", "Haybale", "Horse","Leather", "LightBlue", "Glowstone",
-            "LightGray", "Lime", "Magenta", "MagmaCube", "Melon", "BrownMushroom", "RedMushroom",
-            "Mooshroom", "Nether", "Wither", "Obsidian", "Orange","Overworld", "Pigman", "Pink", "Pig", "Pumpkin",
-            "Purple", "Quartz", "Rainbow", "Red", "Sandstone", "Sheep", "Silver", "Squid", "Sunflower", "Creeper", "Skeleton",
-            "WitherSkeleton", "Zombie", "Slime", "Snow", "Spider", "Sponge", "Standard", "Villager", "White", "Wolf", "Yellow"
+            "Standard",
+            "Cow",
+            "Bat",
+            "Black",
+            "Blaze",
+            "Carrot",
+            "Coal",
+            "Diamond",
+            "Emerald",
+            "Gold",
+            "Iron",
+            "IronGolem",
+            "Lapis",
+            "Redstone",
+            "Blue",
+            "Bookshelf",
+            "Brown",
+            "Cactus",
+            "Cake",
+            "Chest",
+            "Cookie",
+            "Cyan",
+            "Dragon",
+            "Egg",
+            "Electric",
+            "Deluxe",
+            "Enderman",
+            "End",
+            "Chicken",
+            "Ocelot",
+            "Ghast",
+            "Gray",
+            "Green",
+            "Haybale",
+            "Horse",
+            "Leather",
+            "LightBlue",
+            "Glowstone",
+            "LightGray",
+            "Lime",
+            "Magenta",
+            "MagmaCube",
+            "Melon",
+            "BrownMushroom",
+            "RedMushroom",
+            "Mooshroom",
+            "Nether",
+            "Wither",
+            "Obsidian",
+            "Orange",
+            "Overworld",
+            "Pigman",
+            "Pink",
+            "Pig",
+            "Pumpkin",
+            "Purple",
+            "Quartz",
+            "Rainbow",
+            "Red",
+            "Sandstone",
+            "Sheep",
+            "Silver",
+            "Squid",
+            "Sunflower",
+            "Creeper",
+            "Skeleton",
+            "WitherSkeleton",
+            "Slime",
+            "Snow",
+            "Spider",
+            "Sponge",
+            "Villager",
+            "White",
+            "Wolf",
+            "Yellow",
+            "Zombie"
     };
 
+    public static ItemStack setBackpackColorNameFromDamage(ItemStack backpack, int damage)
+    {
+
+        if (backpack == null) return null;
+        if (!(backpack.getItem() instanceof ItemAdventureBackpack)) return null;
+        if(backpack.stackTagCompound == null)
+        {
+            backpack.stackTagCompound = new NBTTagCompound();
+        }
+        backpack.setItemDamage(damage);
+        backpack.stackTagCompound.setString("colorName", backpackNames[damage]);
+        return backpack;
+    }
 
     public static String getBackpackColorName(TileAdventureBackpack te){
         return te.getColorName();

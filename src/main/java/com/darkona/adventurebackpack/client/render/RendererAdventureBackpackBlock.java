@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client.render;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackBlock;
 import com.darkona.adventurebackpack.client.models.ModelNew;
@@ -25,12 +26,10 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 
 //    private ModelAdventureBackpackBlock model;
     private ModelNew model;
-    private String holiday;
 
     public RendererAdventureBackpackBlock()
     {
         this.model = new ModelNew();
-        holiday = Utils.getHoliday();
     }
 
     @Override
@@ -69,7 +68,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         ResourceLocation modelTexture;
         if(BackpackNames.getBackpackColorName((TileAdventureBackpack) te).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString(Utils.getHoliday());
+            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
         }
         else
         {

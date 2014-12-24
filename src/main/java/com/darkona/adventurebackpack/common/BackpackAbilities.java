@@ -11,6 +11,7 @@ import com.darkona.adventurebackpack.network.CowAbilityPacket;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -28,6 +29,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import org.lwjgl.input.Keyboard;
 
 import java.util.Iterator;
 import java.util.List;
@@ -212,25 +214,18 @@ public class BackpackAbilities
     public void itemSlime(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in Ticks for this backpack.
-        if (player.onGround && player.isSprinting())
-        {
-            int i = 2;
-            for (int j = 0; j < i * 2; ++j)
+        if (player.onGround ) {
+            if(player.isSprinting())
             {
-                float f = world.rand.nextFloat() * (float) Math.PI * 2.0F;
-                float f1 = world.rand.nextFloat() * 0.5F + 0.5F;
-                float f2 = MathHelper.sin(f) * i * 0.5F * f1;
-                float f3 = MathHelper.cos(f) * i * 0.5F * f1;
-                world.spawnParticle("slime", player.posX + f2, player.boundingBox.minY, player.posZ + f3, 0.0D, 0.0625D, 0.0D);
+                int slimeTime = backpack.stackTagCompound.hasKey("lastTime") ?
+                        backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
+                if (slimeTime <= 0)
+                {
+                    world.playSoundAtEntity(player, "mob.slime.small", 0.4F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
+                    slimeTime = 5;
+                }
+                backpack.stackTagCompound.setInteger("lastTime", slimeTime);
             }
-            int slimeTime = backpack.stackTagCompound.hasKey("lastTime") ?
-                    backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
-            if (slimeTime <= 0)
-            {
-                world.playSoundAtEntity(player, "mob.slime.small", 0.4F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
-                slimeTime = 5;
-            }
-            backpack.stackTagCompound.setInteger("lastTime", slimeTime);
         }
     }
 

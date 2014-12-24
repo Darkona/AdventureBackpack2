@@ -44,65 +44,69 @@ public class Utils
     }
 
     public static String getHoliday(){
+
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR),
-                month = calendar.get(Calendar.MONTH),
+                month = calendar.get(Calendar.MONTH) + 1,
                 day = calendar.get(Calendar.DAY_OF_MONTH);
 
         if(AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear";
         if(AdventureBackpack.instance.hannukah) return "Hannukah";
         if (month == Utils.calculateEaster(year)[0] && day == Utils.calculateEaster(year)[1])return "Easter";
+        String dia = "Standard";
         if(month == 1)
         {
-            if (day == 1) return "NewYear";
-            if (day == 28) return "Challenger";
+            if (day == 1) dia = "NewYear";
+            if (day == 28) dia = "Challenger";
         }
         if (month == 2)
         {
-            if(day == 1) return "Columbia";
-            if(day == 14)return "Valentines";
-            if(day == 23)return "Fatherland";
+            if(day == 1) dia =  "Columbia";
+            if(day == 14)dia =  "Valentines";
+            if(day == 23)dia =  "Fatherland";
         }
         if (month == 3){
-            if (day == 17) return "Patrick";
+            if (day == 17)dia =  "Patrick";
         }
         if (month == 4)
         {
-            if (day == 1) return "Fools";
-            if (day == 25) return "Italy";
+            if (day == 1) dia = "Fools";
+            if (day == 25) dia = "Italy";
         }
         if (month == 5)
         {
-            if(day == 8 || day == 9 || day == 10) return "Liberation";
+            if(day == 8 || day == 9 || day == 10) dia = "Liberation";
         }
         if (month == 6){}
         if (month == 7)
         {
-            if (day == 4) return "USA";
-            if (day == 24) return "Bolivar";
-            if (day == 14) return "Bastille";
+            if (day == 4) dia = "USA";
+            if (day == 24) dia = "Bolivar";
+            if (day == 14) dia = "Bastille";
         }
         if (month == 8){}
         if (month == 9)
         {
-            if (day == 19) return "Pirate";
+            if (day == 19) dia = "Pirate";
         }
         if (month == 10)
         {
-            if (day == 3) return "Germany";
-            if (day == 12) return "Columbus";
-            if (day == 31) return "Halloween";
+            if (day == 3) dia = "Germany";
+            if (day == 12) dia = "Columbus";
+            if (day == 31) dia = "Halloween";
         }
         if (month == 11)
         {
-            if (day == 2) return "Muertos";
+            if (day == 2) dia = "Muertos";
         }
         if (month == 12)
         {
-            if(day >=22 && day <= 26) return "Christmas";
-            if (day == 31) return "OldYear";
+            if(day >=22 && day <= 26) dia = "Christmas";
+            if (day == 31) dia = "NewYear";
         }
-        return "Standard";
+        //LogHelper.info("Today is: " + day + "/" + month + "/" + year + ". Which means today is: " + dia);
+        return dia;
+
     }
     public static int isBlockRegisteredAsFluid(Block block)
     {

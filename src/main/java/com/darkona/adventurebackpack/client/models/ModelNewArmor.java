@@ -212,8 +212,7 @@ public class ModelNewArmor extends ModelBiped
         lowerTool = new RendererStack(this, true);
         upperTool = new RendererStack(this, false);
 
-        bipedBody.offsetZ = 0.3F;
-        bipedBody.offsetY = 0.2F;
+
 
         bipedBody.addChild(mainBody);
         bipedBody.addChild(bed);
@@ -224,6 +223,14 @@ public class ModelNewArmor extends ModelBiped
         bipedBody.addChild(pigNose);
         mainBody.addChild(lowerTool);
         mainBody.addChild(upperTool);
+
+
+        float offsetZ = 0.3F;
+        float offsetY = 0.2F;
+        for(ModelRenderer part : (List<ModelRenderer>)bipedBody.childModels){
+          //  setRotationPoins(part, part.rotationPointX, part.rotationPointY + offsetY, part.rotationPointZ + offsetZ);
+            setOffset(part,part.offsetX+0,part.offsetY + offsetY,part.offsetZ + offsetZ);
+        }
     }
 
     public ModelNewArmor setBackpack(IAdvBackpack backpack)
@@ -247,6 +254,8 @@ public class ModelNewArmor extends ModelBiped
        // GL11.glPopMatrix();
     }
     private void renderBackpack(Float scale){
+
+        backpack.openInventory();
         String color = backpack.getColorName();
         for(ModelRenderer model : (List<ModelRenderer>)bipedBody.childModels)
         {
@@ -287,10 +296,8 @@ public class ModelNewArmor extends ModelBiped
 
 
         GL11.glPushMatrix();
+        GL11.glTranslatef(bipedBody.offsetX + 0, bipedBody.offsetY + 0.2F, bipedBody.offsetZ + 0.3f);
         renderFluidInTank(backpack.getLeftTank(), -.17f, .1f, .13f, tankLeftTop);
-        GL11.glPopMatrix();
-
-        GL11.glPushMatrix();
         renderFluidInTank(backpack.getRightTank(), .41f, .1f, .13f, tankRightTop);
         GL11.glPopMatrix();
     }
@@ -329,6 +336,7 @@ public class ModelNewArmor extends ModelBiped
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
         GL11.glPushMatrix();
+
         GL11.glTranslatef(bipedBody.offsetX, bipedBody.offsetY, bipedBody.offsetZ);
         GL11.glColor4f(1, 1, 1, 1);
 
@@ -369,6 +377,13 @@ public class ModelNewArmor extends ModelBiped
         }
         GL11.glTranslatef(-bipedBody.offsetX, -bipedBody.offsetY, -(bipedBody.offsetZ));
         GL11.glPopMatrix();
+    }
+
+    private void setRotationPoins(ModelRenderer modelRenderer, float x, float y, float z)
+    {
+        modelRenderer.rotationPointX = x;
+        modelRenderer.rotationPointY = y;
+        modelRenderer.rotationPointZ = z;
     }
 
     public void setOffset(ModelRenderer modelRenderer, float x, float y, float z){
