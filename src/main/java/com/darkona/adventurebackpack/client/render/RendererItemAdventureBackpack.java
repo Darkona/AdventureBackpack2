@@ -1,13 +1,10 @@
 package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.client.models.ModelAdventureBackpackBlock;
-import com.darkona.adventurebackpack.client.models.ModelNew;
+import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -19,10 +16,10 @@ import org.lwjgl.opengl.GL11;
  */
 public class RendererItemAdventureBackpack implements IItemRenderer
 {
-    private final ModelNew model;
+    private final ModelBackpackBlock model;
     public RendererItemAdventureBackpack()
     {
-        model = new ModelNew();
+        model = new ModelBackpackBlock();
     }
 
     public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type)

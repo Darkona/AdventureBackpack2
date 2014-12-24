@@ -1,20 +1,15 @@
 package com.darkona.adventurebackpack.client.models;
 
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.client.render.RendererStack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
-import com.darkona.adventurebackpack.util.LogHelper;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
@@ -25,9 +20,9 @@ import java.util.List;
  *
  * @author Darkona
  */
-public class ModelNewArmor extends ModelBiped
+public class ModelBackpackArmor extends ModelBiped
 {
-    public static final ModelNewArmor instance = new ModelNewArmor();
+    public static final ModelBackpackArmor instance = new ModelBackpackArmor();
 
     public ModelRenderer mainBody;
     public ModelRenderer tankLeftTop;
@@ -62,7 +57,7 @@ public class ModelNewArmor extends ModelBiped
     private IAdvBackpack backpack;
     private float scale = -1;
 
-    public ModelNewArmor() {
+    public ModelBackpackArmor() {
         this.textureWidth = 128;
         this.textureHeight = 64;
 
@@ -233,7 +228,7 @@ public class ModelNewArmor extends ModelBiped
         }
     }
 
-    public ModelNewArmor setBackpack(IAdvBackpack backpack)
+    public ModelBackpackArmor setBackpack(IAdvBackpack backpack)
     {
         this.backpack = backpack;
         return instance;

@@ -75,7 +75,7 @@ public class BackpackNames
             "Red",
             "Sandstone",
             "Sheep",
-            "Silver",
+            "Silverfish",
             "Squid",
             "Sunflower",
             "Creeper",

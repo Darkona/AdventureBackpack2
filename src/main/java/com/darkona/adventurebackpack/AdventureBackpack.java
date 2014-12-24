@@ -67,7 +67,7 @@ public class AdventureBackpack
         ModBlocks.init();
         ModFluids.init();
         FluidEffectRegistry.init();
-        ModRecipes.init();
+
         ModEntities.init();
         ModNetwork.init();
         proxy.initNetwork();
@@ -87,6 +87,7 @@ public class AdventureBackpack
     {
 
         proxy.init();
+        ModRecipes.init();
 
         //GUIs
         guiHandler = new GuiHandler();

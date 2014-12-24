@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Darkona
  */
-public class ModelNew extends ModelBase {
+public class ModelBackpackBlock extends ModelBase {
     public ModelRenderer mainBody;
     public ModelRenderer lampLight;
     public ModelRenderer tankLeftTop;
@@ -61,7 +61,7 @@ public class ModelNew extends ModelBase {
     public ModelRenderer lampGlassFront;
     public ModelRenderer kitchen;
 
-    public ModelNew() {
+    public ModelBackpackBlock() {
         this.textureWidth = 128;
         this.textureHeight = 64;
 

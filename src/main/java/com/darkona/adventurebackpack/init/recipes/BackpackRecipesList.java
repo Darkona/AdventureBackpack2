@@ -26,18 +26,38 @@ public class BackpackRecipesList
         String[] covered = {"XXX", "XaX", "XXX"};
         ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack),0);
 
+        ItemStack woolWhite = new ItemStack(Blocks.wool, 1, 0);
+        ItemStack woolOrange =  new ItemStack(Blocks.wool, 1, 1);
+        ItemStack woolMagenta =  new ItemStack(Blocks.wool, 1, 2);
+        ItemStack woolLightBlue = new ItemStack(Blocks.wool, 1, 3);
+        ItemStack woolYellow =  new ItemStack(Blocks.wool, 1, 4);
+        ItemStack woolLime =  new ItemStack(Blocks.wool, 1, 5);
+        ItemStack woolPink = new ItemStack(Blocks.wool, 1, 6);
+        ItemStack woolGray =  new ItemStack(Blocks.wool, 1, 7);
+        ItemStack woolLightGray =  new ItemStack(Blocks.wool, 1, 8);
+        ItemStack woolCyan =  new ItemStack(Blocks.wool, 1, 9);
+        ItemStack woolPurple =  new ItemStack(Blocks.wool, 1, 10);
+        ItemStack woolBlue = new ItemStack(Blocks.wool, 1, 11);
+        ItemStack woolBrown =  new ItemStack(Blocks.wool, 1, 12);
+        ItemStack woolGreen = new ItemStack(Blocks.wool, 1, 11);
+        ItemStack woolRed =  new ItemStack(Blocks.wool, 1, 14);
+        ItemStack woolBlack = new ItemStack(Blocks.wool, 1, 11);
+
+
+
         Standard = reviewRecipe(
                 "LGL",
                 "TCT",
                 "LSL",
                 'L', Items.leather,
-                'G', Items.gold_ingot,
+                'G', "ingotGold",
                 'T', new ItemStack(ModItems.component, 1, 2),
                 'S', new ItemStack(ModItems.component, 1, 1),
                 'C', Blocks.chest
         );
+
         Black = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 15),
+                'X', woolBlack,
                 'a', backpack
         );
 
@@ -53,7 +73,7 @@ public class BackpackRecipesList
         );
 
         Blue = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 11),
+                'X', woolBlue,
                 'a', backpack
         );
 
@@ -67,7 +87,7 @@ public class BackpackRecipesList
         );
 
         Brown = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 12),
+                'X', woolBrown,
                 'a', backpack
         );
 
@@ -122,7 +142,7 @@ public class BackpackRecipesList
                 "CaC",
                 "ccc",
                 'c', Items.coal,
-                'C', Blocks.coal_block,
+                'C', "blockCoal",
                 'a', backpack
         );
 
@@ -131,7 +151,7 @@ public class BackpackRecipesList
                 "WaW",
                 "ccc",
                 'c', Items.cookie,
-                'C', new ItemStack(Items.dye, 1, 3),
+                'C', new ItemStack(Items.dye, 1, 3),//Chocolate
                 'W', Items.wheat,
                 'a', backpack
         );
@@ -158,7 +178,7 @@ public class BackpackRecipesList
         );
 
         Cyan = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 9),
+                'X', woolCyan,
                 'a', backpack
         );
 
@@ -166,10 +186,10 @@ public class BackpackRecipesList
                 "GDG",
                 "GaG",
                 "GdG",
-                'G', Blocks.glass,
-                'D', Blocks.diamond_block,
+                'G', "blockGlass",
+                'D', "blockDiamond",
                 'a', backpack,
-                'd', Items.diamond
+                'd', "gemDiamond"
         );
 
         Dragon = reviewRecipe(
@@ -211,7 +231,7 @@ public class BackpackRecipesList
                 "PXP",
                 "XaX",
                 "PXP",
-                'X', new ItemStack(Blocks.wool, 1, 15),
+                'X', "woolBlack",
                 'P', Items.ender_pearl,
                 'a', backpack
         );
@@ -231,7 +251,7 @@ public class BackpackRecipesList
                 "GaG",
                 "GgG",
                 'G', Blocks.glowstone,
-                'g', Items.glowstone_dust,
+                'g', "dustGlowstone",
                 'a', backpack
         );
 
@@ -239,14 +259,14 @@ public class BackpackRecipesList
                 "FGF",
                 "FaF",
                 "gFg",
-                'F', Blocks.glass,
-                'G', Blocks.gold_block,
+                'F', "blockGlass",
+                'G', "blockGold",
                 'a', backpack,
-                'g', Items.gold_ingot
+                'g', "ingotGold"
         );
 
         Gray = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 7),
+                'X', woolGray,
                 'a', backpack
         );
 
@@ -264,8 +284,8 @@ public class BackpackRecipesList
                 "GIG",
                 "GaG",
                 "iGi",
-                'G', Blocks.glass,
-                'I', Blocks.iron_block,
+                'G', "blockGlass",
+                'I', "blockIron",
                 'a', backpack,
                 'i', Items.iron_ingot
         );
@@ -274,8 +294,8 @@ public class BackpackRecipesList
                 "GLG",
                 "GaG",
                 "lGl",
-                'G', Blocks.glass,
-                'L', Blocks.lapis_block,
+                'G', "blockGlass",
+                'L', "blockLapis",
                 'l', new ItemStack(Items.dye, 1, 4),
                 'a', backpack
         );
@@ -285,26 +305,23 @@ public class BackpackRecipesList
                 'a', backpack
         );
 
-        LightBlue = reviewRecipe(
-                "XXX",
-                "XaX",
-                "XXX",
-                'X', new ItemStack(Blocks.wool, 1, 3),
+        LightBlue = reviewRecipe(covered,
+                'X', woolLightBlue,
                 'a', backpack
         );
 
         LightGray = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 8),
+                'X', woolLightGray,
                 'a', backpack
         );
 
         Lime = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 5),
+                'X', woolLime,
                 'a', backpack
         );
 
         Magenta = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 2),
+                'X', woolMagenta,
                 'a', backpack
         );
 
@@ -365,7 +382,7 @@ public class BackpackRecipesList
         );
 
         Orange = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 1),
+                'X', woolOrange,
                 'a', backpack
         );
 
@@ -389,7 +406,7 @@ public class BackpackRecipesList
         );
 
         Purple = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 10),
+                'X', woolPurple,
                 'a', backpack
         );
 
@@ -406,19 +423,19 @@ public class BackpackRecipesList
                 "RCP",
                 "OaB",
                 "YGF",
-                'R', new ItemStack(Items.dye, 1, 1), //RED
-                'O', new ItemStack(Items.dye, 1, 14),//ORANGE
-                'Y', new ItemStack(Items.dye, 1, 11),//YELLOW
-                'G', new ItemStack(Items.dye, 1, 10),//LIME
-                'F', new ItemStack(Items.dye, 1, 6),//CYAN
-                'B', new ItemStack(Items.dye, 1, 4),//BLUE
-                'P', new ItemStack(Items.dye, 1, 5),//PURPLE
+                'R', "dyeRed", //RED
+                'O', "dyeOrange",//ORANGE
+                'Y', "dyeYellow",//YELLOW
+                'G', "dyeLime",//LIME
+                'F', "dyeCyan",//CYAN
+                'B', "dyeBlue",//BLUE
+                'P', "dyePurple",//PURPLE
                 'C', Items.record_cat,
                 'a', backpack
         );
 
         Red = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 14),
+                'X', woolRed,
                 'a', backpack
         );
 
@@ -431,7 +448,7 @@ public class BackpackRecipesList
                 "rRr",
                 "RaR",
                 "rRr",
-                'R', Blocks.redstone_block,
+                'R', "blockRedstone",
                 'r', Items.redstone,
                 'a', backpack
         );
@@ -449,8 +466,8 @@ public class BackpackRecipesList
                 "WPW",
                 "WaW",
                 "WWW",
-                'W', new ItemStack(Blocks.wool, 1, 0),
-                'P', new ItemStack(Blocks.wool, 1, 6),
+                'W', woolWhite,
+                'P', woolPink,
                 'a', backpack
         );
 
@@ -466,7 +483,7 @@ public class BackpackRecipesList
         );
 
         Slime = reviewRecipe(covered,
-                'X', Items.slime_ball,
+                'X', "slimeball",
                 'a', backpack
         );
 
@@ -521,12 +538,12 @@ public class BackpackRecipesList
                 "WaW",
                 "BWB",
                 'B', Items.bone,
-                'W', new ItemStack(Blocks.wool, 1, 0),
+                'W', woolWhite,
                 'a', backpack
         );
 
         Yellow = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 4),
+                'X', woolYellow,
                 'a', backpack
         );
 
@@ -538,8 +555,62 @@ public class BackpackRecipesList
                 'S', new ItemStack(Items.skull, 1, 2),
                 'a', backpack
         );
-    }
 
+        Carrot = reviewRecipe(covered,
+                'a',backpack,
+                'X',Items.carrot
+        );
+
+        Silverfish = reviewRecipe(
+                "CGC",
+                "CaC",
+                "CGC",
+                'a',backpack,
+                'G', woolLightGray,
+                'C', new ItemStack(Blocks.stonebrick,1,2)
+        );
+
+        Sunflower = reviewRecipe(
+                covered,
+                'a', backpack,
+                'X', new ItemStack(Blocks.double_plant,1,0)
+        );
+
+        Horse = reviewRecipe(covered,
+                'X', Blocks.hay_block,
+                'a', backpack);
+
+        Overworld = reviewRecipe(
+                "BBB",
+                "GaG",
+                "CCC",
+                'B',new ItemStack(Blocks.wool,1,3),
+                'G', Blocks.grass,
+                'a', backpack,
+                'C', "cobblestone"
+
+        );
+
+        Squid = reviewRecipe(
+                "BIB",
+                "IaI",
+                "BIB",
+                'a', backpack,
+                'B', woolBlue,
+                'I', new ItemStack(Items.dye,1,0)
+        );
+
+        Sponge = reviewRecipe(covered,
+                'X', Blocks.sponge,
+                'a', backpack
+        );
+    }
+    public final Object[] Silverfish;
+    public final Object[] Squid;
+    public final Object[] Sunflower;
+    public final Object[] Horse;
+    public final Object[] Overworld;
+    public final Object[] Carrot;
     public final Object[] Black;
     public final Object[] Blaze;
     public final Object[] Blue;
@@ -597,7 +668,7 @@ public class BackpackRecipesList
     public final Object[] Snow;
     public final Object[] Spider;
     public final Object[] Standard;
-    //public final ItemStack[] Sponge;
+    public final Object[] Sponge;
     public final Object[] White;
     public final Object[] Wither;
     public final Object[] WitherSkeleton;

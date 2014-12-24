@@ -12,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.Field;
 
@@ -137,12 +138,13 @@ public class ModRecipes
                 {
                     if (field.getName().equals((BackpackNames.backpackNames[i])))
                     {
-                        GameRegistry.addRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack),i), (Object[]) field.get(br));
+                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
                         counter++;
                     }
                 } catch (Exception oops)
                 {
                     LogHelper.error("Huge mistake during reflection. Some bad things might happen: " + oops.getClass().getName());
+                    oops.printStackTrace();
                 }
             }
 
