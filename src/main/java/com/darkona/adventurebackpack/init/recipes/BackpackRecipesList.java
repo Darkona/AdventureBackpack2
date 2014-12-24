@@ -231,7 +231,7 @@ public class BackpackRecipesList
                 "PXP",
                 "XaX",
                 "PXP",
-                'X', "woolBlack",
+                'X', woolBlack,
                 'P', Items.ender_pearl,
                 'a', backpack
         );
@@ -488,9 +488,10 @@ public class BackpackRecipesList
         );
 
         Snow = reviewRecipe(
-                "sSs",
+                "III",
                 "SaS",
                 "sSs",
+                "I", Blocks.ice,
                 'S', Blocks.snow,
                 's', Items.snowball,
                 'a', backpack
@@ -576,7 +577,12 @@ public class BackpackRecipesList
                 'X', new ItemStack(Blocks.double_plant,1,0)
         );
 
-        Horse = reviewRecipe(covered,
+        Horse = reviewRecipe(
+                "LSL",
+                "XaX",
+                "LXL",
+                'L', Items.leather,
+                'S', Items.saddle,
                 'X', Blocks.hay_block,
                 'a', backpack);
 
