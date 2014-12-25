@@ -1,15 +1,15 @@
 # Items
 item.adventurebackpack:machete.name=Machete
-item.adventurebackpack:backpackComponent.name=Backpack Component Item
-item.adventurebackpack:sleepingBag.name=Sleeping Bag
-item.adventurebackpack:backpackTank.name=Backpack Tank
-item.adventurebackpack:macheteHandle=Machete Handle
-item.adventurebackpack:hoseHead.name=Hose Nozzle
-item.adventurebackpack:adventureBackpack.name=Adventure Backpack
-item.adventurebackpack:backpackHose.name=Backpack Hose
-item.adventurebackpack:adventureSuit.name=Adventurer's Suit
-item.adventurebackpack:adventureHat.name=Adventurer's Fedora
-item.adventurebackpack:pistonBoots.name=Piston Boots
+item.adventurebackpack:backpackComponent.name=Peça da Mochila
+item.adventurebackpack:sleepingBag.name=Saco de Dormir
+item.adventurebackpack:backpackTank.name=Tanque da Mochila
+item.adventurebackpack:macheteHandle=Cabo de Machete
+item.adventurebackpack:hoseHead.name=Boca da Mangueira
+item.adventurebackpack:adventureBackpack.name=Mochila do Aventureiro
+item.adventurebackpack:backpackHose.name=Mangueira da Mochila
+item.adventurebackpack:adventureSuit.name=Traje do Aventureiro
+item.adventurebackpack:adventureHat.name=Fedora do Aventureiro
+item.adventurebackpack:pistonBoots.name=Botas de Pistão
 item.adventurebackpack:melonJuiceBottle.name=Garrafa de Suco de Melancia
 
 item.adventurebackpack:hose_leftTank_suck.name=Hose: Tanque Esquerdo / Modo Sugar
