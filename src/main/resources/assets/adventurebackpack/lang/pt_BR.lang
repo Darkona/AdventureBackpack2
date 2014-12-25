@@ -12,16 +12,16 @@ item.adventurebackpack:adventureHat.name=Fedora do Aventureiro
 item.adventurebackpack:pistonBoots.name=Botas de Pistão
 item.adventurebackpack:melonJuiceBottle.name=Garrafa de Suco de Melancia
 
-item.adventurebackpack:hose_leftTank_suck.name=Hose: Tanque Esquerdo / Modo Sugar
-item.adventurebackpack:hose_leftTank_spill.name=Hose: Tanque Esquerdo / Modo Expelir
-item.adventurebackpack:hose_leftTank_drink.name=Hose: Tanque Esquerdo / Modo Beber
+item.adventurebackpack:hose_leftTank_suck.name=Mangueira: Tanque Esquerdo / Modo Sugar
+item.adventurebackpack:hose_leftTank_spill.name=Mangueira: Tanque Esquerdo / Modo Expelir
+item.adventurebackpack:hose_leftTank_drink.name=Mangueira: Tanque Esquerdo / Modo Beber
 
 
-item.adventurebackpack:hose_rightTank_suck.name=Hose: Tanque Direito / Modo Sugar
-item.adventurebackpack:hose_rightTank_spill.name=Hose: Tanque Direito / Modo Expelir
-item.adventurebackpack:hose_rightTank_drink.name=Hose: Tanque Direito / Modo Beber
+item.adventurebackpack:hose_rightTank_suck.name=Mangueira: Tanque Direito / Modo Sugar
+item.adventurebackpack:hose_rightTank_spill.name=Mangueira: Tanque Direito / Modo Expelir
+item.adventurebackpack:hose_rightTank_drink.name=Mangueira: Tanque Direito / Modo Beber
 
-item.adventurebackpack:hoseUseless=Hose: Inútil / Sem Mochila
+item.adventurebackpack:hoseUseless=Mangueira: Inútil / Sem Mochila
 
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Base Para Mochila do Aventureiro
