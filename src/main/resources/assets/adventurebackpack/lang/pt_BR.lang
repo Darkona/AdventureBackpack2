@@ -1,0 +1,39 @@
+# Items
+item.adventurebackpack:machete.name=Machete
+item.adventurebackpack:backpackComponent.name=Peça da Mochila
+item.adventurebackpack:sleepingBag.name=Saco de Dormir
+item.adventurebackpack:backpackTank.name=Tanque da Mochila
+item.adventurebackpack:macheteHandle=Cabo de Machete
+item.adventurebackpack:hoseHead.name=Boca da Mangueira
+item.adventurebackpack:adventureBackpack.name=Mochila do Aventureiro
+item.adventurebackpack:backpackHose.name=Mangueira da Mochila
+item.adventurebackpack:adventureSuit.name=Traje do Aventureiro
+item.adventurebackpack:adventureHat.name=Fedora do Aventureiro
+item.adventurebackpack:pistonBoots.name=Botas de Pistão
+item.adventurebackpack:melonJuiceBottle.name=Garrafa de Suco de Melancia
+
+item.adventurebackpack:hose_leftTank_suck.name=Mangueira: Tanque Esquerdo / Modo Sugar
+item.adventurebackpack:hose_leftTank_spill.name=Mangueira: Tanque Esquerdo / Modo Expelir
+item.adventurebackpack:hose_leftTank_drink.name=Mangueira: Tanque Esquerdo / Modo Beber
+
+
+item.adventurebackpack:hose_rightTank_suck.name=Mangueira: Tanque Direito / Modo Sugar
+item.adventurebackpack:hose_rightTank_spill.name=Mangueira: Tanque Direito / Modo Expelir
+item.adventurebackpack:hose_rightTank_drink.name=Mangueira: Tanque Direito / Modo Beber
+
+item.adventurebackpack:hoseUseless=Mangueira: Inútil / Sem Mochila
+
+#Blocks
+block.adventurebackpack:blockAdventureBackpack.name=Base Para Mochila do Aventureiro
+
+#CreativeTab
+itemGroup.adventurebackpack=Mochila do Aventureiro
+
+#Keybindings
+keys.adventureBackpack.category=Mochila do Aventureiro
+keys.adventureBackpack.openBackpackInventory=Abrir Conteúdo da Mochila
+keys.adventureBackpack.switchHoseTank=Trocar a Mangueira do Tanque
+
+#Fluids
+fluid.melonJuice=Suco de Melancia
+fluid.milk=Leite
