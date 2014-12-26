@@ -12,7 +12,9 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
 public class RendererItemAdventureBackpack implements IItemRenderer
 {

@@ -15,7 +15,7 @@ public class ModItems
     public static final ArmorAB adventureHat = new ItemAdventureHat();
     public static final ArmorAB pistonBoots = new ItemPistonBoots();
     public static final ArmorAB adventureSuit = new ItemAdventureSuit();
-    public static final ArmorAB adventureBackpack = new ItemAdventureBackpack();
+    public static final ItemAdventureBackpack adventureBackpack = new ItemAdventureBackpack();
     public static final ItemJuiceBottle melonJuiceBottle = new ItemJuiceBottle();
 
     public static void init()

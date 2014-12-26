@@ -53,7 +53,8 @@ public class BackpackEventHandler
                 LogHelper.info(nyanString);
                 player.addChatComponentMessage(new ChatComponentText(nyanString));
                 NyanCatPacket.NyanCatMessage msg = new NyanCatPacket.NyanCatMessage( NyanCatPacket.PLAY_NYAN, player.getPersistentID().toString());
-                ModNetwork.net.sendToAllAround(msg, new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY,player.posZ,30.0D));
+                //ModNetwork.net.sendToDimension(msg, player.dimension); Would tell everybody in the dimension... not really worth it.
+                ModNetwork.net.sendToAllAround(msg, new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY,player.posZ,50.0D));
             }else
             {
                 ModNetwork.net.sendToServer( new NyanCatPacket.NyanCatMessage( NyanCatPacket.PLAY_NYAN, player.getPersistentID().toString()));

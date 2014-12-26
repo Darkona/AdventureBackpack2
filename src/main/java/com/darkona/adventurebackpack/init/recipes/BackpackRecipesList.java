@@ -491,7 +491,7 @@ public class BackpackRecipesList
                 "III",
                 "SaS",
                 "sSs",
-                "I", Blocks.ice,
+                'I', Blocks.ice,
                 'S', Blocks.snow,
                 's', Items.snowball,
                 'a', backpack

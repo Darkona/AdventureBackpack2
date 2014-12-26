@@ -563,7 +563,6 @@ public class BackpackAbilities
     public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
     {
         int noteTime = backpack.getTagCompound().getInteger("lastTime") - 1;
-        int i = 2;
         if (noteTime >= 0 && noteTime < Utils.secondsToTicks(147))
         {
             player.setSprinting(true);
@@ -572,9 +571,6 @@ public class BackpackAbilities
             if (noteTime % 2 == 0)
             {
                 Visuals.NyanParticles(player, world);
-                /*ModNetwork.networkWrapper.sendToAllAround(
-                        new NyanCatMessage(MessageConstants.SPAWN_PARTICLE, player.getPersistentID().toString()),
-                        new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 30D));*/
             }
         }
         backpack.getTagCompound().setInteger("lastTime", noteTime);

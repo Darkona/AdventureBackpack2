@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
@@ -8,6 +10,7 @@ import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.events.UnequipBackpackEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModMaterials;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
@@ -15,35 +18,45 @@ import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Wearing;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
-public class ItemAdventureBackpack extends ArmorAB
+@Optional.Interface(iface="baubles.api.IBauble", modid="Baubles", striprefs=true)
+public class ItemAdventureBackpack extends ArmorAB implements IBauble
 {
+
 
     public ItemAdventureBackpack()
     {
-        super(0, 1);
+        super(0,1);
         setUnlocalizedName("adventureBackpack");
         setFull3D();
         setMaxStackSize(1);
-        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+        //setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
     /**
@@ -205,6 +218,8 @@ public class ItemAdventureBackpack extends ArmorAB
             {
                 player.openContainer.detectAndSendChanges();
             }
+
+
         }
     }
 
@@ -276,6 +291,7 @@ public class ItemAdventureBackpack extends ArmorAB
         }
     }
 
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     @SideOnly(Side.CLIENT)
@@ -295,4 +311,83 @@ public class ItemAdventureBackpack extends ArmorAB
 
         }*/
     }
+
+
+
+    // BAUBLES
+
+    /**
+     * This method return the type of bauble this is.
+     * Type is used to determine the slots it can go into.
+     *
+     * @param itemstack
+     */
+    @Override
+    public BaubleType getBaubleType(ItemStack itemstack)
+    {
+        return BaubleType.AMULET;
+    }
+
+    /**
+     * This method is called once per tick if the bauble is being worn by a player
+     *
+     * @param itemstack
+     * @param player
+     */
+    @Override
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player)
+    {
+        this.onArmorTick(player.worldObj, (EntityPlayer)player, itemstack);
+        this.onUpdate(itemstack,((EntityPlayer) player).worldObj, player, 0,  false);
+    }
+
+    /**
+     * This method is called when the bauble is equipped by a player
+     *
+     * @param itemstack
+     * @param player
+     */
+    @Override
+    public void onEquipped(ItemStack itemstack, EntityLivingBase player)
+    {
+
+    }
+
+    /**
+     * This method is called when the bauble is unequipped by a player
+     *
+     * @param itemstack
+     * @param player
+     */
+    @Override
+    public void onUnequipped(ItemStack itemstack, EntityLivingBase player)
+    {
+
+    }
+
+    /**
+     * can this bauble be placed in a bauble slot
+     *
+     * @param itemstack
+     * @param player
+     */
+    @Override
+    public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
+    {
+        return true;
+    }
+
+    /**
+     * Can this bauble be removed from a bauble slot
+     *
+     * @param itemstack
+     * @param player
+     */
+    @Override
+    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
+    {
+        return true;
+    }
+
+
 }

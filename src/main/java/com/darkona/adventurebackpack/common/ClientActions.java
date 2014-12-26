@@ -28,6 +28,7 @@ public class ClientActions
         Wearing.getWearingBackpack(player).getTagCompound().setInteger("lastTime", Utils.secondsToTicks(150));
         SoundHandler snd = FMLClientHandler.instance().getClient().getSoundHandler();
         NyanMovingSound nyaaan = new NyanMovingSound(player);
+
         if (code == NyanCatPacket.PLAY_NYAN)
         {
                 /*ISound nyan = new NyanMovingSound(player);*/

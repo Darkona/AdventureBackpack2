@@ -6,7 +6,7 @@ package com.darkona.adventurebackpack.reference;
 public class ModInfo
 {
     public static final String MOD_NAME = "Adventure Backpack";
-    public static final String MOD_VERSION = "0.7.2";
+    public static final String MOD_VERSION = "0.7.3";
     public static final String MOD_ID = "adventurebackpack";
     public static final String MOD_CHANNEL = "advBackpackChan";
     public static final String MOD_CLIENT_PROXY = "com.darkona.adventurebackpack.proxy.ClientProxy";

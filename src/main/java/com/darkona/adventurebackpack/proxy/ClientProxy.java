@@ -1,15 +1,13 @@
 package com.darkona.adventurebackpack.proxy;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.client.render.RendererAdventureBackpackBlock;
-import com.darkona.adventurebackpack.client.render.RendererHose;
-import com.darkona.adventurebackpack.client.render.RendererItemAdventureBackpack;
-import com.darkona.adventurebackpack.client.render.RendererItemAdventureHat;
+import com.darkona.adventurebackpack.client.render.*;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 /**
@@ -21,6 +19,7 @@ public class ClientProxy implements IProxy
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;
+    public static RendererBackpackArmor rendererBackpackArmor;
 
     public void init()
     {
@@ -40,7 +39,7 @@ public class ClientProxy implements IProxy
         rendererItemAdventureBackpack = new RendererItemAdventureBackpack();
         rendererItemAdventureHat = new RendererItemAdventureHat();
         rendererHose = new RendererHose();
-
+        rendererBackpackArmor = new RendererBackpackArmor();
 
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, rendererItemAdventureHat);
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureBackpack, rendererItemAdventureBackpack);

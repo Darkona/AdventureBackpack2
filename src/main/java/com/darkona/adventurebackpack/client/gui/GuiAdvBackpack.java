@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.client.gui;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.GeneralConfig;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -28,15 +29,15 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
     protected IAdvBackpack inventory;
     protected boolean source;
-    private boolean wearing;
+    protected boolean wearing;
     protected int X;
     protected int Y;
     protected int Z;
     private EntityPlayer player;
     private static final ResourceLocation texture = Resources.guiTextures("guiBackpackNew");
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
-    private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, GeneralConfig.GUI_TANK_RES);
-    private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, GeneralConfig.GUI_TANK_RES);
+    private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
+    private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
     private FluidStack lft;
     private FluidStack rgt;
     public int lefties;

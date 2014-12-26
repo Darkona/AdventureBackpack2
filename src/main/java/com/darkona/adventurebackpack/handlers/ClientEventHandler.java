@@ -8,7 +8,6 @@ import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -89,6 +88,7 @@ public class ClientEventHandler
                         int slot = player.inventory.currentItem;
                         ItemStack heldItem = player.inventory.getStackInSlot(slot);
                         Item theItem = heldItem.getItem();
+
                         if (SlotTool.isValidTool(heldItem) ||
                                 (BackpackNames.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
                         {
@@ -96,10 +96,11 @@ public class ClientEventHandler
                             ServerActions.cycleTool(player,dWheel,slot);
                             event.setCanceled(true);
                         }
+
                         if (theItem instanceof ItemHose)
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
-                            ServerActions.cycleTool(player,dWheel,slot);
+                            ServerActions.switchHose(player,ServerActions.HOSE_SWITCH,dWheel,slot);
                             event.setCanceled(true);
                         }
                     }
@@ -107,4 +108,6 @@ public class ClientEventHandler
             }
         }
     }
+
+
 }

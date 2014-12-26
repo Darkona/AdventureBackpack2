@@ -13,6 +13,9 @@ import java.io.File;
 public class ConfigHandler
 {
 
+    public static boolean IS_BAUBLES = false;
+    public static boolean IS_TINKERS = false;
+    public static boolean IS_THAUM = false;
     public static Configuration config;
     public static boolean backpackSlot = false;
     public static int GUI_TANK_RENDER = 2;
@@ -32,7 +35,7 @@ public class ConfigHandler
     private static void loadConfiguration()
     {
         backpackSlot = config.getBoolean("testValue", config.CATEGORY_GENERAL, false, "Use backpacks in armor slot?");
-        GUI_TANK_RENDER = config.getInt("TankRenderType", config.CATEGORY_GENERAL, 3, 1, 3, "1,2,3 for different rendering of fluids in the Backpack GUI");
+        GUI_TANK_RENDER = config.getInt("TankRenderType", config.CATEGORY_GENERAL, 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
         backpackInBonusChest = config.getBoolean("BonusBackpack", config.CATEGORY_GENERAL, false, "Include a Standard Adventure Backpack in bonus chest?");
         pigman = config.getBoolean("PigmanBackpacks", config.CATEGORY_GENERAL, false, "Allow generation of Pigman Backpacks in dungeon loot and villager trades");
         if (config.hasChanged())

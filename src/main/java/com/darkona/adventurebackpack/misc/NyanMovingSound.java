@@ -1,8 +1,12 @@
 package com.darkona.adventurebackpack.misc;
 
+import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -26,13 +30,10 @@ public class NyanMovingSound extends MovingSound
     }
 
     private EntityPlayer player;
-    private float aFloat = 0.0F;
-
-
     public NyanMovingSound(EntityPlayer player)
     {
         super(new ResourceLocation(ModInfo.MOD_ID, "nyan"));
-        this.volume = 1.0f;
+        this.volume = 0.8f;
         this.player = player;
     }
 
@@ -54,6 +55,15 @@ public class NyanMovingSound extends MovingSound
             this.donePlaying = true;
         } else
         {
+            if(BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow") &&
+                    Wearing.getWearingBackpack(player).stackTagCompound.getInteger("lastTime") > 0)
+            {
+                this.volume = 0.8f;
+            }else
+            {
+                this.volume = 0.0f;
+            }
+
             this.xPosF = (float) this.player.posX;
             this.yPosF = (float) this.player.posY;
             this.zPosF = (float) this.player.posZ;

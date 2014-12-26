@@ -368,7 +368,10 @@ public class ItemHose extends ItemAB
                 case HOSE_DRINK_MODE:
                     if (tank.getFluid() != null && tank.getFluidAmount() >= Constants.bucket)
                     {
-                        player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+                        if(FluidEffectRegistry.hasFluidEffect(tank.getFluid().getFluid()))
+                        {
+                            player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+                        }
                     }
                     break;
                 default:
@@ -406,13 +409,9 @@ public class ItemHose extends ItemAB
             FluidTank backpackTank = (tank == 0) ? inventory.getLeftTank() : (tank == 1) ? inventory.getRightTank() : null;
             if (backpackTank != null)
             {
-                if(FluidEffectRegistry.hasFluidEffect(backpackTank.getFluid().getFluid()))
-                {
-                    ServerActions.setFluidEffect(world, player, backpackTank);
-                    backpackTank.drain(Constants.bucket, true);
-                    inventory.saveChanges();
-                }
-                else return null;
+                ServerActions.setFluidEffect(world, player, backpackTank);
+                backpackTank.drain(Constants.bucket, true);
+                inventory.saveChanges();
             }
         }
         return hose;

@@ -6,10 +6,12 @@ import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.client.render.RendererStack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
+import com.darkona.adventurebackpack.inventory.InventoryItem;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
@@ -230,8 +232,18 @@ public class ModelBackpackArmor extends ModelBiped
 
     public ModelBackpackArmor setBackpack(IAdvBackpack backpack)
     {
-        this.backpack = backpack;
+        instance.backpack = backpack;
         return instance;
+    }
+
+    public void setBackpack2(ItemStack backpack)
+    {
+        this.backpack = new InventoryItem(backpack);
+    }
+
+    public ModelBackpackArmor(ItemStack backpack)
+    {
+        this.backpack = new InventoryItem(backpack);
     }
 
     private void startBlending()
@@ -321,14 +333,19 @@ public class ModelBackpackArmor extends ModelBiped
         }
     }
 
+    public void renderWithBackpack(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack backpack){
+        this.backpack = new InventoryItem(backpack);
+        render(entity, f,f1,f2,f3,f4,f5);
+    }
+
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 
         isSneak = ((entity != null) ? ((EntityLivingBase) entity).isSneaking() : false);
+        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         float oV = (isSneak) ? 0 : .3F;
 
         float scale = f5 * 0.9f;
-        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
         GL11.glPushMatrix();
 
