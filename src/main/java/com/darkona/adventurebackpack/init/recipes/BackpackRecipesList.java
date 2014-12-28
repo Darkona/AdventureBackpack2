@@ -39,9 +39,9 @@ public class BackpackRecipesList
         ItemStack woolPurple =  new ItemStack(Blocks.wool, 1, 10);
         ItemStack woolBlue = new ItemStack(Blocks.wool, 1, 11);
         ItemStack woolBrown =  new ItemStack(Blocks.wool, 1, 12);
-        ItemStack woolGreen = new ItemStack(Blocks.wool, 1, 11);
+        ItemStack woolGreen = new ItemStack(Blocks.wool, 1, 13);
         ItemStack woolRed =  new ItemStack(Blocks.wool, 1, 14);
-        ItemStack woolBlack = new ItemStack(Blocks.wool, 1, 11);
+        ItemStack woolBlack = new ItemStack(Blocks.wool, 1, 15);
 
 
 
@@ -271,7 +271,7 @@ public class BackpackRecipesList
         );
 
         Green = reviewRecipe(covered,
-                'X', new ItemStack(Blocks.wool, 1, 13),
+                'X', woolGreen,
                 'a', backpack
         );
 

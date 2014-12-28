@@ -61,7 +61,8 @@ public class NyanMovingSound extends MovingSound
                 this.volume = 0.8f;
             }else
             {
-                this.volume = 0.0f;
+                this.donePlaying = true;
+               // this.volume = 0.0f;
             }
 
             this.xPosF = (float) this.player.posX;

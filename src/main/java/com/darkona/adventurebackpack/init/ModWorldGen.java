@@ -5,7 +5,6 @@ import com.darkona.adventurebackpack.reference.BackpackNames;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.village.MerchantRecipe;
@@ -39,7 +38,7 @@ public class ModWorldGen
                 ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 2));
                 ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, new WeightedRandomChestContent(backpack, 1, 1, 12));
             } else
-            if(BackpackNames.backpackNames[i].equals("Pigman") && ConfigHandler.pigman)
+            if(BackpackNames.backpackNames[i].equals("Pigman") && ConfigHandler.PIGMAN_ALLOWED)
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage( new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 12));
@@ -52,7 +51,7 @@ public class ModWorldGen
                 VillagerRegistry.instance().registerVillageTradeHandler(2, new ModWorldGen.TradeHandler(backpack));
                 VillagerRegistry.instance().registerVillageTradeHandler(3, new ModWorldGen.TradeHandler(backpack));
             } else
-            if(BackpackNames.backpackNames[i].equals("Standard") && ConfigHandler.backpackInBonusChest)
+            if(BackpackNames.backpackNames[i].equals("Standard") && ConfigHandler.BONUS_CHEST_ALLOWED)
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage( new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(backpack, 0, 1, 5));
