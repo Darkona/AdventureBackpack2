@@ -60,7 +60,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     }
 
     /**
-     * Return the enchantability factor of the item, most of the time is based on material.
+     * Return the enchantability factor of the item, most of the timeInSeconds is based on material.
      */
     @Override
     public int getItemEnchantability()

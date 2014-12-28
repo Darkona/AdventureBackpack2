@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
 import com.darkona.adventurebackpack.api.FluidEffect;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -15,16 +16,19 @@ public class LavaEffect extends FluidEffect
     public LavaEffect()
     {
         super(FluidRegistry.LAVA, 15);
-        msg = "Lava burns you from inside";
     }
 
     @Override
-    public void affectDrinker(World world, EntityPlayer player)
+    public void affectDrinker(World world, Entity entity)
     {
-        player.setFire(time);
-        player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, time * 20 * 6, 2, false));
-        player.addPotionEffect(new PotionEffect(Potion.jump.id, time * 20 * 6, 0, false));
-        player.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, time * 20 * 6, 3, false));
+        if(entity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            player.setFire(timeInSeconds);
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, timeInSeconds * 20 * 6, 2, false));
+            player.addPotionEffect(new PotionEffect(Potion.jump.id, timeInSeconds * 20 * 6, 0, false));
+            player.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, timeInSeconds * 20 * 6, 3, false));
+        }
     }
 
 }

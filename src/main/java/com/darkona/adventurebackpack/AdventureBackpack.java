@@ -1,16 +1,13 @@
 package com.darkona.adventurebackpack;
 
-import com.darkona.adventurebackpack.api.FluidEffectRegistry;
-import com.darkona.adventurebackpack.common.RenderHandler;
+import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.BackpackEventHandler;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
 import com.darkona.adventurebackpack.init.*;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.proxy.IProxy;
-import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
@@ -24,10 +21,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Calendar;
@@ -59,7 +52,7 @@ public class AdventureBackpack
     PlayerEventHandler playerEventHandler;
     ClientEventHandler clientEventHandler;
     BackpackEventHandler backpackEventHandler;
-    RenderHandler renderHandler;
+
     GuiHandler guiHandler;
 
     @Mod.EventHandler
@@ -88,9 +81,9 @@ public class AdventureBackpack
         playerEventHandler = new PlayerEventHandler();
         backpackEventHandler = new BackpackEventHandler();
         clientEventHandler = new ClientEventHandler();
-        renderHandler = new RenderHandler();
 
-        MinecraftForge.EVENT_BUS.register(renderHandler);
+
+
         MinecraftForge.EVENT_BUS.register(backpackEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
         MinecraftForge.EVENT_BUS.register(playerEventHandler);
@@ -118,11 +111,23 @@ public class AdventureBackpack
         ConfigHandler.IS_TINKERS = Loader.isModLoaded("TConstruct");
         ConfigHandler.IS_THAUM = Loader.isModLoaded("Thaumcraft");
         ConfigHandler.IS_TWILIGHT = Loader.isModLoaded("TwilightForest");
+        ConfigHandler.IS_ENVIROMINE = Loader.isModLoaded("EnviroMine");
+        ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
         if(ConfigHandler.IS_BAUBLES)
         {
             LogHelper.info("Baubles is present. Acting accordingly");
         }
 
+        if(ConfigHandler.IS_BUILDCRAFT)
+        {
+            LogHelper.info("Buildcraft is present. Acting accordingly");
+        }
+
+        if(ConfigHandler.IS_TWILIGHT)
+        {
+            LogHelper.info("Twilight Forest is present. Acting accordingly");
+        }
+        ConditionalFluidEffect.init();
     }
 
 }

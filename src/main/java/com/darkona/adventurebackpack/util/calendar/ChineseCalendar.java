@@ -190,7 +190,7 @@ private static int baseChineseDate = 11;
 
             // Adding that number of days to the Chinese date
             // Then bring Chinese date into the correct range.
-            //    one Chinese month at a time
+            //    one Chinese month at a timeInSeconds
             chineseDate += daysDiff;
             int lastDate = daysInChineseMonth(chineseYear, chineseMonth);
             int nextMonth = nextChineseMonth(chineseYear, chineseMonth);

@@ -13,11 +13,13 @@ import java.io.File;
 public class ConfigHandler
 {
 
+    public static boolean IS_BUILDCRAFT = false;
     public static boolean IS_BAUBLES = false;
     public static boolean IS_TINKERS = false;
     public static boolean IS_THAUM = false;
     public static boolean IS_INVTWEAKS = false;
     public static boolean IS_TWILIGHT = false;
+    public static boolean IS_ENVIROMINE = false;
 
     public static Configuration config;
     public static boolean BACKPACK_SLOT = false;

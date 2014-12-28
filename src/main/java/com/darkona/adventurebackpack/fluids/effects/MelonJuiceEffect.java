@@ -1,8 +1,10 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
 import com.darkona.adventurebackpack.api.FluidEffect;
-import com.darkona.adventurebackpack.api.FluidEffectRegistry;
+import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
+import com.darkona.adventurebackpack.util.Utils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -16,7 +18,7 @@ public class MelonJuiceEffect extends FluidEffect
 
     public MelonJuiceEffect()
     {
-        super(ModFluids.melonJuice, 7, "Ahhh, refreshing!");
+        super(ModFluids.melonJuice, 30);
     }
 
     /**
@@ -29,9 +31,13 @@ public class MelonJuiceEffect extends FluidEffect
      * @param player The Player.
      */
     @Override
-    public void affectDrinker(World world, EntityPlayer player)
+    public void affectDrinker(World world, Entity entity)
     {
-        player.addPotionEffect(new PotionEffect(Potion.digSpeed.getId(), 600, 0));
-        FluidEffectRegistry.WATER_EFFECT.affectDrinker(world, player);
+        if(entity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            player.addPotionEffect(new PotionEffect(Potion.digSpeed.getId(), timeInTicks, 0));
+            FluidEffectRegistry.WATER_EFFECT.affectDrinker(world, player);
+        }
     }
 }

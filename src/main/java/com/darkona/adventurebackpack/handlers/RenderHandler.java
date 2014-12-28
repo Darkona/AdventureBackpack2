@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.common;
+package com.darkona.adventurebackpack.handlers;
 
 import baubles.api.BaublesApi;
 import com.darkona.adventurebackpack.AdventureBackpack;

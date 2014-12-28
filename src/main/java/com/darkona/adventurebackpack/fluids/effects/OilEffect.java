@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
 import com.darkona.adventurebackpack.api.FluidEffect;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -14,7 +15,7 @@ public class OilEffect extends FluidEffect
 {
     public OilEffect()
     {
-        super(FluidRegistry.getFluid("oil"), 7, "Blerghhh!!");
+        super(FluidRegistry.getFluid("oil"), 20);
     }
 
     /**
@@ -24,11 +25,16 @@ public class OilEffect extends FluidEffect
      * conditions based on where the player is.
      *
      * @param world  The World.
-     * @param player The Player.
+     * @param entity The Player.
      */
     @Override
-    public void affectDrinker(World world, EntityPlayer player)
+    public void affectDrinker(World world, Entity entity)
     {
-        player.addPotionEffect(new PotionEffect(Potion.confusion.getId(), 1, 2));
+        if(entity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            player.addPotionEffect(new PotionEffect(Potion.confusion.getId(), this.timeInTicks, 2));
+            player.addPotionEffect(new PotionEffect(Potion.poison.getId(), this.timeInTicks/2, 1));
+        }
     }
 }

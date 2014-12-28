@@ -16,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
  *
  * @author Darkona
  * @see com.darkona.adventurebackpack.handlers.PlayerEventHandler
- * @see com.darkona.adventurebackpack.api.FluidEffectRegistry
+ * @see com.darkona.adventurebackpack.fluids.FluidEffectRegistry
  * @see com.darkona.adventurebackpack.common.BackpackAbilities
  */
 public class ClientActions

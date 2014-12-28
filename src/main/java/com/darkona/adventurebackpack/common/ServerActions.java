@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.api.FluidEffect;
-import com.darkona.adventurebackpack.api.FluidEffectRegistry;
+import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
@@ -10,7 +10,6 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
-import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,7 +42,7 @@ public class ServerActions
      *
      * @param player    - Duh
      * @param direction - An integer indicating the direction of the switch. Nobody likes to swith always inthe same
-     *                  direction all the time. That's stupid.
+     *                  direction all the timeInSeconds. That's stupid.
      * @param slot      The slot that will be switched with the backpack.
      */
     public static void cycleTool(EntityPlayer player, int direction, int slot)
@@ -272,28 +271,9 @@ public class ServerActions
         boolean done = false;
         if (drained != null && drained.amount >= Constants.bucket)
         {
-            setFluidEffect(world, player, drained.getFluid());
+            done = FluidEffectRegistry.executeFluidEffectsForFluid(drained.getFluid(), player, world);
         }
         return done;
-    }
-
-    public static boolean setFluidEffect(World world, EntityPlayer player, Fluid fluid)
-    {
-
-        boolean done = false;
-        for (FluidEffect effect : FluidEffectRegistry.getEffectsForFluid(fluid))
-        {
-            if (effect != null)
-            {
-                effect.affectDrinker(world, player);
-                if (world.isRemote)
-                {
-                    //player.sendChatToPlayer(ChatMessageComponent.createFromText(effect.msg));
-                }
-                done = true;
-            }
-        }
-        return true;
     }
 
     /**

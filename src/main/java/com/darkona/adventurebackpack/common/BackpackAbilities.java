@@ -240,7 +240,14 @@ public class BackpackAbilities
     public void itemSlime(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in Ticks for this backpack.
+        //0 is Full Moon, 1 is Waning Gibbous, 2 is Last Quarter, 3 is Waning Crescent,
+        // 4 is New Moon, 5 is Waxing Crescent, 6 is First Quarter and 7 is Waxing Gibbous
+        if(world.getMoonPhase() == 0 && !world.isDaytime())
+        {
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, 1));
+        }
         if (player.onGround ) {
+
             if(player.moveForward == 0 && player.moveStrafing == 0)
             {
                 player.addVelocity(player.motionX *= 0.828, 0, player.motionZ *= 0.828);

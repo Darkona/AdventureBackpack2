@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
 import com.darkona.adventurebackpack.api.FluidEffect;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBucketMilk;
 import net.minecraft.item.ItemStack;
@@ -14,17 +15,21 @@ public class MilkEffect extends FluidEffect
 {
     public MilkEffect()
     {
-        super(FluidRegistry.getFluid("milk"), 7, "Milk makes you feel good");
+        super(FluidRegistry.getFluid("milk"), 7);
     }
 
     @Override
-    public void affectDrinker(World world, EntityPlayer player)
+    public void affectDrinker(World world, Entity entity)
     {
-        if (!world.isRemote)
+        if(entity instanceof EntityPlayer)
         {
-            world.playSoundAtEntity(player, "mob.cow.say", 0.3F, 1);
+            EntityPlayer player = (EntityPlayer) entity;
+            if (!world.isRemote)
+            {
+                world.playSoundAtEntity(player, "mob.cow.say", 0.3F, 1);
+            }
+            player.clearActivePotions();
+            //player.curePotionEffects(new ItemStack(new ItemBucketMilk()));
         }
-        player.clearActivePotions();
-        //player.curePotionEffects(new ItemStack(new ItemBucketMilk()));
     }
 }
