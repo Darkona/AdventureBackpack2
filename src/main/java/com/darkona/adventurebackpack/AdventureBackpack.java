@@ -117,7 +117,7 @@ public class AdventureBackpack
         ConfigHandler.IS_BAUBLES = Loader.isModLoaded("Baubles");
         ConfigHandler.IS_TINKERS = Loader.isModLoaded("TConstruct");
         ConfigHandler.IS_THAUM = Loader.isModLoaded("Thaumcraft");
-
+        ConfigHandler.IS_TWILIGHT = Loader.isModLoaded("TwilightForest");
         if(ConfigHandler.IS_BAUBLES)
         {
             LogHelper.info("Baubles is present. Acting accordingly");

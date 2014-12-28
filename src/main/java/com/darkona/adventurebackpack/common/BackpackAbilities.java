@@ -241,13 +241,19 @@ public class BackpackAbilities
     {
         //lastTime is in Ticks for this backpack.
         if (player.onGround ) {
+            if(player.moveForward == 0 && player.moveStrafing == 0)
+            {
+                player.addVelocity(player.motionX *= 0.828, 0, player.motionZ *= 0.828);
+            }
             if(player.isSprinting())
             {
+
                 int slimeTime = backpack.stackTagCompound.hasKey("lastTime") ?
                         backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
                 if (slimeTime <= 0)
                 {
-                    world.playSoundAtEntity(player, "mob.slime.small", 0.4F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
+                    Visuals.SlimeParticles(player, world);
+                    world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
                     slimeTime = 5;
                 }
                 backpack.stackTagCompound.setInteger("lastTime", slimeTime);
