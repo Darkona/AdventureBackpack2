@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.util;
 
+import baubles.api.BaublesApi;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureHat;
@@ -12,6 +14,9 @@ import net.minecraft.item.ItemStack;
  */
 public class Wearing
 {
+    public static final byte AS_ARMOR = 0;
+    public static final byte AS_BAUBLE = 1;
+    public static final byte AS_PROP = 2;
 
     public static boolean isWearingBoots(EntityPlayer player)
     {
@@ -25,7 +30,12 @@ public class Wearing
 
     public static boolean isWearingBackpack(EntityPlayer player)
     {
-        return player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() instanceof ItemAdventureBackpack;
+        boolean isWearing = false;
+        if(ConfigHandler.IS_BAUBLES)
+        {
+            isWearing = BaublesApi.getBaubles(player).getStackInSlot(0) != null && BaublesApi.getBaubles(player).getStackInSlot(0).getItem() instanceof ItemAdventureBackpack;
+        }
+        return isWearing == false ? player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() instanceof ItemAdventureBackpack : true;
     }
 
     public static boolean isHoldingBackpack(EntityPlayer player)

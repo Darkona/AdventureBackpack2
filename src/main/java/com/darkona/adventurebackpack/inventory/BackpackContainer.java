@@ -105,9 +105,6 @@ public class BackpackContainer extends Container
             }
         }
 
-        LogHelper.info("Created " + slot + " slots in backpack Inventory");
-
-
         //Upper Tool Slot
         addSlotToContainer(new SlotTool(inventory, Constants.upperTool, 44, 79));// Upper Tool 16
         //Lower Tool slot
@@ -138,15 +135,8 @@ public class BackpackContainer extends Container
         }
         addSlotToContainer(new SlotCrafting(invPlayer.player, craftMatrix, craftResult, 0, 226, 97));
         this.onCraftMatrixChanged(craftMatrix);
-        //LogHelper.info("List of slots is " +  this.inventorySlots.size() + " in size");
-
     }
 
-    /**
-     * places itemstacks in first x slots, x being aitemstack.lenght
-     *
-     * @param itemStacks
-     */
 
     @Override
     public void putStacksInSlots(ItemStack[] itemStacks)
@@ -272,9 +262,6 @@ public class BackpackContainer extends Container
 
     }
 
-    /**
-     * Looks for changes made in the container, sends them to every listener.
-     */
     @Override
     public void detectAndSendChanges()
     {

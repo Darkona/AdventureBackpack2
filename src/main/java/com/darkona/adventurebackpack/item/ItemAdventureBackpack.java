@@ -227,7 +227,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
     {
 
-        if (stack.stackTagCompound != null &&
+        if (player != null && stack.stackTagCompound != null &&
                 (stack.getTagCompound().getBoolean("special")) || BackpackAbilities.hasAbility(stack.stackTagCompound.getString("colorName")))
         {
             BackpackAbilities.instance.executeAbility(player, world, stack);

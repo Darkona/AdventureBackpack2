@@ -48,7 +48,6 @@ public class AdvBackpackEProperty implements IExtendedEntityProperties
         NBTTagCompound stupidComplexThing = new NBTTagCompound();
         stupidComplexThing.setTag("adventureBackpack", backpack.writeToNBT(new NBTTagCompound()));
         compound.setTag(PROPERTY_NAME, stupidComplexThing);
-
     }
 
     /**
