@@ -4,6 +4,7 @@ import baubles.api.BaublesApi;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.client.render.RendererBackpackArmor;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
@@ -40,25 +41,32 @@ public class RenderHandler
     //@SideOnly(Side.CLIENT)
     public void playerRendering(RenderPlayerEvent.Specials.Pre event)
     {
-        EntityPlayer player = event.entityPlayer;
-        IInventory baubles = BaublesApi.getBaubles(player);
-        ItemStack backpack = baubles.getStackInSlot(0);
-
-        if(backpack != null && backpack.getItem() instanceof ItemAdventureBackpack)
+        if(ConfigHandler.IS_BAUBLES)
         {
-            float rotationY = event.renderer.modelBipedMain.bipedBody.rotateAngleY;
-            float rotationX = event.renderer.modelBipedMain.bipedBody.rotateAngleX;
-            float rotationZ = event.renderer.modelBipedMain.bipedBody.rotateAngleZ;
+            EntityPlayer player = event.entityPlayer;
+            IInventory baubles = BaublesApi.getBaubles(player);
+            ItemStack backpack = baubles.getStackInSlot(0);
 
-            double x = event.entity.posX;
-            double y = event.entity.posY;
-            double z = event.entity.posZ;
-            float yaw = event.entity.rotationYaw;
-            float pitch =  event.entity.rotationPitch;
+            if(backpack != null && backpack.getItem() instanceof ItemAdventureBackpack)
+            {
+                float rotationY = event.renderer.modelBipedMain.bipedBody.rotateAngleY;
+                float rotationX = event.renderer.modelBipedMain.bipedBody.rotateAngleX;
+                float rotationZ = event.renderer.modelBipedMain.bipedBody.rotateAngleZ;
 
-            ClientProxy.rendererBackpackArmor.render(event.entity, x, y, z, rotationY, pitch, backpack, rotationX, rotationY, rotationZ);
-           //ClientProxy.rendererBackpackArmor.render(event.entity,0,0,0,0,0, backpack);
-           event.renderCape = false;
+                double x = event.entity.posX;
+                double y = event.entity.posY;
+                double z = event.entity.posZ;
+
+                float yaw = event.entity.rotationYaw;
+                float pitch =  event.entity.rotationPitch;
+
+                ClientProxy.rendererBackpackArmor.render(event.entity, x, y, z, rotationY, pitch, backpack, rotationX, rotationY, rotationZ);
+
+                event.renderCape = false;
+            }
         }
+
+
+
     }
 }

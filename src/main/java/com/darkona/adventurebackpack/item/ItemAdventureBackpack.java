@@ -211,23 +211,21 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean isCurrentItem)
     {
-        if(entity instanceof EntityPlayer)
+        /*if(entity != null && entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
             if (player.openContainer instanceof BackpackContainer)
             {
                 player.openContainer.detectAndSendChanges();
             }
-
-
-        }
+        }*/
     }
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
     {
-
-        if (player != null && stack.stackTagCompound != null &&
+        if(world == null || player == null || stack ==null)return;
+        if (stack.stackTagCompound != null &&
                 (stack.getTagCompound().getBoolean("special")) || BackpackAbilities.hasAbility(stack.stackTagCompound.getString("colorName")))
         {
             BackpackAbilities.instance.executeAbility(player, world, stack);
