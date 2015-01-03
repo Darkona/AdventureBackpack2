@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.common.ClientActions;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
+import com.sun.deploy.util.SessionState;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -51,7 +52,6 @@ public class CopterPackSound extends MovingSound
     private void killMe()
     {
         this.setDonePlaying();
-        ClientActions.snd.stopSound(this);
     }
 
     @Override
@@ -65,21 +65,17 @@ public class CopterPackSound extends MovingSound
         {
             if(Wearing.getWearingCopter(player).getTagCompound().getByte("status") == ItemCopterPack.OFF_MODE)
             {
-                //setDonePlaying();
                 killMe();
-
+                return;
             }
         }else
         {
             killMe();
         }
 
-        double vertical = player.motionY;
-        if(Wearing.getWearingCopter(player).getTagCompound().getByte("status") != ItemCopterPack.OFF_MODE)
-        {
-           if(!player.onGround) this.pitch = (vertical > 0) ? 1.2F :  (player.isSneaking()) ? 0.8F : 1.0F;
-           if(player.onGround) this.pitch = 0.8F;
-        }
+       if(!player.onGround) this.pitch = (player.motionY > 0) ? 1.2F :  (player.isSneaking()) ? 0.8F : 1.0F;
+       if(player.onGround) this.pitch = 0.8F;
+
         this.xPosF = (float) this.player.posX;
         this.yPosF = (float) this.player.posY;
         this.zPosF = (float) this.player.posZ;

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.init;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.item.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -30,7 +31,14 @@ public class ModItems
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
 
-        GameRegistry.registerItem(copterPack, "copterPack");
+
     }
 
+    public static void conditionalInit()
+    {
+        if(ConfigHandler.IS_BUILDCRAFT)
+        {
+            GameRegistry.registerItem(copterPack, "copterPack");
+        }
+    }
 }

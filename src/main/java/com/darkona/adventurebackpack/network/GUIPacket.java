@@ -19,6 +19,13 @@ import net.minecraft.world.World;
 public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage,IMessage>
 {
 
+    public static final byte FROM_HOLDING = 1;
+    public static final byte FROM_KEYBIND = 0;
+    public static final byte FROM_TILE = 2;
+
+    public static final byte BACKPACK_GUI = 1;
+    public static final byte COPTER_GUI = 2;
+
     @Override
     public IMessage onMessage(GUImessage message, MessageContext ctx)
     {
@@ -32,55 +39,55 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage,IMessage>
                 int playerY = (int) player.posY;
                 int playerZ = (int) player.posZ;
                 World world = player.worldObj;
-                if(message.type == MessageConstants.COPTER_GUI)
+                if(message.type == COPTER_GUI)
                 {
                     if(Wearing.isHoldingCopter(player))
                     {
                         FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_HOLDING, world, playerX, playerY, playerZ);
+                        return null;
                     }
+
                 }
 
-                if (message.type == MessageConstants.NORMAL_GUI)
+                if (message.type == BACKPACK_GUI)
                 {
-                    if (message.from == MessageConstants.FROM_KEYBIND)
+                    if (message.from == FROM_KEYBIND)
                     {
                         if (Wearing.isWearingBackpack(player))
                         {
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_WEARING, world, playerX, playerY, playerZ);
+                            return null;
                         }
                     }
-                    if (message.from == MessageConstants.FROM_HOLDING)
+                    if (message.from == FROM_HOLDING)
                     {
                         if (Wearing.isHoldingBackpack(player))
                         {
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_HOLDING, world, playerX, playerY, playerZ);
+                            return null;
                         }
                     }
-                }
-
-                if (message.from == MessageConstants.FROM_TILE)
-                {
-
-                    if (message.type == MessageConstants.NORMAL_GUI)
+                    if (message.from == FROM_TILE)
                     {
-
                         if (player.openContainer instanceof BackpackContainer)
                         {
                             TileAdventureBackpack te = (TileAdventureBackpack) ((BackpackContainer) player.openContainer).inventory;
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, te.xCoord, te.yCoord, te.zCoord);
+                            return null;
                         }
                     }
+                    }
                 }
-            }
+
         }
         return null;
     }
 
     public static class GUImessage implements IMessage
     {
-        private byte from;
-        private byte type;
 
+        private byte type;
+        private byte from;
         public GUImessage()
         {
         }

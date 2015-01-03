@@ -19,10 +19,10 @@ import java.util.List;
  */
 public class GuiTank
 {
-    private int H;
-    private int W;
-    private int X;
-    private int Y;
+    private int height;
+    private int width;
+    private int startX;
+    private int startY;
     private int resolution;
     private int liquidPerPixel;
     private float zLevel;
@@ -31,8 +31,8 @@ public class GuiTank
     /**
      * Draws the fluid from a fluidstack in a GUI.
      *
-     * @param X          The X coordinate to start drawing from.
-     * @param Y          The Y coordinate to start drawing from.
+     * @param startX          The startX coordinate to start drawing from.
+     * @param Y          The startY coordinate to start drawing from.
      * @param H          The height in pixels of the tank.
      * @param W          The width in pixels of the tank.
      * @param resolution The resolution of the fluid painted in the tank. Higher values
@@ -40,14 +40,14 @@ public class GuiTank
      *                   8, 16. Other values are untested, but i guess they should
      *                   always be integer divisors of the width, with modulus 0;
      */
-    public GuiTank(int X, int Y, int H, int W, int resolution)
+    public GuiTank(int startX, int Y, int H, int W, int resolution, int maxCapacity)
     {
-        this.X = X;
-        this.Y = Y;
-        this.H = H;
-        this.W = W;
+        this.startX = startX;
+        this.startY = Y;
+        this.height = H;
+        this.width = W;
         this.resolution = resolution > 0 ? W / resolution : W;
-        liquidPerPixel = Constants.basicTankCapacity / this.H;
+        liquidPerPixel = maxCapacity / this.height;
     }
 
     public List<String> getTankTooltip()
@@ -97,8 +97,8 @@ public class GuiTank
             IIcon icon = fluid.getFluid().getStillIcon();
             int pixelsY = fluid.amount / liquidPerPixel;
             Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-            int maxY = Y + H;
-            for (int i = X; i < X + W; i += resolution)
+            int maxY = startY + height;
+            for (int i = startX; i < startX + width; i += resolution)
             {
                 for (int j = maxY - resolution; j >= maxY - pixelsY; j -= resolution)
                 {
@@ -122,9 +122,9 @@ public class GuiTank
             IIcon icon = fluid.getFluid().getStillIcon();
             int pixelsY = fluid.amount / liquidPerPixel;
             Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-            int top = Y + H - pixelsY;
-            int maxY = Y + H - 1;
-            for (int i = X; i < X + W; i += resolution)
+            int top = startY + height - pixelsY;
+            int maxY = startY + height - 1;
+            for (int i = startX; i < startX + width; i += resolution)
             {
                 int iconY = 7;
                 for (int j = maxY; j >= top; j--)
@@ -151,13 +151,12 @@ public class GuiTank
             {
                 IIcon icon = fluid.getFluid().getStillIcon();
                 TextureUtils.bindAtlas(fluid.getFluid().getSpriteNumber());
-                int top = Y + H - (fluid.amount / liquidPerPixel);
-                for (int j = Y + H - 1; j >= top; j--)
+                int top = startY + height - (fluid.amount / liquidPerPixel);
+                for (int j = startY + height - 1; j >= top; j--)
                 {
-                    for (int i = X; i <= X + W - 1; i++)
+                    for (int i = startX; i <= startX + width - 1; i++)
                     {
                         GL11.glPushMatrix();
-                        //GL11.glEnable(GL11.GL_BLEND);
                         if (j >= top + 5)
                         {
                             GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
@@ -166,7 +165,6 @@ public class GuiTank
                             GL11.glColor4f(1, 1, 1, 1);
                         }
                         drawFluidPixelFromIcon(i, j, icon, 1, 1, 0, 0, 0, 0);
-                        //GL11.glDisable(GL11.GL_BLEND);
                         GL11.glPopMatrix();
                     }
                 }
@@ -188,20 +186,20 @@ public class GuiTank
     {
         mouseX -= gui.getLeft();
         mouseY -= gui.getTop();
-        return X <= mouseX && mouseX <= X + W && Y <= mouseY && mouseY <= Y + H;
+        return startX <= mouseX && mouseX <= startX + width && startY <= mouseY && mouseY <= startY + height;
     }
 
     /**
      * Draws a box textured with the selected box of an icon.
      *
-     * @param x    The X coordinate where to start drawing the box.
-     * @param y    The Y coordinate where to start drawing the box.
+     * @param x    The startX coordinate where to start drawing the box.
+     * @param y    The startY coordinate where to start drawing the box.
      * @param icon The icon to draw from.
      * @param w    The Width of the drawed box.
      * @param h    The height of the drawed box.
-     * @param srcX The X coordinate from the icon to start drawing from. Starts
+     * @param srcX The startX coordinate from the icon to start drawing from. Starts
      *             at 0.
-     * @param srcY The Y coordinate from the icon to start drawing from. Starts
+     * @param srcY The startY coordinate from the icon to start drawing from. Starts
      *             at 0.
      * @param srcW The width of the selection in the icon to draw from. Starts at
      *             0.

@@ -10,6 +10,7 @@ import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CopterPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -539,7 +540,7 @@ public class ServerActions
             if(mode == ItemCopterPack.OFF_MODE)
             {
                 newMode = ItemCopterPack.NORMAL_MODE;
-                message = "in normal operation mode.";
+                message = "normal mode.";
             }
 
             if(mode == ItemCopterPack.NORMAL_MODE || mode == ItemCopterPack.HOVER_MODE)
@@ -548,12 +549,16 @@ public class ServerActions
                 message = "off.";
             }
             copter.stackTagCompound.setByte("status", newMode);
-            if(player.worldObj.isRemote){
-                player.addChatComponentMessage(new ChatComponentText("The CopterPack is now " + message));
+
+            if(player.worldObj.isRemote)
+            {
+                player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
+
             }else
             {
+                ClientActions.copterSound(player);
                 ModNetwork.net.sendToAllAround(new CopterPacket.CopterMessage(CopterPacket.SOUND, player.getPersistentID().toString()),
-                        new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY,player.posZ,100.0D));
+                        new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY+5,player.posZ,100.0D));
             }
         }
         else

@@ -9,7 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.*;
 
 /**
  * Created on 02/01/2015
@@ -21,9 +21,9 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
 
 
     private ItemStack containerStack;
-    private FluidTank fuelTank;
-    private int tickCounter;
-    private byte status;
+    public FluidTank fuelTank;
+    public int tickCounter;
+    public byte status;
     private ItemStack[] inventory;
     public FluidTank getFuelTank()
     {
@@ -151,8 +151,7 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
         compound.setTag("fuelTank", this.fuelTank.writeToNBT(new NBTTagCompound()));
         compound.setByte("status", this.status);
         compound.setInteger("tickCounter", this.tickCounter);
-        containerStack.stackTagCompound = new NBTTagCompound();
-
+        containerStack.stackTagCompound = compound;
     }
 
     @Override
@@ -167,7 +166,16 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
         {
             if (i == 0)
             {
-                InventoryActions.transferContainerTank(this, fuelTank, i);
+                ItemStack container = getStackInSlot(i);
+                FluidStack oil = new FluidStack(FluidRegistry.getFluid("oil"),1);
+                FluidStack fuel = new FluidStack(FluidRegistry.getFluid("fuel"),1);
+                if(fuel != null && oil != null)
+                {
+                    if(FluidContainerRegistry.containsFluid(container, oil) || FluidContainerRegistry.containsFluid(container, fuel) || FluidContainerRegistry.isEmptyContainer(container))
+                    {
+                        InventoryActions.transferContainerTank(this, fuelTank, i);
+                    }
+                }
             }
         }
         closeInventory();
@@ -240,7 +248,7 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
     @Override
     public ItemStack getParentItemStack()
     {
-        return null;
+        return this.containerStack;
     }
 
     @Override
@@ -341,5 +349,10 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
     public void setTickCounter(int ticks)
     {
         this.tickCounter = ticks;
+    }
+
+    public byte getStatus()
+    {
+        return status;
     }
 }

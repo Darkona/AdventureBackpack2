@@ -71,6 +71,42 @@ public class ModRecipes
                 'S', Items.stick
         );
 
+        //Copter Engine
+        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
+                "IGI",
+                "PCP",
+                "FOF",
+                'I', Items.iron_ingot,
+                'G', Items.gold_ingot,
+                'P', Blocks.piston,
+                'F', Blocks.furnace,
+                'C', Items.cauldron,
+                'O', Blocks.obsidian
+        );
+
+        //Copter Blades
+        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 6),
+                "III",
+                " F ",
+                " F ",
+                'I', Items.iron_ingot,
+                'F', Blocks.fence
+        );
+
+        //Copter Pack
+        GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
+                "WBW",
+                "TEI",
+                "CDI",
+                'W', Blocks.planks,
+                'B', new ItemStack(ModItems.component, 1, 6),
+                'T', new ItemStack(ModItems.component, 1, 2),
+                'E', new ItemStack(ModItems.component, 1, 5),
+                'C', new ItemStack(Items.dye, 1, 2),
+                'D', Items.diamond,
+                'I', Items.iron_ingot
+        );
+
         GameRegistry.addRecipe(new ItemStack(ModItems.machete),
                 " I ",
                 " I ",

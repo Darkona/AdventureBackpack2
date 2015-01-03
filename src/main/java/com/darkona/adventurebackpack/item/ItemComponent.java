@@ -22,6 +22,9 @@ public class ItemComponent extends ItemAB
     private IIcon backpackTankIcon;
     private IIcon hoseHeadIcon;
     private IIcon macheteHandleIcon;
+    private IIcon copterEngineIcon;
+    private IIcon copterBladesIcon;
+
 
     public ItemComponent()
     {
@@ -40,6 +43,8 @@ public class ItemComponent extends ItemAB
         backpackTankIcon = iconRegister.registerIcon(super.getUnlocalizedName("backpackTank").substring(this.getUnlocalizedName().indexOf(".") + 1));
         hoseHeadIcon = iconRegister.registerIcon(super.getUnlocalizedName("hoseHead").substring(this.getUnlocalizedName().indexOf(".") + 1));
         macheteHandleIcon = iconRegister.registerIcon(super.getUnlocalizedName("macheteHandle").substring(this.getUnlocalizedName().indexOf(".") + 1));
+        copterEngineIcon = iconRegister.registerIcon(super.getUnlocalizedName("copterEngine").substring(this.getUnlocalizedName().indexOf(".") + 1));
+        copterBladesIcon = iconRegister.registerIcon(super.getUnlocalizedName("copterBlades").substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
 
     /**
@@ -73,6 +78,10 @@ public class ItemComponent extends ItemAB
                 return hoseHeadIcon;
             case 4:
                 return macheteHandleIcon;
+            case 5:
+                return copterEngineIcon;
+            case 6:
+                return copterBladesIcon;
         }
         return itemIcon;
     }
@@ -90,6 +99,10 @@ public class ItemComponent extends ItemAB
                 return super.getUnlocalizedName("hoseHead");
             case 4:
                 return super.getUnlocalizedName("macheteHandle");
+            case 5:
+                return super.getUnlocalizedName("copterEngine");
+            case 6:
+                return super.getUnlocalizedName("copterBlades");
         }
         return super.getUnlocalizedName("backpackComponent");
     }
@@ -98,7 +111,7 @@ public class ItemComponent extends ItemAB
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
     {
-        for (int i = 1; i <= 4; i++)
+        for (int i = 1; i <= 6; i++)
         {
             list.add(new ItemStack(this, 1, i));
         }

@@ -48,7 +48,7 @@ public class KeybindHandler
             {
                 if(Wearing.isWearingBackpack(player))
                 {
-                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_KEYBIND));
+                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
                 }
                 if(Wearing.isWearingCopter(player))
                 {

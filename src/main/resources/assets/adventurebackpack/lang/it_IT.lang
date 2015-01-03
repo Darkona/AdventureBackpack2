@@ -22,7 +22,7 @@ item.adventurebackpack:hose_rightTank_spill.name=Tubo: Serbatoio destro / Mod. s
 item.adventurebackpack:hose_rightTank_drink.name=Tubo: Serbatoio destro / Mod. bevuta
 
 item.adventurebackpack:hoseUseless.name=Tubo: Inutilizzabile / Nessuno zaino equipaggiato
-
+item.adventurebackpack:copterPack.name=
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
 

@@ -13,7 +13,6 @@ import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
-import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.common.Optional;
@@ -96,7 +95,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
-        return super.getDurabilityForDisplay(stack);
+        return 1;
     }
 
     @Override
@@ -195,7 +194,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
         {
             if (world.isRemote)
             {
-                ModNetwork.net.sendToServer(new GUIPacket.GUImessage(MessageConstants.NORMAL_GUI, MessageConstants.FROM_HOLDING));
+                ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
             }
         }
         return stack;

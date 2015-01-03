@@ -5,6 +5,8 @@ item.adventurebackpack:sleepingBag.name=Sleeping Bag
 item.adventurebackpack:backpackTank.name=Backpack Tank
 item.adventurebackpack:macheteHandle=Machete Handle
 item.adventurebackpack:hoseHead.name=Hose Nozzle
+item.adventurebackpack:copterEngine.name=Two-Cylinder Diesel Engine
+item.adventurebackpack:copterBlades.name=Copter Blades
 item.adventurebackpack:adventureBackpack.name=Adventure Backpack
 item.adventurebackpack:backpackHose.name=Backpack Hose
 item.adventurebackpack:adventureSuit.name=Adventurer's Suit
@@ -22,7 +24,7 @@ item.adventurebackpack:hose_rightTank_spill.name=Hose: Right Tank / Spill Mode
 item.adventurebackpack:hose_rightTank_drink.name=Hose: Right Tank / Drink Mode
 
 item.adventurebackpack:hoseUseless.name=Hose: Useless / No Backpack
-
+item.adventurebackpack:copterPack.name=Copter Pack
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
 

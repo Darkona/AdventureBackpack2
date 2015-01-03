@@ -22,7 +22,7 @@ item.adventurebackpack:hose_rightTank_spill.name=Трубка для жидко�
 item.adventurebackpack:hose_rightTank_drink.name=Трубка для жидкостей: Правая ёмкость / Режим питья
 
 item.adventurebackpack:hoseUseless.name=Трубка для жидкостей: Не используется / Нет рюкзака
-
+item.adventurebackpack:copterPack.name=
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Рюкзак искателя приключений
 

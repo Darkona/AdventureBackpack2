@@ -22,7 +22,7 @@ public class GuiCopterPack extends GuiContainer implements IBackpackGui
     private InventoryCopterPack inventory;
     private static final ResourceLocation texture = Resources.guiTextures("guiCopterPack");
     private FluidStack fuel;
-    private static GuiTank fuelTank = new GuiTank(77, 8, 72, 16, ConfigHandler.GUI_TANK_RENDER);
+    private static GuiTank fuelTank = new GuiTank(77, 8, 72, 16, ConfigHandler.GUI_TANK_RENDER, 6000);
     public int lefties;
     public int topsies;
 
@@ -62,7 +62,7 @@ public class GuiCopterPack extends GuiContainer implements IBackpackGui
         GL11.glPushMatrix();
         String name = (fuel != null) ? fuel.getLocalizedName() : "None";
         String amount = (fuel != null ? fuel.amount : "Empty").toString();
-        String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
+        String capacity = Integer.toString(inventory.getFuelTank().getCapacity());
         int offsetY = 32;
         int offsetX = 8;
         fontRendererObj.drawString(name, 1 + offsetX , offsetY,0x373737 ,false);

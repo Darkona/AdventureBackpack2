@@ -51,8 +51,6 @@ public class ClientActions
         if(ConfigHandler.ALLOW_COPTER_SOUND)
         {
             CopterPackSound tucutucu = new CopterPackSound(player);
-            snd.stopSounds();
-            LogHelper.info("playing tucutucu");
             snd.playSound(tucutucu);
         }
     }

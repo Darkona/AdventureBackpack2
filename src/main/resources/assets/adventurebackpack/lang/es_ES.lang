@@ -5,6 +5,8 @@ item.adventurebackpack:sleepingBag.name=Bolsa de dormir
 item.adventurebackpack:backpackTank.name=Tanque de Mochila
 item.adventurebackpack:macheteHandle=Empuñadura de Machete
 item.adventurebackpack:hoseHead.name=Boquilla de Manquera
+item.adventurebackpack:copterEngine.name=Motor Diesel de Dos Cilindros
+item.adventurebackpack:copterBlades.name=Aspas de Cóptero
 item.adventurebackpack:adventureBackpack.name=Mochila de Aventura
 item.adventurebackpack:backpackHose.name=Manquera de Mochila
 item.adventurebackpack:adventureSuit.name=Traje de Aventurero
@@ -23,6 +25,7 @@ item.adventurebackpack:hose_rightTank_drink.name=Manguera: Tanque Der. / Modo Be
 
 item.adventurebackpack:hoseUseless.name=Hose: Inútil / Sin Mochila
 
+item.adventurebackpack:copterPack.name=Mochilacóptero
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Mochila de Aventura Base
 
