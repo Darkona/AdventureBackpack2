@@ -3,11 +3,10 @@ package com.darkona.adventurebackpack.client.gui;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.config.GeneralConfig;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
@@ -59,7 +58,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         this.topsies = guiTop;
     }
 
-    public GuiAdvBackpack(EntityPlayer player, InventoryItem item, boolean wearing)
+    public GuiAdvBackpack(EntityPlayer player, InventoryBackpack item, boolean wearing)
     {
         super(new BackpackContainer(player, item, wearing ?  BackpackContainer.SOURCE_WEARING : BackpackContainer.SOURCE_HOLDING));
         this.inventory = item;
@@ -106,9 +105,6 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
             }
         }
 
-        inventory.openInventory();
-        lft = inventory.getLeftTank().getFluid();
-        rgt = inventory.getRightTank().getFluid();
 
 
 
@@ -127,7 +123,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-       GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
         inventory.openInventory();
         lft = inventory.getLeftTank().getFluid();

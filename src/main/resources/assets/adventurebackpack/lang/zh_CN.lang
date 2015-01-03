@@ -20,11 +20,13 @@ item.adventurebackpack:hose_rightTank_suck.name=右侧储水箱 / 吸取模式
 item.adventurebackpack:hose_rightTank_spill.name=右侧储水箱 / 喷洒模式
 item.adventurebackpack:hose_rightTank_drink.name=右侧储水箱 / 饮水模式
 
-item.adventurebackpack:hoseUseless=软管:无法使用 / 没有储水箱
+item.adventurebackpack:hoseUseless.name=软管:无法使用 / 没有储水箱
 
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=探险背包工作台
+
 #CreativeTab
+itemGroup.adventurebackpack=探险背包
 
 #Keybindings
 keys.adventureBackpack.category=探险背包

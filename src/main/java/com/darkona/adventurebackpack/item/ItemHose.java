@@ -5,7 +5,7 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModFluids;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -18,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -141,9 +142,10 @@ public class ItemHose extends ItemAB
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int inv_slot, boolean isCurrent)
     {
+        if(entity == null ||!(entity instanceof EntityPlayer))return;
 
         EntityPlayer player = (EntityPlayer) entity;
-        if (player.getItemInUse() != null && player.getItemInUse().equals(stack)) return;
+        if (world.isRemote && player.getItemInUse() != null && player.getItemInUse().getItem().equals(this)) return;
 
 
         NBTTagCompound nbt = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
@@ -152,7 +154,7 @@ public class ItemHose extends ItemAB
         {
             if (nbt.getInteger("tank") == -1) nbt.setInteger("tank", 0);
             if (nbt.getInteger("mode") == -1) nbt.setInteger("mode", 0);
-            InventoryItem inv = new InventoryItem(backpack);
+            InventoryBackpack inv = new InventoryBackpack(backpack);
             inv.readFromNBT();
             FluidTank tank = nbt.getInteger("tank") == 0 ? inv.getLeftTank() : inv.getRightTank();
             if (tank != null && tank.getFluid() != null)
@@ -180,7 +182,7 @@ public class ItemHose extends ItemAB
 
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return false;
-        InventoryItem inv = Wearing.getBackpackInv(player, true);
+        InventoryBackpack inv = Wearing.getBackpackInv(player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inv.getLeftTank() : inv.getRightTank();
 
         TileEntity te = world.getTileEntity(x, y, z);
@@ -236,7 +238,7 @@ public class ItemHose extends ItemAB
     {
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return stack;
-        InventoryItem inventory = new InventoryItem(backpack);
+        InventoryBackpack inventory = new InventoryBackpack(backpack);
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
         if (tank != null)
@@ -405,7 +407,7 @@ public class ItemHose extends ItemAB
         }
         if (mode == HOSE_DRINK_MODE && tank > -1)
         {
-            InventoryItem inventory = new InventoryItem(Wearing.getWearingBackpack(player));
+            InventoryBackpack inventory = new InventoryBackpack(Wearing.getWearingBackpack(player));
             FluidTank backpackTank = (tank == 0) ? inventory.getLeftTank() : (tank == 1) ? inventory.getRightTank() : null;
             if (backpackTank != null)
             {
@@ -432,7 +434,7 @@ public class ItemHose extends ItemAB
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (entity instanceof EntityCow && backpack != null)
         {
-            InventoryItem inventory = new InventoryItem(backpack);
+            InventoryBackpack inventory = new InventoryBackpack(backpack);
             FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
             tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
             inventory.saveChanges();

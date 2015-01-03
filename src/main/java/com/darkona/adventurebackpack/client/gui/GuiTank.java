@@ -64,7 +64,7 @@ public class GuiTank
      * @param gui
      * @param theFluid
      */
-    public void draw(GuiAdvBackpack gui, FluidStack theFluid)
+    public void draw(IBackpackGui gui, FluidStack theFluid)
     {
         fluid = theFluid;
         this.zLevel = gui.getZLevel();
@@ -90,7 +90,7 @@ public class GuiTank
      * @param gui
      * @param
      */
-    private void drawMethodOne(GuiAdvBackpack gui)
+    private void drawMethodOne(IBackpackGui gui)
     {
         if (fluid != null)
         {
@@ -115,7 +115,7 @@ public class GuiTank
      * @param gui
      * @param
      */
-    private void drawMethodTwo(GuiAdvBackpack gui)
+    private void drawMethodTwo(IBackpackGui gui)
     {
         if (fluid != null)
         {
@@ -143,7 +143,7 @@ public class GuiTank
      * @param gui
      * @param
      */
-    private void drawMethodThree(GuiAdvBackpack gui)
+    private void drawMethodThree(IBackpackGui gui)
     {
         if (fluid != null)
         {
@@ -184,7 +184,7 @@ public class GuiTank
      * @param mouseY
      * @return
      */
-    public boolean inTank(GuiAdvBackpack gui, int mouseX, int mouseY)
+    public boolean inTank(IBackpackGui gui, int mouseX, int mouseY)
     {
         mouseX -= gui.getLeft();
         mouseY -= gui.getTop();

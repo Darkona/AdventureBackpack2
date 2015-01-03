@@ -21,7 +21,7 @@ item.adventurebackpack:hose_rightTank_suck.name=Mangueira: Tanque Direito / Modo
 item.adventurebackpack:hose_rightTank_spill.name=Mangueira: Tanque Direito / Modo Expelir
 item.adventurebackpack:hose_rightTank_drink.name=Mangueira: Tanque Direito / Modo Beber
 
-item.adventurebackpack:hoseUseless=Mangueira: Inútil / Sem Mochila
+item.adventurebackpack:hoseUseless.name=Mangueira: Inútil / Sem Mochila
 
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Base Para Mochila do Aventureiro

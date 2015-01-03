@@ -61,7 +61,7 @@ public class ItemJuiceBottle extends ItemAB
     @Override
     public int getMaxItemUseDuration(ItemStack p_77626_1_)
     {
-        return 32;
+        return 28;
     }
 
     @Override

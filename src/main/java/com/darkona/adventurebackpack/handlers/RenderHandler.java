@@ -1,32 +1,14 @@
 package com.darkona.adventurebackpack.handlers;
 
 import baubles.api.BaublesApi;
-import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
-import com.darkona.adventurebackpack.client.render.RendererBackpackArmor;
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Resources;
-import copy.betterstorage.utils.ReflectionUtils;
-import copy.betterstorage.utils.RenderUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import scala.runtime.MethodCache;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Created on 25/12/2014

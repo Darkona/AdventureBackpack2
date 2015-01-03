@@ -1,8 +1,10 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.common.ClientActions;
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.NyanCatPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -33,7 +35,7 @@ public class BackpackEventHandler
     public void eatGoldenApple(PlayerUseItemEvent.Finish event)
     {
         EntityPlayer player = event.entityPlayer;
-
+        if(!ConfigHandler.BACKPACK_ABILITIES)return;
         if (event.item.getItem() instanceof ItemAppleGold &&
                 //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
                 BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow"))
@@ -55,6 +57,7 @@ public class BackpackEventHandler
                 NyanCatPacket.NyanCatMessage msg = new NyanCatPacket.NyanCatMessage( NyanCatPacket.PLAY_NYAN, player.getPersistentID().toString());
                 //ModNetwork.net.sendToDimension(msg, player.dimension); Would tell everybody in the dimension... not really worth it.
                 ModNetwork.net.sendToAllAround(msg, new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY,player.posZ,50.0D));
+                //ClientActions.awesomeness(player, NyanCatPacket.PLAY_NYAN);
             }else
             {
                 ModNetwork.net.sendToServer( new NyanCatPacket.NyanCatMessage( NyanCatPacket.PLAY_NYAN, player.getPersistentID().toString()));
@@ -67,9 +70,10 @@ public class BackpackEventHandler
     @SubscribeEvent
     public void detectBow(ArrowNockEvent event)
     {
+        if(!ConfigHandler.BACKPACK_ABILITIES)return;
         if (Wearing.isWearingBackpack(event.entityPlayer))
         {
-            InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(event.entityPlayer));
+            InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
             if (BackpackNames.getBackpackColorName(backpack.getParentItemStack()).equals("Skeleton") && backpack.hasItem(Items.arrow))
             {
                 event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration());
@@ -81,9 +85,10 @@ public class BackpackEventHandler
     @SubscribeEvent
     public void detectArrow(ArrowLooseEvent event)
     {
+        if(!ConfigHandler.BACKPACK_ABILITIES)return;
         if (Wearing.isWearingBackpack(event.entityPlayer))
         {
-            InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(event.entityPlayer));
+            InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
             if (BackpackNames.getBackpackColorName(backpack.getParentItemStack()).equals("Skeleton") && backpack.hasItem(Items.arrow))
             {
                 ServerActions.leakArrow(event.entityPlayer, event.bow, event.charge);

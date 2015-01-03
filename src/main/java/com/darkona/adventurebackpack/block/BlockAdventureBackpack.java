@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.block;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Icons;
+import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.reference.ModInfo;
@@ -278,7 +279,7 @@ public class BlockAdventureBackpack extends BlockContainer
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
 
-        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, 0, world, x, y, z);
+        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
         return true;
     }
 

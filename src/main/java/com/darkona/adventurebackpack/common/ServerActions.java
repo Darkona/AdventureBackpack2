@@ -1,18 +1,22 @@
 package com.darkona.adventurebackpack.common;
 
-import com.darkona.adventurebackpack.api.FluidEffect;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.network.CopterPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -21,7 +25,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -49,7 +52,7 @@ public class ServerActions
     {
         try
         {
-            InventoryItem backpack = Wearing.getBackpackInv(player, true);
+            InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
             if (direction < 0)
@@ -340,7 +343,7 @@ public class ServerActions
     {
         World world = player.worldObj;
         Random itemRand = new Random();
-        InventoryItem backpack = new InventoryItem(Wearing.getWearingBackpack(player));
+        InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(player));
 
         //this is all vanilla code for the bow
         boolean flag = player.capabilities.isCreativeMode
@@ -516,5 +519,63 @@ public class ServerActions
         player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
         player.motionY += 0.30;
         player.jumpMovementFactor += 0.3;
+    }
+
+    public static void toggleCopterPack(EntityPlayer player, ItemStack copter, byte type)
+    {
+        String message = "";
+        if(!copter.hasTagCompound())
+        {
+            copter.stackTagCompound = new NBTTagCompound();
+        }
+        if(!copter.stackTagCompound.hasKey("status"))
+        {
+            copter.stackTagCompound.setByte("status", ItemCopterPack.OFF_MODE);
+        }
+        byte mode = copter.stackTagCompound.getByte("status");
+        byte newMode = ItemCopterPack.OFF_MODE;
+        if(type == CopterPacket.ON_OFF)
+        {
+            if(mode == ItemCopterPack.OFF_MODE)
+            {
+                newMode = ItemCopterPack.NORMAL_MODE;
+                message = "in normal operation mode.";
+            }
+
+            if(mode == ItemCopterPack.NORMAL_MODE || mode == ItemCopterPack.HOVER_MODE)
+            {
+                newMode = ItemCopterPack.OFF_MODE;
+                message = "off.";
+            }
+            copter.stackTagCompound.setByte("status", newMode);
+            if(player.worldObj.isRemote){
+                player.addChatComponentMessage(new ChatComponentText("The CopterPack is now " + message));
+            }else
+            {
+                ModNetwork.net.sendToAllAround(new CopterPacket.CopterMessage(CopterPacket.SOUND, player.getPersistentID().toString()),
+                        new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY,player.posZ,100.0D));
+            }
+        }
+        else
+        if(type == CopterPacket.TOGGLE && mode != ItemCopterPack.OFF_MODE)
+        {
+            if(mode == ItemCopterPack.NORMAL_MODE)
+            {
+                newMode = ItemCopterPack.HOVER_MODE;
+                message = "in hover mode.";
+            }
+            if(mode == ItemCopterPack.HOVER_MODE)
+            {
+                newMode = ItemCopterPack.NORMAL_MODE;
+                message = "in normal operation mode.";
+            }
+            copter.stackTagCompound.setByte("status", newMode);
+            if(player.worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("The CopterPack is now " + message));
+        }
+    }
+
+    public static void copterPackElevate(EntityPlayerMP player, ItemStack copter)
+    {
+        ItemCopterPack.elevate(player, copter);
     }
 }

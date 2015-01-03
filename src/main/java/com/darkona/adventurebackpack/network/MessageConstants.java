@@ -12,6 +12,5 @@ public class MessageConstants
     public static final byte FROM_TILE = 2;
 
     public static final byte NORMAL_GUI = 1;
-    public static final byte CRAFT_GUI = 2;
-
+    public static final byte COPTER_GUI = 2;
 }

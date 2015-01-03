@@ -6,7 +6,7 @@ import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.client.render.RendererStack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -238,12 +238,12 @@ public class ModelBackpackArmor extends ModelBiped
 
     public void setBackpack2(ItemStack backpack)
     {
-        this.backpack = new InventoryItem(backpack);
+        this.backpack = new InventoryBackpack(backpack);
     }
 
     public ModelBackpackArmor(ItemStack backpack)
     {
-        this.backpack = new InventoryItem(backpack);
+        this.backpack = new InventoryBackpack(backpack);
     }
 
     private void startBlending()
@@ -334,7 +334,7 @@ public class ModelBackpackArmor extends ModelBiped
     }
 
     public void renderWithBackpack(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack backpack){
-        this.backpack = new InventoryItem(backpack);
+        this.backpack = new InventoryBackpack(backpack);
         render(entity, f,f1,f2,f3,f4,f5);
     }
 

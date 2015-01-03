@@ -21,12 +21,13 @@ item.adventurebackpack:hose_rightTank_suck.name=Трубка для жидкос
 item.adventurebackpack:hose_rightTank_spill.name=Трубка для жидкостей: Правая ёмкость / Режим откачивания
 item.adventurebackpack:hose_rightTank_drink.name=Трубка для жидкостей: Правая ёмкость / Режим питья
 
-item.adventurebackpack:hoseUseless=Трубка для жидкостей: Не используется / Нет рюкзака
+item.adventurebackpack:hoseUseless.name=Трубка для жидкостей: Не используется / Нет рюкзака
 
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Рюкзак искателя приключений
 
 #CreativeTab
+itemGroup.adventurebackpack=Рюкзак искателя приключений
 
 #Keybindings
 keys.adventureBackpack.category=Рюкзак искателя приключений

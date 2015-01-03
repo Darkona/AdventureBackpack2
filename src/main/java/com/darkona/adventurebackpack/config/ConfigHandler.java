@@ -29,6 +29,8 @@ public class ConfigHandler
 
     public static boolean BACKPACK_ABILITIES = true;
 
+    public static boolean ALLOW_COPTER_SOUND = true;
+
     public static void init(File configFile)
     {
         if (config == null)
@@ -45,6 +47,9 @@ public class ConfigHandler
         GUI_TANK_RENDER = config.getInt("TankRenderType", config.CATEGORY_GENERAL, 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
         BONUS_CHEST_ALLOWED = config.getBoolean("BonusBackpack", config.CATEGORY_GENERAL, false, "Include a Standard Adventure Backpack in bonus chest?");
         PIGMAN_ALLOWED = config.getBoolean("PigmanBackpacks", config.CATEGORY_GENERAL, false, "Allow generation of Pigman Backpacks in dungeon loot and villager trades");
+        ALLOW_COPTER_SOUND = config.getBoolean("CopterPackSound",config.CATEGORY_GENERAL,true, "Allow playing the CopterPack sound (Client Only, other players may hear it)");
+        BACKPACK_ABILITIES = config.getBoolean("BackpackAbilities",config.CATEGORY_GENERAL,true,"Allow the backpacks to execute their special abilities, or be only cosmetic (Doesn't affect lightning transformation) Must be " +
+                "disabled in both Client and Server to work properly");
         if (config.hasChanged())
         {
             config.save();

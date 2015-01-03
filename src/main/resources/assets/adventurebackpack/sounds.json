@@ -1,3 +1,4 @@
 {
-    "nyan":{"category":"master","sounds":[{"name":"nyan","stream":"true"}]}
+    "nyan":{"category":"player","sounds":[{"name":"nyan","stream":"true"}]},
+	"helicopter":{"category":"player","sounds":[{"name":"helicopter2","stream":"false"}]}
 }

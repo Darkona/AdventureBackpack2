@@ -41,7 +41,6 @@ public class NyanCatPacket  implements IMessageHandler<NyanCatPacket.NyanCatMess
         if(ctx.side.isClient())
         {
             EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerID));
-
             ClientActions.awesomeness(player, message.soundCode);
 
             return null;

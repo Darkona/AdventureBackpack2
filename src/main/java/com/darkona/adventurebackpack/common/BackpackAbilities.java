@@ -6,14 +6,11 @@ import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.CowAbilityPacket;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
-import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -31,7 +28,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.input.Keyboard;
 
 import java.util.Iterator;
 import java.util.List;
@@ -146,15 +142,15 @@ public class BackpackAbilities
 
     public void itemBat(EntityPlayer player, World world, ItemStack backpack)
     {
-        player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 1, 2));
+        player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5, 0));
     }
 
     public void itemSquid(EntityPlayer player, World world, ItemStack backpack)
     {
         if(player.isInWater())
         {
-            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, 2));
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 1, 2));
+            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, 0));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5, 0));
         }
     }
 
@@ -196,7 +192,7 @@ public class BackpackAbilities
 
         if (lastDropTime <= 0 && drops > 0)
         {
-            InventoryItem inv = Wearing.getBackpackInv(player, true);
+            InventoryBackpack inv = Wearing.getBackpackInv(player, true);
             FluidStack raindrop = new FluidStack(FluidRegistry.WATER, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
@@ -311,7 +307,7 @@ public class BackpackAbilities
 
         if (lastDropTime <= 0 && drops > 0)
         {
-            InventoryItem inv = Wearing.getBackpackInv(player, true);
+            InventoryBackpack inv = Wearing.getBackpackInv(player, true);
             FluidStack raindrop = new FluidStack(ModFluids.melonJuice, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
@@ -396,12 +392,12 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        IAdvBackpack inv = new InventoryItem(backpack);
+        IAdvBackpack inv = new InventoryBackpack(backpack);
         FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
         BackpackContainer cont = null;
         if(player.openContainer != null && player.openContainer instanceof BackpackContainer){
             cont = (BackpackContainer)player.openContainer;
-            if (cont.inventory instanceof InventoryItem && ((InventoryItem)cont.inventory).getParentItemStack().equals(backpack)){
+            if (cont.inventory instanceof InventoryBackpack && ((InventoryBackpack)cont.inventory).getParentItemStack().equals(backpack)){
                 inv = cont.inventory;
             }
         }
@@ -484,7 +480,7 @@ public class BackpackAbilities
 
         if (lastCheckTime <= 0)
         {
-            List<EntityWolf> wolves = player.worldObj.getEntitiesWithinAABB(
+            List<EntityWolf> wolves = world.getEntitiesWithinAABB(
                     EntityWolf.class,
                     AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
                             player.posX + 1.0D, player.posY + 1.0D,

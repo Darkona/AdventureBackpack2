@@ -30,7 +30,7 @@ public class ModItems
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
 
-        //GameRegistry.registerItem(copterPack, "copterPack");
+        GameRegistry.registerItem(copterPack, "copterPack");
     }
 
 }

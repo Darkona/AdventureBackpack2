@@ -6,8 +6,10 @@ import com.darkona.adventurebackpack.handlers.RenderHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModItems;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -22,6 +24,7 @@ public class ClientProxy implements IProxy
     public static RendererHose rendererHose;
     public static RendererBackpackArmor rendererBackpackArmor;
     public static RenderHandler renderHandler;
+
     public void init()
     {
         initRenderers();

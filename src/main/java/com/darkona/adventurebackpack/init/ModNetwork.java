@@ -21,6 +21,8 @@ public class ModNetwork
         registerMessage(NyanCatPacket.class, NyanCatPacket.NyanCatMessage.class);
         registerMessage(SleepingBagPacket.class, SleepingBagPacket.SleepingBagMessage.class );
         registerMessage(CowAbilityPacket.class, CowAbilityPacket.CowAbilityMessage.class);
+        registerMessage(JumpPacket.class, JumpPacket.JumpMessage.class);
+        registerMessage(CopterPacket.class, CopterPacket.CopterMessage.class);
     }
 
     private static void registerMessage(Class handler, Class message)

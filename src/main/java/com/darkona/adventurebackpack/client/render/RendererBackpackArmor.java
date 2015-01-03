@@ -2,15 +2,12 @@ package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -18,10 +15,7 @@ import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -51,7 +45,7 @@ public class RendererBackpackArmor extends RendererLivingEntity
 
     public void render(Entity entity, double x, double y, double z, float yaw, float pitch, ItemStack backpack, float rotX, float rotY, float rotZ){
 
-        InventoryItem inv = new InventoryItem(backpack);
+        InventoryBackpack inv = new InventoryBackpack(backpack);
         //((ModelBackpackArmor)this.modelBipedMain) = backpack.getItem().getArmorModel((EntityLivingBase)entity,backpack, 0);
         ((ModelBackpackArmor)this.modelBipedMain).setBackpack2(backpack);
         this.mainModel = this.modelBipedMain;

@@ -3,39 +3,32 @@ package com.darkona.adventurebackpack.item;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.UnequipBackpackEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModMaterials;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.BackpackContainer;
-import com.darkona.adventurebackpack.inventory.InventoryItem;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.MessageConstants;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
@@ -224,6 +217,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
     {
+        if(!ConfigHandler.BACKPACK_ABILITIES)return;
         if(world == null || player == null || stack ==null)return;
         if (stack.stackTagCompound != null &&
                 (stack.getTagCompound().getBoolean("special")) || BackpackAbilities.hasAbility(stack.stackTagCompound.getString("colorName")))
@@ -248,7 +242,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     @Override
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
-        InventoryItem inv = new InventoryItem(stack);
+        InventoryBackpack inv = new InventoryBackpack(stack);
         return ModelBackpackArmor.instance.setBackpack(inv);
     }
 

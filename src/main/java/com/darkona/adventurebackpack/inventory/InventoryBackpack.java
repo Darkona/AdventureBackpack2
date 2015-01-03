@@ -22,7 +22,7 @@ import net.minecraftforge.fluids.FluidTank;
  *
  * @author Darkona
  */
-public class InventoryItem implements IAdvBackpack
+public class InventoryBackpack implements IAdvBackpack
 {
 
     public ItemStack[] inventory;
@@ -36,7 +36,7 @@ public class InventoryItem implements IAdvBackpack
     private boolean special;
     private NBTTagCompound extendedProperties;
 
-    public InventoryItem(ItemStack backpack)
+    public InventoryBackpack(ItemStack backpack)
     {
         this.containerStack = backpack;
         inventory = new ItemStack[Constants.inventorySize];

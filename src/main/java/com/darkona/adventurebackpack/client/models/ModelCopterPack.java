@@ -1,9 +1,11 @@
 package com.darkona.adventurebackpack.client.models;
 
+import com.darkona.adventurebackpack.item.ItemCopterPack;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 
 /**
@@ -14,7 +16,7 @@ import net.minecraft.util.MathHelper;
 public class ModelCopterPack extends ModelBiped
 {
 
-    public static ModelCopterPack instance = new ModelCopterPack();;
+    public static ModelCopterPack instance = new ModelCopterPack();
     public ModelRenderer Base;
     public ModelRenderer EngineBody;
     public ModelRenderer TankTop;
@@ -33,6 +35,18 @@ public class ModelCopterPack extends ModelBiped
     public ModelRenderer TankBottom;
     public ModelRenderer FuelLine1;
     public ModelRenderer FuelLine2;
+    public ModelRenderer Escape1;
+    public ModelRenderer Escape2;
+    public ModelRenderer Escape3;
+    public ModelRenderer EscapeFilter;
+    private ItemStack copterPack;
+
+
+    public ModelCopterPack setCopterPack(ItemStack copterPack)
+    {
+        this.copterPack = copterPack;
+        return this;
+    }
 
     public ModelCopterPack() {
 
@@ -107,7 +121,7 @@ public class ModelCopterPack extends ModelBiped
         this.EngineBody.addChild(this.EnginePistonRight);
 
         this.Axis = new ModelRenderer(this, 25, 22);
-        this.Axis.setRotationPoint(0.0F, 8.0F, 5.0F);
+        this.Axis.setRotationPoint(0.0F, 8.0F, 5.75F);
         this.Axis.addBox(-0.5F, -25.0F, -0.5F, 1, 25, 1);
         this.EngineBody.addChild(this.Axis);
 
@@ -133,25 +147,65 @@ public class ModelCopterPack extends ModelBiped
         this.setRotateAngle(Blade4, -3.141592653589793F, 0.0F, 0.0F);
         this.Axis.addChild(this.Blade4);
 
+        //ESCAPE
+
+        this.Escape1 = new ModelRenderer(this, 9, 35);
+        this.Escape1.setRotationPoint(-4.0F, 9.0F, 4.0F);
+        this.Escape1.addBox(0.0F, 0.0F, 0.0F, 2, 1, 1);
+        this.Base.addChild(this.Escape1);
+
+        this.Escape2 = new ModelRenderer(this, 38, 40);
+        this.Escape2.setRotationPoint(-4.0F, 0.0F, 4.0F);
+        this.Escape2.addBox(0.0F, 0.0F, 0.0F, 1, 9, 1);
+        this.Base.addChild(this.Escape2);
+
+        this.Escape3 = new ModelRenderer(this, 6, 24);
+        this.Escape3.setRotationPoint(-4.0F, 0.0F, 5.0F);
+        this.Escape3.addBox(0.0F, 0.0F, 0.0F, 1, 1, 2);
+        this.Base.addChild(this.Escape3);
+
+        this.EscapeFilter = new ModelRenderer(this, 35, 28);
+        this.EscapeFilter.setRotationPoint(-4.4F, 2.0F, 3.5F);
+        this.EscapeFilter.addBox(0.0F, 0.0F, 0.0F, 2, 5, 2);
+        this.Base.addChild(this.EscapeFilter);
+
         this.bipedBody.addChild(this.Base);
     }
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        setRotationAngles(f,f1,f2,f3,f4,f5,entity);
-        this.Base.render(f5);
-
+        if(entity == null)Axis.isHidden = true;
         if(entity != null && entity instanceof EntityPlayer)
         {
+
+            if(copterPack != null && copterPack.stackTagCompound!= null && copterPack.stackTagCompound.hasKey("status"))
+            {
+                byte mode = copterPack.stackTagCompound.getByte("status");
+                if(mode == ItemCopterPack.OFF_MODE)
+                {
+                    Axis.isHidden = true;
+                }else
+                {
+                    int factor = 0;
+                    if(entity.onGround || (!entity.onGround && entity.isSneaking()))
+                    {
+                        factor = 16;
+                    }else
+                    {
+                        factor = entity.motionY > 0 ? 36 : 28;
+                    }
+                    Axis.isHidden = false;
+                    float rad = this.Axis.rotateAngleY;
+                    float deg = rad * 57.2957795f;
+                    rad = (deg < 360) ? (deg + factor) / 57.2957795f : 0;
+                    this.Axis.rotateAngleY = rad;
+                }
+                setRotationAngles(f,f1,f2,f3,f4,f5,entity);
+            }
+            this.Base.render(f5);
             EntityPlayer player = (EntityPlayer) entity;
             isSneak = player.isSneaking();
-            if(!player.onGround)
-            {
-                float rad = this.Axis.rotateAngleY;
-                float deg = rad * 57.2957795f;
-                rad = (deg < 360) ? (deg + 16) / 57.2957795f : 0;
-                this.Axis.rotateAngleY = rad;
-            }
+
         }
     }
 

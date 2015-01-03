@@ -21,11 +21,13 @@ item.adventurebackpack:hose_rightTank_suck.name=Manguera: Tanque Der. / Modo Suc
 item.adventurebackpack:hose_rightTank_spill.name=Manguera: Tanque Der. / Modo Vertir
 item.adventurebackpack:hose_rightTank_drink.name=Manguera: Tanque Der. / Modo Beber
 
-item.adventurebackpack:hoseUseless=Hose: Inútil / Sin Mochila
+item.adventurebackpack:hoseUseless.name=Hose: Inútil / Sin Mochila
 
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Mochila de Aventura Base
+
 #CreativeTab
+itemGroup.adventurebackpack=Mochila de Aventura
 
 #Keybindings
 keys.adventureBackpack.category=Mochila de Aventura

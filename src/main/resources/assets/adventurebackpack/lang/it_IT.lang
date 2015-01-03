@@ -21,12 +21,13 @@ item.adventurebackpack:hose_rightTank_suck.name=Tubo: Serbatoio destro / Mod. ri
 item.adventurebackpack:hose_rightTank_spill.name=Tubo: Serbatoio destro / Mod. spruzzata
 item.adventurebackpack:hose_rightTank_drink.name=Tubo: Serbatoio destro / Mod. bevuta
 
-item.adventurebackpack:hoseUseless=Tubo: Inutilizzabile / Nessuno zaino equipaggiato
+item.adventurebackpack:hoseUseless.name=Tubo: Inutilizzabile / Nessuno zaino equipaggiato
 
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
 
 #CreativeTab
+itemGroup.adventurebackpack=Zaino dell'avventuriero
 
 #Keybindings
 keys.adventureBackpack.category=Zaini dell'avventuriero
