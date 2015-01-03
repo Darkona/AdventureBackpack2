@@ -51,9 +51,9 @@ public class CopterPacket implements IMessageHandler<CopterPacket.CopterMessage,
             {
                 EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerID));
                 EntityClientPlayerMP thisPlayer = Minecraft.getMinecraft().thePlayer;
-                LogHelper.info("player = " + player.getUniqueID());
-                LogHelper.info("player = " + thisPlayer.getUniqueID());
-                if(player.getUniqueID() != thisPlayer.getUniqueID())
+                //LogHelper.info("player = " + player.getUniqueID());
+                //LogHelper.info("player = " + thisPlayer.getUniqueID());
+                //if(player.getUniqueID() != thisPlayer.getUniqueID())
                 {
                     ClientActions.copterSound(player);
                 }

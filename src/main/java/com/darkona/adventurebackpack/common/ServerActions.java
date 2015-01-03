@@ -553,12 +553,13 @@ public class ServerActions
             if(player.worldObj.isRemote)
             {
                 player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
-
-            }else
-            {
-                ClientActions.copterSound(player);
+                //ClientActions.copterSound(player);
                 ModNetwork.net.sendToAllAround(new CopterPacket.CopterMessage(CopterPacket.SOUND, player.getPersistentID().toString()),
                         new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY+5,player.posZ,100.0D));
+            }else
+            {
+
+
             }
         }
         else
@@ -567,15 +568,15 @@ public class ServerActions
             if(mode == ItemCopterPack.NORMAL_MODE)
             {
                 newMode = ItemCopterPack.HOVER_MODE;
-                message = "in hover mode.";
+                message = "hover mode.";
             }
             if(mode == ItemCopterPack.HOVER_MODE)
             {
                 newMode = ItemCopterPack.NORMAL_MODE;
-                message = "in normal operation mode.";
+                message = "normal mode.";
             }
             copter.stackTagCompound.setByte("status", newMode);
-            if(player.worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("The CopterPack is now " + message));
+            if(player.worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
         }
     }
 
