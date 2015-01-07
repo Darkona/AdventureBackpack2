@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.events.CopterSoundEvent;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModItems;
@@ -9,11 +10,10 @@ import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CopterPacket;
+import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -525,6 +526,8 @@ public class ServerActions
     public static void toggleCopterPack(EntityPlayer player, ItemStack copter, byte type)
     {
         String message = "";
+        boolean actionPerformed = false;
+
         if(!copter.hasTagCompound())
         {
             copter.stackTagCompound = new NBTTagCompound();
@@ -533,48 +536,46 @@ public class ServerActions
         {
             copter.stackTagCompound.setByte("status", ItemCopterPack.OFF_MODE);
         }
+
         byte mode = copter.stackTagCompound.getByte("status");
         byte newMode = ItemCopterPack.OFF_MODE;
+
         if(type == CopterPacket.ON_OFF)
         {
-            if(mode == ItemCopterPack.OFF_MODE)
+            if (mode == ItemCopterPack.OFF_MODE)
             {
                 newMode = ItemCopterPack.NORMAL_MODE;
                 message = "normal mode.";
+                actionPerformed =true;
+                if (!player.worldObj.isRemote)
+                    ModNetwork.sendToNearby(PlayerSoundPacket.makeCopterMessage(player, PlayerSoundPacket.play),player);
             }
-
-            if(mode == ItemCopterPack.NORMAL_MODE || mode == ItemCopterPack.HOVER_MODE)
+            else
             {
                 newMode = ItemCopterPack.OFF_MODE;
                 message = "off.";
-            }
-            copter.stackTagCompound.setByte("status", newMode);
-
-            if(player.worldObj.isRemote)
-            {
-                player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
-                //ClientActions.copterSound(player);
-                ModNetwork.net.sendToAllAround(new CopterPacket.CopterMessage(CopterPacket.SOUND, player.getPersistentID().toString()),
-                        new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY+5,player.posZ,100.0D));
-            }else
-            {
-
-
+                actionPerformed =true;
             }
         }
-        else
+
         if(type == CopterPacket.TOGGLE && mode != ItemCopterPack.OFF_MODE)
         {
             if(mode == ItemCopterPack.NORMAL_MODE)
             {
                 newMode = ItemCopterPack.HOVER_MODE;
                 message = "hover mode.";
+                actionPerformed =true;
             }
             if(mode == ItemCopterPack.HOVER_MODE)
             {
                 newMode = ItemCopterPack.NORMAL_MODE;
                 message = "normal mode.";
+                actionPerformed =true;
             }
+        }
+
+        if (actionPerformed)
+        {
             copter.stackTagCompound.setByte("status", newMode);
             if(player.worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
         }

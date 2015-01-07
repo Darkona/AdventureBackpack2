@@ -10,6 +10,7 @@ import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.UnequipBackpackEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -18,6 +19,7 @@ import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -51,6 +53,11 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
         //setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
+
+    public static Item getItemFromBlock(Block block)
+    {
+        return block instanceof BlockAdventureBackpack ? ModItems.adventureBackpack : null;
+    }
     /**
      * Return the enchantability factor of the item, most of the timeInSeconds is based on material.
      */

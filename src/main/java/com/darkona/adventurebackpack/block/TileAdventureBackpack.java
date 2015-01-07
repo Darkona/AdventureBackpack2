@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.block;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
-import com.darkona.adventurebackpack.events.EquipBackpackEvent;
+import com.darkona.adventurebackpack.events.CopterSoundEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
@@ -560,7 +560,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         }
         if (response)
         {
-            EquipBackpackEvent event = new EquipBackpackEvent(player, stacky);
+            CopterSoundEvent event = new CopterSoundEvent(player, stacky);
             MinecraftForge.EVENT_BUS.post(event);
             return response;
         } else

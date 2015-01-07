@@ -137,19 +137,35 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
         if(compound.hasKey("status"))
         {
             this.status = compound.getByte("status");
+        }else
+        {
+            this.status = ItemCopterPack.OFF_MODE;
         }
         if(compound.hasKey("tickCounter"))
         {
             this.tickCounter = compound.getInteger("tickCounter");
+        }
+        else
+        {
+            this.tickCounter = 0;
         }
     }
 
     @Override
     public void closeInventory()
     {
-        NBTTagCompound compound = new NBTTagCompound();
+
+        NBTTagCompound compound = containerStack.hasTagCompound()? containerStack.stackTagCompound : new NBTTagCompound();
         compound.setTag("fuelTank", this.fuelTank.writeToNBT(new NBTTagCompound()));
         compound.setByte("status", this.status);
+        compound.setInteger("tickCounter", this.tickCounter);
+        containerStack.stackTagCompound = compound;
+    }
+
+    public void closeInventoryNoStatus()
+    {
+        NBTTagCompound compound = containerStack.stackTagCompound;
+        compound.setTag("fuelTank", this.fuelTank.writeToNBT(new NBTTagCompound()));
         compound.setInteger("tickCounter", this.tickCounter);
         containerStack.stackTagCompound = compound;
     }

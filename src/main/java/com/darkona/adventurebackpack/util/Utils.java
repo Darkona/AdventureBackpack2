@@ -21,7 +21,15 @@ import java.util.Calendar;
 public class Utils
 {
 
+    public static float degreesToRadians(float degrees)
+    {
+        return degrees / 57.2957795f;
+    }
 
+    public static float radiansToDegrees(float radians)
+    {
+        return radians * 57.2957795f;
+    }
     public static int[] calculateEaster(int year){
 
 
@@ -154,7 +162,7 @@ public class Utils
         return valid;
     }
 
-    public static ChunkCoordinates findBlock(World world, int x, int y, int z, Block block, int range)
+    public static ChunkCoordinates findBlock2D(World world, int x, int y, int z, Block block, int range)
     {
         for (int i = x - range; i <= x + range; i++)
         {
@@ -169,6 +177,23 @@ public class Utils
         return null;
     }
 
+    public static ChunkCoordinates findBlock3D(World world, int x, int y, int z, Block block, int range, int verticalRange)
+    {
+        for(int vertical = y - verticalRange; vertical <= vertical + verticalRange; vertical++)
+        {
+            for (int i = x - range; i <= x + range; i++)
+            {
+                for (int j = z - range; j <= z + range; j++)
+                {
+                    if (world.getBlock(i, y, j) == block)
+                    {
+                        return new ChunkCoordinates(i, y, j);
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     public static String capitalize(String s)
     {
@@ -226,18 +251,19 @@ public class Utils
         return seconds * 20;
     }
 
-    public static String whereTheHellAmI()
+    public static int secondsToTicks(float seconds)
+    {
+        return (int)seconds*20;
+    }
+    public static boolean whereTheHellAmI()
     {
         Side side = FMLCommonHandler.instance().getEffectiveSide();
         if (side == Side.SERVER)
         {
-            return "Server";
-        } else if (side == Side.CLIENT)
-        {
-            return "Client";
+            return true;
         } else
         {
-            return "I don't know";
+            return false;
         }
     }
 }

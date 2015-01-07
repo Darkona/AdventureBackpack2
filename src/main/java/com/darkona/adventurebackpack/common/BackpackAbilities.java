@@ -8,9 +8,11 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.CowAbilityPacket;
+import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -255,7 +257,10 @@ public class BackpackAbilities
                         backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
                 if (slimeTime <= 0)
                 {
-                    Visuals.SlimeParticles(player, world);
+                    if(!world.isRemote)
+                    {
+                        ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.SLIME_PARTICLE,player.getUniqueID().toString()),player);
+                    }
                     world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
                     slimeTime = 5;
                 }
@@ -579,7 +584,11 @@ public class BackpackAbilities
             player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 1, 2));
             if (noteTime % 2 == 0)
             {
-                Visuals.NyanParticles(player, world);
+                //Visuals.NyanParticles(player, world);
+                if(!world.isRemote)
+                {
+                    ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.NYAN_PARTICLE,player.getUniqueID().toString()),player);
+                }
             }
         }
         backpack.getTagCompound().setInteger("lastTime", noteTime);

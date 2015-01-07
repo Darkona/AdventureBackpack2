@@ -74,13 +74,13 @@ public class GuiTank
                 drawMethodOne(gui);
                 break;
             case 2:
-                drawMethodTwo(gui);
+                drawMethodTwo();
                 break;
             case 3:
-                drawMethodThree(gui);
+                drawMethodThree();
                 break;
             default:
-                drawMethodThree(gui);
+                drawMethodThree();
                 break;
         }
 
@@ -112,10 +112,9 @@ public class GuiTank
     }
 
     /**
-     * @param gui
      * @param
      */
-    private void drawMethodTwo(IBackpackGui gui)
+    private void drawMethodTwo()
     {
         if (fluid != null)
         {
@@ -140,10 +139,9 @@ public class GuiTank
     }
 
     /**
-     * @param gui
      * @param
      */
-    private void drawMethodThree(IBackpackGui gui)
+    private void drawMethodThree()
     {
         if (fluid != null)
         {

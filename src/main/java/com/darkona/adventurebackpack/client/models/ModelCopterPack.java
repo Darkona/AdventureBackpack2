@@ -6,6 +6,7 @@ import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -207,27 +208,24 @@ public class ModelCopterPack extends ModelBiped
 
     private void renderCopterPack(Entity entity,float scale)
     {
+        Axis.isHidden = true;
+        copterPack.openInventory();
         if(copterPack.getParentItemStack() != null && copterPack.getParentItemStack().stackTagCompound!= null && copterPack.getParentItemStack().stackTagCompound.hasKey("status"))
         {
-            byte mode = copterPack.getStatus();
-            if(mode == ItemCopterPack.OFF_MODE)
+            byte mode = copterPack.getParentItemStack().stackTagCompound.getByte("status");
+            if(mode != ItemCopterPack.OFF_MODE)
             {
-                Axis.isHidden = true;
-            }else
-            {
-                int factor = 0;
+                Axis.isHidden = false;
+                int degrees = 0;
                 if(entity.onGround || (!entity.onGround && entity.isSneaking()))
                 {
-                    factor = 16;
+                    degrees = 16;
                 }else
                 {
-                    factor = entity.motionY > 0 ? 36 : 28;
+                    degrees = entity.motionY > 0 ? 36 : 28;
                 }
-                Axis.isHidden = false;
-                float rad = this.Axis.rotateAngleY;
-                float deg = rad * 57.2957795f;
-                rad = (deg < 360) ? (deg + factor) / 57.2957795f : 0;
-                this.Axis.rotateAngleY = rad;
+                float deg = Utils.radiansToDegrees(this.Axis.rotateAngleY);
+                this.Axis.rotateAngleY = (deg <= 360 + degrees) ? Utils.degreesToRadians(deg + degrees) : 0;
             }
         }
         this.Base.render(scale);

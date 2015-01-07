@@ -20,13 +20,14 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
 public class CopterPacket implements IMessageHandler<CopterPacket.CopterMessage,CopterPacket.CopterMessage>
 {
     public static byte ON_OFF = 0;
     public static byte TOGGLE = 1;
-    public static byte SOUND = 2;
     @Override
     public CopterPacket.CopterMessage onMessage(CopterMessage message, MessageContext ctx)
     {
@@ -36,28 +37,12 @@ public class CopterPacket implements IMessageHandler<CopterPacket.CopterMessage,
 
             if (player != null)
             {
-                if(message.type == SOUND){
-
-                    return null;
-                }else
-                {
-                    ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player),message.type);
-                }
+               ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player),message.type);
             }
         }
         if(ctx.side.isClient())
         {
-            if(message.type == SOUND)
-            {
-                EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerID));
-                EntityClientPlayerMP thisPlayer = Minecraft.getMinecraft().thePlayer;
-                //LogHelper.info("player = " + player.getUniqueID());
-                //LogHelper.info("player = " + thisPlayer.getUniqueID());
-                //if(player.getUniqueID() != thisPlayer.getUniqueID())
-                {
-                    ClientActions.copterSound(player);
-                }
-            }
+
         }
         return null;
     }

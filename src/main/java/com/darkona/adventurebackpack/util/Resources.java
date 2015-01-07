@@ -67,7 +67,7 @@ public class Resources
 
     public static ResourceLocation modelTextures(String name)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "models/" + name + ".png");
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/models/" + name + ".png");
     }
 
     public static String getIconString(String name)

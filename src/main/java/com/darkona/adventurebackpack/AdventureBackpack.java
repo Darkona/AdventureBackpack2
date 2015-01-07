@@ -26,9 +26,10 @@ import net.minecraftforge.common.MinecraftForge;
 import java.util.Calendar;
 
 /**
- * Created by Javier Darkona on 10/10/2014.
+ * Created on 10/10/2014
+ * @author Javier Darkona
+ *
  */
-
 @Mod(   modid = ModInfo.MOD_ID,
         name = ModInfo.MOD_NAME,
         version = ModInfo.MOD_VERSION,

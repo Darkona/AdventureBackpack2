@@ -69,12 +69,6 @@ public class NyanMovingSound extends MovingSound
     }
 
     @Override
-    public ResourceLocation getPositionedSoundLocation()
-    {
-        return super.getPositionedSoundLocation();
-    }
-
-    @Override
     public boolean canRepeat()
     {
         return false;

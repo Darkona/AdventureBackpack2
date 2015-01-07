@@ -9,11 +9,11 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
  *
  * @author Darkona
  */
-public class EquipBackpackEvent extends PlayerEvent
+public class CopterSoundEvent extends PlayerEvent
 {
     public final ItemStack backpack;
 
-    public EquipBackpackEvent(EntityPlayer player, ItemStack theBackpack)
+    public CopterSoundEvent(EntityPlayer player, ItemStack theBackpack)
     {
         super(player);
         backpack = theBackpack;

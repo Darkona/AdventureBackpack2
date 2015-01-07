@@ -3,8 +3,10 @@ package com.darkona.adventurebackpack.block;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Icons;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
+import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -281,6 +283,23 @@ public class BlockAdventureBackpack extends BlockContainer
 
         FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
         return true;
+    }
+
+    /**
+     * Called when a user uses the creative pick block button on this block
+     *
+     * @param target The full target the player is looking at
+     * @param world
+     * @param x
+     * @param y
+     * @param z      @return A ItemStack to add to the player's inventory, Null if nothing should be added.
+     */
+    @Override
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    {
+        ItemStack backpack = new ItemStack(ModItems.adventureBackpack,1);
+        BackpackNames.setBackpackColorNameFromDamage(backpack,BackpackNames.getBackpackDamageFromName(getAssociatedTileColorName(world,x,y,z)));
+        return backpack;
     }
 
     @Override

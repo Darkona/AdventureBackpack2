@@ -64,7 +64,7 @@ public class RendererItemAdventureHat implements IItemRenderer
 
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
     {
-        ResourceLocation modelTexture = Resources.resourceRL("textures/models/adventureHat_texture.png");
+        ResourceLocation modelTexture = Resources.modelTextures("adventureHat");
         Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
         switch (type)
         {

@@ -1,6 +1,9 @@
 package com.darkona.adventurebackpack.block;
 
+import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -65,11 +68,13 @@ public class BlockSleepingBag extends BlockDirectional
     /**
      * Returns whether or not this bed block is the head of the bed.
      */
+
     public static boolean isBlockHeadOfBed(int meta)
     {
         return (meta & 8) != 0;
     }
 
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int id, float f1, float f2, float f3)
     {
         if (world.isRemote)
@@ -124,11 +129,18 @@ public class BlockSleepingBag extends BlockDirectional
                     setBedOccupied(world, x, y, z, false);
                 }
 
-                EntityPlayer.EnumStatus enumstatus = player.sleepInBedAt(x, y, z);
+                EntityPlayer.EnumStatus  enumstatus = player.sleepInBedAt(x, y, z);
 
                 if (enumstatus == EntityPlayer.EnumStatus.OK)
                 {
                     setBedOccupied(world, x, y, z, true);
+                    ChunkCoordinates campfire = Utils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
+                    if(campfire != null)
+                    {
+                        //player.setSpawnChunk(campfire,true,player.dimension);
+                        LogHelper.info("Campfire Found, setting spawn point on it.");
+                        player.sleepInBedAt(campfire.posX, campfire.posY, campfire.posZ);
+                    }
                     return true;
                 } else
                 {

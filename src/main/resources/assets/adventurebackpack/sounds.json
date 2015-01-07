@@ -1,4 +1,5 @@
 {
     "nyan":{"category":"player","sounds":[{"name":"nyan","stream":"true"}]},
-	"helicopter":{"category":"player","sounds":[{"name":"helicopter2","stream":"false"}]}
+	"helicopter":{"category":"player","sounds":[{"name":"helicopter2","stream":"false"}]},
+	"crossbowshot":{"category":"master","sounds":[{"name":"crossbowShot","stream":"false"}]}
 }

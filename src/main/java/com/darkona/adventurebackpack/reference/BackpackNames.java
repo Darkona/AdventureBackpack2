@@ -106,6 +106,15 @@ public class BackpackNames
         return backpack;
     }
 
+    public static int getBackpackDamageFromName(String name)
+    {
+        for(int i =0; i < backpackNames.length; i++)
+        {
+            if(backpackNames[i].equals(name))return i;
+        }
+        return 0;
+    }
+
     public static String getBackpackColorName(TileAdventureBackpack te){
         return te.getColorName();
     }

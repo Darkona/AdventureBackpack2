@@ -5,12 +5,14 @@ import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.network.NyanCatPacket;
+import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import ibxm.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;
@@ -41,6 +43,7 @@ public class BackpackEventHandler
                 BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow"))
         {
             if (Wearing.getWearingBackpack(player).stackTagCompound.getInteger("lastTime") > 0) return;
+            Wearing.getWearingBackpack(player).getTagCompound().setInteger("lastTime", Utils.secondsToTicks(150));
             if (!player.worldObj.isRemote)
             {
                 String nyanString =
@@ -54,15 +57,8 @@ public class BackpackEventHandler
 
                 LogHelper.info(nyanString);
                 player.addChatComponentMessage(new ChatComponentText(nyanString));
-                NyanCatPacket.NyanCatMessage msg = new NyanCatPacket.NyanCatMessage( NyanCatPacket.PLAY_NYAN, player.getPersistentID().toString());
-                //ModNetwork.net.sendToDimension(msg, player.dimension); Would tell everybody in the dimension... not really worth it.
-                ModNetwork.net.sendToAllAround(msg, new NetworkRegistry.TargetPoint(player.dimension,player.posX,player.posY,player.posZ,50.0D));
-                //ClientActions.awesomeness(player, NyanCatPacket.PLAY_NYAN);
-            }else
-            {
-                ModNetwork.net.sendToServer( new NyanCatPacket.NyanCatMessage( NyanCatPacket.PLAY_NYAN, player.getPersistentID().toString()));
+                ModNetwork.sendToNearby(PlayerSoundPacket.makeNyanMessage(player, PlayerSoundPacket.play),player);
             }
-
         }
 
     }

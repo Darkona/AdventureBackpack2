@@ -15,7 +15,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 public class AdvBackpackEProperty implements IExtendedEntityProperties
 {
 
-    public final static String PROPERTY_NAME = "AdvBackpackProperty";
+    public final static String PROPERTY_NAME = "adventureBackpackProp";
     private final EntityPlayer player;
 
     private ItemStack backpack;
@@ -45,9 +45,7 @@ public class AdvBackpackEProperty implements IExtendedEntityProperties
     @Override
     public void saveNBTData(NBTTagCompound compound)
     {
-        NBTTagCompound stupidComplexThing = new NBTTagCompound();
-        stupidComplexThing.setTag("adventureBackpack", backpack.writeToNBT(new NBTTagCompound()));
-        compound.setTag(PROPERTY_NAME, stupidComplexThing);
+        compound.setTag("backpack", backpack.writeToNBT(new NBTTagCompound()));
     }
 
     /**
@@ -60,7 +58,7 @@ public class AdvBackpackEProperty implements IExtendedEntityProperties
     @Override
     public void loadNBTData(NBTTagCompound compound)
     {
-        backpack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("adventureBackpack"));
+        backpack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("backpack"));
     }
 
     /**

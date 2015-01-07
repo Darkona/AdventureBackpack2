@@ -19,6 +19,7 @@ public class ModItems
     public static final ItemAdventureBackpack adventureBackpack = new ItemAdventureBackpack();
     public static final ItemJuiceBottle melonJuiceBottle = new ItemJuiceBottle();
     public static final ItemCopterPack copterPack = new ItemCopterPack();
+    public static final ItemCrossbow cwxbow = new ItemCrossbow();
 
     public static void init()
     {
@@ -30,7 +31,7 @@ public class ModItems
         GameRegistry.registerItem(adventureBackpack, "adventureBackpack");
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
-
+        GameRegistry.registerItem(cwxbow, "clockworkCrossbow");
 
     }
 
