@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.proxy;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.block.TileCampFire;
+import com.darkona.adventurebackpack.block.TileCampFire1;
 import com.darkona.adventurebackpack.client.render.*;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.handlers.RenderHandler;
@@ -59,7 +59,7 @@ public class ClientProxy implements IProxy
         rendererHose = new RendererHose();
         MinecraftForgeClient.registerItemRenderer(ModItems.hose, rendererHose);
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCampFire.class, new RendererCampFire());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileCampFire1.class, new RendererCampFire());
 
         renderInflatableBoat = new RendererInflatableBoat();
         RenderingRegistry.registerEntityRenderingHandler(EntityInflatableBoat.class, renderInflatableBoat);

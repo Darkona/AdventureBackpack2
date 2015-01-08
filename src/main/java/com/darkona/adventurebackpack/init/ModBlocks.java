@@ -20,7 +20,7 @@ public class ModBlocks
         GameRegistry.registerBlock(blockSleepingBag, "blockSleepingBag");
         GameRegistry.registerBlock(blockCampFire, "blockCampFire");
 
-        GameRegistry.registerTileEntity(TileCampFire.class,"tileCampFire");
+        GameRegistry.registerTileEntity(TileCampFire1.class,"tileCampFire");
         GameRegistry.registerTileEntity(TileAdventureBackpack.class, "adventureBackpackTileEntity");
     }
 
