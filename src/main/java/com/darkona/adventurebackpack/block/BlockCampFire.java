@@ -4,15 +4,20 @@ import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.client.Icons;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -120,8 +125,6 @@ public class BlockCampFire extends BlockContainer
 
     }
 
-
-
     @Override
     public TileEntity createTileEntity(World world, int metadata)
     {
@@ -162,5 +165,44 @@ public class BlockCampFire extends BlockContainer
     public IIcon getIcon(int p_149691_1_, int p_149691_2_)
     {
         return icon;
+    }
+
+    /**
+     * Determines if this block is classified as a Bed, Allowing
+     * players to sleep in it, though the block has to specifically
+     * perform the sleeping functionality in it's activated event.
+     *
+     * @param world  The current world
+     * @param x      X Position
+     * @param y      Y Position
+     * @param z      Z Position
+     * @param player The player or camera entity, null in some cases.
+     * @return True to treat this as a bed
+     */
+    @Override
+    public boolean isBed(IBlockAccess world, int x, int y, int z, EntityLivingBase player)
+    {
+        return true;
+    }
+
+    @Override
+    public ChunkCoordinates getBedSpawnPosition(IBlockAccess world, int x, int y, int z, EntityPlayer player)
+    {
+        for (int i = y-3; i <= y+3; i++)
+        {
+            for (int j = x-5; j <= x+5; j++)
+            {
+                for (int k = z-5; k <= z+5; k++)
+                {
+                    if (World.doesBlockHaveSolidTopSurface(world, j, y - 1, k) &&
+                            !world.getBlock(j, y, k).getMaterial().isOpaque() &&
+                            !world.getBlock(j, y + 1, k).getMaterial().isOpaque())
+                    {
+                        return new ChunkCoordinates(j, y, k);
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

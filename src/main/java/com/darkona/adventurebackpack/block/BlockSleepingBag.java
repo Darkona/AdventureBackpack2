@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.block;
 
+import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentTranslation;
@@ -23,6 +25,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.chunk.IChunkProvider;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -72,6 +75,27 @@ public class BlockSleepingBag extends BlockDirectional
     public static boolean isBlockHeadOfBed(int meta)
     {
         return (meta & 8) != 0;
+    }
+
+   public static ChunkCoordinates verifyRespawnCoordinatesOnBlock(World world, ChunkCoordinates chunkCoordinates, boolean forced)
+    {
+        IChunkProvider ichunkprovider = world.getChunkProvider();
+        ichunkprovider.loadChunk(chunkCoordinates.posX - 3 >> 4, chunkCoordinates.posZ - 3 >> 4);
+        ichunkprovider.loadChunk(chunkCoordinates.posX + 3 >> 4, chunkCoordinates.posZ - 3 >> 4);
+        ichunkprovider.loadChunk(chunkCoordinates.posX - 3 >> 4, chunkCoordinates.posZ + 3 >> 4);
+        ichunkprovider.loadChunk(chunkCoordinates.posX + 3 >> 4, chunkCoordinates.posZ + 3 >> 4);
+
+        if (world.getBlock(chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ).isBed(world, chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ, null))
+        {
+            ChunkCoordinates newChunkCoords = world.getBlock(chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ).getBedSpawnPosition(world, chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ, null);
+            return newChunkCoords;
+        }
+
+        Material material = world.getBlock(chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ).getMaterial();
+        Material material1 = world.getBlock(chunkCoordinates.posX, chunkCoordinates.posY + 1, chunkCoordinates.posZ).getMaterial();
+        boolean flag1 = (!material.isSolid()) && (!material.isLiquid());
+        boolean flag2 = (!material1.isSolid()) && (!material1.isLiquid());
+        return (forced) && (flag1) && (flag2) ? chunkCoordinates : null;
     }
 
     @Override
@@ -137,9 +161,10 @@ public class BlockSleepingBag extends BlockDirectional
                     ChunkCoordinates campfire = Utils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
                     if(campfire != null)
                     {
-                        //player.setSpawnChunk(campfire,true,player.dimension);
-                        LogHelper.info("Campfire Found, setting spawn point on it.");
-                        player.sleepInBedAt(campfire.posX, campfire.posY, campfire.posZ);
+                        LogHelper.info("Campfire Found, setting spawn point on it. " + LogHelper.print3DCoords(campfire));
+                        player.setSpawnChunk(campfire,true,player.dimension);
+                        ChunkCoordinates campfireSpawn = ModBlocks.blockCampFire.getBedSpawnPosition(world,x,y,z,player);
+                        world.setBlock(campfireSpawn.posX,campfireSpawn.posY+2,campfireSpawn.posZ,Blocks.emerald_block);
                     }
                     return true;
                 } else
@@ -234,7 +259,6 @@ public class BlockSleepingBag extends BlockDirectional
     {
         return null;
     }
-
 
     public static ChunkCoordinates func_149977_a(World world, int x, int y, int z, int whatever)
     {

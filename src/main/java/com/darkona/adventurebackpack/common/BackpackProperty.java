@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
@@ -12,28 +13,33 @@ import net.minecraftforge.common.IExtendedEntityProperties;
  *
  * @author Darkona
  */
-public class AdvBackpackEProperty implements IExtendedEntityProperties
+public class BackpackProperty implements IExtendedEntityProperties
 {
 
     public final static String PROPERTY_NAME = "adventureBackpackProp";
     private final EntityPlayer player;
 
-    private ItemStack backpack;
 
-    public AdvBackpackEProperty(EntityPlayer player)
+    private ItemStack backpack;
+    private ChunkCoordinates campFire;
+    private int dimension;
+
+    public BackpackProperty(EntityPlayer player)
     {
         this.player = player;
         backpack = null;
+        campFire = null;
     }
 
     public static final void register(EntityPlayer player)
     {
-        player.registerExtendedProperties(PROPERTY_NAME, new AdvBackpackEProperty(player));
+
+        player.registerExtendedProperties(PROPERTY_NAME, new BackpackProperty(player));
     }
 
-    public static final AdvBackpackEProperty get(EntityPlayer player)
+    public static final BackpackProperty get(EntityPlayer player)
     {
-        return (AdvBackpackEProperty) player.getExtendedProperties(PROPERTY_NAME);
+        return (BackpackProperty) player.getExtendedProperties(PROPERTY_NAME);
     }
 
     /**
@@ -45,7 +51,18 @@ public class AdvBackpackEProperty implements IExtendedEntityProperties
     @Override
     public void saveNBTData(NBTTagCompound compound)
     {
-        compound.setTag("backpack", backpack.writeToNBT(new NBTTagCompound()));
+        if(backpack!=null)
+        {
+            compound.setTag("backpack", backpack.writeToNBT(new NBTTagCompound()));
+        }
+        if(campFire != null)
+        {
+            compound.setInteger("campFireX", campFire.posX);
+            compound.setInteger("campFireY", campFire.posY);
+            compound.setInteger("campFireZ", campFire.posZ);
+            compound.setInteger("campFireDim", dimension);
+        }
+
     }
 
     /**
@@ -59,6 +76,8 @@ public class AdvBackpackEProperty implements IExtendedEntityProperties
     public void loadNBTData(NBTTagCompound compound)
     {
         backpack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("backpack"));
+        campFire = new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ"));
+        dimension = compound.getInteger("compFireDim");
     }
 
     /**
@@ -85,5 +104,30 @@ public class AdvBackpackEProperty implements IExtendedEntityProperties
     public ItemStack getBackpack()
     {
         return backpack;
+    }
+
+    public void setCampFire(ChunkCoordinates cf)
+    {
+        campFire = cf;
+    }
+
+    public ChunkCoordinates getCampFire()
+    {
+        return campFire;
+    }
+
+    public EntityPlayer getPlayer()
+    {
+        return player;
+    }
+
+    public void setDimension(int dimension)
+    {
+        this.dimension = dimension;
+    }
+
+    public int getDimension()
+    {
+        return dimension;
     }
 }

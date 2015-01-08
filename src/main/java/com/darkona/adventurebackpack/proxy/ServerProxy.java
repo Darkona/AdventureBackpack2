@@ -1,5 +1,9 @@
 package com.darkona.adventurebackpack.proxy;
 import com.darkona.adventurebackpack.init.*;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created on 22/12/2014
@@ -8,6 +12,7 @@ import com.darkona.adventurebackpack.init.*;
  */
 public class ServerProxy implements IProxy
 {
+    private static final Map<String, NBTTagCompound> extendedEntityData = new HashMap<String, NBTTagCompound>();
 
     @Override
     public void init()
@@ -25,5 +30,16 @@ public class ServerProxy implements IProxy
     public void initNetwork()
     {
 
+    }
+
+    public static void storePlayerProps(String name, NBTTagCompound compound)
+    {
+        extendedEntityData.put(name, compound);
+    }
+
+
+    public static NBTTagCompound extractPlayerProps(String name)
+    {
+        return extendedEntityData.remove(name);
     }
 }

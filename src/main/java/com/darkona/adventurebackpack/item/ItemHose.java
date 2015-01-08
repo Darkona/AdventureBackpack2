@@ -179,9 +179,9 @@ public class ItemHose extends ItemAB
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack == null) return false;
+
         InventoryBackpack inv = Wearing.getBackpackInv(player, true);
         FluidTank tank = getHoseTank(stack) == 0 ? inv.getLeftTank() : inv.getRightTank();
 
@@ -218,6 +218,7 @@ public class ItemHose extends ItemAB
             }
         }
         return false;
+
     }
 
     @Override
@@ -249,14 +250,15 @@ public class ItemHose extends ItemAB
 
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
-                        if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
+                       /* if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
                         {
-                            return null;
+                            return stack;
                         }
                         if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
                         {
-                            return null;
-                        }
+                            return stack;
+                        }*/
+                        //TODO adjust for Adventure Mode
                         Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
                         if (fluidBlock != null)
                         {
@@ -320,7 +322,7 @@ public class ItemHose extends ItemAB
                                     boolean flag = !material.isSolid();
                                     if (!world.isAirBlock(x, y, z) && !flag)
                                     {
-                                        return null;
+                                        return stack;
                                     }
                                 /* IN HELL DIMENSION No, I won't let you put water in the nether. You freak*/
                                     if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER)
