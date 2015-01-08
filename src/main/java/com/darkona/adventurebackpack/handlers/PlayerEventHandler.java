@@ -102,7 +102,7 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void playerSpawns(PlayerEvent.PlayerRespawnEvent event)
     {
-        if(event.player.worldObj.isRemote)return;
+       /* if(event.player.worldObj.isRemote)return;
         LogHelper.info("I'm back!");
         BackpackProperty prop = BackpackProperty.get(event.player);
         if(prop != null && prop.getDimension() == event.player.dimension)
@@ -118,7 +118,7 @@ public class PlayerEventHandler
                 //((EntityPlayerMP)event.player).playerNetServerHandler.setPlayerLocation(event.player.posX, event.player.posY, event.player.posZ, event.player.rotationYaw, event.player.rotationPitch);
                 //((EntityPlayerMP)event.player).playerNetServerHandler.sendPacket(new S05PacketSpawnPosition(campfire.posX, campfire.posY, campfire.posZ));
             }
-        }
+        }*/
     }
     /**
      * @param event
