@@ -14,9 +14,10 @@ public class ConditionalFluidEffect
 {
     public static FluidEffect oilEffect;
     public static FluidEffect fuelEffect;
+
     public static void init()
     {
-        if(ConfigHandler.IS_BUILDCRAFT)
+        if (ConfigHandler.IS_BUILDCRAFT)
         {
             oilEffect = new OilEffect();
             fuelEffect = new FuelEffect();

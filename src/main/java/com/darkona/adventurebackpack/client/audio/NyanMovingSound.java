@@ -16,6 +16,7 @@ public class NyanMovingSound extends MovingSound
 {
 
     public static NyanMovingSound instance = new NyanMovingSound();
+
     public EntityPlayer getPlayer()
     {
         return player;
@@ -28,6 +29,7 @@ public class NyanMovingSound extends MovingSound
     }
 
     private EntityPlayer player;
+
     public NyanMovingSound(EntityPlayer player)
     {
         super(new ResourceLocation(ModInfo.MOD_ID, "nyan"));
@@ -53,13 +55,13 @@ public class NyanMovingSound extends MovingSound
             this.donePlaying = true;
         } else
         {
-            if(BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow"))
+            if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow"))
             {
                 this.volume = 0.8f;
-            }else
+            } else
             {
                 this.donePlaying = true;
-               // this.volume = 0.0f;
+                // this.volume = 0.0f;
             }
 
             this.xPosF = (float) this.player.posX;

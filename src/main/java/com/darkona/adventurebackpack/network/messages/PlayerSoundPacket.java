@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.network.messages;
 
 import com.darkona.adventurebackpack.common.ClientActions;
-import com.darkona.adventurebackpack.proxy.ClientProxy;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -22,12 +21,12 @@ public class PlayerSoundPacket implements IMessageHandler<PlayerSoundPacket.Mess
 
     public static Message makeCopterMessage(EntityPlayer player, boolean action)
     {
-        return new Message(COPTER_SOUND,player.getPersistentID().toString(), action);
+        return new Message(COPTER_SOUND, player.getPersistentID().toString(), action);
     }
 
     public static Message makeNyanMessage(EntityPlayer player, boolean action)
     {
-        return new Message(NYAN_SOUND,player.getPersistentID().toString(), action);
+        return new Message(NYAN_SOUND, player.getPersistentID().toString(), action);
     }
 
     public static final boolean play = true;
@@ -40,15 +39,14 @@ public class PlayerSoundPacket implements IMessageHandler<PlayerSoundPacket.Mess
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
-        if(ctx.side.isClient())
+        if (ctx.side.isClient())
         {
 
             EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerUUID));
-            if(message.action)
+            if (message.action)
             {
                 ClientActions.playSoundAtPlayer(player, message.soundCode);
-            }
-            else
+            } else
             {
 
             }

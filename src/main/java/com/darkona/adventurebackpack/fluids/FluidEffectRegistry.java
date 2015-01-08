@@ -10,7 +10,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
@@ -19,8 +18,8 @@ import java.util.Map;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class FluidEffectRegistry
 {
@@ -43,7 +42,6 @@ public class FluidEffectRegistry
     }
 
     /**
-     *
      * @param effect
      * @return
      */
@@ -51,7 +49,7 @@ public class FluidEffectRegistry
     {
         String className = effect.getClass().getName();
         effect.effectID = effectIDCounter;
-        if (!EFFECT_REGISTRY.containsKey(className) && effect.fluid!= null)
+        if (!EFFECT_REGISTRY.containsKey(className) && effect.fluid != null)
         {
             EFFECT_REGISTRY.put(className, effect);
             LogHelper.info("Registered the class " + className + " as a FluidEffect for " + effect.fluid.getName() + " with the ID " + effectIDCounter);
@@ -70,7 +68,7 @@ public class FluidEffectRegistry
     {
         String[] result = new String[EFFECT_REGISTRY.size()];
         int counter = 0;
-        for(FluidEffect effect : getRegisteredFluidEffects().values())
+        for (FluidEffect effect : getRegisteredFluidEffects().values())
         {
             result[counter++] = effect.fluid.getName();
         }
@@ -107,9 +105,9 @@ public class FluidEffectRegistry
         boolean executed = false;
         for (FluidEffect effect : EFFECT_REGISTRY.values())
         {
-            if(effect != null)
+            if (effect != null)
             {
-                if(effect.fluid == fluid)
+                if (effect.fluid == fluid)
                 {
                     effect.affectDrinker(world, entity);
                     executed = true;

@@ -3,10 +3,10 @@ package com.darkona.adventurebackpack.proxy;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileCampFire;
 import com.darkona.adventurebackpack.client.render.*;
-import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
-import com.darkona.adventurebackpack.handlers.RenderHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
+import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.handlers.KeybindHandler;
+import com.darkona.adventurebackpack.handlers.RenderHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -18,8 +18,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 /**
  * Created on 10/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class ClientProxy implements IProxy
 {

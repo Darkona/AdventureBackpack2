@@ -2,13 +2,10 @@ package com.darkona.adventurebackpack.init.recipes;
 
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackNames;
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,25 +21,24 @@ public class BackpackRecipesList
     public BackpackRecipesList()
     {
         String[] covered = {"XXX", "XaX", "XXX"};
-        ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack),0);
+        ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), 0);
 
         ItemStack woolWhite = new ItemStack(Blocks.wool, 1, 0);
-        ItemStack woolOrange =  new ItemStack(Blocks.wool, 1, 1);
-        ItemStack woolMagenta =  new ItemStack(Blocks.wool, 1, 2);
+        ItemStack woolOrange = new ItemStack(Blocks.wool, 1, 1);
+        ItemStack woolMagenta = new ItemStack(Blocks.wool, 1, 2);
         ItemStack woolLightBlue = new ItemStack(Blocks.wool, 1, 3);
-        ItemStack woolYellow =  new ItemStack(Blocks.wool, 1, 4);
-        ItemStack woolLime =  new ItemStack(Blocks.wool, 1, 5);
+        ItemStack woolYellow = new ItemStack(Blocks.wool, 1, 4);
+        ItemStack woolLime = new ItemStack(Blocks.wool, 1, 5);
         ItemStack woolPink = new ItemStack(Blocks.wool, 1, 6);
-        ItemStack woolGray =  new ItemStack(Blocks.wool, 1, 7);
-        ItemStack woolLightGray =  new ItemStack(Blocks.wool, 1, 8);
-        ItemStack woolCyan =  new ItemStack(Blocks.wool, 1, 9);
-        ItemStack woolPurple =  new ItemStack(Blocks.wool, 1, 10);
+        ItemStack woolGray = new ItemStack(Blocks.wool, 1, 7);
+        ItemStack woolLightGray = new ItemStack(Blocks.wool, 1, 8);
+        ItemStack woolCyan = new ItemStack(Blocks.wool, 1, 9);
+        ItemStack woolPurple = new ItemStack(Blocks.wool, 1, 10);
         ItemStack woolBlue = new ItemStack(Blocks.wool, 1, 11);
-        ItemStack woolBrown =  new ItemStack(Blocks.wool, 1, 12);
+        ItemStack woolBrown = new ItemStack(Blocks.wool, 1, 12);
         ItemStack woolGreen = new ItemStack(Blocks.wool, 1, 13);
-        ItemStack woolRed =  new ItemStack(Blocks.wool, 1, 14);
+        ItemStack woolRed = new ItemStack(Blocks.wool, 1, 14);
         ItemStack woolBlack = new ItemStack(Blocks.wool, 1, 15);
-
 
 
         Standard = reviewRecipe(
@@ -558,23 +554,23 @@ public class BackpackRecipesList
         );
 
         Carrot = reviewRecipe(covered,
-                'a',backpack,
-                'X',Items.carrot
+                'a', backpack,
+                'X', Items.carrot
         );
 
         Silverfish = reviewRecipe(
                 "CGC",
                 "CaC",
                 "CGC",
-                'a',backpack,
+                'a', backpack,
                 'G', woolLightGray,
-                'C', new ItemStack(Blocks.stonebrick,1,2)
+                'C', new ItemStack(Blocks.stonebrick, 1, 2)
         );
 
         Sunflower = reviewRecipe(
                 covered,
                 'a', backpack,
-                'X', new ItemStack(Blocks.double_plant,1,0)
+                'X', new ItemStack(Blocks.double_plant, 1, 0)
         );
 
         Horse = reviewRecipe(
@@ -590,7 +586,7 @@ public class BackpackRecipesList
                 "BBB",
                 "GaG",
                 "CCC",
-                'B',new ItemStack(Blocks.wool,1,3),
+                'B', new ItemStack(Blocks.wool, 1, 3),
                 'G', Blocks.grass,
                 'a', backpack,
                 'C', "cobblestone"
@@ -603,7 +599,7 @@ public class BackpackRecipesList
                 "BIB",
                 'a', backpack,
                 'B', woolBlue,
-                'I', new ItemStack(Items.dye,1,0)
+                'I', new ItemStack(Items.dye, 1, 0)
         );
 
         Sponge = reviewRecipe(covered,
@@ -611,6 +607,7 @@ public class BackpackRecipesList
                 'a', backpack
         );
     }
+
     public final Object[] Silverfish;
     public final Object[] Squid;
     public final Object[] Sunflower;

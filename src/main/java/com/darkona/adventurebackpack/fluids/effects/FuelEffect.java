@@ -11,8 +11,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 
 
@@ -23,6 +23,7 @@ public class FuelEffect extends FluidEffect
     {
         super(FluidRegistry.getFluid("fuel"), 20);
     }
+
     /**
      * This method determines what will happen to the player when drinking the
      * corresponding fluid. For example set potion effects, set player on fire,
@@ -35,7 +36,7 @@ public class FuelEffect extends FluidEffect
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if(entity instanceof EntityPlayer)
+        if (entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
             player.addPotionEffect(new PotionEffect(Potion.confusion.getId(), this.timeInTicks, 2));

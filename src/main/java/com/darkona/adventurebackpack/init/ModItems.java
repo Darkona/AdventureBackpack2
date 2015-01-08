@@ -37,7 +37,7 @@ public class ModItems
 
     public static void conditionalInit()
     {
-        if(ConfigHandler.IS_BUILDCRAFT)
+        if (ConfigHandler.IS_BUILDCRAFT)
         {
             GameRegistry.registerItem(copterPack, "copterPack");
         }

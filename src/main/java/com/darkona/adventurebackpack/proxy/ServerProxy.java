@@ -1,5 +1,5 @@
 package com.darkona.adventurebackpack.proxy;
-import com.darkona.adventurebackpack.init.*;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;

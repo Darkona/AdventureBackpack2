@@ -20,8 +20,8 @@ import java.util.Set;
 
 /**
  * Created on 10/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class ItemMachete extends ToolAB
 {

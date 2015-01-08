@@ -40,6 +40,7 @@ public class BlockCampFire extends BlockContainer
     {
         icon = iconRegister.registerIcon(ModInfo.MOD_ID + ":campFire");
     }
+
     @Override
     public String getUnlocalizedName()
     {
@@ -57,6 +58,7 @@ public class BlockCampFire extends BlockContainer
     {
         return 30;
     }
+
     @Override
     public boolean isOpaqueCube()
     {
@@ -71,6 +73,7 @@ public class BlockCampFire extends BlockContainer
     {
         return false;
     }
+
     @Override
     public int getRenderType()
     {
@@ -102,14 +105,14 @@ public class BlockCampFire extends BlockContainer
         float rndX = posX + rnd.nextFloat();
         float rndY = (posY + 1) - rnd.nextFloat() * 0.1F;
         float rndZ = posZ + rnd.nextFloat();
-        world.spawnParticle("largesmoke",  rndX, rndY, rndZ, 0.0D, 0.0D, 0.0D);
-        for(int i = 0; i < 4; i++)
+        world.spawnParticle("largesmoke", rndX, rndY, rndZ, 0.0D, 0.0D, 0.0D);
+        for (int i = 0; i < 4; i++)
         {
-            rndX = posX + 0.5f - (float)rnd.nextGaussian()*0.08f;
-            rndY = (float) (posY + 1f - Math.cos((float)rnd.nextGaussian()*0.1f));
-            rndZ = posZ + 0.5f - (float)rnd.nextGaussian()*0.08f;
+            rndX = posX + 0.5f - (float) rnd.nextGaussian() * 0.08f;
+            rndY = (float) (posY + 1f - Math.cos((float) rnd.nextGaussian() * 0.1f));
+            rndZ = posZ + 0.5f - (float) rnd.nextGaussian() * 0.08f;
             //world.spawnParticle("flame", posX+Math.sin(i/4), posY, posZ+Math.cos(i/4), 0.0D, 0.0D, 0.0D);
-            world.spawnParticle("flame", rndX, rndY+0.16, rndZ, 0.0D, 0.0D, 0.0D);
+            world.spawnParticle("flame", rndX, rndY + 0.16, rndZ, 0.0D, 0.0D, 0.0D);
         }
 
     }
@@ -135,7 +138,7 @@ public class BlockCampFire extends BlockContainer
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-       setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
+        setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
     }
 
     @Override
@@ -177,11 +180,11 @@ public class BlockCampFire extends BlockContainer
     @Override
     public ChunkCoordinates getBedSpawnPosition(IBlockAccess world, int x, int y, int z, EntityPlayer player)
     {
-        for (int i = y-3; i <= y+3; i++)
+        for (int i = y - 3; i <= y + 3; i++)
         {
-            for (int j = x-5; j <= x+5; j++)
+            for (int j = x - 5; j <= x + 5; j++)
             {
-                for (int k = z-5; k <= z+5; k++)
+                for (int k = z - 5; k <= z + 5; k++)
                 {
                     if (World.doesBlockHaveSolidTopSurface(world, j, y - 1, k) &&
                             !world.getBlock(j, y, k).getMaterial().isOpaque() &&

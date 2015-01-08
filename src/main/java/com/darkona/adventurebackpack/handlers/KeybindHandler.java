@@ -3,7 +3,9 @@ package com.darkona.adventurebackpack.handlers;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.network.*;
+import com.darkona.adventurebackpack.network.CopterPacket;
+import com.darkona.adventurebackpack.network.CycleToolPacket;
+import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.reference.Key;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -44,21 +46,21 @@ public class KeybindHandler
 
         if (keypressed == Key.OPEN_BACKPACK_INVENTORY)
         {
-            if(player != null && mc.inGameHasFocus)
+            if (player != null && mc.inGameHasFocus)
             {
-                if(Wearing.isWearingBackpack(player))
+                if (Wearing.isWearingBackpack(player))
                 {
                     ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
                 }
-                if(Wearing.isWearingCopter(player))
+                if (Wearing.isWearingCopter(player))
                 {
-                    if(!player.isSneaking())
+                    if (!player.isSneaking())
                     {
-                        ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.TOGGLE,""));
+                        ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.TOGGLE, ""));
                         ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), CopterPacket.TOGGLE);
-                    }else
+                    } else
                     {
-                        ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.ON_OFF,""));
+                        ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.ON_OFF, ""));
                         ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), CopterPacket.ON_OFF);
                     }
 

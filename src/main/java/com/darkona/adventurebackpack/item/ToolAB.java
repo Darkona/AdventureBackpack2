@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

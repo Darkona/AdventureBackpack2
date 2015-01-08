@@ -237,7 +237,7 @@ public abstract class ConfigTagParent
             switch (sortMode)
             {
                 case 1:
-                    if (o1.value == o2.value)
+                    if (o1.value.equals(o2.value))
                     {
                         return 0;
                     }

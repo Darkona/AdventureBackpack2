@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.client.Visuals;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -12,7 +11,6 @@ import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -117,7 +115,7 @@ public class BackpackAbilities
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static String[] validWearingBackpacks = {
-            "Bat","Squid","Pigman","Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon"};
+            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon"};
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -149,7 +147,7 @@ public class BackpackAbilities
 
     public void itemSquid(EntityPlayer player, World world, ItemStack backpack)
     {
-        if(player.isInWater())
+        if (player.isInWater())
         {
             player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, 0));
             player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5, 0));
@@ -240,26 +238,27 @@ public class BackpackAbilities
         //lastTime is in Ticks for this backpack.
         //0 is Full Moon, 1 is Waning Gibbous, 2 is Last Quarter, 3 is Waning Crescent,
         // 4 is New Moon, 5 is Waxing Crescent, 6 is First Quarter and 7 is Waxing Gibbous
-        if(world.getMoonPhase() == 0 && !world.isDaytime())
+        if (world.getMoonPhase() == 0 && !world.isDaytime())
         {
             player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, 1));
         }
-        if (player.onGround ) {
+        if (player.onGround)
+        {
 
-            if(player.moveForward == 0 && player.moveStrafing == 0)
+            if (player.moveForward == 0 && player.moveStrafing == 0)
             {
                 player.addVelocity(player.motionX *= 0.828, 0, player.motionZ *= 0.828);
             }
-            if(player.isSprinting())
+            if (player.isSprinting())
             {
 
                 int slimeTime = backpack.stackTagCompound.hasKey("lastTime") ?
                         backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
                 if (slimeTime <= 0)
                 {
-                    if(!world.isRemote)
+                    if (!world.isRemote)
                     {
-                        ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.SLIME_PARTICLE,player.getUniqueID().toString()),player);
+                        ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.SLIME_PARTICLE, player.getUniqueID().toString()), player);
                     }
                     world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
                     slimeTime = 5;
@@ -400,9 +399,11 @@ public class BackpackAbilities
         IAdvBackpack inv = new InventoryBackpack(backpack);
         FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
         BackpackContainer cont = null;
-        if(player.openContainer != null && player.openContainer instanceof BackpackContainer){
-            cont = (BackpackContainer)player.openContainer;
-            if (cont.inventory instanceof InventoryBackpack && ((InventoryBackpack)cont.inventory).getParentItemStack().equals(backpack)){
+        if (player.openContainer != null && player.openContainer instanceof BackpackContainer)
+        {
+            cont = (BackpackContainer) player.openContainer;
+            if (cont.inventory instanceof InventoryBackpack && ((InventoryBackpack) cont.inventory).getParentItemStack().equals(backpack))
+            {
                 inv = cont.inventory;
             }
         }
@@ -414,7 +415,7 @@ public class BackpackAbilities
         //Set Cow Properties
         NBTTagCompound cowProperties;
         int wheatConsumed = 0;
-        int milkTime = - 1;
+        int milkTime = -1;
         if (inv.getExtendedProperties() != null)
         {
             cowProperties = inv.getExtendedProperties();
@@ -430,20 +431,20 @@ public class BackpackAbilities
 
         int eatTime = inv.getLastTime() == 0 ? Utils.secondsToTicks(1) : inv.getLastTime() - 1;
 
-        if(inv.hasItem(Items.wheat) && eatTime == 0 && milkTime <= 0)
+        if (inv.hasItem(Items.wheat) && eatTime == 0 && milkTime <= 0)
         {
             LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
-            if(!world.isRemote)
+            if (!world.isRemote)
             {
                 EntityPlayerMP playerMP = (EntityPlayerMP) player;
-                ModNetwork.net.sendTo(new CowAbilityPacket.CowAbilityMessage(player.getPersistentID().toString(), CowAbilityPacket.CONSUME_WHEAT),playerMP);
+                ModNetwork.net.sendTo(new CowAbilityPacket.CowAbilityMessage(player.getPersistentID().toString(), CowAbilityPacket.CONSUME_WHEAT), playerMP);
             }
             wheatConsumed++;
         }
 
         int factor = 1;
-        if(wheatConsumed == 16)
+        if (wheatConsumed == 16)
         {
 
             wheatConsumed = 0;
@@ -455,7 +456,7 @@ public class BackpackAbilities
         {
             if (inv.getLeftTank().fill(milkStack, true) <= 0)
             {
-               inv.getRightTank().fill(milkStack, true);
+                inv.getRightTank().fill(milkStack, true);
             }
         }
 
@@ -464,7 +465,7 @@ public class BackpackAbilities
         inv.setExtendedProperties(cowProperties);
         inv.setExtendedProperties(cowProperties);
         inv.setLastTime(eatTime);
-        if(player.openContainer!=null)player.openContainer.detectAndSendChanges();
+        if (player.openContainer != null) player.openContainer.detectAndSendChanges();
         inv.saveChanges();
     }
 
@@ -585,9 +586,9 @@ public class BackpackAbilities
             if (noteTime % 2 == 0)
             {
                 //Visuals.NyanParticles(player, world);
-                if(!world.isRemote)
+                if (!world.isRemote)
                 {
-                    ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.NYAN_PARTICLE,player.getUniqueID().toString()),player);
+                    ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.NYAN_PARTICLE, player.getUniqueID().toString()), player);
                 }
             }
         }
@@ -595,7 +596,8 @@ public class BackpackAbilities
     }
     /* ==================================== TILE ABILITIES ==========================================*/
 
-    private void fillWithRain(World world, TileAdventureBackpack backpack, FluidStack fluid, int time){
+    private void fillWithRain(World world, TileAdventureBackpack backpack, FluidStack fluid, int time)
+    {
         if (world.isRaining() && world.canBlockSeeTheSky(backpack.xCoord, backpack.yCoord, backpack.zCoord))
         {
             int dropTime = backpack.getLastTime() - 1;
@@ -618,13 +620,13 @@ public class BackpackAbilities
      */
     public void tileCactus(World world, TileAdventureBackpack backpack)
     {
-       fillWithRain(world, backpack,new FluidStack(FluidRegistry.WATER, 2), 5 );
+        fillWithRain(world, backpack, new FluidStack(FluidRegistry.WATER, 2), 5);
     }
 
 
     public void tileMelon(World world, TileAdventureBackpack backpack)
     {
-        fillWithRain(world, backpack,new FluidStack(ModFluids.melonJuice, 2), 5 );
+        fillWithRain(world, backpack, new FluidStack(ModFluids.melonJuice, 2), 5);
     }
 
 }

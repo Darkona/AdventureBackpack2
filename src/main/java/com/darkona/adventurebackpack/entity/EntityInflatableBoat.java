@@ -43,6 +43,7 @@ public class EntityInflatableBoat extends EntityBoat
     private double velocityY;
     @SideOnly(Side.CLIENT)
     private double velocityZ;
+
     public EntityInflatableBoat(World world)
     {
         super(world);
@@ -77,13 +78,13 @@ public class EntityInflatableBoat extends EntityBoat
 
         for (int i = 0; i < b0; ++i)
         {
-            double d1 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (double)(i + 0) / (double)b0 - 0.125D;
-            double d3 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (double)(i + 1) / (double)b0 - 0.125D;
+            double d1 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (double) (i + 0) / (double) b0 - 0.125D;
+            double d3 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (double) (i + 1) / (double) b0 - 0.125D;
             AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(this.boundingBox.minX, d1, this.boundingBox.minZ, this.boundingBox.maxX, d3, this.boundingBox.maxZ);
 
             if (this.worldObj.isAABBInMaterial(axisalignedbb, Material.water))
             {
-                d0 += 1.0D / (double)b0;
+                d0 += 1.0D / (double) b0;
             }
         }
 
@@ -94,13 +95,13 @@ public class EntityInflatableBoat extends EntityBoat
 
         if (d10 > 0.26249999999999996D)
         {
-            d2 = Math.cos((double)this.rotationYaw * Math.PI / 180.0D);
-            d4 = Math.sin((double)this.rotationYaw * Math.PI / 180.0D);
+            d2 = Math.cos((double) this.rotationYaw * Math.PI / 180.0D);
+            d4 = Math.sin((double) this.rotationYaw * Math.PI / 180.0D);
 
-            for (j = 0; (double)j < 1.0D + d10 * 60.0D; ++j)
+            for (j = 0; (double) j < 1.0D + d10 * 60.0D; ++j)
             {
-                double d5 = (double)(this.rand.nextFloat() * 2.0F - 1.0F);
-                double d6 = (double)(this.rand.nextInt(2) * 2 - 1) * 0.7D;
+                double d5 = (double) (this.rand.nextFloat() * 2.0F - 1.0F);
+                double d6 = (double) (this.rand.nextInt(2) * 2 - 1) * 0.7D;
                 double d8;
                 double d9;
 
@@ -109,8 +110,7 @@ public class EntityInflatableBoat extends EntityBoat
                     d8 = this.posX - d2 * d5 * 0.8D + d4 * d6;
                     d9 = this.posZ - d4 * d5 * 0.8D - d2 * d6;
                     this.worldObj.spawnParticle("splash", d8, this.posY - 0.125D, d9, this.motionX, this.motionY, this.motionZ);
-                }
-                else
+                } else
                 {
                     d8 = this.posX + d2 + d4 * d5 * 0.7D;
                     d9 = this.posZ + d4 - d2 * d5 * 0.7D;
@@ -126,17 +126,16 @@ public class EntityInflatableBoat extends EntityBoat
         {
             if (this.boatPosRotationIncrements > 0)
             {
-                d2 = this.posX + (this.boatX - this.posX) / (double)this.boatPosRotationIncrements;
-                d4 = this.posY + (this.boatY - this.posY) / (double)this.boatPosRotationIncrements;
-                d11 = this.posZ + (this.boatZ - this.posZ) / (double)this.boatPosRotationIncrements;
+                d2 = this.posX + (this.boatX - this.posX) / (double) this.boatPosRotationIncrements;
+                d4 = this.posY + (this.boatY - this.posY) / (double) this.boatPosRotationIncrements;
+                d11 = this.posZ + (this.boatZ - this.posZ) / (double) this.boatPosRotationIncrements;
                 d12 = MathHelper.wrapAngleTo180_double(this.boatYaw - (double) this.rotationYaw);
-                this.rotationYaw = (float)((double)this.rotationYaw + d12 / (double)this.boatPosRotationIncrements);
-                this.rotationPitch = (float)((double)this.rotationPitch + (this.boatPitch - (double)this.rotationPitch) / (double)this.boatPosRotationIncrements);
+                this.rotationYaw = (float) ((double) this.rotationYaw + d12 / (double) this.boatPosRotationIncrements);
+                this.rotationPitch = (float) ((double) this.rotationPitch + (this.boatPitch - (double) this.rotationPitch) / (double) this.boatPosRotationIncrements);
                 --this.boatPosRotationIncrements;
                 this.setPosition(d2, d4, d11);
                 this.setRotation(this.rotationYaw, this.rotationPitch);
-            }
-            else
+            } else
             {
                 d2 = this.posX + this.motionX;
                 d4 = this.posY + this.motionY;
@@ -154,15 +153,13 @@ public class EntityInflatableBoat extends EntityBoat
                 this.motionY *= 0.949999988079071D;
                 this.motionZ *= 0.9900000095367432D;
             }
-        }
-        else
+        } else
         {
             if (d0 < 1.0D)
             {
                 d2 = d0 * 2.0D - 1.0D;
                 this.motionY += 0.03999999910593033D * d2;
-            }
-            else
+            } else
             {
                 if (this.motionY < 0.0D)
                 {
@@ -174,10 +171,10 @@ public class EntityInflatableBoat extends EntityBoat
 
             if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityLivingBase)
             {
-                EntityLivingBase entitylivingbase = (EntityLivingBase)this.riddenByEntity;
+                EntityLivingBase entitylivingbase = (EntityLivingBase) this.riddenByEntity;
                 float f = this.riddenByEntity.rotationYaw + -entitylivingbase.moveStrafing * 90.0F;
-                this.motionX += -Math.sin((double)(f * (float)Math.PI / 180.0F)) * this.speedMultiplier * (double)entitylivingbase.moveForward * 0.05000000074505806D;
-                this.motionZ += Math.cos((double)(f * (float)Math.PI / 180.0F)) * this.speedMultiplier * (double)entitylivingbase.moveForward * 0.05000000074505806D;
+                this.motionX += -Math.sin((double) (f * (float) Math.PI / 180.0F)) * this.speedMultiplier * (double) entitylivingbase.moveForward * 0.05000000074505806D;
+                this.motionZ += Math.cos((double) (f * (float) Math.PI / 180.0F)) * this.speedMultiplier * (double) entitylivingbase.moveForward * 0.05000000074505806D;
             }
 
             d2 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -198,8 +195,7 @@ public class EntityInflatableBoat extends EntityBoat
                 {
                     this.speedMultiplier = 0.35D;
                 }
-            }
-            else
+            } else
             {
                 this.speedMultiplier -= (this.speedMultiplier - 0.07D) / 35.0D;
 
@@ -213,8 +209,8 @@ public class EntityInflatableBoat extends EntityBoat
 
             for (l = 0; l < 4; ++l)
             {
-                int i1 = MathHelper.floor_double(this.posX + ((double)(l % 2) - 0.5D) * 0.8D);
-                j = MathHelper.floor_double(this.posZ + ((double)(l / 2) - 0.5D) * 0.8D);
+                int i1 = MathHelper.floor_double(this.posX + ((double) (l % 2) - 0.5D) * 0.8D);
+                j = MathHelper.floor_double(this.posZ + ((double) (l / 2) - 0.5D) * 0.8D);
 
                 for (int j1 = 0; j1 < 2; ++j1)
                 {
@@ -225,8 +221,7 @@ public class EntityInflatableBoat extends EntityBoat
                     {
                         this.worldObj.setBlockToAir(i1, k, j);
                         this.isCollidedHorizontally = false;
-                    }
-                    else if (block == Blocks.waterlily)
+                    } else if (block == Blocks.waterlily)
                     {
                         this.worldObj.func_147480_a(i1, k, j, true);
                         this.isCollidedHorizontally = false;
@@ -268,16 +263,16 @@ public class EntityInflatableBoat extends EntityBoat
             }*/
 
             this.rotationPitch = 0.0F;
-            d4 = (double)this.rotationYaw;
+            d4 = (double) this.rotationYaw;
             d11 = this.prevPosX - this.posX;
             d12 = this.prevPosZ - this.posZ;
 
             if (d11 * d11 + d12 * d12 > 0.001D)
             {
-                d4 = (double)((float)(Math.atan2(d12, d11) * 180.0D / Math.PI));
+                d4 = (double) ((float) (Math.atan2(d12, d11) * 180.0D / Math.PI));
             }
 
-            double d7 = MathHelper.wrapAngleTo180_double(d4 - (double)this.rotationYaw);
+            double d7 = MathHelper.wrapAngleTo180_double(d4 - (double) this.rotationYaw);
 
             if (d7 > 20.0D)
             {
@@ -289,7 +284,7 @@ public class EntityInflatableBoat extends EntityBoat
                 d7 = -20.0D;
             }
 
-            this.rotationYaw = (float)((double)this.rotationYaw + d7);
+            this.rotationYaw = (float) ((double) this.rotationYaw + d7);
             this.setRotation(this.rotationYaw, this.rotationPitch);
 
             if (!this.worldObj.isRemote)
@@ -300,7 +295,7 @@ public class EntityInflatableBoat extends EntityBoat
                 {
                     for (int k1 = 0; k1 < list.size(); ++k1)
                     {
-                        Entity entity = (Entity)list.get(k1);
+                        Entity entity = (Entity) list.get(k1);
 
                         if (entity != this.riddenByEntity && entity.canBePushed() && entity instanceof EntityBoat)
                         {
@@ -326,14 +321,13 @@ public class EntityInflatableBoat extends EntityBoat
         if (this.isEntityInvulnerable())
         {
             return false;
-        }
-        else if (!this.worldObj.isRemote && !this.isDead)
+        } else if (!this.worldObj.isRemote && !this.isDead)
         {
             this.setForwardDirection(-this.getForwardDirection());
             this.setTimeSinceHit(10);
             this.setDamageTaken(this.getDamageTaken() + damage * 10.0F);
             this.setBeenAttacked();
-            boolean flag = damageSource.getEntity() instanceof EntityPlayer && ((EntityPlayer)damageSource.getEntity()).capabilities.isCreativeMode;
+            boolean flag = damageSource.getEntity() instanceof EntityPlayer && ((EntityPlayer) damageSource.getEntity()).capabilities.isCreativeMode;
 
             if (flag || this.getDamageTaken() > 40.0F)
             {
@@ -351,8 +345,7 @@ public class EntityInflatableBoat extends EntityBoat
             }
 
             return true;
-        }
-        else
+        } else
         {
             return true;
         }

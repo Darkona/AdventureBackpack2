@@ -27,14 +27,14 @@ import org.lwjgl.opengl.GL12;
 public class RendererBackpackArmor extends RendererLivingEntity
 {
 
-    public ResourceLocation texture = new ResourceLocation(ModInfo.MOD_ID,"textures/backpack/Standard.png");
+    public ResourceLocation texture = new ResourceLocation(ModInfo.MOD_ID, "textures/backpack/Standard.png");
     public ModelBiped modelBipedMain = new ModelBackpackArmor();
 
     public RendererBackpackArmor()
     {
         super(new ModelBiped(0.0F), 0.5F);
         this.mainModel = this.modelBipedMain = new ModelBackpackArmor();
-        this.renderManager=RenderManager.instance;
+        this.renderManager = RenderManager.instance;
     }
 
     @Override
@@ -43,21 +43,21 @@ public class RendererBackpackArmor extends RendererLivingEntity
         return this.texture;
     }
 
-    public void render(Entity entity, double x, double y, double z, float yaw, float pitch, ItemStack backpack, float rotX, float rotY, float rotZ){
+    public void render(Entity entity, double x, double y, double z, float yaw, float pitch, ItemStack backpack, float rotX, float rotY, float rotZ)
+    {
 
         InventoryBackpack inv = new InventoryBackpack(backpack);
         //((ModelBackpackArmor)this.modelBipedMain) = backpack.getItem().getArmorModel((EntityLivingBase)entity,backpack, 0);
-        ((ModelBackpackArmor)this.modelBipedMain).setBackpack2(backpack);
+        ((ModelBackpackArmor) this.modelBipedMain).setBackpack2(backpack);
         this.mainModel = this.modelBipedMain;
         this.modelBipedMain.bipedBody.rotateAngleX = rotX;
         this.modelBipedMain.bipedBody.rotateAngleY = rotY;
         this.modelBipedMain.bipedBody.rotateAngleZ = rotZ;
         ResourceLocation modelTexture;
-        if(BackpackNames.getBackpackColorName(backpack).equals("Standard"))
+        if (BackpackNames.getBackpackColorName(backpack).equals("Standard"))
         {
             modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
-        }
-        else
+        } else
         {
             modelTexture = Resources.backpackTextureFromColor(inv);
         }
@@ -68,9 +68,8 @@ public class RendererBackpackArmor extends RendererLivingEntity
         try
         {
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            this.renderMainModel((AbstractClientPlayer)entity, 0, 0, 0, 0, 0, 0.0625f);
-        }
-        catch(Exception oops)
+            this.renderMainModel((AbstractClientPlayer) entity, 0, 0, 0, 0, 0, 0.0625f);
+        } catch (Exception oops)
         {
             //No one cares
         }
@@ -87,8 +86,7 @@ public class RendererBackpackArmor extends RendererLivingEntity
         if (!entity.isInvisible())
         {
             this.mainModel.render(entity, limbSwing1, limbswing2, z, yaw, whatever, scale);
-        }
-        else if (!entity.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer))
+        } else if (!entity.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer))
         {
             GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.15F);
@@ -101,8 +99,7 @@ public class RendererBackpackArmor extends RendererLivingEntity
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
             GL11.glPopMatrix();
             GL11.glDepthMask(true);
-        }
-        else
+        } else
         {
             this.mainModel.setRotationAngles(limbSwing1, limbswing2, z, yaw, whatever, scale, entity);
         }

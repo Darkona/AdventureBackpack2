@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -9,13 +8,10 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
-import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 /**
  * Created on 05/01/2015
@@ -43,9 +39,9 @@ public class ItemCrossbow extends Item
     @Override
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
     {
-        if(count % 10 == 0)
+        if (count % 10 == 0)
         {
-          shootArrow(stack,player.worldObj,player);
+            shootArrow(stack, player.worldObj, player);
         }
     }
 
@@ -90,10 +86,10 @@ public class ItemCrossbow extends Item
 
         if (flag || player.inventory.hasItem(Items.arrow))
         {
-            float f = (float)j / 20.0F;
+            float f = (float) j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
 
-            if ((double)f < 0.1D)
+            if ((double) f < 0.1D)
             {
                 return;
             }
@@ -110,7 +106,7 @@ public class ItemCrossbow extends Item
 
             if (k > 0)
             {
-                entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
+                entityarrow.setDamage(entityarrow.getDamage() + (double) k * 0.5D + 0.5D);
             }
 
             int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, stack);
@@ -131,8 +127,7 @@ public class ItemCrossbow extends Item
             if (flag)
             {
                 entityarrow.canBePickedUp = 2;
-            }
-            else
+            } else
             {
                 player.inventory.consumeInventoryItem(Items.arrow);
             }
@@ -143,6 +138,7 @@ public class ItemCrossbow extends Item
             }
         }
     }
+
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int counter)
     {

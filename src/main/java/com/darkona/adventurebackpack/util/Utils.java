@@ -30,10 +30,12 @@ public class Utils
     {
         return radians * 57.2957795f;
     }
-    public static int[] calculateEaster(int year){
+
+    public static int[] calculateEaster(int year)
+    {
 
 
-        int     a = year % 19,
+        int a = year % 19,
                 b = year / 100,
                 c = year % 100,
                 d = b / 4,
@@ -48,33 +50,35 @@ public class Utils
                 p = (h - m + r + n + 19) % 32;
 
         int[] result = {n, p};
-        return result ;
+        return result;
     }
 
-    public static String getHoliday(){
+    public static String getHoliday()
+    {
 
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR),
                 month = calendar.get(Calendar.MONTH) + 1,
                 day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        if(AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear";
-        if(AdventureBackpack.instance.hannukah) return "Hannukah";
-        if (month == Utils.calculateEaster(year)[0] && day == Utils.calculateEaster(year)[1])return "Easter";
+        if (AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear";
+        if (AdventureBackpack.instance.hannukah) return "Hannukah";
+        if (month == Utils.calculateEaster(year)[0] && day == Utils.calculateEaster(year)[1]) return "Easter";
         String dia = "Standard";
-        if(month == 1)
+        if (month == 1)
         {
             if (day == 1) dia = "NewYear";
             if (day == 28) dia = "Challenger";
         }
         if (month == 2)
         {
-            if(day == 1) dia =  "Columbia";
-            if(day == 14)dia =  "Valentines";
-            if(day == 23)dia =  "Fatherland";
+            if (day == 1) dia = "Columbia";
+            if (day == 14) dia = "Valentines";
+            if (day == 23) dia = "Fatherland";
         }
-        if (month == 3){
-            if (day == 17)dia =  "Patrick";
+        if (month == 3)
+        {
+            if (day == 17) dia = "Patrick";
         }
         if (month == 4)
         {
@@ -83,16 +87,20 @@ public class Utils
         }
         if (month == 5)
         {
-            if(day == 8 || day == 9 || day == 10) dia = "Liberation";
+            if (day == 8 || day == 9 || day == 10) dia = "Liberation";
         }
-        if (month == 6){}
+        if (month == 6)
+        {
+        }
         if (month == 7)
         {
             if (day == 4) dia = "USA";
             if (day == 24) dia = "Bolivar";
             if (day == 14) dia = "Bastille";
         }
-        if (month == 8){}
+        if (month == 8)
+        {
+        }
         if (month == 9)
         {
             if (day == 19) dia = "Pirate";
@@ -109,13 +117,14 @@ public class Utils
         }
         if (month == 12)
         {
-            if(day >=22 && day <= 26) dia = "Christmas";
+            if (day >= 22 && day <= 26) dia = "Christmas";
             if (day == 31) dia = "NewYear";
         }
         //LogHelper.info("Today is: " + day + "/" + month + "/" + year + ". Which means today is: " + dia);
         return dia;
 
     }
+
     public static int isBlockRegisteredAsFluid(Block block)
     {
         /*
@@ -177,17 +186,17 @@ public class Utils
         return null;
     }
 
-    public static ChunkCoordinates findBlock3D(World world, int x, int y, int z, Block block, int range, int verticalRange)
+    public static ChunkCoordinates findBlock3D(World world, int x, int y, int z, Block block, int hRange, int vRange)
     {
-        for(int vertical = y - verticalRange; vertical <= vertical + verticalRange; vertical++)
+        for (int i = (y - vRange); i <= (y + vRange); i++)
         {
-            for (int i = x - range; i <= x + range; i++)
+            for (int j = (x - hRange); j <= (x + hRange); j++)
             {
-                for (int j = z - range; j <= z + range; j++)
+                for (int k = (z - hRange); k <= (z + hRange); k++)
                 {
-                    if (world.getBlock(i, y, j) == block)
+                    if (world.getBlock(j, i, k) == block)
                     {
-                        return new ChunkCoordinates(i, y, j);
+                        return new ChunkCoordinates(j, i, k);
                     }
                 }
             }
@@ -253,8 +262,9 @@ public class Utils
 
     public static int secondsToTicks(float seconds)
     {
-        return (int)seconds*20;
+        return (int) seconds * 20;
     }
+
     public static boolean whereTheHellAmI()
     {
         Side side = FMLCommonHandler.instance().getEffectiveSide();

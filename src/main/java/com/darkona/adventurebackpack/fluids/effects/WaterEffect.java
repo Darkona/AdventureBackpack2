@@ -24,18 +24,18 @@ public class WaterEffect extends FluidEffect
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if(entity instanceof EntityPlayer)
+        if (entity instanceof EntityPlayer)
         {
-            EntityPlayer player = (EntityPlayer)entity;
-            BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(player.serverPosX,player.serverPosZ);
+            EntityPlayer player = (EntityPlayer) entity;
+            BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(player.serverPosX, player.serverPosZ);
 
             //If it's hot
-            if(     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.HOT) ||
+            if (BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.HOT) ||
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.DRY) ||
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.SANDY) ||
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.WASTELAND) ||
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.NETHER)
-            )
+                    )
             {
                 // player.getFoodStats().addStats(1, 0.1f);
                 player.addPotionEffect(new PotionEffect(Potion.regeneration.id, timeInSeconds * 20, 0));

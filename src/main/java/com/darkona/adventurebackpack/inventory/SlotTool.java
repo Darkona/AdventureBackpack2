@@ -72,10 +72,10 @@ public class SlotTool extends Slot
             try
             {
                 // Tinker's Construct
-                if ( item.getClass().getName().contains("tconstruct.items.tools") ) return true;
+                if (item.getClass().getName().contains("tconstruct.items.tools")) return true;
             } catch (Exception oops)
             {
-              //  oops.printStackTrace();
+                //  oops.printStackTrace();
             }
             try
             {
@@ -83,17 +83,17 @@ public class SlotTool extends Slot
                 if (java.lang.Class.forName("buildcraft.api.tools.IToolWrench").isInstance(item)) return true;
             } catch (Exception oops)
             {
-              //  oops.printStackTrace();
+                //  oops.printStackTrace();
             }
             try
             {
-               //IndustrialCraft
+                //IndustrialCraft
                 if (java.lang.Class.forName("ic2.api.item.IElectricItem").isInstance(item)) return true;
             } catch (Exception oops)
             {
-              //  oops.printStackTrace();
+                //  oops.printStackTrace();
             }
-                //Thaumcraft
+            //Thaumcraft
             try
             {
                 //Thermal Expansion
@@ -101,10 +101,7 @@ public class SlotTool extends Slot
                 if (java.lang.Class.forName("thermalexpansion.item.tool").isInstance(item)) return true;
             } catch (Exception oops)
             {
-               // oops.printStackTrace();
-            } finally
-            {
-                return valid;
+                // oops.printStackTrace();
             }
 
         }

@@ -4,8 +4,6 @@ import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Icons;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -13,7 +11,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -76,7 +73,7 @@ public class BlockAdventureBackpack extends BlockContainer
                             {
                                 break;
                             }
-                            for(int o = 0; o < 2; o++)
+                            for (int o = 0; o < 2; o++)
                             {
                                 world.spawnParticle("enchantmenttable",
                                         (double) i + 0.5D,
@@ -297,8 +294,8 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
     {
-        ItemStack backpack = new ItemStack(ModItems.adventureBackpack,1);
-        BackpackNames.setBackpackColorNameFromDamage(backpack,BackpackNames.getBackpackDamageFromName(getAssociatedTileColorName(world,x,y,z)));
+        ItemStack backpack = new ItemStack(ModItems.adventureBackpack, 1);
+        BackpackNames.setBackpackColorNameFromDamage(backpack, BackpackNames.getBackpackDamageFromName(getAssociatedTileColorName(world, x, y, z)));
         return backpack;
     }
 

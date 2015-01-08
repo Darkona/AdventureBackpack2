@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.init.recipes;
 
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

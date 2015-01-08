@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,14 +8,17 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 /**
  * Created on 02/01/2015
  *
  * @author Darkona
  */
-public  class InventoryCopterPack implements IInventory, IAdvBackpack
+public class InventoryCopterPack implements IInventory, IAdvBackpack
 {
 
 
@@ -25,6 +27,7 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
     public int tickCounter;
     public byte status;
     private ItemStack[] inventory;
+
     public FluidTank getFuelTank()
     {
         return fuelTank;
@@ -41,13 +44,14 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
 
     public void consumeFuel(int quantity)
     {
-        fuelTank.drain(quantity,true);
+        fuelTank.drain(quantity, true);
     }
 
     public boolean canConsumeFuel(int quantity)
     {
-        return fuelTank.drain(quantity,false) != null && fuelTank.drain(quantity,false).amount > 0;
+        return fuelTank.drain(quantity, false) != null && fuelTank.drain(quantity, false).amount > 0;
     }
+
     @Override
     public int getSizeInventory()
     {
@@ -130,22 +134,21 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
     public void openInventory()
     {
         NBTTagCompound compound = containerStack.getTagCompound() != null ? containerStack.stackTagCompound : new NBTTagCompound();
-        if(compound.hasKey("fuelTank"))
+        if (compound.hasKey("fuelTank"))
         {
             this.fuelTank.readFromNBT(compound.getCompoundTag("fuelTank"));
         }
-        if(compound.hasKey("status"))
+        if (compound.hasKey("status"))
         {
             this.status = compound.getByte("status");
-        }else
+        } else
         {
             this.status = ItemCopterPack.OFF_MODE;
         }
-        if(compound.hasKey("tickCounter"))
+        if (compound.hasKey("tickCounter"))
         {
             this.tickCounter = compound.getInteger("tickCounter");
-        }
-        else
+        } else
         {
             this.tickCounter = 0;
         }
@@ -155,7 +158,7 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
     public void closeInventory()
     {
 
-        NBTTagCompound compound = containerStack.hasTagCompound()? containerStack.stackTagCompound : new NBTTagCompound();
+        NBTTagCompound compound = containerStack.hasTagCompound() ? containerStack.stackTagCompound : new NBTTagCompound();
         compound.setTag("fuelTank", this.fuelTank.writeToNBT(new NBTTagCompound()));
         compound.setByte("status", this.status);
         compound.setInteger("tickCounter", this.tickCounter);
@@ -183,11 +186,11 @@ public  class InventoryCopterPack implements IInventory, IAdvBackpack
             if (i == 0)
             {
                 ItemStack container = getStackInSlot(i);
-                FluidStack oil = new FluidStack(FluidRegistry.getFluid("oil"),1);
-                FluidStack fuel = new FluidStack(FluidRegistry.getFluid("fuel"),1);
-                if(fuel != null && oil != null)
+                FluidStack oil = new FluidStack(FluidRegistry.getFluid("oil"), 1);
+                FluidStack fuel = new FluidStack(FluidRegistry.getFluid("fuel"), 1);
+                if (fuel != null && oil != null)
                 {
-                    if(FluidContainerRegistry.containsFluid(container, oil) || FluidContainerRegistry.containsFluid(container, fuel) || FluidContainerRegistry.isEmptyContainer(container))
+                    if (FluidContainerRegistry.containsFluid(container, oil) || FluidContainerRegistry.containsFluid(container, fuel) || FluidContainerRegistry.isEmptyContainer(container))
                     {
                         InventoryActions.transferContainerTank(this, fuelTank, i);
                     }

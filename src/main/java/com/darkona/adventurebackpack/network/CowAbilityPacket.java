@@ -26,18 +26,19 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
     @Override
     public IMessage onMessage(CowAbilityMessage message, MessageContext ctx)
     {
-        if(ctx.side.isClient())
+        if (ctx.side.isClient())
         {
             EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerID));
 
-            if(player.openContainer instanceof BackpackContainer)
+            if (player.openContainer instanceof BackpackContainer)
             {
-                BackpackContainer cont = ((BackpackContainer)player.openContainer);
+                BackpackContainer cont = ((BackpackContainer) player.openContainer);
                 cont.detectAndSendChanges();
                 IAdvBackpack inv = cont.inventory;
-                switch(message.action)
+                switch (message.action)
                 {
-                    case CONSUME_WHEAT: inv.consumeInventoryItem(Items.wheat);
+                    case CONSUME_WHEAT:
+                        inv.consumeInventoryItem(Items.wheat);
                 }
                 player.inventoryContainer.detectAndSendChanges();
                 inv.onInventoryChanged();

@@ -1,7 +1,8 @@
 package baubles.api;
 
-public enum BaubleType {
-	RING,
-	AMULET,
-	BELT
+public enum BaubleType
+{
+    RING,
+    AMULET,
+    BELT
 }

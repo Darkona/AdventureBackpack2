@@ -97,7 +97,7 @@ public class BackpackNames
 
         if (backpack == null) return null;
         if (!(backpack.getItem() instanceof ItemAdventureBackpack)) return null;
-        if(backpack.stackTagCompound == null)
+        if (backpack.stackTagCompound == null)
         {
             backpack.stackTagCompound = new NBTTagCompound();
         }
@@ -108,16 +108,18 @@ public class BackpackNames
 
     public static int getBackpackDamageFromName(String name)
     {
-        for(int i =0; i < backpackNames.length; i++)
+        for (int i = 0; i < backpackNames.length; i++)
         {
-            if(backpackNames[i].equals(name))return i;
+            if (backpackNames[i].equals(name)) return i;
         }
         return 0;
     }
 
-    public static String getBackpackColorName(TileAdventureBackpack te){
+    public static String getBackpackColorName(TileAdventureBackpack te)
+    {
         return te.getColorName();
     }
+
     public static String getBackpackColorName(ItemStack item)
     {
         if (item == null) return "";
@@ -132,9 +134,12 @@ public class BackpackNames
         return item.stackTagCompound.getString("colorName");
     }
 
-    public static void setBackpackColorName(ItemStack item, String newName){
-        if(item!=null){
-            if(item.stackTagCompound == null){
+    public static void setBackpackColorName(ItemStack item, String newName)
+    {
+        if (item != null)
+        {
+            if (item.stackTagCompound == null)
+            {
                 item.setTagCompound(new NBTTagCompound());
             }
             item.stackTagCompound.setString("colorName", newName);

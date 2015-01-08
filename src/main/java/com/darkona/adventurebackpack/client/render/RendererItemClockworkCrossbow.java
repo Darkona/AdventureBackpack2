@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.client.render;
 
 
-import com.darkona.adventurebackpack.client.models.ModelAdventureHat;
 import com.darkona.adventurebackpack.client.models.ModelClockworkCrossbow;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
@@ -28,6 +27,7 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
     {
         model = new ModelClockworkCrossbow();
     }
+
     public boolean handleRenderType(ItemStack item, ItemRenderType type)
     {
         switch (type)
@@ -131,8 +131,8 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                 GL11.glRotatef(75, 1, 0, 0);
 
                 GL11.glTranslatef(0.0f, 0.4f, 0.2f);
-                player = (EntityPlayer)data[1];
-                model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1/20F);
+                player = (EntityPlayer) data[1];
+                model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F);
 
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();
@@ -158,7 +158,7 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                 GL11.glRotatef(45, 0, 1, 0);
                 GL11.glRotatef(20, 1, 0, 0);
                 //GL11.glRotatef(15, 0, 0, 1);
-                player = (EntityPlayer)data[1];
+                player = (EntityPlayer) data[1];
                 int countDracula = player.getItemInUseCount();
                 if (countDracula > 0)
                 {
@@ -170,10 +170,10 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                 }
 
                 model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F);
-               // if (player.getItemInUseCount() > 0)
+                // if (player.getItemInUseCount() > 0)
                 //{
-                    //GL11.glPopMatrix();
-               // }
+                //GL11.glPopMatrix();
+                // }
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();

@@ -1,14 +1,11 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.client.Visuals;
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
-import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -18,10 +15,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -50,7 +45,6 @@ public class ItemCopterPack extends ArmorAB
 
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     *
      */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -88,12 +82,11 @@ public class ItemCopterPack extends ArmorAB
      */
 
 
-
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
     {
         //You dont need a helicopter backpack if you can simply fly around.
-        if(player == null || stack == null)return;
+        if (player == null || stack == null) return;
         //|| player.capabilities.isCreativeMode || player.capabilities.allowFlying || player.capabilities.isFlying) return;
         InventoryCopterPack inv = new InventoryCopterPack(stack);
 
@@ -102,28 +95,32 @@ public class ItemCopterPack extends ArmorAB
         int fuelConsumption = 0;
         byte status = stack.stackTagCompound.getByte("status");
         float pitch = 1.0f;
-        if(status != OFF_MODE)
+        if (status != OFF_MODE)
         {
-            if(inv.fuelTank.getFluidAmount() == 0)
+            if (inv.fuelTank.getFluidAmount() == 0)
             {
                 canElevate = false;
-                if(player.onGround)
+                if (player.onGround)
                 {
                     stack.stackTagCompound.setByte("status", OFF_MODE);
-                    if(world.isRemote)
-                    player.addChatComponentMessage(new ChatComponentText("CopterPack: out of fuel, shutting off."));
+                    if (world.isRemote)
+                    {
+                        player.addChatComponentMessage(new ChatComponentText("CopterPack: out of fuel, shutting off."));
+                    }
                     //TODO play "backpackOff" sound
                 }
-                if(!player.onGround && status == HOVER_MODE)
+                if (!player.onGround && status == HOVER_MODE)
                 {
                     stack.stackTagCompound.setByte("status", NORMAL_MODE);
-                    if(world.isRemote)
-                    player.addChatComponentMessage(new ChatComponentText("CopterPack: out of fuel."));
+                    if (world.isRemote)
+                    {
+                        player.addChatComponentMessage(new ChatComponentText("CopterPack: out of fuel."));
+                    }
                     //TODO play "outofFuel" sound
                 }
             }
             fuelConsumption++;
-            if(status == NORMAL_MODE)
+            if (status == NORMAL_MODE)
             {
                 player.fallDistance = 0;
                 if (!player.onGround && !player.isSneaking() && player.motionY < 0.0D)
@@ -131,7 +128,7 @@ public class ItemCopterPack extends ArmorAB
                     fuelConsumption--;
                     player.motionY = (status == OFF_MODE) ? player.motionY * 0.7 : player.motionY * 0.6;
                 }
-                if(player.isSneaking())
+                if (player.isSneaking())
                 {
                     fuelConsumption--;
                     player.motionY = -0.3;
@@ -139,12 +136,12 @@ public class ItemCopterPack extends ArmorAB
                 }
             }
 
-            if(status == HOVER_MODE)
+            if (status == HOVER_MODE)
             {
                 fuelConsumption++;
                 player.motionY = 0;
                 player.fallDistance = 0;
-                if(player.isSneaking())
+                if (player.isSneaking())
                 {
                     player.motionY = -0.3;
                     fuelConsumption--;
@@ -153,38 +150,44 @@ public class ItemCopterPack extends ArmorAB
             }
 
             //Smoke
-            if(!world.isRemote)ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.COPTER_PARTICLE,player.getUniqueID().toString()),player);
+            if (!world.isRemote)
+            {
+                ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.COPTER_PARTICLE, player.getUniqueID().toString()), player);
+            }
             //Sound
 
             //Airwave
-            if(!player.onGround)
+            if (!player.onGround)
             {
                 pushEntities(world, player, 0.1f);
                 float factor = 0.18f;
-                if (player.moveForward > 0) {
+                if (player.moveForward > 0)
+                {
                     player.moveFlying(0.0F, factor, factor);
                 }
-                if (player.moveForward < 0) {
+                if (player.moveForward < 0)
+                {
                     player.moveFlying(0.0F, -factor, factor * 0.8F);
                 }
-                if (player.moveStrafing > 0) {
+                if (player.moveStrafing > 0)
+                {
                     player.moveFlying(factor, 0.0F, factor);
                 }
-                if (player.moveStrafing < 0) {
+                if (player.moveStrafing < 0)
+                {
                     player.moveFlying(-factor, 0.0F, factor);
                 }
-            }
-            else
+            } else
             {
                 pushEntities(world, player, 0.2f);
             }
 
             //Elevation
-            if(world.isRemote)
+            if (world.isRemote)
             {
-                if(Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
+                if (Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
                 {
-                    if(inv.canConsumeFuel(fuelConsumption + 2) && canElevate)
+                    if (inv.canConsumeFuel(fuelConsumption + 2) && canElevate)
                     {
                         elevate(player, stack);
                         pitch = 1.2f;
@@ -192,7 +195,7 @@ public class ItemCopterPack extends ArmorAB
                 }
             }
             //Elevation
-            if(!player.onGround && player.motionY > 0)
+            if (!player.onGround && player.motionY > 0)
             {
                 fuelConsumption += 2;
             }
@@ -203,22 +206,23 @@ public class ItemCopterPack extends ArmorAB
         inv.openInventory();
         int ticks = inv.tickCounter - 1;
 
-        if(inv.fuelTank.getFluid()!=null)
+        if (inv.fuelTank.getFluid() != null)
         {
             String name = FluidRegistry.getFluidName(inv.fuelTank.getFluid());
-            if(name.equals("oil"))fuelConsumption = (int)Math.floor(fuelConsumption * 1.5D);
+            if (name.equals("oil")) fuelConsumption = (int) Math.floor(fuelConsumption * 1.5D);
         }
 
-        if(ticks <= 0)
+        if (ticks <= 0)
         {
             //if(status!=OFF_MODE)
-               // world.playSound(player.posX,player.posY,player.posZ,"adventurebackpack:helicopter",0.5f,pitch,true);
-                //world.playSoundAtEntity(player,"adventurebackpack:helicopter",1.0f,pitch);
+            // world.playSound(player.posX,player.posY,player.posZ,"adventurebackpack:helicopter",0.5f,pitch,true);
+            //world.playSoundAtEntity(player,"adventurebackpack:helicopter",1.0f,pitch);
             inv.tickCounter = 12;
-        }else{
+        } else
+        {
             inv.tickCounter = ticks;
         }
-        if(ticks % 4 == 0)
+        if (ticks % 4 == 0)
         {
             inv.consumeFuel(fuelConsumption);
         }
@@ -240,20 +244,30 @@ public class ItemCopterPack extends ArmorAB
 
         for (EntityItem groundItem : groundItems)
         {
-            if(!groundItem.isInWater())
+            if (!groundItem.isInWater())
             {
-                if(groundItem.posX > posX)
+                if (groundItem.posX > posX)
+                {
                     groundItem.motionX = speed;
-                if(groundItem.posX < posX)
+                }
+                if (groundItem.posX < posX)
+                {
                     groundItem.motionX = -speed;
+                }
 
-                if(groundItem.posZ > posZ)
+                if (groundItem.posZ > posZ)
+                {
                     groundItem.motionZ = speed;
-                if(groundItem.posZ < posZ)
+                }
+                if (groundItem.posZ < posZ)
+                {
                     groundItem.motionZ = -speed;
+                }
 
-                if(groundItem.posY < posY)
+                if (groundItem.posY < posY)
+                {
                     groundItem.motionY -= speed;
+                }
             }
         }
     }
@@ -272,7 +286,7 @@ public class ItemCopterPack extends ArmorAB
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String modelTexture;
-            modelTexture = Resources.modelTextures("copterPack").toString();
+        modelTexture = Resources.modelTextures("copterPack").toString();
 
         return modelTexture;
     }
@@ -286,8 +300,8 @@ public class ItemCopterPack extends ArmorAB
             byte status = copter.stackTagCompound.getByte("status");
             if((status != OFF_MODE))
             {*/
-                if(player.posY < 100)player.motionY = Math.max(player.motionY, 0.15);
-                if(player.posY > 100)player.motionY = 0.15 - ((player.posY % 100)/100);
+        if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.15);
+        if (player.posY > 100) player.motionY = 0.15 - ((player.posY % 100) / 100);
      /*       }
         }*/
 

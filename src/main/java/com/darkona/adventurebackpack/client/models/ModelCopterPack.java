@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.client.models;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.util.Utils;
@@ -13,7 +12,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
@@ -57,7 +55,8 @@ public class ModelCopterPack extends ModelBiped
         return this;
     }
 
-    public ModelCopterPack() {
+    public ModelCopterPack()
+    {
 
 
         this.textureWidth = 64;
@@ -181,7 +180,8 @@ public class ModelCopterPack extends ModelBiped
         this.bipedBody.addChild(this.Base);
     }
 
-    private void renderFluidInTank(FluidTank tank,  float offsetX, float offsetY, float offsetZ, ModelRenderer parent){
+    private void renderFluidInTank(FluidTank tank, float offsetX, float offsetY, float offsetZ, ModelRenderer parent)
+    {
 
         if (tank != null && tank.getFluid() != null && tank.getFluid().getFluid().getIcon() != null)
         {
@@ -206,21 +206,21 @@ public class ModelCopterPack extends ModelBiped
         }
     }
 
-    private void renderCopterPack(Entity entity,float scale)
+    private void renderCopterPack(Entity entity, float scale)
     {
         Axis.isHidden = true;
         copterPack.openInventory();
-        if(copterPack.getParentItemStack() != null && copterPack.getParentItemStack().stackTagCompound!= null && copterPack.getParentItemStack().stackTagCompound.hasKey("status"))
+        if (copterPack.getParentItemStack() != null && copterPack.getParentItemStack().stackTagCompound != null && copterPack.getParentItemStack().stackTagCompound.hasKey("status"))
         {
             byte mode = copterPack.getParentItemStack().stackTagCompound.getByte("status");
-            if(mode != ItemCopterPack.OFF_MODE)
+            if (mode != ItemCopterPack.OFF_MODE)
             {
                 Axis.isHidden = false;
                 int degrees = 0;
-                if(entity.onGround || (!entity.onGround && entity.isSneaking()))
+                if (entity.onGround || (!entity.onGround && entity.isSneaking()))
                 {
                     degrees = 16;
-                }else
+                } else
                 {
                     degrees = entity.motionY > 0 ? 36 : 28;
                 }
@@ -234,14 +234,14 @@ public class ModelCopterPack extends ModelBiped
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        isSneak = ((entity != null) ? ((EntityLivingBase) entity).isSneaking() : false);
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    {
+        isSneak = ((entity != null) && ((EntityLivingBase) entity).isSneaking());
 
 
-
-        if(entity == null)Axis.isHidden = true;
-        setRotationAngles(f,f1,f2,f3,f4,f5,entity);
-        if(entity != null && entity instanceof EntityPlayer)
+        if (entity == null) Axis.isHidden = true;
+        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        if (entity != null && entity instanceof EntityPlayer)
         {
             GL11.glPushMatrix();
 
@@ -254,32 +254,30 @@ public class ModelCopterPack extends ModelBiped
                 {
                     renderCopterPack(entity, f5);
 
-                }
-                else
+                } else
                 {
                     GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);
                     renderCopterPack(entity, f5);
                     GL11.glTranslatef(-bipedBody.rotationPointX * f5, -bipedBody.rotationPointY * f5, -bipedBody.rotationPointZ * f5);
                 }
-            }
-            else
+            } else
             {
                 GL11.glPushMatrix();
                 GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);
 
                 if (bipedBody.rotateAngleZ != 0.0F)
                 {
-                    GL11.glRotatef(bipedBody.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                    GL11.glRotatef(bipedBody.rotateAngleZ * (180F / (float) Math.PI), 0.0F, 0.0F, 1.0F);
                 }
 
                 if (bipedBody.rotateAngleY != 0.0F)
                 {
-                    GL11.glRotatef(bipedBody.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(bipedBody.rotateAngleY * (180F / (float) Math.PI), 0.0F, 1.0F, 0.0F);
                 }
 
                 if (bipedBody.rotateAngleX != 0.0F)
                 {
-                    GL11.glRotatef(bipedBody.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(bipedBody.rotateAngleX * (180F / (float) Math.PI), 1.0F, 0.0F, 0.0F);
                 }
                 renderCopterPack(entity, f5);
                 GL11.glPopMatrix();
@@ -292,7 +290,8 @@ public class ModelCopterPack extends ModelBiped
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

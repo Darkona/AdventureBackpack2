@@ -25,6 +25,7 @@ public class Resources
     {
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + backpack.getTagCompound().getString("colorName") + ".png").toString();
     }
+
     public static ResourceLocation backpackTextureFromString(String color)
     {
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + color + ".png");

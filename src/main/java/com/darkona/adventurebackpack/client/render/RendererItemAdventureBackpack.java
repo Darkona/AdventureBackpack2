@@ -13,12 +13,13 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class RendererItemAdventureBackpack implements IItemRenderer
 {
     private final ModelBackpackBlock model;
+
     public RendererItemAdventureBackpack()
     {
         model = new ModelBackpackBlock();
@@ -64,11 +65,10 @@ public class RendererItemAdventureBackpack implements IItemRenderer
     {
         InventoryBackpack inv = new InventoryBackpack(item);
         ResourceLocation modelTexture;
-        if(BackpackNames.getBackpackColorName(item).equals("Standard"))
+        if (BackpackNames.getBackpackColorName(item).equals("Standard"))
         {
             modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
-        }
-        else
+        } else
         {
             modelTexture = Resources.backpackTextureFromColor(inv);
         }

@@ -25,7 +25,7 @@ public class ManualConfigHandler
 
     private static void loadConfiguration()
     {
-       
+
         if (config.hasChanged())
         {
             config.save();

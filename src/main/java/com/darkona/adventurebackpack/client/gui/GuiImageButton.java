@@ -1,7 +1,5 @@
 package com.darkona.adventurebackpack.client.gui;
 
-import net.minecraft.client.gui.Gui;
-
 /**
  * Created on 12/10/2014
  *

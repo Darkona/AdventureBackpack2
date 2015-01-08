@@ -3,11 +3,9 @@ package com.darkona.adventurebackpack.client.gui;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.CopterContainer;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
-import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
@@ -46,8 +44,6 @@ public class GuiCopterPack extends GuiContainer implements IBackpackGui
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 
-
-
     }
 
     @Override
@@ -57,7 +53,7 @@ public class GuiCopterPack extends GuiContainer implements IBackpackGui
         GL11.glDisable(GL11.GL_BLEND);
         inventory.openInventory();
         fuel = inventory.getFuelTank().getFluid();
-        fuelTank.draw(this,fuel);
+        fuelTank.draw(this, fuel);
 
         GL11.glPushMatrix();
         String name = (fuel != null) ? fuel.getLocalizedName() : "None";
@@ -65,9 +61,9 @@ public class GuiCopterPack extends GuiContainer implements IBackpackGui
         String capacity = Integer.toString(inventory.getFuelTank().getCapacity());
         int offsetY = 32;
         int offsetX = 8;
-        fontRendererObj.drawString(name, 1 + offsetX , offsetY,0x373737 ,false);
-        fontRendererObj.drawString(amount, 1 + offsetX, 10 + offsetY, 0x373737,false);
-        fontRendererObj.drawString(capacity , 1 + offsetX, 20 + offsetY, 0x373737,false);
+        fontRendererObj.drawString(name, 1 + offsetX, offsetY, 0x373737, false);
+        fontRendererObj.drawString(amount, 1 + offsetX, 10 + offsetY, 0x373737, false);
+        fontRendererObj.drawString(capacity, 1 + offsetX, 20 + offsetY, 0x373737, false);
         GL11.glPopMatrix();
     }
 

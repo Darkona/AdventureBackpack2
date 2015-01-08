@@ -23,7 +23,7 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
     @Override
     public IMessage onMessage(CycleToolMessage message, MessageContext ctx)
     {
-        if(ctx.side.isServer())
+        if (ctx.side.isServer())
         {
             LogHelper.info("Received CycleToolMessage with values: " + message.directionOfCycle + " " + message.typeOfAction + " " + message.slot);
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;

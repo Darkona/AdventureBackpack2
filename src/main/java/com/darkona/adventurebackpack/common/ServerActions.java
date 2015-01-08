@@ -1,8 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
-import com.darkona.adventurebackpack.events.CopterSoundEvent;
-import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
@@ -25,7 +24,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -75,7 +73,7 @@ public class ServerActions
             }
             backpack.saveChanges();
             player.inventory.closeInventory();
-        }catch(Exception oops)
+        } catch (Exception oops)
         {
             LogHelper.debug("Exception trying to cycle tools.");
             oops.printStackTrace();
@@ -97,7 +95,7 @@ public class ServerActions
         {
             World world = player.worldObj;
 
-           for(int i = (int)player.posY - 7; i <= player.posY + 7; i++)
+            for (int i = (int) player.posY - 7; i <= player.posY + 7; i++)
             {
                 ChunkCoordinates spawn = getNearestEmptyChunkCoordinates(world, (int) player.posX, (int) player.posZ, (int) player.posX, (int) player.posY, (int) player.posZ, 12, false, 1, (byte) 0);
 
@@ -114,7 +112,7 @@ public class ServerActions
         return false;
     }
 
-    private static ChunkCoordinates checkCoords(World world, int origX, int origZ, int X,int Y, int Z, boolean except)
+    private static ChunkCoordinates checkCoords(World world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
         //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
         if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
@@ -135,83 +133,87 @@ public class ServerActions
      * that a: can have stuff placed on it and b: has space above it.
      *
      * @param world  The world object.
-     * @param origX Original X coordinate
-     * @param origZ Original Z coordinate
+     * @param origX  Original X coordinate
+     * @param origZ  Original Z coordinate
      * @param X
      * @param Y
      * @param Z      The coordinates of the central point of the search.
      * @param radius The radius of the search. If set to higher numbers, will create a ton of lag
      * @param except Wheter or not to include the origin of the search as a valid block.
-     * @param steps number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
-     * @param pass Pass switch for the witchcraft I can't quite explain.
+     * @param steps  number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
+     * @param pass   Pass switch for the witchcraft I can't quite explain.
      * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
      */
-    public static ChunkCoordinates getNearestEmptyChunkCoordinates(World world, int origX, int origZ, int X,int Y, int Z, int radius, boolean except, int steps, byte pass)
+    public static ChunkCoordinates getNearestEmptyChunkCoordinates(World world, int origX, int origZ, int X, int Y, int Z, int radius, boolean except, int steps, byte pass)
     {
         //Spiral search, because I'm awesome :)
         //This is so the backpack tries to get placed near the death point first
         //And then goes looking farther away at each step
-       // Steps mod 2 == 0 => X++, Z--
+        // Steps mod 2 == 0 => X++, Z--
         //Steps mod 2 == 1 => X--, Z++
 
         //
-        if(steps >= radius) return null;
+        if (steps >= radius) return null;
         int i = X, j = Z;
         if (steps % 2 == 0)
         {
-            if(pass == 0)
+            if (pass == 0)
             {
-                for(;i <= X + steps; i++){
+                for (; i <= X + steps; i++)
+                {
                     ChunkCoordinates coords = checkCoords(world, origX, origZ, X, Y, Z, except);
-                    if(coords != null)
+                    if (coords != null)
                     {
                         return coords;
                     }
                 }
                 pass++;
-                return getNearestEmptyChunkCoordinates(world, origX,origZ,i,Y,j,radius,except,steps,pass);
+                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass);
             }
-            if(pass == 1)
+            if (pass == 1)
             {
-                for(;j >= Z - steps; j--){
+                for (; j >= Z - steps; j--)
+                {
                     ChunkCoordinates coords = checkCoords(world, origX, origZ, X, Y, Z, except);
-                    if(coords != null)
+                    if (coords != null)
                     {
                         return coords;
                     }
                 }
                 pass--;
                 steps++;
-                return getNearestEmptyChunkCoordinates(world, origX,origZ,i,Y,j,radius,except,steps,pass);
+                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass);
             }
         }
 
-        if(steps % 2 == 1)
+        if (steps % 2 == 1)
         {
-            if(pass == 0)
+            if (pass == 0)
             {
-                for(;i >= X - steps; i--){
+                for (; i >= X - steps; i--)
+                {
                     ChunkCoordinates coords = checkCoords(world, origX, origZ, X, Y, Z, except);
-                    if(coords != null)
+                    if (coords != null)
                     {
                         return coords;
                     }
                 }
                 pass++;
-                return getNearestEmptyChunkCoordinates(world, origX,origZ,i,Y,j,radius,except,steps,pass);
+                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass);
             }
-            if(pass == 1)
+            if (pass == 1)
             {
-                for(;j <= Z + steps; j++){
+                for (; j <= Z + steps; j++)
+                {
                     ChunkCoordinates coords = checkCoords(world, origX, origZ, X, Y, Z, except);
-                    if(coords != null)
+                    if (coords != null)
                     {
                         return coords;
                     }
                 }
                 pass--;
                 steps++;
-                return getNearestEmptyChunkCoordinates(world, origX,origZ,i,Y,j,radius,except,steps,pass);
+                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass);
             }
         }
        /* if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(x, y, z, X, Y, Z))
@@ -295,7 +297,7 @@ public class ServerActions
         if (hose != null && hose.getItem() instanceof ItemHose)
         {
             NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
-            if (action == HOSE_SWITCH)
+            if (!action)
             {
                 int mode = ItemHose.getHoseMode(hose);
                 if (direction > 0)
@@ -308,7 +310,7 @@ public class ServerActions
                 tag.setInteger("mode", mode);
             }
 
-            if (action == HOSE_TOGGLE)
+            if (action)
             {
                 int tank = ItemHose.getHoseTank(hose);
                 tank = (tank + 1) % 2;
@@ -528,11 +530,11 @@ public class ServerActions
         String message = "";
         boolean actionPerformed = false;
 
-        if(!copter.hasTagCompound())
+        if (!copter.hasTagCompound())
         {
             copter.stackTagCompound = new NBTTagCompound();
         }
-        if(!copter.stackTagCompound.hasKey("status"))
+        if (!copter.stackTagCompound.hasKey("status"))
         {
             copter.stackTagCompound.setByte("status", ItemCopterPack.OFF_MODE);
         }
@@ -540,44 +542,48 @@ public class ServerActions
         byte mode = copter.stackTagCompound.getByte("status");
         byte newMode = ItemCopterPack.OFF_MODE;
 
-        if(type == CopterPacket.ON_OFF)
+        if (type == CopterPacket.ON_OFF)
         {
             if (mode == ItemCopterPack.OFF_MODE)
             {
                 newMode = ItemCopterPack.NORMAL_MODE;
                 message = "normal mode.";
-                actionPerformed =true;
+                actionPerformed = true;
                 if (!player.worldObj.isRemote)
-                    ModNetwork.sendToNearby(PlayerSoundPacket.makeCopterMessage(player, PlayerSoundPacket.play),player);
-            }
-            else
+                {
+                    ModNetwork.sendToNearby(PlayerSoundPacket.makeCopterMessage(player, PlayerSoundPacket.play), player);
+                }
+            } else
             {
                 newMode = ItemCopterPack.OFF_MODE;
                 message = "off.";
-                actionPerformed =true;
+                actionPerformed = true;
             }
         }
 
-        if(type == CopterPacket.TOGGLE && mode != ItemCopterPack.OFF_MODE)
+        if (type == CopterPacket.TOGGLE && mode != ItemCopterPack.OFF_MODE)
         {
-            if(mode == ItemCopterPack.NORMAL_MODE)
+            if (mode == ItemCopterPack.NORMAL_MODE)
             {
                 newMode = ItemCopterPack.HOVER_MODE;
                 message = "hover mode.";
-                actionPerformed =true;
+                actionPerformed = true;
             }
-            if(mode == ItemCopterPack.HOVER_MODE)
+            if (mode == ItemCopterPack.HOVER_MODE)
             {
                 newMode = ItemCopterPack.NORMAL_MODE;
                 message = "normal mode.";
-                actionPerformed =true;
+                actionPerformed = true;
             }
         }
 
         if (actionPerformed)
         {
             copter.stackTagCompound.setByte("status", newMode);
-            if(player.worldObj.isRemote) player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
+            if (player.worldObj.isRemote)
+            {
+                player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
+            }
         }
     }
 

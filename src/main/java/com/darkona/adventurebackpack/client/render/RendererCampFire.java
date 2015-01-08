@@ -1,10 +1,6 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
 import com.darkona.adventurebackpack.client.models.ModelCampFire;
-import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -34,7 +30,7 @@ public class RendererCampFire extends TileEntitySpecialRenderer
         ResourceLocation modelTexture = Resources.modelTextures("campFire");
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glTranslatef((float) x + 0.5F, (float) y + 1.2f , (float) z + 0.5F);
+        GL11.glTranslatef((float) x + 0.5F, (float) y + 1.2f, (float) z + 0.5F);
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 

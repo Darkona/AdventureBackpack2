@@ -26,10 +26,10 @@ public class PlayerParticlePacket implements IMessageHandler<PlayerParticlePacke
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
-        if(ctx.side.isClient())
+        if (ctx.side.isClient())
         {
             EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerUUID));
-            ClientActions.showParticlesAtPlayer(player,message.particleCode);
+            ClientActions.showParticlesAtPlayer(player, message.particleCode);
         }
         return null;
     }

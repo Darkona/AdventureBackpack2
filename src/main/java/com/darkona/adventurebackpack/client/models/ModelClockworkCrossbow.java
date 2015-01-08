@@ -14,7 +14,8 @@ import net.minecraft.item.ItemStack;
  * clockworkCrossbow - Darkona
  * Created using Tabula 4.1.0
  */
-public class ModelClockworkCrossbow extends ModelBase {
+public class ModelClockworkCrossbow extends ModelBase
+{
     public ModelRenderer xbowBody;
     public ModelRenderer leftArc1;
     public ModelRenderer rightArc1;
@@ -48,7 +49,8 @@ public class ModelClockworkCrossbow extends ModelBase {
     public ModelRenderer hookTooth4;
     public RendererStack arrow;
 
-    public ModelClockworkCrossbow() {
+    public ModelClockworkCrossbow()
+    {
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.hookTooth1 = new ModelRenderer(this, 0, 0);
@@ -182,11 +184,12 @@ public class ModelClockworkCrossbow extends ModelBase {
         this.hookHead.addChild(this.hookTooth3);
 
         arrow = new RendererStack(this, true);
-        arrow.stack = new ItemStack(Items.arrow,1);
+        arrow.stack = new ItemStack(Items.arrow, 1);
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    {
         this.wheel.render(f5);
         this.reloader1.render(f5);
         this.sniperLeg1.render(f5);
@@ -202,26 +205,26 @@ public class ModelClockworkCrossbow extends ModelBase {
         this.magazine.render(f5);
 
 
-        ModelRenderer[] arrows = {arrow1,arrow2,arrow3};
+        ModelRenderer[] arrows = {arrow1, arrow2, arrow3};
 
 
         setRotateAngle(arrow, Utils.degreesToRadians(-90), Utils.degreesToRadians(0), Utils.degreesToRadians(0));
-        for(ModelRenderer model : arrows)
+        for (ModelRenderer model : arrows)
         {
-            arrow.setRotationPoint(model.rotationPointX,model.rotationPointY,model.rotationPointZ);
+            arrow.setRotationPoint(model.rotationPointX, model.rotationPointY, model.rotationPointZ);
             setOffset(arrow, -.25f, .1f, -.2f);
             arrow.render(f5);
             setOffset(arrow, -.75f, .1f, -.2f);
             arrow.render(f5);
         }
-        if(entity != null && entity instanceof EntityPlayer)
+        if (entity != null && entity instanceof EntityPlayer)
         {
-            if(((EntityPlayer)entity).getItemInUse() != null && ((EntityPlayer)entity).getItemInUse().getItem() instanceof ItemCrossbow && ((EntityPlayer)entity).getItemInUseCount() > 0)
+            if (((EntityPlayer) entity).getItemInUse() != null && ((EntityPlayer) entity).getItemInUse().getItem() instanceof ItemCrossbow && ((EntityPlayer) entity).getItemInUseCount() > 0)
             {
-                setOffset(arrow,-.0f,-.0f,-.0f);
+                setOffset(arrow, -.0f, -.0f, -.0f);
                 setRotateAngle(arrow, Utils.degreesToRadians(-90), Utils.degreesToRadians(0), Utils.degreesToRadians(90));
-                arrow.setRotationPoint(xbowBody.rotationPointX,xbowBody.rotationPointY,xbowBody.rotationPointZ);
-                arrow.render(1/14);
+                arrow.setRotationPoint(xbowBody.rotationPointX, xbowBody.rotationPointY, xbowBody.rotationPointZ);
+                arrow.render(1 / 14);
             }
         }
         this.leftArc1.render(f5);

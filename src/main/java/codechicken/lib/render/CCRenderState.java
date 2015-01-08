@@ -1,4 +1,3 @@
-
 package codechicken.lib.render;
 
 import codechicken.lib.colour.ColourRGBA;

@@ -22,22 +22,35 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     private ItemStack backpack;
     private ChunkCoordinates campFire;
+    private boolean forceCampFire;
+
+    public boolean isForceCampFire()
+    {
+        return forceCampFire;
+    }
+
+    public void setForceCampFire(boolean forceCampFire)
+    {
+        this.forceCampFire = forceCampFire;
+    }
+
     private int dimension;
 
     public BackpackProperty(EntityPlayer player)
     {
         this.player = player;
         backpack = null;
-        campFire = null;
+        campFire = player.getBedLocation(player.dimension);
+        forceCampFire = false;
     }
 
-    public static final void register(EntityPlayer player)
+    public static void register(EntityPlayer player)
     {
 
         player.registerExtendedProperties(PROPERTY_NAME, new BackpackProperty(player));
     }
 
-    public static final BackpackProperty get(EntityPlayer player)
+    public static BackpackProperty get(EntityPlayer player)
     {
         return (BackpackProperty) player.getExtendedProperties(PROPERTY_NAME);
     }
@@ -51,11 +64,11 @@ public class BackpackProperty implements IExtendedEntityProperties
     @Override
     public void saveNBTData(NBTTagCompound compound)
     {
-        if(backpack!=null)
+        if (backpack != null)
         {
             compound.setTag("backpack", backpack.writeToNBT(new NBTTagCompound()));
         }
-        if(campFire != null)
+        if (campFire != null)
         {
             compound.setInteger("campFireX", campFire.posX);
             compound.setInteger("campFireY", campFire.posY);

@@ -20,8 +20,8 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 @SideOnly(Side.CLIENT)
 public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
@@ -61,7 +61,7 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
     public GuiAdvBackpack(EntityPlayer player, InventoryBackpack item, boolean wearing)
     {
-        super(new BackpackContainer(player, item, wearing ?  BackpackContainer.SOURCE_WEARING : BackpackContainer.SOURCE_HOLDING));
+        super(new BackpackContainer(player, item, wearing ? BackpackContainer.SOURCE_WEARING : BackpackContainer.SOURCE_HOLDING));
         this.inventory = item;
         this.wearing = wearing;
         this.source = false;
@@ -151,25 +151,28 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
         int offsetY = 32;
         int offsetX = 8;
-        fontRendererObj.drawString(getFirstWord(name), 1 + offsetX , 64 + offsetY,0x373737 ,false);
-        fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737,false);
-        fontRendererObj.drawString(capacity , 1 + offsetX, 94 + offsetY, 0x373737,false);
+        fontRendererObj.drawString(getFirstWord(name), 1 + offsetX, 64 + offsetY, 0x373737, false);
+        fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737, false);
+        fontRendererObj.drawString(capacity, 1 + offsetX, 94 + offsetY, 0x373737, false);
 
         name = (rgt != null) ? rgt.getLocalizedName() : "None";
         amount = (rgt != null ? rgt.amount : "Empty").toString();
-        fontRendererObj.drawString(getFirstWord(name), 369 + offsetX , 64 + offsetY, 0x373737,false);
-        fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737,false);
-        fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737,false);
+        fontRendererObj.drawString(getFirstWord(name), 369 + offsetX, 64 + offsetY, 0x373737, false);
+        fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737, false);
+        fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737, false);
 
         GL11.glPopMatrix();
     }
 
-    private String getFirstWord(String text) {
-        if (text.indexOf(' ') > -1) { // Check if there is more than one word.
-            String firstWord =  text.substring(0, text.indexOf(' '));
-            String secondWord = text.substring(text.indexOf(' ')+1);
+    private String getFirstWord(String text)
+    {
+        if (text.indexOf(' ') > -1)
+        { // Check if there is more than one word.
+            String firstWord = text.substring(0, text.indexOf(' '));
+            String secondWord = text.substring(text.indexOf(' ') + 1);
             return firstWord.equals("Molten") ? secondWord : firstWord;// Extract first word.
-        } else {
+        } else
+        {
             return text; // Text is the first word itself.
         }
     }

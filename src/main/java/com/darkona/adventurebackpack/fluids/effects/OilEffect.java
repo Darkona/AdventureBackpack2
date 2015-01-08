@@ -30,11 +30,11 @@ public class OilEffect extends FluidEffect
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if(entity instanceof EntityPlayer)
+        if (entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
             player.addPotionEffect(new PotionEffect(Potion.confusion.getId(), this.timeInTicks, 2));
-            player.addPotionEffect(new PotionEffect(Potion.poison.getId(), this.timeInTicks/2, 1));
+            player.addPotionEffect(new PotionEffect(Potion.poison.getId(), this.timeInTicks / 2, 1));
         }
     }
 }

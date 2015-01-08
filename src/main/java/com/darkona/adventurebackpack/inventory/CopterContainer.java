@@ -1,17 +1,10 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Created on 03/01/2015
@@ -29,7 +22,7 @@ public class CopterContainer extends Container
             PLAYER_INV_END = PLAYER_INV_START + 26,
             COPTER_INV_START = PLAYER_INV_END + 1;
 
-    public CopterContainer(EntityPlayer player,InventoryCopterPack copterPack)
+    public CopterContainer(EntityPlayer player, InventoryCopterPack copterPack)
     {
         this.inventory = copterPack;
         makeSlots(player.inventory);
@@ -70,7 +63,7 @@ public class CopterContainer extends Container
         addSlotToContainer(new SlotFluid(inventory, slot++, 99, 52));
     }
 
-      @Override
+    @Override
     public boolean canInteractWith(EntityPlayer p_75145_1_)
     {
         return true;
@@ -85,11 +78,11 @@ public class CopterContainer extends Container
             for (int i = 0; i < inventory.getSizeInventory(); i++)
             {
                 ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                    if (itemstack != null)
-                    {
-                        inventory.setInventorySlotContents(i, null);
-                        player.dropPlayerItemWithRandomChoice(itemstack, false);
-                    }
+                if (itemstack != null)
+                {
+                    inventory.setInventorySlotContents(i, null);
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
+                }
             }
         }
     }
@@ -97,7 +90,8 @@ public class CopterContainer extends Container
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem()) {
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
+        {
             return null;
         }
         inventory.onInventoryChanged();

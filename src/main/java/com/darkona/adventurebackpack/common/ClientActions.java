@@ -1,16 +1,11 @@
 package com.darkona.adventurebackpack.common;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Visuals;
 import com.darkona.adventurebackpack.client.audio.CopterPackSound;
 import com.darkona.adventurebackpack.client.audio.NyanMovingSound;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
 import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
-import com.darkona.adventurebackpack.proxy.ClientProxy;
-import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,7 +27,7 @@ public class ClientActions
     @SideOnly(Side.CLIENT)
     public static void showParticlesAtPlayer(EntityPlayer player, byte particleCode)
     {
-        switch(particleCode)
+        switch (particleCode)
         {
             case PlayerParticlePacket.COPTER_PARTICLE:
                 Visuals.CopterParticles(player, player.worldObj);
@@ -51,10 +46,10 @@ public class ClientActions
     {
         SoundHandler snd = FMLClientHandler.instance().getClient().getSoundHandler();
 
-        switch(soundCode)
+        switch (soundCode)
         {
             case PlayerSoundPacket.COPTER_SOUND:
-                if(ConfigHandler.ALLOW_COPTER_SOUND)
+                if (ConfigHandler.ALLOW_COPTER_SOUND)
                 {
                     CopterPackSound tucutucu = new CopterPackSound(player);
                     Minecraft.getMinecraft().getSoundHandler().stopSound(tucutucu);

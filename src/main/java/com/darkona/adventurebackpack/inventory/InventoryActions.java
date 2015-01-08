@@ -107,7 +107,7 @@ public class InventoryActions
     {
         ItemStack[] inventory = backpack.getInventory();
         int i = -1;
-        for (int j = 0; j < Constants.inventorySize-7; ++j)
+        for (int j = 0; j < Constants.inventorySize - 7; ++j)
         {
             if (backpack.getInventory()[j] != null && backpack.getInventory()[j].getItem() == item)
             {
@@ -115,12 +115,9 @@ public class InventoryActions
                 break;
             }
         }
-        if (i < 0)
+        if (i >= 0)
         {
-            return;
-        } else
-        {
-           if (--inventory[i].stackSize <= 0)
+            if (--inventory[i].stackSize <= 0)
             {
                 inventory[i] = null;
             }

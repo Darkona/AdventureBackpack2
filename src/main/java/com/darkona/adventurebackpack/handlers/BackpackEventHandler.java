@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.common.ClientActions;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -11,8 +10,6 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import ibxm.Player;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;
@@ -37,7 +34,7 @@ public class BackpackEventHandler
     public void eatGoldenApple(PlayerUseItemEvent.Finish event)
     {
         EntityPlayer player = event.entityPlayer;
-        if(!ConfigHandler.BACKPACK_ABILITIES)return;
+        if (!ConfigHandler.BACKPACK_ABILITIES) return;
         if (event.item.getItem() instanceof ItemAppleGold &&
                 //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
                 BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow"))
@@ -48,16 +45,16 @@ public class BackpackEventHandler
             {
                 String nyanString =
                         EnumChatFormatting.RED + "N" +
-                        EnumChatFormatting.GOLD + "Y" +
-                        EnumChatFormatting.YELLOW + "A" +
-                        EnumChatFormatting.GREEN + "N" +
-                        EnumChatFormatting.AQUA + "C" +
-                        EnumChatFormatting.BLUE + "A" +
-                        EnumChatFormatting.DARK_PURPLE + "T";
+                                EnumChatFormatting.GOLD + "Y" +
+                                EnumChatFormatting.YELLOW + "A" +
+                                EnumChatFormatting.GREEN + "N" +
+                                EnumChatFormatting.AQUA + "C" +
+                                EnumChatFormatting.BLUE + "A" +
+                                EnumChatFormatting.DARK_PURPLE + "T";
 
                 LogHelper.info(nyanString);
                 player.addChatComponentMessage(new ChatComponentText(nyanString));
-                ModNetwork.sendToNearby(PlayerSoundPacket.makeNyanMessage(player, PlayerSoundPacket.play),player);
+                ModNetwork.sendToNearby(PlayerSoundPacket.makeNyanMessage(player, PlayerSoundPacket.play), player);
             }
         }
 
@@ -66,7 +63,7 @@ public class BackpackEventHandler
     @SubscribeEvent
     public void detectBow(ArrowNockEvent event)
     {
-        if(!ConfigHandler.BACKPACK_ABILITIES)return;
+        if (!ConfigHandler.BACKPACK_ABILITIES) return;
         if (Wearing.isWearingBackpack(event.entityPlayer))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -81,7 +78,7 @@ public class BackpackEventHandler
     @SubscribeEvent
     public void detectArrow(ArrowLooseEvent event)
     {
-        if(!ConfigHandler.BACKPACK_ABILITIES)return;
+        if (!ConfigHandler.BACKPACK_ABILITIES) return;
         if (Wearing.isWearingBackpack(event.entityPlayer))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -99,39 +96,10 @@ public class BackpackEventHandler
     @SubscribeEvent
     public void detectLightning(EntityStruckByLightningEvent event)
     {
-        if (event.entity !=null && event.entity instanceof EntityPlayer)
+        if (event.entity != null && event.entity instanceof EntityPlayer)
         {
             ServerActions.electrify((EntityPlayer) event.entity);
         }
     }
 
-    /**
-     * @param event
-     */
-    /*@SubscribeEvent
-
-
-    public void stopMusic(UnequipBackpackEvent event)
-    {
-        EntityPlayer player = event.entityPlayer;
-        if (event.backpack.getTagCompound().getString("colorName").equals("Nyan"))
-        {
-            event.backpack.getTagCompound().setInteger("lastTime", 0);
-            if (Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(NyanMovingSound.instance) &&
-                    NyanMovingSound.instance.getPlayer() == player)
-            {
-                Minecraft.getMinecraft().getSoundHandler().stopSound(NyanMovingSound.instance);
-                ModNetwork.networkWrapper.sendToAllAround(
-                        new NyanCatMessage(
-                                MessageConstants.STOP_NYAN,
-                                player.getPersistentID().toString()),
-                        new NetworkRegistry.TargetPoint(
-                                player.dimension,
-                                player.posX,
-                                player.posY,
-                                player.posZ,
-                                30.0D));
-            }
-        }
-    }*/
 }

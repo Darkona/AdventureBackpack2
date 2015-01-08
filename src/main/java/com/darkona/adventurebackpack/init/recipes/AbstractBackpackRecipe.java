@@ -21,7 +21,7 @@ import java.util.Map;
 public class AbstractBackpackRecipe implements IRecipe
 {
 
-    BackpackRecipes br = new BackpackRecipes();
+    final BackpackRecipes br = new BackpackRecipes();
     private ItemStack result;
     private ItemStack[] recipe;
 
@@ -43,7 +43,6 @@ public class AbstractBackpackRecipe implements IRecipe
         }
         return false;
     }
-
 
 
     public AbstractBackpackRecipe()
@@ -100,7 +99,7 @@ public class AbstractBackpackRecipe implements IRecipe
             }
             if (i == 4)
             {
-                if (BackpackNames.getBackpackColorName(c) != "Standard")
+                if (!BackpackNames.getBackpackColorName(c).equals("Standard"))
                 {
                     return false;
                 }

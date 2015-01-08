@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage,IMessage>
+public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage>
 {
 
     public static final byte FROM_HOLDING = 1;
@@ -29,7 +29,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage,IMessage>
     @Override
     public IMessage onMessage(GUImessage message, MessageContext ctx)
     {
-        if(ctx.side.isServer())
+        if (ctx.side.isServer())
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
@@ -39,9 +39,9 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage,IMessage>
                 int playerY = (int) player.posY;
                 int playerZ = (int) player.posZ;
                 World world = player.worldObj;
-                if(message.type == COPTER_GUI)
+                if (message.type == COPTER_GUI)
                 {
-                    if(Wearing.isHoldingCopter(player))
+                    if (Wearing.isHoldingCopter(player))
                     {
                         FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_HOLDING, world, playerX, playerY, playerZ);
                         return null;
@@ -76,8 +76,8 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage,IMessage>
                             return null;
                         }
                     }
-                    }
                 }
+            }
 
         }
         return null;
@@ -88,6 +88,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage,IMessage>
 
         private byte type;
         private byte from;
+
         public GUImessage()
         {
         }

@@ -36,17 +36,17 @@ import java.util.List;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
-@Optional.Interface(iface="baubles.api.IBauble", modid="Baubles", striprefs=true)
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles", striprefs = true)
 public class ItemAdventureBackpack extends ArmorAB implements IBauble
 {
 
 
     public ItemAdventureBackpack()
     {
-        super(0,1);
+        super(0, 1);
         setUnlocalizedName("adventureBackpack");
         setFull3D();
         setMaxStackSize(1);
@@ -58,6 +58,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     {
         return block instanceof BlockAdventureBackpack ? ModItems.adventureBackpack : null;
     }
+
     /**
      * Return the enchantability factor of the item, most of the timeInSeconds is based on material.
      */
@@ -127,7 +128,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
             stack.stackTagCompound.setString("colorName", "Standard");
         }
 
-       // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
+        // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
         BlockAdventureBackpack backpack = ModBlocks.blockBackpack;
 
         if (y <= 0 || y >= 255)
@@ -169,7 +170,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
                 if (world.setBlock(x, y, z, ModBlocks.blockBackpack))
                 {
                     backpack.onBlockPlacedBy(world, x, y, z, player, stack);
-                     world.playSoundAtEntity(player, BlockAdventureBackpack.soundTypeCloth.getStepResourcePath(), 0.5f, 1.0f);
+                    world.playSoundAtEntity(player, BlockAdventureBackpack.soundTypeCloth.getStepResourcePath(), 0.5f, 1.0f);
                     ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(stack.stackTagCompound);
                     if (from)
                     {
@@ -223,8 +224,8 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
     {
-        if(!ConfigHandler.BACKPACK_ABILITIES)return;
-        if(world == null || player == null || stack ==null)return;
+        if (!ConfigHandler.BACKPACK_ABILITIES) return;
+        if (world == null || player == null || stack == null) return;
         if (stack.stackTagCompound != null &&
                 (stack.getTagCompound().getBoolean("special")) || BackpackAbilities.hasAbility(stack.stackTagCompound.getString("colorName")))
         {
@@ -257,11 +258,10 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String modelTexture;
-        if(BackpackNames.getBackpackColorName(stack).equals("Standard"))
+        if (BackpackNames.getBackpackColorName(stack).equals("Standard"))
         {
             modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday).toString();
-        }
-        else
+        } else
         {
             modelTexture = Resources.backpackTexturesStringFromColor(stack);
         }
@@ -295,7 +295,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems)
     {
-        for(int i = 0; i < BackpackNames.backpackNames.length; i++)
+        for (int i = 0; i < BackpackNames.backpackNames.length; i++)
         {
             ItemStack bp = new ItemStack(this, 1, 0);
             bp.setItemDamage(i);
@@ -309,7 +309,6 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
 
         }*/
     }
-
 
 
     // BAUBLES
@@ -335,8 +334,8 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     @Override
     public void onWornTick(ItemStack itemstack, EntityLivingBase player)
     {
-        this.onArmorTick(player.worldObj, (EntityPlayer)player, itemstack);
-        this.onUpdate(itemstack,((EntityPlayer) player).worldObj, player, 0,  false);
+        this.onArmorTick(player.worldObj, (EntityPlayer) player, itemstack);
+        this.onUpdate(itemstack, ((EntityPlayer) player).worldObj, player, 0, false);
     }
 
     /**

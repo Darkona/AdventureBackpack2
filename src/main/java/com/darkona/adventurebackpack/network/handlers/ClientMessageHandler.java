@@ -7,7 +7,6 @@ package com.darkona.adventurebackpack.network.handlers;
  */
 public class ClientMessageHandler
 {
-    
 
 
 }

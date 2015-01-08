@@ -12,9 +12,12 @@ public class BackpackRecipe
     public ItemStack[] array;
     public String name;
 
-    BackpackRecipe(){}
+    BackpackRecipe()
+    {
+    }
 
-    BackpackRecipe(String name, ItemStack[] array){
+    BackpackRecipe(String name, ItemStack[] array)
+    {
         this.name = name;
         this.array = array;
     }

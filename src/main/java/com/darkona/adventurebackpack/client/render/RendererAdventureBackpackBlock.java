@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL12;
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
 
-//    private ModelAdventureBackpackBlock model;
+    //    private ModelAdventureBackpackBlock model;
     private ModelBackpackBlock model;
 
     public RendererAdventureBackpackBlock()
@@ -43,7 +43,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5f , (float) z + 0.5F);
+        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5f, (float) z + 0.5F);
 
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -62,11 +62,10 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
             GL11.glRotatef(dir * (-180F), 0.0F, 1.0F, 0.0F);
         }
         ResourceLocation modelTexture;
-        if(BackpackNames.getBackpackColorName((TileAdventureBackpack) te).equals("Standard"))
+        if (BackpackNames.getBackpackColorName((TileAdventureBackpack) te).equals("Standard"))
         {
             modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
-        }
-        else
+        } else
         {
             modelTexture = Resources.backpackTextureFromColor((TileAdventureBackpack) te);
         }

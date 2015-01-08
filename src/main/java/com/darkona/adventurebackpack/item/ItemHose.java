@@ -1,9 +1,9 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.util.Resources;
@@ -18,7 +18,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -142,7 +141,7 @@ public class ItemHose extends ItemAB
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int inv_slot, boolean isCurrent)
     {
-        if(entity == null ||!(entity instanceof EntityPlayer))return;
+        if (entity == null || !(entity instanceof EntityPlayer)) return;
 
         EntityPlayer player = (EntityPlayer) entity;
         if (world.isRemote && player.getItemInUse() != null && player.getItemInUse().getItem().equals(this)) return;
@@ -372,7 +371,7 @@ public class ItemHose extends ItemAB
                 case HOSE_DRINK_MODE:
                     if (tank.getFluid() != null && tank.getFluidAmount() >= Constants.bucket)
                     {
-                        if(FluidEffectRegistry.hasFluidEffect(tank.getFluid().getFluid()))
+                        if (FluidEffectRegistry.hasFluidEffect(tank.getFluid().getFluid()))
                         {
                             player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
                         }
@@ -413,7 +412,7 @@ public class ItemHose extends ItemAB
             FluidTank backpackTank = (tank == 0) ? inventory.getLeftTank() : (tank == 1) ? inventory.getRightTank() : null;
             if (backpackTank != null)
             {
-                if(ServerActions.setFluidEffect(world, player, backpackTank))
+                if (ServerActions.setFluidEffect(world, player, backpackTank))
                 {
                     backpackTank.drain(Constants.bucket, true);
                     inventory.saveChanges();

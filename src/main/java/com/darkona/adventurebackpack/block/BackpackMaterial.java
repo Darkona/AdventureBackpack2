@@ -94,6 +94,7 @@ public class BackpackMaterial extends Material
     {
         return false;
     }
+
     /**
      * Returns true if the material can be harvested without a tool (or with the wrong tool)
      */

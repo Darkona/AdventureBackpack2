@@ -28,9 +28,9 @@ public class RendererInflatableBoat extends Render
     public void doRender(EntityInflatableBoat entity, double x, double y, double z, float var1, float var2)
     {
         GL11.glPushMatrix();
-        GL11.glTranslatef((float)x, (float)y, (float)z);
+        GL11.glTranslatef((float) x, (float) y, (float) z);
         GL11.glRotatef(180.0F - var1, 0.0F, 1.0F, 0.0F);
-        float f2 = (float)entity.getTimeSinceHit() - var2;
+        float f2 = (float) entity.getTimeSinceHit() - var2;
         float f3 = entity.getDamageTaken() - var2;
 
         if (f3 < 0.0F)
@@ -40,7 +40,7 @@ public class RendererInflatableBoat extends Render
 
         if (f2 > 0.0F)
         {
-            GL11.glRotatef(MathHelper.sin(f2) * f2 * f3 / 10.0F * (float)entity.getForwardDirection(), 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(MathHelper.sin(f2) * f2 * f3 / 10.0F * (float) entity.getForwardDirection(), 1.0F, 0.0F, 0.0F);
         }
 
         float f4 = 0.75F;
@@ -73,6 +73,6 @@ public class RendererInflatableBoat extends Render
     @Override
     public void doRender(Entity entity, double posX, double posY, double posZ, float p_76986_8_, float p_76986_9_)
     {
-        this.doRender((EntityInflatableBoat)entity, posX, posY, posZ, p_76986_8_, p_76986_9_);
+        this.doRender((EntityInflatableBoat) entity, posX, posY, posZ, p_76986_8_, p_76986_9_);
     }
 }

@@ -1,7 +1,5 @@
 package com.darkona.adventurebackpack.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntitySmokeFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
@@ -17,7 +15,7 @@ public class Visuals
 
     public static void NyanParticles(EntityPlayer player, World world)
     {
-       // World world = player.worldObj;
+        // World world = player.worldObj;
         int i = 2;
         for (int j = 0; j < i * 3; ++j)
         {

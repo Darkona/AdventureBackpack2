@@ -59,7 +59,8 @@ public class ModelBackpackArmor extends ModelBiped
     private IAdvBackpack backpack;
     private float scale = -1;
 
-    public ModelBackpackArmor() {
+    public ModelBackpackArmor()
+    {
         this.textureWidth = 128;
         this.textureHeight = 64;
 
@@ -210,7 +211,6 @@ public class ModelBackpackArmor extends ModelBiped
         upperTool = new RendererStack(this, false);
 
 
-
         bipedBody.addChild(mainBody);
         bipedBody.addChild(bed);
         bipedBody.addChild(tankLeftTop);
@@ -224,9 +224,10 @@ public class ModelBackpackArmor extends ModelBiped
 
         float offsetZ = 0.3F;
         float offsetY = 0.2F;
-        for(ModelRenderer part : (List<ModelRenderer>)bipedBody.childModels){
-          //  setRotationPoins(part, part.rotationPointX, part.rotationPointY + offsetY, part.rotationPointZ + offsetZ);
-            setOffset(part,part.offsetX+0,part.offsetY + offsetY,part.offsetZ + offsetZ);
+        for (ModelRenderer part : (List<ModelRenderer>) bipedBody.childModels)
+        {
+            //  setRotationPoins(part, part.rotationPointX, part.rotationPointY + offsetY, part.rotationPointZ + offsetZ);
+            setOffset(part, part.offsetX + 0, part.offsetY + offsetY, part.offsetZ + offsetZ);
         }
     }
 
@@ -258,29 +259,33 @@ public class ModelBackpackArmor extends ModelBiped
     {
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_BLEND);
-       // GL11.glPopMatrix();
+        // GL11.glPopMatrix();
     }
-    private void renderBackpack(Float scale){
+
+    private void renderBackpack(Float scale)
+    {
 
         backpack.openInventory();
         String color = backpack.getColorName();
-        for(ModelRenderer model : (List<ModelRenderer>)bipedBody.childModels)
+        for (ModelRenderer model : (List<ModelRenderer>) bipedBody.childModels)
         {
             model.mirror = false;
         }
 
         lowerTool.setRotationPoint(-.5F, .10F, .3F);
-        setOffset(lowerTool, -.28F, 0.8F, -.1F );
-        setOffset(upperTool, 0.0f, 0.04f, 0.25f );
+        setOffset(lowerTool, -.28F, 0.8F, -.1F);
+        setOffset(upperTool, 0.0f, 0.04f, 0.25f);
 
         lowerTool.stack = backpack.getStackInSlot(Constants.lowerTool);
         upperTool.stack = backpack.getStackInSlot(Constants.upperTool);
 
-        if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow")){
+        if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
+        {
             startBlending();
             this.mainBody.render(scale);
             stopBlending();
-        }else{
+        } else
+        {
             this.mainBody.render(scale);
         }
 
@@ -290,13 +295,16 @@ public class ModelBackpackArmor extends ModelBiped
         tankRightTop.render(scale);
 
         bed.render(scale);
-        if(color.equals("Pig") || color.equals("Horse")){
+        if (color.equals("Pig") || color.equals("Horse"))
+        {
             pigNose.render(scale);
         }
-        if(color.equals("Villager") || color.equals("IronGolem")){
+        if (color.equals("Villager") || color.equals("IronGolem"))
+        {
             villagerNose.render(scale);
         }
-        if(color.equals("Ocelot")){
+        if (color.equals("Ocelot"))
+        {
             ocelotNose.render(scale);
         }
         GL11.glPopMatrix();
@@ -309,7 +317,8 @@ public class ModelBackpackArmor extends ModelBiped
         GL11.glPopMatrix();
     }
 
-    private void renderFluidInTank(FluidTank tank,  float offsetX, float offsetY, float offsetZ, ModelRenderer parent){
+    private void renderFluidInTank(FluidTank tank, float offsetX, float offsetY, float offsetZ, ModelRenderer parent)
+    {
         //Side true is left, false is right
         if (tank != null && tank.getFluid() != null && tank.getFluid().getFluid().getIcon() != null)
         {
@@ -323,9 +332,9 @@ public class ModelBackpackArmor extends ModelBiped
             float maxY = 0f;
             float maxZ = 0.17f;
             Vector3 victor = new Vector3(
-                        (parent.rotationPointX * 0.1f + offsetX), //
-                        (parent.rotationPointY * 0.1f + offsetY),
-                        (parent.rotationPointZ * 0.1f + offsetZ));
+                    (parent.rotationPointX * 0.1f + offsetX), //
+                    (parent.rotationPointY * 0.1f + offsetY),
+                    (parent.rotationPointZ * 0.1f + offsetZ));
 
             Cuboid6 cat = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
             //Thanks Chickenbones!
@@ -333,15 +342,17 @@ public class ModelBackpackArmor extends ModelBiped
         }
     }
 
-    public void renderWithBackpack(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack backpack){
+    public void renderWithBackpack(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack backpack)
+    {
         this.backpack = new InventoryBackpack(backpack);
-        render(entity, f,f1,f2,f3,f4,f5);
+        render(entity, f, f1, f2, f3, f4, f5);
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    {
 
-        isSneak = ((entity != null) ? ((EntityLivingBase) entity).isSneaking() : false);
+        isSneak = ((entity != null) && ((EntityLivingBase) entity).isSneaking());
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         float oV = (isSneak) ? 0 : .3F;
 
@@ -357,32 +368,30 @@ public class ModelBackpackArmor extends ModelBiped
             if (bipedBody.rotationPointX == 0.0F && bipedBody.rotationPointY == 0.0F && bipedBody.rotationPointZ == 0.0F)
             {
                 renderBackpack(scale);
-            }
-            else
+            } else
             {
                 GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);
                 renderBackpack(scale);
                 GL11.glTranslatef(-bipedBody.rotationPointX * f5, -bipedBody.rotationPointY * f5, -bipedBody.rotationPointZ * f5);
             }
-        }
-        else
+        } else
         {
             GL11.glPushMatrix();
             GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);
 
             if (bipedBody.rotateAngleZ != 0.0F)
             {
-                GL11.glRotatef(bipedBody.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                GL11.glRotatef(bipedBody.rotateAngleZ * (180F / (float) Math.PI), 0.0F, 0.0F, 1.0F);
             }
 
             if (bipedBody.rotateAngleY != 0.0F)
             {
-                GL11.glRotatef(bipedBody.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(bipedBody.rotateAngleY * (180F / (float) Math.PI), 0.0F, 1.0F, 0.0F);
             }
 
             if (bipedBody.rotateAngleX != 0.0F)
             {
-                GL11.glRotatef(bipedBody.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(bipedBody.rotateAngleX * (180F / (float) Math.PI), 1.0F, 0.0F, 0.0F);
             }
             renderBackpack(scale);
             GL11.glPopMatrix();
@@ -398,13 +407,15 @@ public class ModelBackpackArmor extends ModelBiped
         modelRenderer.rotationPointZ = z;
     }
 
-    public void setOffset(ModelRenderer modelRenderer, float x, float y, float z){
+    public void setOffset(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.offsetX = x;
         modelRenderer.offsetY = y;
         modelRenderer.offsetZ = z;
     }
 
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

@@ -1,10 +1,8 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -38,7 +36,7 @@ public class BackpackContainer extends Container
             TOOL_START = BACK_INV_END + 1,
             TOOL_END = TOOL_START + 1,
             BUCKET_LEFT = TOOL_END + 1,
-            BUCKET_RIGHT = BUCKET_LEFT +2;
+            BUCKET_RIGHT = BUCKET_LEFT + 2;
 
     public BackpackContainer(EntityPlayer player, IAdvBackpack backpack, byte source)
     {
@@ -192,7 +190,7 @@ public class BackpackContainer extends Container
                 {
                     if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
                     {
-                        if(!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
+                        if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
                         {
                             if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
                             {
@@ -371,7 +369,8 @@ public class BackpackContainer extends Container
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING) {
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
+        {
             return null;
         }
         inventory.onInventoryChanged();

@@ -15,8 +15,8 @@ import net.minecraft.world.World;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class GuiHandler implements IGuiHandler
 {
@@ -25,7 +25,6 @@ public class GuiHandler implements IGuiHandler
     public static final byte BACKPACK_HOLDING = 2;
     public static final byte BACKPACK_WEARING = 1;
     public static final byte BACKPACK_TILE = 0;
-
 
 
     public GuiHandler()
@@ -65,7 +64,7 @@ public class GuiHandler implements IGuiHandler
                 break;
             case COPTER_HOLDING:
                 InventoryCopterPack inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
-                if(inv2.getParentItemStack() != null)
+                if (inv2.getParentItemStack() != null)
                 {
                     return new CopterContainer(player, inv2);
                 }
@@ -112,7 +111,7 @@ public class GuiHandler implements IGuiHandler
                 break;
             case COPTER_HOLDING:
                 InventoryCopterPack inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
-                if(inv2.getParentItemStack() != null)
+                if (inv2.getParentItemStack() != null)
                 {
                     return new GuiCopterPack(player, inv2);
                 }

@@ -17,13 +17,12 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
     @Override
     public IMessage onMessage(SleepingBagMessage message, MessageContext ctx)
     {
-        if(ctx.side.isServer())
+        if (ctx.side.isServer())
         {
             ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.x, message.y, message.z);
         }
         return null;
     }
-
 
 
     public static class SleepingBagMessage implements IMessage

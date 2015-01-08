@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack;
 
-import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.handlers.BackpackEventHandler;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
@@ -27,10 +27,10 @@ import java.util.Calendar;
 
 /**
  * Created on 10/10/2014
- * @author Javier Darkona
  *
+ * @author Javier Darkona
  */
-@Mod(   modid = ModInfo.MOD_ID,
+@Mod(modid = ModInfo.MOD_ID,
         name = ModInfo.MOD_NAME,
         version = ModInfo.MOD_VERSION,
         guiFactory = ModInfo.GUI_FACTORY_CLASS
@@ -60,12 +60,12 @@ public class AdventureBackpack
     public void preInit(FMLPreInitializationEvent event)
     {
 
-        int year = Calendar.getInstance().get(Calendar.YEAR), month = Calendar.getInstance().get(Calendar.MONTH)+1, day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int year = Calendar.getInstance().get(Calendar.YEAR), month = Calendar.getInstance().get(Calendar.MONTH) + 1, day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
         //Configuration
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-        chineseNewYear = ChineseCalendar.isChineseNewYear(year,month,day);
+        chineseNewYear = ChineseCalendar.isChineseNewYear(year, month, day);
         hannukah = JewishCalendar.isHannukah(year, month, day);
         Holiday = Utils.getHoliday();
 
@@ -82,7 +82,6 @@ public class AdventureBackpack
         playerEventHandler = new PlayerEventHandler();
         backpackEventHandler = new BackpackEventHandler();
         clientEventHandler = new ClientEventHandler();
-
 
 
         MinecraftForge.EVENT_BUS.register(backpackEventHandler);
@@ -116,17 +115,17 @@ public class AdventureBackpack
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
 
 
-        if(ConfigHandler.IS_BAUBLES)
+        if (ConfigHandler.IS_BAUBLES)
         {
             LogHelper.info("Baubles is present. Acting accordingly");
         }
 
-        if(ConfigHandler.IS_BUILDCRAFT)
+        if (ConfigHandler.IS_BUILDCRAFT)
         {
             LogHelper.info("Buildcraft is present. Acting accordingly");
         }
 
-        if(ConfigHandler.IS_TWILIGHT)
+        if (ConfigHandler.IS_TWILIGHT)
         {
             LogHelper.info("Twilight Forest is present. Acting accordingly");
         }

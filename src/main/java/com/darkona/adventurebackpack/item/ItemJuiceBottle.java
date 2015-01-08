@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.util.Resources;
@@ -33,7 +32,7 @@ public class ItemJuiceBottle extends ItemAB
     @Override
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
     {
-        FluidEffectRegistry.executeFluidEffectsForFluid(ModFluids.melonJuice,player, world);
+        FluidEffectRegistry.executeFluidEffectsForFluid(ModFluids.melonJuice, player, world);
         return new ItemStack(Items.glass_bottle, 1);
     }
 

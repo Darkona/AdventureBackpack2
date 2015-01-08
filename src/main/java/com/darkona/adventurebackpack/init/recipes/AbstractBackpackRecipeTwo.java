@@ -1,9 +1,6 @@
 package com.darkona.adventurebackpack.init.recipes;
 
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -25,7 +22,7 @@ public class AbstractBackpackRecipeTwo implements IRecipe
     {
         this.recipe = recipe;
         this.name = name;
-        this.result = makeBackpack(new ItemStack(ModItems.adventureBackpack),this.name);
+        this.result = makeBackpack(new ItemStack(ModItems.adventureBackpack), this.name);
     }
 
     public boolean compareStacks(ItemStack stack1, ItemStack stack2)
@@ -34,8 +31,7 @@ public class AbstractBackpackRecipeTwo implements IRecipe
         if (stack1 == null && stack2 == null)
         {
             return true;
-        } else
-        if (stack1 != null && stack2 != null)
+        } else if (stack1 != null && stack2 != null)
         {
             if (stack1.getItem().equals(stack2.getItem()))
             {
@@ -43,7 +39,7 @@ public class AbstractBackpackRecipeTwo implements IRecipe
                 {
                     return stack1.stackTagCompound.getString("colorName").equals("Standard");
                 }*/
-               return ((stack1.getItemDamage() == stack2.getItemDamage()));
+                return ((stack1.getItemDamage() == stack2.getItemDamage()));
             }
         }
         return false;
@@ -55,7 +51,7 @@ public class AbstractBackpackRecipeTwo implements IRecipe
         if (backpackIn.stackTagCompound == null)
         {
             backpackIn.setTagCompound(new NBTTagCompound());
-            backpackIn.stackTagCompound.setString("colorName",colorName);
+            backpackIn.stackTagCompound.setString("colorName", colorName);
         }
         ItemStack newBackpack = backpackIn.copy();
         NBTTagCompound compound = (NBTTagCompound) backpackIn.getTagCompound().copy();
@@ -69,8 +65,9 @@ public class AbstractBackpackRecipeTwo implements IRecipe
     {
         //LogHelper.info("Matching recipe");
         if (this.recipe == null || invC == null) return false;
-        for(int i = 0; i < invC.getSizeInventory(); i++){
-            if(!compareStacks(this.recipe[i],invC.getStackInSlot(i)))
+        for (int i = 0; i < invC.getSizeInventory(); i++)
+        {
+            if (!compareStacks(this.recipe[i], invC.getStackInSlot(i)))
             {
                 return false;
             }
@@ -82,9 +79,9 @@ public class AbstractBackpackRecipeTwo implements IRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting invC)
     {
-        if(matches(invC, null))
+        if (matches(invC, null))
         {
-            return makeBackpack(invC.getStackInSlot(4),this.name);
+            return makeBackpack(invC.getStackInSlot(4), this.name);
         }
         return null;
     }

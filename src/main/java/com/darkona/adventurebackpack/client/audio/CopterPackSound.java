@@ -45,21 +45,22 @@ public class CopterPackSound extends MovingSound
     @Override
     public void update()
     {
-        if(player.isDead || !Wearing.isWearingCopter(player)){
+        if (player.isDead || !Wearing.isWearingCopter(player))
+        {
             setDonePlaying();
             return;
         }
-        if(Wearing.getWearingCopter(player).hasTagCompound() && Wearing.getWearingCopter(player).getTagCompound().hasKey("status"))
+        if (Wearing.getWearingCopter(player).hasTagCompound() && Wearing.getWearingCopter(player).getTagCompound().hasKey("status"))
         {
-            if(Wearing.getWearingCopter(player).getTagCompound().getByte("status") == ItemCopterPack.OFF_MODE)
+            if (Wearing.getWearingCopter(player).getTagCompound().getByte("status") == ItemCopterPack.OFF_MODE)
             {
                 setDonePlaying();
                 return;
             }
         }
 
-        if(!player.onGround) this.pitch = (player.motionY > 0) ? 1.2F :  (player.isSneaking()) ? 0.8F : 1.0F;
-        if(player.onGround) this.pitch = 0.8F;
+        if (!player.onGround) this.pitch = (player.motionY > 0) ? 1.2F : (player.isSneaking()) ? 0.8F : 1.0F;
+        if (player.onGround) this.pitch = 0.8F;
 
         this.xPosF = (float) this.player.posX;
         this.yPosF = (float) this.player.posY;

@@ -25,7 +25,7 @@ public class LogHelper
 
     public static String print3DCoords(ChunkCoordinates coords)
     {
-        return print3DCoords(coords.posX,coords.posY,coords.posZ);
+        return print3DCoords(coords.posX, coords.posY, coords.posZ);
     }
 
     public static void all(Object object)

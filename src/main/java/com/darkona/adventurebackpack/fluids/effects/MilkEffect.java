@@ -3,8 +3,6 @@ package com.darkona.adventurebackpack.fluids.effects;
 import com.darkona.adventurebackpack.api.FluidEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBucketMilk;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -21,7 +19,7 @@ public class MilkEffect extends FluidEffect
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if(entity instanceof EntityPlayer)
+        if (entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
             if (!world.isRemote)

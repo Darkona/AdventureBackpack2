@@ -8,7 +8,8 @@ import net.minecraft.entity.Entity;
  * InflatableBoat - Darkona
  * Created using Tabula 4.1.0
  */
-public class ModelInflatableBoat extends ModelBase {
+public class ModelInflatableBoat extends ModelBase
+{
     public ModelRenderer boatSides1;
     public ModelRenderer boatSides2;
     public ModelRenderer boatSides3;
@@ -29,7 +30,8 @@ public class ModelInflatableBoat extends ModelBase {
     public ModelRenderer Blade3;
     public ModelRenderer Blade4;
 
-    public ModelInflatableBoat() {
+    public ModelInflatableBoat()
+    {
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.boatSides4 = new ModelRenderer(this, 0, 36);
@@ -117,7 +119,8 @@ public class ModelInflatableBoat extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) { 
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    {
         this.boatSides5.render(f5);
         this.boatSides3.render(f5);
         this.boatSides2.render(f5);
@@ -130,7 +133,8 @@ public class ModelInflatableBoat extends ModelBase {
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

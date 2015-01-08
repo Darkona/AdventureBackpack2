@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.fluids.effects;
 import com.darkona.adventurebackpack.api.FluidEffect;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
-import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -33,7 +32,7 @@ public class MelonJuiceEffect extends FluidEffect
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if(entity instanceof EntityPlayer)
+        if (entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
             player.addPotionEffect(new PotionEffect(Potion.digSpeed.getId(), timeInTicks, 0));

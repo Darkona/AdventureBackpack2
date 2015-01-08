@@ -1,17 +1,12 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.init.recipes.AbstractBackpackRecipeTwo;
-import com.darkona.adventurebackpack.init.recipes.BackpackRecipes;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.Field;
@@ -25,7 +20,7 @@ public class ModRecipes
 {
     private static ItemStack bc(int damage)
     {
-        return BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack),damage);
+        return BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), damage);
     }
 
     public static void init()
@@ -187,7 +182,7 @@ public class ModRecipes
         }
         LogHelper.info("Loaded " + counter + " backpack recipes.");
 
-            //GameRegistry.addRecipe(new AbstractBackpackRecipe());
+        //GameRegistry.addRecipe(new AbstractBackpackRecipe());
         /*BackpackRecipes br = new BackpackRecipes();
         int i = 0;
         for (Field field : BackpackRecipes.class.getFields())

@@ -12,14 +12,14 @@ import net.minecraft.world.World;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class JumpPacket implements IMessageHandler<JumpPacket.JumpMessage,IMessage>
+public class JumpPacket implements IMessageHandler<JumpPacket.JumpMessage, IMessage>
 {
 
 
     @Override
     public IMessage onMessage(JumpMessage message, MessageContext ctx)
     {
-        if(ctx.side.isServer())
+        if (ctx.side.isServer())
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 

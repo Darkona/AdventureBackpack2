@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentTranslation;
@@ -77,7 +76,7 @@ public class BlockSleepingBag extends BlockDirectional
         return (meta & 8) != 0;
     }
 
-   public static ChunkCoordinates verifyRespawnCoordinatesOnBlock(World world, ChunkCoordinates chunkCoordinates, boolean forced)
+    public static ChunkCoordinates verifyRespawnCoordinatesOnBlock(World world, ChunkCoordinates chunkCoordinates, boolean forced)
     {
         IChunkProvider ichunkprovider = world.getChunkProvider();
         ichunkprovider.loadChunk(chunkCoordinates.posX - 3 >> 4, chunkCoordinates.posZ - 3 >> 4);
@@ -153,18 +152,20 @@ public class BlockSleepingBag extends BlockDirectional
                     setBedOccupied(world, x, y, z, false);
                 }
 
-                EntityPlayer.EnumStatus  enumstatus = player.sleepInBedAt(x, y, z);
+                EntityPlayer.EnumStatus enumstatus = player.sleepInBedAt(x, y, z);
 
                 if (enumstatus == EntityPlayer.EnumStatus.OK)
                 {
                     setBedOccupied(world, x, y, z, true);
+                    //This is so the wake up event can detect it. It fires before the player wakes up.
+                    //and the bed location isn't set until then, normally.
+                    player.setSpawnChunk(new ChunkCoordinates(x,y,z),true,player.dimension);
+                    LogHelper.info("Looking for a campfire nearby...");
                     ChunkCoordinates campfire = Utils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
-                    if(campfire != null)
+                    if (campfire != null)
                     {
-                        LogHelper.info("Campfire Found, setting spawn point on it. " + LogHelper.print3DCoords(campfire));
-                        player.setSpawnChunk(campfire,true,player.dimension);
-                        ChunkCoordinates campfireSpawn = ModBlocks.blockCampFire.getBedSpawnPosition(world,x,y,z,player);
-                        world.setBlock(campfireSpawn.posX,campfireSpawn.posY+2,campfireSpawn.posZ,Blocks.emerald_block);
+                        LogHelper.info("Campfire Found, saving coordinates. " + LogHelper.print3DCoords(campfire));
+                        BackpackProperty.get(player).setCampFire(campfire);
                     }
                     return true;
                 } else

@@ -18,15 +18,16 @@ public class ModNetwork
     public static SimpleNetworkWrapper net;
     public static int messages = 0;
 
-    public static void init(){
+    public static void init()
+    {
         net = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_CHANNEL);
         registerMessage(PlayerParticlePacket.class, PlayerParticlePacket.Message.class);
         registerMessage(PlayerSoundPacket.class, PlayerSoundPacket.Message.class);
 
-        registerMessage(CopterPacket.class,CopterPacket.CopterMessage.class);
-        registerMessage(CycleToolPacket.class,CycleToolPacket.CycleToolMessage.class);
+        registerMessage(CopterPacket.class, CopterPacket.CopterMessage.class);
+        registerMessage(CycleToolPacket.class, CycleToolPacket.CycleToolMessage.class);
         registerMessage(GUIPacket.class, GUIPacket.GUImessage.class);
-        registerMessage(SleepingBagPacket.class, SleepingBagPacket.SleepingBagMessage.class );
+        registerMessage(SleepingBagPacket.class, SleepingBagPacket.SleepingBagMessage.class);
         registerMessage(CowAbilityPacket.class, CowAbilityPacket.CowAbilityMessage.class);
         registerMessage(JumpPacket.class, JumpPacket.JumpMessage.class);
 

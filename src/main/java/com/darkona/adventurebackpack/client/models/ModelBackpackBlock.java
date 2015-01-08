@@ -12,14 +12,13 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
-import java.util.List;
-
 /**
  * Created on 17/12/2014
  *
  * @author Darkona
  */
-public class ModelBackpackBlock extends ModelBase {
+public class ModelBackpackBlock extends ModelBase
+{
     public ModelRenderer mainBody;
     public ModelRenderer lampLight;
     public ModelRenderer tankLeftTop;
@@ -61,7 +60,8 @@ public class ModelBackpackBlock extends ModelBase {
     public ModelRenderer lampGlassFront;
     public ModelRenderer kitchen;
 
-    public ModelBackpackBlock() {
+    public ModelBackpackBlock()
+    {
         this.textureWidth = 128;
         this.textureHeight = 64;
 
@@ -270,6 +270,7 @@ public class ModelBackpackBlock extends ModelBase {
         this.pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1);
 
     }
+
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, IAdvBackpack backpack)
     {
 
@@ -280,19 +281,19 @@ public class ModelBackpackBlock extends ModelBase {
         setRotationAngles(f, f1, f2, f3, f4, scale, entity);
 
         GL11.glPushMatrix();
-        renderBackpack(backpack,scale);
+        renderBackpack(backpack, scale);
         //renderFluidsInTanks(backpack.getLeftTank(),backpack.getRightTank(),scale);
         GL11.glPopMatrix();
 
         if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getIcon() != null)
         {
-            Vector3 victor = new Vector3((tankLeftTop.rotationPointX*0.1f - 0.22f ), (tankLeftTop.rotationPointY * 0.1f + 0.05f ),
+            Vector3 victor = new Vector3((tankLeftTop.rotationPointX * 0.1f - 0.22f), (tankLeftTop.rotationPointY * 0.1f + 0.05f),
                     (tankLeftTop.rotationPointZ * 0.1f + 0.15f));
             GL11.glPushMatrix();
             CCRenderState.reset();
             CCRenderState.pullLightmap();
             CCRenderState.useNormals = true;
-            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), new Cuboid6(0f,0.39f, 0f, 0.15f, 0f, 0.15f).add(victor),
+            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), new Cuboid6(0f, 0.39f, 0f, 0.15f, 0f, 0.15f).add(victor),
                     ((1.0F * tankLeft.getFluidAmount()) / (1.0F * tankLeft.getCapacity())), 0.8);
             GL11.glPopMatrix();
 
@@ -306,7 +307,7 @@ public class ModelBackpackBlock extends ModelBase {
             CCRenderState.reset();
             CCRenderState.pullLightmap();
             CCRenderState.useNormals = true;
-            RenderUtils.renderFluidCuboid(tankRight.getFluid(), new Cuboid6(0,0.39, 0, 0.15,0 , 0.15).add(victor),
+            RenderUtils.renderFluidCuboid(tankRight.getFluid(), new Cuboid6(0, 0.39, 0, 0.15, 0, 0.15).add(victor),
                     ((1.0F * tankRight.getFluidAmount()) / (1.0F * tankRight.getCapacity())), 0.8);
             GL11.glPopMatrix();
         }
@@ -330,9 +331,9 @@ public class ModelBackpackBlock extends ModelBase {
             //X++ to the right, X-- to the left
             //Z-- to the front, Z++ to the back
             Vector3 victor = new Vector3(
-                    (tankLeftTop.rotationPointX * 0.1f - 0.17f ), //
-                    (tankLeftTop.rotationPointY * 0.1f + 0.1f ),
-                    (tankLeftTop.rotationPointZ * 0.1f + 0.13f ));
+                    (tankLeftTop.rotationPointX * 0.1f - 0.17f), //
+                    (tankLeftTop.rotationPointY * 0.1f + 0.1f),
+                    (tankLeftTop.rotationPointZ * 0.1f + 0.13f));
             //ChickenStuff
             CCRenderState.reset();
             CCRenderState.pullLightmap();
@@ -367,7 +368,8 @@ public class ModelBackpackBlock extends ModelBase {
     {
         String color = backpack.getColorName();
 
-        if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow")){
+        if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
+        {
             GL11.glPushMatrix();
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -379,21 +381,25 @@ public class ModelBackpackBlock extends ModelBase {
             GL11.glDisable(GL11.GL_CULL_FACE);
             GL11.glDisable(GL11.GL_BLEND);
 
-        }else{
+        } else
+        {
             this.mainBody.render(scale);
         }
         tankLeftTop.render(scale);
         tankRightTop.render(scale);
 
-        if(!backpack.isSBDeployed())bed.render(scale);
+        if (!backpack.isSBDeployed()) bed.render(scale);
 
-        if(color.equals("Pig") || color.equals("Horse")){
+        if (color.equals("Pig") || color.equals("Horse"))
+        {
             pigNose.render(scale);
         }
-        if(color.equals("Villager") || color.equals("IronGolem")){
+        if (color.equals("Villager") || color.equals("IronGolem"))
+        {
             villagerNose.render(scale);
         }
-        if(color.equals("Ocelot")){
+        if (color.equals("Ocelot"))
+        {
             ocelotNose.render(scale);
         }
 
@@ -407,10 +413,12 @@ public class ModelBackpackBlock extends ModelBase {
             GL11.glDisable(GL11.GL_BLEND);
         }*/
     }
+
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
