@@ -1,32 +1,21 @@
 package com.darkona.adventurebackpack.block;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.client.Icons;
 import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.Random;
-
-import static net.minecraftforge.common.util.ForgeDirection.*;
-import static net.minecraftforge.common.util.ForgeDirection.DOWN;
-import static net.minecraftforge.common.util.ForgeDirection.NORTH;
 
 /**
  * Created on 05/01/2015
@@ -60,7 +49,7 @@ public class BlockCampFire extends BlockContainer
     @Override
     public TileEntity createNewTileEntity(World world, int p_149915_2_)
     {
-        return new TileCampFire1();
+        return new TileCampFire();
     }
 
     @Override
@@ -128,7 +117,7 @@ public class BlockCampFire extends BlockContainer
     @Override
     public TileEntity createTileEntity(World world, int metadata)
     {
-        return new TileCampFire1();
+        return new TileCampFire();
     }
 
     @Override
