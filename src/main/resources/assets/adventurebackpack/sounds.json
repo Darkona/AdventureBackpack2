@@ -1,5 +1,6 @@
 {
     "nyan":{"category":"player","sounds":[{"name":"nyan","stream":"true"}]},
-	"helicopter":{"category":"player","sounds":[{"name":"helicopter2","stream":"false"}]},
+	"helicopter":{"category":"player","sounds":[{"name":"helicopter","stream":"false"}]},
+	"helishort":{"category":"player","sounds":[{"name":"helicopterShort","stream":"false"}]},
 	"crossbowshot":{"category":"master","sounds":[{"name":"crossbowShot","stream":"false"}]}
 }

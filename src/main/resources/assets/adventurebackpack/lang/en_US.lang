@@ -1,41 +1,58 @@
 # Items
-item.adventurebackpack:machete.name=Machete
+
+## Component Items For Crafting
 item.adventurebackpack:backpackComponent.name=Backpack Component Item
 item.adventurebackpack:sleepingBag.name=Sleeping Bag
 item.adventurebackpack:backpackTank.name=Backpack Tank
-item.adventurebackpack:macheteHandle=Machete Handle
+item.adventurebackpack:macheteHandle.name=Machete Handle
 item.adventurebackpack:hoseHead.name=Hose Nozzle
 item.adventurebackpack:copterEngine.name=Two-Cylinder Diesel Engine
 item.adventurebackpack:copterBlades.name=Copter Blades
-item.adventurebackpack:adventureBackpack.name=Adventure Backpack
-item.adventurebackpack:backpackHose.name=Backpack Hose
-item.adventurebackpack:adventureSuit.name=Adventurer's Suit
-item.adventurebackpack:adventureHat.name=Adventurer's Fedora
-item.adventurebackpack:pistonBoots.name=Piston Boots
-item.adventurebackpack:melonJuiceBottle.name=Melon Juice Bottle
+item.adventurebackpack:hydroBlades.name=Hidro Blades
+item.adventurebackpack:inflatableBoat.name=Inflatable Boat
+item.adventurebackpack:inflatableBoatMotorized.name=Inflatable Boat (Motorized)
 
+## Tools and consumables
+item.adventurebackpack:clockworkCrossbow.name=Clockwork Crossbow
+item.adventurebackpack:melonJuiceBottle.name=Melon Juice Bottle
+item.adventurebackpack:machete.name=Machete
+
+item.adventurebackpack:backpackHose.name=Backpack Hose
 item.adventurebackpack:hose_leftTank_suck.name=Hose: Left Tank / Suck Mode
 item.adventurebackpack:hose_leftTank_spill.name=Hose: Left Tank / Spill Mode
 item.adventurebackpack:hose_leftTank_drink.name=Hose: Left Tank / Drink Mode
 
-
 item.adventurebackpack:hose_rightTank_suck.name=Hose: Right Tank / Suck Mode
 item.adventurebackpack:hose_rightTank_spill.name=Hose: Right Tank / Spill Mode
 item.adventurebackpack:hose_rightTank_drink.name=Hose: Right Tank / Drink Mode
-
 item.adventurebackpack:hoseUseless.name=Hose: Useless / No Backpack
-item.adventurebackpack:copterPack.name=Copter Pack
-#Blocks
-block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
 
-#CreativeTab
+## Wearables
+item.adventurebackpack:adventureBackpack.name=Adventure Backpack
+item.adventurebackpack:copterPack.name=Copter Pack
+
+## Armor
+item.adventurebackpack:adventureSuit.name=Adventurer's Suit
+item.adventurebackpack:adventureHat.name=Adventurer's Fedora
+item.adventurebackpack:pistonBoots.name=Piston Boots
+
+## Blocks
+block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
+block.adventurebackpack:blockCampFire.name=Camp Fire
+block.adventurebackpack:blockSleepingBag.name=Sleeping Bag
+
+## CreativeTab
 itemGroup.adventurebackpack=Adventure Backpack
 
-#Keybindings
+## Keybindings
 keys.adventureBackpack.category=Adventure Backpack
 keys.adventureBackpack.openBackpackInventory=Open Backpack Inventory
 keys.adventureBackpack.switchHoseTank=Switch Hose Tank
 
-#Fluids
+## Fluids
 fluid.melonJuice=Melon Juice
 fluid.milk=Milk
+
+## Messages
+adventurebackpack:already.equipped=You are already equipping a backpack.
+adventurebackpack:messages.already.impossibru=You aren't wearing any backpacks.
