@@ -58,9 +58,9 @@ public class CopterContainer extends Container
         int slot = 0;
         //Bucket Slots
         // bucket in
-        addSlotToContainer(new SlotFluid(inventory, slot++, 99, 22));
+        addSlotToContainer(new SlotFluid(inventory, slot++, 44, 23));
         // bucket out
-        addSlotToContainer(new SlotFluid(inventory, slot++, 99, 52));
+        addSlotToContainer(new SlotFluid(inventory, slot++, 44, 53));
     }
 
     @Override

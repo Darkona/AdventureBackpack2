@@ -1,21 +1,24 @@
 package com.darkona.adventurebackpack.client.gui;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -24,7 +27,7 @@ import org.lwjgl.opengl.GL11;
  * @author Darkona
  */
 @SideOnly(Side.CLIENT)
-public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
+public class GuiAdvBackpack extends GuiWithTanks
 {
 
     protected IAdvBackpack inventory;
@@ -36,10 +39,12 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     private EntityPlayer player;
     private static final ResourceLocation texture = Resources.guiTextures("guiBackpackNew");
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
-    private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER, Constants.basicTankCapacity);
-    private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER, Constants.basicTankCapacity);
-    private FluidStack lft;
-    private FluidStack rgt;
+    private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 91, 18, 18);
+    private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 91, 18, 18);
+    private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
+    private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
+    private FluidTank lft;
+    private FluidTank rgt;
     public int lefties;
     public int topsies;
 
@@ -92,33 +97,50 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Buttons and button highlight
-        int srcX = 1;
-        int srcY = 227;
         if (source)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {
-                bedButton.draw(this, srcX + 19, srcY);
-
+                bedButton.draw(this, 20, 227);
             } else
             {
-                bedButton.draw(this, srcX, srcY);
+                bedButton.draw(this, 1, 227);
+            }
+        }else
+        {
+            if(wearing)
+            {
+                if(unequipButton.inButton(this,mouseX,mouseY))
+                {
+                    unequipButton.draw(this,96,227);
+                }else
+                {
+                    unequipButton.draw(this,77,227);
+                }
+            }else
+            {
+                if(equipButton.inButton(this,mouseX,mouseY))
+                {
+                    equipButton.draw(this,96,208);
+                }else
+                {
+                    equipButton.draw(this,77,208);
+                }
             }
         }
-
-
-
-
-     /*   zLevel +=1;
-        if (tankLeft.inTank(this, mouseX, mouseY))
+        //zLevel +=1;
+        if(ConfigHandler.HOVERING_TEXT_TANKS)
         {
-            drawHoveringText(tankLeft.getTankTooltip(), mouseX, mouseY, fontRendererObj);
+            if (tankLeft.inTank(this, mouseX, mouseY))
+            {
+                drawHoveringText(tankLeft.getTankTooltip(), mouseX, mouseY, fontRendererObj);
+            }
+
+            if (tankRight.inTank(this, mouseX, mouseY))
+            {
+                drawHoveringText(tankRight.getTankTooltip(), mouseX, mouseY, fontRendererObj);
+            }
         }
-
-        if (tankRight.inTank(this, mouseX, mouseY))
-        {
-            drawHoveringText(tankRight.getTankTooltip(), mouseX, mouseY, fontRendererObj);
-        }*/
     }
 
     @Override
@@ -127,8 +149,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
         inventory.openInventory();
-        lft = inventory.getLeftTank().getFluid();
-        rgt = inventory.getRightTank().getFluid();
+        lft = inventory.getLeftTank();
+        rgt = inventory.getRightTank();
         tankLeft.draw(this, lft);
         tankRight.draw(this, rgt);
 /*
@@ -145,9 +167,11 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
 
         GL11.glPushMatrix();
         //GL11.glTranslatef(8f,64f,0f);
+        FluidStack leftFluid = lft.getFluid();
+        FluidStack rightFluid = rgt.getFluid();
         GL11.glScalef(0.6f, 0.6f, 0.6f);
-        String name = (lft != null) ? lft.getLocalizedName() : "None";
-        String amount = (lft != null ? lft.amount : "Empty").toString();
+        String name = (leftFluid != null) ? leftFluid.getLocalizedName() : "None";
+        String amount = (leftFluid != null ? leftFluid.amount : "Empty").toString();
         String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
         int offsetY = 32;
         int offsetX = 8;
@@ -155,8 +179,8 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
         fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737, false);
         fontRendererObj.drawString(capacity, 1 + offsetX, 94 + offsetY, 0x373737, false);
 
-        name = (rgt != null) ? rgt.getLocalizedName() : "None";
-        amount = (rgt != null ? rgt.amount : "Empty").toString();
+        name = (rightFluid != null) ? rightFluid.getLocalizedName() : "None";
+        amount = (rightFluid != null ? rightFluid.amount : "Empty").toString();
         fontRendererObj.drawString(getFirstWord(name), 369 + offsetX, 64 + offsetY, 0x373737, false);
         fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737, false);
         fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737, false);
@@ -205,10 +229,33 @@ public class GuiAdvBackpack extends GuiContainer implements IBackpackGui
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-        if (bedButton.inButton(this, mouseX, mouseY) && source)
+        int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
+        if(source)
         {
-            TileAdventureBackpack te = (TileAdventureBackpack) inventory;
-            ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
+            if (bedButton.inButton(this, mouseX, mouseY))
+            {
+                TileAdventureBackpack te = (TileAdventureBackpack) inventory;
+                ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
+            }
+        }else
+        {
+            if(wearing)
+            {
+                if(unequipButton.inButton(this,mouseX,mouseY))
+                {
+                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE,false));
+                    player.closeScreen();
+                }
+            } else
+            {
+                if(equipButton.inButton(this,mouseX,mouseY))
+                {
+                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
+                    LogHelper.info("Sending packet with force of: " + Keyboard.isKeyDown(sneakKey) + " Keycode: " + sneakKey);
+                    player.closeScreen();
+                }
+
+            }
         }
         super.mouseClicked(mouseX, mouseY, button);
     }

@@ -2,6 +2,8 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
+import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
@@ -10,15 +12,21 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAITasks;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
+
+import java.util.UUID;
 
 /**
  * Created on 17/10/2014
@@ -102,4 +110,44 @@ public class BackpackEventHandler
         }
     }
 
+    @SubscribeEvent
+    public void makeHorsesFollowOwner(EntityJoinWorldEvent event)
+    {
+        if(!ConfigHandler.BACKPACK_ABILITIES)return;
+        if(event.entity instanceof EntityHorse && ((EntityHorse)event.entity).isTame())
+        {
+
+            EntityHorse horse = ((EntityHorse)event.entity);
+            if(!horse.isDead && horse.hasCustomNameTag())
+            {
+                boolean set = true;
+                if(horse.worldObj.func_152378_a(UUID.fromString(horse.func_152119_ch())) != null)
+                {
+                    for (Object entry : horse.tasks.taskEntries)
+                    {
+                        if (((EntityAITasks.EntityAITaskEntry) entry).action instanceof EntityAIHorseFollowOwner)
+                        {
+                            set = false;
+                        }
+                    }
+                }
+                if(set)
+                {
+                    horse.tasks.addTask(4, new EntityAIHorseFollowOwner(horse, 1.5d, 2.0f, 20.0f));
+
+                    if (horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange) != null)
+                    {
+                        horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).setBaseValue(100.0D);
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void backpackUnequipped(WearableEvent.UnequipWearableEvent event)
+    {
+
+
+    }
 }

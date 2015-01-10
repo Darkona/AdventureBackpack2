@@ -1,12 +1,9 @@
 package com.darkona.adventurebackpack.util;
 
-import baubles.api.BaublesApi;
-import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemAdventureHat;
-import com.darkona.adventurebackpack.item.ItemCopterPack;
-import com.darkona.adventurebackpack.item.ItemPistonBoots;
+import com.darkona.adventurebackpack.item.*;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -15,22 +12,27 @@ import net.minecraft.item.ItemStack;
  */
 public class Wearing
 {
-    public static final byte AS_ARMOR = 0;
-    public static final byte AS_BAUBLE = 1;
-    public static final byte AS_PROP = 2;
+    public static boolean isWearingWearable(EntityPlayer player){
+        return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof IBackWearableItem;
+    }
+
+    public static ItemStack getWearingWearable(EntityPlayer player)
+    {
+       return isWearingWearable(player) ? BackpackProperty.get(player).getWearable() : null;
+    }
+
+    public static boolean isHoldingWearable(EntityPlayer player){
+        return player.inventory.getCurrentItem()!= null && player.inventory.getCurrentItem().getItem() instanceof IBackWearableItem;
+    }
 
     public static boolean isWearingCopter(EntityPlayer player)
     {
-        return player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() instanceof ItemCopterPack;
+        return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemCopterPack;
     }
 
     public static ItemStack getWearingCopter(EntityPlayer player)
     {
-        if (isWearingCopter(player))
-        {
-            return player.inventory.armorInventory[2];
-        }
-        return null;
+         return isWearingCopter(player) ? BackpackProperty.get(player).getWearable() : null;
     }
 
     public static boolean isHoldingCopter(EntityPlayer player)
@@ -40,11 +42,7 @@ public class Wearing
 
     public static ItemStack getHoldingCopter(EntityPlayer player)
     {
-        if (isHoldingCopter(player))
-        {
-            return player.inventory.getCurrentItem();
-        }
-        return null;
+        return isHoldingCopter(player) ?  player.inventory.getCurrentItem() : null;
     }
 
     public static boolean isWearingBoots(EntityPlayer player)
@@ -59,12 +57,7 @@ public class Wearing
 
     public static boolean isWearingBackpack(EntityPlayer player)
     {
-        boolean isWearing = false;
-        if (ConfigHandler.IS_BAUBLES)
-        {
-            isWearing = BaublesApi.getBaubles(player).getStackInSlot(0) != null && BaublesApi.getBaubles(player).getStackInSlot(0).getItem() instanceof ItemAdventureBackpack;
-        }
-        return isWearing != false || player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() instanceof ItemAdventureBackpack;
+        return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemAdventureBackpack;
     }
 
     public static boolean isHoldingBackpack(EntityPlayer player)
@@ -80,11 +73,7 @@ public class Wearing
 
     public static ItemStack getWearingBackpack(EntityPlayer player)
     {
-        if (isWearingBackpack(player))
-        {
-            return player.inventory.armorInventory[2];
-        }
-        return null;
+        return isWearingBackpack(player) ? BackpackProperty.get(player).getWearable() : null;
     }
 
     public static ItemStack getHoldingBackpack(EntityPlayer player)
@@ -102,8 +91,7 @@ public class Wearing
     }
 
     /**
-     * Will return a backpack inventory from a backpack on the player's armor
-     * slot if true, or from his hand if false;
+     * Will return a backpack inventory from a backpack in the slot if true, or in the hand if false.
      *
      * @param player  the player com.darkona.adventurebackpack.entity
      * @param wearing boolean flag
@@ -111,8 +99,21 @@ public class Wearing
      */
     public static InventoryBackpack getBackpackInv(EntityPlayer player, boolean wearing)
     {
-        return new InventoryBackpack((wearing) ? player.inventory.armorItemInSlot(2) : player.getCurrentEquippedItem());
+        return new InventoryBackpack((wearing) ? BackpackProperty.get(player).getWearable() : player.getCurrentEquippedItem());
     }
 
-
+    public static boolean isWearingTheRightBackpack(EntityPlayer player, String... backpacks)
+    {
+        if(Wearing.isWearingBackpack(player))
+        {
+            for(String name : backpacks)
+            {
+                if(BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals(name))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

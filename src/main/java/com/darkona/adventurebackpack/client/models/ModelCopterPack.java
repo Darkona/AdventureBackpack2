@@ -1,18 +1,14 @@
 package com.darkona.adventurebackpack.client.models;
 
-import codechicken.lib.render.RenderUtils;
-import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.util.Utils;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -20,7 +16,7 @@ import org.lwjgl.opengl.GL11;
  *
  * @author Darkona
  */
-public class ModelCopterPack extends ModelBiped
+public class ModelCopterPack extends ModelWearable
 {
 
     public static ModelCopterPack instance = new ModelCopterPack();
@@ -48,17 +44,8 @@ public class ModelCopterPack extends ModelBiped
     public ModelRenderer EscapeFilter;
     private InventoryCopterPack copterPack;
 
-
-    public ModelCopterPack setCopterPack(ItemStack copterPack)
+    private void init()
     {
-        this.copterPack = new InventoryCopterPack(copterPack);
-        return this;
-    }
-
-    public ModelCopterPack()
-    {
-
-
         this.textureWidth = 64;
         this.textureHeight = 64;
 
@@ -180,30 +167,20 @@ public class ModelCopterPack extends ModelBiped
         this.bipedBody.addChild(this.Base);
     }
 
-    private void renderFluidInTank(FluidTank tank, float offsetX, float offsetY, float offsetZ, ModelRenderer parent)
+    public ModelCopterPack setCopter(ItemStack wearable)
     {
+        this.copterPack = new InventoryCopterPack(wearable);
+        return this;
+    }
+    public ModelCopterPack(ItemStack wearable)
+    {
+        this.copterPack = new InventoryCopterPack(wearable);
+        init();
+    }
 
-        if (tank != null && tank.getFluid() != null && tank.getFluid().getFluid().getIcon() != null)
-        {
-            //Size of the cuboid
-            //Y-- is up, Y++ is down
-            //must be inverted because it renders from the bottom up, so the min is the top and the max is the bottom
-            float minX = 0f;
-            float minY = 0.25f;
-            float minZ = 0f;
-
-            float maxX = 0.25f;
-            float maxY = 0f;
-            float maxZ = 0.25f;
-            Vector3 victor = new Vector3(
-                    (parent.rotationPointX * 0.1f + offsetX), //
-                    (parent.rotationPointY * 0.1f + offsetY),
-                    (parent.rotationPointZ * 0.1f + offsetZ));
-
-            Cuboid6 cat = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
-            //Thanks Chickenbones!
-            RenderUtils.renderFluidCuboid(tank.getFluid(), cat.add(victor), ((1.0F * tank.getFluidAmount()) / (1.0F * tank.getCapacity())), 0.8);
-        }
+    public ModelCopterPack()
+    {
+        init();
     }
 
     private void renderCopterPack(Entity entity, float scale)
@@ -230,14 +207,13 @@ public class ModelCopterPack extends ModelBiped
         }
         this.Base.render(scale);
         this.Axis.render(scale);
-        renderFluidInTank(copterPack.getFuelTank(), 0f, 0.0625f, -0.0625f, TankTop);
+        renderFluidInTank(copterPack.getFuelTank(), new Vector3(0,.25f,0), new Vector3(.25f,0,.25f), new Vector3 (0f, 0.0625f, -0.0625f), TankTop);
     }
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
         isSneak = ((entity != null) && ((EntityLivingBase) entity).isSneaking());
-
 
         if (entity == null) Axis.isHidden = true;
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
@@ -285,15 +261,5 @@ public class ModelCopterPack extends ModelBiped
             GL11.glTranslatef(-bipedBody.offsetX, -bipedBody.offsetY, -(bipedBody.offsetZ));
             GL11.glPopMatrix();
         }
-    }
-
-    /**
-     * This is a helper function from Tabula to set the rotation of model parts
-     */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
-    {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
     }
 }

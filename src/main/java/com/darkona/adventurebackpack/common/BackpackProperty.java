@@ -19,7 +19,6 @@ public class BackpackProperty implements IExtendedEntityProperties
     public final static String PROPERTY_NAME = "adventureBackpackProp";
     private final EntityPlayer player;
 
-
     private ItemStack backpack;
     private ChunkCoordinates campFire;
     private boolean forceCampFire;
@@ -109,12 +108,12 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     }
 
-    public void setBackpack(ItemStack bp)
+    public void setWearable(ItemStack bp)
     {
         backpack = bp;
     }
 
-    public ItemStack getBackpack()
+    public ItemStack getWearable()
     {
         return backpack;
     }

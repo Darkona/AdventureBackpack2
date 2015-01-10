@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.block;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -34,6 +36,16 @@ public class BlockCampFire extends BlockContainer
 
     }
 
+    private void func_149978_e()
+    {
+        this.setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
+    }
+
+    private void blockBoundsForRender()
+    {
+        this.func_149978_e();
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
@@ -44,7 +56,7 @@ public class BlockCampFire extends BlockContainer
     @Override
     public String getUnlocalizedName()
     {
-        return "campFire";
+        return "blockCampFire";
     }
 
     @Override
@@ -138,7 +150,36 @@ public class BlockCampFire extends BlockContainer
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-        setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
+        this.setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
+    }
+
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     *
+     * @param p_149668_1_
+     * @param p_149668_2_
+     * @param p_149668_3_
+     * @param p_149668_4_
+     */
+    @Override
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_)
+    {
+        return super.getCollisionBoundingBoxFromPool(p_149668_1_, p_149668_2_, p_149668_3_, p_149668_4_);
+    }
+
+    /**
+     * Returns the bounding box of the wired rectangular prism to render.
+     *
+     * @param p_149633_1_
+     * @param p_149633_2_
+     * @param p_149633_3_
+     * @param p_149633_4_
+     */
+    @Override
+    public AxisAlignedBB getSelectedBoundingBoxFromPool(World p_149633_1_, int p_149633_2_, int p_149633_3_, int p_149633_4_)
+    {
+        return super.getSelectedBoundingBoxFromPool(p_149633_1_, p_149633_2_, p_149633_3_, p_149633_4_);
     }
 
     @Override
@@ -180,19 +221,13 @@ public class BlockCampFire extends BlockContainer
     @Override
     public ChunkCoordinates getBedSpawnPosition(IBlockAccess world, int x, int y, int z, EntityPlayer player)
     {
-        for (int i = y - 3; i <= y + 3; i++)
+        for (int i = y - 5; i <= y + 5; i++)
         {
-            for (int j = x - 5; j <= x + 5; j++)
+            ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinates(world, x, z, x, i, z, 8, true, 1, (byte) 0, true);
+
+            if (spawn != null)
             {
-                for (int k = z - 5; k <= z + 5; k++)
-                {
-                    if (World.doesBlockHaveSolidTopSurface(world, j, y - 1, k) &&
-                            !world.getBlock(j, y, k).getMaterial().isOpaque() &&
-                            !world.getBlock(j, y + 1, k).getMaterial().isOpaque())
-                    {
-                        return new ChunkCoordinates(j, y, k);
-                    }
-                }
+              return spawn;
             }
         }
         return null;

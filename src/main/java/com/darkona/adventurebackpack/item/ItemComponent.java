@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,13 +21,18 @@ import java.util.List;
  */
 public class ItemComponent extends ItemAB
 {
-
-    private IIcon sleepingBagIcon;
-    private IIcon backpackTankIcon;
-    private IIcon hoseHeadIcon;
-    private IIcon macheteHandleIcon;
-    private IIcon copterEngineIcon;
-    private IIcon copterBladesIcon;
+    private HashMap<String, IIcon> componentIcons = new HashMap<>();
+    private String[] names = {
+            "sleepingBag",
+            "backpackTank",
+            "hoseHead",
+            "macheteHandle",
+            "copterEngine",
+            "copterBlades",
+            "inflatableBoat",
+            "inflatableBoatMotorized",
+            "hydroBlades"
+    };
 
 
     public ItemComponent()
@@ -41,25 +47,16 @@ public class ItemComponent extends ItemAB
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister)
     {
+
+        for(String name : names){
+            IIcon temporalIcon = iconRegister.registerIcon(super.getUnlocalizedName(name).substring(this.getUnlocalizedName().indexOf(".") + 1));
+            componentIcons.put(name, temporalIcon);
+        }
+
+
         itemIcon = iconRegister.registerIcon(super.getUnlocalizedName("sleepingBag").substring(this.getUnlocalizedName().indexOf(".") + 1));
-        sleepingBagIcon = iconRegister.registerIcon(super.getUnlocalizedName("sleepingBag").substring(this.getUnlocalizedName().indexOf(".") + 1));
-        backpackTankIcon = iconRegister.registerIcon(super.getUnlocalizedName("backpackTank").substring(this.getUnlocalizedName().indexOf(".") + 1));
-        hoseHeadIcon = iconRegister.registerIcon(super.getUnlocalizedName("hoseHead").substring(this.getUnlocalizedName().indexOf(".") + 1));
-        macheteHandleIcon = iconRegister.registerIcon(super.getUnlocalizedName("macheteHandle").substring(this.getUnlocalizedName().indexOf(".") + 1));
-        copterEngineIcon = iconRegister.registerIcon(super.getUnlocalizedName("copterEngine").substring(this.getUnlocalizedName().indexOf(".") + 1));
-        copterBladesIcon = iconRegister.registerIcon(super.getUnlocalizedName("copterBlades").substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
 
-    /**
-     * Player, Render pass, and item usage sensitive version of getIconIndex.
-     *
-     * @param stack        The item stack to get the icon for. (Usually this, and usingItem will be the same if usingItem is not null)
-     * @param renderPass   The pass to get the icon for, 0 is default.
-     * @param player       The player holding the item
-     * @param usingItem    The item the player is actively using. Can be null if not using anything.
-     * @param useRemaining The ticks remaining for the active item.
-     * @return The icon index
-     */
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
     {
@@ -71,57 +68,22 @@ public class ItemComponent extends ItemAB
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int damage)
     {
-        switch (damage)
-        {
-            case 1:
-                return sleepingBagIcon;
-            case 2:
-                return backpackTankIcon;
-            case 3:
-                return hoseHeadIcon;
-            case 4:
-                return macheteHandleIcon;
-            case 5:
-                return copterEngineIcon;
-            case 6:
-            case 7:
-            case 8:
+        return componentIcons.get(names[damage-1]);
 
-                return copterBladesIcon;
-        }
-        return itemIcon;
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        switch (getDamage(stack))
-        {
-            case 1:
-                return super.getUnlocalizedName("sleepingBag");
-            case 2:
-                return super.getUnlocalizedName("backpackTank");
-            case 3:
-                return super.getUnlocalizedName("hoseHead");
-            case 4:
-                return super.getUnlocalizedName("macheteHandle");
-            case 5:
-                return super.getUnlocalizedName("copterEngine");
-            case 6:
-                return super.getUnlocalizedName("copterBlades");
-            case 7:
-                return super.getUnlocalizedName("inflatableBoat");
-            case 8:
-                return super.getUnlocalizedName("hydroBlades");
-        }
-        return super.getUnlocalizedName("backpackComponent");
+        return super.getUnlocalizedName(names[getDamage(stack)-1]);
+
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
     {
-        for (int i = 1; i <= 8; i++)
+        for (int i = 1; i <= names.length; i++)
         {
             list.add(new ItemStack(this, 1, i));
         }

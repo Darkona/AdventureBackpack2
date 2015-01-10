@@ -27,7 +27,7 @@ public class ClientProxy implements IProxy
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;
-    public static RendererBackpackArmor rendererBackpackArmor;
+    public static RendererWearableEquipped rendererWearableEquipped;
     public static RenderHandler renderHandler;
     public static RendererInflatableBoat renderInflatableBoat;
     public static RendererItemClockworkCrossbow renderCrossbow;
@@ -40,13 +40,14 @@ public class ClientProxy implements IProxy
 
     public void initNetwork()
     {
+
     }
 
     public void initRenderers()
     {
         renderHandler = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(renderHandler);
-        rendererBackpackArmor = new RendererBackpackArmor();
+        rendererWearableEquipped = new RendererWearableEquipped();
 
         rendererItemAdventureBackpack = new RendererItemAdventureBackpack();
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureBackpack, rendererItemAdventureBackpack);

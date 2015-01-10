@@ -9,7 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -275,5 +277,175 @@ public class Utils
         {
             return false;
         }
+    }
+
+    private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
+    {
+        //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
+        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
+        {
+            //LogHelper.info("Found spot with the exception of the death point");
+            return new ChunkCoordinates(X, Y, Z);
+        }
+        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z))
+        {
+            //LogHelper.info("Found spot without exceptions");
+            return new ChunkCoordinates(X, Y, Z);
+        }
+        return null;
+    }
+
+    private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
+    {
+        //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
+        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X,Y+1,Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
+        {
+            //LogHelper.info("Found spot with the exception of the death point");
+            return new ChunkCoordinates(X, Y, Z);
+        }
+        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z)&& world.isAirBlock(X,Y+1,Z))
+        {
+            //LogHelper.info("Found spot without exceptions");
+            return new ChunkCoordinates(X, Y, Z);
+        }
+        return null;
+    }
+
+    /**
+     * Gets you the nearest Empty Chunk Coordinates, free of charge! Looks in two dimensions and finds a block
+     * that a: can have stuff placed on it and b: has space above it.
+     *
+     * @param world  The world object.
+     * @param origX  Original X coordinate
+     * @param origZ  Original Z coordinate
+     * @param X
+     * @param Y
+     * @param Z      The coordinates of the central point of the search.
+     * @param radius The radius of the search. If set to higher numbers, will create a ton of lag
+     * @param except Wheter or not to include the origin of the search as a valid block.
+     * @param steps  number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
+     * @param pass   Pass switch for the witchcraft I can't quite explain. Set to 0 always at the beggining.
+     * @param type   True = for player, False = for backpack
+     * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
+     */
+    public static ChunkCoordinates getNearestEmptyChunkCoordinates(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, int radius, boolean except, int steps, byte pass, boolean type)
+    {
+        //Spiral search, because I'm awesome :)
+        //This is so the backpack tries to get placed near the death point first
+        //And then goes looking farther away at each step
+        // Steps mod 2 == 0 => X++, Z--
+        //Steps mod 2 == 1 => X--, Z++
+
+        //
+        if (steps >= radius) return null;
+        int i = X, j = Z;
+        if (steps % 2 == 0)
+        {
+            if (pass == 0)
+            {
+                for (; i <= X + steps; i++)
+                {
+
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    if (coords != null)
+                    {
+                        return coords;
+                    }
+                }
+                pass++;
+                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+            }
+            if (pass == 1)
+            {
+                for (; j >= Z - steps; j--)
+                {
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    if (coords != null)
+                    {
+                        return coords;
+                    }
+                }
+                pass--;
+                steps++;
+                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+            }
+        }
+
+        if (steps % 2 == 1)
+        {
+            if (pass == 0)
+            {
+                for (; i >= X - steps; i--)
+                {
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    if (coords != null)
+                    {
+                        return coords;
+                    }
+                }
+                pass++;
+                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass,type);
+            }
+            if (pass == 1)
+            {
+                for (; j <= Z + steps; j++)
+                {
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    if (coords != null)
+                    {
+                        return coords;
+                    }
+                }
+                pass--;
+                steps++;
+                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass, type );
+            }
+        }
+       /* if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(x, y, z, X, Y, Z))
+        {
+            return new ChunkCoordinates(X, Y, Z);
+        }
+        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z))
+        {
+            return new ChunkCoordinates(X, Y, Z);
+        }*/
+
+
+
+       /* Old code. Still works, though.
+       for (int i = x - radius; i <= x + radius; i++)
+        {
+            for (int j = y - (radius / 2); j <= y + (radius / 2); j++)
+            {
+                for (int k = z + radius; k <= z + (radius); k++)
+                {
+                    if (except && world.isSideSolid(i, j - 1, k, ForgeDirection.UP) && world.isAirBlock(i, j, k) && !areCoordinatesTheSame(x, y, z, i, j, k))
+                    {
+                        return new ChunkCoordinates(i, j, k);
+                    }
+                    if (!except && world.isSideSolid(i, j - 1, k, ForgeDirection.UP) && world.isAirBlock(i, j, k))
+                    {
+                        return new ChunkCoordinates(i, j, k);
+                    }
+                }
+            }
+        }*/
+        return null;
+    }
+
+    /**
+     * Compares two coordinates. Heh.
+     *
+     * @param X1 First coordinate X.
+     * @param Y1 First coordinate Y.
+     * @param Z1 First coordinate Z.
+     * @param X2 Second coordinate X.
+     * @param Y2 Second coordinate Y.
+     * @param Z2 Second coordinate Z. I really didn't need to type all that, its obvious.
+     * @return If both coordinates are the same, returns true. This is the least helpful javadoc ever.
+     */
+    private static boolean areCoordinatesTheSame(int X1, int Y1, int Z1, int X2, int Y2, int Z2)
+    {
+        return (X1 == X2 && Y1 == Y2 && Z1 == Z2);
     }
 }

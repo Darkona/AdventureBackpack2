@@ -1,13 +1,17 @@
 package com.darkona.adventurebackpack.client.gui;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.CopterContainer;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
+import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.util.Resources;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -15,34 +19,55 @@ import org.lwjgl.opengl.GL11;
  *
  * @author Darkona
  */
-public class GuiCopterPack extends GuiContainer implements IBackpackGui
+public class GuiCopterPack extends GuiWithTanks
 {
     private InventoryCopterPack inventory;
     private static final ResourceLocation texture = Resources.guiTextures("guiCopterPack");
-    private FluidStack fuel;
-    private static GuiTank fuelTank = new GuiTank(77, 8, 72, 16, ConfigHandler.GUI_TANK_RENDER, 6000);
-    public int lefties;
-    public int topsies;
+    private FluidTank fuel;
+    private static GuiTank fuelTank = new GuiTank(8, 8, 72, 32, ConfigHandler.GUI_TANK_RENDER);
+    private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
+    private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
 
-    public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv)
+    private boolean wearing;
+    EntityPlayer player;
+
+    public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
     {
         super(new CopterContainer(player, inv));
         this.inventory = inv;
         xSize = 176;
         ySize = 166;
-        this.lefties = guiLeft;
-        this.topsies = guiTop;
+        this.wearing = wearing;
+        this.player = player;
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
+    protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseY)
     {
         GL11.glColor4f(1, 1, 1, 1);
 
         this.mc.renderEngine.bindTexture(texture);
-
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
+        if(wearing)
+        {
+            if(unequipButton.inButton(this,mouseX,mouseY))
+            {
+                unequipButton.draw(this,20,186);
+            }else
+            {
+                unequipButton.draw(this,1,186);
+            }
+        }else
+        {
+            if(equipButton.inButton(this,mouseX,mouseY))
+            {
+                equipButton.draw(this,20,167);
+            }else
+            {
+                equipButton.draw(this,1,167);
+            }
+        }
 
     }
 
@@ -52,15 +77,15 @@ public class GuiCopterPack extends GuiContainer implements IBackpackGui
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
         inventory.openInventory();
-        fuel = inventory.getFuelTank().getFluid();
+        fuel = inventory.getFuelTank();
         fuelTank.draw(this, fuel);
-
+        FluidStack fuelStack = fuel.getFluid();
         GL11.glPushMatrix();
-        String name = (fuel != null) ? fuel.getLocalizedName() : "None";
-        String amount = (fuel != null ? fuel.amount : "Empty").toString();
+        String name = (fuel != null) ? fuelStack.getLocalizedName() : "None";
+        String amount = (fuel != null ? fuelStack.amount : "Empty").toString();
         String capacity = Integer.toString(inventory.getFuelTank().getCapacity());
-        int offsetY = 32;
-        int offsetX = 8;
+        int offsetY = 8;
+        int offsetX = 83;
         fontRendererObj.drawString(name, 1 + offsetX, offsetY, 0x373737, false);
         fontRendererObj.drawString(amount, 1 + offsetX, 10 + offsetY, 0x373737, false);
         fontRendererObj.drawString(capacity, 1 + offsetX, 20 + offsetY, 0x373737, false);
@@ -70,18 +95,40 @@ public class GuiCopterPack extends GuiContainer implements IBackpackGui
     @Override
     public int getLeft()
     {
-        return this.lefties;
+        return guiLeft;
     }
 
     @Override
     public int getTop()
     {
-        return this.topsies;
+        return guiTop;
     }
 
     @Override
     public float getZLevel()
     {
-        return 0;
+        return zLevel;
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
+        if(wearing)
+        {
+            if(unequipButton.inButton(this,mouseX,mouseY))
+            {
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE,false));
+                player.closeScreen();
+            }
+        } else
+        {
+            if(equipButton.inButton(this,mouseX,mouseY))
+            {
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
+                player.closeScreen();
+            }
+        }
+        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 }

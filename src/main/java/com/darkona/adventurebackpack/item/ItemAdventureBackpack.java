@@ -1,14 +1,14 @@
 package com.darkona.adventurebackpack.item;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.common.BackpackProperty;
+import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.events.UnequipBackpackEvent;
+import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -16,7 +16,7 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
-import cpw.mods.fml.common.Optional;
+import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -29,6 +29,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -39,14 +40,13 @@ import java.util.List;
  *
  * @author Darkona
  */
-@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles", striprefs = true)
-public class ItemAdventureBackpack extends ArmorAB implements IBauble
+public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 {
 
 
     public ItemAdventureBackpack()
     {
-        super(0, 1);
+        super();
         setUnlocalizedName("adventureBackpack");
         setFull3D();
         setMaxStackSize(1);
@@ -171,15 +171,16 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
                 {
                     backpack.onBlockPlacedBy(world, x, y, z, player, stack);
                     world.playSoundAtEntity(player, BlockAdventureBackpack.soundTypeCloth.getStepResourcePath(), 0.5f, 1.0f);
-                    ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(stack.stackTagCompound);
+                    InventoryBackpack oldBackpack = new InventoryBackpack(stack);
+                    ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(oldBackpack.writeToNBT());
                     if (from)
                     {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
                     } else
                     {
-                        player.inventory.armorInventory[2] = null;
+                        BackpackProperty.get(player).setWearable(null);
                     }
-                    UnequipBackpackEvent event = new UnequipBackpackEvent(player, stack);
+                    WearableEvent event = new WearableEvent(player, stack);
                     MinecraftForge.EVENT_BUS.post(event);
                     return true;
                 }
@@ -208,30 +209,6 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
         return stack;
     }
 
-    @Override
-    public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean isCurrentItem)
-    {
-        /*if(entity != null && entity instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) entity;
-            if (player.openContainer instanceof BackpackContainer)
-            {
-                player.openContainer.detectAndSendChanges();
-            }
-        }*/
-    }
-
-    @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
-    {
-        if (!ConfigHandler.BACKPACK_ABILITIES) return;
-        if (world == null || player == null || stack == null) return;
-        if (stack.stackTagCompound != null &&
-                (stack.getTagCompound().getBoolean("special")) || BackpackAbilities.hasAbility(stack.stackTagCompound.getString("colorName")))
-        {
-            BackpackAbilities.instance.executeAbility(player, world, stack);
-        }
-    }
 
     @Override
     public boolean isDamageable()
@@ -250,7 +227,7 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
         InventoryBackpack inv = new InventoryBackpack(stack);
-        return ModelBackpackArmor.instance.setBackpack(inv);
+        return new ModelBackpackArmor();
     }
 
     @SideOnly(Side.CLIENT)
@@ -310,81 +287,68 @@ public class ItemAdventureBackpack extends ArmorAB implements IBauble
         }*/
     }
 
-
-    // BAUBLES
-
-    /**
-     * This method return the type of bauble this is.
-     * Type is used to determine the slots it can go into.
-     *
-     * @param itemstack
-     */
     @Override
-    public BaubleType getBaubleType(ItemStack itemstack)
+    public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
-        return BaubleType.AMULET;
+        if (!ConfigHandler.BACKPACK_ABILITIES) return;
+        if (world == null || player == null || stack == null) return;
+
+        if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
+        {
+            BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
+        }
     }
 
-    /**
-     * This method is called once per tick if the bauble is being worn by a player
-     *
-     * @param itemstack
-     * @param player
-     */
     @Override
-    public void onWornTick(ItemStack itemstack, EntityLivingBase player)
+    public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        this.onArmorTick(player.worldObj, (EntityPlayer) player, itemstack);
-        this.onUpdate(itemstack, ((EntityPlayer) player).worldObj, player, 0, false);
+
+        if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
+        {
+            player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
+        }
+        if (!ServerActions.tryPlaceOnDeath(player))
+        {
+            onDroppedByPlayer(stack, player);
+            BackpackProperty.get(player).setWearable(null);
+        }
     }
 
-    /**
-     * This method is called when the bauble is equipped by a player
-     *
-     * @param itemstack
-     * @param player
-     */
     @Override
-    public void onEquipped(ItemStack itemstack, EntityLivingBase player)
+    public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
 
     }
 
-    /**
-     * This method is called when the bauble is unequipped by a player
-     *
-     * @param itemstack
-     * @param player
-     */
     @Override
-    public void onUnequipped(ItemStack itemstack, EntityLivingBase player)
+    public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-
+        if(BackpackAbilities.hasRemoval(BackpackNames.getBackpackColorName(stack)))
+        {
+            BackpackAbilities.backpackAbilities.executeRemoval(player, world, stack);
+        }
     }
 
-    /**
-     * can this bauble be placed in a bauble slot
-     *
-     * @param itemstack
-     * @param player
-     */
     @Override
-    public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
+    @SideOnly(Side.CLIENT)
+    public ModelBiped getWearableModel(ItemStack wearable)
     {
-        return true;
+        return  new ModelBackpackArmor(wearable);
     }
 
-    /**
-     * Can this bauble be removed from a bauble slot
-     *
-     * @param itemstack
-     * @param player
-     */
     @Override
-    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
-    {
-        return true;
+    @SideOnly(Side.CLIENT)
+    public ResourceLocation getWearableTexture(ItemStack wearable){
+
+        ResourceLocation modelTexture;
+
+        if (BackpackNames.getBackpackColorName(wearable).equals("Standard"))
+        {
+            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
+        } else
+        {
+            modelTexture = Resources.backpackTextureFromString(BackpackNames.getBackpackColorName(wearable));
+        }
+        return modelTexture;
     }
-
-
 }

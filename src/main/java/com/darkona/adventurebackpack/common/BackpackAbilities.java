@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.CowAbilityPacket;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -43,7 +44,8 @@ import java.util.List;
 public class BackpackAbilities
 {
 
-    public static BackpackAbilities instance = new BackpackAbilities();
+    public static BackpackAbilities backpackAbilities = new BackpackAbilities();
+    public static BackpackRemovals backpackRemovals = new BackpackRemovals();
 
     /**
      * Checks if the selected String is a valid ability backpack colorName.
@@ -54,6 +56,18 @@ public class BackpackAbilities
     public static boolean hasAbility(String colorName)
     {
         for (String valid : validWearingBackpacks)
+        {
+            if (valid.equals(colorName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasRemoval(String colorName)
+    {
+        for (String valid : validRemovalBackpacks)
         {
             if (valid.equals(colorName))
             {
@@ -74,13 +88,13 @@ public class BackpackAbilities
     {
         if (backpack instanceof ItemStack)
         {
-            String colorName = ((ItemStack) backpack).getTagCompound().getString("colorName");
+            String colorName = BackpackNames.getBackpackColorName((ItemStack)backpack);
             try
             {
                 //This is black magic and shouldn't be attempted by the faint of heart.
                 this.getClass()
                         .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class).
-                        invoke(instance, player, world, backpack);
+                        invoke(backpackAbilities, player, world, backpack);
             } catch (Exception oops)
             {
                 //NOBODY CARES
@@ -102,7 +116,7 @@ public class BackpackAbilities
                      */
                 this.getClass()
                         .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
-                        .invoke(instance, world, backpack);
+                        .invoke(backpackAbilities, world, backpack);
             } catch (Exception oops)
             {
                 //Seriously, nobody cares if this can't work, this is just so the game won't explode.
@@ -111,19 +125,37 @@ public class BackpackAbilities
 
     }
 
+    public void executeRemoval(EntityPlayer player, World world,ItemStack backpack )
+    {
+
+        String colorName = BackpackNames.getBackpackColorName(backpack);
+        try
+        {
+            //This is black magic and shouldn't be attempted by the faint of heart.
+            backpackRemovals.getClass()
+                    .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class).
+                    invoke(backpackRemovals, player, world, backpack);
+        } catch (Exception oops)
+        {
+            //NOBODY CARES
+        }
+    }
     /**
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static String[] validWearingBackpacks = {
-            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon"};
+            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower"};
 
+    private static String[] validRemovalBackpacks = {
+            "Bat", "Squid", "Dragon"
+    };
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
      * backpacks that have particularities while in block form necessarily have abilities.
      *
      * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
      */
-    private static String[] validTileBackpacks = {"Cactus"};
+    private static String[] validTileBackpacks = {"Cactus","Melon"};
 
     /**
      * Detects if a player is under the rain. For detecting when it is Under The Sea (maybe to sing a nice Disney tune)
@@ -140,9 +172,33 @@ public class BackpackAbilities
                 MathHelper.floor_double(player.posZ));
     }
 
+
+    public void itemSunflower(EntityPlayer player, World world, ItemStack backpack)
+    {
+
+        if(world.isDaytime())
+        {
+            int sunTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.getTagCompound().getInteger("lastTime") - 1 : Utils.secondsToTicks(30);
+            if( sunTime <= 0 && world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY),MathHelper.floor_double(player.posZ)))
+            {
+                player.getFoodStats().addStats(1,1f);
+            }
+            backpack.stackTagCompound.setInteger("lastTime",sunTime);
+        }
+    }
+
     public void itemBat(EntityPlayer player, World world, ItemStack backpack)
     {
-        player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5, 0));
+        //Shameless rip-off from Machinemuse. Thanks Claire, I don't have to reinvent the wheel thanks to you.
+        //I will use a different potion id to avoid conflicting with her modular suits
+        PotionEffect nightVision = null;
+        if (player.isPotionActive(Potion.nightVision.id)) {
+            nightVision = player.getActivePotionEffect(Potion.nightVision);
+        }
+        if (nightVision == null || nightVision.getDuration() < 400 && nightVision.getAmplifier() != -3)
+        {
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 500, -5));
+        }
     }
 
     public void itemSquid(EntityPlayer player, World world, ItemStack backpack)
@@ -150,7 +206,9 @@ public class BackpackAbilities
         if (player.isInWater())
         {
             player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, 0));
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5, 0));
+            itemBat(player, world, backpack);
+        }else{
+            backpackRemovals.itemBat(player,world,backpack);
         }
     }
 
@@ -330,10 +388,10 @@ public class BackpackAbilities
      */
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
+        itemPigman(player,world,backpack);
         player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 1, 1));
-        player.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), 1, 0));
-        player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, 0));
         player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 1, 0));
+        itemSquid(player, world, backpack);
     }
 
     /**
@@ -574,6 +632,7 @@ public class BackpackAbilities
         }
         backpack.getTagCompound().setInteger("lastTime", lastCheckTime);
     }
+
 
     public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
     {

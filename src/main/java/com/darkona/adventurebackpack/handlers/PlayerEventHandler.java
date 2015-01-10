@@ -2,8 +2,13 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -12,9 +17,14 @@ import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemNameTag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
@@ -121,14 +131,7 @@ public class PlayerEventHandler
 
             if (Wearing.isWearingBackpack(player))
             {
-                if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Creeper"))
-                {
-                    player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
-                }
-                if (!ServerActions.tryPlaceOnDeath(player))
-                {
-                    Wearing.getWearingBackpack(player).getItem().onDroppedByPlayer(Wearing.getWearingBackpack(player), player);
-                }
+                ((IBackWearableItem)BackpackProperty.get(player).getWearable().getItem()).onPlayerDeath(player.worldObj,player,Wearing.getWearingBackpack(player));
             }
 
             if (!player.worldObj.isRemote)
@@ -137,12 +140,14 @@ public class PlayerEventHandler
                 {
                     ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
                     if(lastCampFire != null)
-                    player.setSpawnChunk(lastCampFire,true,player.dimension);
+                        //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
+                    player.setSpawnChunk(lastCampFire,false,player.dimension);
                 }
                 NBTTagCompound playerData = new NBTTagCompound();
                 BackpackProperty.get(player).saveNBTData(playerData);
                 ServerProxy.storePlayerProps(player.getCommandSenderName(), playerData);
-                LogHelper.info("Player just died, bedLocation is" + LogHelper.print3DCoords(player.getBedLocation(player.dimension)));
+
+                LogHelper.info("Player " + player.getCommandSenderName() +  " just died, bedLocation is" + ((player.getBedLocation(player.dimension)!=null ) ? LogHelper.print3DCoords(player.getBedLocation(player.dimension)): "null"));
             }
         }
 
@@ -181,6 +186,38 @@ public class PlayerEventHandler
     }
 
     @SubscribeEvent
+    public void ownHorse(EntityInteractEvent event)
+    {
+        if(!ConfigHandler.BACKPACK_ABILITIES)return;
+        EntityPlayer player = event.entityPlayer;
+
+        if (!event.entityPlayer.worldObj.isRemote)
+        {
+
+            ItemStack stack = player.getCurrentEquippedItem();
+            if(stack!=null && stack.getItem()!=null && stack.getItem() instanceof ItemNameTag && stack.hasDisplayName())
+            {
+                if (event.target instanceof EntityHorse )
+                {
+                    EntityHorse horse = (EntityHorse)event.target;
+                    if(horse.getCustomNameTag()==null ||horse.getCustomNameTag().equals("") && horse.isTame())
+                    {
+                        horse.setTamedBy(player);
+                        horse.tasks.addTask(4, new EntityAIHorseFollowOwner(horse, 1.5d, 2.0f, 20.0f));
+
+                        if (horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange) != null)
+                        {
+                            horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).setBaseValue(100.0D);
+                            LogHelper.info("the horse follow range is now: " + horse.getEntityAttribute(SharedMonsterAttributes.followRange).getBaseValue());
+                        }
+                    }
+                }
+            }
+            event.setResult(Event.Result.ALLOW);
+        }
+    }
+
+    @SubscribeEvent
     public void playerWokeUp(PlayerWakeUpEvent event)
     {
         if(event.entity.worldObj.isRemote)return;
@@ -196,6 +233,24 @@ public class PlayerEventHandler
         }
     }
 
+    @SubscribeEvent
+    public void tickBackpack(TickEvent.PlayerTickEvent event)
+    {
+        if(event.side.isServer())
+        {
+            NBTTagCompound props = new NBTTagCompound();
+            BackpackProperty.get(event.player).saveNBTData(props);
+            ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(props), (EntityPlayerMP)event.player);
+        }
+        if(event.type == TickEvent.Type.PLAYER && event.phase == TickEvent.Phase.END)
+        {
+            ItemStack backpack = BackpackProperty.get(event.player).getWearable();
+            if(backpack != null && backpack.getItem() instanceof IBackWearableItem)
+            {
+                ((IBackWearableItem) backpack.getItem()).onEquippedUpdate(event.player.worldObj, event.player, backpack);
+            }
+        }
+    }
 
 }
 

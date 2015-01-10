@@ -59,7 +59,7 @@ public class BlockSleepingBag extends BlockDirectional
     @Override
     public String getUnlocalizedName()
     {
-        return "sleepingBag";
+        return "blockSleepingBag";
     }
 
     private void func_149978_e()

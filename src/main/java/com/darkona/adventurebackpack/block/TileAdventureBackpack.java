@@ -3,12 +3,12 @@ package com.darkona.adventurebackpack.block;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
-import com.darkona.adventurebackpack.events.CopterSoundEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,9 +20,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -486,7 +486,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         //Execute this backpack's ability. No, seriously. You might not infer that from the code. Just sayin'
         if (isSpecial() && !colorName.isEmpty())
         {
-            BackpackAbilities.instance.executeAbility(null, this.worldObj, this);
+            BackpackAbilities.backpackAbilities.executeAbility(null, this.worldObj, this);
         }
 
         //Check for backpack luminosity and a deployed sleeping bag, just in case because i'm super paranoid.
@@ -549,24 +549,15 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
         stacky.setTagCompound(this.writeToNBT());
         removeSleepingBag(world);
-        boolean response = false;
-        if (player.inventory.armorInventory[2] == null)
+        if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.reasons.SUCCESFUL)
         {
-            player.inventory.armorInventory[2] = stacky;
-            response = true;
-        } else if (player.inventory.addItemStackToInventory(stacky))
-        {
-            response = true;
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:already.equipped"));
+            if (!player.inventory.addItemStackToInventory(stacky))
+            {
+                return drop(world, player, x, y, z);
+            }
         }
-        if (response)
-        {
-            CopterSoundEvent event = new CopterSoundEvent(player, stacky);
-            MinecraftForge.EVENT_BUS.post(event);
-            return response;
-        } else
-        {
-            return drop(world, player, x, y, z);
-        }
+        return true;
     }
 
     public boolean drop(World world, EntityPlayer player, int x, int y, int z)

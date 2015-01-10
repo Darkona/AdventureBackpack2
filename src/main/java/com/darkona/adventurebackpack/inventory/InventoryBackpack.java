@@ -29,7 +29,6 @@ public class InventoryBackpack implements IAdvBackpack
     private FluidTank leftTank;
     private FluidTank rightTank;
     private ItemStack containerStack;
-    private String color;
     private String colorName;
     private int lastTime = 0;
     private boolean special;
@@ -181,7 +180,6 @@ public class InventoryBackpack implements IAdvBackpack
             }
         }
         compound.setTag("ABPItems", items);
-        compound.setString("color", color);
         compound.setString("colorName", colorName);
         compound.setInteger("lastTime", lastTime);
         compound.setBoolean("special", BackpackAbilities.hasAbility(colorName));
@@ -208,7 +206,6 @@ public class InventoryBackpack implements IAdvBackpack
         }
         leftTank.readFromNBT(compound.getCompoundTag("leftTank"));
         rightTank.readFromNBT(compound.getCompoundTag("rightTank"));
-        color = compound.getString("color");
         colorName = compound.getString("colorName");
         lastTime = compound.getInteger("lastTime");
         special = compound.getBoolean("special");

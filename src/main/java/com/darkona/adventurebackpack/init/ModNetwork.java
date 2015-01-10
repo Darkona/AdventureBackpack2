@@ -21,6 +21,8 @@ public class ModNetwork
     public static void init()
     {
         net = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_CHANNEL);
+
+        registerClientSide(SyncPropertiesPacket.class, SyncPropertiesPacket.Message.class);
         registerMessage(PlayerParticlePacket.class, PlayerParticlePacket.Message.class);
         registerMessage(PlayerSoundPacket.class, PlayerSoundPacket.Message.class);
 
@@ -30,7 +32,16 @@ public class ModNetwork
         registerMessage(SleepingBagPacket.class, SleepingBagPacket.SleepingBagMessage.class);
         registerMessage(CowAbilityPacket.class, CowAbilityPacket.CowAbilityMessage.class);
         registerMessage(JumpPacket.class, JumpPacket.JumpMessage.class);
+        registerMessage(EquipUnequipBackWearablePacket.class, EquipUnequipBackWearablePacket.Message.class);
 
+
+
+    }
+
+    public static void registerClientSide(Class handler, Class message)
+    {
+        net.registerMessage(handler, message, messages, Side.CLIENT);
+        messages++;
     }
 
     private static void registerMessage(Class handler, Class message)
@@ -42,6 +53,11 @@ public class ModNetwork
 
     public static void sendToNearby(IMessage message, EntityPlayer player)
     {
-        net.sendToAllAround(message, new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 32.0D));
+        net.sendToAllAround(message, new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 144.0D));
+    }
+
+    public static void sendToDimension(IMessage message, EntityPlayer player)
+    {
+        net.sendToDimension(message, player.dimension);
     }
 }

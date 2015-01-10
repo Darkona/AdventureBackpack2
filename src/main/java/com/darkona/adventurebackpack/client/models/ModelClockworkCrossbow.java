@@ -1,14 +1,13 @@
 package com.darkona.adventurebackpack.client.models;
 
 import com.darkona.adventurebackpack.client.render.RendererStack;
-import com.darkona.adventurebackpack.item.ItemCrossbow;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
 /**
  * clockworkCrossbow - Darkona
@@ -31,10 +30,10 @@ public class ModelClockworkCrossbow extends ModelBase
     public ModelRenderer hookBolt;
     public ModelRenderer leftArc2;
     public ModelRenderer leftArc3;
-    public ModelRenderer shape47;
+    public ModelRenderer stringLeft;
     public ModelRenderer rightArc2;
     public ModelRenderer rightArc3;
-    public ModelRenderer shape47_1;
+    public ModelRenderer stringRight;
     public ModelRenderer arrow1;
     public ModelRenderer arrow2;
     public ModelRenderer arrow3;
@@ -48,6 +47,7 @@ public class ModelClockworkCrossbow extends ModelBase
     public ModelRenderer hookTooth3;
     public ModelRenderer hookTooth4;
     public RendererStack arrow;
+    private ItemStack xbow;
 
     public ModelClockworkCrossbow()
     {
@@ -66,10 +66,16 @@ public class ModelClockworkCrossbow extends ModelBase
         this.hookTooth4 = new ModelRenderer(this, 0, 0);
         this.hookTooth4.setRotationPoint(0.0F, 3.0F, -1.0F);
         this.hookTooth4.addBox(0.0F, 0.0F, 0.0F, 3, 1, 1, 0.0F);
-        this.shape47 = new ModelRenderer(this, 56, 36);
-        this.shape47.setRotationPoint(7.3F, 0.3F, 2.0F);
-        this.shape47.addBox(-0.5F, 0.0F, -0.5F, 1, 22, 1, 0.0F);
-        this.setRotateAngle(shape47, 1.5707963267948966F, -0.5235987755982988F, 0.0F);
+
+        this.stringLeft = new ModelRenderer(this, 56, 36);
+        this.stringLeft.setRotationPoint(7.3F, 0.3F, 2.0F);
+        this.stringLeft.addBox(-0.5F, 0.0F, -0.5F, 1, 22, 1, 0.0F);
+        this.setRotateAngle(stringLeft, 1.5707963267948966F, -0.5235987755982988F, 0.0F);
+        this.stringRight = new ModelRenderer(this, 56, 36);
+        this.stringRight.setRotationPoint(7.3F, 0.3F, -2.0F);
+        this.stringRight.addBox(-0.5F, 0.0F, -0.5F, 1, 22, 1, 0.0F);
+        this.setRotateAngle(stringRight, -1.5707963267948966F, 0.5235987755982988F, 0.0F);
+
         this.wheel = new ModelRenderer(this, 32, 17);
         this.wheel.setRotationPoint(-4.0F, 4.0F, 9.0F);
         this.wheel.addBox(0.0F, -2.5F, -2.5F, 1, 5, 5, 0.0F);
@@ -83,10 +89,7 @@ public class ModelClockworkCrossbow extends ModelBase
         this.trigger = new ModelRenderer(this, 0, 20);
         this.trigger.setRotationPoint(-1.0F, 4.0F, 9.0F);
         this.trigger.addBox(0.0F, 0.0F, 0.0F, 2, 4, 3, 0.0F);
-        this.rightArc1 = new ModelRenderer(this, 0, 36);
-        this.rightArc1.setRotationPoint(-2.0F, 0.0F, -13.0F);
-        this.rightArc1.addBox(-8.0F, 0.0F, 0.0F, 8, 2, 2, 0.0F);
-        this.setRotateAngle(rightArc1, 0.0F, -0.5235987755982988F, 0.0F);
+
         this.shape37 = new ModelRenderer(this, 0, 50);
         this.shape37.setRotationPoint(0.3F, 6.6F, -0.5F);
         this.shape37.addBox(0.0F, 0.0F, 0.0F, 1, 2, 1, 0.0F);
@@ -95,14 +98,8 @@ public class ModelClockworkCrossbow extends ModelBase
         this.sniperLeg1_1.setRotationPoint(2.0F, 3.0F, -12.0F);
         this.sniperLeg1_1.addBox(-0.5F, 0.0F, -0.5F, 1, 7, 1, 0.0F);
         this.setRotateAngle(sniperLeg1_1, 0.0F, 0.0F, -0.4363323129985824F);
-        this.leftArc2 = new ModelRenderer(this, 0, 36);
-        this.leftArc2.setRotationPoint(8.0F, 0.0F, 0.0F);
-        this.leftArc2.addBox(0.0F, 0.0F, 0.0F, 8, 2, 2, 0.0F);
-        this.setRotateAngle(leftArc2, 0.0F, -0.7853981633974483F, 0.0F);
-        this.shape47_1 = new ModelRenderer(this, 56, 36);
-        this.shape47_1.setRotationPoint(7.3F, 0.3F, -2.0F);
-        this.shape47_1.addBox(-0.5F, 0.0F, -0.5F, 1, 22, 1, 0.0F);
-        this.setRotateAngle(shape47_1, -1.5707963267948966F, 0.5235987755982988F, 0.0F);
+
+
 
         this.hookTooth2 = new ModelRenderer(this, 0, 0);
         this.hookTooth2.setRotationPoint(0.0F, -1.0F, -1.0F);
@@ -131,6 +128,11 @@ public class ModelClockworkCrossbow extends ModelBase
         this.point = new ModelRenderer(this, 45, 16);
         this.point.setRotationPoint(-2.0F, 0.0F, -16.0F);
         this.point.addBox(0.0F, 0.0F, 0.0F, 4, 2, 3, 0.0F);
+
+        this.rightArc1 = new ModelRenderer(this, 0, 36);
+        this.rightArc1.setRotationPoint(-2.0F, 0.1F, -13.0F);
+        this.rightArc1.addBox(-8.0F, 0.0F, 0.0F, 8, 2, 2, 0.0F);
+        this.setRotateAngle(rightArc1, 0.0F, -0.5235987755982988F, 0.0F);
         this.rightArc2 = new ModelRenderer(this, 0, 36);
         this.rightArc2.setRotationPoint(-8.0F, 0.0F, 0.0F);
         this.rightArc2.addBox(0.0F, 0.0F, -2.0F, 8, 2, 2, 0.0F);
@@ -141,13 +143,19 @@ public class ModelClockworkCrossbow extends ModelBase
         this.setRotateAngle(rightArc3, 0.0F, 0.7853981633974483F, 0.0F);
 
         this.leftArc1 = new ModelRenderer(this, 0, 36);
-        this.leftArc1.setRotationPoint(2.0F, 0.0F, -13.0F);
+        this.leftArc1.setRotationPoint(2.0F, 0.1F, -13.0F);
         this.leftArc1.addBox(0.0F, 0.0F, 0.0F, 8, 2, 2, 0.0F);
         this.setRotateAngle(leftArc1, 0.0F, 0.5235987755982988F, 0.0F);
+        this.leftArc2 = new ModelRenderer(this, 0, 36);
+        this.leftArc2.setRotationPoint(8.0F, 0.0F, 0.0F);
+        this.leftArc2.addBox(0.0F, 0.0F, 0.0F, 8, 2, 2, 0.0F);
+        this.setRotateAngle(leftArc2, 0.0F, -0.7853981633974483F, 0.0F);
         this.leftArc3 = new ModelRenderer(this, 0, 36);
         this.leftArc3.setRotationPoint(8.0F, 0.0F, 0.0F);
         this.leftArc3.addBox(0.0F, 0.0F, 0.0F, 8, 2, 2, 0.0F);
         this.setRotateAngle(leftArc3, 0.0F, -0.7853981633974483F, 0.0F);
+
+
         this.reloader2 = new ModelRenderer(this, 0, 44);
         this.reloader2.setRotationPoint(6.0F, 1.0F, 0.0F);
         this.reloader2.addBox(0.0F, -0.5F, -0.5F, 1, 4, 1, 0.0F);
@@ -164,14 +172,16 @@ public class ModelClockworkCrossbow extends ModelBase
         this.hookTooth3 = new ModelRenderer(this, 0, 0);
         this.hookTooth3.setRotationPoint(0.0F, 3.0F, 3.0F);
         this.hookTooth3.addBox(0.0F, 0.0F, 0.0F, 3, 1, 1, 0.0F);
+
+
         this.hookHead.addChild(this.hookTooth1);
         this.reloader2.addChild(this.reloader3);
         this.sniperLeg1_1.addChild(this.shape38);
         this.hookHead.addChild(this.hookTooth4);
-        this.leftArc3.addChild(this.shape47);
+        this.leftArc3.addChild(this.stringLeft);
         this.sniperLeg1.addChild(this.shape37);
         this.leftArc1.addChild(this.leftArc2);
-        this.rightArc3.addChild(this.shape47_1);
+        this.rightArc3.addChild(this.stringRight);
         this.magazine.addChild(this.arrow3);
         this.hookHead.addChild(this.hookTooth2);
         this.magazine.addChild(this.arrow2);
@@ -187,9 +197,15 @@ public class ModelClockworkCrossbow extends ModelBase
         arrow.stack = new ItemStack(Items.arrow, 1);
     }
 
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack xbow)
+    {
+        this.xbow = xbow;
+        render(entity,f,f1,f2,f3,f4,f5);
+    }
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
+
         this.wheel.render(f5);
         this.reloader1.render(f5);
         this.sniperLeg1.render(f5);
@@ -201,7 +217,7 @@ public class ModelClockworkCrossbow extends ModelBase
         this.point.render(f5);
 
         this.handle2.render(f5);
-        this.handle.render(f5);
+        this.handle.render(1/18f);
         this.magazine.render(f5);
 
 
@@ -217,15 +233,25 @@ public class ModelClockworkCrossbow extends ModelBase
             setOffset(arrow, -.75f, .1f, -.2f);
             arrow.render(f5);
         }
-        if (entity != null && entity instanceof EntityPlayer)
+        if(xbow != null && xbow.hasTagCompound() && xbow.stackTagCompound.hasKey("Pulled"))
         {
-            if (((EntityPlayer) entity).getItemInUse() != null && ((EntityPlayer) entity).getItemInUse().getItem() instanceof ItemCrossbow && ((EntityPlayer) entity).getItemInUseCount() > 0)
+            if(xbow.stackTagCompound.getInteger("Pulled") <= 0)
             {
-                setOffset(arrow, -.0f, -.0f, -.0f);
+                setRotateAngle(stringLeft, 1.5707963267948966F, 0.0F, 0.0F);
+                setRotateAngle(stringRight, -1.5707963267948966F, 0.0F, 0.0F);
+                setOffset(arrow, -.0f, -.0f, -.4f);
                 setRotateAngle(arrow, Utils.degreesToRadians(-90), Utils.degreesToRadians(0), Utils.degreesToRadians(90));
                 arrow.setRotationPoint(xbowBody.rotationPointX, xbowBody.rotationPointY, xbowBody.rotationPointZ);
+                GL11.glPushMatrix();
+                GL11.glScalef(1.0f,1.0f,1.5f);
                 arrow.render(1 / 14);
+                GL11.glPopMatrix();
+            }else
+            {
+                setRotateAngle(stringLeft, 1.5707963267948966F, -0.5235987755982988F, 0.0F);
+                setRotateAngle(stringRight, -1.5707963267948966F, 0.5235987755982988F, 0.0F);
             }
+
         }
         this.leftArc1.render(f5);
         this.rightArc1.render(f5);

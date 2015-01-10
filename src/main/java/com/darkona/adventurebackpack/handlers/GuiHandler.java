@@ -20,7 +20,7 @@ import net.minecraft.world.World;
  */
 public class GuiHandler implements IGuiHandler
 {
-
+    public static final byte COPTER_WEARING = 4;
     public static final byte COPTER_HOLDING = 3;
     public static final byte BACKPACK_HOLDING = 2;
     public static final byte BACKPACK_WEARING = 1;
@@ -82,6 +82,7 @@ public class GuiHandler implements IGuiHandler
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
         InventoryBackpack inv;
+        InventoryCopterPack inv2;
         TileEntity te;
         switch (ID)
         {
@@ -110,10 +111,17 @@ public class GuiHandler implements IGuiHandler
                 }
                 break;
             case COPTER_HOLDING:
-                InventoryCopterPack inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
+                inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
                 if (inv2.getParentItemStack() != null)
                 {
-                    return new GuiCopterPack(player, inv2);
+                    return new GuiCopterPack(player, inv2,false);
+                }
+                break;
+            case COPTER_WEARING:
+                inv2 = new InventoryCopterPack(Wearing.getWearingCopter(player));
+                if (inv2.getParentItemStack() != null)
+                {
+                    return new GuiCopterPack(player, inv2,true);
                 }
                 break;
             default:

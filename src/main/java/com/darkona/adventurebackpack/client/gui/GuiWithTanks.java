@@ -15,5 +15,15 @@ public abstract class GuiWithTanks extends GuiContainer
         super(p_i1072_1_);
     }
 
+    public int getLeft()
+    {
+        return guiLeft;
+    }
 
+    public int getTop()
+    {
+        return guiTop;
+    }
+
+    public float getZLevel() {return zLevel;}
 }

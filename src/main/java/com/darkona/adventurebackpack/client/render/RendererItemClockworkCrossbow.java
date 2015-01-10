@@ -132,7 +132,7 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
 
                 GL11.glTranslatef(0.0f, 0.4f, 0.2f);
                 player = (EntityPlayer) data[1];
-                model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1 / 20F);
+                model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F, item);
 
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();
@@ -159,17 +159,17 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                 GL11.glRotatef(20, 1, 0, 0);
                 //GL11.glRotatef(15, 0, 0, 1);
                 player = (EntityPlayer) data[1];
-                int countDracula = player.getItemInUseCount();
-                if (countDracula > 0)
-                {
+
+               // if (player.getItemInUseCount() > 0)
+                //{
                     //GL11.glPushMatrix();
                     //countDracula = 2 - countDracula / 800;
                     GL11.glRotatef(-20, 1.0F, 0.0F, 0.0F);
                     GL11.glTranslatef(0.0F, -0.32F, .42F);
 
-                }
+               // }
 
-                model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F);
+                model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F, item);
                 // if (player.getItemInUseCount() > 0)
                 //{
                 //GL11.glPopMatrix();

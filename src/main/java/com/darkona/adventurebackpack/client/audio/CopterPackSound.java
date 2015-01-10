@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -31,7 +32,7 @@ public class CopterPackSound extends MovingSound
     public CopterPackSound(EntityPlayer player)
     {
         super(new ResourceLocation(ModInfo.MOD_ID, "helicopter"));
-        this.volume = 0.8f;
+        this.volume = 0.0f;
         this.pitch = 1.0F;
         this.player = player;
         this.repeat = true;
@@ -50,17 +51,31 @@ public class CopterPackSound extends MovingSound
             setDonePlaying();
             return;
         }
-        if (Wearing.getWearingCopter(player).hasTagCompound() && Wearing.getWearingCopter(player).getTagCompound().hasKey("status"))
+        ItemStack copter = Wearing.getWearingCopter(player);
+        byte status = 0;
+        if (copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
         {
-            if (Wearing.getWearingCopter(player).getTagCompound().getByte("status") == ItemCopterPack.OFF_MODE)
+            status = copter.getTagCompound().getByte("status");
+            if (status == ItemCopterPack.OFF_MODE)
             {
-                setDonePlaying();
-                return;
+                volume = 0.0f;
+            }else{
+                volume = 0.8F;
+                if(status == ItemCopterPack.HOVER_MODE)
+                {
+                    pitch = (player.motionY == 0) ? 1.0f : (player.motionY > 0) ? 1.2f : 0.8f;
+                }
+                else
+                {
+                    pitch = (player.onGround || player.motionY == 0) ?  1.0f : (player.motionY > 0) ? 1.2f : 0.8f;
+                }
             }
+        }else{
+            volume = 0.0F;
         }
 
-        if (!player.onGround) this.pitch = (player.motionY > 0) ? 1.2F : (player.isSneaking()) ? 0.8F : 1.0F;
-        if (player.onGround) this.pitch = 0.8F;
+
+
 
         this.xPosF = (float) this.player.posX;
         this.yPosF = (float) this.player.posY;

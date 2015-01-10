@@ -13,10 +13,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidTank;
 
 import java.util.List;
 
@@ -27,8 +29,8 @@ import java.util.List;
  */
 public class EntityInflatableBoat extends EntityBoat
 {
-    private boolean isMotorized;
-
+    public boolean isMotorized;
+    private FluidTank fuelTank;
     private boolean isBoatEmpty;
     private double speedMultiplier;
     private int boatPosRotationIncrements;
@@ -44,6 +46,8 @@ public class EntityInflatableBoat extends EntityBoat
     @SideOnly(Side.CLIENT)
     private double velocityZ;
 
+    public float inflation = 0.25f;
+
     public EntityInflatableBoat(World world)
     {
         super(world);
@@ -53,6 +57,7 @@ public class EntityInflatableBoat extends EntityBoat
     {
         super(world, posX, posY, posZ);
         this.isMotorized = motorized;
+        fuelTank = new FluidTank(6000);
     }
 
     /**
@@ -60,6 +65,13 @@ public class EntityInflatableBoat extends EntityBoat
      */
     public void onUpdate()
     {
+        if(this.ticksExisted < 35)
+        {
+            inflation += 0.025;
+        }
+        if(inflation > 1.0f){
+            inflation = 1.0f;
+        }
         if (this.getTimeSinceHit() > 0)
         {
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
@@ -355,5 +367,42 @@ public class EntityInflatableBoat extends EntityBoat
     public EntityItem func_145778_a(Item item, int quantity, float someFloat)
     {
         return this.entityDropItem(new ItemStack(item, quantity, 0), someFloat);
+    }
+
+    @Override
+    public boolean interactFirst(EntityPlayer p_130002_1_)
+    {
+        if(inflation < 1.0f) return false;
+        if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != p_130002_1_)
+        {
+            return true;
+        }
+        else
+        {
+            if (!this.worldObj.isRemote)
+            {
+                p_130002_1_.mountEntity(this);
+            }
+
+            return true;
+        }
+    }
+
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound compound) {
+        compound.setFloat("Inflation",inflation);
+        compound.setBoolean("Motorized",isMotorized);
+    }
+
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound compound) {
+        if (compound.hasKey("Inflation"))
+        {
+            inflation = compound.getFloat("Inflation");
+        }
+        if(compound.hasKey("Motorized"))
+        {
+            isMotorized = compound.getBoolean("Motorized");
+        }
     }
 }

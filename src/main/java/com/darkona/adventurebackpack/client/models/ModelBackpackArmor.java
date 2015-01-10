@@ -1,18 +1,14 @@
 package com.darkona.adventurebackpack.client.models;
 
-import codechicken.lib.render.RenderUtils;
-import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.client.render.RendererStack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -22,7 +18,7 @@ import java.util.List;
  *
  * @author Darkona
  */
-public class ModelBackpackArmor extends ModelBiped
+public class ModelBackpackArmor extends ModelWearable
 {
     public static final ModelBackpackArmor instance = new ModelBackpackArmor();
 
@@ -56,10 +52,10 @@ public class ModelBackpackArmor extends ModelBiped
     public ModelRenderer bedStrapLeftTop;
     RendererStack lowerTool;
     RendererStack upperTool;
-    private IAdvBackpack backpack;
+    public IAdvBackpack backpack;
     private float scale = -1;
 
-    public ModelBackpackArmor()
+    private void init()
     {
         this.textureWidth = 128;
         this.textureHeight = 64;
@@ -231,37 +227,22 @@ public class ModelBackpackArmor extends ModelBiped
         }
     }
 
-    public ModelBackpackArmor setBackpack(IAdvBackpack backpack)
+    public ModelBackpackArmor setBackpack(ItemStack wearable)
     {
-        instance.backpack = backpack;
-        return instance;
+        this.backpack = new InventoryBackpack(wearable);
+        return this;
     }
-
-    public void setBackpack2(ItemStack backpack)
+    public ModelBackpackArmor()
     {
-        this.backpack = new InventoryBackpack(backpack);
+        init();
     }
 
     public ModelBackpackArmor(ItemStack backpack)
     {
+        init();
         this.backpack = new InventoryBackpack(backpack);
     }
-
-    private void startBlending()
-    {
-        //GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-    }
-
-    private void stopBlending()
-    {
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_BLEND);
-        // GL11.glPopMatrix();
-    }
-
+    @SuppressWarnings("unchecked")
     private void renderBackpack(Float scale)
     {
 
@@ -309,43 +290,13 @@ public class ModelBackpackArmor extends ModelBiped
         }
         GL11.glPopMatrix();
 
-
         GL11.glPushMatrix();
         GL11.glTranslatef(bipedBody.offsetX + 0, bipedBody.offsetY + 0.2F, bipedBody.offsetZ + 0.3f);
-        renderFluidInTank(backpack.getLeftTank(), -.17f, .1f, .13f, tankLeftTop);
-        renderFluidInTank(backpack.getRightTank(), .41f, .1f, .13f, tankRightTop);
+
+        renderFluidInTank(backpack.getLeftTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(-.17f, .1f, .13f), tankLeftTop);
+
+        renderFluidInTank(backpack.getRightTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(.41f, .1f, .13f), tankRightTop);
         GL11.glPopMatrix();
-    }
-
-    private void renderFluidInTank(FluidTank tank, float offsetX, float offsetY, float offsetZ, ModelRenderer parent)
-    {
-        //Side true is left, false is right
-        if (tank != null && tank.getFluid() != null && tank.getFluid().getFluid().getIcon() != null)
-        {
-            //Size of the cuboid
-            //Y-- is up, Y++ is down
-            float minX = 0f;
-            float minY = 0.5f;
-            float minZ = 0f;
-
-            float maxX = 0.17f;
-            float maxY = 0f;
-            float maxZ = 0.17f;
-            Vector3 victor = new Vector3(
-                    (parent.rotationPointX * 0.1f + offsetX), //
-                    (parent.rotationPointY * 0.1f + offsetY),
-                    (parent.rotationPointZ * 0.1f + offsetZ));
-
-            Cuboid6 cat = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
-            //Thanks Chickenbones!
-            RenderUtils.renderFluidCuboid(tank.getFluid(), cat.add(victor), ((1.0F * tank.getFluidAmount()) / (1.0F * Constants.basicTankCapacity)), 0.8);
-        }
-    }
-
-    public void renderWithBackpack(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack backpack)
-    {
-        this.backpack = new InventoryBackpack(backpack);
-        render(entity, f, f1, f2, f3, f4, f5);
     }
 
     @Override
@@ -398,33 +349,6 @@ public class ModelBackpackArmor extends ModelBiped
         }
         GL11.glTranslatef(-bipedBody.offsetX, -bipedBody.offsetY, -(bipedBody.offsetZ));
         GL11.glPopMatrix();
-    }
-
-    private void setRotationPoins(ModelRenderer modelRenderer, float x, float y, float z)
-    {
-        modelRenderer.rotationPointX = x;
-        modelRenderer.rotationPointY = y;
-        modelRenderer.rotationPointZ = z;
-    }
-
-    public void setOffset(ModelRenderer modelRenderer, float x, float y, float z)
-    {
-        modelRenderer.offsetX = x;
-        modelRenderer.offsetY = y;
-        modelRenderer.offsetZ = z;
-    }
-
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
-    {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void setRotationAngles(float v1, float v2, float v3, float v4, float v5, float v6, Entity entity)
-    {
-        super.setRotationAngles(v1, v2, v3, v4, v5, v6, entity);
     }
 
 }

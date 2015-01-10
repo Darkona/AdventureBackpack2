@@ -205,4 +205,17 @@ public class ModRecipes
         RecipeSorter.register(ModInfo.MOD_ID + ":adventureBackpack", AbstractBackpackRecipeTwo.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless");
         */
     }
+
+    public static void initConditional()
+    {
+        GameRegistry.addRecipe(new ItemStack(Items.saddle),
+                "LLL",
+                "L L",
+                "I I",
+                'L', Items.leather,
+                'I', Items.iron_ingot
+        );
+
+        //GameRegistry.addSmelting(Items.egg,ModItems.component,5f);
+    }
 }

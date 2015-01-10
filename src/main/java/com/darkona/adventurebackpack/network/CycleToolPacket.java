@@ -25,7 +25,7 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
     {
         if (ctx.side.isServer())
         {
-            LogHelper.info("Received CycleToolMessage with values: " + message.directionOfCycle + " " + message.typeOfAction + " " + message.slot);
+            //LogHelper.info("Received CycleToolMessage with values: " + message.directionOfCycle + " " + message.typeOfAction + " " + message.slot);
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
             switch (message.typeOfAction)
             {

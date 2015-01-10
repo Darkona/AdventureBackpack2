@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created on 11/10/2014
@@ -52,7 +53,6 @@ public class ClientActions
                 if (ConfigHandler.ALLOW_COPTER_SOUND)
                 {
                     CopterPackSound tucutucu = new CopterPackSound(player);
-                    Minecraft.getMinecraft().getSoundHandler().stopSound(tucutucu);
                     Minecraft.getMinecraft().getSoundHandler().playSound(tucutucu);
                 }
                 break;
@@ -62,5 +62,11 @@ public class ClientActions
 
                 break;
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void synchronizePlayer(NBTTagCompound properties)
+    {
+        BackpackProperty.get(Minecraft.getMinecraft().thePlayer).loadNBTData(properties);
     }
 }
