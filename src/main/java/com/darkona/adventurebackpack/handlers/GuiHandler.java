@@ -35,11 +35,11 @@ public class GuiHandler implements IGuiHandler
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
         InventoryBackpack inv;
+        InventoryCopterPack inv2;
         TileEntity te;
         switch (ID)
         {
             case BACKPACK_TILE:
-                //ADVENTUREBACKPACK GUI FROM TILE ENTITY
                 te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack)
                 {
@@ -47,7 +47,6 @@ public class GuiHandler implements IGuiHandler
                 }
                 break;
             case BACKPACK_WEARING:
-                //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
                 if (inv.getParentItemStack() != null)
                 {
@@ -55,7 +54,6 @@ public class GuiHandler implements IGuiHandler
                 }
                 break;
             case BACKPACK_HOLDING:
-                //ADVENTUREBACKPACK GUI FROM HOLDING BACKPACK /RIGHT CLICK
                 inv = Wearing.getBackpackInv(player, false);
                 if (inv.getParentItemStack() != null)
                 {
@@ -63,7 +61,14 @@ public class GuiHandler implements IGuiHandler
                 }
                 break;
             case COPTER_HOLDING:
-                InventoryCopterPack inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
+                inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
+                if (inv2.getParentItemStack() != null)
+                {
+                    return new CopterContainer(player, inv2);
+                }
+                break;
+            case COPTER_WEARING:
+                inv2 = new InventoryCopterPack(Wearing.getWearingCopter(player));
                 if (inv2.getParentItemStack() != null)
                 {
                     return new CopterContainer(player, inv2);
@@ -87,7 +92,6 @@ public class GuiHandler implements IGuiHandler
         switch (ID)
         {
             case BACKPACK_TILE:
-                //ADVENTUREBACKPACK GUI FROM TILE ENTITY
                 te = world.getTileEntity(x, y, z);
                 if (te != null && te instanceof TileAdventureBackpack)
                 {
@@ -95,7 +99,6 @@ public class GuiHandler implements IGuiHandler
                 }
                 break;
             case BACKPACK_WEARING:
-                //ADVENTUREBACKPACK GUI FROM WEARING BACKPACK/KEYBIND
                 inv = Wearing.getBackpackInv(player, true);
                 if (inv.getParentItemStack() != null)
                 {
@@ -103,7 +106,6 @@ public class GuiHandler implements IGuiHandler
                 }
                 break;
             case BACKPACK_HOLDING:
-                //ADVENTUREBACKPACK GUI FROM RIGHTCLICK/ HOLDING
                 inv = Wearing.getBackpackInv(player, false);
                 if (inv.getParentItemStack() != null)
                 {

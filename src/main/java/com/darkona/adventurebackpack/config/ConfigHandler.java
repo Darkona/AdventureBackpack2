@@ -36,7 +36,7 @@ public class ConfigHandler
     public static boolean TANKS_OVERLAY = true;
     public static boolean HOVERING_TEXT_TANKS = false;
     public static boolean SADDLE_RECIPE = true;
-
+    public static boolean FIX_LEAD = true;
     public static void init(File configFile)
     {
         if (config == null)
@@ -58,6 +58,7 @@ public class ConfigHandler
         STATUS_OVERLAY = config.getBoolean("StatusOverlay", config.CATEGORY_GENERAL,true, "Show player status effects on screen?");
         TANKS_OVERLAY = config.getBoolean("BackpackOverlay", config.CATEGORY_GENERAL,true, "Show the different wearable overlays on screen?");
         HOVERING_TEXT_TANKS = config.getBoolean("HoveringText", config.CATEGORY_GENERAL,false, "Show hovering text on fluid tanks?");
+        FIX_LEAD = config.getBoolean("FixVanillaLead", config.CATEGORY_GENERAL,true, "Fix the vanilla Lead? (Checks mobs falling on a leash to not die of fall damage if they're not falling so fast)");
 
         //RECIPES
         SADDLE_RECIPE = config.getBoolean("SaddleRecipe", config.CATEGORY_GENERAL,true, "Add recipe for saddle?");

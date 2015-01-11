@@ -39,14 +39,25 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                 int playerY = (int) player.posY;
                 int playerZ = (int) player.posZ;
                 World world = player.worldObj;
+
                 if (message.type == COPTER_GUI)
                 {
-                    if (Wearing.isHoldingCopter(player))
+                    if(message.from == FROM_KEYBIND)
                     {
-                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_HOLDING, world, playerX, playerY, playerZ);
-                        return null;
+                        if (Wearing.isWearingCopter(player))
+                        {
+                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_WEARING, world, playerX, playerY, playerZ);
+                            return null;
+                        }
                     }
-
+                    if(message.from == FROM_HOLDING)
+                    {
+                        if (Wearing.isHoldingCopter(player))
+                        {
+                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_HOLDING, world, playerX, playerY, playerZ);
+                            return null;
+                        }
+                    }
                 }
 
                 if (message.type == BACKPACK_GUI)

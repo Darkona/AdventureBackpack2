@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.handlers;
 import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
@@ -178,7 +179,11 @@ public class PlayerEventHandler
             {
                 if (event.target instanceof EntitySpider)
                 {
-                    event.entityPlayer.mountEntity(event.target);
+                    EntityFriendlySpider pet = new EntityFriendlySpider(event.target.worldObj);
+                    pet.setLocationAndAngles(event.target.posX, event.target.posY, event.target.posZ, event.target.rotationYaw, event.target.rotationPitch);
+                    event.target.setDead();
+                    event.entityPlayer.worldObj.spawnEntityInWorld(pet);
+                    event.entityPlayer.mountEntity(pet);
                 }
             }
             event.setResult(Event.Result.ALLOW);
@@ -234,20 +239,23 @@ public class PlayerEventHandler
     }
 
     @SubscribeEvent
-    public void tickBackpack(TickEvent.PlayerTickEvent event)
+    public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
-        if(event.side.isServer())
+        if(event.player!=null && !event.player.isDead)
         {
-            NBTTagCompound props = new NBTTagCompound();
-            BackpackProperty.get(event.player).saveNBTData(props);
-            ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(props), (EntityPlayerMP)event.player);
-        }
-        if(event.type == TickEvent.Type.PLAYER && event.phase == TickEvent.Phase.END)
-        {
-            ItemStack backpack = BackpackProperty.get(event.player).getWearable();
-            if(backpack != null && backpack.getItem() instanceof IBackWearableItem)
+            if(event.side.isServer())
             {
-                ((IBackWearableItem) backpack.getItem()).onEquippedUpdate(event.player.worldObj, event.player, backpack);
+                NBTTagCompound props = new NBTTagCompound();
+                BackpackProperty.get(event.player).saveNBTData(props);
+                ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(props), (EntityPlayerMP)event.player);
+            }
+            if(event.type == TickEvent.Type.PLAYER && event.phase == TickEvent.Phase.END)
+            {
+                ItemStack backpack = BackpackProperty.get(event.player).getWearable();
+                if(backpack != null && backpack.getItem() instanceof IBackWearableItem)
+                {
+                    ((IBackWearableItem) backpack.getItem()).onEquippedUpdate(event.player.worldObj, event.player, backpack);
+                }
             }
         }
     }

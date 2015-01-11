@@ -18,12 +18,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.7.5"
+version = "1.7.10-0.8"
 group = "com.darkona.adventurebackpack" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "adventurebackpack"
 
 minecraft {
-    version = "1.7.10-10.13.2.1230"
+    version = "1.7.10-10.13.2.1277"
     runDir = "eclipse"
 }
 

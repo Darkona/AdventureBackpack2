@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack;
 import com.darkona.adventurebackpack.client.gui.GuiOverlayBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
-import com.darkona.adventurebackpack.handlers.BackpackEventHandler;
+import com.darkona.adventurebackpack.handlers.GeneralEventHandler;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
@@ -54,7 +54,7 @@ public class AdventureBackpack
     public String Holiday;
     PlayerEventHandler playerEventHandler;
     ClientEventHandler clientEventHandler;
-    BackpackEventHandler backpackEventHandler;
+    GeneralEventHandler generalEventHandler;
 
     GuiHandler guiHandler;
 
@@ -82,11 +82,11 @@ public class AdventureBackpack
         proxy.initNetwork();
         // EVENTS
         playerEventHandler = new PlayerEventHandler();
-        backpackEventHandler = new BackpackEventHandler();
+        generalEventHandler = new GeneralEventHandler();
         clientEventHandler = new ClientEventHandler();
 
 
-        MinecraftForge.EVENT_BUS.register(backpackEventHandler);
+        MinecraftForge.EVENT_BUS.register(generalEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
         MinecraftForge.EVENT_BUS.register(playerEventHandler);
         MinecraftForge.EVENT_BUS.register(new GuiOverlayBackpack(Minecraft.getMinecraft()));

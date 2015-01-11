@@ -10,6 +10,8 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 
 /**
  * Created on 05/01/2015
@@ -56,15 +58,15 @@ public class ItemCrossbow extends ItemAB
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
     {
 
-        if(count < 35990)
+        //stack.stackTagCompound.setBoolean("Shot",!(count % 5 == 0 || (count +1) %5 == 0 || (count-1)%5 == 0));
+        byte pulled = stack.stackTagCompound.getByte("Shot");
+        if(pulled > 0)stack.stackTagCompound.setByte("Shot", (byte) (pulled - 1));
+        if(count % 5 == 0)
         {
-            int pulled  = stack.stackTagCompound.getInteger("Pulled") - 1;
-            if (count % 10 == 0)
-            {
-                shootArrow(stack, player.worldObj, player);
-                if(pulled <= 0) stack.stackTagCompound.setInteger("Pulled",3);
-            }
+            shootArrow(stack,player.worldObj,player);
+            stack.stackTagCompound.setByte("Shot",(byte)3);
         }
+        if(count <= 0)player.stopUsingItem();
     }
 
     @Override
@@ -76,9 +78,7 @@ public class ItemCrossbow extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if(!stack.hasTagCompound())stack.setTagCompound(new NBTTagCompound());
-        stack.stackTagCompound.setInteger("Pulled",0);
-        player.setItemInUse(stack, getMaxItemUseDuration(stack));
+        player.setItemInUse(stack,getMaxItemUseDuration(stack));
         return stack;
     }
 
@@ -91,20 +91,25 @@ public class ItemCrossbow extends ItemAB
     @Override
     public int getMaxItemUseDuration(ItemStack stack)
     {
-        return 36000;
+        return 9;
     }
 
+    @Override
+    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int counter)
+    {
+        stack.stackTagCompound.setByte("Shot", (byte) 0);
+    }
 
     public void shootArrow(ItemStack stack, World world, EntityPlayer player)
     {
         int j = 1000;
-        /*
+
         ArrowLooseEvent event = new ArrowLooseEvent(player, stack, j);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled())
         {
             return;
-        }*/
+        }
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
@@ -123,7 +128,7 @@ public class ItemCrossbow extends ItemAB
                 f = 1.0F;
             }
 
-            EntityArrow entityarrow = new EntityArrow(world, player, f * 5.0F);
+            EntityArrow entityarrow = new EntityArrow(world, player, f * 3.0F);
             f = 1.0f;
 
             int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, stack);
@@ -162,8 +167,5 @@ public class ItemCrossbow extends ItemAB
         }
     }
 
-    @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int counter)
-    {
-    }
+
 }

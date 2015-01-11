@@ -261,12 +261,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
 
         inv.openInventory();
         int ticks = inv.tickCounter - 1;
-
-        /*if ((!player.worldObj.isRemote) && (this.soundLoopTime < System.currentTimeMillis()) && status != OFF_MODE)
-        {
-            player.worldObj.playSoundAtEntity(player, "adventurebackpack:helishort", 1F, pitch);
-            this.soundLoopTime = (System.currentTimeMillis() + 360L);
-        }*/
         if (inv.fuelTank.getFluid() != null)
         {
             String name = FluidRegistry.getFluidName(inv.fuelTank.getFluid());
@@ -286,7 +280,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        onDroppedByPlayer(stack,player);
+        onDroppedByPlayer(stack.copy(),player);
         BackpackProperty.get(player).setWearable(null);
     }
 

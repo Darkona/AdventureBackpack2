@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileCampFire;
 import com.darkona.adventurebackpack.client.render.*;
 import com.darkona.adventurebackpack.config.Keybindings;
+import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.handlers.RenderHandler;
@@ -12,9 +13,14 @@ import com.darkona.adventurebackpack.init.ModItems;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.client.audio.MovingSound;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Created on 10/10/2014
@@ -24,13 +30,32 @@ import net.minecraftforge.common.MinecraftForge;
 public class ClientProxy implements IProxy
 {
 
+    public static HashMap<UUID,MovingSound> soundPoolCopters = new HashMap<>();
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;
     public static RendererWearableEquipped rendererWearableEquipped;
     public static RenderHandler renderHandler;
     public static RendererInflatableBoat renderInflatableBoat;
+    public static RenderRideableSpider renderRideableSpider;
     public static RendererItemClockworkCrossbow renderCrossbow;
+
+    public static void putCopterSound(EntityPlayer player, MovingSound sound)
+    {
+        UUID key = player.getUniqueID();
+        if(!soundPoolCopters.containsKey(key))
+        {
+            soundPoolCopters.put(key, sound);
+        }
+    }
+
+    public static MovingSound getCopterSound(EntityPlayer player)
+    {
+        return soundPoolCopters.get(player.getUniqueID());
+    }
+
+
+
 
     public void init()
     {
@@ -64,6 +89,8 @@ public class ClientProxy implements IProxy
 
         renderInflatableBoat = new RendererInflatableBoat();
         RenderingRegistry.registerEntityRenderingHandler(EntityInflatableBoat.class, renderInflatableBoat);
+        renderRideableSpider = new RenderRideableSpider();
+        RenderingRegistry.registerEntityRenderingHandler(EntityFriendlySpider.class, renderRideableSpider);
 
         renderCrossbow = new RendererItemClockworkCrossbow();
         MinecraftForgeClient.registerItemRenderer(ModItems.cwxbow, renderCrossbow);

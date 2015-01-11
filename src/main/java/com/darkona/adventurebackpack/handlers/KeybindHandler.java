@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.handlers;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CopterPacket;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -23,11 +24,11 @@ public class KeybindHandler
     {
         if (Keybindings.openBackpack.isPressed())
         {
-            return Key.OPEN_BACKPACK_INVENTORY;
+            return Key.INVENTORY_KEY;
         }
         if (Keybindings.toggleHose.isPressed())
         {
-            return Key.TOGGLE_HOSE_TANK;
+            return Key.TOGGLE_KEY;
         }
 
         if (Minecraft.getMinecraft().gameSettings.keyBindJump.isPressed())
@@ -44,7 +45,7 @@ public class KeybindHandler
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
 
-        if (keypressed == Key.OPEN_BACKPACK_INVENTORY)
+        if (keypressed == Key.INVENTORY_KEY)
         {
             if (player != null && mc.inGameHasFocus)
             {
@@ -54,24 +55,30 @@ public class KeybindHandler
                 }
                 if (Wearing.isWearingCopter(player))
                 {
-                    if (!player.isSneaking())
-                    {
-                        ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.TOGGLE, ""));
-                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), CopterPacket.TOGGLE);
-                    } else
-                    {
-                        ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.ON_OFF, ""));
-                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), CopterPacket.ON_OFF);
-                    }
-
+                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
                 }
             }
         }
 
-        if (keypressed == Key.TOGGLE_HOSE_TANK)
+        if (keypressed == Key.TOGGLE_KEY)
         {
-            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
-            ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, (player).inventory.currentItem);
+            if(player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemHose)
+            {
+                ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
+                ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, (player).inventory.currentItem);
+            }
+            if (Wearing.isWearingCopter(player))
+            {
+                if (!player.isSneaking())
+                {
+                    ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.TOGGLE, ""));
+                    ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), CopterPacket.TOGGLE);
+                } else
+                {
+                    ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.ON_OFF, ""));
+                    ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), CopterPacket.ON_OFF);
+                }
+            }
         }
 
         /*if(keypressed == Key.JUMP && player!=null && Wearing.isWearingCopter(player))

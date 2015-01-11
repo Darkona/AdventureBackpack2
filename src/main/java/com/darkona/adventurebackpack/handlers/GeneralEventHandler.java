@@ -12,6 +12,7 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.passive.EntityHorse;
@@ -22,6 +23,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
@@ -33,7 +35,7 @@ import java.util.UUID;
  *
  * @author Darkona
  */
-public class BackpackEventHandler
+public class GeneralEventHandler
 {
     /**
      * @param event
@@ -149,5 +151,23 @@ public class BackpackEventHandler
     {
 
 
+    }
+
+    @SubscribeEvent
+    public void fixLeashFall(LivingFallEvent event)
+    {
+        if(!ConfigHandler.FIX_LEAD)return;
+        if(event.entityLiving instanceof EntityCreature)
+        {
+            EntityCreature creature = (EntityCreature)event.entityLiving;
+            if(creature.getLeashed() && creature.getLeashedToEntity() != null &&  creature.getLeashedToEntity() instanceof EntityPlayer)
+            {
+                EntityPlayer player = (EntityPlayer)creature.getLeashedToEntity();
+                if(creature.motionY > -2.0f && player.motionY > -2.0f)
+                {
+                    event.setCanceled(true);
+                }
+            }
+        }
     }
 }
