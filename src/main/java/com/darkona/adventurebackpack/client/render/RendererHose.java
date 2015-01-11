@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client.render;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
@@ -8,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 /**
  * Created on 13/10/2014
@@ -44,7 +46,7 @@ public class RendererHose implements IItemRenderer
 
                 // ====================Render the item===================== //
                 IIcon icon = hose.getItem().getIcon(hose, 1);
-                renderHose.renderIcon(0, 0, icon, 16, 16);
+
                 if (hose.hasTagCompound())
                 {
                     String amount = Integer.toString(hose.getTagCompound().getInteger("amount"));
@@ -65,39 +67,33 @@ public class RendererHose implements IItemRenderer
                             mode = "Useless";
                             break;
                     }
+                   // RenderHelper.enableStandardItemLighting();
+                   // RenderHelper.enableGUIStandardItemLighting();
 
-                    GL11.glDisable(GL11.GL_TEXTURE_2D);
+                    GL11.glDisable(GL11.GL_LIGHTING); //Forge: Make sure that render states are reset, a renderEffect can derp them up.
+                    GL11.glEnable(GL11.GL_ALPHA_TEST);
                     GL11.glEnable(GL11.GL_BLEND);
-                    GL11.glDepthMask(false);
                     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-                    tessellator.startDrawing(GL11.GL_QUADS);
-
-                    tessellator.setColorRGBA(0, 0, 0, 0);
-
-                    tessellator.addVertex(0, 0, 0);
-                    tessellator.addVertex(0, 8, 0);
-                    tessellator.addVertex(8, 8, 0);
-                    tessellator.addVertex(8, 0, 0);
-
-                    tessellator.draw();
-
-                    GL11.glDepthMask(true);
+                    //GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
+                    renderHose.renderIcon(0, 0, icon, 16, 16);
+                    GL11.glEnable(GL11.GL_LIGHTING);
+                    GL11.glDisable(GL11.GL_ALPHA_TEST);
                     GL11.glDisable(GL11.GL_BLEND);
 
-                    GL11.glEnable(GL11.GL_TEXTURE_2D);
-
-                    GL11.glPushMatrix();
-                    GL11.glScalef(0.5f, 0.5f, 0.5f);
-                    if (fontRenderer != null)
+                    if(ConfigHandler.TANKS_OVERLAY)
                     {
-                        fontRenderer.drawStringWithShadow(mode, 0, 0, 0xFFFFFF);
-                        fontRenderer.drawStringWithShadow(amount, 0, 18, 0xFFFFFF);
-                        fontRenderer.drawStringWithShadow(name, 0, 24, 0xFFFFFF);
+                        GL11.glPushMatrix();
+                        GL11.glScalef(0.5f, 0.5f, 0.5f);
+                        if (fontRenderer != null)
+                        {
+                            fontRenderer.drawString(mode, 0, 0, 0xFFFFFF);
+                            fontRenderer.drawString(amount, 0, 18, 0xFFFFFF);
+                            fontRenderer.drawString(name, 0, 24, 0xFFFFFF);
+                        }
+                        GL11.glPopMatrix();
                     }
-                    GL11.glPopMatrix();
-
-
+                    //RenderHelper.disableStandardItemLighting();
+                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                     break;
 
                 }

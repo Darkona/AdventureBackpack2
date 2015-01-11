@@ -1,7 +1,8 @@
 package com.darkona.adventurebackpack.proxy;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.block.TileCampFire;
+import com.darkona.adventurebackpack.block.TileCampfire;
+import com.darkona.adventurebackpack.client.gui.GuiOverlayBackpack;
 import com.darkona.adventurebackpack.client.render.*;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
@@ -13,6 +14,7 @@ import com.darkona.adventurebackpack.init.ModItems;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -61,6 +63,7 @@ public class ClientProxy implements IProxy
     {
         initRenderers();
         registerKeybindings();
+        MinecraftForge.EVENT_BUS.register(new GuiOverlayBackpack(Minecraft.getMinecraft()));
     }
 
     public void initNetwork()
@@ -85,7 +88,7 @@ public class ClientProxy implements IProxy
         rendererHose = new RendererHose();
         MinecraftForgeClient.registerItemRenderer(ModItems.hose, rendererHose);
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCampFire.class, new RendererCampFire());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileCampfire.class, new RendererCampFire());
 
         renderInflatableBoat = new RendererInflatableBoat();
         RenderingRegistry.registerEntityRenderingHandler(EntityInflatableBoat.class, renderInflatableBoat);

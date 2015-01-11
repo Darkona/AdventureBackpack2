@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.client.gui;
 
 import codechicken.lib.render.TextureUtils;
 import com.darkona.adventurebackpack.common.BackpackProperty;
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
@@ -15,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,6 +28,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -50,6 +53,7 @@ public class GuiOverlayBackpack extends Gui
         // We need this to invoke the render engine.
         this.mc = mc;
         this.itemRender.renderWithColor = false;
+        this.fontRendererObj = mc.fontRenderer;
     }
 
     private static final int BUFF_ICON_SIZE = 18;
@@ -147,6 +151,20 @@ public class GuiOverlayBackpack extends Gui
                     drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight);
                     //Right Tank
                     drawTexturedModalRect(xStart[1], yStart[0], u[1], v[1], textureWidth, textureHeight);
+                   // GL11.glDisable(GL11.GL_BLEND);
+
+                    RenderHelper.enableStandardItemLighting();
+                    RenderHelper.enableGUIStandardItemLighting();
+                   // drawItemStack(inv.getStackInSlot(Constants.upperTool), xStart [1] + textureWidth + 2, yStart[0]-16);
+                    //drawItemStack(inv.getStackInSlot(Constants.lowerTool), xStart [1] + textureWidth + 2, yStart[0]);
+                    GL11.glPushMatrix();
+                    GL11.glTranslatef(xStart[1]+textureWidth+2,yStart[0],0);
+                    GL11.glScalef(0.5f,0.5f,0.5f);
+                    drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
+                    drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);
+                    GL11.glPopMatrix();
+                    RenderHelper.disableStandardItemLighting();
+                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                     GL11.glDisable(GL11.GL_BLEND);
                 }
             }
@@ -186,5 +204,18 @@ public class GuiOverlayBackpack extends Gui
                 LogHelper.error("Exception while trying to render the fluid in the GUI");
             }
         }
+    }
+
+    private void drawItemStack(ItemStack stack, int x, int y)
+    {
+        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
+        this.zLevel = 200.0F;
+        itemRender.zLevel = 200.0F;
+        FontRenderer font = null;
+        if (stack != null) font = stack.getItem().getFontRenderer(stack);
+        if (font == null) font = fontRendererObj;
+        itemRender.renderItemIntoGUI(font,mc.getTextureManager(),stack,x,y);
+        this.zLevel = 0.0F;
+        itemRender.zLevel = 0.0F;
     }
 }

@@ -193,8 +193,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
 
             if (status == HOVER_MODE)
             {
-                fuelConsumption++;
-                player.motionY = 0;
+                fuelConsumption+=5;
+                player.motionY *= 0.00625;
                 player.fallDistance = 0;
                 if (player.isSneaking())
                 {

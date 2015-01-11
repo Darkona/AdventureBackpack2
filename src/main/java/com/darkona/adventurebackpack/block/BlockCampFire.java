@@ -62,7 +62,7 @@ public class BlockCampFire extends BlockContainer
     @Override
     public TileEntity createNewTileEntity(World world, int p_149915_2_)
     {
-        return new TileCampFire();
+        return new TileCampfire();
     }
 
     @Override
@@ -132,7 +132,7 @@ public class BlockCampFire extends BlockContainer
     @Override
     public TileEntity createTileEntity(World world, int metadata)
     {
-        return new TileCampFire();
+        return new TileCampfire();
     }
 
     @Override
