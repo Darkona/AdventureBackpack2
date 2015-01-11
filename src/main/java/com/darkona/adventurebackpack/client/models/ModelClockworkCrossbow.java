@@ -235,7 +235,7 @@ public class ModelClockworkCrossbow extends ModelBase
         }
         if(xbow != null && xbow.hasTagCompound() && xbow.stackTagCompound.hasKey("Pulled"))
         {
-            if(xbow.stackTagCompound.getInteger("Pulled") <= 0)
+            if(!(xbow.stackTagCompound.getByte("Shot")>0))
             {
                 setRotateAngle(stringLeft, 1.5707963267948966F, 0.0F, 0.0F);
                 setRotateAngle(stringRight, -1.5707963267948966F, 0.0F, 0.0F);

@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.client.audio;
 
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 public class CopterPackSound extends MovingSound
 {
 
-    public EntityPlayer player;
+    public EntityPlayer thePlayer;
     private boolean repeat;
     private CopterPackSound myself;
     protected float pitch;
@@ -32,28 +33,29 @@ public class CopterPackSound extends MovingSound
     public CopterPackSound(EntityPlayer player)
     {
         super(new ResourceLocation(ModInfo.MOD_ID, "helicopter"));
-        this.volume = 0.0f;
-        this.pitch = 1.0F;
-        this.player = player;
-        this.repeat = true;
+        volume = 0.8f;
+        pitch = 1.0F;
+        thePlayer = player;
+        repeat = true;
+        LogHelper.info("Sound Created");
     }
 
+    public void setRepeat(boolean newRepeat){
+        LogHelper.info("Setting sound repeat");
+        repeat = newRepeat;
+    }
     public void setDonePlaying()
     {
         this.donePlaying = true;
     }
-
+    long messagetime = 0;
     @Override
     public void update()
     {
-        if (player.isDead || !Wearing.isWearingCopter(player))
-        {
-            setDonePlaying();
-            return;
-        }
-        ItemStack copter = Wearing.getWearingCopter(player);
+        ItemStack copter = Wearing.getWearingCopter(thePlayer);
         byte status = 0;
-        if (copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
+        if(thePlayer == null)setDonePlaying();
+        if (copter != null&& copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
         {
             status = copter.getTagCompound().getByte("status");
             if (status == ItemCopterPack.OFF_MODE)
@@ -63,23 +65,19 @@ public class CopterPackSound extends MovingSound
                 volume = 0.8F;
                 if(status == ItemCopterPack.HOVER_MODE)
                 {
-                    pitch = (player.motionY == 0) ? 1.0f : (player.motionY > 0) ? 1.2f : 0.8f;
+                    pitch = (thePlayer.motionY == 0) ? 1.0f : (thePlayer.motionY > 0) ? 1.2f : 0.8f;
                 }
                 else
                 {
-                    pitch = (player.onGround || player.motionY == 0) ?  1.0f : (player.motionY > 0) ? 1.2f : 0.8f;
+                    pitch = (thePlayer.onGround || thePlayer.motionY == 0) ?  0.8f : (thePlayer.isSneaking()) ? 0.8f : (thePlayer.motionY > 0) ? 1.2f : 1.0F;
                 }
             }
         }else{
             volume = 0.0F;
         }
-
-
-
-
-        this.xPosF = (float) this.player.posX;
-        this.yPosF = (float) this.player.posY;
-        this.zPosF = (float) this.player.posZ;
+        xPosF = (float)thePlayer.posX;
+        yPosF = (float)thePlayer.posY;
+        zPosF = (float)thePlayer.posZ;
     }
 
     @Override

@@ -6,6 +6,8 @@ import com.darkona.adventurebackpack.client.audio.NyanMovingSound;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
 import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
+import com.darkona.adventurebackpack.proxy.ClientProxy;
+import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -52,13 +54,25 @@ public class ClientActions
             case PlayerSoundPacket.COPTER_SOUND:
                 if (ConfigHandler.ALLOW_COPTER_SOUND)
                 {
-                    CopterPackSound tucutucu = new CopterPackSound(player);
-                    Minecraft.getMinecraft().getSoundHandler().playSound(tucutucu);
+                    CopterPackSound tucutucu;
+                    if(ClientProxy.getCopterSound(player)!=null)
+                    {
+                        LogHelper.info("Retrieving sound");
+                        tucutucu = (CopterPackSound)ClientProxy.getCopterSound(player);
+                        if(!snd.isSoundPlaying(tucutucu))
+                        snd.playSound(tucutucu);
+                    }else
+                    {
+                        LogHelper.info("Creating sound");
+                        tucutucu = new CopterPackSound(player);
+                        ClientProxy.putCopterSound(player, tucutucu);
+                    }
+                    snd.playSound(tucutucu);
                 }
                 break;
             case PlayerSoundPacket.NYAN_SOUND:
                 NyanMovingSound nyaaan = new NyanMovingSound(player);
-                Minecraft.getMinecraft().getSoundHandler().playSound(nyaaan);
+                    snd.playSound(nyaaan);
 
                 break;
         }

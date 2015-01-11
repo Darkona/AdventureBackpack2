@@ -9,7 +9,6 @@ import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -251,7 +250,6 @@ public class GuiAdvBackpack extends GuiWithTanks
                 if(equipButton.inButton(this,mouseX,mouseY))
                 {
                     ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
-                    LogHelper.info("Sending packet with force of: " + Keyboard.isKeyDown(sneakKey) + " Keycode: " + sneakKey);
                     player.closeScreen();
                 }
 

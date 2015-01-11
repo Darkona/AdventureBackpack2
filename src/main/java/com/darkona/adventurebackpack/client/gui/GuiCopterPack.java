@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.client.gui;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.CopterContainer;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
@@ -81,8 +82,8 @@ public class GuiCopterPack extends GuiWithTanks
         fuelTank.draw(this, fuel);
         FluidStack fuelStack = fuel.getFluid();
         GL11.glPushMatrix();
-        String name = (fuel != null) ? fuelStack.getLocalizedName() : "None";
-        String amount = (fuel != null ? fuelStack.amount : "Empty").toString();
+        String name = (fuelStack != null) ? fuelStack.getLocalizedName() : "None";
+        String amount = (fuelStack != null ? fuelStack.amount : "Empty").toString();
         String capacity = Integer.toString(inventory.getFuelTank().getCapacity());
         int offsetY = 8;
         int offsetX = 83;
@@ -130,5 +131,15 @@ public class GuiCopterPack extends GuiWithTanks
             }
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    protected void keyTyped(char key, int keycode)
+    {
+        if (keycode == Keybindings.openBackpack.getKeyCode())
+        {
+            player.closeScreen();
+        }
+        super.keyTyped(key, keycode);
     }
 }
