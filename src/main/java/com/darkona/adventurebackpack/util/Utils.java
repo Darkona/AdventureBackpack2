@@ -297,15 +297,15 @@ public class Utils
 
     private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
-        //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
+        LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
         if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X,Y+1,Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
         {
-            //LogHelper.info("Found spot with the exception of the death point");
+            LogHelper.info("Found spot with the exception of the origin point");
             return new ChunkCoordinates(X, Y, Z);
         }
         if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z)&& world.isAirBlock(X,Y+1,Z))
         {
-            //LogHelper.info("Found spot without exceptions");
+            LogHelper.info("Found spot without exceptions");
             return new ChunkCoordinates(X, Y, Z);
         }
         return null;
@@ -314,16 +314,16 @@ public class Utils
     /**
      * Gets you the nearest Empty Chunk Coordinates, free of charge! Looks in two dimensions and finds a block
      * that a: can have stuff placed on it and b: has space above it.
-     *
+     * This is a spiral search, will begin at close range and move out.
      * @param world  The world object.
      * @param origX  Original X coordinate
      * @param origZ  Original Z coordinate
      * @param X
      * @param Y
      * @param Z      The coordinates of the central point of the search.
-     * @param radius The radius of the search. If set to higher numbers, will create a ton of lag
-     * @param except Wheter or not to include the origin of the search as a valid block.
-     * @param steps  number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
+     * @param radius The radius of the search. If set to high numbers, will create a ton of lag
+     * @param except Wether to include the origin of the search as a valid block.
+     * @param steps  Number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
      * @param pass   Pass switch for the witchcraft I can't quite explain. Set to 0 always at the beggining.
      * @param type   True = for player, False = for backpack
      * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
@@ -333,7 +333,7 @@ public class Utils
         //Spiral search, because I'm awesome :)
         //This is so the backpack tries to get placed near the death point first
         //And then goes looking farther away at each step
-        // Steps mod 2 == 0 => X++, Z--
+        //Steps mod 2 == 0 => X++, Z--
         //Steps mod 2 == 1 => X--, Z++
 
         //

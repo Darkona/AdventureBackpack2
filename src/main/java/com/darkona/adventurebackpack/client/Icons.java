@@ -14,4 +14,6 @@ public class Icons
 
     public static IIcon melonJuiceFlowing;
     public static IIcon melonJuiceStill;
+    public static IIcon mushRoomStewStill;
+    public static IIcon mushRoomStewFlowing;
 }

@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.proxy;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 /**
  * Created on 14/10/2014
  *
@@ -14,5 +16,6 @@ public interface IProxy
 
     void initNetwork();
 
+    public void joinPlayer(EntityPlayer player);
 
 }

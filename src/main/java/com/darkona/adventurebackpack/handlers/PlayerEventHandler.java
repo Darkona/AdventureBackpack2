@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -19,6 +20,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.passive.EntityHorse;
@@ -92,6 +94,20 @@ public class PlayerEventHandler
         {
             event.setCanceled(true);
         }
+
+        if(!ConfigHandler.FIX_LEAD)return;
+        if(event.entityLiving instanceof EntityCreature)
+        {
+            EntityCreature creature = (EntityCreature)event.entityLiving;
+            if(creature.getLeashed() && creature.getLeashedToEntity() != null &&  creature.getLeashedToEntity() instanceof EntityPlayer)
+            {
+                EntityPlayer player = (EntityPlayer)creature.getLeashedToEntity();
+                if(creature.motionY > -2.0f && player.motionY > -2.0f)
+                {
+                    event.setCanceled(true);
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -100,22 +116,7 @@ public class PlayerEventHandler
         if (event.entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) event.entity;
-
-            NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getCommandSenderName());
-            if (playerData != null)
-            {
-                BackpackProperty.get(player).loadNBTData(playerData);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void playerSpawns(PlayerEvent.PlayerRespawnEvent event)
-    {
-        if(!event.player.worldObj.isRemote)
-        {
-            ChunkCoordinates bedLocation = event.player.getBedLocation(event.player.dimension);
-            LogHelper.info("PlayerRespawnEvent: Player respawn coordinates are " + ((bedLocation != null) ? LogHelper.print3DCoords( bedLocation) : "null."));
+            AdventureBackpack.proxy.joinPlayer(player);
         }
     }
 
@@ -125,19 +126,22 @@ public class PlayerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerDies(LivingDeathEvent event)
     {
-
         if (event.entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) event.entity;
 
-            if (Wearing.isWearingBackpack(player))
-            {
-                ((IBackWearableItem)BackpackProperty.get(player).getWearable().getItem()).onPlayerDeath(player.worldObj,player,Wearing.getWearingBackpack(player));
-            }
 
             if (!player.worldObj.isRemote)
             {
-                if(BackpackProperty.get(player).isForceCampFire())
+                LogHelper.info("Player died");
+                BackpackProperty props = BackpackProperty.get(player);
+                if (props.getWearable()!=null)
+                {
+                    ItemStack wearable = BackpackProperty.get(player).getWearable();
+                    LogHelper.info("Executing death protocol.");
+                    ((IBackWearableItem)wearable.getItem()).onPlayerDeath(player.worldObj,player,wearable);
+                }
+                if(props.isForceCampFire())
                 {
                     ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
                     if(lastCampFire != null)
@@ -148,7 +152,7 @@ public class PlayerEventHandler
                 BackpackProperty.get(player).saveNBTData(playerData);
                 ServerProxy.storePlayerProps(player.getCommandSenderName(), playerData);
 
-                LogHelper.info("Player " + player.getCommandSenderName() +  " just died, bedLocation is" + ((player.getBedLocation(player.dimension)!=null ) ? LogHelper.print3DCoords(player.getBedLocation(player.dimension)): "null"));
+                //LogHelper.info("Player " + player.getCommandSenderName() +  " just died, bedLocation is" + ((player.getBedLocation(player.dimension)!=null ) ? LogHelper.print3DCoords(player.getBedLocation(player.dimension)): "null"));
             }
         }
 
@@ -161,7 +165,7 @@ public class PlayerEventHandler
         if (event.crafting.getItem() == ModItems.adventureBackpack)
         {
             LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + event.crafting.getTagCompound().getString("colorName"));
-            if (event.crafting.getTagCompound().getString("colorName").equals("Dragon"))
+            if (BackpackNames.getBackpackColorName(event.crafting).equals("Dragon"))
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);
                 event.player.playSound("mob.enderdragon.growl", 1.0f, 5.0f);
@@ -249,7 +253,7 @@ public class PlayerEventHandler
                 BackpackProperty.get(event.player).saveNBTData(props);
                 ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(props), (EntityPlayerMP)event.player);
             }
-            if(event.type == TickEvent.Type.PLAYER && event.phase == TickEvent.Phase.END)
+            if(event.phase == TickEvent.Phase.END)
             {
                 ItemStack backpack = BackpackProperty.get(event.player).getWearable();
                 if(backpack != null && backpack.getItem() instanceof IBackWearableItem)

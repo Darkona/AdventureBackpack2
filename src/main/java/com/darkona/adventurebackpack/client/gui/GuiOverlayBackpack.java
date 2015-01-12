@@ -208,11 +208,12 @@ public class GuiOverlayBackpack extends Gui
 
     private void drawItemStack(ItemStack stack, int x, int y)
     {
+        if(stack == null)return;
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
         FontRenderer font = null;
-        if (stack != null) font = stack.getItem().getFontRenderer(stack);
+        font = stack.getItem().getFontRenderer(stack);
         if (font == null) font = fontRendererObj;
         itemRender.renderItemIntoGUI(font,mc.getTextureManager(),stack,x,y);
         this.zLevel = 0.0F;

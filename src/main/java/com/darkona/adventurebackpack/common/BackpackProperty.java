@@ -45,7 +45,6 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public static void register(EntityPlayer player)
     {
-
         player.registerExtendedProperties(PROPERTY_NAME, new BackpackProperty(player));
     }
 

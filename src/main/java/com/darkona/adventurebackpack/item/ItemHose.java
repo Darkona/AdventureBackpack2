@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
@@ -433,16 +434,30 @@ public class ItemHose extends ItemAB
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
     {
         ItemStack backpack = Wearing.getWearingBackpack(player);
-        if (entity instanceof EntityCow && backpack != null)
+        if(backpack != null)
         {
-            InventoryBackpack inventory = new InventoryBackpack(backpack);
-            FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
-            tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
-            inventory.saveChanges();
+            if (entity instanceof EntityCow && !(entity instanceof EntityMooshroom))
+            {
+                InventoryBackpack inventory = new InventoryBackpack(backpack);
+                FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
+                tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
+                inventory.saveChanges();
 
-            ((EntityCow) entity).faceEntity(player, 0.1f, 0.1f);
-            return true;
+                ((EntityCow) entity).faceEntity(player, 0.1f, 0.1f);
+                return true;
+            }
+            if (entity instanceof EntityMooshroom)
+            {
+                InventoryBackpack inventory = new InventoryBackpack(backpack);
+                FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
+                tank.fill(new FluidStack(ModFluids.mushroomStew, Constants.bucket), true);
+                inventory.saveChanges();
+
+                ((EntityMooshroom) entity).faceEntity(player, 0.1f, 0.1f);
+                return true;
+            }
         }
+
         return false;
     }
 

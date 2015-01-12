@@ -6,7 +6,6 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.BackpackProperty;
-import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
@@ -16,7 +15,7 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Wearing;
+import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -28,10 +27,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
@@ -219,7 +220,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
     {
-        return super.onDroppedByPlayer(stack, player);
+        return true;
     }
 
     @SideOnly(Side.CLIENT)
@@ -290,9 +291,13 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
+
         if (!ConfigHandler.BACKPACK_ABILITIES) return;
         if (world == null || player == null || stack == null) return;
-
+        if (player.isDead){
+            onPlayerDeath(world, player, stack);
+            return;
+        }
         if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
         {
             BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
@@ -302,16 +307,31 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-
-        if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
+        if (BackpackNames.getBackpackColorName(stack).equals("Creeper"))
         {
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
         }
-        if (!ServerActions.tryPlaceOnDeath(player))
+        if (!tryPlace(world, player,stack))
         {
-            onDroppedByPlayer(stack, player);
+            player.dropPlayerItemWithRandomChoice(stack,false);
             BackpackProperty.get(player).setWearable(null);
         }
+
+    }
+
+    private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
+    {
+        for (int i = ((int) player.posY - 7); i <= ((int) player.posY + 7); i++)
+        {
+            ChunkCoordinates spawn =
+                    Utils.getNearestEmptyChunkCoordinates(world, (int) player.posX, (int) player.posZ, (int) player.posX, i, (int) player.posZ, 12, false, 1, (byte) 0, false);
+
+            if (spawn != null)
+            {
+                return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
+            }
+        }
+        return false;
     }
 
     @Override

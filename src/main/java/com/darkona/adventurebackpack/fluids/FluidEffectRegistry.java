@@ -1,10 +1,7 @@
 package com.darkona.adventurebackpack.fluids;
 
 import com.darkona.adventurebackpack.api.FluidEffect;
-import com.darkona.adventurebackpack.fluids.effects.LavaEffect;
-import com.darkona.adventurebackpack.fluids.effects.MelonJuiceEffect;
-import com.darkona.adventurebackpack.fluids.effects.MilkEffect;
-import com.darkona.adventurebackpack.fluids.effects.WaterEffect;
+import com.darkona.adventurebackpack.fluids.effects.*;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -29,6 +26,7 @@ public class FluidEffectRegistry
     public static FluidEffect LAVA_EFFECT;
     public static FluidEffect MILK_EFFECT;
     public static FluidEffect MELON_EFFECT;
+    public static FluidEffect SOUP_EFFECT;
 
     private static int effectIDCounter = 0;
 
@@ -39,6 +37,7 @@ public class FluidEffectRegistry
         LAVA_EFFECT = new LavaEffect();
         MILK_EFFECT = new MilkEffect();
         MELON_EFFECT = new MelonJuiceEffect();
+        SOUP_EFFECT = new MushroomStewEffect();
     }
 
     /**

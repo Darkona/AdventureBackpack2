@@ -175,13 +175,12 @@ public class BackpackAbilities
 
     public void itemSunflower(EntityPlayer player, World world, ItemStack backpack)
     {
-
-        if(world.isDaytime())
+        if(world.isDaytime() && !world.isRemote)
         {
-            int sunTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.getTagCompound().getInteger("lastTime") - 1 : Utils.secondsToTicks(30);
+            int sunTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.stackTagCompound.getInteger("lastTime") - 1 : Utils.secondsToTicks(30);
             if( sunTime <= 0 && world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY),MathHelper.floor_double(player.posZ)))
             {
-                player.getFoodStats().addStats(1,1f);
+                player.getFoodStats().addStats(1,0.2f);
             }
             backpack.stackTagCompound.setInteger("lastTime",sunTime);
         }

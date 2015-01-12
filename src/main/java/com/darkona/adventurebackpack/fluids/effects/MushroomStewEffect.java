@@ -1,27 +1,28 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
 import com.darkona.adventurebackpack.api.FluidEffect;
+import com.darkona.adventurebackpack.init.ModFluids;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 11/01/2015
+ *
+ * @author Darkona
  */
-public class MilkEffect extends FluidEffect
+public class MushroomStewEffect extends FluidEffect
 {
-    public MilkEffect()
+    public MushroomStewEffect()
     {
-        super(FluidRegistry.getFluid("milk"), 7);
+        super(ModFluids.mushroomStew);
     }
-
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if (entity instanceof EntityPlayer)
+        if(entity instanceof EntityPlayer)
         {
-            ((EntityPlayer) entity).clearActivePotions();
+            ((EntityPlayer)entity).getFoodStats().addStats(6,0.6F);
         }
     }
 }

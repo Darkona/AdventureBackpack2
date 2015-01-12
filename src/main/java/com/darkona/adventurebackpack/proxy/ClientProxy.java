@@ -32,7 +32,7 @@ import java.util.UUID;
 public class ClientProxy implements IProxy
 {
 
-    public static HashMap<UUID,MovingSound> soundPoolCopters = new HashMap<>();
+    public static HashMap<UUID,MovingSound> soundPoolCopters = new HashMap<UUID,MovingSound>();
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;
@@ -69,6 +69,12 @@ public class ClientProxy implements IProxy
     public void initNetwork()
     {
 
+    }
+
+    @Override
+    public void joinPlayer(EntityPlayer player)
+    {
+        soundPoolCopters.remove(getCopterSound(player));
     }
 
     public void initRenderers()

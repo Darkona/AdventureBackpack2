@@ -3,13 +3,10 @@ package com.darkona.adventurebackpack.common;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CopterPacket;
-import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
@@ -79,38 +76,6 @@ public class ServerActions
             LogHelper.debug("Exception trying to cycle tools.");
             oops.printStackTrace();
         }
-    }
-
-
-    /**
-     * Tries, i stress, TRIES to place a backpack in the world. Called when the player dies what was probaby
-     * a very horrible, untimely death, maybe in lava. It looks for a block nearby to place it.
-     *
-     * @param player
-     * @return Whether or not the backpack could be placed somewhere.
-     */
-    public static boolean tryPlaceOnDeath(EntityPlayer player)
-    {
-        ItemStack backpack = Wearing.getWearingBackpack(player);
-        if (backpack != null)
-        {
-            World world = player.worldObj;
-
-            for (int i = (int) player.posY - 7; i <= player.posY + 7; i++)
-            {
-                ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinates(world, (int) player.posX, (int) player.posZ, (int) player.posX, (int) player.posY, (int) player.posZ, 12, false, 1, (byte) 0,false);
-
-                if (spawn != null)
-                {
-                    if ((ModItems.adventureBackpack).placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ,
-                            ForgeDirection.UP.ordinal(), false))
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
 

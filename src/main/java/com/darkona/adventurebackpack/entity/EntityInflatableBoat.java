@@ -63,6 +63,7 @@ public class EntityInflatableBoat extends EntityBoat
     /**
      * Called to update the entity's position/logic.
      */
+    @Override
     public void onUpdate()
     {
         if(this.ticksExisted < 35)
@@ -90,8 +91,8 @@ public class EntityInflatableBoat extends EntityBoat
 
         for (int i = 0; i < b0; ++i)
         {
-            double d1 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (double) (i + 0) / (double) b0 - 0.125D;
-            double d3 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (double) (i + 1) / (double) b0 - 0.125D;
+            double d1 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (i + 0) / b0 - 0.125D;
+            double d3 = this.boundingBox.minY + (this.boundingBox.maxY - this.boundingBox.minY) * (i + 1) / b0 - 0.125D;
             AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(this.boundingBox.minX, d1, this.boundingBox.minZ, this.boundingBox.maxX, d3, this.boundingBox.maxZ);
 
             if (this.worldObj.isAABBInMaterial(axisalignedbb, Material.water))
@@ -100,17 +101,17 @@ public class EntityInflatableBoat extends EntityBoat
             }
         }
 
-        double d10 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
+        double horizontalMotion = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         double d2;
         double d4;
         int j;
 
-        if (d10 > 0.26249999999999996D)
+        if (horizontalMotion > 0.26249999999999996D)
         {
             d2 = Math.cos((double) this.rotationYaw * Math.PI / 180.0D);
             d4 = Math.sin((double) this.rotationYaw * Math.PI / 180.0D);
 
-            for (j = 0; (double) j < 1.0D + d10 * 60.0D; ++j)
+            for (j = 0; (double) j < 1.0D + horizontalMotion * 60.0D; ++j)
             {
                 double d5 = (double) (this.rand.nextFloat() * 2.0F - 1.0F);
                 double d6 = (double) (this.rand.nextInt(2) * 2 - 1) * 0.7D;
@@ -199,7 +200,7 @@ public class EntityInflatableBoat extends EntityBoat
                 d2 = 0.35D;
             }
 
-            if (d2 > d10 && this.speedMultiplier < 0.35D)
+            if (d2 > horizontalMotion && this.speedMultiplier < 0.35D)
             {
                 this.speedMultiplier += (0.35D - this.speedMultiplier) / 35.0D;
 
@@ -324,9 +325,6 @@ public class EntityInflatableBoat extends EntityBoat
         }
     }
 
-    /**
-     * Called when the entity is attacked.
-     */
     @Override
     public boolean attackEntityFrom(DamageSource damageSource, float damage)
     {

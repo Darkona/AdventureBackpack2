@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class ItemComponent extends ItemAB
 {
-    private HashMap<String, IIcon> componentIcons = new HashMap<>();
+    private HashMap<String, IIcon> componentIcons = new HashMap<String, IIcon>();
     private String[] names = {
             "sleepingBag",
             "backpackTank",

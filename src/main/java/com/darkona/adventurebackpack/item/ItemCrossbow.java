@@ -58,9 +58,8 @@ public class ItemCrossbow extends ItemAB
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
     {
 
-        //stack.stackTagCompound.setBoolean("Shot",!(count % 5 == 0 || (count +1) %5 == 0 || (count-1)%5 == 0));
-        byte pulled = stack.stackTagCompound.getByte("Shot");
-        if(pulled > 0)stack.stackTagCompound.setByte("Shot", (byte) (pulled - 1));
+        byte shot = stack.stackTagCompound.getByte("Shot");
+        if(shot > 0)stack.stackTagCompound.setByte("Shot", (byte) (shot - 1));
         if(count % 5 == 0)
         {
             shootArrow(stack,player.worldObj,player);
@@ -78,6 +77,7 @@ public class ItemCrossbow extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
+        if(!stack.hasTagCompound())stack.setTagCompound(new NBTTagCompound());
         player.setItemInUse(stack,getMaxItemUseDuration(stack));
         return stack;
     }
