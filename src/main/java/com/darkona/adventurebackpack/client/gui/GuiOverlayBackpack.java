@@ -127,7 +127,7 @@ public class GuiOverlayBackpack extends Gui
                     int textureWidth = 10;
 
                     int xPos = 2;
-                    int yPos = screenHeight - textureHeight - 2;
+                    int yPos = ((screenHeight/3)*2) - textureHeight - 2;
                     int[] xStart = {xPos,xPos + textureWidth + 1};
                     int[] yStart = {yPos,yPos};
                     int u[] = {10,10};

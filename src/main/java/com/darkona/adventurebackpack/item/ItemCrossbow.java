@@ -150,7 +150,7 @@ public class ItemCrossbow extends ItemAB
                 entityarrow.setFire(100);
             }
 
-            world.playSoundAtEntity(player, "adventurebackpack:crossbowshot", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+            world.playSoundAtEntity(player, "adventurebackpack:crossbowshot", 0.5F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
             if (flag)
             {
