@@ -97,7 +97,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     public void loadNBTData(NBTTagCompound compound)
     {
         if(compound==null)return;
-        if(compound.hasKey("backpack"))backpack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("backpack"));
+        backpack = (compound.hasKey("backpack")) ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("backpack")) : null;
         campFire = new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ"));
         dimension = compound.getInteger("compFireDim");
     }

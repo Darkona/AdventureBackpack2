@@ -38,51 +38,48 @@ public class RendererHose implements IItemRenderer
     @Override
     public void renderItem(ItemRenderType type, ItemStack hose, Object... data)
     {
-        fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        switch (type)
+
+        if (type == ItemRenderType.INVENTORY)
         {
-            case INVENTORY:
+            // ====================Render the item===================== //
+            GL11.glColor4f(1, 1, 1, 1);
+            IIcon icon = hose.getItem().getIcon(hose, 0);
+            renderHose.renderIcon(0, 0, icon, 16, 16);
+            fontRenderer = Minecraft.getMinecraft().fontRenderer;
 
-                // ====================Render the item===================== //
-                IIcon icon = hose.getItem().getIcon(hose, 1);
-
-                if (hose.hasTagCompound())
+            if (hose.hasTagCompound())
+            {
+                String amount = Integer.toString(hose.getTagCompound().getInteger("amount"));
+                String name = hose.getTagCompound().getString("fluid");
+                String mode;
+                switch (hose.getTagCompound().getInteger("mode"))
                 {
-                    String amount = Integer.toString(hose.getTagCompound().getInteger("amount"));
-                    String name = hose.getTagCompound().getString("fluid");
-                    String mode;
-                    switch (hose.getTagCompound().getInteger("mode"))
-                    {
-                        case 0:
-                            mode = "Suck";
-                            break;
-                        case 1:
-                            mode = "Spill";
-                            break;
-                        case 2:
-                            mode = "Drink";
-                            break;
-                        default:
-                            mode = "Useless";
-                            break;
-                    }
-                    renderHose.renderIcon(0, 0, icon, 16, 16);
-                    if(ConfigHandler.TANKS_OVERLAY)
-                    {
-                        GL11.glPushMatrix();
-                        GL11.glScalef(0.5f, 0.5f, 0.5f);
-                        if (fontRenderer != null)
-                        {
-                            fontRenderer.drawString(mode, 0, 0, 0xFFFFFF);
-                            fontRenderer.drawString(amount, 0, 18, 0xFFFFFF);
-                            fontRenderer.drawString(name, 0, 24, 0xFFFFFF);
-                        }
-                        GL11.glPopMatrix();
-                    }
-                    break;
-
+                    case 0:
+                        mode = "Suck";
+                        break;
+                    case 1:
+                        mode = "Spill";
+                        break;
+                    case 2:
+                        mode = "Drink";
+                        break;
+                    default:
+                        mode = "Useless";
+                        break;
                 }
+                GL11.glPushMatrix();
+                GL11.glScalef(0.5f, 0.5f, 0.5f);
+                if (fontRenderer != null)
+                {
+                    fontRenderer.drawString(mode, 0, 0, 0xFFFFFF);
+                    if (!ConfigHandler.TANKS_OVERLAY)
+                    {
+                        fontRenderer.drawString(amount, 0, 18, 0xFFFFFF);
+                        fontRenderer.drawString(name, 0, 24, 0xFFFFFF);
+                    }
+                }
+                GL11.glPopMatrix();
+            }
         }
     }
-
 }

@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.client.audio.CopterPackSound;
 import com.darkona.adventurebackpack.client.gui.GuiOverlayBackpack;
 import com.darkona.adventurebackpack.client.render.*;
 import com.darkona.adventurebackpack.common.BackpackProperty;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
@@ -99,8 +100,11 @@ public class ClientProxy implements IProxy
         rendererItemAdventureHat = new RendererItemAdventureHat();
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, rendererItemAdventureHat);
 
-        rendererHose = new RendererHose();
-        MinecraftForgeClient.registerItemRenderer(ModItems.hose, rendererHose);
+        if(!ConfigHandler.TANKS_OVERLAY)
+        {
+            rendererHose = new RendererHose();
+            MinecraftForgeClient.registerItemRenderer(ModItems.hose, rendererHose);
+        }
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileCampfire.class, new RendererCampFire());
 

@@ -36,8 +36,9 @@ import net.minecraftforge.fluids.*;
 public class ItemHose extends ItemAB
 {
 
-    IIcon leftIcon;
-    IIcon rightIcon;
+    IIcon drinkIcon;
+    IIcon spillIcon;
+    IIcon suckIcon;
     final byte HOSE_SUCK_MODE = 0;
     final byte HOSE_SPILL_MODE = 1;
     final byte HOSE_DRINK_MODE = 2;
@@ -59,10 +60,17 @@ public class ItemHose extends ItemAB
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int pass)
     {
-        if (stack.getTagCompound() == null || stack.getTagCompound().getInteger("tank") == -1) return itemIcon;
-        return
-                stack.getTagCompound().getInteger("tank") == 0 ? leftIcon : rightIcon;
-
+       switch(getHoseMode(stack))
+       {
+           case HOSE_SUCK_MODE:
+               return suckIcon;
+           case HOSE_SPILL_MODE:
+               return spillIcon;
+           case HOSE_DRINK_MODE:
+               return drinkIcon;
+           default:
+               return itemIcon;
+       }
     }
 
     @Override
@@ -133,8 +141,9 @@ public class ItemHose extends ItemAB
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister)
     {
-        leftIcon = iconRegister.registerIcon(Resources.getIconString("hoseLeft"));
-        rightIcon = iconRegister.registerIcon(Resources.getIconString("hoseRight"));
+        drinkIcon = iconRegister.registerIcon(Resources.getIconString("hoseDrink"));
+        spillIcon = iconRegister.registerIcon(Resources.getIconString("hoseSpill"));
+        suckIcon = iconRegister.registerIcon(Resources.getIconString("hoseSuck"));
         itemIcon = iconRegister.registerIcon(Resources.getIconString("hoseLeft"));
     }
     // ================================================ ACTIONS  =====================================================//
