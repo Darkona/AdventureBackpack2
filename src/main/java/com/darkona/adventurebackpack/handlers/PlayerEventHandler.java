@@ -114,27 +114,42 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void onFall(LivingFallEvent event)
     {
-        if (event.entity != null &&
-                event.entityLiving instanceof EntityPlayer &&
-                Wearing.isWearingBoots(((EntityPlayer) event.entityLiving)) &&
-                event.distance < 8)
+        if (event.entity != null)
         {
-            event.setCanceled(true);
-        }
-
-        if(!ConfigHandler.FIX_LEAD)return;
-        if(event.entityLiving instanceof EntityCreature)
-        {
-            EntityCreature creature = (EntityCreature)event.entityLiving;
-            if(creature.getLeashed() && creature.getLeashedToEntity() != null &&  creature.getLeashedToEntity() instanceof EntityPlayer)
+            if(event.entityLiving instanceof EntityCreature && ConfigHandler.FIX_LEAD)
             {
-                EntityPlayer player = (EntityPlayer)creature.getLeashedToEntity();
-                if(creature.motionY > -2.0f && player.motionY > -2.0f)
+                EntityCreature creature = (EntityCreature)event.entityLiving;
+                if(creature.getLeashed() && creature.getLeashedToEntity() != null &&  creature.getLeashedToEntity() instanceof EntityPlayer)
+                {
+                    EntityPlayer player = (EntityPlayer)creature.getLeashedToEntity();
+                    if(creature.motionY > -2.0f && player.motionY > -2.0f)
+                    {
+                        event.setCanceled(true);
+                    }
+                }
+            }
+
+            if(event.entityLiving instanceof EntityFriendlySpider)
+            {
+                if(((EntityFriendlySpider) event.entityLiving).riddenByEntity != null
+                        && ((EntityFriendlySpider) event.entityLiving).riddenByEntity instanceof EntityPlayer
+                        && event.distance < 5)
                 {
                     event.setCanceled(true);
                 }
             }
+
+            if(event.entityLiving instanceof EntityPlayer &&
+                    Wearing.isWearingBoots(((EntityPlayer) event.entityLiving)) &&
+                    event.distance < 8)
+            {
+                event.setCanceled(true);
+            }
         }
+
+
+
+
     }
 
 

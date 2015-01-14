@@ -3,10 +3,7 @@ package com.darkona.adventurebackpack.entity;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWander;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -31,6 +28,7 @@ public class EntityFriendlySpider extends EntityCreature
     private int jumpTicks;
     private EntityPlayer owner;
     private boolean tamed = false;
+    private final EntityAIControlledByPlayer aiControlledByPlayer;
 
     @Override
     protected void entityInit() {
@@ -43,7 +41,7 @@ public class EntityFriendlySpider extends EntityCreature
     {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.225D);
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.15D);
         this.getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(40.0D);
     }
 
@@ -51,6 +49,7 @@ public class EntityFriendlySpider extends EntityCreature
         super(world);
         this.setSize(1.4F, 0.9F);
         this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(2, this.aiControlledByPlayer = new EntityAIControlledByPlayer(this, 0.3F));
         this.tasks.addTask(6, new EntityAIWander(this, 0.7D));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -375,7 +374,7 @@ public class EntityFriendlySpider extends EntityCreature
         {
             this.jumpTicks = 0;
         }
-
+        this.setJumping(false);
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.startSection("travel");
         this.moveStrafing *= 0.98F;
@@ -479,7 +478,7 @@ public class EntityFriendlySpider extends EntityCreature
     public void spiderJump()
     {
         this.getJumpHelper().setJumping();
-        this.getJumpHelper().doJump();
+        //this.getJumpHelper().doJump();
     }
 
     public static class GroupData implements IEntityLivingData
