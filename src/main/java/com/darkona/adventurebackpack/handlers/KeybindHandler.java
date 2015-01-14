@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CopterPacket;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import com.darkona.adventurebackpack.reference.Key;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -49,6 +50,7 @@ public class KeybindHandler
         {
             if (player != null && mc.inGameHasFocus)
             {
+                ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
                 if (Wearing.isWearingBackpack(player))
                 {
                     ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));

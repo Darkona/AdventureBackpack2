@@ -22,7 +22,7 @@ public class ModNetwork
     {
         net = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_CHANNEL);
 
-        registerClientSide(SyncPropertiesPacket.class, SyncPropertiesPacket.Message.class);
+        registerMessage(SyncPropertiesPacket.class, SyncPropertiesPacket.Message.class);
         registerMessage(PlayerParticlePacket.class, PlayerParticlePacket.Message.class);
         registerMessage(PlayerSoundPacket.class, PlayerSoundPacket.Message.class);
 
@@ -33,8 +33,6 @@ public class ModNetwork
         registerMessage(CowAbilityPacket.class, CowAbilityPacket.CowAbilityMessage.class);
         registerMessage(JumpPacket.class, JumpPacket.JumpMessage.class);
         registerMessage(EquipUnequipBackWearablePacket.class, EquipUnequipBackWearablePacket.Message.class);
-
-
 
     }
 

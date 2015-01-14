@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
@@ -8,12 +9,11 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.world.World;
 
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class BackpackContainer extends Container
+public class BackpackContainer extends Container implements IWearableContainer
 {
 
     public IAdvBackpack inventory;
@@ -23,8 +23,7 @@ public class BackpackContainer extends Container
     public byte source;
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
     public IInventory craftResult = new InventoryCraftResult();
-    private World world;
-
+    EntityPlayer player;
 
     private final int
             PLAYER_HOT_START = 0,
@@ -40,6 +39,7 @@ public class BackpackContainer extends Container
 
     public BackpackContainer(EntityPlayer player, IAdvBackpack backpack, byte source)
     {
+        this.player = player;
         inventory = backpack;
         makeSlots(player.inventory);
         inventory.openInventory();
@@ -73,9 +73,7 @@ public class BackpackContainer extends Container
 
         bindPlayerInventory(invPlayer);
 
-
         // Backpack Inventory
-
         int startX = 62;
         int startY = 7;
         int slot = 0;
@@ -135,33 +133,156 @@ public class BackpackContainer extends Container
         this.onCraftMatrixChanged(craftMatrix);
     }
 
-
-    @Override
-    public void putStacksInSlots(ItemStack[] itemStacks)
-    {
-        for (int i = 0; i < itemStacks.length; i++)
-        {
-            this.getSlot(i).putStack(itemStacks[i]);
-        }
-    }
-
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
         return inventory.isUseableByPlayer(player);
     }
 
-
     @Override
     public void onCraftMatrixChanged(IInventory par1IInventory)
     {
-        this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.world));
+        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
+    }
+
+    @Override
+    public void onContainerClosed(EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+        if (!player.worldObj.isRemote)
+        {
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
+            {
+                if (i == Constants.bucketInRight || i == Constants.bucketInLeft || i == Constants.bucketOutLeft || i == Constants.bucketOutRight)
+                {
+                    ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
+                    if (itemstack != null)
+                    {
+                        inventory.setInventorySlotContents(i, null);
+                        player.dropPlayerItemWithRandomChoice(itemstack, false);
+                    }
+                }
+            }
+
+            for (int i = 0; i < 9; ++i)
+            {
+                ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
+
+                if (itemstack != null)
+                {
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
+                }
+            }
+        }
+        if(source == 1)
+        {
+            BackpackProperty.get(player).sync();
+        }
+
+    }
+
+    @Override
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    {
+        //inventory.onInventoryChanged();
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
+        {
+            return null;
+        }
+        return super.slotClick(slot, button, flag, player);
+    }
+
+    @Override
+    protected boolean mergeItemStack(ItemStack stack, int minSlot, int maxSlot, boolean direction)
+    {
+        boolean changesMade = false;
+        int slotInit = minSlot;
+
+        if (direction)
+        {
+            slotInit = maxSlot - 1;
+        }
+
+        Slot slot;
+        ItemStack newItemStack;
+
+        if (stack.isStackable())
+        {
+            while (stack.stackSize > 0 && (!direction && slotInit < maxSlot || direction && slotInit >= minSlot))
+            {
+                slot = (Slot) this.inventorySlots.get(slotInit);
+                newItemStack = slot.getStack();
+
+                if (newItemStack != null && newItemStack.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == newItemStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, newItemStack))
+                {
+
+                    int newStackSize = newItemStack.stackSize + stack.stackSize;
+
+                    if (newStackSize <= stack.getMaxStackSize())
+                    {
+                        stack.stackSize = 0;
+                        newItemStack.stackSize = newStackSize;
+                        slot.onSlotChanged();
+                        changesMade = true;
+                    } else if (newItemStack.stackSize < stack.getMaxStackSize())
+                    {
+                        stack.stackSize -= stack.getMaxStackSize() - newItemStack.stackSize;
+                        newItemStack.stackSize = stack.getMaxStackSize();
+                        slot.onSlotChanged();
+                        changesMade = true;
+                    }
+                }
+
+                if (direction)
+                {
+                    --slotInit;
+                } else
+                {
+                    ++slotInit;
+                }
+            }
+        }
+
+        if (stack.stackSize > 0)
+        {
+            if (direction)
+            {
+                slotInit = maxSlot - 1;
+            } else
+            {
+                slotInit = minSlot;
+            }
+
+            while (!direction && slotInit < maxSlot || direction && slotInit >= minSlot)
+            {
+                slot = (Slot) this.inventorySlots.get(slotInit);
+                newItemStack = slot.getStack();
+
+                if (newItemStack == null)
+                {
+                    slot.putStack(stack.copy());
+                    slot.onSlotChanged();
+                    stack.stackSize = 0;
+                    changesMade = true;
+                    break;
+                }
+
+                if (direction)
+                {
+                    --slotInit;
+                } else
+                {
+                    ++slotInit;
+                }
+            }
+        }
+
+        return changesMade;
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
-        // TODO Fix the shit disrespecting slot accepting itemstack.
         Slot slot = getSlot(i);
         ItemStack result = null;
         if (slot != null && slot.getHasStack())
@@ -221,161 +342,18 @@ public class BackpackContainer extends Container
                 return null;
             }
             slot.onPickupFromSlot(player, stack);
-            inventory.onInventoryChanged();
+            //inventory.onInventoryChanged();
         }
         return result;
     }
 
-
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
-            {
-                if (i == Constants.bucketInRight || i == Constants.bucketInLeft || i == Constants.bucketOutLeft || i == Constants.bucketOutRight)
-                {
-                    ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                    if (itemstack != null)
-                    {
-                        inventory.setInventorySlotContents(i, null);
-                        player.dropPlayerItemWithRandomChoice(itemstack, false);
-                    }
-                }
-            }
-
-            for (int i = 0; i < 9; ++i)
-            {
-                ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
-
-                if (itemstack != null)
-                {
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-        }
-
-
-    }
-
+    /**
+     * Looks for changes made in the container, sends them to every listener.
+     */
     @Override
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
+        BackpackProperty.get(player).sync();
     }
-
-    @Override
-    public Slot getSlotFromInventory(IInventory iInventory, int index)
-    {
-        return super.getSlotFromInventory(iInventory, index);
-    }
-
-    @Override
-    protected boolean mergeItemStack(ItemStack stack, int minSlot, int maxSlot, boolean par4)
-    {
-        boolean flag1 = false;
-        int slotInit = minSlot;
-
-        if (par4)
-        {
-            slotInit = maxSlot - 1;
-        }
-
-        Slot slot;
-        ItemStack itemstack1;
-
-        if (stack.isStackable())
-        {
-            while (stack.stackSize > 0 && (!par4 && slotInit < maxSlot || par4 && slotInit >= minSlot))
-            {
-                slot = (Slot) this.inventorySlots.get(slotInit);
-                itemstack1 = slot.getStack();
-
-                if (itemstack1 != null && itemstack1.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, itemstack1))
-                {
-
-                    int newStackSize = itemstack1.stackSize + stack.stackSize;
-
-                    if (newStackSize <= stack.getMaxStackSize())
-                    {
-                        stack.stackSize = 0;
-                        itemstack1.stackSize = newStackSize;
-                        slot.onSlotChanged();
-                        flag1 = true;
-                    } else if (itemstack1.stackSize < stack.getMaxStackSize())
-                    {
-                        stack.stackSize -= stack.getMaxStackSize() - itemstack1.stackSize;
-                        itemstack1.stackSize = stack.getMaxStackSize();
-                        slot.onSlotChanged();
-                        flag1 = true;
-                    }
-                }
-
-                if (par4)
-                {
-                    --slotInit;
-                } else
-                {
-                    ++slotInit;
-                }
-            }
-        }
-
-        if (stack.stackSize > 0)
-        {
-            if (par4)
-            {
-                slotInit = maxSlot - 1;
-            } else
-            {
-                slotInit = minSlot;
-            }
-
-            while (!par4 && slotInit < maxSlot || par4 && slotInit >= minSlot)
-            {
-                slot = (Slot) this.inventorySlots.get(slotInit);
-                itemstack1 = slot.getStack();
-
-                if (itemstack1 == null)
-                {
-                    slot.putStack(stack.copy());
-                    slot.onSlotChanged();
-                    stack.stackSize = 0;
-                    flag1 = true;
-                    break;
-                }
-
-                if (par4)
-                {
-                    --slotInit;
-                } else
-                {
-                    ++slotInit;
-                }
-            }
-        }
-
-        return flag1;
-    }
-
-    @Override
-    public void putStackInSlot(int slot, ItemStack stack)
-    {
-        super.putStackInSlot(slot, stack);
-    }
-
-    @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
-    {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
-        {
-            return null;
-        }
-        inventory.onInventoryChanged();
-        return super.slotClick(slot, button, flag, player);
-    }
-
-
 }

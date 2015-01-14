@@ -2,8 +2,10 @@ package com.darkona.adventurebackpack.proxy;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileCampfire;
+import com.darkona.adventurebackpack.client.audio.CopterPackSound;
 import com.darkona.adventurebackpack.client.gui.GuiOverlayBackpack;
 import com.darkona.adventurebackpack.client.render.*;
+import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
@@ -15,9 +17,9 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -32,7 +34,7 @@ import java.util.UUID;
 public class ClientProxy implements IProxy
 {
 
-    public static HashMap<UUID,MovingSound> soundPoolCopters = new HashMap<UUID,MovingSound>();
+    public static HashMap<UUID,CopterPackSound> soundPoolCopters = new HashMap<UUID,CopterPackSound>();
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;
@@ -42,7 +44,7 @@ public class ClientProxy implements IProxy
     public static RenderRideableSpider renderRideableSpider;
     public static RendererItemClockworkCrossbow renderCrossbow;
 
-    public static void putCopterSound(EntityPlayer player, MovingSound sound)
+    public static void putCopterSound(EntityPlayer player, CopterPackSound sound)
     {
         UUID key = player.getUniqueID();
         if(!soundPoolCopters.containsKey(key))
@@ -51,9 +53,9 @@ public class ClientProxy implements IProxy
         }
     }
 
-    public static MovingSound getCopterSound(EntityPlayer player)
+    public static CopterPackSound getCopterSound(EntityPlayer player)
     {
-        return soundPoolCopters.get(player.getUniqueID());
+        return soundPoolCopters.remove(player.getUniqueID());
     }
 
 
@@ -75,6 +77,12 @@ public class ClientProxy implements IProxy
     public void joinPlayer(EntityPlayer player)
     {
         soundPoolCopters.remove(getCopterSound(player));
+    }
+
+    @Override
+    public void synchronizePlayer(EntityPlayer player, NBTTagCompound properties)
+    {
+        BackpackProperty.get(Minecraft.getMinecraft().thePlayer).loadNBTData(properties);
     }
 
     public void initRenderers()

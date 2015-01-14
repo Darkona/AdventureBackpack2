@@ -24,6 +24,8 @@ public class GuiTank
     private int width;
     private int startX;
     private int startY;
+    private int offsetX = 0;
+    private int offsetY = 0;
     private int resolution;
     private int liquidPerPixel;
     private float zLevel;
@@ -71,7 +73,7 @@ public class GuiTank
 
         tank = theFluid;
         liquidPerPixel = tank.getCapacity() / this.height;
-        this.zLevel = gui.getZLevel();
+        this.zLevel = gui.getZLevel()+1;
         switch (ConfigHandler.GUI_TANK_RENDER)
         {
             case 1:
@@ -90,6 +92,13 @@ public class GuiTank
 
     }
 
+    public void draw(GuiWithTanks gui, FluidTank theFluid, int X, int Y)
+    {
+        offsetX = X;
+        offsetY = Y;
+        draw(gui, theFluid);
+    }
+
     /**
      * @param gui
      * @param
@@ -103,8 +112,8 @@ public class GuiTank
             IIcon icon = fluid.getFluid().getStillIcon();
             int pixelsY = fluid.amount / liquidPerPixel;
             Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-            int maxY = startY + height;
-            for (int i = startX; i < startX + width; i += resolution)
+            int maxY = (startY + offsetY) + height;
+            for (int i = (startX + offsetX); i < (startX + offsetX) + width; i += resolution)
             {
                 for (int j = maxY - resolution; j >= maxY - pixelsY; j -= resolution)
                 {
@@ -129,9 +138,9 @@ public class GuiTank
             IIcon icon = fluid.getFluid().getStillIcon();
             int pixelsY = fluid.amount / liquidPerPixel;
             Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-            int top = startY + height - pixelsY;
-            int maxY = startY + height - 1;
-            for (int i = startX; i < startX + width; i += resolution)
+            int top = (startY + offsetY) + height - pixelsY;
+            int maxY = (startY + offsetY) + height - 1;
+            for (int i = (startX + offsetX); i < (startX + offsetX) + width; i += resolution)
             {
                 int iconY = 7;
                 for (int j = maxY; j >= top; j--)
@@ -159,10 +168,10 @@ public class GuiTank
             {
                 IIcon icon = fluid.getFluid().getStillIcon();
                 TextureUtils.bindAtlas(fluid.getFluid().getSpriteNumber());
-                int top = startY + height - (fluid.amount / liquidPerPixel);
-                for (int j = startY + height - 1; j >= top; j--)
+                int top = (startY + offsetY) + height - (fluid.amount / liquidPerPixel);
+                for (int j = (startY + offsetY) + height - 1; j >= top; j--)
                 {
-                    for (int i = startX; i <= startX + width - 1; i++)
+                    for (int i = (startX + offsetX); i <= (startX + offsetX) + width - 1; i++)
                     {
                         GL11.glPushMatrix();
                         if (j >= top + 5)
@@ -194,7 +203,7 @@ public class GuiTank
     {
         mouseX -= gui.getLeft();
         mouseY -= gui.getTop();
-        return startX <= mouseX && mouseX <= startX + width && startY <= mouseY && mouseY <= startY + height;
+        return startX <= mouseX && mouseX <= (startX + offsetX) + width && (startY + offsetY) <= mouseY && mouseY <= (startY + offsetY) + height;
     }
 
     /**

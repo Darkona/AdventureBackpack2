@@ -27,5 +27,16 @@ public abstract class GuiWithTanks extends GuiContainer
 
     public float getZLevel() {return zLevel;}
 
-
+    protected String getFirstWord(String text)
+    {
+        if (text.indexOf(' ') > -1)
+        { // Check if there is more than one word.
+            String firstWord = text.substring(0, text.indexOf(' '));
+            String secondWord = text.substring(text.indexOf(' ') + 1);
+            return firstWord.equals("Molten") ? secondWord : firstWord;// Extract first word.
+        } else
+        {
+            return text; // Text is the first word itself.
+        }
+    }
 }

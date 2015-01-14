@@ -8,7 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 /**
- * Created by Darkona on 11/10/2014.
+ * Created on 11/10/2014
+ * @author Darkona
+ *
  */
 public class Wearing
 {
@@ -93,7 +95,7 @@ public class Wearing
     /**
      * Will return a backpack inventory from a backpack in the slot if true, or in the hand if false.
      *
-     * @param player  the player com.darkona.adventurebackpack.entity
+     * @param player  the player 
      * @param wearing boolean flag
      * @return
      */

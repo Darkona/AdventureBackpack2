@@ -294,10 +294,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
         if (!ConfigHandler.BACKPACK_ABILITIES) return;
         if (world == null || player == null || stack == null) return;
-        if (player.isDead){
-            onPlayerDeath(world, player, stack);
-            return;
-        }
+
         if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
         {
             BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);

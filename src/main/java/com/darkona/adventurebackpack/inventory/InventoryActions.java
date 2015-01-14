@@ -28,7 +28,7 @@ public class InventoryActions
      * @param slotIn   The slot in which the fluid container item must be to update the tank.
      * @return True if the tank was filled and the resulting filled or empty container item was placed in the other slot.
      */
-    public static boolean transferContainerTank(IAdvBackpack backpack, FluidTank tank, int slotIn)
+    public static boolean transferContainerTank(IInventoryTanks backpack, FluidTank tank, int slotIn)
     {
         ItemStack stackIn = backpack.getStackInSlot(slotIn);
         if (tank == null || stackIn == null) return false;
@@ -52,7 +52,6 @@ public class InventoryActions
                     backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
                     tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
                     backpack.decrStackSizeNoSave(slotIn, 1);
-                    backpack.markDirty();
                     return true;
                 } else if (backpack.getStackInSlot(slotOut).getItem() == stackOut.getItem())
                 {
@@ -62,7 +61,6 @@ public class InventoryActions
                         backpack.getStackInSlot(slotOut).stackSize++;
                         tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
                         backpack.decrStackSizeNoSave(slotIn, 1);
-                        backpack.markDirty();
                         return true;
                     }
                 }
@@ -70,12 +68,13 @@ public class InventoryActions
         }
 
         //TANK =====> CONTAINER
+
         if (tank.getFluid() != null && tank.getFluidAmount() > 0 && FluidContainerRegistry.isEmptyContainer(stackIn))
         {
             //How much fluid can this container hold.
             int amount = FluidContainerRegistry.getContainerCapacity(tank.getFluid(), stackIn);
             //Let's see how much can we drain this tank
-            FluidStack drain = tank.drain(Constants.bucket, false);
+            FluidStack drain = tank.drain(amount, false);
 
             ItemStack stackOut = FluidContainerRegistry.fillFluidContainer(drain, stackIn);
 
@@ -83,17 +82,19 @@ public class InventoryActions
             {
                 if (backpack.getStackInSlot(slotOut) == null)
                 {
-                    backpack.decrStackSizeNoSave(slotIn, 1);
                     tank.drain(amount, true);
+                    backpack.decrStackSizeNoSave(slotIn, 1);
                     backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
                     return true;
-                } else if (stackOut.getItem() != null && stackOut.getItem() == backpack.getStackInSlot(slotOut).getItem())
+                } else
+                if (stackOut.getItem() != null
+                    && stackOut.getItem() == backpack.getStackInSlot(slotOut).getItem())
                 {
                     int maxStack = backpack.getStackInSlot(slotOut).getMaxStackSize();
                     if (maxStack > 1 && (backpack.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
                     {
-                        backpack.decrStackSizeNoSave(slotIn, 1);
                         tank.drain(amount, true);
+                        backpack.decrStackSizeNoSave(slotIn, 1);
                         backpack.getStackInSlot(slotOut).stackSize++;
                         return true;
                     }

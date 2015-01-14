@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 /**
  * Created on 13/10/2014
@@ -67,19 +66,7 @@ public class RendererHose implements IItemRenderer
                             mode = "Useless";
                             break;
                     }
-                   // RenderHelper.enableStandardItemLighting();
-                   // RenderHelper.enableGUIStandardItemLighting();
-
-                    GL11.glDisable(GL11.GL_LIGHTING); //Forge: Make sure that render states are reset, a renderEffect can derp them up.
-                    GL11.glEnable(GL11.GL_ALPHA_TEST);
-                    GL11.glEnable(GL11.GL_BLEND);
-                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                    //GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.0F);
                     renderHose.renderIcon(0, 0, icon, 16, 16);
-                    GL11.glEnable(GL11.GL_LIGHTING);
-                    GL11.glDisable(GL11.GL_ALPHA_TEST);
-                    GL11.glDisable(GL11.GL_BLEND);
-
                     if(ConfigHandler.TANKS_OVERLAY)
                     {
                         GL11.glPushMatrix();
@@ -92,8 +79,6 @@ public class RendererHose implements IItemRenderer
                         }
                         GL11.glPopMatrix();
                     }
-                    //RenderHelper.disableStandardItemLighting();
-                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                     break;
 
                 }

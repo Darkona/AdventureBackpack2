@@ -1,14 +1,13 @@
 package com.darkona.adventurebackpack.proxy;
 
 import com.darkona.adventurebackpack.common.BackpackProperty;
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
+import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created on 22/12/2014
@@ -17,7 +16,7 @@ import java.util.Map;
  */
 public class ServerProxy implements IProxy
 {
-    private static final Map<String, NBTTagCompound> extendedEntityData = new HashMap<String, NBTTagCompound>();
+    private static final Map<UUID, NBTTagCompound> extendedEntityData = new HashMap<UUID, NBTTagCompound>();
 
     @Override
     public void init()
@@ -40,22 +39,29 @@ public class ServerProxy implements IProxy
     @Override
     public void joinPlayer(EntityPlayer player)
     {
-        NBTTagCompound playerData = extractPlayerProps(player.getCommandSenderName());
+        NBTTagCompound playerData = extractPlayerProps(player.getUniqueID());
         if (playerData != null)
         {
             BackpackProperty.get(player).loadNBTData(playerData);
-            ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(playerData), (EntityPlayerMP)player);
+            BackpackProperty.get(player).sync();
         }
     }
 
-    public static void storePlayerProps(String name, NBTTagCompound compound)
+    @Override
+    public void synchronizePlayer(EntityPlayer player, NBTTagCompound compound)
     {
-        extendedEntityData.put(name, compound);
+        LogHelper.info("Sending synchronization message");
+
+    }
+
+    public static void storePlayerProps(UUID playerID, NBTTagCompound compound)
+    {
+        extendedEntityData.put(playerID, compound);
     }
 
 
-    public static NBTTagCompound extractPlayerProps(String name)
+    public static NBTTagCompound extractPlayerProps(UUID playerID)
     {
-        return extendedEntityData.remove(name);
+        return extendedEntityData.remove(playerID);
     }
 }

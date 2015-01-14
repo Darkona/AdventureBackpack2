@@ -5,7 +5,6 @@ import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 /**
@@ -18,7 +17,6 @@ public class RenderHandler
     @SubscribeEvent
     public void playerSpecialsRendering(RenderPlayerEvent.Specials.Pre event)
     {
-
         if (Wearing.isWearingWearable(event.entityPlayer))
         {
             float rotationY = event.renderer.modelBipedMain.bipedBody.rotateAngleY;

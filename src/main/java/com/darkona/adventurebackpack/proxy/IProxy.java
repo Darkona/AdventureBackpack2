@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.proxy;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created on 14/10/2014
@@ -18,4 +19,5 @@ public interface IProxy
 
     public void joinPlayer(EntityPlayer player);
 
+    public void synchronizePlayer(EntityPlayer player, NBTTagCompound compound);
 }

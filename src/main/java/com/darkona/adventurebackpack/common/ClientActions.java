@@ -11,10 +11,8 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created on 11/10/2014
@@ -48,26 +46,33 @@ public class ClientActions
     public static void playSoundAtPlayer(EntityPlayer player, byte soundCode)
     {
         SoundHandler snd = FMLClientHandler.instance().getClient().getSoundHandler();
-
+        //snd.stopSound();
         switch (soundCode)
         {
             case PlayerSoundPacket.COPTER_SOUND:
                 if (ConfigHandler.ALLOW_COPTER_SOUND)
                 {
-                    CopterPackSound tucutucu;
-                    if(ClientProxy.getCopterSound(player)!=null)
+                    CopterPackSound tucutucu = ClientProxy.getCopterSound(player);
+                    if(tucutucu !=null)
                     {
-                        LogHelper.info("Retrieving sound");
-                        tucutucu = (CopterPackSound)ClientProxy.getCopterSound(player);
+                        if(tucutucu.getThePlayer() == null)
+                        {
+                            LogHelper.info("Sound player was null, setting player");
+                            tucutucu.setThePlayer(player);
+                        }
                         if(!snd.isSoundPlaying(tucutucu))
-                        snd.playSound(tucutucu);
+                        {
+                            ClientProxy.putCopterSound(player, tucutucu);
+                            snd.playSound(tucutucu);
+                            LogHelper.info("Sound wasn't playing, playing now.");
+                        }
+
                     }else
                     {
                         LogHelper.info("Creating sound");
                         tucutucu = new CopterPackSound(player);
-                        ClientProxy.putCopterSound(player, tucutucu);
+                        snd.playSound(tucutucu);
                     }
-                    snd.playSound(tucutucu);
                 }
                 break;
             case PlayerSoundPacket.NYAN_SOUND:
@@ -78,9 +83,4 @@ public class ClientActions
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public static void synchronizePlayer(NBTTagCompound properties)
-    {
-        BackpackProperty.get(Minecraft.getMinecraft().thePlayer).loadNBTData(properties);
-    }
 }

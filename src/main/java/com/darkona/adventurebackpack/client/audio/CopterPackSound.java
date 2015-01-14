@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.client.audio;
 
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -8,6 +9,8 @@ import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.UUID;
 
 /**
  * Created on 16/10/2014
@@ -19,7 +22,8 @@ public class CopterPackSound extends MovingSound
 
     public EntityPlayer thePlayer;
     private boolean repeat;
-    private CopterPackSound myself;
+    private UUID playerID;
+
     protected float pitch;
 
     public CopterPackSound()
@@ -30,14 +34,26 @@ public class CopterPackSound extends MovingSound
         this.pitch = 1.0F;
     }
 
+
     public CopterPackSound(EntityPlayer player)
     {
         super(new ResourceLocation(ModInfo.MOD_ID, "helicopter"));
         volume = 0.8f;
         pitch = 1.0F;
         thePlayer = player;
+        playerID = thePlayer.getUniqueID();
         repeat = true;
         LogHelper.info("Sound Created");
+    }
+
+    public EntityPlayer getThePlayer()
+    {
+        return thePlayer;
+    }
+
+    public void setThePlayer(EntityPlayer player){
+        thePlayer = player;
+        playerID = thePlayer.getUniqueID();
     }
 
     public void setRepeat(boolean newRepeat){
@@ -54,7 +70,12 @@ public class CopterPackSound extends MovingSound
     {
         ItemStack copter = Wearing.getWearingCopter(thePlayer);
         byte status = 0;
-        if(thePlayer == null)setDonePlaying();
+       if(thePlayer == null || thePlayer.worldObj == null)
+        {
+            LogHelper.info("Stopped playing copter sound");
+            setDonePlaying();
+            ClientProxy.soundPoolCopters.remove(playerID);
+        }
         if (copter != null&& copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
         {
             status = copter.getTagCompound().getByte("status");

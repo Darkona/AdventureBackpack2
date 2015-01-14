@@ -1,16 +1,11 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.util.FluidUtils;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 /**
@@ -18,20 +13,15 @@ import net.minecraftforge.fluids.FluidTank;
  *
  * @author Darkona
  */
-public class InventoryCopterPack implements IInventory, IAdvBackpack
+public class InventoryCopterPack implements IInventoryTanks
 {
-
-
     private ItemStack containerStack;
     public FluidTank fuelTank;
     public int tickCounter;
     public byte status;
     private ItemStack[] inventory;
 
-    public FluidTank getFuelTank()
-    {
-        return fuelTank;
-    }
+
 
     public InventoryCopterPack(ItemStack copterPack)
     {
@@ -40,6 +30,11 @@ public class InventoryCopterPack implements IInventory, IAdvBackpack
         this.status = ItemCopterPack.OFF_MODE;
         this.inventory = new ItemStack[2];
         openInventory();
+    }
+
+    public FluidTank getFuelTank()
+    {
+        return fuelTank;
     }
 
     public void consumeFuel(int quantity)
@@ -186,14 +181,13 @@ public class InventoryCopterPack implements IInventory, IAdvBackpack
             if (i == 0)
             {
                 ItemStack container = getStackInSlot(i);
-                FluidStack oil = new FluidStack(FluidRegistry.getFluid("oil"), 1);
-                FluidStack fuel = new FluidStack(FluidRegistry.getFluid("fuel"), 1);
-                if (fuel != null && oil != null)
+                if(FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isValidFuel(FluidContainerRegistry.getFluidForFilledItem(container).getFluid()))
                 {
-                    if (FluidContainerRegistry.containsFluid(container, oil) || FluidContainerRegistry.containsFluid(container, fuel) || FluidContainerRegistry.isEmptyContainer(container))
-                    {
-                        InventoryActions.transferContainerTank(this, fuelTank, i);
-                    }
+                    InventoryActions.transferContainerTank(this, fuelTank, i);
+                }else
+                if(FluidContainerRegistry.isEmptyContainer(container) && fuelTank.getFluid()!=null && FluidUtils.isContainerForFluid(container, fuelTank.getFluid().getFluid()))
+                {
+                    InventoryActions.transferContainerTank(this, fuelTank, i);
                 }
             }
         }
@@ -228,134 +222,12 @@ public class InventoryCopterPack implements IInventory, IAdvBackpack
         return null;
     }
 
-    @Override
-    public FluidTank getLeftTank()
-    {
-        return null;
-    }
-
-    @Override
-    public FluidTank getRightTank()
-    {
-        return null;
-    }
-
-    @Override
-    public void setLeftTank(FluidTank tank)
-    {
-
-    }
-
-    @Override
-    public void setRightTank(FluidTank tank)
-    {
-
-    }
-
-    @Override
-    public ItemStack[] getInventory()
-    {
-        return new ItemStack[0];
-    }
-
-    @Override
-    public TileAdventureBackpack getTile()
-    {
-        return null;
-    }
-
-    @Override
     public ItemStack getParentItemStack()
     {
         return this.containerStack;
     }
 
-    @Override
-    public String getColorName()
-    {
-        return null;
-    }
-
-    @Override
-    public int getLastTime()
-    {
-        return 0;
-    }
-
-    @Override
-    public NBTTagCompound getExtendedProperties()
-    {
-        return null;
-    }
-
-    @Override
-    public void setExtendedProperties(NBTTagCompound properties)
-    {
-
-    }
-
-    @Override
-    public boolean isSpecial()
-    {
-        return false;
-    }
-
-    @Override
     public void updateTankSlots(FluidTank tank, int slotIN)
-    {
-
-    }
-
-    @Override
-    public void saveTanks()
-    {
-
-    }
-
-    @Override
-    public void loadTanks()
-    {
-
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT()
-    {
-        return null;
-    }
-
-    @Override
-    public void readFromNBT()
-    {
-
-    }
-
-    @Override
-    public boolean hasItem(Item item)
-    {
-        return false;
-    }
-
-    @Override
-    public void consumeInventoryItem(Item item)
-    {
-
-    }
-
-    @Override
-    public void saveChanges()
-    {
-
-    }
-
-    @Override
-    public boolean isSBDeployed()
-    {
-        return false;
-    }
-
-    @Override
-    public void setLastTime(int time)
     {
 
     }
@@ -373,5 +245,11 @@ public class InventoryCopterPack implements IInventory, IAdvBackpack
     public byte getStatus()
     {
         return status;
+    }
+
+    @Override
+    public boolean updateTankSlots()
+    {
+        return false;
     }
 }

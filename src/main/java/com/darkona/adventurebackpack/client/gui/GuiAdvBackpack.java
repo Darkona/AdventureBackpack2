@@ -10,6 +10,7 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -145,6 +146,10 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+        if(wearing)
+        {
+            inventory = new InventoryBackpack(Wearing.getWearingBackpack(player));
+        }
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
         inventory.openInventory();
@@ -163,42 +168,33 @@ public class GuiAdvBackpack extends GuiWithTanks
             drawHoveringText(tankRight.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
         }
 */
+        if(!ConfigHandler.HOVERING_TEXT_TANKS){
+            GL11.glPushMatrix();
+            //GL11.glTranslatef(8f,64f,0f);
+            FluidStack leftFluid = lft.getFluid();
+            FluidStack rightFluid = rgt.getFluid();
+            GL11.glScalef(0.6f, 0.6f, 0.6f);
+            String name = (leftFluid != null) ? leftFluid.getLocalizedName() : "None";
+            String amount = (leftFluid != null ? leftFluid.amount : "Empty").toString();
+            String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
+            int offsetY = 32;
+            int offsetX = 8;
+            fontRendererObj.drawString(getFirstWord(name), 1 + offsetX, 64 + offsetY, 0x373737, false);
+            fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737, false);
+            fontRendererObj.drawString(capacity, 1 + offsetX, 94 + offsetY, 0x373737, false);
 
-        GL11.glPushMatrix();
-        //GL11.glTranslatef(8f,64f,0f);
-        FluidStack leftFluid = lft.getFluid();
-        FluidStack rightFluid = rgt.getFluid();
-        GL11.glScalef(0.6f, 0.6f, 0.6f);
-        String name = (leftFluid != null) ? leftFluid.getLocalizedName() : "None";
-        String amount = (leftFluid != null ? leftFluid.amount : "Empty").toString();
-        String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
-        int offsetY = 32;
-        int offsetX = 8;
-        fontRendererObj.drawString(getFirstWord(name), 1 + offsetX, 64 + offsetY, 0x373737, false);
-        fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737, false);
-        fontRendererObj.drawString(capacity, 1 + offsetX, 94 + offsetY, 0x373737, false);
+            name = (rightFluid != null) ? rightFluid.getLocalizedName() : "None";
+            amount = (rightFluid != null ? rightFluid.amount : "Empty").toString();
+            fontRendererObj.drawString(getFirstWord(name), 369 + offsetX, 64 + offsetY, 0x373737, false);
+            fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737, false);
+            fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737, false);
 
-        name = (rightFluid != null) ? rightFluid.getLocalizedName() : "None";
-        amount = (rightFluid != null ? rightFluid.amount : "Empty").toString();
-        fontRendererObj.drawString(getFirstWord(name), 369 + offsetX, 64 + offsetY, 0x373737, false);
-        fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737, false);
-        fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737, false);
-
-        GL11.glPopMatrix();
-    }
-
-    private String getFirstWord(String text)
-    {
-        if (text.indexOf(' ') > -1)
-        { // Check if there is more than one word.
-            String firstWord = text.substring(0, text.indexOf(' '));
-            String secondWord = text.substring(text.indexOf(' ') + 1);
-            return firstWord.equals("Molten") ? secondWord : firstWord;// Extract first word.
-        } else
-        {
-            return text; // Text is the first word itself.
+            GL11.glPopMatrix();
         }
+
     }
+
+
 
     @Override
     public float getZLevel()

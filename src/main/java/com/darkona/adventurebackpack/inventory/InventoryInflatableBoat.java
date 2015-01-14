@@ -1,12 +1,8 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -19,7 +15,7 @@ import net.minecraftforge.fluids.FluidTank;
  *
  * @author Darkona
  */
-public class InventoryInflatableBoat implements IInventory, IAdvBackpack
+public class InventoryInflatableBoat implements IInventoryTanks
 {
 
 
@@ -235,137 +231,11 @@ public class InventoryInflatableBoat implements IInventory, IAdvBackpack
         return null;
     }
 
-    @Override
-    public FluidTank getLeftTank()
-    {
-        return null;
-    }
-
-    @Override
-    public FluidTank getRightTank()
-    {
-        return null;
-    }
-
-    @Override
-    public void setLeftTank(FluidTank tank)
-    {
-
-    }
-
-    @Override
-    public void setRightTank(FluidTank tank)
-    {
-
-    }
-
-    @Override
-    public ItemStack[] getInventory()
-    {
-        return new ItemStack[0];
-    }
-
-    @Override
-    public TileAdventureBackpack getTile()
-    {
-        return null;
-    }
-
-    @Override
     public ItemStack getParentItemStack()
     {
         return this.containerStack;
     }
 
-    @Override
-    public String getColorName()
-    {
-        return null;
-    }
-
-    @Override
-    public int getLastTime()
-    {
-        return 0;
-    }
-
-    @Override
-    public NBTTagCompound getExtendedProperties()
-    {
-        return null;
-    }
-
-    @Override
-    public void setExtendedProperties(NBTTagCompound properties)
-    {
-
-    }
-
-    @Override
-    public boolean isSpecial()
-    {
-        return false;
-    }
-
-    @Override
-    public void updateTankSlots(FluidTank tank, int slotIN)
-    {
-
-    }
-
-    @Override
-    public void saveTanks()
-    {
-
-    }
-
-    @Override
-    public void loadTanks()
-    {
-
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT()
-    {
-        return null;
-    }
-
-    @Override
-    public void readFromNBT()
-    {
-
-    }
-
-    @Override
-    public boolean hasItem(Item item)
-    {
-        return false;
-    }
-
-    @Override
-    public void consumeInventoryItem(Item item)
-    {
-
-    }
-
-    @Override
-    public void saveChanges()
-    {
-
-    }
-
-    @Override
-    public boolean isSBDeployed()
-    {
-        return false;
-    }
-
-    @Override
-    public void setLastTime(int time)
-    {
-
-    }
 
     public int getTickCounter()
     {
@@ -380,5 +250,11 @@ public class InventoryInflatableBoat implements IInventory, IAdvBackpack
     public byte getStatus()
     {
         return status;
+    }
+
+    @Override
+    public boolean updateTankSlots()
+    {
+        return false;
     }
 }

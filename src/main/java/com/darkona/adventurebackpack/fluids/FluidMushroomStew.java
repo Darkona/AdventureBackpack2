@@ -15,10 +15,10 @@ public class FluidMushroomStew extends Fluid
 {
     public FluidMushroomStew()
     {
-        super("mushroomStew");
+        super("mushroomsoup");
         setDensity(1200);
         setViscosity(1200);
-        setUnlocalizedName("mushroomStew");
+        setUnlocalizedName("mushroomsoup");
         setLuminosity(0);
     }
 

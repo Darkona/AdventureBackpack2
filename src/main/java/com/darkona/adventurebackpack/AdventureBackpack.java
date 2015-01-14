@@ -22,6 +22,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.Calendar;
 
@@ -98,11 +100,11 @@ public class AdventureBackpack
 
         proxy.init();
         ModRecipes.init();
+        ModRecipes.initConditional();
         ModWorldGen.init();
         //GUIs
         guiHandler = new GuiHandler();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);
-
     }
 
     @Mod.EventHandler
@@ -132,6 +134,14 @@ public class AdventureBackpack
         }
         ConditionalFluidEffect.init();
         ModItems.conditionalInit();
+        LogHelper.info("DUMPING FLUID INFORMATION");
+        LogHelper.info("-------------------------------------------------------------------------");
+        for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
+        {
+            LogHelper.info("Unlocalized name: " + fluid.getUnlocalizedName());
+            LogHelper.info("Name: " + fluid.getName());
+        }
+        LogHelper.info("-------------------------------------------------------------------------");
     }
 
 }

@@ -37,6 +37,7 @@ public class GuiHandler implements IGuiHandler
         InventoryBackpack inv;
         InventoryCopterPack inv2;
         TileEntity te;
+
         switch (ID)
         {
             case BACKPACK_TILE:

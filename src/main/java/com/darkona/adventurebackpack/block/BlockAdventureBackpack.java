@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -54,37 +55,21 @@ public class BlockAdventureBackpack extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-        if (!getAssociatedTileColorName(world, x, y, z).equals("Bookshelf")) return;
-        for (int i = x - 2; i <= x + 2; ++i)
+        if (getAssociatedTileColorName(world, x, y, z).equals("Bookshelf"))
         {
-            for (int j = z - 2; j <= z + 2; ++j)
+            ChunkCoordinates enchTable = Utils.findBlock3D(world, x, y, z, Blocks.enchanting_table, 2, 2);
+            if(enchTable !=null)
             {
-                if (i > x - 2 && i < x + 2 && j == z - 1)
+                if (!world.isAirBlock((enchTable.posX - x) / 2 + x, enchTable.posY, (enchTable.posZ - z) / 2 + z))
                 {
-                    j = z + 2;
+                    return;
                 }
-                if (random.nextInt(8) == 0)
+                for (int o = 0; o < 4; o++)
                 {
-                    for (int k = y; k <= y + 1; ++k)
-                    {
-                        if (world.getBlock(i, k, j) == Blocks.enchanting_table)
-                        {
-                            if (!world.isAirBlock((i - x) / 2 + x, k, (j - z) / 2 + z))
-                            {
-                                break;
-                            }
-                            for (int o = 0; o < 2; o++)
-                            {
-                                world.spawnParticle("enchantmenttable",
-                                        (double) i + 0.5D,
-                                        (double) k + 2.0D,
-                                        (double) j + 0.5D,
-                                        (double) ((float) (x - i) + random.nextFloat()) - 0.5D,
-                                        (double) ((float) (y - k) - random.nextFloat() - 1.0F),
-                                        (double) ((float) (z - j) + random.nextFloat()) - 0.5D);
-                            }
-                        }
-                    }
+                    world.spawnParticle("enchantmenttable",enchTable.posX + 0.5D,enchTable.posY + 2.0D,enchTable.posZ + 0.5D,
+                            ((x - enchTable.posX) + random.nextFloat()) - 0.5D,
+                            ((y - enchTable.posY) - random.nextFloat() - 1.0F),
+                            ((z - enchTable.posZ) + random.nextFloat()) - 0.5D);
                 }
             }
         }
@@ -117,13 +102,6 @@ public class BlockAdventureBackpack extends BlockContainer
     {
         return ((TileAdventureBackpack) world.getTileEntity(x, y, z)).getColorName();
     }
-
-    /**
-     * Determines if this block should render in this pass.
-     *
-     * @param pass The pass in question
-     * @return True to render
-     */
     @Override
     public boolean canRenderInPass(int pass)
     {
@@ -205,20 +183,20 @@ public class BlockAdventureBackpack extends BlockContainer
     /**
      * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
      *
-     * @param p_149660_1_
-     * @param p_149660_2_
-     * @param p_149660_3_
-     * @param p_149660_4_
-     * @param p_149660_5_
-     * @param p_149660_6_
-     * @param p_149660_7_
-     * @param p_149660_8_
-     * @param p_149660_9_
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     * @param side
+     * @param hitX
+     * @param hitY
+     * @param hitZ
+     * @param meta
      */
     @Override
-    public int onBlockPlaced(World p_149660_1_, int p_149660_2_, int p_149660_3_, int p_149660_4_, int p_149660_5_, float p_149660_6_, float p_149660_7_, float p_149660_8_, int p_149660_9_)
+    public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
     {
-        return super.onBlockPlaced(p_149660_1_, p_149660_2_, p_149660_3_, p_149660_4_, p_149660_5_, p_149660_6_, p_149660_7_, p_149660_8_, p_149660_9_);
+        return super.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, meta);
     }
 
     @Override
@@ -385,9 +363,10 @@ public class BlockAdventureBackpack extends BlockContainer
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIcon(int par1, int par2)
     {
-        return null;
+        return Blocks.wool.getIcon(par1,par2);
     }
 
     @Override

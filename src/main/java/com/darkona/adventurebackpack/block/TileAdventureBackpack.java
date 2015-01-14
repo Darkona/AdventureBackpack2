@@ -5,6 +5,8 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.IAsynchronousInventory;
+import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
@@ -29,7 +31,7 @@ import net.minecraftforge.fluids.FluidTank;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
+public class TileAdventureBackpack extends TileEntity implements IAdvBackpack, IAsynchronousInventory, IInventoryTanks
 {
 
     public ItemStack[] inventory;
@@ -87,7 +89,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         luminosity = 0;
         lastTime = 0;
         checkTime = 0;
-
+        extendedProperties = new NBTTagCompound();
     }
 
     public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta)
@@ -400,7 +402,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
 
     public void onInventoryChanged()
     {
-        boolean changed = false;
         for (int i = 0; i < inventory.length; i++)
         {
             if (i == Constants.bucketInLeft && inventory[i] != null)
@@ -419,6 +420,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     @Override
     public void setInventorySlotContentsNoSave(int slot, ItemStack itemstack)
     {
+        if (slot > inventory.length) return;
         inventory[slot] = itemstack;
         if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
         {
@@ -441,7 +443,7 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         {
             if (stack.stackSize <= amount)
             {
-                setInventorySlotContents(slot, null);
+                setInventorySlotContentsNoSave(slot, null);
             } else
             {
                 stack = stack.splitStack(amount);
@@ -513,7 +515,6 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
         }
     }
 
-    @Override
     public void updateTankSlots(FluidTank tank, int slotIn)
     {
         InventoryActions.transferContainerTank(this, tank, slotIn);
@@ -583,4 +584,9 @@ public class TileAdventureBackpack extends TileEntity implements IAdvBackpack
     }
 
 
+    @Override
+    public boolean updateTankSlots()
+    {
+        return false;
+    }
 }

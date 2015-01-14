@@ -23,9 +23,7 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class InventoryBackpack implements IAdvBackpack
 {
-
     public ItemStack[] inventory;
-    public boolean needsUpdate = false;
     private FluidTank leftTank;
     private FluidTank rightTank;
     private ItemStack containerStack;
@@ -53,18 +51,6 @@ public class InventoryBackpack implements IAdvBackpack
     public FluidTank getRightTank()
     {
         return rightTank;
-    }
-
-    @Override
-    public void setLeftTank(FluidTank tank)
-    {
-        this.leftTank = tank;
-    }
-
-    @Override
-    public void setRightTank(FluidTank tank)
-    {
-        this.leftTank = tank;
     }
 
     @Override
@@ -113,40 +99,6 @@ public class InventoryBackpack implements IAdvBackpack
     public boolean isSpecial()
     {
         return special;
-    }
-
-    @Override
-    public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
-    {
-        if (slot > inventory.length) return;
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
-        {
-            stack.stackSize = this.getInventoryStackLimit();
-        }
-    }
-
-    @Override
-    public ItemStack decrStackSizeNoSave(int slot, int amount)
-    {
-        if (slot < inventory.length && inventory[slot] != null)
-        {
-            if (inventory[slot].stackSize > amount)
-            {
-                ItemStack result = inventory[slot].splitStack(amount);
-                return result;
-            }
-            ItemStack stack = inventory[slot];
-            setInventorySlotContentsNoSave(slot, null);
-            return stack;
-        }
-        return null;
-    }
-
-    @Override
-    public void updateTankSlots(FluidTank tank, int slotIn)
-    {
-        InventoryActions.transferContainerTank(this, tank, slotIn);
     }
 
     @Override
@@ -228,20 +180,7 @@ public class InventoryBackpack implements IAdvBackpack
     @Override
     public void onInventoryChanged()
     {
-
-        boolean changed = false;
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (i == Constants.bucketInLeft && inventory[i] != null)
-            {
-                updateTankSlots(getLeftTank(), i);
-            }
-
-            if (i == Constants.bucketInRight && inventory[i] != null)
-            {
-                updateTankSlots(getRightTank(), i);
-            }
-        }
+        updateTankSlots();
         saveChanges();
     }
 
@@ -264,23 +203,32 @@ public class InventoryBackpack implements IAdvBackpack
     }
 
     @Override
-    public int getSizeInventory()
+    public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        return inventory.length;
+        if (slot > inventory.length) return;
+        inventory[slot] = stack;
+        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        {
+            stack.stackSize = this.getInventoryStackLimit();
+        }
+        onInventoryChanged();
     }
 
-
     @Override
-    public ItemStack getStackInSlot(int slot)
+    public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
     {
-        return inventory[slot];
+        if (slot > inventory.length) return;
+        inventory[slot] = stack;
+        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        {
+            stack.stackSize = this.getInventoryStackLimit();
+        }
     }
 
     @Override
     public ItemStack decrStackSize(int slot, int quantity)
     {
         ItemStack itemstack = getStackInSlot(slot);
-
         if (itemstack != null)
         {
             if (itemstack.stackSize <= quantity)
@@ -294,6 +242,40 @@ public class InventoryBackpack implements IAdvBackpack
         }
         return itemstack;
     }
+    @Override
+    public ItemStack decrStackSizeNoSave(int slot, int quantity)
+    {
+        ItemStack stack = getStackInSlot(slot);
+        if (stack != null)
+        {
+            if (stack.stackSize <= quantity)
+            {
+                setInventorySlotContentsNoSave(slot, null);
+            } else
+            {
+                stack = stack.splitStack(quantity);
+            }
+        }
+        return stack;
+    }
+
+    public boolean updateTankSlots()
+    {
+        boolean changed = false;
+        for (int i = 0; i < inventory.length; i++)
+        {
+            if (i == Constants.bucketInLeft && inventory[i] != null)
+            {
+                changed = InventoryActions.transferContainerTank(this, getLeftTank(), i);
+            }
+
+            if (i == Constants.bucketInRight && inventory[i] != null)
+            {
+                changed = InventoryActions.transferContainerTank(this, getRightTank(), i);
+            }
+        }
+        return changed;
+    }
 
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
@@ -303,17 +285,6 @@ public class InventoryBackpack implements IAdvBackpack
             return inventory[slot];
         }
         return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack)
-    {
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit())
-        {
-            stack.stackSize = getInventoryStackLimit();
-        }
-        onInventoryChanged();
     }
 
     @Override
@@ -337,7 +308,6 @@ public class InventoryBackpack implements IAdvBackpack
     @Override
     public void markDirty()
     {
-        this.needsUpdate = true;
     }
 
     @Override
@@ -350,7 +320,6 @@ public class InventoryBackpack implements IAdvBackpack
     public void openInventory()
     {
         readFromNBT();
-        needsUpdate = false;
     }
 
     @Override
@@ -366,14 +335,24 @@ public class InventoryBackpack implements IAdvBackpack
         {
             return false;
         }
-        if (slot == 6 || slot == 8)
+        if (slot == Constants.bucketInRight || slot == Constants.bucketInLeft)
         {
             return FluidContainerRegistry.isContainer(stack);
         }
 
-        return !(slot == 0 || slot == 3) || SlotTool.isValidTool(stack);
+        return !(slot == Constants.upperTool || slot == Constants.lowerTool) || SlotTool.isValidTool(stack);
     }
 
+    @Override
+    public int getSizeInventory()
+    {
+        return inventory.length;
+    }
 
+    @Override
+    public ItemStack getStackInSlot(int slot)
+    {
+        return inventory[slot];
+    }
 }
 

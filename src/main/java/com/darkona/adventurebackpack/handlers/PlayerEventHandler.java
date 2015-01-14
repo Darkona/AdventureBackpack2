@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.IWearableContainer;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
@@ -58,6 +59,32 @@ public class PlayerEventHandler
         }
     }
 
+    @SubscribeEvent
+    public void joinPlayer(EntityJoinWorldEvent event)
+    {
+        if(event.entity instanceof EntityPlayer)
+        {
+            AdventureBackpack.proxy.joinPlayer((EntityPlayer) event.entity);
+        }
+    }
+
+
+    @SubscribeEvent
+    public void playerLogsIn(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        if (event.player instanceof EntityPlayerMP)
+        {
+            BackpackProperty.get(event.player).sync();
+        }
+    }
+    @SubscribeEvent
+    public void playerTravelsAcrossDimensions(PlayerEvent.PlayerChangedDimensionEvent event)
+    {
+        if (event.player instanceof EntityPlayerMP)
+        {
+            BackpackProperty.get(event.player).sync();
+        }
+    }
     /**
      * Used for the Piston Boots to give them their amazing powers.
      *
@@ -110,15 +137,7 @@ public class PlayerEventHandler
         }
     }
 
-    @SubscribeEvent
-    public void playerIsBorn(EntityJoinWorldEvent event)
-    {
-        if (event.entity instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) event.entity;
-            AdventureBackpack.proxy.joinPlayer(player);
-        }
-    }
+
 
     /**
      * @param event
@@ -150,7 +169,7 @@ public class PlayerEventHandler
                 }
                 NBTTagCompound playerData = new NBTTagCompound();
                 BackpackProperty.get(player).saveNBTData(playerData);
-                ServerProxy.storePlayerProps(player.getCommandSenderName(), playerData);
+                ServerProxy.storePlayerProps(player.getUniqueID(), playerData);
 
                 //LogHelper.info("Player " + player.getCommandSenderName() +  " just died, bedLocation is" + ((player.getBedLocation(player.dimension)!=null ) ? LogHelper.print3DCoords(player.getBedLocation(player.dimension)): "null"));
             }
@@ -174,42 +193,29 @@ public class PlayerEventHandler
     }
 
     @SubscribeEvent
-    public void rideSpider(EntityInteractEvent event)
+    public void interactWithCreatures(EntityInteractEvent event)
     {
         EntityPlayer player = event.entityPlayer;
         if (!event.entityPlayer.worldObj.isRemote)
         {
-            if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Spider"))
+            if (event.target instanceof EntitySpider)
             {
-                if (event.target instanceof EntitySpider)
+                if (Wearing.isWearingTheRightBackpack(player, "Spider"))
                 {
-                    EntityFriendlySpider pet = new EntityFriendlySpider(event.target.worldObj);
-                    pet.setLocationAndAngles(event.target.posX, event.target.posY, event.target.posZ, event.target.rotationYaw, event.target.rotationPitch);
-                    event.target.setDead();
-                    event.entityPlayer.worldObj.spawnEntityInWorld(pet);
-                    event.entityPlayer.mountEntity(pet);
+                EntityFriendlySpider pet = new EntityFriendlySpider(event.target.worldObj);
+                pet.setLocationAndAngles(event.target.posX, event.target.posY, event.target.posZ, event.target.rotationYaw, event.target.rotationPitch);
+                event.target.setDead();
+                event.entityPlayer.worldObj.spawnEntityInWorld(pet);
+                event.entityPlayer.mountEntity(pet);
                 }
             }
-            event.setResult(Event.Result.ALLOW);
-        }
-    }
-
-    @SubscribeEvent
-    public void ownHorse(EntityInteractEvent event)
-    {
-        if(!ConfigHandler.BACKPACK_ABILITIES)return;
-        EntityPlayer player = event.entityPlayer;
-
-        if (!event.entityPlayer.worldObj.isRemote)
-        {
-
-            ItemStack stack = player.getCurrentEquippedItem();
-            if(stack!=null && stack.getItem()!=null && stack.getItem() instanceof ItemNameTag && stack.hasDisplayName())
+            if (event.target instanceof EntityHorse)
             {
-                if (event.target instanceof EntityHorse )
+                ItemStack stack = player.getCurrentEquippedItem();
+                EntityHorse horse = (EntityHorse) event.target;
+                if (stack != null && stack.getItem() != null && stack.getItem() instanceof ItemNameTag && stack.hasDisplayName())
                 {
-                    EntityHorse horse = (EntityHorse)event.target;
-                    if(horse.getCustomNameTag()==null ||horse.getCustomNameTag().equals("") && horse.isTame())
+                    if (horse.getCustomNameTag() == null || horse.getCustomNameTag().equals("") && horse.isTame())
                     {
                         horse.setTamedBy(player);
                         horse.tasks.addTask(4, new EntityAIHorseFollowOwner(horse, 1.5d, 2.0f, 20.0f));
@@ -222,8 +228,8 @@ public class PlayerEventHandler
                     }
                 }
             }
-            event.setResult(Event.Result.ALLOW);
         }
+        event.setResult(Event.Result.ALLOW);
     }
 
     @SubscribeEvent
@@ -242,24 +248,47 @@ public class PlayerEventHandler
         }
     }
 
+
     @SubscribeEvent
     public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
+        /*
+        This here takes care of sending a packet with the extended properties to each player.
+        It will update the player's wearable.
+         */
         if(event.player!=null && !event.player.isDead)
         {
-            if(event.side.isServer())
+            BackpackProperty prop = BackpackProperty.get(event.player);
+            //Synchronize when in inventory, or weird things will happen.
+           if((event.player.openContainer instanceof IWearableContainer) && prop != null)
             {
-                NBTTagCompound props = new NBTTagCompound();
-                BackpackProperty.get(event.player).saveNBTData(props);
-                ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(props), (EntityPlayerMP)event.player);
+                if(event.side.isServer())
+                {
+                    //NBTTagCompound playerData = new NBTTagCompound();
+                    //prop.saveNBTData(playerData);
+                   // prop.sync();
+                    //ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(playerData,SyncPropertiesPacket.RESPONSE), (EntityPlayerMP)event.player);
+                }
             }
+            //If the properties are null, ask for them to be sent.
+            if(event.side.isClient() && prop == null)
+            {
+                ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
+            }
+            //This part executes backpack abilities on each tick. Just like an onArmorTick.
             if(event.phase == TickEvent.Phase.END)
             {
-                ItemStack backpack = BackpackProperty.get(event.player).getWearable();
+                ItemStack backpack = prop.getWearable();
                 if(backpack != null && backpack.getItem() instanceof IBackWearableItem)
                 {
                     ((IBackWearableItem) backpack.getItem()).onEquippedUpdate(event.player.worldObj, event.player, backpack);
                 }
+               /* if(event.side.isServer())
+                {
+                    NBTTagCompound playerData = new NBTTagCompound();
+                    prop.saveNBTData(playerData);
+                    ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(playerData), (EntityPlayerMP)event.player);
+                }*/
             }
         }
     }

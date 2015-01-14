@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.network;
 
+import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackProperty;
-import com.darkona.adventurebackpack.common.ClientActions;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -9,7 +9,6 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
 
 /**
  * Created on 08/01/2015
@@ -18,7 +17,6 @@ import net.minecraft.nbt.NBTUtil;
  */
 public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacket.Message,SyncPropertiesPacket.Message>
 {
-
 
     /**
      * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
@@ -32,9 +30,15 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
     public Message onMessage(Message message, MessageContext ctx)
     {
 
-        if(ctx.side.isClient())
+        if(ctx.side.isClient() && message.properties != null)
         {
-            ClientActions.synchronizePlayer(message.properties);
+            //LogHelper.info("Packet received on CLIENT side");
+            AdventureBackpack.proxy.synchronizePlayer(Minecraft.getMinecraft().thePlayer,message.properties);
+        }
+        if(ctx.side.isServer())
+        {
+            //LogHelper.info("Packet received on SERVER side");
+            BackpackProperty.get(ctx.getServerHandler().playerEntity).sync();
         }
         return null;
     }
@@ -43,7 +47,6 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
     {
 
         NBTTagCompound properties;
-
 
         public Message(){}
 
