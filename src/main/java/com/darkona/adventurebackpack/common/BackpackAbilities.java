@@ -453,7 +453,7 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        IAdvBackpack inv = new InventoryBackpack(backpack);
+        IInventoryAdventureBackpack inv = new InventoryBackpack(backpack);
         FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
         BackpackContainer cont = null;
         if (player.openContainer != null && player.openContainer instanceof BackpackContainer)

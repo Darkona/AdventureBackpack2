@@ -2,7 +2,7 @@ package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IAdvBackpack;
+import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,7 +16,7 @@ import net.minecraft.item.crafting.CraftingManager;
 public class BackpackContainer extends Container implements IWearableContainer
 {
 
-    public IAdvBackpack inventory;
+    public IInventoryAdventureBackpack inventory;
     public static byte SOURCE_TILE = 0;
     public static byte SOURCE_WEARING = 1;
     public static byte SOURCE_HOLDING = 2;
@@ -37,7 +37,7 @@ public class BackpackContainer extends Container implements IWearableContainer
             BUCKET_LEFT = TOOL_END + 1,
             BUCKET_RIGHT = BUCKET_LEFT + 2;
 
-    public BackpackContainer(EntityPlayer player, IAdvBackpack backpack, byte source)
+    public BackpackContainer(EntityPlayer player, IInventoryAdventureBackpack backpack, byte source)
     {
         this.player = player;
         inventory = backpack;

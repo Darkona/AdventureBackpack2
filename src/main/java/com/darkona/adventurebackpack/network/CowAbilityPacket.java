@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.network;
 
-import com.darkona.adventurebackpack.common.IAdvBackpack;
+import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.BackpackContainer;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -34,7 +34,7 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
             {
                 BackpackContainer cont = ((BackpackContainer) player.openContainer);
                 cont.detectAndSendChanges();
-                IAdvBackpack inv = cont.inventory;
+                IInventoryAdventureBackpack inv = cont.inventory;
                 switch (message.action)
                 {
                     case CONSUME_WHEAT:

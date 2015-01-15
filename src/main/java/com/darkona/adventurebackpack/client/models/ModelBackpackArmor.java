@@ -224,7 +224,7 @@ public class ModelBackpackArmor extends ModelWearable
         }
     }
 
-    public ModelBackpackArmor setBackpack(ItemStack wearable)
+    public ModelBackpackArmor setWearable(ItemStack wearable)
     {
         this.backpack = wearable;
         return this;

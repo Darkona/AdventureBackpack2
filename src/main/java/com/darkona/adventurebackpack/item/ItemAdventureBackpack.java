@@ -14,8 +14,10 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -172,8 +174,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
                 {
                     backpack.onBlockPlacedBy(world, x, y, z, player, stack);
                     world.playSoundAtEntity(player, BlockAdventureBackpack.soundTypeCloth.getStepResourcePath(), 0.5f, 1.0f);
-                    InventoryBackpack oldBackpack = new InventoryBackpack(stack);
-                    ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(oldBackpack.writeToNBT());
+                    ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(stack.stackTagCompound);
                     if (from)
                     {
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
@@ -257,12 +258,12 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
-        NBTTagCompound compound = stack.stackTagCompound;
-        if (compound != null)
+        NBTTagCompound backpackData = BackpackUtils.getBackpackData(stack);
+        if (backpackData != null)
         {
-            if (compound.hasKey("colorName"))
+            if (backpackData.hasKey("colorName"))
             {
-                list.add(compound.getString("colorName"));
+                list.add(backpackData.getString("colorName"));
             }
         }
     }
@@ -279,13 +280,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             bp.setItemDamage(i);
             NBTTagCompound c = new NBTTagCompound();
             c.setString("colorName", BackpackNames.backpackNames[i]);
-            bp.setTagCompound(c);
+            BackpackUtils.setBackpackData(bp, c);
             subItems.add(bp);
         }
-        /*for (String name : BackpackNames.backpackNames)
-        {
-
-        }*/
     }
 
     @Override
@@ -304,7 +301,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        if (BackpackNames.getBackpackColorName(stack).equals("Creeper"))
+        if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
         {
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
         }
@@ -346,11 +343,12 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         }
     }
 
+    private ModelBackpackArmor model = new ModelBackpackArmor();
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getWearableModel(ItemStack wearable)
     {
-        return  new ModelBackpackArmor(wearable);
+        return  model.setWearable(wearable);
     }
 
     @Override

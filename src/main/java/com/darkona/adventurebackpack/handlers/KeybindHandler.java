@@ -7,7 +7,6 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.*;
 import com.darkona.adventurebackpack.reference.Key;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
@@ -86,8 +85,6 @@ public class KeybindHandler
 
             if(keypressed == Key.JUMP )
             {
-                LogHelper.info("Detected spacebar");
-
                 if(player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
                 {
                     ModNetwork.net.sendToServer(new JumpPacket.JumpMessage());

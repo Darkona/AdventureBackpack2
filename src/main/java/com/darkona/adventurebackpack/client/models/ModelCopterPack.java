@@ -166,7 +166,7 @@ public class ModelCopterPack extends ModelWearable
         this.bipedBody.addChild(this.Base);
     }
 
-    public ModelCopterPack setCopter(ItemStack wearable)
+    public ModelCopterPack setWearable(ItemStack wearable)
     {
         this.copterPack = wearable;
         return this;
@@ -184,17 +184,16 @@ public class ModelCopterPack extends ModelWearable
 
     private void renderCopterPack(Entity entity, float scale)
     {
-        InventoryCopterPack copterPack = new InventoryCopterPack(this.copterPack);
+        InventoryCopterPack copterInv = new InventoryCopterPack(this.copterPack);
+        copterInv.openInventory();
         Axis.isHidden = true;
-        copterPack.openInventory();
-        ItemStack copter = copterPack.getParentItemStack();
-        if (copter != null && copter.stackTagCompound != null && copter.stackTagCompound.hasKey("status"))
+        if (copterPack != null && copterPack.stackTagCompound != null && copterPack.stackTagCompound.hasKey("status"))
         {
-            if (copter.stackTagCompound.getByte("status") != ItemCopterPack.OFF_MODE)
+            if (copterPack.stackTagCompound.getByte("status") != ItemCopterPack.OFF_MODE)
             {
                 Axis.isHidden = false;
                 int degrees = 0;
-                if (entity.onGround || (!entity.onGround && entity.isSneaking()))
+                if (entity.onGround || (entity.isSneaking()))
                 {
                     degrees = 16;
                 } else
@@ -207,7 +206,7 @@ public class ModelCopterPack extends ModelWearable
         }
         this.Base.render(scale);
         this.Axis.render(scale);
-        renderFluidInTank(copterPack.getFuelTank(), new Vector3(0,.25f,0), new Vector3(.25f,0,.25f), new Vector3 (0f, 0.0625f, -0.0625f), TankTop);
+        renderFluidInTank(copterInv.getFuelTank(), new Vector3(0, .25f, 0), new Vector3(.25f, 0, .25f), new Vector3(0f, 0.0625f, -0.0625f), TankTop);
     }
 
    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)

@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -55,5 +56,20 @@ public class BackpackUtils
         {
             player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.impossibru"));
         }
+    }
+
+    public static NBTTagCompound getBackpackData(ItemStack backpack)
+    {
+        if(backpack.hasTagCompound() && backpack.stackTagCompound.hasKey("backpackData"))
+        {
+            return backpack.stackTagCompound.getCompoundTag("backpackData");
+        }
+        return null;
+    }
+
+    public static void setBackpackData(ItemStack stack, NBTTagCompound compound)
+    {
+        if(!stack.hasTagCompound())stack.stackTagCompound = new NBTTagCompound();
+        stack.stackTagCompound.setTag("backpackData",compound);
     }
 }

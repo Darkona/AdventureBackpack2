@@ -5,7 +5,7 @@ import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IAdvBackpack;
+import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -271,7 +271,7 @@ public class ModelBackpackBlock extends ModelBase
 
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, IAdvBackpack backpack)
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, IInventoryAdventureBackpack backpack)
     {
 
         //scale*=0.9;
@@ -364,7 +364,7 @@ public class ModelBackpackBlock extends ModelBase
 
     }
 
-    private void renderBackpack(IAdvBackpack backpack, float scale)
+    private void renderBackpack(IInventoryAdventureBackpack backpack, float scale)
     {
         String color = backpack.getColorName();
 

@@ -86,16 +86,21 @@ public class CopterPackSound extends MovingSound
             if (status == ItemCopterPack.OFF_MODE)
             {
                 setDonePlaying();
-                //volume = 0.0f;
             }else{
-                volume = 0.8F;
                 if(status == ItemCopterPack.HOVER_MODE)
                 {
+
                     pitch = (thePlayer.motionY == 0) ? 1.0f : (thePlayer.motionY > 0) ? 1.2f : 0.8f;
                 }
-                else
+                if(status == ItemCopterPack.NORMAL_MODE)
                 {
-                    pitch = (thePlayer.onGround || thePlayer.motionY == 0) ?  0.8f : (thePlayer.isSneaking()) ? 0.8f : (thePlayer.motionY > 0) ? 1.2f : 1.0F;
+                    if(thePlayer.onGround)
+                    {
+                        pitch = 0.8f;
+                    }else
+                    {
+                        pitch = (thePlayer.motionY > 0) ? 1.2f : (thePlayer.isSneaking()) ? 0.8f : 1.0f;
+                    }
                 }
             }
         }else{
@@ -133,4 +138,5 @@ public class CopterPackSound extends MovingSound
     {
         return AttenuationType.LINEAR;
     }
+
 }

@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.client.gui;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.IAdvBackpack;
+import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -30,7 +30,7 @@ import org.lwjgl.opengl.GL11;
 public class GuiAdvBackpack extends GuiWithTanks
 {
 
-    protected IAdvBackpack inventory;
+    protected IInventoryAdventureBackpack inventory;
     protected boolean source;
     protected boolean wearing;
     protected int X;

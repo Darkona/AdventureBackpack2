@@ -25,10 +25,16 @@ public class InventoryCopterPack implements IInventoryTanks
 
     public InventoryCopterPack(ItemStack copterPack)
     {
-        this.containerStack = copterPack;
-        this.fuelTank = new FluidTank(6000);
-        this.status = ItemCopterPack.OFF_MODE;
-        this.inventory = new ItemStack[2];
+        fuelTank = new FluidTank(6000);
+        status = ItemCopterPack.OFF_MODE;
+        inventory = new ItemStack[2];
+        containerStack = copterPack;
+        if(!copterPack.hasTagCompound())
+        {
+            copterPack.stackTagCompound = new NBTTagCompound();
+            saveToNBT(copterPack.stackTagCompound);
+        }
+
         openInventory();
     }
 
@@ -128,44 +134,19 @@ public class InventoryCopterPack implements IInventoryTanks
     @Override
     public void openInventory()
     {
-        NBTTagCompound compound = containerStack.getTagCompound() != null ? containerStack.stackTagCompound : new NBTTagCompound();
-        if (compound.hasKey("fuelTank"))
-        {
-            this.fuelTank.readFromNBT(compound.getCompoundTag("fuelTank"));
-        }
-        if (compound.hasKey("status"))
-        {
-            this.status = compound.getByte("status");
-        } else
-        {
-            this.status = ItemCopterPack.OFF_MODE;
-        }
-        if (compound.hasKey("tickCounter"))
-        {
-            this.tickCounter = compound.getInteger("tickCounter");
-        } else
-        {
-            this.tickCounter = 0;
-        }
+      loadFromNBT(containerStack.stackTagCompound);
     }
 
     @Override
     public void closeInventory()
     {
-
-        NBTTagCompound compound = containerStack.hasTagCompound() ? containerStack.stackTagCompound : new NBTTagCompound();
-        compound.setTag("fuelTank", this.fuelTank.writeToNBT(new NBTTagCompound()));
-        compound.setByte("status", this.status);
-        compound.setInteger("tickCounter", this.tickCounter);
-        containerStack.stackTagCompound = compound;
+        saveToNBT(containerStack.stackTagCompound);
     }
 
     public void closeInventoryNoStatus()
     {
-        NBTTagCompound compound = containerStack.stackTagCompound;
-        compound.setTag("fuelTank", this.fuelTank.writeToNBT(new NBTTagCompound()));
-        compound.setInteger("tickCounter", this.tickCounter);
-        containerStack.stackTagCompound = compound;
+        containerStack.stackTagCompound.setTag("fuelTank", this.fuelTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.setInteger("tickCounter", this.tickCounter);
     }
 
     @Override
@@ -251,5 +232,28 @@ public class InventoryCopterPack implements IInventoryTanks
     public boolean updateTankSlots()
     {
         return false;
+    }
+
+    @Override
+    public void loadFromNBT(NBTTagCompound compound)
+    {
+        fuelTank.readFromNBT(compound.getCompoundTag("fuelTank"));
+        status = compound.getByte("status");
+        tickCounter = compound.getInteger("tickCounter");
+    }
+
+    @Override
+    public void saveToNBT(NBTTagCompound compound)
+    {
+        compound.setTag("fuelTank", fuelTank.writeToNBT(new NBTTagCompound()));
+        compound.setByte("status", status);
+        compound.setInteger("tickCounter", this.tickCounter);
+    }
+
+    @Override
+    public FluidTank[] getTanksArray()
+    {
+        FluidTank[] tanks = {fuelTank};
+        return tanks;
     }
 }

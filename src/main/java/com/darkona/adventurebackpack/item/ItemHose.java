@@ -164,7 +164,6 @@ public class ItemHose extends ItemAB
             if (nbt.getInteger("tank") == -1) nbt.setInteger("tank", 0);
             if (nbt.getInteger("mode") == -1) nbt.setInteger("mode", 0);
             InventoryBackpack inv = new InventoryBackpack(backpack);
-            inv.readFromNBT();
             FluidTank tank = nbt.getInteger("tank") == 0 ? inv.getLeftTank() : inv.getRightTank();
             if (tank != null && tank.getFluid() != null)
             {

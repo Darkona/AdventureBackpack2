@@ -257,4 +257,22 @@ public class InventoryInflatableBoat implements IInventoryTanks
     {
         return false;
     }
+
+    @Override
+    public void loadFromNBT(NBTTagCompound compound)
+    {
+
+    }
+
+    @Override
+    public void saveToNBT(NBTTagCompound compound)
+    {
+
+    }
+
+    @Override
+    public FluidTank[] getTanksArray()
+    {
+        return new FluidTank[0];
+    }
 }

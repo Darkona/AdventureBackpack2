@@ -67,7 +67,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         double posX = player.posX;
         double posY = player.posY;
         double posZ = player.posZ;
-
         List<EntityItem> groundItems = world.getEntitiesWithinAABB(
                 EntityItem.class,
                 AxisAlignedBB.getBoundingBox(posX, posY, posZ,
@@ -108,7 +107,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
-        return ModelCopterPack.instance.setCopter(stack);
+        return ModelCopterPack.instance.setWearable(stack);
     }
 
 
@@ -123,21 +122,13 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
 
     public static void elevate(EntityPlayer player, ItemStack copter)
     {
-        /*double currentAccel = player.motionY < 0.4D ? player.motionY : 0.15;
-
-        if(copter.hasTagCompound() && copter.stackTagCompound.hasKey("status"))
-        {
-            byte status = copter.stackTagCompound.getByte("status");
-            if((status != OFF_MODE))
-            {*/
-        if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.15);
-        if (player.posY > 100) player.motionY = 0.15 - ((player.posY % 100) / 100);
+        if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.18);
+        if (player.posY > 100) player.motionY = 0.18 - ((player.posY % 100) / 100);
      /*       }
         }*/
 
     }
 
-    long soundLoopTime = 0L;
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
@@ -203,16 +194,16 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
 
             if (status == HOVER_MODE)
             {
-                fuelConsumption+=2;
-                player.motionY *= 0.05;
-
                 if (player.isSneaking())
                 {
                     player.motionY = -0.3;
-                    fuelConsumption--;
+                }else{
+                    fuelConsumption+=2;
+                    player.motionY = 0.0f;
                 }
             }
             player.fallDistance = 0;
+
             //Smoke
             if (!world.isRemote)
             {
@@ -220,34 +211,39 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             }
             //Sound
 
-            //Airwave
-            float factor = 0.24f;
+
+            float factor = 0.05f;
             if (!player.onGround)
             {
-                pushEntities(world, player, 0.1f);
+                //Airwave
+                pushEntities(world, player, 0.2f);
+                //movement boost
+                player.moveFlying(player.moveStrafing,player.moveForward,factor);
 
+                /*
                 if (player.moveForward > 0)
                 {
-                    player.moveFlying(0.0F, factor, factor);
+                    player.moveFlying(0.0f, movSpd, factor);
                 }
                 if (player.moveForward < 0)
                 {
-                    player.moveFlying(0.0F, -factor, factor * 0.8F);
+                    player.moveFlying(0.0f, -movSpd, factor);
                 }
                 if (player.moveStrafing > 0)
                 {
-                    player.moveFlying(factor, 0.0F, factor);
+                    player.moveFlying(movSpd, 0.0f, factor);
                 }
                 if (player.moveStrafing < 0)
                 {
-                    player.moveFlying(-factor, 0.0F, factor);
+                    player.moveFlying(-movSpd, 0.0f, factor);
                 }
+                */
             } else
             {
                 pushEntities(world, player, factor + 0.4f);
             }
 
-            //Elevation
+            //Elevation clientside
             if (world.isRemote)
             {
                 if (Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
@@ -259,7 +255,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 }
             }
 
-            //Elevation
+            //Elevation serverside
             if (!player.onGround && player.motionY > 0)
             {
                 fuelConsumption += 2;
@@ -298,8 +294,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     {
         if(!stack.hasTagCompound())stack.setTagCompound(new NBTTagCompound());
         stack.stackTagCompound.setByte("status",OFF_MODE);
-        /*if(!world.isRemote)
-        ModNetwork.sendToNearby(new PlayerSoundPacket.Message(PlayerSoundPacket.COPTER_SOUND,player.getUniqueID().toString(),true), player);*/
     }
 
     @Override
@@ -308,11 +302,12 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         stack.stackTagCompound.setByte("status",OFF_MODE);
     }
 
+    private ModelCopterPack model = new ModelCopterPack();
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getWearableModel(ItemStack wearable)
     {
-        return new ModelCopterPack(wearable);
+        return model.setWearable(wearable);
     }
 
     @Override

@@ -2,10 +2,7 @@ package com.darkona.adventurebackpack.client.render;
 
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
-import com.darkona.adventurebackpack.client.models.ModelWearable;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
@@ -15,7 +12,6 @@ import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -50,12 +46,9 @@ public class RendererWearableEquipped extends RendererLivingEntity
     {
 
         ItemStack wearable = Wearing.getWearingWearable((EntityPlayer)entity);
-        Item wearableItem = wearable.getItem();
-        if(wearableItem instanceof ItemAdventureBackpack) modelBipedMain = backpack;
-        // backpack.setBackpack(wearable);
-        if(wearableItem instanceof ItemCopterPack)modelBipedMain = copter;
-        //copter.setCopter(wearable);
-        texture = ((IBackWearableItem)wearableItem).getWearableTexture(wearable);
+        IBackWearableItem wearableItem = (IBackWearableItem)wearable.getItem();
+        modelBipedMain = wearableItem.getWearableModel(wearable);
+        texture = wearableItem.getWearableTexture(wearable);
         modelBipedMain.bipedBody.rotateAngleX = rotX;
         modelBipedMain.bipedBody.rotateAngleY = rotY;
         modelBipedMain.bipedBody.rotateAngleZ = rotZ;
@@ -64,7 +57,7 @@ public class RendererWearableEquipped extends RendererLivingEntity
         try
         {
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            renderMainModel((EntityPlayer) entity, 0, 0, 0, 0, 0, 0.0625f,wearable);
+            renderMainModel((EntityPlayer) entity, 0, 0, 0, 0, 0, 0.0625f);
         } catch (Exception oops)
         {
 
@@ -75,12 +68,12 @@ public class RendererWearableEquipped extends RendererLivingEntity
         GL11.glPopMatrix();
     }
 
-    protected void renderMainModel(EntityLivingBase entity, float limbSwing1, float limbswing2, float z, float yaw, float whatever, float scale, ItemStack wearable)
+    protected void renderMainModel(EntityLivingBase entity, float limbSwing1, float limbswing2, float z, float yaw, float whatever, float scale)
     {
         bindTexture(this.texture);
         if (!entity.isInvisible())
         {
-            ((ModelWearable)this.modelBipedMain).render(entity, limbSwing1, limbswing2, z, yaw, whatever, scale, wearable);
+            modelBipedMain.render(entity, limbSwing1, limbswing2, z, yaw, whatever, scale);
         } else
         if (!entity.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer))
         {
@@ -90,14 +83,14 @@ public class RendererWearableEquipped extends RendererLivingEntity
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
-            ((ModelWearable)this.modelBipedMain).render(entity, limbSwing1, limbswing2, z, yaw, whatever, scale, wearable);
+            modelBipedMain.render(entity, limbSwing1, limbswing2, z, yaw, whatever, scale);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
             GL11.glPopMatrix();
             GL11.glDepthMask(true);
         } else
         {
-            this.modelBipedMain.setRotationAngles(limbSwing1, limbswing2, z, yaw, whatever, scale, entity);
+            modelBipedMain.setRotationAngles(limbSwing1, limbswing2, z, yaw, whatever, scale, entity);
         }
     }
 }

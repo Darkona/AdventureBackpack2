@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.reference;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -97,12 +98,10 @@ public class BackpackNames
 
         if (backpack == null) return null;
         if (!(backpack.getItem() instanceof ItemAdventureBackpack)) return null;
-        if (backpack.stackTagCompound == null)
-        {
-            backpack.stackTagCompound = new NBTTagCompound();
-        }
+        NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound() ;
         backpack.setItemDamage(damage);
-        backpack.stackTagCompound.setString("colorName", backpackNames[damage]);
+        backpackData.setString("colorName", backpackNames[damage]);
+        BackpackUtils.setBackpackData(backpack,backpackData);
         return backpack;
     }
 
@@ -120,29 +119,24 @@ public class BackpackNames
         return te.getColorName();
     }
 
-    public static String getBackpackColorName(ItemStack item)
+    public static String getBackpackColorName(ItemStack backpack)
     {
-        if (item == null) return "";
-        if (item.stackTagCompound == null)
+        if (backpack == null) return "";
+        NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound() ;
+        if (backpackData.getString("colorName").isEmpty())
         {
-            item.stackTagCompound = new NBTTagCompound();
+            backpackData.setString("colorName", "Standard");
         }
-        if (item.stackTagCompound.getString("colorName").isEmpty())
-        {
-            item.stackTagCompound.setString("colorName", "Standard");
-        }
-        return item.stackTagCompound.getString("colorName");
+        return backpackData.getString("colorName");
     }
 
-    public static void setBackpackColorName(ItemStack item, String newName)
+    public static void setBackpackColorName(ItemStack backpack, String newName)
     {
-        if (item != null)
+        if (backpack != null)
         {
-            if (item.stackTagCompound == null)
-            {
-                item.setTagCompound(new NBTTagCompound());
-            }
-            item.stackTagCompound.setString("colorName", newName);
+            NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound() ;
+            backpackData.setString("colorName", newName);
+            BackpackUtils.setBackpackData(backpack, backpackData);
         }
     }
 }
