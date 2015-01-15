@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.network;
 
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.inventory.BackpackContainer;
+import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -30,9 +30,9 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
         {
             EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerID));
 
-            if (player.openContainer instanceof BackpackContainer)
+            if (player.openContainer instanceof ContainerBackpack)
             {
-                BackpackContainer cont = ((BackpackContainer) player.openContainer);
+                ContainerBackpack cont = ((ContainerBackpack) player.openContainer);
                 cont.detectAndSendChanges();
                 IInventoryAdventureBackpack inv = cont.inventory;
                 switch (message.action)

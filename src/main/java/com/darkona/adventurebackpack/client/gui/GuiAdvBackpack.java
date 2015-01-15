@@ -5,7 +5,7 @@ import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.BackpackContainer;
+import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
@@ -51,7 +51,7 @@ public class GuiAdvBackpack extends GuiWithTanks
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {
-        super(new BackpackContainer(player, tileBackpack, BackpackContainer.SOURCE_TILE));
+        super(new ContainerBackpack(player, tileBackpack, ContainerBackpack.SOURCE_TILE));
         this.inventory = tileBackpack;
         this.source = true;
         xSize = 248;
@@ -66,7 +66,7 @@ public class GuiAdvBackpack extends GuiWithTanks
 
     public GuiAdvBackpack(EntityPlayer player, InventoryBackpack item, boolean wearing)
     {
-        super(new BackpackContainer(player, item, wearing ? BackpackContainer.SOURCE_WEARING : BackpackContainer.SOURCE_HOLDING));
+        super(new ContainerBackpack(player, item, wearing ? ContainerBackpack.SOURCE_WEARING : ContainerBackpack.SOURCE_HOLDING));
         this.inventory = item;
         this.wearing = wearing;
         this.source = false;

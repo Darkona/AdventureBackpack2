@@ -52,6 +52,7 @@ public class ModelBackpackArmor extends ModelWearable
     RendererStack upperTool;
     public ItemStack backpack;
 
+    @SuppressWarnings("unchecked")
     private void init()
     {
         this.textureWidth = 128;
@@ -215,7 +216,7 @@ public class ModelBackpackArmor extends ModelWearable
         mainBody.addChild(upperTool);
 
 
-        float offsetZ = 0.3F;
+        float offsetZ = 0.4F;
         float offsetY = 0.2F;
         for (ModelRenderer part : (List<ModelRenderer>) bipedBody.childModels)
         {

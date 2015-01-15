@@ -15,11 +15,12 @@ public class ModItems
     public static final ItemHose hose = new ItemHose();
     public static final ArmorAB adventureHat = new ItemAdventureHat();
     public static final ArmorAB pistonBoots = new ItemPistonBoots();
-    public static final ArmorAB adventureSuit = new ItemAdventureSuit();
+    public static final ArmorAB adventureSuit = new ItemAdventureJacket();
     public static final ItemAdventureBackpack adventureBackpack = new ItemAdventureBackpack();
     public static final ItemJuiceBottle melonJuiceBottle = new ItemJuiceBottle();
     public static final ItemCopterPack copterPack = new ItemCopterPack();
     public static final ItemCrossbow cwxbow = new ItemCrossbow();
+    public static final ItemSteamJetpack steamJetpack = new ItemSteamJetpack();
 
     public static void init()
     {
@@ -32,7 +33,7 @@ public class ModItems
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
         GameRegistry.registerItem(cwxbow, "clockworkCrossbow");
-
+        GameRegistry.registerItem(steamJetpack, "steamJetpack");
     }
 
     public static void conditionalInit()

@@ -10,8 +10,6 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 
 /**
  * Created on 05/01/2015
@@ -29,10 +27,45 @@ public class ItemCrossbow extends ItemAB
         setMaxStackSize(1);
     }
 
+
+    /**
+     * Returns true if players can use this item to affect the world (e.g. placing blocks, placing ender eyes in portal)
+     * when not in creative
+     */
+    @Override
+    public boolean canItemEditBlocks()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isRepairable()
+    {
+        return super.isRepairable();
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
+    {
+        return super.getItemStackDisplayName(stack);
+    }
+
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        return false;
+    }
+
     @Override
     public EnumAction getItemUseAction(ItemStack p_77661_1_)
     {
-        return EnumAction.none;
+        return EnumAction.bow;
     }
 
     /**
@@ -58,67 +91,65 @@ public class ItemCrossbow extends ItemAB
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
     {
 
-        byte shot = stack.stackTagCompound.getByte("Shot");
-        if(shot > 0)stack.stackTagCompound.setByte("Shot", (byte) (shot - 1));
-        if(count % 5 == 0)
-        {
-            shootArrow(stack,player.worldObj,player);
-            stack.stackTagCompound.setByte("Shot",(byte)3);
-        }
-        if(count <= 0)player.stopUsingItem();
     }
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean current)
     {
 
+        if(current)
+        {
+            byte shot = stack.stackTagCompound.getByte("Shot");
+            int reloading = stack.stackTagCompound.getInteger("Reloading");
+            if(shot > 0)stack.stackTagCompound.setByte("Shot", (byte)(shot-1));
+            if(reloading > 0)stack.stackTagCompound.setInteger("Reloading",reloading-1);
+            if(entity instanceof EntityPlayer)
+            {
+                //((EntityPlayer)entity).setItemInUse(stack,2);
+            }
+        }
     }
 
+    private int reloadTime = 20;
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if(!stack.hasTagCompound())stack.setTagCompound(new NBTTagCompound());
-        player.setItemInUse(stack,getMaxItemUseDuration(stack));
+        if(!stack.stackTagCompound.hasKey("Reloading"))stack.stackTagCompound.setInteger("Reloading",0);
+        int reloading = stack.stackTagCompound.getInteger("Reloading");
+        if(reloading <= 0){
+            shootArrow(stack,player.worldObj,player, 1000);
+            stack.stackTagCompound.setByte("Shot",(byte)4);
+            stack.stackTagCompound.setInteger("Reloading",reloadTime);
+
+        }
         return stack;
     }
 
-    @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-    {
-        return false;
-    }
 
     @Override
     public int getMaxItemUseDuration(ItemStack stack)
     {
-        return 9;
+        return Integer.MAX_VALUE;
     }
 
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int counter)
     {
-        stack.stackTagCompound.setByte("Shot", (byte) 0);
     }
 
-    public void shootArrow(ItemStack stack, World world, EntityPlayer player)
+    public void shootArrow(ItemStack stack, World world, EntityPlayer player, int count)
     {
-        int j = 1000;
-
-        ArrowLooseEvent event = new ArrowLooseEvent(player, stack, j);
-        MinecraftForge.EVENT_BUS.post(event);
-        if (event.isCanceled())
-        {
-            return;
-        }
+        int j = count;
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
         if (flag || player.inventory.hasItem(Items.arrow))
         {
-            float f = (float) j / 20.0F;
+            float f =  j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
 
-            if ((double) f < 0.1D)
+            if (f < 0.1D)
             {
                 return;
             }
@@ -135,7 +166,7 @@ public class ItemCrossbow extends ItemAB
 
             if (k > 0)
             {
-                entityarrow.setDamage(entityarrow.getDamage() + (double) k * 0.5D + 0.5D);
+                entityarrow.setDamage(entityarrow.getDamage() + k * 0.5D + 0.5D);
             }
 
             int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, stack);
@@ -166,6 +197,4 @@ public class ItemCrossbow extends ItemAB
             }
         }
     }
-
-
 }

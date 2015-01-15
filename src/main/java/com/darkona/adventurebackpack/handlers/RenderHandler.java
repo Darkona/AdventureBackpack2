@@ -1,10 +1,10 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.item.ItemCrossbow;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 /**
@@ -36,15 +36,15 @@ public class RenderHandler
     }
 
     @SubscribeEvent
-    //@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     public void playerRendering(RenderPlayerEvent.Pre event)
     {
-        EntityPlayer player = event.entityPlayer;
 
-        if (player != null && player.getItemInUse() != null && player.getItemInUse().getItem() instanceof ItemCrossbow && player.getItemInUseCount() > 0)
-        {
-            event.renderer.modelBipedMain.aimedBow = true;
-        }
+    }
+
+    public void playerRendering(RenderPlayerEvent.SetArmorModel event)
+    {
+
     }
 
 

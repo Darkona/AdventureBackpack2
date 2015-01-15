@@ -124,9 +124,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     {
         if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.18);
         if (player.posY > 100) player.motionY = 0.18 - ((player.posY % 100) / 100);
-     /*       }
-        }*/
-
     }
 
     @Override

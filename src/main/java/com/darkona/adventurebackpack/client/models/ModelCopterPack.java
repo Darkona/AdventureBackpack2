@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
+import java.util.List;
+
 /**
  * Created on 31/12/2014
  *
@@ -43,6 +45,7 @@ public class ModelCopterPack extends ModelWearable
     public ModelRenderer EscapeFilter;
     private ItemStack copterPack;
 
+    @SuppressWarnings("unchecked")
     private void init()
     {
         this.textureWidth = 64;
@@ -164,6 +167,13 @@ public class ModelCopterPack extends ModelWearable
         this.Base.addChild(this.EscapeFilter);
 
         this.bipedBody.addChild(this.Base);
+
+        float offsetZ = 0.1F;
+        float offsetY = 0.0F;
+        for (ModelRenderer part : (List<ModelRenderer>) bipedBody.childModels)
+        {
+            setOffset(part, part.offsetX + 0, part.offsetY + offsetY, part.offsetZ + offsetZ);
+        }
     }
 
     public ModelCopterPack setWearable(ItemStack wearable)

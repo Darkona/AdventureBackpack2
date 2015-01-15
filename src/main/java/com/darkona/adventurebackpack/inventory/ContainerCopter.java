@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
  *
  * @author Darkona
  */
-public class CopterContainer extends Container implements IWearableContainer
+public class ContainerCopter extends Container implements IWearableContainer
 {
 
     public InventoryCopterPack inventory;
@@ -22,7 +22,7 @@ public class CopterContainer extends Container implements IWearableContainer
             PLAYER_INV_END = PLAYER_INV_START + 26,
             COPTER_INV_START = PLAYER_INV_END + 1;
 
-    public CopterContainer(EntityPlayer player, InventoryCopterPack copterPack)
+    public ContainerCopter(EntityPlayer player, InventoryCopterPack copterPack)
     {
         this.inventory = copterPack;
         makeSlots(player.inventory);
@@ -90,7 +90,6 @@ public class CopterContainer extends Container implements IWearableContainer
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        //inventory.onInventoryChanged();
         return super.slotClick(slot, button, flag, player);
     }
 

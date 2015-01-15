@@ -13,7 +13,7 @@ import net.minecraft.item.crafting.CraftingManager;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class BackpackContainer extends Container implements IWearableContainer
+public class ContainerBackpack extends Container implements IWearableContainer
 {
 
     public IInventoryAdventureBackpack inventory;
@@ -37,7 +37,7 @@ public class BackpackContainer extends Container implements IWearableContainer
             BUCKET_LEFT = TOOL_END + 1,
             BUCKET_RIGHT = BUCKET_LEFT + 2;
 
-    public BackpackContainer(EntityPlayer player, IInventoryAdventureBackpack backpack, byte source)
+    public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, byte source)
     {
         this.player = player;
         inventory = backpack;

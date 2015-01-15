@@ -3,10 +3,9 @@ package com.darkona.adventurebackpack.client.gui;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.ContainerCopter;
-import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
+import com.darkona.adventurebackpack.inventory.ContainerJetpack;
+import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
-import com.darkona.adventurebackpack.util.FluidUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,48 +16,33 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Created on 03/01/2015
+ * Created on 15/01/2015
  *
  * @author Darkona
  */
-public class GuiCopterPack extends GuiWithTanks
+public class GuiSteamJetpack extends GuiWithTanks
 {
-    private InventoryCopterPack inventory;
-    private static final ResourceLocation texture = Resources.guiTextures("guiCopterPack");
-    private static GuiTank fuelTank = new GuiTank(8, 8,72, 32, ConfigHandler.GUI_TANK_RENDER);
+    private static final ResourceLocation texture = Resources.guiTextures("guiSteamJetpack");
+    private static GuiTank waterTank = new GuiTank(8, 8,72, 16, ConfigHandler.GUI_TANK_RENDER);
+    private static GuiTank steamTank = new GuiTank(116, 8,72, 16, ConfigHandler.GUI_TANK_RENDER);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
-
     private boolean wearing;
     EntityPlayer player;
-
-    public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
+    InventorySteamJetpack inv;
+    public GuiSteamJetpack(EntityPlayer player, InventorySteamJetpack inv, boolean wearing)
     {
-        super(new ContainerCopter(player, inv));
-        this.inventory = inv;
-        xSize = 176;
-        ySize = 166;
+        super(new ContainerJetpack(player, inv));
         this.wearing = wearing;
         this.player = player;
-    }
-
-    /**
-     * Called from the main game loop to update the screen.
-     */
-    @Override
-    public void updateScreen()
-    {
-        super.updateScreen();
+        this.inv = inv;
+        xSize = 176;
+        ySize = 166;
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseY)
     {
-        GL11.glColor4f(1, 1, 1, 1);
-       /* if(wearing)
-        {
-            inventory = new InventoryCopterPack(Wearing.getWearingCopter(player));
-        }*/
         this.mc.renderEngine.bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -81,8 +65,6 @@ public class GuiCopterPack extends GuiWithTanks
                 equipButton.draw(this,1,167);
             }
         }
-
-
     }
 
     @Override
@@ -90,48 +72,22 @@ public class GuiCopterPack extends GuiWithTanks
     {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
-        inventory.openInventory();
-        FluidTank fuel = inventory.getFuelTank();
+        inv.openInventory();
+        FluidTank water = inv.getWaterTank();
+        FluidTank steam = inv.getSteamTank();
         //zLevel += 5;
-        fuelTank.draw(this, fuel);
-        FluidStack fuelStack = fuel.getFluid();
+        waterTank.draw(this, water);
+        FluidStack waterStack = water.getFluid();
+        FluidStack steamStack = steam.getFluid();
 
         GL11.glPushMatrix();
-        String name = (fuelStack != null) ? fuelStack.getFluid().getName() : "None";
-        String amount = (fuelStack != null) ? ""+fuelStack.amount : "0";
-        String capacity = Integer.toString(fuel.getCapacity());
-        int offsetY = 8;
-        int offsetX = 83;
-        fontRendererObj.drawString(name, 1 + offsetX, offsetY, 0x373737, false);
-        fontRendererObj.drawString(amount, 1 + offsetX, 10 + offsetY, 0x373737, false);
-        fontRendererObj.drawString(capacity, 1 + offsetX, 20 + offsetY, 0x373737, false);
-
-        if(fuelStack!=null)
-        {
-            Float f = FluidUtils.fuelValues.get(name);
-            String conLev = (f != null) ? f.toString() : "0";
-            if(conLev != null && !conLev.isEmpty())
-                fontRendererObj.drawString("Consumption: " + conLev , 1 + offsetX, 40 + offsetY, 0x373737, false);
-        }
+        String name = (waterStack != null) ? waterStack.getFluid().getName() : "None";
+        String amount = (waterStack != null) ? ""+waterStack.amount : "0";
+        String capacity = Integer.toString(water.getCapacity());
+        int offsetY = 7;
+        int offsetX = 29;
+        fontRendererObj.drawString(name + "-" + amount + "/" + capacity, 1 + offsetX, offsetY, 0x373737, false);
         GL11.glPopMatrix();
-    }
-
-    @Override
-    public int getLeft()
-    {
-        return guiLeft;
-    }
-
-    @Override
-    public int getTop()
-    {
-        return guiTop;
-    }
-
-    @Override
-    public float getZLevel()
-    {
-        return zLevel;
     }
 
     @Override
@@ -154,6 +110,24 @@ public class GuiCopterPack extends GuiWithTanks
             }
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public int getLeft()
+    {
+        return guiLeft;
+    }
+
+    @Override
+    public int getTop()
+    {
+        return guiTop;
+    }
+
+    @Override
+    public float getZLevel()
+    {
+        return zLevel;
     }
 
     @Override

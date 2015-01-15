@@ -1,13 +1,12 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.client.models.FullArmorModel;
+import com.darkona.adventurebackpack.client.models.ModelFullArmor;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
@@ -16,10 +15,10 @@ import net.minecraft.util.IIcon;
  *
  * @author Darkona
  */
-public class ItemAdventureSuit extends ArmorAB
+public class ItemAdventurePantaloon extends ArmorAB
 {
 
-    public ItemAdventureSuit()
+    public ItemAdventurePantaloon()
     {
         super(2, 2);
         setUnlocalizedName("adventureSuit");
@@ -48,7 +47,7 @@ public class ItemAdventureSuit extends ArmorAB
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack itemStack, int armorSlot)
     {
-        return entity instanceof EntityPlayer ? FullArmorModel.instance.setPlayer(((EntityPlayer) entity)) : null;
+        return new ModelFullArmor();
     }
 
 }

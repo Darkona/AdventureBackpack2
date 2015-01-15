@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.network;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
-import com.darkona.adventurebackpack.inventory.BackpackContainer;
+import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -19,12 +19,14 @@ import net.minecraft.world.World;
 public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage>
 {
 
-    public static final byte FROM_HOLDING = 1;
+
     public static final byte FROM_KEYBIND = 0;
+    public static final byte FROM_HOLDING = 1;
     public static final byte FROM_TILE = 2;
 
     public static final byte BACKPACK_GUI = 1;
     public static final byte COPTER_GUI = 2;
+    public static final byte JETPACK_GUI = 3;
 
     @Override
     public IMessage onMessage(GUImessage message, MessageContext ctx)
@@ -59,7 +61,25 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                         }
                     }
                 }
-
+                if (message.type == JETPACK_GUI)
+                {
+                    if(message.from == FROM_KEYBIND)
+                    {
+                        if (Wearing.isWearingSteam(player))
+                        {
+                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_WEARING, world, playerX, playerY, playerZ);
+                            return null;
+                        }
+                    }
+                    if(message.from == FROM_HOLDING)
+                    {
+                        if (Wearing.isHoldingSteam(player))
+                        {
+                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_HOLDING, world, playerX, playerY, playerZ);
+                            return null;
+                        }
+                    }
+                }
                 if (message.type == BACKPACK_GUI)
                 {
                     if (message.from == FROM_KEYBIND)
@@ -80,9 +100,9 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                     }
                     if (message.from == FROM_TILE)
                     {
-                        if (player.openContainer instanceof BackpackContainer)
+                        if (player.openContainer instanceof ContainerBackpack)
                         {
-                            TileAdventureBackpack te = (TileAdventureBackpack) ((BackpackContainer) player.openContainer).inventory;
+                            TileAdventureBackpack te = (TileAdventureBackpack) ((ContainerBackpack) player.openContainer).inventory;
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, te.xCoord, te.yCoord, te.zCoord);
                             return null;
                         }

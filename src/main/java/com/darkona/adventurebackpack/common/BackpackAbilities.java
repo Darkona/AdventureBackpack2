@@ -4,7 +4,7 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.BackpackContainer;
+import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.CowAbilityPacket;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
@@ -455,10 +455,10 @@ public class BackpackAbilities
     {
         IInventoryAdventureBackpack inv = new InventoryBackpack(backpack);
         FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
-        BackpackContainer cont = null;
-        if (player.openContainer != null && player.openContainer instanceof BackpackContainer)
+        ContainerBackpack cont = null;
+        if (player.openContainer != null && player.openContainer instanceof ContainerBackpack)
         {
-            cont = (BackpackContainer) player.openContainer;
+            cont = (ContainerBackpack) player.openContainer;
             if (cont.inventory instanceof InventoryBackpack && ((InventoryBackpack) cont.inventory).getParentItemStack().equals(backpack))
             {
                 inv = cont.inventory;

@@ -30,6 +30,7 @@ item.adventurebackpack:hoseUseless.name=Hose: Useless / No Backpack
 ## Wearables
 item.adventurebackpack:adventureBackpack.name=Adventure Backpack
 item.adventurebackpack:copterPack.name=Copter Pack
+item.adventurebackpack:steamJetpack.name=Steam Jetpack
 
 ## Armor
 item.adventurebackpack:adventureSuit.name=Adventurer's Suit

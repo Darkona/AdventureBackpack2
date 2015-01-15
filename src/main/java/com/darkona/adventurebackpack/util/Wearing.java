@@ -37,6 +37,26 @@ public class Wearing
          return isWearingCopter(player) ? BackpackProperty.get(player).getWearable() : null;
     }
 
+    public static boolean isHoldingSteam(EntityPlayer player)
+    {
+        return player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemSteamJetpack;
+    }
+
+    public static ItemStack getHoldingSteam(EntityPlayer player)
+    {
+        return isHoldingSteam(player) ?  player.inventory.getCurrentItem() : null;
+    }
+
+    public static boolean isWearingSteam(EntityPlayer player)
+    {
+        return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemSteamJetpack;
+    }
+
+    public static ItemStack getWearingSteam(EntityPlayer player)
+    {
+        return isWearingSteam(player) ? BackpackProperty.get(player).getWearable() : null;
+    }
+
     public static boolean isHoldingCopter(EntityPlayer player)
     {
         return player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemCopterPack;
@@ -46,6 +66,7 @@ public class Wearing
     {
         return isHoldingCopter(player) ?  player.inventory.getCurrentItem() : null;
     }
+
 
     public static boolean isWearingBoots(EntityPlayer player)
     {
@@ -118,4 +139,6 @@ public class Wearing
         }
         return false;
     }
+
+
 }

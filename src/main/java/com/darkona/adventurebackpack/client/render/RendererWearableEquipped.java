@@ -1,7 +1,5 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
-import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.Minecraft;
@@ -27,8 +25,6 @@ public class RendererWearableEquipped extends RendererLivingEntity
 
     public ResourceLocation texture;
     public ModelBiped modelBipedMain;
-    public ModelBackpackArmor backpack = new ModelBackpackArmor();
-    public ModelCopterPack copter = new ModelCopterPack();
 
     public RendererWearableEquipped()
     {
