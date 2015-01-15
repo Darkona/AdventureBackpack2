@@ -3,11 +3,9 @@ package com.darkona.adventurebackpack.client.models;
 import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.client.render.RendererStack;
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IAdvBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
@@ -52,8 +50,7 @@ public class ModelBackpackArmor extends ModelWearable
     public ModelRenderer bedStrapLeftTop;
     RendererStack lowerTool;
     RendererStack upperTool;
-    public IAdvBackpack backpack;
-    private float scale = -1;
+    public ItemStack backpack;
 
     private void init()
     {
@@ -229,7 +226,7 @@ public class ModelBackpackArmor extends ModelWearable
 
     public ModelBackpackArmor setBackpack(ItemStack wearable)
     {
-        this.backpack = new InventoryBackpack(wearable);
+        this.backpack = wearable;
         return this;
     }
     public ModelBackpackArmor()
@@ -240,12 +237,12 @@ public class ModelBackpackArmor extends ModelWearable
     public ModelBackpackArmor(ItemStack backpack)
     {
         init();
-        this.backpack = new InventoryBackpack(backpack);
+        this.backpack = backpack;
     }
     @SuppressWarnings("unchecked")
     private void renderBackpack(Float scale)
     {
-
+        InventoryBackpack backpack = new InventoryBackpack(this.backpack);
         backpack.openInventory();
         String color = backpack.getColorName();
         for (ModelRenderer model : (List<ModelRenderer>) bipedBody.childModels)
@@ -303,7 +300,7 @@ public class ModelBackpackArmor extends ModelWearable
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
 
-        isSneak = ((entity != null) && ((EntityLivingBase) entity).isSneaking());
+        isSneak = ((entity != null) && (entity).isSneaking());
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         float oV = (isSneak) ? 0 : .3F;
 
@@ -351,4 +348,10 @@ public class ModelBackpackArmor extends ModelWearable
         GL11.glPopMatrix();
     }
 
+    @Override
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)
+    {
+        this.backpack = stack;
+        render(entity, f, f1,f2,f3,f4,f5);
+    }
 }

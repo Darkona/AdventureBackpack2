@@ -241,29 +241,26 @@ public class ModelClockworkCrossbow extends ModelBase
                 setRotateAngle(stringRight, -1.5707963267948966F, 0.5235987755982988F, 0.0F);
             }else
             {
-                setRotateAngle(stringLeft, 1.5707963267948966F, 0.0F, 0.0F);
-                setRotateAngle(stringRight, -1.5707963267948966F, 0.0F, 0.0F);
-                setOffset(arrow, -.0f, -.0f, -.2f);
-                setRotateAngle(arrow, Utils.degreesToRadians(-90), Utils.degreesToRadians(0), Utils.degreesToRadians(90));
-                arrow.setRotationPoint(xbowBody.rotationPointX, xbowBody.rotationPointY, xbowBody.rotationPointZ);
-                GL11.glPushMatrix();
-                GL11.glScalef(1.0f,1.0f,2f);
-                arrow.render(1 / 14);
-                GL11.glPopMatrix();
+               renderNormal();
             }
         }else{
-            setRotateAngle(stringLeft, 1.5707963267948966F, 0.0F, 0.0F);
-            setRotateAngle(stringRight, -1.5707963267948966F, 0.0F, 0.0F);
-            setOffset(arrow, -.0f, -.0f, -.5f);
-            setRotateAngle(arrow, Utils.degreesToRadians(-90), Utils.degreesToRadians(0), Utils.degreesToRadians(90));
-            arrow.setRotationPoint(xbowBody.rotationPointX, xbowBody.rotationPointY, xbowBody.rotationPointZ);
-            GL11.glPushMatrix();
-            GL11.glScalef(1.0f,1.0f,1.2f);
-            arrow.render(1 / 14);
-            GL11.glPopMatrix();
+            renderNormal();
         }
         this.leftArc1.render(f5);
         this.rightArc1.render(f5);
+    }
+
+    private void renderNormal()
+    {
+        setRotateAngle(stringLeft, 1.5707963267948966F, 0.0F, 0.0F);
+        setRotateAngle(stringRight, -1.5707963267948966F, 0.0F, 0.0F);
+        setOffset(arrow, -.0f, -.0f, -.2f);
+        setRotateAngle(arrow, Utils.degreesToRadians(-90), Utils.degreesToRadians(0), Utils.degreesToRadians(90));
+        arrow.setRotationPoint(xbowBody.rotationPointX, xbowBody.rotationPointY, xbowBody.rotationPointZ);
+        GL11.glPushMatrix();
+        GL11.glScalef(1.0f,1.0f,2f);
+        arrow.render(1 / 14);
+        GL11.glPopMatrix();
     }
 
     /**

@@ -6,8 +6,6 @@ import com.darkona.adventurebackpack.client.audio.NyanMovingSound;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
 import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
-import com.darkona.adventurebackpack.proxy.ClientProxy;
-import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -52,7 +50,7 @@ public class ClientActions
             case PlayerSoundPacket.COPTER_SOUND:
                 if (ConfigHandler.ALLOW_COPTER_SOUND)
                 {
-                    CopterPackSound tucutucu = ClientProxy.getCopterSound(player);
+                    /*CopterPackSound tucutucu = ClientProxy.getCopterSound(player);
                     if(tucutucu !=null)
                     {
                         if(tucutucu.getThePlayer() == null)
@@ -72,13 +70,13 @@ public class ClientActions
                         LogHelper.info("Creating sound");
                         tucutucu = new CopterPackSound(player);
                         snd.playSound(tucutucu);
-                    }
+                    }*/
+                    snd.playSound(new CopterPackSound(player));
                 }
                 break;
             case PlayerSoundPacket.NYAN_SOUND:
                 NyanMovingSound nyaaan = new NyanMovingSound(player);
                     snd.playSound(nyaaan);
-
                 break;
         }
     }

@@ -6,7 +6,6 @@ import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
@@ -42,7 +41,7 @@ public class ModelCopterPack extends ModelWearable
     public ModelRenderer Escape2;
     public ModelRenderer Escape3;
     public ModelRenderer EscapeFilter;
-    private InventoryCopterPack copterPack;
+    private ItemStack copterPack;
 
     private void init()
     {
@@ -169,12 +168,12 @@ public class ModelCopterPack extends ModelWearable
 
     public ModelCopterPack setCopter(ItemStack wearable)
     {
-        this.copterPack = new InventoryCopterPack(wearable);
+        this.copterPack = wearable;
         return this;
     }
     public ModelCopterPack(ItemStack wearable)
     {
-        this.copterPack = new InventoryCopterPack(wearable);
+        this.copterPack = wearable;
         init();
     }
 
@@ -185,12 +184,13 @@ public class ModelCopterPack extends ModelWearable
 
     private void renderCopterPack(Entity entity, float scale)
     {
+        InventoryCopterPack copterPack = new InventoryCopterPack(this.copterPack);
         Axis.isHidden = true;
         copterPack.openInventory();
-        if (copterPack.getParentItemStack() != null && copterPack.getParentItemStack().stackTagCompound != null && copterPack.getParentItemStack().stackTagCompound.hasKey("status"))
+        ItemStack copter = copterPack.getParentItemStack();
+        if (copter != null && copter.stackTagCompound != null && copter.stackTagCompound.hasKey("status"))
         {
-            byte mode = copterPack.getParentItemStack().stackTagCompound.getByte("status");
-            if (mode != ItemCopterPack.OFF_MODE)
+            if (copter.stackTagCompound.getByte("status") != ItemCopterPack.OFF_MODE)
             {
                 Axis.isHidden = false;
                 int degrees = 0;
@@ -210,10 +210,16 @@ public class ModelCopterPack extends ModelWearable
         renderFluidInTank(copterPack.getFuelTank(), new Vector3(0,.25f,0), new Vector3(.25f,0,.25f), new Vector3 (0f, 0.0625f, -0.0625f), TankTop);
     }
 
+   public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)
+   {
+       this.copterPack = stack;
+       render(entity, f, f1,f2,f3,f4,f5);
+   }
+
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-        isSneak = ((entity != null) && ((EntityLivingBase) entity).isSneaking());
+        isSneak = (entity != null && entity.isSneaking());
 
         if (entity == null) Axis.isHidden = true;
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);

@@ -126,13 +126,13 @@ public class ItemHose extends ItemAB
     @Override
     public int getMaxDamage()
     {
-        return Constants.basicTankCapacity;
+        return 0;
     }
 
     @Override
     public int getMaxDamage(ItemStack stack)
     {
-        return Constants.basicTankCapacity;
+        return 0;
     }
 
     // ================================================ SETTERS  =====================================================//

@@ -298,12 +298,12 @@ public class PlayerEventHandler
                 {
                     ((IBackWearableItem) backpack.getItem()).onEquippedUpdate(event.player.worldObj, event.player, backpack);
                 }
-               /* if(event.side.isServer())
+                if(event.side.isServer())
                 {
                     NBTTagCompound playerData = new NBTTagCompound();
                     prop.saveNBTData(playerData);
                     ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(playerData), (EntityPlayerMP)event.player);
-                }*/
+                }
             }
         }
     }

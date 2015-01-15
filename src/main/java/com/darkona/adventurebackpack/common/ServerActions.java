@@ -2,17 +2,18 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
+import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CopterPacket;
+import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -362,6 +363,7 @@ public class ServerActions
                 actionPerformed = true;
                 if (!player.worldObj.isRemote)
                 {
+                    ModNetwork.sendToNearby(new PlayerSoundPacket.Message(PlayerSoundPacket.COPTER_SOUND,player.getUniqueID().toString(),true), player);
                     //ModNetwork.sendToNearby(PlayerSoundPacket.makeCopterMessage(player, PlayerSoundPacket.play), player);
                 }
             } else
@@ -395,11 +397,8 @@ public class ServerActions
             {
                 player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
             }
+
         }
     }
 
-    public static void copterPackElevate(EntityPlayerMP player, ItemStack copter)
-    {
-        ItemCopterPack.elevate(player, copter);
-    }
 }

@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.client.audio;
 
 import com.darkona.adventurebackpack.item.ItemCopterPack;
-import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -9,8 +8,6 @@ import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.UUID;
 
 /**
  * Created on 16/10/2014
@@ -21,8 +18,8 @@ public class CopterPackSound extends MovingSound
 {
 
     public EntityPlayer thePlayer;
-    private boolean repeat;
-    private UUID playerID;
+    protected boolean repeat = true;
+    protected int repeatDelay = 0;
 
     protected float pitch;
 
@@ -41,8 +38,6 @@ public class CopterPackSound extends MovingSound
         volume = 0.8f;
         pitch = 1.0F;
         thePlayer = player;
-        playerID = thePlayer.getUniqueID();
-        repeat = true;
         LogHelper.info("Sound Created");
     }
 
@@ -53,18 +48,27 @@ public class CopterPackSound extends MovingSound
 
     public void setThePlayer(EntityPlayer player){
         thePlayer = player;
-        playerID = thePlayer.getUniqueID();
     }
 
     public void setRepeat(boolean newRepeat){
         LogHelper.info("Setting sound repeat");
         repeat = newRepeat;
     }
+
+
     public void setDonePlaying()
     {
+        this.repeat = false;
         this.donePlaying = true;
+        this.repeatDelay = 0;
     }
-    long messagetime = 0;
+
+    @Override
+    public boolean isDonePlaying()
+    {
+        return this.donePlaying;
+    }
+
     @Override
     public void update()
     {
@@ -74,14 +78,15 @@ public class CopterPackSound extends MovingSound
         {
             LogHelper.info("Stopped playing copter sound");
             setDonePlaying();
-            ClientProxy.soundPoolCopters.remove(playerID);
+            //ClientProxy.soundPoolCopters.remove(playerID);
         }
         if (copter != null&& copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
         {
             status = copter.getTagCompound().getByte("status");
             if (status == ItemCopterPack.OFF_MODE)
             {
-                volume = 0.0f;
+                setDonePlaying();
+                //volume = 0.0f;
             }else{
                 volume = 0.8F;
                 if(status == ItemCopterPack.HOVER_MODE)
@@ -94,7 +99,8 @@ public class CopterPackSound extends MovingSound
                 }
             }
         }else{
-            volume = 0.0F;
+            setDonePlaying();
+            //volume = 0.0F;
         }
         xPosF = (float)thePlayer.posX;
         yPosF = (float)thePlayer.posY;
@@ -118,6 +124,9 @@ public class CopterPackSound extends MovingSound
     {
         return this.pitch;
     }
+
+    @Override
+    public int getRepeatDelay(){ return this.repeatDelay; }
 
     @Override
     public AttenuationType getAttenuationType()
