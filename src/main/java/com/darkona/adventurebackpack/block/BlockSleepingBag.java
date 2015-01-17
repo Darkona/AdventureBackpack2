@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.block;
 
-import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;

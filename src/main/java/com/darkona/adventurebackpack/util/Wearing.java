@@ -1,8 +1,8 @@
 package com.darkona.adventurebackpack.util;
 
-import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.item.*;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

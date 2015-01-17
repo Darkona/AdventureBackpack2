@@ -1,8 +1,8 @@
 package com.darkona.adventurebackpack.util;
 
-import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,12 +25,14 @@ public class BackpackUtils
         BackpackProperty prop = BackpackProperty.get(player);
         if(prop.getWearable() == null)
         {
+            player.openContainer.onContainerClosed(player);
             ItemStack gimme = backpack.copy();
             prop.setWearable(gimme);
             ((IBackWearableItem)gimme.getItem()).onEquipped(player.worldObj,player,gimme);
             backpack.stackSize--;
             WearableEvent event = new WearableEvent.EquipWearableEvent(player, prop.getWearable());
             MinecraftForge.EVENT_BUS.post(event);
+            BackpackProperty.sync(player);
             return reasons.SUCCESFUL;
         }else
         {
@@ -43,6 +45,7 @@ public class BackpackUtils
         BackpackProperty prop = BackpackProperty.get(player);
         if(prop.getWearable() != null)
         {
+            player.openContainer.onContainerClosed(player);
             ItemStack gimme = prop.getWearable().copy();
             ((IBackWearableItem)gimme.getItem()).onUnequipped(player.worldObj,player,gimme);
             prop.setWearable(null);
@@ -52,6 +55,7 @@ public class BackpackUtils
             }
             WearableEvent event = new WearableEvent.UnequipWearableEvent(player, gimme);
             MinecraftForge.EVENT_BUS.post(event);
+            BackpackProperty.sync(player);
         }else
         {
             player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.impossibru"));
@@ -72,4 +76,5 @@ public class BackpackUtils
         if(!stack.hasTagCompound())stack.stackTagCompound = new NBTTagCompound();
         stack.stackTagCompound.setTag("backpackData",compound);
     }
+
 }

@@ -218,11 +218,13 @@ public class ModelBackpackArmor extends ModelWearable
 
         float offsetZ = 0.4F;
         float offsetY = 0.2F;
+
+
         for (ModelRenderer part : (List<ModelRenderer>) bipedBody.childModels)
         {
-            //  setRotationPoins(part, part.rotationPointX, part.rotationPointY + offsetY, part.rotationPointZ + offsetZ);
             setOffset(part, part.offsetX + 0, part.offsetY + offsetY, part.offsetZ + offsetZ);
         }
+
     }
 
     public ModelBackpackArmor setWearable(ItemStack wearable)
@@ -291,9 +293,9 @@ public class ModelBackpackArmor extends ModelWearable
         GL11.glPushMatrix();
         GL11.glTranslatef(bipedBody.offsetX + 0, bipedBody.offsetY + 0.2F, bipedBody.offsetZ + 0.3f);
 
-        renderFluidInTank(backpack.getLeftTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(-.17f, .1f, .13f), tankLeftTop);
+        renderFluidInTank(backpack.getLeftTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(-.17f, .05f, .2f), tankLeftTop);
 
-        renderFluidInTank(backpack.getRightTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(.41f, .1f, .13f), tankRightTop);
+        renderFluidInTank(backpack.getRightTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(.41f, .05f, .2f), tankRightTop);
         GL11.glPopMatrix();
     }
 

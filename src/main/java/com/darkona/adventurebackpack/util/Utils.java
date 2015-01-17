@@ -267,16 +267,10 @@ public class Utils
         return (int) seconds * 20;
     }
 
-    public static boolean whereTheHellAmI()
+    public static boolean inServer()
     {
         Side side = FMLCommonHandler.instance().getEffectiveSide();
-        if (side == Side.SERVER)
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
+        return side == Side.SERVER;
     }
 
     private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)

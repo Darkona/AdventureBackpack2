@@ -1,6 +1,12 @@
 {
     "nyan":{"category":"player","sounds":[{"name":"nyan","stream":"true"}]},
 	"helicopter":{"category":"player","sounds":[{"name":"helicopter","stream":"false"}]},
-	"helishort":{"category":"player","sounds":[{"name":"helicopterShort","stream":"false"}]},
-	"crossbowshot":{"category":"master","sounds":[{"name":"crossbowShot","stream":"false"}]}
+	"crossbowshot":{"category":"master","sounds":[{"name":"crossbowShot","stream":"false"}]},
+	"s_jetpackon":{"category":"player","sounds":[{"name":"s_jetpackon","stream":"false"}]},
+	"s_burst1":{"category":"player","sounds":[{"name":"s_burst1","stream":"false"}]},
+	"s_burst3":{"category":"player","sounds":[{"name":"s_burst3","stream":"false"}]},
+	"s_boiling":{"category":"player","sounds":[{"name":"s_boiling","stream":"false"}]},
+	"s_background1":{"category":"player","sounds":[{"name":"s_background1","stream":"false"}]},
+	"s_background2":{"category":"player","sounds":[{"name":"s_background2","stream":"false"}]},
+	"s_background3":{"category":"player","sounds":[{"name":"s_background3","stream":"false"}]}
 }

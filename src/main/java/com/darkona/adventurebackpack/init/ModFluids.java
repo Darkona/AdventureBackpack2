@@ -2,8 +2,8 @@ package com.darkona.adventurebackpack.init;
 
 import com.darkona.adventurebackpack.fluids.FluidMelonJuice;
 import com.darkona.adventurebackpack.fluids.FluidMilk;
-import com.darkona.adventurebackpack.fluids.FluidMushroomStew;
-import com.darkona.adventurebackpack.util.FluidUtils;
+import com.darkona.adventurebackpack.fluids.FluidMushroomSoup;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -16,12 +16,12 @@ public class ModFluids
 {
     public static FluidMilk milk;
     public static FluidMelonJuice melonJuice;
-    public static FluidMushroomStew mushroomStew;
+    public static FluidMushroomSoup mushroomStew;
     public static void init()
     {
         milk = new FluidMilk();
         melonJuice = new FluidMelonJuice();
-        mushroomStew = new FluidMushroomStew();
+        mushroomStew = new FluidMushroomSoup();
         FluidRegistry.registerFluid(milk);
         FluidRegistry.registerFluid(melonJuice);
         FluidRegistry.registerFluid(mushroomStew);
@@ -30,7 +30,7 @@ public class ModFluids
         FluidContainerRegistry.registerFluidContainer(melonJuice, new ItemStack(ModItems.melonJuiceBottle), FluidContainerRegistry.EMPTY_BOTTLE);
         FluidContainerRegistry.registerFluidContainer(mushroomStew, new ItemStack(Items.mushroom_stew), new ItemStack(Items.bowl));
 
-        FluidUtils.init();
+        GeneralReference.init();
     }
 
 }

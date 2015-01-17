@@ -5,7 +5,6 @@ import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
-import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
@@ -13,6 +12,7 @@ import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
@@ -53,7 +53,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         setUnlocalizedName("adventureBackpack");
         setFull3D();
         setMaxStackSize(1);
-        //setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
 
@@ -245,12 +244,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             modelTexture = Resources.backpackTexturesStringFromColor(stack);
         }
         return modelTexture;
-    }
-
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ,
-                                int metadata)
-    {
-        return true;
     }
 
     @Override

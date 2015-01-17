@@ -34,6 +34,7 @@ public class PlayerSoundPacket implements IMessageHandler<PlayerSoundPacket.Mess
 
     public static final byte NYAN_SOUND = 0;
     public static final byte COPTER_SOUND = 1;
+    public static final byte JETPACK_FIZZ = 2;
 
 
     @Override

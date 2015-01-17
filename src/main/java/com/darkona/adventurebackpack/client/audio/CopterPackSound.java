@@ -38,7 +38,6 @@ public class CopterPackSound extends MovingSound
         volume = 0.8f;
         pitch = 1.0F;
         thePlayer = player;
-        LogHelper.info("Sound Created");
     }
 
     public EntityPlayer getThePlayer()
@@ -76,9 +75,7 @@ public class CopterPackSound extends MovingSound
         byte status = 0;
        if(thePlayer == null || thePlayer.worldObj == null)
         {
-            LogHelper.info("Stopped playing copter sound");
             setDonePlaying();
-            //ClientProxy.soundPoolCopters.remove(playerID);
         }
         if (copter != null&& copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
         {
@@ -89,7 +86,6 @@ public class CopterPackSound extends MovingSound
             }else{
                 if(status == ItemCopterPack.HOVER_MODE)
                 {
-
                     pitch = (thePlayer.motionY == 0) ? 1.0f : (thePlayer.motionY > 0) ? 1.2f : 0.8f;
                 }
                 if(status == ItemCopterPack.NORMAL_MODE)
@@ -105,7 +101,6 @@ public class CopterPackSound extends MovingSound
             }
         }else{
             setDonePlaying();
-            //volume = 0.0F;
         }
         xPosF = (float)thePlayer.posX;
         yPosF = (float)thePlayer.posY;

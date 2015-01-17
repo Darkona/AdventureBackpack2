@@ -6,7 +6,7 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
-import com.darkona.adventurebackpack.util.FluidUtils;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,21 +34,12 @@ public class GuiCopterPack extends GuiWithTanks
 
     public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
     {
-        super(new ContainerCopter(player, inv));
+        super(new ContainerCopter(player, inv, wearing));
         this.inventory = inv;
         xSize = 176;
         ySize = 166;
         this.wearing = wearing;
         this.player = player;
-    }
-
-    /**
-     * Called from the main game loop to update the screen.
-     */
-    @Override
-    public void updateScreen()
-    {
-        super.updateScreen();
     }
 
     @Override
@@ -92,7 +83,6 @@ public class GuiCopterPack extends GuiWithTanks
         GL11.glDisable(GL11.GL_BLEND);
         inventory.openInventory();
         FluidTank fuel = inventory.getFuelTank();
-        //zLevel += 5;
         fuelTank.draw(this, fuel);
         FluidStack fuelStack = fuel.getFluid();
 
@@ -108,7 +98,7 @@ public class GuiCopterPack extends GuiWithTanks
 
         if(fuelStack!=null)
         {
-            Float f = FluidUtils.fuelValues.get(name);
+            Float f = GeneralReference.liquidFuels.get(name);
             String conLev = (f != null) ? f.toString() : "0";
             if(conLev != null && !conLev.isEmpty())
                 fontRendererObj.drawString("Consumption: " + conLev , 1 + offsetX, 40 + offsetY, 0x373737, false);
@@ -164,5 +154,15 @@ public class GuiCopterPack extends GuiWithTanks
             player.closeScreen();
         }
         super.keyTyped(key, keycode);
+    }
+
+    @Override
+    public void onGuiClosed()
+    {
+        if (inventory != null)
+        {
+            inventory.closeInventory();
+        }
+        super.onGuiClosed();
     }
 }

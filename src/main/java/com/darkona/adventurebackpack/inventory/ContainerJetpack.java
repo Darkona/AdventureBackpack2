@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 /**
  * Created on 15/01/2015
@@ -20,13 +21,15 @@ public class ContainerJetpack extends Container implements IWearableContainer
     PLAYER_INV_START = PLAYER_HOT_END + 1,
     PLAYER_INV_END = PLAYER_INV_START + 26,
     JETPACK_INV_START = PLAYER_INV_END + 1;
+    boolean wearing;
 
-    public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inv)
+    public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inv, boolean wearing)
     {
         this.player = player;
         this.inv = inv;
         makeSlots(player.inventory);
         inv.openInventory();
+        this.wearing = wearing;
     }
 
     private void bindPlayerInventory(InventoryPlayer invPlayer)
@@ -55,14 +58,14 @@ public class ContainerJetpack extends Container implements IWearableContainer
     {
 
         bindPlayerInventory(invPlayer);
-        int slot = 0;
+
         //Bucket Slots
         // bucket in
-        addSlotToContainer(new SlotFluid(inv, slot++, 29, 21));
+        addSlotToContainer(new SlotFluid(inv, InventorySteamJetpack.BUCKET_IN_SLOT, 30, 22));
         // bucket out
-        addSlotToContainer(new SlotFluid(inv, slot++, 29, 51));
-
-        addSlotToContainer(new Slot(inv,slot++, 76, 63));
+        addSlotToContainer(new SlotFluid(inv, InventorySteamJetpack.BUCKET_OUT_SLOT, 30, 52));
+        // fuel
+        addSlotToContainer(new Slot(inv,InventorySteamJetpack.FUEL_SLOT, 77, 64));
 
     }
     @Override
@@ -71,6 +74,80 @@ public class ContainerJetpack extends Container implements IWearableContainer
         return true;
     }
 
+    @Override
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
+    }
 
 
+
+    public void onContainerClosed(EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+        if (!player.worldObj.isRemote)
+        {
+            for (int i = 0; i < 1; i++)
+            {
+                ItemStack itemstack = this.inv.getStackInSlotOnClosing(i);
+                if (itemstack != null)
+                {
+                    inv.setInventorySlotContents(i, null);
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
+                }
+            }
+        }
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int i)
+    {
+        Slot slot = getSlot(i);
+        ItemStack result = null;
+
+        if (slot != null && slot.getHasStack())
+        {
+            ItemStack stack = slot.getStack();
+            result = stack.copy();
+            if (i >= 36)
+            {
+                if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
+                {
+                    return null;
+                }
+            }
+            if (i < 36)
+            {
+                if (SlotFluid.valid(stack))
+                {
+                    if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 3, false))
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            if (stack.stackSize == 0)
+            {
+                slot.putStack(null);
+            } else
+            {
+                slot.onSlotChanged();
+            }
+
+            if (stack.stackSize == result.stackSize)
+            {
+                return null;
+            }
+            slot.onPickupFromSlot(player, stack);
+            //inventory.onInventoryChanged();
+        }
+        return result;
+    }
+
+    @Override
+    public void refresh()
+    {
+
+    }
 }

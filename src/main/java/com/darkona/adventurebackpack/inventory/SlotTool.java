@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.inventory;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.*;
 
 /**
@@ -11,7 +10,7 @@ import net.minecraft.item.*;
  *
  * @author Darkona
  */
-public class SlotTool extends Slot
+public class SlotTool extends SlotAdventureBackpack
 {
 
     public SlotTool(IInventory inventory, int id, int x, int y)
@@ -108,4 +107,6 @@ public class SlotTool extends Slot
 
         return valid;
     }
+
+
 }

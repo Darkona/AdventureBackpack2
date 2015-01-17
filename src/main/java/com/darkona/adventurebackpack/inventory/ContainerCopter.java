@@ -21,12 +21,16 @@ public class ContainerCopter extends Container implements IWearableContainer
             PLAYER_INV_START = PLAYER_HOT_END + 1,
             PLAYER_INV_END = PLAYER_INV_START + 26,
             COPTER_INV_START = PLAYER_INV_END + 1;
+    EntityPlayer player;
+    boolean wearing;
 
-    public ContainerCopter(EntityPlayer player, InventoryCopterPack copterPack)
+    public ContainerCopter(EntityPlayer player, InventoryCopterPack copterPack,boolean wearing)
     {
         this.inventory = copterPack;
         makeSlots(player.inventory);
         inventory.openInventory();
+        this.player = player;
+        this.wearing = wearing;
     }
 
     private void bindPlayerInventory(InventoryPlayer invPlayer)
@@ -90,101 +94,17 @@ public class ContainerCopter extends Container implements IWearableContainer
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && !wearing)
+        {
+            return null;
+        }
         return super.slotClick(slot, button, flag, player);
     }
 
-    @Override
-    protected boolean mergeItemStack(ItemStack stack, int minSlot, int maxSlot, boolean par4)
-    {
-        boolean flag1 = false;
-        int slotInit = minSlot;
-
-        if (par4)
-        {
-            slotInit = maxSlot - 1;
-        }
-
-        Slot slot;
-        ItemStack itemstack1;
-
-        if (stack.isStackable())
-        {
-            while (stack.stackSize > 0 && (!par4 && slotInit < maxSlot || par4 && slotInit >= minSlot))
-            {
-                slot = (Slot) this.inventorySlots.get(slotInit);
-                itemstack1 = slot.getStack();
-
-                if (itemstack1 != null && itemstack1.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, itemstack1))
-                {
-
-                    int newStackSize = itemstack1.stackSize + stack.stackSize;
-
-                    if (newStackSize <= stack.getMaxStackSize())
-                    {
-                        stack.stackSize = 0;
-                        itemstack1.stackSize = newStackSize;
-                        slot.onSlotChanged();
-                        flag1 = true;
-                    } else if (itemstack1.stackSize < stack.getMaxStackSize())
-                    {
-                        stack.stackSize -= stack.getMaxStackSize() - itemstack1.stackSize;
-                        itemstack1.stackSize = stack.getMaxStackSize();
-                        slot.onSlotChanged();
-                        flag1 = true;
-                    }
-                }
-
-                if (par4)
-                {
-                    --slotInit;
-                } else
-                {
-                    ++slotInit;
-                }
-            }
-        }
-
-        if (stack.stackSize > 0)
-        {
-            if (par4)
-            {
-                slotInit = maxSlot - 1;
-            } else
-            {
-                slotInit = minSlot;
-            }
-
-            while (!par4 && slotInit < maxSlot || par4 && slotInit >= minSlot)
-            {
-                slot = (Slot) this.inventorySlots.get(slotInit);
-                itemstack1 = slot.getStack();
-
-                if (itemstack1 == null)
-                {
-                    slot.putStack(stack.copy());
-                    slot.onSlotChanged();
-                    stack.stackSize = 0;
-                    flag1 = true;
-                    break;
-                }
-
-                if (par4)
-                {
-                    --slotInit;
-                } else
-                {
-                    ++slotInit;
-                }
-            }
-        }
-
-        return flag1;
-    }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
-        // TODO Fix the shit disrespecting slot accepting itemstack.
         Slot slot = getSlot(i);
         ItemStack result = null;
 
@@ -223,8 +143,20 @@ public class ContainerCopter extends Container implements IWearableContainer
                 return null;
             }
             slot.onPickupFromSlot(player, stack);
-            //inventory.onInventoryChanged();
         }
         return result;
+    }
+
+    @Override
+    public void detectAndSendChanges()
+    {
+        inventory.openInventory();
+        super.detectAndSendChanges();
+    }
+
+    @Override
+    public void refresh()
+    {
+        inventory.openInventory();
     }
 }

@@ -66,28 +66,28 @@ public class GuiHandler implements IGuiHandler
                 inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
                 if (inv2.getParentItemStack() != null)
                 {
-                    return new ContainerCopter(player, inv2);
+                    return new ContainerCopter(player, inv2,false);
                 }
                 break;
             case COPTER_WEARING:
                 inv2 = new InventoryCopterPack(Wearing.getWearingCopter(player));
                 if (inv2.getParentItemStack() != null)
                 {
-                    return new ContainerCopter(player, inv2);
+                    return new ContainerCopter(player, inv2,true);
                 }
                 break;
             case JETPACK_HOLDING:
                 inv3 = new InventorySteamJetpack(Wearing.getHoldingSteam(player));
                 if (inv3.getParentItemStack() != null)
                 {
-                    return new ContainerJetpack(player, inv3);
+                    return new ContainerJetpack(player, inv3,false);
                 }
                 break;
             case JETPACK_WEARING:
                 inv3 = new InventorySteamJetpack(Wearing.getWearingSteam(player));
                 if (inv3.getParentItemStack() != null)
                 {
-                    return new ContainerJetpack(player, inv3);
+                    return new ContainerJetpack(player, inv3,true);
                 }
                 break;
             default:

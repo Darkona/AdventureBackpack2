@@ -1,8 +1,15 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.util.FluidUtils;
+import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 /**
@@ -15,20 +22,22 @@ public class InventorySteamJetpack implements IInventoryTanks
     private FluidTank waterTank = new FluidTank(6000);
     private FluidTank steamTank = new FluidTank(12000);
     private ItemStack[] inventory = new ItemStack[3];
-
-
     private int temperature = 0;
-
-
-
     private byte status = 0;
     private int burnTicks = 0;
     private ItemStack containerStack;
     private long systemTime = 0;
+    private boolean boiling = false;
+    private boolean leaking = false;
+    private boolean inUse = false;
 
-    public InventorySteamJetpack(ItemStack jetpack)
+    public static final int BUCKET_IN_SLOT = 0;
+    public static final int BUCKET_OUT_SLOT = 1;
+    public static final int FUEL_SLOT = 2;
+
+    public InventorySteamJetpack(final ItemStack jetpack)
     {
-        containerStack = jetpack;
+        this.containerStack = jetpack;
         if (!jetpack.hasTagCompound())
         {
             jetpack.stackTagCompound = new NBTTagCompound();
@@ -55,7 +64,10 @@ public class InventorySteamJetpack implements IInventoryTanks
             status = jetpackData.getByte("status");
             burnTicks = jetpackData.getInteger("burnTicks");
             systemTime = jetpackData.getLong("systemTime");
-            inventory[3] = ItemStack.loadItemStackFromNBT(jetpackData.getCompoundTag("fuel"));
+            inUse = jetpackData.getBoolean("inUse");
+            boiling = jetpackData.getBoolean("boiling");
+            leaking = jetpackData.getBoolean("leaking");
+            if(jetpackData.hasKey("fuel"))inventory[2] = ItemStack.loadItemStackFromNBT(jetpackData.getCompoundTag("fuel"));
         }
     }
 
@@ -69,8 +81,10 @@ public class InventorySteamJetpack implements IInventoryTanks
         jetpackData.setByte("status", status);
         jetpackData.setInteger("burnTicks", burnTicks);
         jetpackData.setLong("systemTime",systemTime);
-        jetpackData.setTag("fuel",inventory[2].writeToNBT(new NBTTagCompound()));
-
+        jetpackData.setBoolean("inUse", inUse);
+        jetpackData.setBoolean("boiling",boiling);
+        jetpackData.setBoolean("leaking",leaking);
+        if(inventory[2]!=null)jetpackData.setTag("fuel",inventory[2].writeToNBT(new NBTTagCompound()));
         compound.setTag("jetpackData",jetpackData);
     }
 
@@ -82,14 +96,116 @@ public class InventorySteamJetpack implements IInventoryTanks
     }
 
     @Override
-    public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
+    public void dirtyInventory()
     {
 
     }
 
     @Override
+    public void dirtyTanks()
+    {
+
+    }
+
+    public void consumeFuel()
+    {
+        if(inventory[FUEL_SLOT] != null && TileEntityFurnace.getItemBurnTime(inventory[FUEL_SLOT]) > 0 && burnTicks <= 0)
+        {
+            LogHelper.info("Consuming fuel for value in ticks" + TileEntityFurnace.getItemBurnTime(inventory[FUEL_SLOT]));
+            burnTicks = TileEntityFurnace.getItemBurnTime(inventory[FUEL_SLOT]);
+            --inventory[FUEL_SLOT].stackSize;
+
+            if (inventory[FUEL_SLOT].stackSize == 0)
+            {
+                inventory[FUEL_SLOT] = inventory[FUEL_SLOT].getItem().getContainerItem(inventory[FUEL_SLOT]);
+            }
+        }
+        closeInventory();
+    }
+
+    public void runBoiler()
+    {
+        if(temperature < 200 && burnTicks > 0)
+        {
+            int heatFactor = 200;
+            if(burnTicks % heatFactor == 0)
+            {
+                if(burnTicks > 0)
+                {
+                    ++temperature;
+                    --burnTicks;
+                    LogHelper.info("Burnticks is: " + burnTicks);
+                    LogHelper.info("Boiler is heating up temperature is: " + temperature);
+                }
+
+            }
+
+        }else
+        {
+            --temperature;
+            LogHelper.info("Burnticks is: " + burnTicks);
+            LogHelper.info("Boiler is cooling down temperature is: " + temperature);
+        }
+
+        if(temperature > 100)
+        {
+            if(!boiling)
+            {
+                boiling = true;
+                LogHelper.info("Boiler boiling");
+                //TODO start playing boiling sound
+            }
+            if(steamTank.getFluidAmount() < steamTank.getCapacity())
+            {
+                if(leaking)
+                {
+                    leaking = false;
+                }
+                int steam = waterTank.drain((temperature/100),true).amount;
+                steamTank.fill(new FluidStack(FluidRegistry.LAVA, steam * 4), true);
+            }else
+            {
+                if(!leaking)
+                {
+                    leaking = true;
+                }
+            }
+        }
+        else
+        {
+            if(boiling)
+            {
+                boiling = false;
+            }
+        }
+        closeInventory();
+    }
+
+    @Override
+    public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
+    {
+        if (slot > inventory.length) return;
+        inventory[slot] = stack;
+        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        {
+            stack.stackSize = this.getInventoryStackLimit();
+        }
+    }
+
+    @Override
     public ItemStack decrStackSizeNoSave(int slot, int amount)
     {
+        if (slot < inventory.length && inventory[slot] != null)
+        {
+            if (inventory[slot].stackSize > amount)
+            {
+                ItemStack result = inventory[slot].splitStack(amount);
+                return result;
+            }
+            ItemStack stack = inventory[slot];
+            setInventorySlotContentsNoSave(slot, null);
+            return stack;
+        }
         return null;
     }
 
@@ -106,23 +222,60 @@ public class InventorySteamJetpack implements IInventoryTanks
     }
 
     @Override
-    public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_)
+    public ItemStack decrStackSize(int slot, int quantity)
     {
-        return null;
+        ItemStack itemstack = getStackInSlot(slot);
+
+        if (itemstack != null)
+        {
+            if (itemstack.stackSize <= quantity)
+            {
+                setInventorySlotContents(slot, null);
+            } else
+            {
+                itemstack = itemstack.splitStack(quantity);
+                onInventoryChanged();
+            }
+        }
+        return itemstack;
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int p_70304_1_)
+    public ItemStack getStackInSlotOnClosing(int i)
     {
-        return null;
+        return (i == 0 || i== 1) ? inventory[i] : null;
     }
 
     @Override
-    public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_)
+    public void setInventorySlotContents(int slot, ItemStack stack)
     {
-
+        inventory[slot] = stack;
+        if (stack != null && stack.stackSize > getInventoryStackLimit())
+        {
+            stack.stackSize = getInventoryStackLimit();
+        }
+        onInventoryChanged();
     }
 
+    public void onInventoryChanged()
+    {
+        for (int i = 0; i < inventory.length; i++)
+        {
+            if (i == 0)
+            {
+                ItemStack container = getStackInSlot(i);
+                if(FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
+                {
+                    InventoryActions.transferContainerTank(this, waterTank, i);
+                }else
+                if(FluidContainerRegistry.isEmptyContainer(container) && waterTank.getFluid()!=null && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
+                {
+                    InventoryActions.transferContainerTank(this, waterTank, i);
+                }
+            }
+        }
+        closeInventory();
+    }
     @Override
     public String getInventoryName()
     {
@@ -162,14 +315,18 @@ public class InventorySteamJetpack implements IInventoryTanks
     @Override
     public void closeInventory()
     {
-        saveToNBT(containerStack.stackTagCompound);
+        if(Utils.inServer()){
+            LogHelper.info("saving inventory");
+            saveToNBT(containerStack.stackTagCompound);
+        }
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if(slot < 2)return SlotFluid.valid(stack);
-        return true;
+        if(slot == BUCKET_IN_SLOT)return SlotFluid.valid(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.WATER);
+        if(slot == FUEL_SLOT)return TileEntityFurnace.isItemFuel(stack);
+        return false;
     }
 
     public ItemStack getParentItemStack()
@@ -206,5 +363,85 @@ public class InventorySteamJetpack implements IInventoryTanks
     public void setTemperature(int temperature)
     {
         this.temperature = temperature;
+    }
+
+    public boolean isInUse()
+    {
+        return inUse;
+    }
+
+    public void setInUse(boolean inUse)
+    {
+        this.inUse = inUse;
+    }
+
+    public boolean isBoiling()
+    {
+        return boiling;
+    }
+
+    public void setBoiling(boolean boiling)
+    {
+        this.boiling = boiling;
+    }
+
+    public boolean isLeaking()
+    {
+        return leaking;
+    }
+
+    public void setLeaking(boolean leaking)
+    {
+        this.leaking = leaking;
+    }
+
+    public long getSystemTime()
+    {
+        return systemTime;
+    }
+
+    public void setSystemTime(long systemTime)
+    {
+        this.systemTime = systemTime;
+    }
+
+    public ItemStack getContainerStack()
+    {
+        return containerStack;
+    }
+
+    public void setContainerStack(ItemStack containerStack)
+    {
+        this.containerStack = containerStack;
+    }
+
+    public int getBurnTicks()
+    {
+        return burnTicks;
+    }
+
+    public void setBurnTicks(int burnTicks)
+    {
+        this.burnTicks = burnTicks;
+    }
+
+    public ItemStack[] getInventory()
+    {
+        return inventory;
+    }
+
+    public void setInventory(ItemStack[] inventory)
+    {
+        this.inventory = inventory;
+    }
+
+    public void setSteamTank(FluidTank steamTank)
+    {
+        this.steamTank = steamTank;
+    }
+
+    public void setWaterTank(FluidTank waterTank)
+    {
+        this.waterTank = waterTank;
     }
 }

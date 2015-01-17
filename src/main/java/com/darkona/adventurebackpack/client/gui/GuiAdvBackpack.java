@@ -194,8 +194,6 @@ public class GuiAdvBackpack extends GuiWithTanks
 
     }
 
-
-
     @Override
     public float getZLevel()
     {
@@ -252,13 +250,6 @@ public class GuiAdvBackpack extends GuiWithTanks
             }
         }
         super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    protected void mouseMovedOrUp(int mouseX, int mouseY, int par3)
-    {
-
-        super.mouseMovedOrUp(mouseX, mouseY, par3);
     }
 
     @Override

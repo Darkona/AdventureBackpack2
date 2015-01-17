@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.FluidUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -46,6 +47,7 @@ public class InventoryCopterPack implements IInventoryTanks
     public void consumeFuel(int quantity)
     {
         fuelTank.drain(quantity, true);
+        dirtyTanks();
     }
 
     public boolean canConsumeFuel(int quantity)
@@ -78,7 +80,6 @@ public class InventoryCopterPack implements IInventoryTanks
             } else
             {
                 itemstack = itemstack.splitStack(quantity);
-                onInventoryChanged();
             }
         }
         return itemstack;
@@ -98,7 +99,16 @@ public class InventoryCopterPack implements IInventoryTanks
         {
             stack.stackSize = getInventoryStackLimit();
         }
-        onInventoryChanged();
+        if(FluidContainerRegistry.isFilledContainer(stack) && GeneralReference.isValidFuel(FluidContainerRegistry.getFluidForFilledItem(stack).getFluid()))
+        {
+            InventoryActions.transferContainerTank(this, fuelTank, 0);
+        }else
+        if(FluidContainerRegistry.isEmptyContainer(stack) && fuelTank.getFluid()!=null && FluidUtils.isContainerForFluid(stack, fuelTank.getFluid().getFluid()))
+        {
+            InventoryActions.transferContainerTank(this, fuelTank, 0);
+        }
+        dirtyTanks();
+        dirtyInventory();
     }
 
     @Override
@@ -122,7 +132,26 @@ public class InventoryCopterPack implements IInventoryTanks
     @Override
     public void markDirty()
     {
+        containerStack.stackTagCompound.setTag("fuelTank", fuelTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.setByte("status", status);
+        containerStack.stackTagCompound.setInteger("tickCounter", this.tickCounter);
+    }
 
+    @Override
+    public void dirtyTanks()
+    {
+        containerStack.stackTagCompound.setTag("fuelTank", fuelTank.writeToNBT(new NBTTagCompound()));
+    }
+
+    @Override
+    public void dirtyInventory()
+    {
+
+    }
+
+    public void dirtyCounter()
+    {
+        containerStack.stackTagCompound.setInteger("tickCounter", this.tickCounter);
     }
 
     @Override
@@ -157,21 +186,9 @@ public class InventoryCopterPack implements IInventoryTanks
 
     public void onInventoryChanged()
     {
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (i == 0)
-            {
-                ItemStack container = getStackInSlot(i);
-                if(FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isValidFuel(FluidContainerRegistry.getFluidForFilledItem(container).getFluid()))
-                {
-                    InventoryActions.transferContainerTank(this, fuelTank, i);
-                }else
-                if(FluidContainerRegistry.isEmptyContainer(container) && fuelTank.getFluid()!=null && FluidUtils.isContainerForFluid(container, fuelTank.getFluid().getFluid()))
-                {
-                    InventoryActions.transferContainerTank(this, fuelTank, i);
-                }
-            }
-        }
+
+        ItemStack container = getStackInSlot(0);
+
         closeInventory();
     }
 
@@ -208,10 +225,6 @@ public class InventoryCopterPack implements IInventoryTanks
         return this.containerStack;
     }
 
-    public void updateTankSlots(FluidTank tank, int slotIN)
-    {
-
-    }
 
     public int getTickCounter()
     {
@@ -255,5 +268,10 @@ public class InventoryCopterPack implements IInventoryTanks
     {
         FluidTank[] tanks = {fuelTank};
         return tanks;
+    }
+
+    public void setStatus(byte status)
+    {
+        this.status = status;
     }
 }

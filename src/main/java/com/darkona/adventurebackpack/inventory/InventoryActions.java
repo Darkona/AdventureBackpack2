@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -104,13 +105,12 @@ public class InventoryActions
         return false;
     }
 
-    public static void consumeItemInBackpack(IInventoryAdventureBackpack backpack, Item item)
+    public static void consumeItemInInventory(IInventory backpack, Item item)
     {
-        ItemStack[] inventory = backpack.getInventory();
         int i = -1;
         for (int j = 0; j < Constants.inventorySize - 7; ++j)
         {
-            if (backpack.getInventory()[j] != null && backpack.getInventory()[j].getItem() == item)
+            if (backpack.getStackInSlot(j) != null && backpack.getStackInSlot(j).getItem() == item)
             {
                 i = j;
                 break;
@@ -118,10 +118,7 @@ public class InventoryActions
         }
         if (i >= 0)
         {
-            if (--inventory[i].stackSize <= 0)
-            {
-                inventory[i] = null;
-            }
+           backpack.decrStackSize(i,1);
         }
     }
 

@@ -4,8 +4,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
-import java.util.HashMap;
-
 /**
  * Created on 17/10/2014
  *
@@ -13,18 +11,6 @@ import java.util.HashMap;
  */
 public class FluidUtils
 {
-
-    public static HashMap<String, Float> fuelValues = new HashMap<String, Float>();
-
-    public static void init()
-    {
-        fuelValues.put("fuel",1.0f);
-        fuelValues.put("oil",1.5f);
-        fuelValues.put("bioethanol",1.2f);
-        fuelValues.put("biofuel",1.0f);
-        fuelValues.put("creosote",1.8f);
-        fuelValues.put("coal",0.8f);
-    }
 
     public static boolean isContainerForFluid(ItemStack container, Fluid fluid)
     {
@@ -51,20 +37,6 @@ public class FluidUtils
                     )
             {
                 return true;
-            }
-        }
-        return false;
-    }
-    public static boolean isValidFuel(Fluid fluid)
-    {
-        if(fluid != null)
-        {
-            for(String fuel : fuelValues.keySet())
-            {
-                if(fuel.equals(fluid.getName()))
-                {
-                    return true;
-                }
             }
         }
         return false;

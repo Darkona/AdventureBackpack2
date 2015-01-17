@@ -61,11 +61,11 @@ public class RendererItemAdventureBackpack implements IItemRenderer
         return false;
     }
 
-    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
+    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack backpack, Object... data)
     {
-        InventoryBackpack inv = new InventoryBackpack(item);
+        InventoryBackpack inv = new InventoryBackpack(backpack);
         ResourceLocation modelTexture;
-        if (BackpackNames.getBackpackColorName(item).equals("Standard"))
+        if (BackpackNames.getBackpackColorName(backpack).equals("Standard"))
         {
             modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
         } else

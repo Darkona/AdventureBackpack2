@@ -17,4 +17,8 @@ public interface IInventoryTanks extends IAsynchronousInventory
     public void saveToNBT(NBTTagCompound compound);
 
     public FluidTank[] getTanksArray();
+
+    public void dirtyInventory();
+
+    public void dirtyTanks();
 }

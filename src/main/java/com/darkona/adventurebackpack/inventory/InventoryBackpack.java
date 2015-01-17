@@ -38,7 +38,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         if(!backpack.hasTagCompound())
         {
             backpack.stackTagCompound = new NBTTagCompound();
-            saveToNBT(containerStack.stackTagCompound);
+            saveToNBT(backpack.stackTagCompound);
         }
         loadFromNBT(backpack.stackTagCompound);
     }
@@ -104,17 +104,17 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     }
 
     @Override
-    public void saveTanks()
+    public void saveTanks(NBTTagCompound compound)
     {
-        containerStack.stackTagCompound.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
+        compound.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
+        compound.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
     }
 
     @Override
-    public void loadTanks()
+    public void loadTanks(NBTTagCompound compound)
     {
-        leftTank.readFromNBT(containerStack.stackTagCompound.getCompoundTag("leftTank"));
-        rightTank.readFromNBT(containerStack.stackTagCompound.getCompoundTag("rightTank"));
+        leftTank.readFromNBT(compound.getCompoundTag("leftTank"));
+        rightTank.readFromNBT(compound.getCompoundTag("rightTank"));
     }
 
     @Override
@@ -126,22 +126,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void consumeInventoryItem(Item item)
     {
-        InventoryActions.consumeItemInBackpack(this, item);
-        onInventoryChanged();
+        InventoryActions.consumeItemInInventory(this, item);
     }
 
-    @Override
-    public void onInventoryChanged()
-    {
-        updateTankSlots();
-        saveChanges();
-    }
-
-    @Override
-    public void saveChanges()
-    {
-        saveToNBT(containerStack.stackTagCompound);
-    }
 
     @Override
     public boolean isSBDeployed()
@@ -164,7 +151,15 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         {
             stack.stackSize = this.getInventoryStackLimit();
         }
-        onInventoryChanged();
+        /*
+        if(slot == Constants.bucketInLeft ||slot == Constants.bucketInRight)
+        {
+           if(updateTankSlots()){
+               dirtyTanks();
+           }
+        }
+        */
+        dirtyInventory();
     }
 
     @Override
@@ -190,7 +185,6 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
             } else
             {
                 itemstack = itemstack.splitStack(quantity);
-                onInventoryChanged();
             }
         }
         return itemstack;
@@ -214,20 +208,11 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
 
     public boolean updateTankSlots()
     {
-        boolean changed = false;
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (i == Constants.bucketInLeft && inventory[i] != null)
-            {
-                changed = InventoryActions.transferContainerTank(this, getLeftTank(), i);
-            }
-
-            if (i == Constants.bucketInRight && inventory[i] != null)
-            {
-                changed = InventoryActions.transferContainerTank(this, getRightTank(), i);
-            }
-        }
-        return changed;
+        boolean answer =  InventoryActions.transferContainerTank(this, getLeftTank(), Constants.bucketInLeft) ||
+                InventoryActions.transferContainerTank(this, getRightTank(), Constants.bucketInRight);
+        dirtyInventory();
+        dirtyTanks();
+        return answer;
     }
 
     @Override
@@ -259,6 +244,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
+       // if(Utils.inServer())
+       // {
         NBTTagCompound backpackData = new NBTTagCompound();
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
@@ -281,6 +268,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
 
         compound.setTag("backpackData",backpackData);
+        //}
     }
 
     @Override
@@ -320,6 +308,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void markDirty()
     {
+        saveToNBT(containerStack.stackTagCompound);
     }
 
     @Override
@@ -337,7 +326,10 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void closeInventory()
     {
-        saveChanges();
+       /* if(Utils.inServer())
+        {*/
+        saveToNBT(containerStack.stackTagCompound);
+       // }
     }
 
     @Override
@@ -365,6 +357,39 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     public ItemStack getStackInSlot(int slot)
     {
         return inventory[slot];
+    }
+
+    public void dirtyTanks()
+    {
+        containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("leftTank",leftTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("rightTank",rightTank.writeToNBT(new NBTTagCompound()));
+    }
+
+    public void dirtyTime()
+    {
+        containerStack.stackTagCompound.getCompoundTag("backpackData").setInteger("lastTime",lastTime);
+    }
+
+    public void dirtyExtended()
+    {
+        containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("extendedProperties",extendedProperties);
+    }
+
+    public void dirtyInventory()
+    {
+        NBTTagList items = new NBTTagList();
+        for (int i = 0; i < inventory.length; i++)
+        {
+            ItemStack stack = inventory[i];
+            if (stack != null)
+            {
+                NBTTagCompound item = new NBTTagCompound();
+                item.setByte("Slot", (byte) i);
+                stack.writeToNBT(item);
+                items.appendTag(item);
+            }
+        }
+        containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("ABPItems", items);
     }
 }
 

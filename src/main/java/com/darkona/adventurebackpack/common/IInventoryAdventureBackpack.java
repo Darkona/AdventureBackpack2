@@ -33,21 +33,21 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
 
     public boolean isSpecial();
 
-    public void saveTanks();
+    public void saveTanks(NBTTagCompound compound);
 
-    public void loadTanks();
-
-
+    public void loadTanks(NBTTagCompound compound);
 
     public boolean hasItem(Item item);
 
     void consumeInventoryItem(Item item);
 
-    void onInventoryChanged();
-
-    void saveChanges();
-
     boolean isSBDeployed();
 
     void setLastTime(int time);
+
+
+    public void dirtyTime();
+
+    public void dirtyExtended();
+
 }

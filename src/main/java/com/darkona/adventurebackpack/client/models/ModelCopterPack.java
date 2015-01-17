@@ -216,7 +216,7 @@ public class ModelCopterPack extends ModelWearable
         }
         this.Base.render(scale);
         this.Axis.render(scale);
-        renderFluidInTank(copterInv.getFuelTank(), new Vector3(0, .25f, 0), new Vector3(.25f, 0, .25f), new Vector3(0f, 0.0625f, -0.0625f), TankTop);
+        renderFluidInTank(copterInv.getFuelTank(), new Vector3(0, .25f, 0), new Vector3(.25f, 0, .25f), new Vector3(0f, 0.0625f, 0.0625f), TankTop);
     }
 
    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)

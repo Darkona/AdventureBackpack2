@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.client.Visuals;
 import com.darkona.adventurebackpack.client.audio.CopterPackSound;
+import com.darkona.adventurebackpack.client.audio.JetpackSoundOn;
 import com.darkona.adventurebackpack.client.audio.NyanMovingSound;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
@@ -50,33 +51,14 @@ public class ClientActions
             case PlayerSoundPacket.COPTER_SOUND:
                 if (ConfigHandler.ALLOW_COPTER_SOUND)
                 {
-                    /*CopterPackSound tucutucu = ClientProxy.getCopterSound(player);
-                    if(tucutucu !=null)
-                    {
-                        if(tucutucu.getThePlayer() == null)
-                        {
-                            LogHelper.info("Sound player was null, setting player");
-                            tucutucu.setThePlayer(player);
-                        }
-                        if(!snd.isSoundPlaying(tucutucu))
-                        {
-                            ClientProxy.putCopterSound(player, tucutucu);
-                            snd.playSound(tucutucu);
-                            LogHelper.info("Sound wasn't playing, playing now.");
-                        }
-
-                    }else
-                    {
-                        LogHelper.info("Creating sound");
-                        tucutucu = new CopterPackSound(player);
-                        snd.playSound(tucutucu);
-                    }*/
                     snd.playSound(new CopterPackSound(player));
                 }
                 break;
             case PlayerSoundPacket.NYAN_SOUND:
-                NyanMovingSound nyaaan = new NyanMovingSound(player);
-                    snd.playSound(nyaaan);
+                snd.playSound(new NyanMovingSound(player));
+                break;
+            case PlayerSoundPacket.JETPACK_FIZZ:
+                snd.playSound(new JetpackSoundOn(player));
                 break;
         }
     }

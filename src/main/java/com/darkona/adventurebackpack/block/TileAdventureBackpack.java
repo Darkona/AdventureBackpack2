@@ -52,11 +52,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return luminosity;
     }
 
-    public void setLuminosity(int luminosity)
-    {
-        this.luminosity = luminosity;
-    }
-
     public int getLastTime()
     {
         return lastTime;
@@ -137,24 +132,22 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             {
                 world.func_147480_a(sbx, sby, sbz, false);
                 this.sleepingBagDeployed = false;
-                //LogHelper.info("removeSleepingBag() ==> SleepingBagDeployed is:" + sleepingBagDeployed);
-                saveChanges();
+                markDirty();
                 return true;
             }
         } else
         {
             this.sleepingBagDeployed = false;
-            saveChanges();
+            markDirty();
         }
         return false;
     }
-
 
     //=====================================================GETTERS====================================================//
 
     public String getColorName()
     {
-        return this.colorName;
+        return colorName;
     }
 
     @Override
@@ -207,18 +200,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         this.colorName = string;
     }
 
-    public void setLeftTank(FluidTank leftTank)
-    {
-        this.leftTank = leftTank;
-        markDirty();
-    }
-
-    public void setRightTank(FluidTank rightTank)
-    {
-        this.rightTank = rightTank;
-        markDirty();
-    }
-
     //=====================================================BOOLEANS===================================================//
     @Override
     public boolean hasCustomInventoryName()
@@ -247,33 +228,26 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        if(compound.hasKey("backpackTileData"))
-        {
-            NBTTagCompound backpackTileData = compound.getCompoundTag("backpackTileData");
-            sleepingBagDeployed = backpackTileData.getBoolean("sleepingbag");
-            sbx = backpackTileData.getInteger("sbx");
-            sby = backpackTileData.getInteger("sby");
-            sbz = backpackTileData.getInteger("sbz");
-            sbdir = backpackTileData.getInteger("sbdir");
-            luminosity = backpackTileData.getInteger("lumen");
-        }
-
         loadFromNBT(compound);
+        sleepingBagDeployed = compound.getBoolean("sleepingbag");
+        sbx = compound.getInteger("sbx");
+        sby = compound.getInteger("sby");
+        sbz = compound.getInteger("sbz");
+        sbdir = compound.getInteger("sbdir");
+        luminosity = compound.getInteger("lumen");
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        saveToNBT(compound);
-        NBTTagCompound backpackTileData = new NBTTagCompound();
-        backpackTileData.setBoolean("sleepingbag", sleepingBagDeployed);
-        backpackTileData.setInteger("sbx", sbx);
-        backpackTileData.setInteger("sby", sby);
-        backpackTileData.setInteger("sbz", sbz);
-        backpackTileData.setInteger("lumen", luminosity);
-        backpackTileData.setInteger("sbdir", sbdir);
-        compound.setTag("backpackTileData",backpackTileData);
         super.writeToNBT(compound);
+        saveToNBT(compound);
+        compound.setBoolean("sleepingbag", sleepingBagDeployed);
+        compound.setInteger("sbx", sbx);
+        compound.setInteger("sby", sby);
+        compound.setInteger("sbz", sbz);
+        compound.setInteger("lumen", luminosity);
+        compound.setInteger("sbdir", sbdir);
     }
 
     @Override
@@ -292,7 +266,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                     inventory[slot] = ItemStack.loadItemStackFromNBT(item);
                 }
             }
-
             leftTank.readFromNBT(backpackData.getCompoundTag("leftTank"));
             rightTank.readFromNBT(backpackData.getCompoundTag("rightTank"));
             colorName = backpackData.getString("colorName");
@@ -340,7 +313,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void openInventory()
     {
-
     }
 
     @Override
@@ -379,7 +351,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 itemstack = itemstack.splitStack(count);
             }
         }
-        onInventoryChanged();
+        markDirty();
         return itemstack;
     }
 
@@ -402,10 +374,11 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         {
             itemstack.stackSize = getInventoryStackLimit();
         }
-        onInventoryChanged();
+        markDirty();
     }
 
-    public void onInventoryChanged()
+    @Override
+    public void markDirty()
     {
         for (int i = 0; i < inventory.length; i++)
         {
@@ -419,7 +392,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 updateTankSlots(getRightTank(), i);
             }
         }
-        markDirty();
+        super.markDirty();
     }
 
     @Override
@@ -431,12 +404,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         {
             itemstack.stackSize = getInventoryStackLimit();
         }
-    }
-
-    @Override
-    public void saveChanges()
-    {
-        markDirty();
     }
 
     @Override
@@ -466,7 +433,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void consumeInventoryItem(Item item)
     {
-        InventoryActions.consumeItemInBackpack(this, item);
+        InventoryActions.consumeItemInInventory(this, item);
     }
 
     //===================================================TILE ENTITY==================================================//
@@ -476,7 +443,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public Packet getDescriptionPacket()
     {
         NBTTagCompound compound = new NBTTagCompound();
-        saveToNBT(compound);
+        writeToNBT(compound);
         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, compound);
     }
 
@@ -486,7 +453,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
         super.onDataPacket(net, pkt);
-        saveToNBT(pkt.func_148857_g());
+        readFromNBT(pkt.func_148857_g());
     }
 
     @Override
@@ -528,15 +495,29 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
-    public void saveTanks()
+    public void saveTanks(NBTTagCompound compound)
     {
-
+        NBTTagCompound backpackData;
+        if(compound.hasKey("backpackData"))
+        {
+            backpackData = compound.getCompoundTag("backpackData");
+        }else{
+            backpackData = new NBTTagCompound();
+        }
+        backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
+        backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
+        compound.setTag("backpackData",backpackData);
     }
 
     @Override
-    public void loadTanks()
+    public void loadTanks(NBTTagCompound compound)
     {
-
+        if(compound.hasKey("backpackData"))
+        {
+            NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
+            leftTank.readFromNBT(backpackData.getCompoundTag("leftTank"));
+            rightTank.readFromNBT(backpackData.getCompoundTag("rightTank"));
+        }
     }
 
     @Override
@@ -603,5 +584,24 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public boolean updateTankSlots()
     {
         return false;
+    }
+
+    public void dirtyTanks()
+    {
+
+    }
+
+    public void dirtyTime()
+    {
+    }
+
+    public void dirtyExtended()
+    {
+
+    }
+
+    public void dirtyInventory()
+    {
+
     }
 }

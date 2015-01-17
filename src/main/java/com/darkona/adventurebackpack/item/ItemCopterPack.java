@@ -1,12 +1,12 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
-import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
-import com.darkona.adventurebackpack.util.FluidUtils;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -135,13 +135,11 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         InventoryCopterPack inv = new InventoryCopterPack(stack);
         boolean canElevate = true;
         int fuelConsumption = 0;
-        byte status = stack.stackTagCompound.getByte("status");
-        if (status != OFF_MODE)
+        if (inv.getStatus() != OFF_MODE)
         {
             if (player.isInWater())
             {
-                stack.stackTagCompound.setByte("status", OFF_MODE);
-                status = OFF_MODE;
+                inv.setStatus(OFF_MODE);
                 player.addChatComponentMessage(new ChatComponentText("CopterPack: can't function in water."));
                 return;
             }
@@ -150,8 +148,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 canElevate = false;
                 if (player.onGround)
                 {
-                    stack.stackTagCompound.setByte("status", OFF_MODE);
-                    status = OFF_MODE;
+                    inv.setStatus(OFF_MODE);
                     if (!world.isRemote)
                     {
                         player.addChatComponentMessage(new ChatComponentText("CopterPack: out of fuel, shutting off"));
@@ -159,11 +156,10 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                     return;
                     //TODO play "backpackOff" sound
                 }
-                if (status == HOVER_MODE)
+                if (inv.getStatus() == HOVER_MODE)
                 {
 
-                    stack.stackTagCompound.setByte("status", NORMAL_MODE);
-                    status = NORMAL_MODE;
+                    inv.setStatus(NORMAL_MODE);
                     if (!world.isRemote)
                     {
                         player.addChatComponentMessage(new ChatComponentText("CopterPack: out of fuel."));
@@ -174,10 +170,10 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             }
         }
 
-        if (status != OFF_MODE)
+        if (inv.getStatus() != OFF_MODE)
         {
             fuelConsumption++;
-            if (status == NORMAL_MODE)
+            if (inv.getStatus() == NORMAL_MODE)
             {
                 if (!player.onGround && !player.isSneaking() && player.motionY < 0.0D)
                 {
@@ -189,7 +185,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 }
             }
 
-            if (status == HOVER_MODE)
+            if (inv.getStatus() == HOVER_MODE)
             {
                 if (player.isSneaking())
                 {
@@ -216,25 +212,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 pushEntities(world, player, 0.2f);
                 //movement boost
                 player.moveFlying(player.moveStrafing,player.moveForward,factor);
-
-                /*
-                if (player.moveForward > 0)
-                {
-                    player.moveFlying(0.0f, movSpd, factor);
-                }
-                if (player.moveForward < 0)
-                {
-                    player.moveFlying(0.0f, -movSpd, factor);
-                }
-                if (player.moveStrafing > 0)
-                {
-                    player.moveFlying(movSpd, 0.0f, factor);
-                }
-                if (player.moveStrafing < 0)
-                {
-                    player.moveFlying(-movSpd, 0.0f, factor);
-                }
-                */
             } else
             {
                 pushEntities(world, player, factor + 0.4f);
@@ -261,21 +238,22 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             int ticks = inv.tickCounter - 1;
             if (inv.fuelTank.getFluid() != null)
             {
-                if(FluidUtils.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
+                if(GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
                 {
-                    fuelConsumption = (int)Math.floor(fuelConsumption * FluidUtils.fuelValues.get(inv.getFuelTank().getFluid().getFluid().getName()));
+                    fuelConsumption = (int)Math.floor(fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName()));
                 }
             }
             if (ticks <= 0)
             {
                 inv.tickCounter = 3;
                 inv.consumeFuel(fuelConsumption);
+                inv.dirtyTanks();
             } else
             {
                 inv.tickCounter = ticks;
             }
-            inv.status = status;
-            inv.closeInventory();
+
+            if(!world.isRemote)inv.closeInventory();
         }
     }
 

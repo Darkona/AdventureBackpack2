@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.common;
+package com.darkona.adventurebackpack.playerProperties;
 
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
@@ -20,20 +20,20 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 public class BackpackProperty implements IExtendedEntityProperties
 {
 
-    public final static String PROPERTY_NAME = ModInfo.MOD_ID + ".properties";
+    public static final String PROPERTY_NAME = ModInfo.MOD_ID + ".properties";
     protected EntityPlayer player;
     protected World world;
-    private ItemStack backpack;
+    private ItemStack wearable;
     private ChunkCoordinates campFire;
     private boolean forceCampFire;
     private int dimension;
 
-    public void sync()
+    public static void sync(EntityPlayer player)
     {
-        if(player.worldObj.isRemote)return;
-        NBTTagCompound compound = new NBTTagCompound();
-        saveNBTData(compound);
-        ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(compound), (EntityPlayerMP)player);
+        if(player instanceof EntityPlayerMP)
+        {
+            ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(get(player).getData()),(EntityPlayerMP)player);
+        }
     }
 
     public BackpackProperty(EntityPlayer player)
@@ -41,8 +41,9 @@ public class BackpackProperty implements IExtendedEntityProperties
         this.player = player;
         try{
             campFire = (player != null) ? player.getBedLocation(player.dimension) : null;
-        }catch(NullPointerException e)
+        }catch(Exception e)
         {
+            //NO ONE CARES!
         }
         forceCampFire = false;
     }
@@ -50,9 +51,19 @@ public class BackpackProperty implements IExtendedEntityProperties
     public NBTTagCompound getData()
     {
         NBTTagCompound data = new NBTTagCompound();
-        saveNBTData(data);
+        if(wearable != null) data.setTag("wearable", wearable.writeToNBT(new NBTTagCompound()));
+        if (campFire != null)
+        {
+            data.setInteger("campFireX", campFire.posX);
+            data.setInteger("campFireY", campFire.posY);
+            data.setInteger("campFireZ", campFire.posZ);
+            data.setInteger("campFireDim", dimension);
+
+        }
+        data.setBoolean("forceCampfire",forceCampFire);
         return data;
     }
+
     public static void register(EntityPlayer player)
     {
         player.registerExtendedProperties(PROPERTY_NAME, new BackpackProperty(player));
@@ -72,7 +83,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     @Override
     public void saveNBTData(NBTTagCompound compound)
     {
-        if(backpack != null) compound.setTag("backpack", backpack.writeToNBT(new NBTTagCompound()));
+        if(wearable != null) compound.setTag("wearable", wearable.writeToNBT(new NBTTagCompound()));
         if (campFire != null)
         {
             compound.setInteger("campFireX", campFire.posX);
@@ -80,7 +91,7 @@ public class BackpackProperty implements IExtendedEntityProperties
             compound.setInteger("campFireZ", campFire.posZ);
             compound.setInteger("campFireDim", dimension);
         }
-
+        forceCampFire = compound.getBoolean("forceCampfire");
     }
 
     /**
@@ -93,10 +104,12 @@ public class BackpackProperty implements IExtendedEntityProperties
     @Override
     public void loadNBTData(NBTTagCompound compound)
     {
-        if(compound==null)return;
-        backpack = (compound.hasKey("backpack")) ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("backpack")) : null;
-        campFire = new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ"));
-        dimension = compound.getInteger("compFireDim");
+        if(compound!=null)
+        {
+            wearable = (compound.hasKey("wearable")) ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null;
+            campFire = new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ"));
+            dimension = compound.getInteger("compFireDim");
+        }
     }
 
     /**
@@ -118,19 +131,22 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public void setWearable(ItemStack bp)
     {
-        backpack = bp;
-        sync();
+        wearable = bp;
     }
 
     public ItemStack getWearable()
     {
-        return backpack;
+        return wearable;
     }
 
     public void setCampFire(ChunkCoordinates cf)
     {
         campFire = cf;
-        sync();
+    }
+
+    public boolean hasWearable()
+    {
+        return wearable != null;
     }
 
     public ChunkCoordinates getCampFire()

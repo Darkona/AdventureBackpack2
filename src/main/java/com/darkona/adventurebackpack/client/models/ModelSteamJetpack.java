@@ -6,8 +6,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -184,7 +182,6 @@ public class ModelSteamJetpack extends ModelWearable {
         InventorySteamJetpack inv = new InventorySteamJetpack(jetpack);
 
         this.fireBox.setTextureOffset((inv.getStatus() == 0) ? 9 : 26, 25);
-        inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER,inv.getWaterTank().getCapacity()),true);
 
         tubeStraightRight.render(f5);
         tubeEndLeft.render(f5);

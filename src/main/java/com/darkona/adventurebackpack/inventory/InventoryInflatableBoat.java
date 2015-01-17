@@ -275,4 +275,16 @@ public class InventoryInflatableBoat implements IInventoryTanks
     {
         return new FluidTank[0];
     }
+
+    @Override
+    public void dirtyInventory()
+    {
+
+    }
+
+    @Override
+    public void dirtyTanks()
+    {
+
+    }
 }

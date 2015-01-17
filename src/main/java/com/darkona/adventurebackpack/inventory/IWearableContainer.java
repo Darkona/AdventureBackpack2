@@ -7,4 +7,5 @@ package com.darkona.adventurebackpack.inventory;
  */
 public interface IWearableContainer
 {
+    public void refresh();
 }

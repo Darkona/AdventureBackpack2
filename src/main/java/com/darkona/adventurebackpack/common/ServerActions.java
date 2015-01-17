@@ -66,7 +66,7 @@ public class ServerActions
                     backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
                 }
             }
-            backpack.saveChanges();
+            backpack.markDirty();
             player.inventory.closeInventory();
         } catch (Exception oops)
         {
@@ -218,13 +218,12 @@ public class ServerActions
                 * I should make a pull request. Too lazy, though.
                 * */
                 backpack.consumeInventoryItem(Items.arrow);
-                backpack.saveChanges();
+                backpack.dirtyInventory();
             }
 
             if (!world.isRemote)
             {
                 world.spawnEntityInWorld(entityarrow);
-                //LogHelper.info("Fired an arrow!");
             }
         }
     }
@@ -364,7 +363,7 @@ public class ServerActions
                 if (!player.worldObj.isRemote)
                 {
                     ModNetwork.sendToNearby(new PlayerSoundPacket.Message(PlayerSoundPacket.COPTER_SOUND,player.getUniqueID().toString(),true), player);
-                    //ModNetwork.sendToNearby(PlayerSoundPacket.makeCopterMessage(player, PlayerSoundPacket.play), player);
+
                 }
             } else
             {

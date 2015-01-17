@@ -207,7 +207,7 @@ public class ItemHose extends ItemAB
                     {
                         tank.fill(exTank.drain(ForgeDirection.UNKNOWN, accepted, true), true);
                         te.markDirty();
-                        inv.saveChanges();
+                        inv.markDirty();
                         return true;
                     }
                     break;
@@ -219,7 +219,7 @@ public class ItemHose extends ItemAB
                     {
                         exTank.fill(ForgeDirection.UNKNOWN, tank.drain(accepted, true), true);
                         te.markDirty();
-                        inv.saveChanges();
+                        inv.markDirty();
                         return true;
                     }
                     break;
@@ -281,7 +281,7 @@ public class ItemHose extends ItemAB
                                 }
                             }
                         }
-                        inventory.saveChanges();
+                        inventory.markDirty();
                     }
                     break;
 
@@ -374,7 +374,7 @@ public class ItemHose extends ItemAB
                                 }
                             }
                         }
-                        inventory.saveChanges();
+                        inventory.markDirty();
                     }
                     break;
                 case HOSE_DRINK_MODE:
@@ -424,7 +424,7 @@ public class ItemHose extends ItemAB
                 if (ServerActions.setFluidEffect(world, player, backpackTank))
                 {
                     backpackTank.drain(Constants.bucket, true);
-                    inventory.saveChanges();
+                    inventory.markDirty();
                 }
             }
         }
@@ -449,7 +449,7 @@ public class ItemHose extends ItemAB
                 InventoryBackpack inventory = new InventoryBackpack(backpack);
                 FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
                 tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
-                inventory.saveChanges();
+                inventory.markDirty();
 
                 ((EntityCow) entity).faceEntity(player, 0.1f, 0.1f);
                 return true;
@@ -459,7 +459,7 @@ public class ItemHose extends ItemAB
                 InventoryBackpack inventory = new InventoryBackpack(backpack);
                 FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
                 tank.fill(new FluidStack(ModFluids.mushroomStew, Constants.bucket), true);
-                inventory.saveChanges();
+                inventory.markDirty();
 
                 ((EntityMooshroom) entity).faceEntity(player, 0.1f, 0.1f);
                 return true;

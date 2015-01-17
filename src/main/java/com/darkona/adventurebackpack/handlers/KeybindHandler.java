@@ -91,7 +91,7 @@ public class KeybindHandler
             {
                 if(player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
                 {
-                    ModNetwork.net.sendToServer(new JumpPacket.JumpMessage());
+                    ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.spiderJump));
                     ((EntityFriendlySpider)player.ridingEntity).setJumping(true);
                 }
             }

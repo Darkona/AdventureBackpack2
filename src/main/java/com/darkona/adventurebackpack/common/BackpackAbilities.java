@@ -4,21 +4,17 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.network.CowAbilityPacket;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -175,14 +171,17 @@ public class BackpackAbilities
 
     public void itemSunflower(EntityPlayer player, World world, ItemStack backpack)
     {
+
         if(world.isDaytime() && !world.isRemote)
         {
-            int sunTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.stackTagCompound.getInteger("lastTime") - 1 : Utils.secondsToTicks(30);
+            InventoryBackpack inv = new InventoryBackpack(backpack);
+            int sunTime = inv.getLastTime()  - 1 ;
             if( sunTime <= 0 && world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY),MathHelper.floor_double(player.posZ)))
             {
                 player.getFoodStats().addStats(1,0.2f);
+                inv.setLastTime(Utils.secondsToTicks(35));
             }
-            backpack.stackTagCompound.setInteger("lastTime",sunTime);
+           inv.markDirty();
         }
     }
 
@@ -218,7 +217,7 @@ public class BackpackAbilities
 
     public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
     {
-        player.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), 1, 0));
+        player.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), 1, 2));
     }
 
     /**
@@ -235,8 +234,8 @@ public class BackpackAbilities
     public void itemCactus(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in ticks for this backpack.
-        int lastDropTime = (backpack.stackTagCompound.hasKey("lastTime")) ?
-                backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
+        if(world.isRemote)return;
+        InventoryBackpack inv = new InventoryBackpack(backpack);
         int drops = 0;
         if (player.isInWater())
         {
@@ -247,16 +246,17 @@ public class BackpackAbilities
             drops += 1;
         }
 
-        if (lastDropTime <= 0 && drops > 0)
+        if (inv.getLastTime() <= 0 && drops > 0)
         {
-            InventoryBackpack inv = Wearing.getBackpackInv(player, true);
+            inv.setLastTime(5);
             FluidStack raindrop = new FluidStack(FluidRegistry.WATER, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
-            inv.saveChanges();
-            lastDropTime = 5;
+        }else{
+            inv.setLastTime(inv.getLastTime() - 1);
         }
-        backpack.stackTagCompound.setInteger("lastTime", lastDropTime);
+        inv.dirtyTime();
+        inv.dirtyTanks();
     }
 
     /**
@@ -272,14 +272,15 @@ public class BackpackAbilities
     public void itemPig(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in seconds for this backpack.
-        int oinkTime = backpack.stackTagCompound.hasKey("lastTime") ?
-                backpack.stackTagCompound.getInteger("lastTime") - 1 : Utils.secondsToTicks(5);
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        int oinkTime = inv.getLastTime() - 1;
         if (oinkTime <= 0)
         {
             world.playSoundAtEntity(player, "mob.pig.say", 0.8f, 1f);
             oinkTime = Utils.secondsToTicks(world.rand.nextInt(61));
         }
-        backpack.stackTagCompound.setInteger("lastTime", oinkTime);
+        inv.setLastTime(oinkTime);
+        inv.dirtyTime();
     }
 
     /**
@@ -302,15 +303,14 @@ public class BackpackAbilities
         if (player.onGround)
         {
 
-            if (player.moveForward == 0 && player.moveStrafing == 0)
+            if ((player.moveForward == 0 && player.moveStrafing == 0) && (Math.abs(player.moveForward) < 3 && Math.abs(player.moveStrafing)<3) )
             {
                 player.addVelocity(player.motionX *= 0.828, 0, player.motionZ *= 0.828);
             }
             if (player.isSprinting())
             {
-
-                int slimeTime = backpack.stackTagCompound.hasKey("lastTime") ?
-                        backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
+                InventoryBackpack inv = new InventoryBackpack(backpack);
+                int slimeTime = inv.getLastTime() > 0 ? inv.getLastTime() - 1 : 5;
                 if (slimeTime <= 0)
                 {
                     if (!world.isRemote)
@@ -320,7 +320,8 @@ public class BackpackAbilities
                     world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
                     slimeTime = 5;
                 }
-                backpack.stackTagCompound.setInteger("lastTime", slimeTime);
+                inv.setLastTime(slimeTime);
+                inv.dirtyTime();
             }
         }
     }
@@ -334,14 +335,16 @@ public class BackpackAbilities
      */
     public void itemChicken(EntityPlayer player, World world, ItemStack backpack)
     {
-        int eggTime = backpack.getTagCompound().hasKey("lastTime") ? backpack.getTagCompound().getInteger("lastTime") - 1 : Utils.secondsToTicks(5);
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        int eggTime = inv.getLastTime() - 1 ;
         if (eggTime <= 0)
         {
             player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
             if (!world.isRemote) player.dropItem(Items.egg, 1);
             eggTime = Utils.secondsToTicks(200 + 10 * world.rand.nextInt(10));
         }
-        backpack.getTagCompound().setInteger("lastTime", eggTime);
+        inv.setLastTime(eggTime);
+        inv.dirtyTime();
     }
 
     /**
@@ -354,28 +357,30 @@ public class BackpackAbilities
      */
     public void itemMelon(EntityPlayer player, World world, ItemStack backpack)
     {
-        int lastDropTime = (backpack.stackTagCompound.hasKey("lastTime")) ? backpack.stackTagCompound.getInteger("lastTime") - 1 : 5;
-
+        //lastTime is in ticks for this backpack.
+        if(world.isRemote)return;
+        InventoryBackpack inv = new InventoryBackpack(backpack);
         int drops = 0;
         if (player.isInWater())
         {
-            drops += 5;
+            drops += 2;
         }
         if (isUnderRain(player))
         {
-            drops += 2;
+            drops += 1;
         }
 
-        if (lastDropTime <= 0 && drops > 0)
+        if (inv.getLastTime() <= 0 && drops > 0)
         {
-            InventoryBackpack inv = Wearing.getBackpackInv(player, true);
+            inv.setLastTime(5);
             FluidStack raindrop = new FluidStack(ModFluids.melonJuice, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
-            inv.onInventoryChanged();
-            lastDropTime = 5;
+        }else{
+            inv.setLastTime(inv.getLastTime() - 1);
         }
-        backpack.stackTagCompound.setInteger("lastTime", lastDropTime);
+        inv.dirtyTime();
+        inv.dirtyTanks();
     }
 
     /**
@@ -403,14 +408,16 @@ public class BackpackAbilities
      * @param backpack
      * @see com.darkona.adventurebackpack.handlers.PlayerEventHandler
      */
+    @SuppressWarnings("unchecked")
     public void itemCreeper(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in seconds for this ability
-        int pssstTime = (backpack.getTagCompound().hasKey("lastTime")) ? backpack.getTagCompound().getInteger("lastTime") - 1 : 20;
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        int pssstTime = inv.getLastTime() - 1;
 
         if (pssstTime <= 0)
         {
-            pssstTime = 0;
+            pssstTime = 20;
             if (player.isSneaking())
             {
                 List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity(player,
@@ -435,11 +442,9 @@ public class BackpackAbilities
                     }
                 }
             }
-        } else
-        {
-            pssstTime--;
         }
-        backpack.getTagCompound().setInteger("lastTime", pssstTime);
+        inv.setLastTime(pssstTime);
+        inv.markDirty();
     }
 
     /**
@@ -453,24 +458,15 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        IInventoryAdventureBackpack inv = new InventoryBackpack(backpack);
+        if(world.isRemote)return;
+        InventoryBackpack inv = new InventoryBackpack(backpack);
         FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
-        ContainerBackpack cont = null;
-        if (player.openContainer != null && player.openContainer instanceof ContainerBackpack)
-        {
-            cont = (ContainerBackpack) player.openContainer;
-            if (cont.inventory instanceof InventoryBackpack && ((InventoryBackpack) cont.inventory).getParentItemStack().equals(backpack))
-            {
-                inv = cont.inventory;
-            }
-        }
-        inv.openInventory();
         if (inv.getLeftTank().fill(milkStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0)
         {
             return;
         }
         //Set Cow Properties
-        NBTTagCompound cowProperties;
+        NBTTagCompound cowProperties = new NBTTagCompound();
         int wheatConsumed = 0;
         int milkTime = -1;
         if (inv.getExtendedProperties() != null)
@@ -481,29 +477,25 @@ public class BackpackAbilities
                 wheatConsumed = cowProperties.getInteger("wheatConsumed");
                 milkTime = cowProperties.getInteger("milkTime") - 1;
             }
-        } else
-        {
-            cowProperties = new NBTTagCompound();
         }
 
-        int eatTime = inv.getLastTime() == 0 ? Utils.secondsToTicks(1) : inv.getLastTime() - 1;
-
-        if (inv.hasItem(Items.wheat) && eatTime == 0 && milkTime <= 0)
+        int eatTime = (inv.getLastTime() - 1 >= 0 ) ? inv.getLastTime() -1 : 0;
+        if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
         {
+            eatTime = 20;
             LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
-            if (!world.isRemote)
+           /* if (!world.isRemote)
             {
                 EntityPlayerMP playerMP = (EntityPlayerMP) player;
                 ModNetwork.net.sendTo(new CowAbilityPacket.CowAbilityMessage(player.getPersistentID().toString(), CowAbilityPacket.CONSUME_WHEAT), playerMP);
-            }
+            }*/
             wheatConsumed++;
         }
 
         int factor = 1;
         if (wheatConsumed == 16)
         {
-
             wheatConsumed = 0;
             milkTime = (1000 * factor) - factor;
             world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
@@ -516,16 +508,74 @@ public class BackpackAbilities
                 inv.getRightTank().fill(milkStack, true);
             }
         }
-
         cowProperties.setInteger("wheatConsumed", wheatConsumed);
         cowProperties.setInteger("milkTime", milkTime);
         inv.setExtendedProperties(cowProperties);
-        inv.setExtendedProperties(cowProperties);
         inv.setLastTime(eatTime);
-        if (player.openContainer != null) player.openContainer.detectAndSendChanges();
-        inv.saveChanges();
+        inv.dirtyExtended();
+        inv.dirtyTanks();
+        inv.dirtyTime();
+        inv.dirtyInventory();
+        //So naughty!!!
     }
 
+    public void itemMooshroom(EntityPlayer player, World world, ItemStack backpack)
+    {
+        if(world.isRemote)return;
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        FluidStack soupStack = new FluidStack(FluidRegistry.getFluid("mushroomsoup"), 1);
+        if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(soupStack, false) <= 0)
+        {
+            return;
+        }
+        //Set Cow Properties
+        NBTTagCompound cowProperties = new NBTTagCompound();
+        int wheatConsumed = 0;
+        int milkTime = -1;
+        if (inv.getExtendedProperties() != null)
+        {
+            cowProperties = inv.getExtendedProperties();
+            if (cowProperties.hasKey("wheatConsumed"))
+            {
+                wheatConsumed = cowProperties.getInteger("wheatConsumed");
+                milkTime = cowProperties.getInteger("milkTime") - 1;
+            }
+        }
+
+        int eatTime = (inv.getLastTime() - 1 >= 0 ) ? inv.getLastTime() -1 : 0;
+        if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
+        {
+            eatTime = 20;
+            LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
+            inv.consumeInventoryItem(Items.wheat);
+            wheatConsumed++;
+        }
+
+        int factor = 1;
+        if (wheatConsumed == 16)
+        {
+            wheatConsumed = 0;
+            milkTime = (1000 * factor) - factor;
+            world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
+        }
+
+        if (milkTime >= 0 && (milkTime % factor == 0))
+        {
+            if (inv.getLeftTank().fill(soupStack, true) <= 0)
+            {
+                inv.getRightTank().fill(soupStack, true);
+            }
+        }
+        cowProperties.setInteger("wheatConsumed", wheatConsumed);
+        cowProperties.setInteger("milkTime", milkTime);
+        inv.setExtendedProperties(cowProperties);
+        inv.setLastTime(eatTime);
+        inv.dirtyExtended();
+        inv.dirtyTanks();
+        inv.dirtyTime();
+        inv.dirtyInventory();
+        //So naughty!!!
+    }
     /**
      * The Wolf Backpack is a handy one if you're out in the wild. It checks around for any wolves that may lurk around.
      * If any of them gets mad at you, it will smell the scent of it's kin on you and promptly forget about the whole
@@ -539,10 +589,12 @@ public class BackpackAbilities
     public void itemWolf(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in Ticks for this backpack
-        int lastCheckTime = (backpack.getTagCompound().hasKey("lastTime")) ? backpack.getTagCompound().getInteger("lastTime") - 1 : 20;
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        int lastCheckTime =  inv.getLastTime() - 1;
 
         if (lastCheckTime <= 0)
         {
+            lastCheckTime = 20;
             List<EntityWolf> wolves = world.getEntitiesWithinAABB(
                     EntityWolf.class,
                     AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
@@ -554,7 +606,7 @@ public class BackpackAbilities
             {
                 if (wolf.isAngry() && wolf.getAttackTarget() == player)
                 {
-                    wolf.setAngry(wolf.isAngry() ? false : false);
+                    wolf.setAngry(false);
                     wolf.setAttackTarget(null);
                     wolf.setRevengeTarget(null);
                     Iterator<?> i2 = wolf.targetTasks.taskEntries.iterator();
@@ -564,12 +616,9 @@ public class BackpackAbilities
                     }
                 }
             }
-            lastCheckTime = 20;
-        } else
-        {
-            lastCheckTime--;
         }
-        backpack.getTagCompound().setInteger("lastTime", lastCheckTime);
+        inv.setLastTime(lastCheckTime);
+        inv.dirtyTime();
     }
 
     /**
@@ -598,10 +647,11 @@ public class BackpackAbilities
     public void itemOcelot(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime in this backpack is in Ticks.
-        int lastCheckTime = (backpack.getTagCompound().hasKey("lastTime")) ? backpack.getTagCompound().getInteger("lastTime") - 1 : 20;
-
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        int lastCheckTime = inv.getLastTime() - 1;
         if (lastCheckTime <= 0)
         {
+            lastCheckTime = 20;
             List<EntityCreeper> creepers = player.worldObj.getEntitiesWithinAABB(
                     EntityCreeper.class,
                     AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
@@ -618,6 +668,7 @@ public class BackpackAbilities
                     if (((EntityAITasks.EntityAITaskEntry) entry).action instanceof EntityAIAvoidPlayerWithBackpack)
                     {
                         set = false;
+                        break;
                     }
                 }
 
@@ -627,15 +678,16 @@ public class BackpackAbilities
                     creeper.tasks.addTask(3, task);
                 }
             }
-            lastCheckTime = 20;
         }
-        backpack.getTagCompound().setInteger("lastTime", lastCheckTime);
+        inv.setLastTime(lastCheckTime);
+        inv.markDirty();
     }
 
 
     public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
     {
-        int noteTime = backpack.getTagCompound().getInteger("lastTime") - 1;
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        int noteTime = inv.getLastTime() - 1;
         if (noteTime >= 0 && noteTime < Utils.secondsToTicks(147))
         {
             player.setSprinting(true);
@@ -650,7 +702,8 @@ public class BackpackAbilities
                 }
             }
         }
-        backpack.getTagCompound().setInteger("lastTime", noteTime);
+        inv.setLastTime(noteTime);
+        inv.markDirty();
     }
     /* ==================================== TILE ABILITIES ==========================================*/
 

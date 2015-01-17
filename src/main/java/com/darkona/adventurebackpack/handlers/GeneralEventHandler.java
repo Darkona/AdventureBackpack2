@@ -7,8 +7,6 @@ import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -45,10 +43,13 @@ public class GeneralEventHandler
         if (!ConfigHandler.BACKPACK_ABILITIES) return;
         if (event.item.getItem() instanceof ItemAppleGold &&
                 //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
-                BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow"))
+                Wearing.isWearingTheRightBackpack(player,"Rainbow"))
         {
-            if (Wearing.getWearingBackpack(player).stackTagCompound.getInteger("lastTime") > 0) return;
-            Wearing.getWearingBackpack(player).getTagCompound().setInteger("lastTime", Utils.secondsToTicks(150));
+
+            InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
+            if (inv.getLastTime() > 0) return;
+            inv.setLastTime(Utils.secondsToTicks(150));
+            inv.dirtyTime();
             if (!player.worldObj.isRemote)
             {
                 String nyanString =
@@ -59,8 +60,6 @@ public class GeneralEventHandler
                                 EnumChatFormatting.AQUA + "C" +
                                 EnumChatFormatting.BLUE + "A" +
                                 EnumChatFormatting.DARK_PURPLE + "T";
-
-                LogHelper.info(nyanString);
                 player.addChatComponentMessage(new ChatComponentText(nyanString));
                 ModNetwork.sendToNearby(PlayerSoundPacket.makeNyanMessage(player, PlayerSoundPacket.play), player);
             }
@@ -72,10 +71,10 @@ public class GeneralEventHandler
     public void detectBow(ArrowNockEvent event)
     {
         if (!ConfigHandler.BACKPACK_ABILITIES) return;
-        if (Wearing.isWearingBackpack(event.entityPlayer))
+        if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
-            if (BackpackNames.getBackpackColorName(backpack.getParentItemStack()).equals("Skeleton") && backpack.hasItem(Items.arrow))
+            if (backpack.hasItem(Items.arrow))
             {
                 event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration());
                 event.setCanceled(true);
@@ -87,10 +86,10 @@ public class GeneralEventHandler
     public void detectArrow(ArrowLooseEvent event)
     {
         if (!ConfigHandler.BACKPACK_ABILITIES) return;
-        if (Wearing.isWearingBackpack(event.entityPlayer))
+        if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
-            if (BackpackNames.getBackpackColorName(backpack.getParentItemStack()).equals("Skeleton") && backpack.hasItem(Items.arrow))
+            if (backpack.hasItem(Items.arrow))
             {
                 ServerActions.leakArrow(event.entityPlayer, event.bow, event.charge);
                 event.setCanceled(true);

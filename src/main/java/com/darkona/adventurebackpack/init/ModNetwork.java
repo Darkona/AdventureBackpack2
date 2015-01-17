@@ -31,7 +31,7 @@ public class ModNetwork
         registerMessage(GUIPacket.class, GUIPacket.GUImessage.class);
         registerMessage(SleepingBagPacket.class, SleepingBagPacket.SleepingBagMessage.class);
         registerMessage(CowAbilityPacket.class, CowAbilityPacket.CowAbilityMessage.class);
-        registerMessage(JumpPacket.class, JumpPacket.JumpMessage.class);
+        registerMessage(PlayerActionPacket.class, PlayerActionPacket.ActionMessage.class);
         registerMessage(EquipUnequipBackWearablePacket.class, EquipUnequipBackWearablePacket.Message.class);
 
     }

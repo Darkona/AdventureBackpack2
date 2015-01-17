@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.proxy;
 
-import com.darkona.adventurebackpack.common.BackpackProperty;
-import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -43,15 +42,13 @@ public class ServerProxy implements IProxy
         if (playerData != null)
         {
             BackpackProperty.get(player).loadNBTData(playerData);
-            BackpackProperty.get(player).sync();
+            BackpackProperty.get(player).sync(player);
         }
     }
 
     @Override
     public void synchronizePlayer(EntityPlayer player, NBTTagCompound compound)
     {
-        LogHelper.info("Sending synchronization message");
-
     }
 
     public static void storePlayerProps(UUID playerID, NBTTagCompound compound)

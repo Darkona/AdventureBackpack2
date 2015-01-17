@@ -96,6 +96,11 @@ public class ItemCrossbow extends ItemAB
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean current)
     {
+        if(!stack.hasTagCompound()){
+            stack.stackTagCompound = new NBTTagCompound();
+            stack.stackTagCompound.setByte("Shot",(byte)0);
+            stack.stackTagCompound.setInteger("Reloading",0);
+        }
 
         if(current)
         {

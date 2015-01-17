@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.common.BackpackProperty;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
@@ -11,7 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
 public class ContainerBackpack extends Container implements IWearableContainer
 {
@@ -174,17 +175,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
                 }
             }
         }
-        if(source == 1)
-        {
-            BackpackProperty.get(player).sync();
-        }
-
     }
 
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        //inventory.onInventoryChanged();
         if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
         {
             return null;
@@ -342,7 +337,6 @@ public class ContainerBackpack extends Container implements IWearableContainer
                 return null;
             }
             slot.onPickupFromSlot(player, stack);
-            //inventory.onInventoryChanged();
         }
         return result;
     }
@@ -353,7 +347,13 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
+        inventory.openInventory();
         super.detectAndSendChanges();
-        BackpackProperty.get(player).sync();
+    }
+
+    @Override
+    public void refresh()
+    {
+        inventory.openInventory();
     }
 }

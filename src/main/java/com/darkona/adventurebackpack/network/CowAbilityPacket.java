@@ -40,9 +40,6 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
                     case CONSUME_WHEAT:
                         inv.consumeInventoryItem(Items.wheat);
                 }
-                player.inventoryContainer.detectAndSendChanges();
-                inv.onInventoryChanged();
-                inv.saveChanges();
             }
         }
         return null;
