@@ -18,6 +18,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,6 +44,7 @@ public class ClientProxy implements IProxy
 
 
 
+
     public void init()
     {
         initRenderers();
@@ -61,13 +63,22 @@ public class ClientProxy implements IProxy
     }
 
     @Override
-    public void synchronizePlayer(EntityPlayer player, NBTTagCompound properties)
+    public void synchronizePlayer(int id, NBTTagCompound properties)
     {
-        if(BackpackProperty.get(player) == null) BackpackProperty.register(player);
-        BackpackProperty.get(Minecraft.getMinecraft().thePlayer).loadNBTData(properties);
-        if(player.openContainer != null && player.openContainer instanceof IWearableContainer)
+        Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
+        if(entity != null && entity instanceof EntityPlayer)
         {
-            player.openContainer.detectAndSendChanges();
+
+            EntityPlayer player = (EntityPlayer)entity;
+            if(BackpackProperty.get(player) == null) BackpackProperty.register(player);
+            BackpackProperty.get(player).loadNBTData(properties);
+            if(player == Minecraft.getMinecraft().thePlayer)
+            {
+                if (player.openContainer != null && player.openContainer instanceof IWearableContainer)
+                {
+                    player.openContainer.detectAndSendChanges();
+                }
+            }
         }
     }
 

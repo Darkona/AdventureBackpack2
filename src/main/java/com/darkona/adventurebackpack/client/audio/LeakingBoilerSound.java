@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
  *
  * @author Darkona
  */
-public class JetpackSoundOn extends MovingSound
+public class LeakingBoilerSound extends MovingSound
 {
 
     public EntityPlayer thePlayer;
@@ -22,11 +22,11 @@ public class JetpackSoundOn extends MovingSound
 
     protected float pitch;
 
-    public JetpackSoundOn(EntityPlayer player)
+    public LeakingBoilerSound(EntityPlayer player)
     {
-        super(new ResourceLocation(ModInfo.MOD_ID, "s_jetpackon"));
-        volume = 0.9f;
-        pitch = 1.0F;
+        super(new ResourceLocation(ModInfo.MOD_ID, "s_background2"));
+        volume = 0.1f;
+        pitch = 1.2F;
         thePlayer = player;
     }
 
@@ -62,7 +62,7 @@ public class JetpackSoundOn extends MovingSound
         }
 
         InventorySteamJetpack inv = new InventorySteamJetpack(jetpack);
-        if(inv.isInUse())
+        if(inv.isLeaking())
         {
             xPosF = (float)thePlayer.posX;
             yPosF = (float)thePlayer.posY;

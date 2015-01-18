@@ -77,12 +77,20 @@ public class KeybindHandler
                 {
                     if (!player.isSneaking())
                     {
-                        ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.TOGGLE, ""));
-                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), CopterPacket.TOGGLE);
+                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.COPTER_TOGGLE, ""));
+                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_TOGGLE);
                     } else
                     {
-                        ModNetwork.net.sendToServer(new CopterPacket.CopterMessage(CopterPacket.ON_OFF, ""));
-                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), CopterPacket.ON_OFF);
+                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.COPTER_ON_OFF, ""));
+                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_ON_OFF);
+                    }
+                }
+                if (Wearing.isWearingSteam(player))
+                {
+                    if (player.isSneaking())
+                    {
+                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.JETPACK_ON_OFF, ""));
+                        ServerActions.toggleSteamJetpack(player, Wearing.getWearingSteam(player), WearableModePacket.JETPACK_ON_OFF);
                     }
                 }
             }

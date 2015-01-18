@@ -40,8 +40,8 @@ public class RendererWearableEquipped extends RendererLivingEntity
 
     public void render(Entity entity, double x, double y, double z, float rotX, float rotY, float rotZ, float yaw, float pitch)
     {
-
         ItemStack wearable = Wearing.getWearingWearable((EntityPlayer)entity);
+        if(wearable == null)return;
         IBackWearableItem wearableItem = (IBackWearableItem)wearable.getItem();
         modelBipedMain = wearableItem.getWearableModel(wearable);
         texture = wearableItem.getWearableTexture(wearable);

@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.network.messages;
 
-import com.darkona.adventurebackpack.common.ClientActions;
+import com.darkona.adventurebackpack.client.ClientActions;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;

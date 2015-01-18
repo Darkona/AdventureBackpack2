@@ -1,9 +1,6 @@
-package com.darkona.adventurebackpack.common;
+package com.darkona.adventurebackpack.client;
 
-import com.darkona.adventurebackpack.client.Visuals;
-import com.darkona.adventurebackpack.client.audio.CopterPackSound;
-import com.darkona.adventurebackpack.client.audio.JetpackSoundOn;
-import com.darkona.adventurebackpack.client.audio.NyanMovingSound;
+import com.darkona.adventurebackpack.client.audio.*;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
 import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
@@ -59,6 +56,12 @@ public class ClientActions
                 break;
             case PlayerSoundPacket.JETPACK_FIZZ:
                 snd.playSound(new JetpackSoundOn(player));
+                break;
+            case PlayerSoundPacket.BOILING_BUBBLES:
+                snd.playSound(new BoilingBoilerSound(player));
+                break;
+            case PlayerSoundPacket.LEAKING_STEAM:
+                snd.playSound(new LeakingBoilerSound(player));
                 break;
         }
     }

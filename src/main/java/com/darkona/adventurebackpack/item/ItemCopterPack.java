@@ -140,7 +140,10 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             if (player.isInWater())
             {
                 inv.setStatus(OFF_MODE);
-                player.addChatComponentMessage(new ChatComponentText("CopterPack: can't function in water."));
+                inv.dirtyStatus();
+                if (!world.isRemote){
+                    player.addChatComponentMessage(new ChatComponentText("CopterPack: can't function in water."));
+                }
                 return;
             }
             if (inv.fuelTank.getFluidAmount() == 0)
@@ -149,6 +152,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 if (player.onGround)
                 {
                     inv.setStatus(OFF_MODE);
+                    inv.dirtyStatus();
                     if (!world.isRemote)
                     {
                         player.addChatComponentMessage(new ChatComponentText("CopterPack: out of fuel, shutting off"));
@@ -160,6 +164,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 {
 
                     inv.setStatus(NORMAL_MODE);
+                    inv.dirtyStatus();
                     if (!world.isRemote)
                     {
                         player.addChatComponentMessage(new ChatComponentText("CopterPack: out of fuel."));
@@ -260,7 +265,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        onDroppedByPlayer(stack.copy(),player);
+        onUnequipped(world,player,stack);
+        player.dropPlayerItemWithRandomChoice(stack.copy(),false);
         BackpackProperty.get(player).setWearable(null);
     }
 

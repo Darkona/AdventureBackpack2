@@ -26,7 +26,7 @@ public class ModNetwork
         registerMessage(PlayerParticlePacket.class, PlayerParticlePacket.Message.class);
         registerMessage(PlayerSoundPacket.class, PlayerSoundPacket.Message.class);
 
-        registerMessage(CopterPacket.class, CopterPacket.CopterMessage.class);
+        registerMessage(WearableModePacket.class, WearableModePacket.Message.class);
         registerMessage(CycleToolPacket.class, CycleToolPacket.CycleToolMessage.class);
         registerMessage(GUIPacket.class, GUIPacket.GUImessage.class);
         registerMessage(SleepingBagPacket.class, SleepingBagPacket.SleepingBagMessage.class);

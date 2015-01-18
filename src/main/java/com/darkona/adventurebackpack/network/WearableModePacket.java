@@ -14,13 +14,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
  *
  * @author Darkona
  */
-public class CopterPacket implements IMessageHandler<CopterPacket.CopterMessage, CopterPacket.CopterMessage>
+public class WearableModePacket implements IMessageHandler<WearableModePacket.Message, WearableModePacket.Message>
 {
-    public static byte ON_OFF = 0;
-    public static byte TOGGLE = 1;
-
+    public static byte COPTER_ON_OFF = 0;
+    public static byte COPTER_TOGGLE = 1;
+    public static byte JETPACK_ON_OFF = 2;
     @Override
-    public CopterPacket.CopterMessage onMessage(CopterMessage message, MessageContext ctx)
+    public Message onMessage(Message message, MessageContext ctx)
     {
         if (ctx.side.isServer())
         {
@@ -28,8 +28,13 @@ public class CopterPacket implements IMessageHandler<CopterPacket.CopterMessage,
 
             if (player != null)
             {
+                if((message.type == COPTER_ON_OFF || message.type == COPTER_TOGGLE))
                 ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), message.type);
+
+                if(message.type == JETPACK_ON_OFF)
+                    ServerActions.toggleSteamJetpack(player,Wearing.getWearingSteam(player),message.type);
             }
+
         }
         if (ctx.side.isClient())
         {
@@ -38,17 +43,17 @@ public class CopterPacket implements IMessageHandler<CopterPacket.CopterMessage,
         return null;
     }
 
-    public static class CopterMessage implements IMessage
+    public static class Message implements IMessage
     {
 
         private byte type;
         private String playerID;
 
-        public CopterMessage()
+        public Message()
         {
         }
 
-        public CopterMessage(byte type, String playerID)
+        public Message(byte type, String playerID)
         {
             this.type = type;
             this.playerID = playerID;

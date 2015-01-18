@@ -35,7 +35,7 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
                 {
                     InventorySteamJetpack inv = new InventorySteamJetpack(Wearing.getWearingSteam(ctx.getServerHandler().playerEntity));
                     inv.setInUse(message.type == JETPACK_IN_USE);
-                    inv.closeInventory();
+                    inv.markDirty();
                 }
             }
 

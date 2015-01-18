@@ -4,9 +4,10 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
-import com.darkona.adventurebackpack.network.CopterPacket;
+import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -353,7 +354,7 @@ public class ServerActions
         byte mode = copter.stackTagCompound.getByte("status");
         byte newMode = ItemCopterPack.OFF_MODE;
 
-        if (type == CopterPacket.ON_OFF)
+        if (type == WearableModePacket.COPTER_ON_OFF)
         {
             if (mode == ItemCopterPack.OFF_MODE)
             {
@@ -373,7 +374,7 @@ public class ServerActions
             }
         }
 
-        if (type == CopterPacket.TOGGLE && mode != ItemCopterPack.OFF_MODE)
+        if (type == WearableModePacket.COPTER_TOGGLE && mode != ItemCopterPack.OFF_MODE)
         {
             if (mode == ItemCopterPack.NORMAL_MODE)
             {
@@ -400,4 +401,24 @@ public class ServerActions
         }
     }
 
+    public static void toggleSteamJetpack(EntityPlayer player, ItemStack jetpack, byte on_off)
+    {
+        InventorySteamJetpack inv = new InventorySteamJetpack(jetpack);
+        if(inv.getStatus())
+        {
+            inv.setStatus(false);
+            inv.markDirty();
+            if (player.worldObj.isRemote)
+            {
+                player.addChatComponentMessage(new ChatComponentText("Steam Jetpack: Off."));
+            }
+        }else{
+            inv.setStatus(true);
+            inv.markDirty();
+            if (player.worldObj.isRemote)
+            {
+                player.addChatComponentMessage(new ChatComponentText("Steam Jetpack: On."));
+            }
+        }
+    }
 }

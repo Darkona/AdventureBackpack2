@@ -8,10 +8,11 @@ import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -30,13 +31,14 @@ public class GuiSteamJetpack extends GuiWithTanks
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private boolean wearing;
     EntityPlayer player;
-    InventorySteamJetpack inv;
-    public GuiSteamJetpack(EntityPlayer player, InventorySteamJetpack inv, boolean wearing)
+    InventorySteamJetpack inventory;
+    int boiling = 0;
+    public GuiSteamJetpack(EntityPlayer player, InventorySteamJetpack inventory, boolean wearing)
     {
-        super(new ContainerJetpack(player, inv,wearing));
+        super(new ContainerJetpack(player, inventory,wearing));
         this.wearing = wearing;
         this.player = player;
-        this.inv = inv;
+        this.inventory = inventory;
         xSize = 176;
         ySize = 166;
     }
@@ -46,7 +48,7 @@ public class GuiSteamJetpack extends GuiWithTanks
     @Override
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseY)
     {
-        inv.openInventory();
+        inventory.openInventory();
         this.mc.renderEngine.bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -69,41 +71,59 @@ public class GuiSteamJetpack extends GuiWithTanks
                 equipButton.draw(this,1,167);
             }
         }
+
+
+
+
+
+       // if(wearing) inventory = new InventorySteamJetpack(Wearing.getWearingSteam(player));
+
+
+
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        int maxTemp = 200;
-        int temp = inv.getTemperature();
-        int hMax = 72;
-        int H = (hMax / maxTemp) * temp;
-        int V = 167+hMax-H;
-        int X = guiLeft+139;
-        int Y= guiTop+8+hMax-H;
-        int U = 40;
-        int W = 5;
-        drawTexturedModalRect(X,Y,U,V,W,H);
+        this.mc.renderEngine.bindTexture(texture);
+        if(wearing) inventory = new InventorySteamJetpack(Wearing.getWearingSteam(player));
+        FluidTank water = inventory.getWaterTank();
+        FluidTank steam = inventory.getSteamTank();
+        GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        if(     inventory.isBoiling()
+                && steam.getFluidAmount() < steam.getCapacity()
+                && water.getFluidAmount() > 0)
+        {
+            if(boiling < 83)
+            {
+                drawTexturedModalRect(28,40,50,172,boiling++,37);
+            }else boiling = 0;
+        }
+        if(inventory.getBurnTicks() > 0)
+        {
+            int i1 =inventory.getBurnTimeRemainingScaled(13);
+            this.drawTexturedModalRect(78, 48 + 12 - i1, 176, 12 - i1, 14, i1 + 1);
+        }
 
-        GL11.glDisable(GL11.GL_LIGHTING);
+        int H = Math.round(((float)72 / (float)InventorySteamJetpack.MAX_TEMPERATURE) * (float)inventory.getTemperature());
+        drawTexturedModalRect( 139, 8 + (72- H), 40, 167 + (72 - H), 5, H);
+
         GL11.glDisable(GL11.GL_BLEND);
+        GL11.glPopMatrix();
+        GL11.glDisable(GL11.GL_LIGHTING);
 
-        FluidTank water = inv.getWaterTank();
-        FluidTank steam = inv.getSteamTank();
+
         waterTank.draw(this, water);
         steamTank.draw(this,steam);
-        FluidStack waterStack = water.getFluid();
-        FluidStack steamStack = steam.getFluid();
-
-
         GL11.glPushMatrix();
-        String name = (waterStack != null) ? Utils.capitalize(waterStack.getFluid().getLocalizedName(waterStack)) : "None";
-        String amount = (waterStack != null) ? ""+waterStack.amount : "0";
-        String capacity = Integer.toString(water.getCapacity());
+        String name =(water.getFluidAmount() > 0) ? Utils.capitalize(FluidRegistry.getFluidName(water.getFluid())) : "None";
+        String amount =  Integer.toString(water.getFluidAmount());
         int offsetY = 5;
         int offsetX = 29;
-        fontRendererObj.drawString(name + "-" + amount + "/" + capacity, offsetX, offsetY, 0x373737, false);
-        fontRendererObj.drawString(inv.getTemperature()+"ºC", 146, 8, 0x373737, false);
+        fontRendererObj.drawString(name + "-" + amount, offsetX, offsetY, 0x373737, false);
+        fontRendererObj.drawString((inventory.getTemperature())+"ºC", 146, 8, 0x373737, false);
         GL11.glPopMatrix();
 
 

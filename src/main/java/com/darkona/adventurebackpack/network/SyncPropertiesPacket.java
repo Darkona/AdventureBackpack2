@@ -7,7 +7,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -15,7 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @author Darkona
  */
-public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacket.Message,SyncPropertiesPacket.Message>
+public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacket.Message, SyncPropertiesPacket.Message>
 {
 
     /**
@@ -31,11 +30,11 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
     public Message onMessage(Message message, MessageContext ctx)
     {
 
-        if(ctx.side.isClient() && message.properties != null)
+        if (ctx.side.isClient() && message.properties != null)
         {
-            AdventureBackpack.proxy.synchronizePlayer(Minecraft.getMinecraft().thePlayer,message.properties);
+            AdventureBackpack.proxy.synchronizePlayer(message.ID, message.properties);
         }
-        if(ctx.side.isServer())
+        if (ctx.side.isServer())
         {
             BackpackProperty.sync(ctx.getServerHandler().playerEntity);
         }
@@ -45,29 +44,33 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
     public static class Message implements IMessage
     {
 
+        int ID;
         NBTTagCompound properties;
 
-        public Message(){}
 
-        public Message(NBTTagCompound props)
+        public Message()
         {
+        }
+
+        public Message(int id, NBTTagCompound props)
+        {
+            ID = id;
             properties = props;
         }
+
         @Override
         public void fromBytes(ByteBuf buf)
         {
+            ID = buf.readInt();
             properties = ByteBufUtils.readTag(buf);
+
         }
 
-        /**
-         * Deconstruct your message into the supplied byte buffer
-         *
-         * @param buf
-         */
         @Override
         public void toBytes(ByteBuf buf)
         {
-            ByteBufUtils.writeTag(buf,properties);
+            buf.writeInt(ID);
+            ByteBufUtils.writeTag(buf, properties);
         }
     }
 }

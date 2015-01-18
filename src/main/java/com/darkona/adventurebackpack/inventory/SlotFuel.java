@@ -15,4 +15,5 @@ public class SlotFuel extends SlotAdventureBackpack
     }
 
 
+
 }

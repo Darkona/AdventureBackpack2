@@ -116,8 +116,7 @@ public class AdventureBackpack
         ConfigHandler.IS_TWILIGHT = Loader.isModLoaded("TwilightForest");
         ConfigHandler.IS_ENVIROMINE = Loader.isModLoaded("EnviroMine");
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
-
-
+        ConfigHandler.IS_RAILCRAFT = Loader.isModLoaded("Railcraft");
         if (ConfigHandler.IS_BAUBLES)
         {
             LogHelper.info("Baubles is present. Acting accordingly");
@@ -131,6 +130,10 @@ public class AdventureBackpack
         if (ConfigHandler.IS_TWILIGHT)
         {
             LogHelper.info("Twilight Forest is present. Acting accordingly");
+        }
+        if(ConfigHandler.IS_RAILCRAFT)
+        {
+            LogHelper.info("Railcraft is present. Acting accordingly");
         }
         ConditionalFluidEffect.init();
         ModItems.conditionalInit();

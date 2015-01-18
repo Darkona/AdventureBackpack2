@@ -16,11 +16,10 @@ public class ContainerCopter extends Container implements IWearableContainer
 
     public InventoryCopterPack inventory;
     private final int
-            PLAYER_HOT_START = 0,
-            PLAYER_HOT_END = PLAYER_HOT_START + 8,
-            PLAYER_INV_START = PLAYER_HOT_END + 1,
-            PLAYER_INV_END = PLAYER_INV_START + 26,
-            COPTER_INV_START = PLAYER_INV_END + 1;
+            PLAYER_HOT_START = 0;
+    private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
+    private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
+    private final int PLAYER_INV_END = PLAYER_INV_START + 26;
     EntityPlayer player;
     boolean wearing;
 
@@ -123,6 +122,7 @@ public class ContainerCopter extends Container implements IWearableContainer
             {
                 if (SlotFluid.valid(stack))
                 {
+                    int COPTER_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
                     {
                         return null;

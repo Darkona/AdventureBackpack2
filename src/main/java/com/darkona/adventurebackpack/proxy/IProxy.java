@@ -19,5 +19,6 @@ public interface IProxy
 
     public void joinPlayer(EntityPlayer player);
 
-    public void synchronizePlayer(EntityPlayer player, NBTTagCompound compound);
+    public void synchronizePlayer(int id, NBTTagCompound compound);
+
 }

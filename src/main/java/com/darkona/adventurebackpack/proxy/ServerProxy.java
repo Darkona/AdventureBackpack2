@@ -42,13 +42,14 @@ public class ServerProxy implements IProxy
         if (playerData != null)
         {
             BackpackProperty.get(player).loadNBTData(playerData);
-            BackpackProperty.get(player).sync(player);
+            BackpackProperty.sync(player);
         }
     }
 
     @Override
-    public void synchronizePlayer(EntityPlayer player, NBTTagCompound compound)
+    public void synchronizePlayer(int id, NBTTagCompound compound)
     {
+
     }
 
     public static void storePlayerProps(UUID playerID, NBTTagCompound compound)

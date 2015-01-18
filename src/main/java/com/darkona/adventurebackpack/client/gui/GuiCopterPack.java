@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -81,7 +82,7 @@ public class GuiCopterPack extends GuiWithTanks
     {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
-        inventory.openInventory();
+        if(wearing) inventory = new InventoryCopterPack(Wearing.getWearingCopter(player));
         FluidTank fuel = inventory.getFuelTank();
         fuelTank.draw(this, fuel);
         FluidStack fuelStack = fuel.getFluid();

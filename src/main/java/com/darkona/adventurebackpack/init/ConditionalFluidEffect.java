@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.api.FluidEffect;
+import adventurebackpack.api.FluidEffect;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.effects.FuelEffect;
 import com.darkona.adventurebackpack.fluids.effects.OilEffect;

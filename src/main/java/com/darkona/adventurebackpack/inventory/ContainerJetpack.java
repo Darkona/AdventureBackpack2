@@ -13,22 +13,21 @@ import net.minecraft.item.ItemStack;
  */
 public class ContainerJetpack extends Container implements IWearableContainer
 {
-    InventorySteamJetpack inv;
+    InventorySteamJetpack inventory;
     EntityPlayer player;
     private final int
-    PLAYER_HOT_START = 0,
-    PLAYER_HOT_END = PLAYER_HOT_START + 8,
-    PLAYER_INV_START = PLAYER_HOT_END + 1,
-    PLAYER_INV_END = PLAYER_INV_START + 26,
-    JETPACK_INV_START = PLAYER_INV_END + 1;
+    PLAYER_HOT_START = 0;
+    private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
+    private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
+    private final int PLAYER_INV_END = PLAYER_INV_START + 26;
     boolean wearing;
 
-    public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inv, boolean wearing)
+    public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inventory, boolean wearing)
     {
         this.player = player;
-        this.inv = inv;
+        this.inventory = inventory;
         makeSlots(player.inventory);
-        inv.openInventory();
+        this.inventory.openInventory();
         this.wearing = wearing;
     }
 
@@ -61,11 +60,11 @@ public class ContainerJetpack extends Container implements IWearableContainer
 
         //Bucket Slots
         // bucket in
-        addSlotToContainer(new SlotFluid(inv, InventorySteamJetpack.BUCKET_IN_SLOT, 30, 22));
+        addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_IN_SLOT, 30, 22));
         // bucket out
-        addSlotToContainer(new SlotFluid(inv, InventorySteamJetpack.BUCKET_OUT_SLOT, 30, 52));
+        addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_OUT_SLOT, 30, 52));
         // fuel
-        addSlotToContainer(new Slot(inv,InventorySteamJetpack.FUEL_SLOT, 77, 64));
+        addSlotToContainer(new Slot(inventory,InventorySteamJetpack.FUEL_SLOT, 77, 64));
 
     }
     @Override
@@ -77,7 +76,9 @@ public class ContainerJetpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
+        refresh();
         super.detectAndSendChanges();
+
     }
 
 
@@ -89,10 +90,10 @@ public class ContainerJetpack extends Container implements IWearableContainer
         {
             for (int i = 0; i < 1; i++)
             {
-                ItemStack itemstack = this.inv.getStackInSlotOnClosing(i);
+                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
                 if (itemstack != null)
                 {
-                    inv.setInventorySlotContents(i, null);
+                    inventory.setInventorySlotContents(i, null);
                     player.dropPlayerItemWithRandomChoice(itemstack, false);
                 }
             }
@@ -120,7 +121,16 @@ public class ContainerJetpack extends Container implements IWearableContainer
             {
                 if (SlotFluid.valid(stack))
                 {
-                    if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 3, false))
+                    int JETPACK_INV_START = PLAYER_INV_END + 1;
+                    if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
+                    {
+
+                    }
+                }
+                else
+                {
+                    int JETPACK_FUEL_START = PLAYER_INV_END + 3;
+                    if (inventory.isFuel(stack) && !mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false))
                     {
                         return null;
                     }
@@ -140,7 +150,6 @@ public class ContainerJetpack extends Container implements IWearableContainer
                 return null;
             }
             slot.onPickupFromSlot(player, stack);
-            //inventory.onInventoryChanged();
         }
         return result;
     }
@@ -148,6 +157,6 @@ public class ContainerJetpack extends Container implements IWearableContainer
     @Override
     public void refresh()
     {
-
+        inventory.openInventory();
     }
 }

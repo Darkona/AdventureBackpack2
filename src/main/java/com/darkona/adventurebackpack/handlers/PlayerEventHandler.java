@@ -7,7 +7,6 @@ import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.IWearableContainer;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
@@ -42,11 +41,12 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
  * Handle ALL the events!
  *
  * @author Darkona
- * @see com.darkona.adventurebackpack.common.ClientActions
+ * @see com.darkona.adventurebackpack.client.ClientActions
  */
 public class PlayerEventHandler
 {
 
+    private static int tickCounter = 0;
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {
@@ -262,19 +262,26 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
-        if (event.player != null && !event.player.isDead)
+
+
+        if (event.player != null)
         {
-            BackpackProperty prop = BackpackProperty.get(event.player);
-            if (prop != null && event.phase == TickEvent.Phase.END && prop.hasWearable())
+            if (!event.player.isDead)
             {
-
-                ((IBackWearableItem) prop.getWearable().getItem()).onEquippedUpdate(event.player.worldObj, event.player, prop.getWearable());
-                BackpackProperty.sync(event.player);
-                if (event.side.isServer() && (event.player.openContainer == null || !(event.player.openContainer instanceof IWearableContainer)))
+                BackpackProperty prop = BackpackProperty.get(event.player);
+                if (Wearing.isWearingWearable(event.player) && event.phase == TickEvent.Phase.END )
                 {
-
+                    ((IBackWearableItem)Wearing.getWearingWearable(event.player).getItem()).onEquippedUpdate(event.player.worldObj, event.player, prop.getWearable());
+                    if(event.side.isServer())
+                    {
+                        BackpackProperty.syncToNear(event.player);
+                        if(--tickCounter == 0)
+                        {
+                            tickCounter = 20;
+                            BackpackProperty.syncToNear(event.player);
+                        }
+                    }
                 }
-
             }
         }
     }

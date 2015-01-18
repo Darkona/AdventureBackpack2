@@ -2,7 +2,7 @@
 {
   "modid": "adventurebackpack",
   "name": "Adventure Backpack",
-  "dependencies": ["Baubles"],
+  "dependencies": ["Buildcraft|Core","Railcraft"],
   "useDependencyInformation" : true,
   "description": "Useful and pretty backpacks for Minecraft",
   "version": "1.7.10-0.8-dev",

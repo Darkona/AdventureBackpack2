@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.network.messages;
 
-import com.darkona.adventurebackpack.common.ClientActions;
+import com.darkona.adventurebackpack.client.ClientActions;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -19,6 +19,8 @@ import java.util.UUID;
 public class PlayerSoundPacket implements IMessageHandler<PlayerSoundPacket.Message, PlayerSoundPacket.Message>
 {
 
+
+
     public static Message makeCopterMessage(EntityPlayer player, boolean action)
     {
         return new Message(COPTER_SOUND, player.getPersistentID().toString(), action);
@@ -35,7 +37,8 @@ public class PlayerSoundPacket implements IMessageHandler<PlayerSoundPacket.Mess
     public static final byte NYAN_SOUND = 0;
     public static final byte COPTER_SOUND = 1;
     public static final byte JETPACK_FIZZ = 2;
-
+    public static final byte BOILING_BUBBLES = 3;
+    public static final byte LEAKING_STEAM = 4;
 
     @Override
     public Message onMessage(Message message, MessageContext ctx)

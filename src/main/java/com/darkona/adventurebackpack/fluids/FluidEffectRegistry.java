@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.fluids;
 
-import com.darkona.adventurebackpack.api.FluidEffect;
+import adventurebackpack.api.FluidEffect;
 import com.darkona.adventurebackpack.fluids.effects.*;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.google.common.collect.BiMap;

@@ -33,7 +33,7 @@ public class ModItems
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
         GameRegistry.registerItem(cwxbow, "clockworkCrossbow");
-        GameRegistry.registerItem(steamJetpack, "steamJetpack");
+
     }
 
     public static void conditionalInit()
@@ -41,6 +41,11 @@ public class ModItems
         if (ConfigHandler.IS_BUILDCRAFT)
         {
             GameRegistry.registerItem(copterPack, "copterPack");
+        }
+
+        if (ConfigHandler.IS_RAILCRAFT)
+        {
+            GameRegistry.registerItem(steamJetpack, "steamJetpack");
         }
     }
 }

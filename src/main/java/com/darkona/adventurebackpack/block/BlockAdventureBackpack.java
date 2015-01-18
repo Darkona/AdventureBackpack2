@@ -384,6 +384,12 @@ public class BlockAdventureBackpack extends BlockContainer
     }
 
     @Override
+    public boolean canReplace(World p_149705_1_, int p_149705_2_, int p_149705_3_, int p_149705_4_, int p_149705_5_, ItemStack p_149705_6_)
+    {
+        return false;
+    }
+
+    @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean harvest)
     {
         TileEntity tile = world.getTileEntity(x, y, z);

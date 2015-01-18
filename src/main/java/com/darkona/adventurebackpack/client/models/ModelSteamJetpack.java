@@ -181,7 +181,7 @@ public class ModelSteamJetpack extends ModelWearable {
     {
         InventorySteamJetpack inv = new InventorySteamJetpack(jetpack);
 
-        this.fireBox.setTextureOffset((inv.getStatus() == 0) ? 9 : 26, 25);
+        this.fireBox.setTextureOffset((inv.getBurnTicks() > 0) ? 9 : 26, 25);
 
         tubeStraightRight.render(f5);
         tubeEndLeft.render(f5);

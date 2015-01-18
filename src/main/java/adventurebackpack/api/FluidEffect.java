@@ -1,4 +1,4 @@
-package com.darkona.adventurebackpack.api;
+package adventurebackpack.api;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;

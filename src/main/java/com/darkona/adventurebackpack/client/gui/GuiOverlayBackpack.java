@@ -155,8 +155,8 @@ public class GuiOverlayBackpack extends Gui
 
                     RenderHelper.enableStandardItemLighting();
                     RenderHelper.enableGUIStandardItemLighting();
-                   // drawItemStack(inv.getStackInSlot(Constants.upperTool), xStart [1] + textureWidth + 2, yStart[0]-16);
-                    //drawItemStack(inv.getStackInSlot(Constants.lowerTool), xStart [1] + textureWidth + 2, yStart[0]);
+                   // drawItemStack(inventory.getStackInSlot(Constants.upperTool), xStart [1] + textureWidth + 2, yStart[0]-16);
+                    //drawItemStack(inventory.getStackInSlot(Constants.lowerTool), xStart [1] + textureWidth + 2, yStart[0]);
                     GL11.glPushMatrix();
                     GL11.glTranslatef(xStart[1]+textureWidth+2,yStart[0],0);
                     GL11.glScalef(0.5f,0.5f,0.5f);

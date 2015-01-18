@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
-import com.darkona.adventurebackpack.api.FluidEffect;
+import adventurebackpack.api.FluidEffect;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -2,7 +2,6 @@ package com.darkona.adventurebackpack.playerProperties;
 
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
-import com.darkona.adventurebackpack.reference.ModInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 /**
@@ -20,32 +20,37 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 public class BackpackProperty implements IExtendedEntityProperties
 {
 
-    public static final String PROPERTY_NAME = ModInfo.MOD_ID + ".properties";
-    protected EntityPlayer player;
-    protected World world;
-    private ItemStack wearable;
-    private ChunkCoordinates campFire;
-    private boolean forceCampFire;
-    private int dimension;
+    public static final String PROPERTY_NAME = "abp.property";
+    protected EntityPlayer player = null;
+    protected World world = null;
+    private ItemStack wearable = null;
+    private ChunkCoordinates campFire = null;
+    private boolean forceCampFire = false;
+    private int dimension = 0;
 
     public static void sync(EntityPlayer player)
     {
         if(player instanceof EntityPlayerMP)
         {
-            ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(get(player).getData()),(EntityPlayerMP)player);
+            syncToNear(player);
+        }
+    }
+
+    public static void syncToNear(EntityPlayer player)
+    {
+        //Thanks diesieben07!!!
+        if(player.worldObj instanceof WorldServer)
+        {
+            WorldServer world = (WorldServer)player.worldObj;
+            SyncPropertiesPacket.Message msg = new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData());
+            world.getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(msg));
         }
     }
 
     public BackpackProperty(EntityPlayer player)
     {
         this.player = player;
-        try{
-            campFire = (player != null) ? player.getBedLocation(player.dimension) : null;
-        }catch(Exception e)
-        {
-            //NO ONE CARES!
-        }
-        forceCampFire = false;
+        this.world = player.worldObj;
     }
 
     public NBTTagCompound getData()

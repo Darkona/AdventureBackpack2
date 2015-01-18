@@ -19,10 +19,9 @@ public class ConfigHandler
     public static boolean IS_BAUBLES = false;
     public static boolean IS_TINKERS = false;
     public static boolean IS_THAUM = false;
-    public static boolean IS_INVTWEAKS = false;
     public static boolean IS_TWILIGHT = false;
     public static boolean IS_ENVIROMINE = false;
-
+    public static boolean IS_RAILCRAFT = false;
 
     public static int GUI_TANK_RENDER = 2;
     public static boolean BONUS_CHEST_ALLOWED = false;
@@ -37,6 +36,8 @@ public class ConfigHandler
     public static boolean HOVERING_TEXT_TANKS = false;
     public static boolean SADDLE_RECIPE = true;
     public static boolean FIX_LEAD = true;
+
+
     public static void init(File configFile)
     {
         if (config == null)

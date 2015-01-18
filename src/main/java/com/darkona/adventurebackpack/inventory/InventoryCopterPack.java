@@ -274,4 +274,9 @@ public class InventoryCopterPack implements IInventoryTanks
     {
         this.status = status;
     }
+
+    public void dirtyStatus()
+    {
+        containerStack.stackTagCompound.setByte("status", status);
+    }
 }

@@ -154,14 +154,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
         {
             for (int i = 0; i < inventory.getSizeInventory(); i++)
             {
-                if (i == Constants.bucketInRight || i == Constants.bucketInLeft || i == Constants.bucketOutLeft || i == Constants.bucketOutRight)
+                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
+                if (itemstack != null)
                 {
-                    ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                    if (itemstack != null)
-                    {
-                        inventory.setInventorySlotContents(i, null);
-                        player.dropPlayerItemWithRandomChoice(itemstack, false);
-                    }
+                    inventory.setInventorySlotContents(i, null);
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
                 }
             }
 
@@ -347,7 +344,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
-        inventory.openInventory();
+       refresh();
         super.detectAndSendChanges();
     }
 
