@@ -44,10 +44,9 @@ public class BackpackAbilities
     public static BackpackRemovals backpackRemovals = new BackpackRemovals();
 
     /**
-     * Checks if the selected String is a valid ability backpack colorName.
      *
      * @param colorName
-     * @return Whether this is a valid ability backpack or not.
+     * @return
      */
     public static boolean hasAbility(String colorName)
     {
@@ -466,18 +465,9 @@ public class BackpackAbilities
             return;
         }
         //Set Cow Properties
-        NBTTagCompound cowProperties = new NBTTagCompound();
-        int wheatConsumed = 0;
-        int milkTime = -1;
-        if (inv.getExtendedProperties() != null)
-        {
-            cowProperties = inv.getExtendedProperties();
-            if (cowProperties.hasKey("wheatConsumed"))
-            {
-                wheatConsumed = cowProperties.getInteger("wheatConsumed");
-                milkTime = cowProperties.getInteger("milkTime") - 1;
-            }
-        }
+        NBTTagCompound cowProperties = inv.getExtendedProperties();
+        int wheatConsumed =  cowProperties.getInteger("wheatConsumed");;
+        int milkTime = cowProperties.getInteger("milkTime") - 1;;
 
         int eatTime = (inv.getLastTime() - 1 >= 0 ) ? inv.getLastTime() -1 : 0;
         if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
@@ -485,11 +475,6 @@ public class BackpackAbilities
             eatTime = 20;
             LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
-           /* if (!world.isRemote)
-            {
-                EntityPlayerMP playerMP = (EntityPlayerMP) player;
-                ModNetwork.net.sendTo(new CowAbilityPacket.CowAbilityMessage(player.getPersistentID().toString(), CowAbilityPacket.CONSUME_WHEAT), playerMP);
-            }*/
             wheatConsumed++;
         }
 
@@ -508,9 +493,11 @@ public class BackpackAbilities
                 inv.getRightTank().fill(milkStack, true);
             }
         }
+        if(milkTime < -1)milkTime = -1;
         cowProperties.setInteger("wheatConsumed", wheatConsumed);
         cowProperties.setInteger("milkTime", milkTime);
         inv.setExtendedProperties(cowProperties);
+        inv.setLastTime(eatTime);
         inv.setLastTime(eatTime);
         inv.dirtyExtended();
         inv.dirtyTanks();

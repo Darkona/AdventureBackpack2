@@ -39,11 +39,17 @@ public class BackpackProperty implements IExtendedEntityProperties
     public static void syncToNear(EntityPlayer player)
     {
         //Thanks diesieben07!!!
-        if(player.worldObj instanceof WorldServer)
+        if(player != null && player.worldObj instanceof WorldServer)
         {
-            WorldServer world = (WorldServer)player.worldObj;
-            SyncPropertiesPacket.Message msg = new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData());
-            world.getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(msg));
+            try
+            {
+                WorldServer world = (WorldServer) player.worldObj;
+                SyncPropertiesPacket.Message msg = new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData());
+
+                world.getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(msg));
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
         }
     }
 
