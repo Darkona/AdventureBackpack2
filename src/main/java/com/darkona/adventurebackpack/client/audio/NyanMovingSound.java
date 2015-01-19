@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.client.audio;
 
-import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
@@ -55,7 +54,7 @@ public class NyanMovingSound extends MovingSound
             this.donePlaying = true;
         } else
         {
-            if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals("Rainbow"))
+            if (Wearing.isWearingTheRightBackpack(player, "Rainbow"))
             {
                 this.volume = 0.8f;
             } else

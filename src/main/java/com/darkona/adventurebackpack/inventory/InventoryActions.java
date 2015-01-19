@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -129,6 +130,20 @@ public class InventoryActions
         {
             if (inventory[i] != null &&
                     inventory[i].getItem().equals(item))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasBlockItem(IInventoryAdventureBackpack backpack, Block item)
+    {
+        ItemStack[] inventory = backpack.getInventory();
+        for (int i = 0; i < inventory.length; i++)
+        {
+            if (inventory[i] != null &&
+                    inventory[i].getItem().equals(Item.getItemFromBlock(item)))
             {
                 return true;
             }

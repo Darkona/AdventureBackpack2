@@ -1,26 +1,26 @@
 package com.darkona.adventurebackpack.network.messages;
 
 import com.darkona.adventurebackpack.client.ClientActions;
-import cpw.mods.fml.common.network.ByteBufUtils;
+import com.darkona.adventurebackpack.init.ModNetwork;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.UUID;
+import net.minecraft.entity.Entity;
 
 /**
  * Created on 06/01/2015
  *
  * @author Darkona
  */
-public class PlayerParticlePacket implements IMessageHandler<PlayerParticlePacket.Message, PlayerParticlePacket.Message>
+public class EntityParticlePacket implements IMessageHandler<EntityParticlePacket.Message, EntityParticlePacket.Message>
 {
     public static final byte NYAN_PARTICLE = 0;
     public static final byte COPTER_PARTICLE = 1;
     public static final byte SLIME_PARTICLE = 2;
+    public static final byte JETPACK_PARTICLE = 3;
+
 
 
     @Override
@@ -28,8 +28,12 @@ public class PlayerParticlePacket implements IMessageHandler<PlayerParticlePacke
     {
         if (ctx.side.isClient())
         {
-            EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerUUID));
-            ClientActions.showParticlesAtPlayer(player, message.particleCode);
+            Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID);
+            ClientActions.showParticlesAtEntity(entity, message.particleCode);
+        }
+        else
+        {
+            ModNetwork.sendToNearby(message,ctx.getServerHandler().playerEntity);
         }
         return null;
     }
@@ -38,12 +42,12 @@ public class PlayerParticlePacket implements IMessageHandler<PlayerParticlePacke
     {
 
         private byte particleCode;
-        private String playerUUID;
+        private int entityID;
 
-        public Message(byte particleCode, String playerUUID)
+        public Message(byte particleCode, Entity entity)
         {
             this.particleCode = particleCode;
-            this.playerUUID = playerUUID;
+            this.entityID = entity.getEntityId();
         }
 
         public Message()
@@ -54,14 +58,14 @@ public class PlayerParticlePacket implements IMessageHandler<PlayerParticlePacke
         public void fromBytes(ByteBuf buf)
         {
             particleCode = buf.readByte();
-            playerUUID = ByteBufUtils.readUTF8String(buf);
+            entityID = buf.readInt();
         }
 
         @Override
         public void toBytes(ByteBuf buf)
         {
             buf.writeByte(particleCode);
-            ByteBufUtils.writeUTF8String(buf, playerUUID);
+            buf.writeInt(entityID);
         }
     }
 }

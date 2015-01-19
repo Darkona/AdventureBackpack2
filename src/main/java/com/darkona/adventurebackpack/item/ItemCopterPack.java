@@ -4,7 +4,7 @@ import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
-import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
+import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
@@ -205,7 +205,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             //Smoke
             if (!world.isRemote)
             {
-                ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.COPTER_PARTICLE, player.getUniqueID().toString()), player);
+                ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.COPTER_PARTICLE, player), player);
             }
             //Sound
 

@@ -1,6 +1,9 @@
 package com.darkona.adventurebackpack.util;
 
+import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
+import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.item.*;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -140,5 +143,12 @@ public class Wearing
         return false;
     }
 
-
+    public static IInventoryTanks getWearableInv(EntityPlayer player)
+    {
+        ItemStack wearable = Wearing.getWearingWearable(player);
+        if(wearable.getItem() instanceof ItemAdventureBackpack)return new InventoryBackpack(wearable);
+        if (wearable.getItem() instanceof ItemCopterPack) return new InventoryCopterPack(wearable);
+        if (wearable.getItem() instanceof ItemSteamJetpack) return new InventorySteamJetpack(wearable);
+        return null;
+    }
 }

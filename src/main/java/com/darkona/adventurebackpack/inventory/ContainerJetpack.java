@@ -81,14 +81,12 @@ public class ContainerJetpack extends Container implements IWearableContainer
 
     }
 
-
-
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
         if (!player.worldObj.isRemote)
         {
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 3; i++)
             {
                 ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
                 if (itemstack != null)

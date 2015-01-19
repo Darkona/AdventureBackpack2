@@ -262,17 +262,9 @@ public class BlockAdventureBackpack extends BlockContainer
         return true;
     }
 
-    /**
-     * Called when a user uses the creative pick block button on this block
-     *
-     * @param target The full target the player is looking at
-     * @param world
-     * @param x
-     * @param y
-     * @param z      @return A ItemStack to add to the player's inventory, Null if nothing should be added.
-     */
+
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
         ItemStack backpack = new ItemStack(ModItems.adventureBackpack, 1);
         BackpackNames.setBackpackColorNameFromDamage(backpack, BackpackNames.getBackpackDamageFromName(getAssociatedTileColorName(world, x, y, z)));

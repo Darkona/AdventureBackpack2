@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.client.audio;
 
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.item.ItemSteamJetpack;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
@@ -56,7 +57,7 @@ public class LeakingBoilerSound extends MovingSound
     public void update()
     {
         ItemStack jetpack = Wearing.getWearingSteam(thePlayer);
-        if(thePlayer == null || thePlayer.worldObj == null || jetpack == null)
+        if(thePlayer == null || thePlayer.worldObj == null || jetpack == null || !(jetpack.getItem() instanceof ItemSteamJetpack))
         {
             setDonePlaying();
         }

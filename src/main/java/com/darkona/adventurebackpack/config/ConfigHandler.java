@@ -13,6 +13,7 @@ import java.io.File;
 public class ConfigHandler
 {
 
+
     public static Configuration config;
 
     public static boolean IS_BUILDCRAFT = false;
@@ -27,9 +28,12 @@ public class ConfigHandler
     public static boolean BONUS_CHEST_ALLOWED = false;
     public static boolean PIGMAN_ALLOWED = false;
 
+    public static boolean BACKPACK_DEATH_PLACE = true;
     public static boolean BACKPACK_ABILITIES = true;
 
     public static boolean ALLOW_COPTER_SOUND = true;
+    public static boolean ALLOW_JETPACK_SOUNDS = true;
+
 
     public static boolean STATUS_OVERLAY = true;
     public static boolean TANKS_OVERLAY = true;

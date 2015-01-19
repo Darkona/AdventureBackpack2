@@ -117,14 +117,35 @@ public class GuiSteamJetpack extends GuiWithTanks
 
         waterTank.draw(this, water);
         steamTank.draw(this,steam);
+
+        float factor = 0.7f;
+
+        String show = ((water.getFluidAmount() > 0) ? Utils.capitalize(FluidRegistry.getFluidName(water.getFluid())) : "None")+ "-" + water.getFluidAmount();
+
         GL11.glPushMatrix();
-        String name =(water.getFluidAmount() > 0) ? Utils.capitalize(FluidRegistry.getFluidName(water.getFluid())) : "None";
-        String amount =  Integer.toString(water.getFluidAmount());
-        int offsetY = 5;
-        int offsetX = 29;
-        fontRendererObj.drawString(name + "-" + amount, offsetX, offsetY, 0x373737, false);
-        fontRendererObj.drawString((inventory.getTemperature())+"ºC", 146, 8, 0x373737, false);
+        GL11.glTranslatef(70, 10, 0);
+        GL11.glScalef(factor, factor, factor);
+        fontRendererObj.drawString(show, 0, 0, 0x373737, false);
+        GL11.glScalef(1, 1, 1);
         GL11.glPopMatrix();
+
+        show = ((steam.getFluidAmount() > 0) ? Utils.capitalize(FluidRegistry.getFluidName(steam.getFluid())) : "None") + "-" + steam.getFluidAmount();
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(70, 20, 0);
+        GL11.glScalef(factor, factor, factor);
+        fontRendererObj.drawString(show, 0, 0, 0x373737, false);
+        GL11.glScalef(1, 1, 1);
+        GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(145,8,0);
+        GL11.glScalef(0.9f, 0.9f, 0.9f);
+        fontRendererObj.drawString((inventory.getTemperature()) + "ºC", 0, 0, 0x373737, false);
+        GL11.glScalef(1, 1, 1);
+        GL11.glPopMatrix();
+
+
 
 
     }

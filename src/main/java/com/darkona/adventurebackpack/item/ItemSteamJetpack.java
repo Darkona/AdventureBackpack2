@@ -5,7 +5,8 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
-import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
+import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
+import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
@@ -137,6 +138,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             {
                 inv.setInUse(true);
                 elevate(player);
+                ModNetwork.net.sendToServer(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE,player));
             } else
             {
                 inv.setInUse(false);
@@ -156,7 +158,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_IN_USE));
                 if (mustFizzz)
                 {
-                    ModNetwork.sendToNearby(new PlayerSoundPacket.Message(PlayerSoundPacket.JETPACK_FIZZ, player.getUniqueID().toString(), true), player);
+                    ModNetwork.net.sendToServer(new EntitySoundPacket.Message(EntitySoundPacket.JETPACK_FIZZ, player));
                 }
             } else
             {
@@ -192,7 +194,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
 
             if (!world.isRemote && mustBlublub)
             {
-                ModNetwork.net.sendTo(new PlayerSoundPacket.Message(PlayerSoundPacket.BOILING_BUBBLES, player.getUniqueID().toString(), true), (EntityPlayerMP) player);
+                ModNetwork.net.sendTo(new EntitySoundPacket.Message(EntitySoundPacket.BOILING_BUBBLES, player), (EntityPlayerMP) player);
             }
         } else
         {
@@ -228,7 +230,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                 leaking = true;
                 if (!world.isRemote && mustSSSSS)
                 {
-                    ModNetwork.net.sendTo(new PlayerSoundPacket.Message(PlayerSoundPacket.LEAKING_STEAM, player.getUniqueID().toString(), true), (EntityPlayerMP) player);
+                    ModNetwork.net.sendTo(new EntitySoundPacket.Message(EntitySoundPacket.LEAKING_STEAM, player), (EntityPlayerMP) player);
                 }
             }
         }

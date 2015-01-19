@@ -3,8 +3,9 @@ package com.darkona.adventurebackpack.client.gui;
 import codechicken.lib.render.TextureUtils;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.ModInfo;
@@ -111,16 +112,9 @@ public class GuiOverlayBackpack extends Gui
             ItemStack wearable = BackpackProperty.get(player).getWearable();
             if(wearable != null)
             {
-                if(wearable.getItem() instanceof ItemAdventureBackpack)
+                if(wearable.getItem() instanceof IBackWearableItem)
                 {
-
-                    InventoryBackpack inv = Wearing.getBackpackInv(player,true);
-                    short tank = -1;
-                    if(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemHose)
-                    {
-                        tank = (short)(ItemHose.getHoseTank(player.getHeldItem()));
-                    }
-
+                    IInventoryTanks inv = Wearing.getWearableInv(player);
                     inv.openInventory();
 
                     int textureHeight = 23;
@@ -128,44 +122,71 @@ public class GuiOverlayBackpack extends Gui
 
                     int xPos = 2;
                     int yPos = ((screenHeight/3)*2) - textureHeight - 2;
-                    int[] xStart = {xPos,xPos + textureWidth + 1};
-                    int[] yStart = {yPos,yPos};
-                    int u[] = {10,10};
-                    int v[] = {0,0};
-                    if(tank > -1)
-                    {
-                        u[0] = (tank == 0) ? 0 : 10;
-                        u[1] = (tank == 1) ? 0 : 10;
-                    }
+
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     GL11.glDisable(GL11.GL_LIGHTING);
                     zLevel = 2;
-                    drawTank(inv.getLeftTank(),xPos+1,yPos+1,textureHeight-2,textureWidth-2);
-                    drawTank(inv.getRightTank(), xPos + textureWidth + 2, yPos + 1, textureHeight - 2, textureWidth - 2);
+                    int tankX = xPos;
 
-                    mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
+                    for(FluidTank tank : inv.getTanksArray())
+                    {
+                        drawTank(tank, tankX + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
+                        ++tankX;
+                        tankX += textureWidth;
+                    }
+
                     zLevel = 3;
+                    mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
+                    tankX = xPos;
                     GL11.glEnable(GL11.GL_BLEND);
                     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                    //Left Tank
-                    drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight);
-                    //Right Tank
-                    drawTexturedModalRect(xStart[1], yStart[0], u[1], v[1], textureWidth, textureHeight);
-                   // GL11.glDisable(GL11.GL_BLEND);
-
-                    RenderHelper.enableStandardItemLighting();
-                    RenderHelper.enableGUIStandardItemLighting();
-                   // drawItemStack(inventory.getStackInSlot(Constants.upperTool), xStart [1] + textureWidth + 2, yStart[0]-16);
-                    //drawItemStack(inventory.getStackInSlot(Constants.lowerTool), xStart [1] + textureWidth + 2, yStart[0]);
-                    GL11.glPushMatrix();
-                    GL11.glTranslatef(xStart[1]+textureWidth+2,yStart[0],0);
-                    GL11.glScalef(0.5f,0.5f,0.5f);
-                    drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
-                    drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);
-                    GL11.glPopMatrix();
-                    RenderHelper.disableStandardItemLighting();
+                    for (FluidTank tank : inv.getTanksArray())
+                    {
+                        drawTexturedModalRect(tankX, yPos, 10, 0, textureWidth, textureHeight);
+                        ++tankX;
+                        tankX+=textureWidth;
+                    }
                     GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                     GL11.glDisable(GL11.GL_BLEND);
+
+
+                    if(inv instanceof InventoryBackpack)
+                    {
+                        int u[] = {10, 10};
+                        int v[] = {0, 0};
+                        int[] xStart = {xPos, xPos + textureWidth + 1};
+                        int[] yStart = {yPos, yPos};
+                        short tank = -1;
+                        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemHose)
+                        {
+                            tank = (short) (ItemHose.getHoseTank(player.getHeldItem()));
+                        }
+                        if (tank > -1)
+                        {
+                            u[0] = (tank == 0) ? 0 : 10;
+                            u[1] = (tank == 1) ? 0 : 10;
+                        }
+
+
+                        GL11.glEnable(GL11.GL_BLEND);
+                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                        //Left Tank
+                        drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight);
+                        //Right Tank
+                        drawTexturedModalRect(xStart[1], yStart[0], u[1], v[1], textureWidth, textureHeight);
+
+                        RenderHelper.enableStandardItemLighting();
+                        RenderHelper.enableGUIStandardItemLighting();
+                        GL11.glPushMatrix();
+                        GL11.glTranslatef(xStart[1] + textureWidth + 2, yStart[0], 0);
+                        GL11.glScalef(0.5f, 0.5f, 0.5f);
+                        drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
+                        drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);
+                        GL11.glPopMatrix();
+                        RenderHelper.disableStandardItemLighting();
+                        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+                        GL11.glDisable(GL11.GL_BLEND);
+                    }
                 }
             }
         }

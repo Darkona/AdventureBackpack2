@@ -73,7 +73,7 @@ public class CopterPackSound extends MovingSound
     {
         ItemStack copter = Wearing.getWearingCopter(thePlayer);
         byte status = 0;
-       if(thePlayer == null || thePlayer.worldObj == null)
+       if(thePlayer == null || thePlayer.worldObj == null || copter ==null || !(copter.getItem() instanceof ItemCopterPack))
         {
             setDonePlaying();
         }

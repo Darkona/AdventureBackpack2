@@ -43,8 +43,6 @@ public class ClientProxy implements IProxy
     public static RendererItemClockworkCrossbow renderCrossbow;
 
 
-
-
     public void init()
     {
         initRenderers();

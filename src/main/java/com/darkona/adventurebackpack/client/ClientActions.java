@@ -2,12 +2,13 @@ package com.darkona.adventurebackpack.client;
 
 import com.darkona.adventurebackpack.client.audio.*;
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
-import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
+import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
+import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -22,47 +23,57 @@ public class ClientActions
 {
 
     @SideOnly(Side.CLIENT)
-    public static void showParticlesAtPlayer(EntityPlayer player, byte particleCode)
+    public static void showParticlesAtEntity(Entity entity, byte particleCode)
     {
-        switch (particleCode)
+        if (entity instanceof EntityPlayer)
         {
-            case PlayerParticlePacket.COPTER_PARTICLE:
-                Visuals.CopterParticles(player, player.worldObj);
-                break;
-            case PlayerParticlePacket.NYAN_PARTICLE:
-                Visuals.NyanParticles(player, player.worldObj);
-                break;
-            case PlayerParticlePacket.SLIME_PARTICLE:
-                Visuals.SlimeParticles(player, player.worldObj);
-                break;
+            EntityPlayer player = (EntityPlayer) entity;
+            switch (particleCode)
+            {
+                case EntityParticlePacket.COPTER_PARTICLE:
+                    Visuals.CopterParticles(player, player.worldObj);
+                    break;
+                case EntityParticlePacket.NYAN_PARTICLE:
+                    Visuals.NyanParticles(player, player.worldObj);
+                    break;
+                case EntityParticlePacket.SLIME_PARTICLE:
+                    Visuals.SlimeParticles(player, player.worldObj);
+                    break;
+                case EntityParticlePacket.JETPACK_PARTICLE:
+                    Visuals.JetpackParticles(player, player.worldObj);
+                    break;
+            }
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public static void playSoundAtPlayer(EntityPlayer player, byte soundCode)
+    public static void playSoundAtEntity(Entity entity, byte soundCode)
     {
         SoundHandler snd = FMLClientHandler.instance().getClient().getSoundHandler();
-        //snd.stopSound();
-        switch (soundCode)
+        if (entity instanceof EntityPlayer)
         {
-            case PlayerSoundPacket.COPTER_SOUND:
-                if (ConfigHandler.ALLOW_COPTER_SOUND)
-                {
-                    snd.playSound(new CopterPackSound(player));
-                }
-                break;
-            case PlayerSoundPacket.NYAN_SOUND:
-                snd.playSound(new NyanMovingSound(player));
-                break;
-            case PlayerSoundPacket.JETPACK_FIZZ:
-                snd.playSound(new JetpackSoundOn(player));
-                break;
-            case PlayerSoundPacket.BOILING_BUBBLES:
-                snd.playSound(new BoilingBoilerSound(player));
-                break;
-            case PlayerSoundPacket.LEAKING_STEAM:
-                snd.playSound(new LeakingBoilerSound(player));
-                break;
+            EntityPlayer player = (EntityPlayer) entity;
+            switch (soundCode)
+            {
+                case EntitySoundPacket.COPTER_SOUND:
+                    if (ConfigHandler.ALLOW_COPTER_SOUND)
+                    {
+                        snd.playSound(new CopterPackSound(player));
+                    }
+                    break;
+                case EntitySoundPacket.NYAN_SOUND:
+                    snd.playSound(new NyanMovingSound(player));
+                    break;
+                case EntitySoundPacket.JETPACK_FIZZ:
+                    snd.playSound(new JetpackSoundOn(player));
+                    break;
+                case EntitySoundPacket.BOILING_BUBBLES:
+                    snd.playSound(new BoilingBoilerSound(player));
+                    break;
+                case EntitySoundPacket.LEAKING_STEAM:
+                    snd.playSound(new LeakingBoilerSound(player));
+                    break;
+            }
         }
     }
 

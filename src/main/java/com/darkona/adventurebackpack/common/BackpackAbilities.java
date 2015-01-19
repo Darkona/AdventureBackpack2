@@ -5,7 +5,7 @@ import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
+import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
@@ -139,7 +139,7 @@ public class BackpackAbilities
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static String[] validWearingBackpacks = {
-            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower"};
+            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"};
 
     private static String[] validRemovalBackpacks = {
             "Bat", "Squid", "Dragon"
@@ -314,7 +314,7 @@ public class BackpackAbilities
                 {
                     if (!world.isRemote)
                     {
-                        ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.SLIME_PARTICLE, player.getUniqueID().toString()), player);
+                        ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.SLIME_PARTICLE, player), player);
                     }
                     world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
                     slimeTime = 5;
@@ -508,29 +508,21 @@ public class BackpackAbilities
 
     public void itemMooshroom(EntityPlayer player, World world, ItemStack backpack)
     {
-        if(world.isRemote)return;
+        if (world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
-        FluidStack soupStack = new FluidStack(FluidRegistry.getFluid("mushroomsoup"), 1);
+        FluidStack soupStack = new FluidStack(ModFluids.mushroomStew, 1);
         if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(soupStack, false) <= 0)
         {
             return;
         }
         //Set Cow Properties
-        NBTTagCompound cowProperties = new NBTTagCompound();
-        int wheatConsumed = 0;
-        int milkTime = -1;
-        if (inv.getExtendedProperties() != null)
-        {
-            cowProperties = inv.getExtendedProperties();
-            if (cowProperties.hasKey("wheatConsumed"))
-            {
-                wheatConsumed = cowProperties.getInteger("wheatConsumed");
-                milkTime = cowProperties.getInteger("milkTime") - 1;
-            }
-        }
+        NBTTagCompound cowProperties = inv.getExtendedProperties();
+        int wheatConsumed = cowProperties.getInteger("wheatConsumed");
 
-        int eatTime = (inv.getLastTime() - 1 >= 0 ) ? inv.getLastTime() -1 : 0;
-        if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
+        int soupTime = cowProperties.getInteger("soupTime") - 1;
+
+        int eatTime = (inv.getLastTime() - 1 >= 0) ? inv.getLastTime() - 1 : 0;
+        if (inv.hasItem(Items.wheat) && eatTime <= 0 && soupTime <= 0)
         {
             eatTime = 20;
             LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
@@ -542,20 +534,22 @@ public class BackpackAbilities
         if (wheatConsumed == 16)
         {
             wheatConsumed = 0;
-            milkTime = (1000 * factor) - factor;
+            soupTime = (1000 * factor) - factor;
             world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
         }
 
-        if (milkTime >= 0 && (milkTime % factor == 0))
+        if (soupTime >= 0 && (soupTime % factor == 0))
         {
             if (inv.getLeftTank().fill(soupStack, true) <= 0)
             {
                 inv.getRightTank().fill(soupStack, true);
             }
         }
+        if (soupTime < -1) soupTime = -1;
         cowProperties.setInteger("wheatConsumed", wheatConsumed);
-        cowProperties.setInteger("milkTime", milkTime);
+        cowProperties.setInteger("milkTime", soupTime);
         inv.setExtendedProperties(cowProperties);
+        inv.setLastTime(eatTime);
         inv.setLastTime(eatTime);
         inv.dirtyExtended();
         inv.dirtyTanks();
@@ -685,7 +679,7 @@ public class BackpackAbilities
                 //Visuals.NyanParticles(player, world);
                 if (!world.isRemote)
                 {
-                    ModNetwork.sendToNearby(new PlayerParticlePacket.Message(PlayerParticlePacket.NYAN_PARTICLE, player.getUniqueID().toString()), player);
+                    ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.NYAN_PARTICLE, player), player);
                 }
             }
         }

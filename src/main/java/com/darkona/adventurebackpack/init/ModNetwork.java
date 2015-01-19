@@ -1,17 +1,20 @@
 package com.darkona.adventurebackpack.init;
 
 import com.darkona.adventurebackpack.network.*;
-import com.darkona.adventurebackpack.network.messages.PlayerParticlePacket;
-import com.darkona.adventurebackpack.network.messages.PlayerSoundPacket;
+import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
+import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.WorldServer;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
 public class ModNetwork
 {
@@ -23,8 +26,8 @@ public class ModNetwork
         net = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_CHANNEL);
 
         registerMessage(SyncPropertiesPacket.class, SyncPropertiesPacket.Message.class);
-        registerMessage(PlayerParticlePacket.class, PlayerParticlePacket.Message.class);
-        registerMessage(PlayerSoundPacket.class, PlayerSoundPacket.Message.class);
+        registerMessage(EntityParticlePacket.class, EntityParticlePacket.Message.class);
+        registerMessage(EntitySoundPacket.class, EntitySoundPacket.Message.class);
 
         registerMessage(WearableModePacket.class, WearableModePacket.Message.class);
         registerMessage(CycleToolPacket.class, CycleToolPacket.CycleToolMessage.class);
@@ -36,12 +39,14 @@ public class ModNetwork
 
     }
 
+    @SuppressWarnings("unchecked")
     public static void registerClientSide(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
         messages++;
     }
 
+    @SuppressWarnings("unchecked")
     private static void registerMessage(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
@@ -51,7 +56,16 @@ public class ModNetwork
 
     public static void sendToNearby(IMessage message, EntityPlayer player)
     {
-        net.sendToAllAround(message, new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 144.0D));
+        if(player!=null && player.worldObj instanceof WorldServer)
+        {
+            try
+            {
+                ((WorldServer) player.worldObj).getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(message));
+            } catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public static void sendToDimension(IMessage message, EntityPlayer player)
