@@ -379,7 +379,6 @@ public class InventorySteamJetpack implements IInventoryTanks
         this.status = status;
     }
 
-
     public int getTemperature()
     {
         return temperature;
@@ -473,5 +472,21 @@ public class InventorySteamJetpack implements IInventoryTanks
     public void setCoolTicks(int coolTicks)
     {
         this.coolTicks = coolTicks;
+    }
+
+    public void setContainerStack(ItemStack containerStack)
+    {
+        this.containerStack = containerStack;
+    }
+
+    public ItemStack getContainerStack()
+    {
+        return containerStack;
+    }
+
+    public void calculateLostTime()
+    {
+        long elapsedTimesince = System.currentTimeMillis() - systemTime;
+
     }
 }

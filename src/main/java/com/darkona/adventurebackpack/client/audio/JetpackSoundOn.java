@@ -1,12 +1,11 @@
 package com.darkona.adventurebackpack.client.audio;
 
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
-import com.darkona.adventurebackpack.item.ItemSteamJetpack;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -56,13 +55,12 @@ public class JetpackSoundOn extends MovingSound
     @Override
     public void update()
     {
-        ItemStack jetpack = Wearing.getWearingSteam(thePlayer);
-        if (thePlayer == null || thePlayer.worldObj == null || jetpack == null || !(jetpack.getItem() instanceof ItemSteamJetpack))
+        if (thePlayer == null || thePlayer.isDead || thePlayer.worldObj == null || !Wearing.isWearingSteam(thePlayer))
         {
             setDonePlaying();
         }
 
-        InventorySteamJetpack inv = new InventorySteamJetpack(jetpack);
+        InventorySteamJetpack inv = (InventorySteamJetpack) BackpackProperty.get(thePlayer).getInventory();
         if(inv.isInUse())
         {
             xPosF = (float)thePlayer.posX;

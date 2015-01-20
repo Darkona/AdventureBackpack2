@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -76,14 +78,27 @@ public class ContainerJetpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
-        refresh();
-        super.detectAndSendChanges();
-
+        if(wearing)
+        {
+            refresh();
+            super.detectAndSendChanges();
+            if (wearing && player instanceof EntityPlayerMP)
+            {
+                ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
+                BackpackProperty.syncToNear(player);
+            }
+        }else{
+            super.detectAndSendChanges();
+        }
     }
 
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
+        if (wearing)
+        {
+            this.crafters.remove(player);
+        }
         if (!player.worldObj.isRemote)
         {
             for (int i = 0; i < 3; i++)
@@ -101,6 +116,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
+        refresh();
         Slot slot = getSlot(i);
         ItemStack result = null;
 

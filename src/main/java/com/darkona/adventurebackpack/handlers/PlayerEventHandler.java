@@ -7,11 +7,13 @@ import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.IWearableContainer;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -156,19 +158,17 @@ public class PlayerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerDies(LivingDeathEvent event)
     {
-        if (event.entity instanceof EntityPlayer)
+        if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
         {
             EntityPlayer player = (EntityPlayer) event.entity;
-
-
             if (!player.worldObj.isRemote)
             {
-                LogHelper.info("Player died");
+                //LogHelper.info("Player died");
                 BackpackProperty props = BackpackProperty.get(player);
                 if (props.hasWearable())
                 {
                     ItemStack wearable = props.getWearable();
-                    LogHelper.info("Executing death protocol.");
+                   // LogHelper.info("Executing death protocol.");
                     ((IBackWearableItem) wearable.getItem()).onPlayerDeath(player.worldObj, player, wearable);
                 }
                 if (props.isForceCampFire())
@@ -183,7 +183,6 @@ public class PlayerEventHandler
                 ServerProxy.storePlayerProps(player.getUniqueID(), props.getData());
             }
         }
-
         event.setResult(Event.Result.ALLOW);
     }
 
@@ -207,7 +206,7 @@ public class PlayerEventHandler
         EntityPlayer player = event.entityPlayer;
         if (!event.entityPlayer.worldObj.isRemote)
         {
-            if (event.target instanceof EntitySpider)
+            if (Utils.notNullAndInstanceOf(event.target, EntitySpider.class))
             {
                 if (Wearing.isWearingTheRightBackpack(player, "Spider"))
                 {
@@ -218,7 +217,7 @@ public class PlayerEventHandler
                     event.entityPlayer.mountEntity(pet);
                 }
             }
-            if (event.target instanceof EntityHorse)
+            if (Utils.notNullAndInstanceOf(event.target, EntityHorse.class))
             {
                 ItemStack stack = player.getCurrentEquippedItem();
                 EntityHorse horse = (EntityHorse) event.target;
@@ -269,22 +268,27 @@ public class PlayerEventHandler
             if (!event.player.isDead)
             {
                 BackpackProperty prop = BackpackProperty.get(event.player);
-                if (Wearing.isWearingWearable(event.player) && event.phase == TickEvent.Phase.END )
+                if (Wearing.isWearingWearable(event.player))
                 {
-                    ((IBackWearableItem)Wearing.getWearingWearable(event.player).getItem()).onEquippedUpdate(event.player.worldObj, event.player, prop.getWearable());
-
-                    if(event.side.isServer())
+                    if(event.phase == TickEvent.Phase.START)
                     {
-                        /*
-                        EntityPlayerMP playerMP = (EntityPlayerMP)event.player;
-                        if (playerMP.openContainer instanceof IWearableContainer)
-                        {
-                            playerMP.sendContainerToPlayer(playerMP.openContainer);
-                        }
-                        //BackpackProperty.syncToNear(event.player);
-                        */
+                        prop.executeWearableUpdateProtocol();
                     }
+                    if (event.phase == TickEvent.Phase.END)
+                    {
 
+                        if (event.side.isServer())
+                        {
+                            EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
+                            if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
+                            {
+                                playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
+                            } else
+                            {
+                                BackpackProperty.syncToNear(event.player);
+                            }
+                        }
+                    }
                 }
             }
         }

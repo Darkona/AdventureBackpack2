@@ -26,6 +26,17 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     public ItemStack[] inventory = new ItemStack[Constants.inventorySize];
     private FluidTank leftTank = new FluidTank(Constants.basicTankCapacity);
     private FluidTank rightTank = new FluidTank(Constants.basicTankCapacity);
+
+    public ItemStack getContainerStack()
+    {
+        return containerStack;
+    }
+
+    public void setContainerStack(ItemStack containerStack)
+    {
+        this.containerStack = containerStack;
+    }
+
     private ItemStack containerStack;
     private String colorName = "Standard";
     private int lastTime = 0;

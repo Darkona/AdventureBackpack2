@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -63,10 +64,11 @@ public class GuiAdvBackpack extends GuiWithTanks
         this.topsies = guiTop;
     }
 
-    public GuiAdvBackpack(EntityPlayer player, InventoryBackpack item, boolean wearing)
+    public GuiAdvBackpack(EntityPlayer player, InventoryBackpack inventoryBackpack, boolean wearing)
     {
-        super(new ContainerBackpack(player, item, wearing ? ContainerBackpack.SOURCE_WEARING : ContainerBackpack.SOURCE_HOLDING));
-        this.inventory = item;
+//        super(new ContainerBackpack(player, item, wearing ? ContainerBackpack.SOURCE_WEARING : ContainerBackpack.SOURCE_HOLDING));
+        super(wearing ? BackpackProperty.get(player).getContainer() : new ContainerBackpack(player, inventoryBackpack, ContainerBackpack.SOURCE_HOLDING));
+        this.inventory = wearing ? (IInventoryAdventureBackpack)BackpackProperty.get(player).getInventory() : inventoryBackpack;
         this.wearing = wearing;
         this.source = false;
         xSize = 248;
@@ -261,3 +263,4 @@ public class GuiAdvBackpack extends GuiWithTanks
         super.keyTyped(key, keycode);
     }
 }
+

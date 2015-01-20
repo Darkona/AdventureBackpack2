@@ -1,12 +1,11 @@
 package com.darkona.adventurebackpack.client.audio;
 
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
-import com.darkona.adventurebackpack.item.ItemSteamJetpack;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -26,7 +25,7 @@ public class LeakingBoilerSound extends MovingSound
     public LeakingBoilerSound(EntityPlayer player)
     {
         super(new ResourceLocation(ModInfo.MOD_ID, "s_background2"));
-        volume = 0.1f;
+        volume = 0.2f;
         pitch = 1.2F;
         thePlayer = player;
     }
@@ -56,13 +55,12 @@ public class LeakingBoilerSound extends MovingSound
     @Override
     public void update()
     {
-        ItemStack jetpack = Wearing.getWearingSteam(thePlayer);
-        if(thePlayer == null || thePlayer.worldObj == null || jetpack == null || !(jetpack.getItem() instanceof ItemSteamJetpack))
+        if (thePlayer == null || thePlayer.isDead || thePlayer.worldObj == null || !Wearing.isWearingSteam(thePlayer))
         {
             setDonePlaying();
         }
 
-        InventorySteamJetpack inv = new InventorySteamJetpack(jetpack);
+        InventorySteamJetpack inv = (InventorySteamJetpack) BackpackProperty.get(thePlayer).getInventory();
         if(inv.isLeaking())
         {
             xPosF = (float)thePlayer.posX;

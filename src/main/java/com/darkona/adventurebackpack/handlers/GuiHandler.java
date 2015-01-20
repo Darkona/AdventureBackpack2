@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
 import com.darkona.adventurebackpack.client.gui.GuiSteamJetpack;
 import com.darkona.adventurebackpack.inventory.*;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,7 +53,7 @@ public class GuiHandler implements IGuiHandler
                 inv = Wearing.getBackpackInv(player, true);
                 if (inv.getParentItemStack() != null)
                 {
-                    return new ContainerBackpack(player, inv, ContainerBackpack.SOURCE_WEARING);
+                    return BackpackProperty.get(player).getContainer();
                 }
                 break;
             case BACKPACK_HOLDING:
@@ -73,7 +74,7 @@ public class GuiHandler implements IGuiHandler
                 inv2 = new InventoryCopterPack(Wearing.getWearingCopter(player));
                 if (inv2.getParentItemStack() != null)
                 {
-                    return new ContainerCopter(player, inv2,true);
+                    return BackpackProperty.get(player).getContainer();
                 }
                 break;
             case JETPACK_HOLDING:
@@ -87,7 +88,7 @@ public class GuiHandler implements IGuiHandler
                 inv3 = new InventorySteamJetpack(Wearing.getWearingSteam(player));
                 if (inv3.getParentItemStack() != null)
                 {
-                    return new ContainerJetpack(player, inv3,true);
+                    return BackpackProperty.get(player).getContainer();
                 }
                 break;
             default:

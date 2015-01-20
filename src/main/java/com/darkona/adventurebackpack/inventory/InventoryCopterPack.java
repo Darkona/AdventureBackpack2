@@ -279,4 +279,9 @@ public class InventoryCopterPack implements IInventoryTanks
     {
         containerStack.stackTagCompound.setByte("status", status);
     }
+
+    public void setContainerStack(ItemStack containerStack)
+    {
+        this.containerStack = containerStack;
+    }
 }

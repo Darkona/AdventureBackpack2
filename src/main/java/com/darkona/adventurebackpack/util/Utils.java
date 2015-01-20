@@ -292,7 +292,7 @@ public class Utils
     private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
         LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
-        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X,Y+1,Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
+        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X,Y+1,Z) && !areCoordinatesTheSame2D(origX, origZ, X, Z))
         {
             LogHelper.info("Found spot with the exception of the origin point");
             return new ChunkCoordinates(X, Y, Z);
@@ -322,7 +322,7 @@ public class Utils
      * @param type   True = for player, False = for backpack
      * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
      */
-    public static ChunkCoordinates getNearestEmptyChunkCoordinates(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, int radius, boolean except, int steps, byte pass, boolean type)
+    public static ChunkCoordinates getNearestEmptyChunkCoordinatesSpiral(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, int radius, boolean except, int steps, byte pass, boolean type)
     {
         //Spiral search, because I'm awesome :)
         //This is so the backpack tries to get placed near the death point first
@@ -347,7 +347,7 @@ public class Utils
                     }
                 }
                 pass++;
-                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
             }
             if (pass == 1)
             {
@@ -361,7 +361,7 @@ public class Utils
                 }
                 pass--;
                 steps++;
-                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
             }
         }
 
@@ -378,7 +378,7 @@ public class Utils
                     }
                 }
                 pass++;
-                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass,type);
+                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
             }
             if (pass == 1)
             {
@@ -392,19 +392,9 @@ public class Utils
                 }
                 pass--;
                 steps++;
-                return getNearestEmptyChunkCoordinates(world, origX, origZ, i, Y, j, radius, except, steps, pass, type );
+                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
             }
         }
-       /* if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(x, y, z, X, Y, Z))
-        {
-            return new ChunkCoordinates(X, Y, Z);
-        }
-        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP) && world.isAirBlock(X, Y, Z))
-        {
-            return new ChunkCoordinates(X, Y, Z);
-        }*/
-
-
 
        /* Old code. Still works, though.
        for (int i = x - radius; i <= x + radius; i++)
@@ -441,5 +431,19 @@ public class Utils
     private static boolean areCoordinatesTheSame(int X1, int Y1, int Z1, int X2, int Y2, int Z2)
     {
         return (X1 == X2 && Y1 == Y2 && Z1 == Z2);
+    }
+
+    private static boolean areCoordinatesTheSame2D(int X1, int Z1, int X2, int Z2)
+    {
+        return (X1 == X2 &&  Z1 == Z2);
+    }
+
+    /**
+     * Seriously why doesn't Java's instanceof check for null?
+     * @return
+     */
+    public static boolean notNullAndInstanceOf(Object object, Class clazz)
+    {
+        return object != null && clazz.isInstance(object);
     }
 }

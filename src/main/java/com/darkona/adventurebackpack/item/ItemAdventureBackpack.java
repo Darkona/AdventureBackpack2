@@ -296,20 +296,28 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         {
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
         }
-        if (!tryPlace(world, player,stack))
+        if(ConfigHandler.BACKPACK_DEATH_PLACE)
         {
-            player.dropPlayerItemWithRandomChoice(stack,false);
+            if (!tryPlace(world, player, stack))
+            {
+                player.dropPlayerItemWithRandomChoice(stack, false);
+                BackpackProperty.get(player).setWearable(null);
+            }
+        }else{
+            player.dropPlayerItemWithRandomChoice(stack, false);
             BackpackProperty.get(player).setWearable(null);
         }
-
     }
 
     private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
     {
-        for (int i = ((int) player.posY - 7); i <= ((int) player.posY + 7); i++)
+        int X = (int) player.posX;
+        int Z = (int) player.posZ;
+        for (int Y = ((int) player.posY - 7); Y <= ((int) player.posY + 7); Y++)
         {
+
             ChunkCoordinates spawn =
-                    Utils.getNearestEmptyChunkCoordinates(world, (int) player.posX, (int) player.posZ, (int) player.posX, i, (int) player.posZ, 12, false, 1, (byte) 0, false);
+                    Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y, Z, 12, true, 1, (byte) 0, false);
 
             if (spawn != null)
             {

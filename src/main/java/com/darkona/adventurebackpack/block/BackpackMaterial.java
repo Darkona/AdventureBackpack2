@@ -14,7 +14,7 @@ public class BackpackMaterial extends Material
 
     public BackpackMaterial()
     {
-        super(MapColor.clothColor);
+        super(MapColor.brownColor);
     }
 
     /**
@@ -38,7 +38,7 @@ public class BackpackMaterial extends Material
     @Override
     public boolean getCanBlockGrass()
     {
-        return super.getCanBlockGrass();
+        return false;
     }
 
     /**
@@ -65,7 +65,7 @@ public class BackpackMaterial extends Material
     @Override
     protected Material setBurning()
     {
-        return super.setBurning();
+        return this;
     }
 
     /**

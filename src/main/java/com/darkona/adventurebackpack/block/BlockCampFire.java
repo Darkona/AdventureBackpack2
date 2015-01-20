@@ -223,7 +223,7 @@ public class BlockCampFire extends BlockContainer
     {
         for (int i = y - 5; i <= y + 5; i++)
         {
-            ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinates(world, x, z, x, i, z, 8, true, 1, (byte) 0, true);
+            ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinatesSpiral(world, x, z, x, i, z, 8, true, 1, (byte) 0, true);
 
             if (spawn != null)
             {

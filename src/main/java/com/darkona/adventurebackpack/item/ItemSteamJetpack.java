@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.client.models.ModelSteamJetpack;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -8,6 +7,7 @@ import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -103,6 +103,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                             break;
                         default:
                             minTemp = 25;
+                            break;
                     }
                 }
                 temperature = (temperature - 1 >= minTemp) ? temperature - 1 : 0;
@@ -116,12 +117,13 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
-        InventorySteamJetpack inv = new InventorySteamJetpack(stack);
+        InventorySteamJetpack inv = (InventorySteamJetpack)BackpackProperty.get(player).getInventory();
+        inv.openInventory();
         boolean mustFizzz = !inv.isInUse();
 
         boolean canUse = inv.getSteamTank().getFluidAmount() >= 5;
 
-        int steamConsumed = 15;
+        int steamConsumed = 10;
 
         if (inv.getStatus())
         {
@@ -144,11 +146,19 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                 inv.setInUse(false);
             }
         }
+
         if (inv.isInUse())
         {
             player.moveFlying(player.moveStrafing, player.moveForward, 0.02f);
+            if(player.fallDistance > 1)
+            {
 
-            if (player.fallDistance > 2) player.fallDistance /= 2;
+                player.fallDistance -= 1;
+            }
+            if(player.motionY >= 0)
+            {
+                player.fallDistance = 0;
+            }
         }
 
         if (world.isRemote)
@@ -164,6 +174,13 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             {
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_NOT_IN_USE));
             }
+            /*
+            if (!player.onGround)
+            {
+                LogHelper.info("FallDistance: " + player.fallDistance);
+                LogHelper.info("MotionY: " + player.motionY);
+            }
+*/
         } else
         {
             if (inv.isInUse())
@@ -176,7 +193,6 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             }
             inv.closeInventory();
         }
-
 
     }
 
@@ -243,7 +259,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     {
         if (player.motionY <= 0.32 && player.posY < 100)
         {
-            player.motionY += 0.09;
+            player.motionY += 0.1;
         } else
         {
             if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.32);
@@ -262,7 +278,8 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-
+        InventorySteamJetpack inv = new InventorySteamJetpack(stack);
+        inv.calculateLostTime();
     }
 
     @Override
@@ -270,20 +287,18 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     {
         InventorySteamJetpack inv = new InventorySteamJetpack(stack);
         inv.setBoiling(false);
-        inv.setTemperature(25);
         inv.setInUse(false);
         inv.setLeaking(false);
         inv.setStatus(false);
+        inv.setSystemTime(System.currentTimeMillis());
         inv.markDirty();
     }
-
-    private ModelSteamJetpack model = new ModelSteamJetpack();
 
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getWearableModel(ItemStack wearable)
     {
-        return model.setWearable(wearable);
+        return ClientProxy.modelSteamJetpack.setWearable(wearable);
     }
 
     @Override

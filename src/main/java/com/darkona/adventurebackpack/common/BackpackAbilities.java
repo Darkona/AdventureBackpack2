@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
@@ -459,7 +460,9 @@ public class BackpackAbilities
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
         if (world.isRemote) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
+        InventoryBackpack inv = (InventoryBackpack)BackpackProperty.get(player).getInventory();
+        inv.openInventory();
+
         if (inv.getLeftTank().fill(milkStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0)
         {
             return;
@@ -480,9 +483,10 @@ public class BackpackAbilities
         if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
         {
             eatTime = 20;
-            LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
+            //LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
             wheatConsumed++;
+            inv.dirtyInventory();
         }
 
         int factor = 1;
@@ -499,19 +503,17 @@ public class BackpackAbilities
             {
                 inv.getRightTank().fill(milkStack, true);
             }
+            inv.dirtyTanks();
         }
         if (milkTime < -1) milkTime = -1;
         inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
         inv.extendedProperties.setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
-        inv.setLastTime(eatTime);
+      //  inv.setLastTime(eatTime);
         inv.dirtyExtended();
-        inv.dirtyTanks();
+        //inv.dirtyTanks();
         inv.dirtyTime();
-        inv.dirtyInventory();
-      /*  LogHelper.info("eatTime :" + eatTime );
-        LogHelper.info("wheatConsumed :" + wheatConsumed);
-        LogHelper.info("milkTime :" + milkTime);*/
+        //inv.dirtyInventory();
 
         //So naughty!!!
     }
@@ -519,8 +521,10 @@ public class BackpackAbilities
     public void itemMooshroom(EntityPlayer player, World world, ItemStack backpack)
     {
         if (world.isRemote) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(soupStack, false) <= 0)
+        InventoryBackpack inv = (InventoryBackpack) BackpackProperty.get(player).getInventory();
+        inv.openInventory();
+
+        if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0)
         {
             return;
         }
@@ -543,6 +547,7 @@ public class BackpackAbilities
             LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
             wheatConsumed++;
+            inv.dirtyInventory();
         }
 
         int factor = 1;
@@ -557,18 +562,20 @@ public class BackpackAbilities
         {
             if (inv.getLeftTank().fill(soupStack, true) <= 0)
             {
-                inv.getRightTank().fill(milkStack, true);
+                inv.getRightTank().fill(soupStack, true);
             }
+            inv.dirtyTanks();
         }
         if (milkTime < -1) milkTime = -1;
         inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
         inv.extendedProperties.setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
-        inv.setLastTime(eatTime);
+        //  inv.setLastTime(eatTime);
         inv.dirtyExtended();
-        inv.dirtyTanks();
+        //inv.dirtyTanks();
         inv.dirtyTime();
-        inv.dirtyInventory();
+        //inv.dirtyInventory();
+
         //So naughty!!!
     }
     /**

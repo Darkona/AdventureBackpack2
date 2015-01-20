@@ -1,15 +1,21 @@
 package com.darkona.adventurebackpack.playerProperties;
 
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.*;
+import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.item.ItemSteamJetpack;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 /**
@@ -22,12 +28,29 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public static final String PROPERTY_NAME = "abp.property";
     protected EntityPlayer player = null;
-    protected World world = null;
     private ItemStack wearable = null;
     private ChunkCoordinates campFire = null;
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
+
+    public Container getContainer()
+    {
+        return container;
+    }
+
+    public IInventory getInventory()
+    {
+        return inventory;
+    }
+
+    public NBTTagCompound getWearableData()
+    {
+        return wearableData;
+    }
+
+    private Container container = null;
+    private IInventory inventory = null;
 
     public static void sync(EntityPlayer player)
     {
@@ -40,14 +63,12 @@ public class BackpackProperty implements IExtendedEntityProperties
     public static void syncToNear(EntityPlayer player)
     {
         //Thanks diesieben07!!!
-        if(player != null && player.worldObj instanceof WorldServer)
+        if(player != null && player instanceof EntityPlayerMP)
         {
             try
             {
-                WorldServer world = (WorldServer) player.worldObj;
                 SyncPropertiesPacket.Message msg = new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData());
-
-                world.getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(msg));
+                ((EntityPlayerMP) player).getServerForPlayer().getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(msg));
             }catch(Exception ex){
                 ex.printStackTrace();
             }
@@ -57,7 +78,6 @@ public class BackpackProperty implements IExtendedEntityProperties
     public BackpackProperty(EntityPlayer player)
     {
         this.player = player;
-        this.world = player.worldObj;
     }
 
     public NBTTagCompound getData()
@@ -70,7 +90,6 @@ public class BackpackProperty implements IExtendedEntityProperties
             data.setInteger("campFireY", campFire.posY);
             data.setInteger("campFireZ", campFire.posZ);
             data.setInteger("campFireDim", dimension);
-
         }
         data.setBoolean("forceCampfire",forceCampFire);
         return data;
@@ -102,8 +121,9 @@ public class BackpackProperty implements IExtendedEntityProperties
             compound.setInteger("campFireY", campFire.posY);
             compound.setInteger("campFireZ", campFire.posZ);
             compound.setInteger("campFireDim", dimension);
+
         }
-        forceCampFire = compound.getBoolean("forceCampfire");
+        compound.setBoolean("forceCampFire",forceCampFire);
     }
 
     /**
@@ -118,9 +138,10 @@ public class BackpackProperty implements IExtendedEntityProperties
     {
         if(compound!=null)
         {
-            wearable = (compound.hasKey("wearable")) ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null;
-            campFire = new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ"));
+            setWearable((compound.hasKey("wearable")) ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null);
+            setCampFire( new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")));
             dimension = compound.getInteger("compFireDim");
+            forceCampFire = compound.getBoolean("forceCampfire");
         }
     }
 
@@ -138,17 +159,59 @@ public class BackpackProperty implements IExtendedEntityProperties
     public void init(Entity entity, World world)
     {
         this.player = (EntityPlayer)entity;
-        this.world = world;
     }
 
     public void setWearable(ItemStack bp)
     {
+
         wearable = bp;
+        if(wearable == null){
+            container = null;
+            inventory = null;
+            return;
+        }
+        if(wearable.getItem() instanceof ItemAdventureBackpack)
+        {
+            if(inventory != null && inventory instanceof InventoryBackpack)
+            {
+                ((InventoryBackpack) inventory).setContainerStack(wearable);
+                ((ContainerBackpack) container).refresh();
+            }else
+            {
+                inventory = new InventoryBackpack(wearable);
+                container = new ContainerBackpack(player, (InventoryBackpack) inventory, ContainerBackpack.SOURCE_WEARING);
+            }
+        }
+        if (wearable.getItem() instanceof ItemCopterPack)
+        {
+            if (inventory != null && inventory instanceof InventoryCopterPack)
+            {
+                ((InventoryCopterPack) inventory).setContainerStack(wearable);
+                ((ContainerCopter) container).refresh();
+            } else
+            {
+                inventory = new InventoryCopterPack(wearable);
+                container = new ContainerCopter(player, (InventoryCopterPack) inventory, true);
+            }
+        }
+        if (wearable.getItem() instanceof ItemSteamJetpack)
+        {
+            if (inventory != null && inventory instanceof InventorySteamJetpack)
+            {
+                ((InventorySteamJetpack) inventory).setContainerStack(wearable);
+                ((ContainerJetpack) container).refresh();
+            } else
+            {
+                inventory = new InventorySteamJetpack(wearable);
+                container = new ContainerJetpack(player, (InventorySteamJetpack) inventory, true);
+            }
+        }
     }
+
 
     public ItemStack getWearable()
     {
-        return wearable;
+        return wearable != null ? wearable : null ;
     }
 
     public void setCampFire(ChunkCoordinates cf)
@@ -189,5 +252,38 @@ public class BackpackProperty implements IExtendedEntityProperties
     public void setForceCampFire(boolean forceCampFire)
     {
         this.forceCampFire = forceCampFire;
+    }
+
+    //Scary names for methods because why not
+    public void executeWearableUpdateProtocol()
+    {
+        if(wearable != null && wearable.getItem() instanceof IBackWearableItem)
+        {
+            ((IBackWearableItem)wearable.getItem()).onEquippedUpdate(player.getEntityWorld(), player, wearable);
+        }
+    }
+
+    public void executeWearableDeathProtocol()
+    {
+        if (wearable != null && wearable.getItem() instanceof IBackWearableItem)
+        {
+            ((IBackWearableItem) wearable.getItem()).onPlayerDeath(player.getEntityWorld(), player, wearable);
+        }
+    }
+
+    public void executeWearableEquipProtocol()
+    {
+        if (wearable != null && wearable.getItem() instanceof IBackWearableItem)
+        {
+            ((IBackWearableItem) wearable.getItem()).onEquipped(player.getEntityWorld(), player, wearable);
+        }
+    }
+
+    public void executeWearableUnequipProtocol()
+    {
+        if (wearable != null && wearable.getItem() instanceof IBackWearableItem)
+        {
+            ((IBackWearableItem) wearable.getItem()).onUnequipped(player.getEntityWorld(), player, wearable);
+        }
     }
 }

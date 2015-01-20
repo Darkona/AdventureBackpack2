@@ -40,28 +40,35 @@ public class RendererWearableEquipped extends RendererLivingEntity
 
     public void render(Entity entity, double x, double y, double z, float rotX, float rotY, float rotZ, float yaw, float pitch)
     {
-        ItemStack wearable = Wearing.getWearingWearable((EntityPlayer)entity);
-        if(wearable == null)return;
-        IBackWearableItem wearableItem = (IBackWearableItem)wearable.getItem();
-        modelBipedMain = wearableItem.getWearableModel(wearable);
-        texture = wearableItem.getWearableTexture(wearable);
-        modelBipedMain.bipedBody.rotateAngleX = rotX;
-        modelBipedMain.bipedBody.rotateAngleY = rotY;
-        modelBipedMain.bipedBody.rotateAngleZ = rotZ;
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
-        GL11.glPushMatrix();
         try
         {
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            renderMainModel((EntityPlayer) entity, 0, 0, 0, 0, 0, 0.0625f);
-        } catch (Exception oops)
-        {
+            if (!Wearing.isWearingWearable((EntityPlayer) entity)) return;
+            ItemStack wearable = Wearing.getWearingWearable((EntityPlayer) entity).copy();
+            if (wearable == null) return;
+            IBackWearableItem wearableItem = (IBackWearableItem) wearable.getItem();
+            modelBipedMain = wearableItem.getWearableModel(wearable);
+            texture = wearableItem.getWearableTexture(wearable);
+            modelBipedMain.bipedBody.rotateAngleX = rotX;
+            modelBipedMain.bipedBody.rotateAngleY = rotY;
+            modelBipedMain.bipedBody.rotateAngleZ = rotZ;
+            GL11.glColor3f(1.0F, 1.0F, 1.0F);
+            GL11.glPushMatrix();
+            try
+            {
+                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                renderMainModel((EntityPlayer) entity, 0, 0, 0, 0, 0, 0.0625f);
+            } catch (Exception oops)
+            {
 
+            }
+            OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+            GL11.glPopMatrix();
+        }catch(Exception ex)
+        {
+            //discard silently because NO ONE CARES
         }
-        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
-        GL11.glPopMatrix();
     }
 
     protected void renderMainModel(EntityLivingBase entity, float limbSwing1, float limbswing2, float z, float yaw, float whatever, float scale)

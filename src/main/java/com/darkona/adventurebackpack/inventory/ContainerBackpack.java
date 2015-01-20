@@ -49,6 +49,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
         this.source = source;
     }
 
+    public IInventoryAdventureBackpack getInventoryBackpack()
+    {
+        return inventory;
+    }
+
     private void bindPlayerInventory(InventoryPlayer invPlayer)
     {
         int startX = 44;
@@ -152,6 +157,10 @@ public class ContainerBackpack extends Container implements IWearableContainer
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
+        if(source == SOURCE_WEARING)
+        {
+            this.crafters.remove(player);
+        }
         if (!player.worldObj.isRemote)
         {
             for (int i = 0; i < inventory.getSizeInventory(); i++)
@@ -283,6 +292,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
+        if(source == SOURCE_WEARING)refresh();
         Slot slot = getSlot(i);
         ItemStack result = null;
         if (slot != null && slot.getHasStack())
@@ -352,18 +362,18 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
-
-      /*  if(Utils.inServer())
-        {
-
-        }*/
-        super.detectAndSendChanges();
-        if (source == SOURCE_WEARING && player instanceof EntityPlayerMP)
-        {
-            BackpackProperty.syncToNear(player);
-            refresh();
-            ((EntityPlayerMP)player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
-        }
+         if(source == SOURCE_WEARING)
+         {
+             refresh();
+             super.detectAndSendChanges();
+             if (source == SOURCE_WEARING && player instanceof EntityPlayerMP)
+             {
+                 ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
+                 BackpackProperty.syncToNear(player);
+             }
+         }else{
+             super.detectAndSendChanges();
+         }
     }
 
     @Override
