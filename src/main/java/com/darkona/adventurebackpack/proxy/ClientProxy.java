@@ -12,7 +12,6 @@ import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.handlers.RenderHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.IWearableContainer;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -72,10 +71,12 @@ public class ClientProxy implements IProxy
             BackpackProperty.get(player).loadNBTData(properties);
             if(player == Minecraft.getMinecraft().thePlayer)
             {
+                /*
                 if (player.openContainer != null && player.openContainer instanceof IWearableContainer)
                 {
                     player.openContainer.detectAndSendChanges();
                 }
+                */
             }
         }
     }

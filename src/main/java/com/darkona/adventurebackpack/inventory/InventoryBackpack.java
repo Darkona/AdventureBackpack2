@@ -30,7 +30,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     private String colorName = "Standard";
     private int lastTime = 0;
     private boolean special = false;
-    private NBTTagCompound extendedProperties = new NBTTagCompound();
+    public NBTTagCompound extendedProperties = new NBTTagCompound();
 
     public InventoryBackpack(ItemStack backpack)
     {
@@ -151,14 +151,6 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         {
             stack.stackSize = this.getInventoryStackLimit();
         }
-        /*
-        if(slot == Constants.bucketInLeft ||slot == Constants.bucketInRight)
-        {
-           if(updateTankSlots()){
-               dirtyTanks();
-           }
-        }
-        */
         dirtyInventory();
     }
 
@@ -237,7 +229,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
             colorName = backpackData.getString("colorName");
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
-            extendedProperties = backpackData.getCompoundTag("extended");
+            extendedProperties = backpackData.getCompoundTag("extendedProperties");
         }
     }
 
@@ -259,11 +251,12 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
                 items.appendTag(item);
             }
         }
+        backpackData.removeTag("ABPItems");
         backpackData.setTag("ABPItems", items);
         backpackData.setString("colorName", colorName);
         backpackData.setInteger("lastTime", lastTime);
         backpackData.setBoolean("special", BackpackAbilities.hasAbility(colorName));
-        backpackData.setTag("extended", extendedProperties);
+        backpackData.setTag("extendedProperties", extendedProperties);
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
 
@@ -372,6 +365,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
 
     public void dirtyExtended()
     {
+        containerStack.stackTagCompound.getCompoundTag("backpackData").removeTag("extendedProperties");
         containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("extendedProperties",extendedProperties);
     }
 
@@ -389,6 +383,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
                 items.appendTag(item);
             }
         }
+        containerStack.stackTagCompound.getCompoundTag("backpackData").removeTag("ABPItems");
         containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("ABPItems", items);
     }
 

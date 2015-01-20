@@ -272,15 +272,19 @@ public class PlayerEventHandler
                 if (Wearing.isWearingWearable(event.player) && event.phase == TickEvent.Phase.END )
                 {
                     ((IBackWearableItem)Wearing.getWearingWearable(event.player).getItem()).onEquippedUpdate(event.player.worldObj, event.player, prop.getWearable());
+
                     if(event.side.isServer())
                     {
-                        BackpackProperty.syncToNear(event.player);
-                        if(--tickCounter == 0)
+                        /*
+                        EntityPlayerMP playerMP = (EntityPlayerMP)event.player;
+                        if (playerMP.openContainer instanceof IWearableContainer)
                         {
-                            tickCounter = 20;
-                            BackpackProperty.syncToNear(event.player);
+                            playerMP.sendContainerToPlayer(playerMP.openContainer);
                         }
+                        //BackpackProperty.syncToNear(event.player);
+                        */
                     }
+
                 }
             }
         }

@@ -10,7 +10,6 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -47,7 +46,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     private FluidTank rgt;
     public int lefties;
     public int topsies;
-
+    ContainerBackpack containerBackpack;
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {
@@ -148,7 +147,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     {
         if(wearing)
         {
-            inventory = new InventoryBackpack(Wearing.getWearingBackpack(player));
+            inventory.openInventory();
         }
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);

@@ -10,7 +10,6 @@ import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -227,7 +226,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
-        InventoryBackpack inv = new InventoryBackpack(stack);
         return new ModelBackpackArmor();
     }
 

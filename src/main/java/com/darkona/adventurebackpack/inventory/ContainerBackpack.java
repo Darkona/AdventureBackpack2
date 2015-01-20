@@ -3,7 +3,9 @@ package com.darkona.adventurebackpack.inventory;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
@@ -273,6 +275,12 @@ public class ContainerBackpack extends Container implements IWearableContainer
     }
 
     @Override
+    public Slot getSlotFromInventory(IInventory p_75147_1_, int p_75147_2_)
+    {
+        return super.getSlotFromInventory(p_75147_1_, p_75147_2_);
+    }
+
+    @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
         Slot slot = getSlot(i);
@@ -344,8 +352,18 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
-       refresh();
+
+      /*  if(Utils.inServer())
+        {
+
+        }*/
         super.detectAndSendChanges();
+        if (source == SOURCE_WEARING && player instanceof EntityPlayerMP)
+        {
+            BackpackProperty.syncToNear(player);
+            refresh();
+            ((EntityPlayerMP)player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
+        }
     }
 
     @Override

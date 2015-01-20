@@ -54,12 +54,12 @@ public class GeneralEventHandler
             {
                 String nyanString =
                         EnumChatFormatting.RED + "N" +
-                                EnumChatFormatting.GOLD + "Y" +
-                                EnumChatFormatting.YELLOW + "A" +
-                                EnumChatFormatting.GREEN + "N" +
-                                EnumChatFormatting.AQUA + "C" +
-                                EnumChatFormatting.BLUE + "A" +
-                                EnumChatFormatting.DARK_PURPLE + "T";
+                        EnumChatFormatting.GOLD + "Y" +
+                        EnumChatFormatting.YELLOW + "A" +
+                        EnumChatFormatting.GREEN + "N" +
+                        EnumChatFormatting.AQUA + "C" +
+                        EnumChatFormatting.BLUE + "A" +
+                        EnumChatFormatting.DARK_PURPLE + "T";
                 player.addChatComponentMessage(new ChatComponentText(nyanString));
                 ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.NYAN_SOUND,player),player);
             }

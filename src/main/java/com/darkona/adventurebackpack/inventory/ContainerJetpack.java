@@ -64,7 +64,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
         // bucket out
         addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_OUT_SLOT, 30, 52));
         // fuel
-        addSlotToContainer(new Slot(inventory,InventorySteamJetpack.FUEL_SLOT, 77, 64));
+        addSlotToContainer(new SlotFuel(inventory,InventorySteamJetpack.FUEL_SLOT, 77, 64));
 
     }
     @Override

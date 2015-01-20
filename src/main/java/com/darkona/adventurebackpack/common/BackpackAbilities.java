@@ -17,7 +17,6 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
@@ -455,21 +454,29 @@ public class BackpackAbilities
      * @param world
      * @param backpack
      */
+    private FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
+    private FluidStack soupStack = new FluidStack(ModFluids.mushroomStew, 1);
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        if(world.isRemote)return;
+        if (world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
-        FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
         if (inv.getLeftTank().fill(milkStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0)
         {
             return;
         }
         //Set Cow Properties
-        NBTTagCompound cowProperties = inv.getExtendedProperties();
-        int wheatConsumed =  cowProperties.getInteger("wheatConsumed");;
-        int milkTime = cowProperties.getInteger("milkTime") - 1;;
+        int wheatConsumed = 0;
+        int milkTime = -1;
+        if (inv.getExtendedProperties() != null)
+        {
+            if (inv.extendedProperties.hasKey("wheatConsumed"))
+            {
+                wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
+                milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
+            }
+        }
 
-        int eatTime = (inv.getLastTime() - 1 >= 0 ) ? inv.getLastTime() -1 : 0;
+        int eatTime = (inv.getLastTime() - 1 >= 0) ? inv.getLastTime() - 1 : 0;
         if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
         {
             eatTime = 20;
@@ -493,16 +500,19 @@ public class BackpackAbilities
                 inv.getRightTank().fill(milkStack, true);
             }
         }
-        if(milkTime < -1)milkTime = -1;
-        cowProperties.setInteger("wheatConsumed", wheatConsumed);
-        cowProperties.setInteger("milkTime", milkTime);
-        inv.setExtendedProperties(cowProperties);
+        if (milkTime < -1) milkTime = -1;
+        inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
+        inv.extendedProperties.setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
         inv.setLastTime(eatTime);
         inv.dirtyExtended();
         inv.dirtyTanks();
         inv.dirtyTime();
         inv.dirtyInventory();
+      /*  LogHelper.info("eatTime :" + eatTime );
+        LogHelper.info("wheatConsumed :" + wheatConsumed);
+        LogHelper.info("milkTime :" + milkTime);*/
+
         //So naughty!!!
     }
 
@@ -510,19 +520,24 @@ public class BackpackAbilities
     {
         if (world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
-        FluidStack soupStack = new FluidStack(ModFluids.mushroomStew, 1);
         if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(soupStack, false) <= 0)
         {
             return;
         }
         //Set Cow Properties
-        NBTTagCompound cowProperties = inv.getExtendedProperties();
-        int wheatConsumed = cowProperties.getInteger("wheatConsumed");
-
-        int soupTime = cowProperties.getInteger("soupTime") - 1;
+        int wheatConsumed = 0;
+        int milkTime = -1;
+        if (inv.getExtendedProperties() != null)
+        {
+            if (inv.extendedProperties.hasKey("wheatConsumed"))
+            {
+                wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
+                milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
+            }
+        }
 
         int eatTime = (inv.getLastTime() - 1 >= 0) ? inv.getLastTime() - 1 : 0;
-        if (inv.hasItem(Items.wheat) && eatTime <= 0 && soupTime <= 0)
+        if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
         {
             eatTime = 20;
             LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
@@ -534,21 +549,20 @@ public class BackpackAbilities
         if (wheatConsumed == 16)
         {
             wheatConsumed = 0;
-            soupTime = (1000 * factor) - factor;
+            milkTime = (1000 * factor) - factor;
             world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
         }
 
-        if (soupTime >= 0 && (soupTime % factor == 0))
+        if (milkTime >= 0 && (milkTime % factor == 0))
         {
             if (inv.getLeftTank().fill(soupStack, true) <= 0)
             {
-                inv.getRightTank().fill(soupStack, true);
+                inv.getRightTank().fill(milkStack, true);
             }
         }
-        if (soupTime < -1) soupTime = -1;
-        cowProperties.setInteger("wheatConsumed", wheatConsumed);
-        cowProperties.setInteger("milkTime", soupTime);
-        inv.setExtendedProperties(cowProperties);
+        if (milkTime < -1) milkTime = -1;
+        inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
+        inv.extendedProperties.setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
         inv.setLastTime(eatTime);
         inv.dirtyExtended();

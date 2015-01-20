@@ -47,6 +47,7 @@ public class EntityInflatableBoat extends EntityBoat
     private double velocityZ;
 
     public float inflation = 0.25f;
+    private boolean motorized;
 
     public EntityInflatableBoat(World world)
     {
@@ -402,5 +403,10 @@ public class EntityInflatableBoat extends EntityBoat
         {
             isMotorized = compound.getBoolean("Motorized");
         }
+    }
+
+    public void setMotorized(boolean motorized)
+    {
+        this.motorized = motorized;
     }
 }

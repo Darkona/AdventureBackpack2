@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
@@ -18,7 +19,12 @@ public abstract class SlotAdventureBackpack extends Slot
     @Override
     public void onSlotChanged()
     {
-        if(inventory instanceof IInventoryTanks)
-        ((IInventoryTanks)this.inventory).dirtyInventory();
+        if(Utils.inServer())
+        {
+            if (inventory instanceof IInventoryTanks)
+                ((IInventoryTanks) this.inventory).dirtyInventory();
+        }
     }
+
+
 }

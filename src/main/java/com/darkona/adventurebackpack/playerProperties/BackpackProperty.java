@@ -25,6 +25,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     protected World world = null;
     private ItemStack wearable = null;
     private ChunkCoordinates campFire = null;
+    private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
 
