@@ -12,6 +12,7 @@ import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
@@ -342,12 +343,11 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         }
     }
 
-    private ModelBackpackArmor model = new ModelBackpackArmor();
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getWearableModel(ItemStack wearable)
     {
-        return  model.setWearable(wearable);
+        return ClientProxy.modelAdventureBackpack.setWearable(wearable);
     }
 
     @Override

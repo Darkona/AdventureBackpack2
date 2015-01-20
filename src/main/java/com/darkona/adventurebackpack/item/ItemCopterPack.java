@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
@@ -283,12 +284,11 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         stack.stackTagCompound.setByte("status",OFF_MODE);
     }
 
-    private ModelCopterPack model = new ModelCopterPack();
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getWearableModel(ItemStack wearable)
     {
-        return model.setWearable(wearable);
+        return ClientProxy.modelCopterPack.setWearable(wearable);
     }
 
     @Override
