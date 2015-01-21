@@ -140,12 +140,18 @@ public class PlayerEventHandler
                 }
             }
 
-            if (event.entityLiving instanceof EntityPlayer &&
-                    Wearing.isWearingBoots(((EntityPlayer) event.entityLiving)) &&
-                    event.distance < 8)
+            if (event.entityLiving instanceof EntityPlayer)
             {
-                event.setCanceled(true);
+                if (Wearing.isWearingBoots(((EntityPlayer) event.entityLiving)) && event.distance < 8)
+                {
+                    event.setCanceled(true);
+                }
+                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.BACKPACK_ABILITIES)
+                {
+                    event.setCanceled(true);
+                }
             }
+
         }
 
 

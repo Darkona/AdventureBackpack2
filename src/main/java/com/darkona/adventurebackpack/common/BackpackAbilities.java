@@ -455,6 +455,7 @@ public class BackpackAbilities
     private FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
     private FluidStack soupStack = new FluidStack(ModFluids.mushroomStew, 1);
     private FluidStack lavaStack = new FluidStack(FluidRegistry.LAVA, 1);
+
     /**
      * The Cow Backpack fills itself with milk when there is wheat in the backpack's inventory, but it will do so slowly
      * and will eat the wheat. It's like having a cow in your backpack. Each 16 wheat makes a bucket. It only happens
