@@ -8,7 +8,6 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -142,7 +141,7 @@ public class BackpackAbilities
             "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"};
 
     private static String[] validRemovalBackpacks = {
-            "Bat", "Squid", "Dragon"
+            "Bat", "Squid", "Dragon", "Rainbow"
     };
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -180,10 +179,16 @@ public class BackpackAbilities
                 player.getFoodStats().addStats(1,0.2f);
                 inv.setLastTime(Utils.secondsToTicks(35));
             }
-           inv.markDirty();
+           inv.dirtyTime();
         }
     }
 
+    /**
+     * Nana nana nana nana Bat - Batpack! See in the dark!
+     * @param player
+     * @param world
+     * @param backpack
+     */
     public void itemBat(EntityPlayer player, World world, ItemStack backpack)
     {
         //Shameless rip-off from Machinemuse. Thanks Claire, I don't have to reinvent the wheel thanks to you.
@@ -446,6 +451,10 @@ public class BackpackAbilities
         inv.markDirty();
     }
 
+
+    private FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
+    private FluidStack soupStack = new FluidStack(ModFluids.mushroomStew, 1);
+    private FluidStack lavaStack = new FluidStack(FluidRegistry.LAVA, 1);
     /**
      * The Cow Backpack fills itself with milk when there is wheat in the backpack's inventory, but it will do so slowly
      * and will eat the wheat. It's like having a cow in your backpack. Each 16 wheat makes a bucket. It only happens
@@ -455,8 +464,6 @@ public class BackpackAbilities
      * @param world
      * @param backpack
      */
-    private FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
-    private FluidStack soupStack = new FluidStack(ModFluids.mushroomStew, 1);
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
         if (world.isRemote) return;
@@ -524,7 +531,7 @@ public class BackpackAbilities
         InventoryBackpack inv = (InventoryBackpack) BackpackProperty.get(player).getInventory();
         inv.openInventory();
 
-        if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0)
+        if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(soupStack, false) <= 0)
         {
             return;
         }
@@ -544,7 +551,7 @@ public class BackpackAbilities
         if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
         {
             eatTime = 20;
-            LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
+            //LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
             wheatConsumed++;
             inv.dirtyInventory();
@@ -578,6 +585,7 @@ public class BackpackAbilities
 
         //So naughty!!!
     }
+
     /**
      * The Wolf Backpack is a handy one if you're out in the wild. It checks around for any wolves that may lurk around.
      * If any of them gets mad at you, it will smell the scent of it's kin on you and promptly forget about the whole

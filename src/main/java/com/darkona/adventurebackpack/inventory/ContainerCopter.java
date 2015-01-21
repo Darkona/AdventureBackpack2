@@ -76,6 +76,10 @@ public class ContainerCopter extends Container implements IWearableContainer
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
+        if (wearing)
+        {
+            this.crafters.remove(player);
+        }
         if (!player.worldObj.isRemote)
         {
             for (int i = 0; i < inventory.getSizeInventory(); i++)

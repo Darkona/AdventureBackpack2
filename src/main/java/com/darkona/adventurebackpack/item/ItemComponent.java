@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
+import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,7 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Darkona on 11/10/2014.
+ * Created on 11/10/2014
+ * @author Darkona
+ *
  */
 public class ItemComponent extends ItemAB
 {
@@ -39,7 +42,7 @@ public class ItemComponent extends ItemAB
     {
         setNoRepair();
         setHasSubtypes(true);
-        setMaxStackSize(1);
+        setMaxStackSize(16);
         this.setUnlocalizedName("backpackComponent");
     }
 
@@ -153,17 +156,9 @@ public class ItemComponent extends ItemAB
         }*/
     }
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     *
-     * @param stack
-     * @param world
-     * @param player
-     */
-    @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+
+    private ItemStack placeBoat(ItemStack stack, World world, EntityPlayer player, boolean motorized)
     {
-        if (stack.getItemDamage() != 7 && stack.getItemDamage() != 8 ) return stack;
         float f = 1.0F;
         float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
         float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
@@ -224,9 +219,9 @@ public class ItemComponent extends ItemAB
                         --j;
                     }
 
-                    EntityInflatableBoat inflatableBoat = new EntityInflatableBoat(world, i + 0.5, j + 1.0, k + 0.5, false);
+                    EntityInflatableBoat inflatableBoat = new EntityInflatableBoat(world, i + 0.5, j + 1.0, k + 0.5, motorized);
+
                     inflatableBoat.rotationYaw = (float) (((MathHelper.floor_double((double) (player.rotationYaw * 4.0 / 360.0) + 0.5D) & 3) - 1) * 90);
-                    if(stack.getItemDamage() == 8)inflatableBoat.setMotorized(true);
                     if (!world.getCollidingBoundingBoxes(inflatableBoat, inflatableBoat.boundingBox.expand(-0.1, -0.1, -0.1)).isEmpty())
                     {
                         return stack;
@@ -242,9 +237,26 @@ public class ItemComponent extends ItemAB
                         --stack.stackSize;
                     }
                 }
-
                 return stack;
             }
         }
+    }
+
+
+
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     *
+     * @param stack
+     * @param world
+     * @param player
+     */
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    {
+        LogHelper.info("Damage: " + stack.getItemDamage());
+        if(stack.getItemDamage() == 7)return placeBoat(stack,world,player,false);
+        if(stack.getItemDamage() == 8)return placeBoat(stack,world,player,true);
+        return stack;
     }
 }

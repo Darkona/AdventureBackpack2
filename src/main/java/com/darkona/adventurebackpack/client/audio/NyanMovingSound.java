@@ -49,7 +49,7 @@ public class NyanMovingSound extends MovingSound
     @Override
     public void update()
     {
-        if (this.player.isDead)
+        if (player == null || player.isDead)
         {
             this.donePlaying = true;
         } else

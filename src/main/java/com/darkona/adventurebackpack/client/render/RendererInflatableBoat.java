@@ -17,8 +17,8 @@ import org.lwjgl.opengl.GL11;
 public class RendererInflatableBoat extends Render
 {
 
-    private static final ResourceLocation boatTexture = Resources.modelTextures("inflatableBoat");
-    private static final ModelInflatableBoat boatModel = new ModelInflatableBoat();
+    private  ResourceLocation boatTexture = Resources.modelTextures("inflatableBoat");
+    private  ModelInflatableBoat boatModel = new ModelInflatableBoat();
 
     public RendererInflatableBoat()
     {
@@ -64,12 +64,7 @@ public class RendererInflatableBoat extends Render
         return boatTexture;
     }
 
-    /**
-     * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then
-     * handing it off to a worker function which does the actual work. In all probabilty, the class Render is generic
-     * (Render<T extends Entity) and this method has signature public void func_76986_a(T entity, double d, double d1,
-     * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
-     */
+
     @Override
     public void doRender(Entity entity, double posX, double posY, double posZ, float p_76986_8_, float p_76986_9_)
     {

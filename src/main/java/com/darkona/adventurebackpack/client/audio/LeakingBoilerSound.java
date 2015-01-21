@@ -58,6 +58,7 @@ public class LeakingBoilerSound extends MovingSound
         if (thePlayer == null || thePlayer.isDead || thePlayer.worldObj == null || !Wearing.isWearingSteam(thePlayer))
         {
             setDonePlaying();
+            return;
         }
 
         InventorySteamJetpack inv = (InventorySteamJetpack) BackpackProperty.get(thePlayer).getInventory();

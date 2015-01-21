@@ -278,7 +278,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public FluidTank[] getTanksArray()
     {
-        return new FluidTank[0];
+        FluidTank[] array = {leftTank,rightTank};
+        return array;
     }
 
     @Override

@@ -76,8 +76,9 @@ public class CopterPackSound extends MovingSound
        if(thePlayer == null || thePlayer.worldObj == null || copter ==null || !(copter.getItem() instanceof ItemCopterPack))
         {
             setDonePlaying();
+            return;
         }
-        if (copter != null&& copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
+        if (copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
         {
             status = copter.getTagCompound().getByte("status");
             if (status == ItemCopterPack.OFF_MODE)

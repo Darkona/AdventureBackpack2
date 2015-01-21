@@ -29,7 +29,6 @@ import java.util.List;
  */
 public class EntityInflatableBoat extends EntityBoat
 {
-    public boolean isMotorized;
     private FluidTank fuelTank;
     private boolean isBoatEmpty;
     private double speedMultiplier;
@@ -45,8 +44,14 @@ public class EntityInflatableBoat extends EntityBoat
     private double velocityY;
     @SideOnly(Side.CLIENT)
     private double velocityZ;
-
+    private boolean inflated = false;
     public float inflation = 0.25f;
+
+    public boolean isMotorized()
+    {
+        return motorized;
+    }
+
     private boolean motorized;
 
     public EntityInflatableBoat(World world)
@@ -57,8 +62,13 @@ public class EntityInflatableBoat extends EntityBoat
     public EntityInflatableBoat(World world, double posX, double posY, double posZ, boolean motorized)
     {
         super(world, posX, posY, posZ);
-        this.isMotorized = motorized;
+        setMotorized(motorized);
         fuelTank = new FluidTank(6000);
+    }
+
+    public boolean isInflated()
+    {
+        return inflated;
     }
 
     /**
@@ -67,13 +77,18 @@ public class EntityInflatableBoat extends EntityBoat
     @Override
     public void onUpdate()
     {
-        if(this.ticksExisted < 35)
+        if(!inflated)
         {
             inflation += 0.025;
+            if (inflation >= 1.0f)
+            {
+                inflation = 1;
+                inflated = true;
+            }
+        }else{
+            inflation = 1;
         }
-        if(inflation > 1.0f){
-            inflation = 1.0f;
-        }
+
         if (this.getTimeSinceHit() > 0)
         {
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
@@ -349,7 +364,7 @@ public class EntityInflatableBoat extends EntityBoat
 
                 if (!flag)
                 {
-                    this.entityDropItem(new ItemStack(ModItems.component, 1, 7), 0.0f);
+                    this.entityDropItem(new ItemStack(ModItems.component, 1, motorized ? 8:7), 0.0f);
                 }
 
                 this.setDead();
@@ -387,10 +402,35 @@ public class EntityInflatableBoat extends EntityBoat
         }
     }
 
+    /**
+     * Save the entity to NBT (calls an abstract helper method to write extra data)
+     *
+     * @param compound
+     */
+    @Override
+    public void writeToNBT(NBTTagCompound compound)
+    {
+        super.writeToNBT(compound);
+        writeEntityToNBT(compound);
+    }
+
+    /**
+     * Reads the entity from NBT (calls an abstract helper method to read specialized data)
+     *
+     * @param compound
+     */
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
+    {
+        super.readFromNBT(compound);
+        readEntityFromNBT(compound);
+    }
+
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
         compound.setFloat("Inflation",inflation);
-        compound.setBoolean("Motorized",isMotorized);
+        compound.setBoolean("Motorized",motorized);
+        compound.setBoolean("Inflated",inflated);
     }
 
     @Override
@@ -401,7 +441,11 @@ public class EntityInflatableBoat extends EntityBoat
         }
         if(compound.hasKey("Motorized"))
         {
-            isMotorized = compound.getBoolean("Motorized");
+            motorized = compound.getBoolean("Motorized");
+        }
+        if (compound.hasKey("Inflated"))
+        {
+            inflated = compound.getBoolean("Inflated");
         }
     }
 

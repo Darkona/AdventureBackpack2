@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.client.models;
 
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -123,18 +124,18 @@ public class ModelInflatableBoat extends ModelBase
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-        if( entity!=null && entity instanceof EntityInflatableBoat)
+        if(Utils.notNullAndInstanceOf(entity,EntityInflatableBoat.class))
         {
             EntityInflatableBoat theBoat = (EntityInflatableBoat)entity;
-            if(theBoat.inflation < 1 )
+            
+            if(theBoat.isMotorized() && theBoat.isInflated())
             {
-                this.Axis.isHidden = true;
-                this.EngineBody.isHidden = true;
+                Axis.isHidden = EngineBody.isHidden = false;
             }else
             {
-                this.Axis.isHidden = false;
-                this.EngineBody.isHidden = false;
+                Axis.isHidden = EngineBody.isHidden = true;
             }
+
             GL11.glPushMatrix();
             GL11.glScalef(theBoat.inflation,theBoat.inflation,theBoat.inflation);
 
@@ -143,12 +144,9 @@ public class ModelInflatableBoat extends ModelBase
             this.boatSides2.render(f5);
             this.boatSides1.render(f5);
             this.boatSides4.render(f5);
+            this.Axis.render(f5);
+            this.EngineBody.render(f5);
 
-            if(theBoat.isMotorized)
-            {
-                this.Axis.render(f5);
-                this.EngineBody.render(f5);
-            }
 
             GL11.glPopMatrix();
         }else{

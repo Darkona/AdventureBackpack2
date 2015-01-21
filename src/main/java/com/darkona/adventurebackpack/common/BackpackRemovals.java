@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -36,5 +38,13 @@ public class BackpackRemovals
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
         itemBat(player, world, backpack);
+    }
+
+    public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
+    {
+        InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
+        if (inv.getLastTime() > 0) return;
+        inv.setLastTime(0);
+        inv.dirtyTime();
     }
 }
