@@ -120,10 +120,8 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         InventorySteamJetpack inv = (InventorySteamJetpack)BackpackProperty.get(player).getInventory();
         inv.openInventory();
         boolean mustFizzz = !inv.isInUse();
-
-        boolean canUse = inv.getSteamTank().getFluidAmount() >= 5;
-
-        int steamConsumed = 10;
+        int steamConsumed = 13;
+        boolean canUse = inv.getSteamTank().drain(steamConsumed,false) != null;
 
         if (inv.getStatus())
         {
@@ -133,38 +131,18 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         runBoiler(inv, world, player);
         inv.dirtyBoiler();
 
+        //Suction
+        if(player.isInWater())
+        {
+            inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER,2),true);
+        }
+
         //Elevation
         if (world.isRemote)
         {
             if (inv.getStatus() && canUse && Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
             {
                 inv.setInUse(true);
-                elevate(player);
-                ModNetwork.net.sendToServer(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE,player));
-            } else
-            {
-                inv.setInUse(false);
-            }
-        }
-
-        if (inv.isInUse())
-        {
-            player.moveFlying(player.moveStrafing, player.moveForward, 0.02f);
-            if(player.fallDistance > 1)
-            {
-
-                player.fallDistance -= 1;
-            }
-            if(player.motionY >= 0)
-            {
-                player.fallDistance = 0;
-            }
-        }
-
-        if (world.isRemote)
-        {
-            if (inv.isInUse())
-            {
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_IN_USE));
                 if (mustFizzz)
                 {
@@ -172,28 +150,34 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                 }
             } else
             {
+                inv.setInUse(false);
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_NOT_IN_USE));
             }
-            /*
-            if (!player.onGround)
-            {
-                LogHelper.info("FallDistance: " + player.fallDistance);
-                LogHelper.info("MotionY: " + player.motionY);
-            }
-*/
-        } else
-        {
-            if (inv.isInUse())
-            {
-                inv.getSteamTank().drain(steamConsumed, true);
-                if (inv.getSteamTank().getFluidAmount() == 0)
-                {
-                    inv.setInUse(false);
-                }
-            }
-            inv.closeInventory();
         }
 
+        if (inv.isInUse() && canUse)
+        {
+
+            elevate(player);
+            inv.getSteamTank().drain(steamConsumed, true);
+            if (inv.getSteamTank().getFluidAmount() == 0)
+            {
+                inv.setInUse(false);
+            }
+            player.moveFlying(player.moveStrafing, player.moveForward, 0.02f);
+            if(player.fallDistance > 1)
+            {
+                player.fallDistance -= 1;
+            }
+            if(player.motionY >= 0)
+            {
+                player.fallDistance = 0;
+            }
+            if(!world.isRemote)
+            ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE, player), player);
+
+        }
+        inv.closeInventory();
     }
 
     private void runBoiler(InventorySteamJetpack inv, World world, EntityPlayer player)

@@ -151,16 +151,10 @@ public class PlayerEventHandler
                     event.setCanceled(true);
                 }
             }
-
         }
-
-
     }
 
 
-    /**
-     * @param event
-     */
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerDies(LivingDeathEvent event)
     {
@@ -267,37 +261,29 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
-
-
-        if (event.player != null)
+        if (event.player != null && !event.player.isDead && Wearing.isWearingWearable(event.player))
         {
-            if (!event.player.isDead)
+            if(event.phase == TickEvent.Phase.START)
             {
-                BackpackProperty prop = BackpackProperty.get(event.player);
-                if (Wearing.isWearingWearable(event.player))
+                BackpackProperty.get(event.player).executeWearableUpdateProtocol();
+            }
+            if (event.phase == TickEvent.Phase.END)
+            {
+                if (event.side.isServer())
                 {
-                    if(event.phase == TickEvent.Phase.START)
+                    EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
+                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
                     {
-                        prop.executeWearableUpdateProtocol();
-                    }
-                    if (event.phase == TickEvent.Phase.END)
+                        playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
+                    } else
                     {
-
-                        if (event.side.isServer())
-                        {
-                            EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
-                            if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
-                            {
-                                playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
-                            } else
-                            {
-                                BackpackProperty.syncToNear(event.player);
-                            }
-                        }
+                        BackpackProperty.syncToNear(event.player);
                     }
                 }
             }
         }
     }
+
+
 }
 

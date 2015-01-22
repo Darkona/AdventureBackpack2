@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.init;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -26,7 +27,17 @@ public class ModRecipes
     public static void init()
     {
 
-        //Sleeping Bag - temporal recipe
+        //CampFire
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.blockCampFire,
+                " S ",
+                "SxS",
+                "ccc",
+                'S', "stickWood",
+                'x', Items.coal,
+                'c', "cobblestone"
+        ));
+
+        //Sleeping Bag
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 1),
                 "  X",
                 "CCC",
@@ -66,41 +77,6 @@ public class ModRecipes
                 'S', Items.stick
         );
 
-        //Copter Engine
-        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
-                "IGI",
-                "PCP",
-                "FOF",
-                'I', Items.iron_ingot,
-                'G', Items.gold_ingot,
-                'P', Blocks.piston,
-                'F', Blocks.furnace,
-                'C', Items.cauldron,
-                'O', Blocks.obsidian
-        );
-
-        //Copter Blades
-        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 6),
-                "III",
-                " F ",
-                " F ",
-                'I', Items.iron_ingot,
-                'F', Blocks.fence
-        );
-
-        //Copter Pack
-        GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
-                "WBW",
-                "TEI",
-                "CDI",
-                'W', Blocks.planks,
-                'B', new ItemStack(ModItems.component, 1, 6),
-                'T', new ItemStack(ModItems.component, 1, 2),
-                'E', new ItemStack(ModItems.component, 1, 5),
-                'C', new ItemStack(Items.dye, 1, 2),
-                'D', Items.diamond,
-                'I', Items.iron_ingot
-        );
 
         GameRegistry.addRecipe(new ItemStack(ModItems.machete),
                 " I ",
@@ -206,16 +182,87 @@ public class ModRecipes
         */
     }
 
-    public static void initConditional()
+    public static void conditionalInit()
     {
-        GameRegistry.addRecipe(new ItemStack(Items.saddle),
-                "LLL",
-                "L L",
-                "I I",
-                'L', Items.leather,
-                'I', Items.iron_ingot
-        );
+        if(ConfigHandler.SADDLE_RECIPE)
+        {
+            GameRegistry.addRecipe(new ItemStack(Items.saddle),
+                    "LLL",
+                    "L L",
+                    "I I",
+                    'L', Items.leather,
+                    'I', Items.iron_ingot
+            );
+        }
 
-        //GameRegistry.addSmelting(Items.egg,ModItems.component,5f);
+        if(ConfigHandler.IS_BUILDCRAFT)
+        {
+            //Copter Engine
+            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
+                    "IGI",
+                    "PCP",
+                    "FOF",
+                    'I', Items.iron_ingot,
+                    'G', Items.gold_ingot,
+                    'P', Blocks.piston,
+                    'F', Blocks.furnace,
+                    'C', Items.cauldron,
+                    'O', Blocks.obsidian
+            );
+
+            //Copter Blades
+            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 6),
+                    "III",
+                    " F ",
+                    " F ",
+                    'I', Items.iron_ingot,
+                    'F', Blocks.fence
+            );
+
+            //Copter Pack
+            GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
+                    "WBW",
+                    "TEI",
+                    "CDI",
+                    'W', Blocks.planks,
+                    'B', new ItemStack(ModItems.component, 1, 6),
+                    'T', new ItemStack(ModItems.component, 1, 2),
+                    'E', new ItemStack(ModItems.component, 1, 5),
+                    'C', new ItemStack(Items.dye, 1, 2),
+                    'D', Items.diamond,
+                    'I', Items.iron_ingot
+            );
+        }
+
+        //Ok let's try getting railcraft stuff.
+        //Seriously this is hard
+        if(ConfigHandler.IS_RAILCRAFT)
+        {
+            try
+            {
+                LogHelper.info("Railcraft is present. Adding Steam Jetpack.");
+                ItemStack firebox = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.firebox.solid", 1);
+                ItemStack boiler = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.tank.pressure.low", 1);
+                if(firebox != null && boiler != null)
+                {
+                    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.steamJetpack),
+                            "BWT",
+                            "GIG",
+                            "xWC",
+                            'W', "plankWood",
+                            'G', "ingotGold",
+                            'I',"ingotIron",
+                            'B', boiler,
+                            'x', firebox,
+                            'C', new ItemStack(Items.dye, 1, 2),
+                            'T', new ItemStack(ModItems.component, 1, 2)
+                    ));
+                }
+
+            }catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     }
 }

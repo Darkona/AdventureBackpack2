@@ -119,7 +119,7 @@ public class BackpackRecipesList
                 "WaW",
                 "CWC",
                 'C', Blocks.chest,
-                'W', Blocks.planks,
+                'W', "plankWood",
                 'a', backpack
         );
 

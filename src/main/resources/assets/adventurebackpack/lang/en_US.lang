@@ -38,9 +38,9 @@ item.adventurebackpack:adventureHat.name=Adventurer's Fedora
 item.adventurebackpack:pistonBoots.name=Piston Boots
 
 ## Blocks
-block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
-block.adventurebackpack:blockCampFire.name=Camp Fire
-block.adventurebackpack:blockSleepingBag.name=Sleeping Bag
+block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Base
+block.adventurebackpack:CampFire.name=Campfire
+block.adventurebackpack:SleepingBag.name=Sleeping Bag
 
 ## CreativeTab
 itemGroup.adventurebackpack=Adventure Backpack

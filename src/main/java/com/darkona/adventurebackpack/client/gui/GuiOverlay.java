@@ -37,7 +37,7 @@ import java.util.Iterator;
  *
  * @author Darkona
  */
-public class GuiOverlayBackpack extends Gui
+public class GuiOverlay extends Gui
 {
     private Minecraft mc;
     private int screenWidth;
@@ -45,7 +45,7 @@ public class GuiOverlayBackpack extends Gui
     protected static RenderItem itemRender = new RenderItem();
     protected FontRenderer fontRendererObj;
     ScaledResolution resolution;
-    public GuiOverlayBackpack(Minecraft mc)
+    public GuiOverlay(Minecraft mc)
     {
         super();
 
@@ -120,19 +120,17 @@ public class GuiOverlayBackpack extends Gui
                 GL11.glDisable(GL11.GL_LIGHTING);
 
                 int tankX = xPos;
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 for (FluidTank tank : inv.getTanksArray())
                 {
-                    drawTank(tank, tankX + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
-                    GL11.glEnable(GL11.GL_BLEND);
-                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
                     mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
                     drawTexturedModalRect(tankX, yPos, 10, 0, textureWidth, textureHeight);
-                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                    GL11.glDisable(GL11.GL_BLEND);
+                    drawTank(tank, tankX + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
                     ++tankX;
                     tankX += textureWidth;
                 }
-
                 if (Wearing.isWearingBackpack(player))
                 {
                     int u[] = {10, 10};
@@ -151,8 +149,6 @@ public class GuiOverlayBackpack extends Gui
                     }
                     mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
 
-                    GL11.glEnable(GL11.GL_BLEND);
-                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                     //Left Tank
                     drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight);
                     //Right Tank
@@ -166,10 +162,10 @@ public class GuiOverlayBackpack extends Gui
                     drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);
                     GL11.glPopMatrix();
                     RenderHelper.disableStandardItemLighting();
-                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                    GL11.glDisable(GL11.GL_BLEND);
-                }
 
+                }
+                GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+                GL11.glDisable(GL11.GL_BLEND);
             }
         }
     }

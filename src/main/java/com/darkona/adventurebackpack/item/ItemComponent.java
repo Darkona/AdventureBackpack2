@@ -34,7 +34,8 @@ public class ItemComponent extends ItemAB
             "copterBlades",
             "inflatableBoat",
             "inflatableBoatMotorized",
-            "hydroBlades"
+            "hydroBlades",
+
     };
 
 

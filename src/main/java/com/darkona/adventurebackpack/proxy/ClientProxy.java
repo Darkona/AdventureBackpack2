@@ -2,7 +2,7 @@ package com.darkona.adventurebackpack.proxy;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileCampfire;
-import com.darkona.adventurebackpack.client.gui.GuiOverlayBackpack;
+import com.darkona.adventurebackpack.client.gui.GuiOverlay;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.client.models.ModelSteamJetpack;
@@ -52,7 +52,7 @@ public class ClientProxy implements IProxy
     {
         initRenderers();
         registerKeybindings();
-        MinecraftForge.EVENT_BUS.register(new GuiOverlayBackpack(Minecraft.getMinecraft()));
+        MinecraftForge.EVENT_BUS.register(new GuiOverlay(Minecraft.getMinecraft()));
     }
 
     public void initNetwork()

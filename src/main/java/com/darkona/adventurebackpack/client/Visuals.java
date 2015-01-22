@@ -69,8 +69,8 @@ public class Visuals
         Vec3 rightPosition = victoria.addVector(playerPosition.xCoord, playerPosition.yCoord, playerPosition.zCoord);
         for(int i = 0; i< 4; i++)
         {
-            spawnParticle("steam", leftPosition.xCoord, leftPosition.yCoord, leftPosition.zCoord, 0.04*world.rand.nextGaussian(), -0.4, 0.04 * world.rand.nextGaussian());
-            spawnParticle("steam", rightPosition.xCoord, rightPosition.yCoord, rightPosition.zCoord, 0.04 * world.rand.nextGaussian(), -0.4, 0.04 * world.rand.nextGaussian());
+            spawnParticle("steam", leftPosition.xCoord, leftPosition.yCoord, leftPosition.zCoord, 0.04*world.rand.nextGaussian(), -0.8, 0.04 * world.rand.nextGaussian());
+            spawnParticle("steam", rightPosition.xCoord, rightPosition.yCoord, rightPosition.zCoord, 0.04 * world.rand.nextGaussian(), -0.8, 0.04 * world.rand.nextGaussian());
         }
     }
 
@@ -107,6 +107,8 @@ public class Visuals
             {
                 if (particleName.equals("steam"))
                 {
+                    entityFX = new SteamFX(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
+                    /*
                     try
                     {
                         entityFX = (EntityFX) Class.forName("mods.railcraft.client.particles.EntitySteamFX")
@@ -116,7 +118,7 @@ public class Visuals
                     {
                         entityFX = new SteamFX(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
                     }
-
+                    */
                 }
                 mc.effectRenderer.addEffect(entityFX);
                 return entityFX;

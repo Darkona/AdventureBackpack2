@@ -22,8 +22,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.Calendar;
 
@@ -100,7 +98,7 @@ public class AdventureBackpack
 
         proxy.init();
         ModRecipes.init();
-        ModRecipes.initConditional();
+
         ModWorldGen.init();
         //GUIs
         guiHandler = new GuiHandler();
@@ -131,12 +129,12 @@ public class AdventureBackpack
         {
             LogHelper.info("Twilight Forest is present. Acting accordingly");
         }
-        if(ConfigHandler.IS_RAILCRAFT)
-        {
-            LogHelper.info("Railcraft is present. Acting accordingly");
-        }
+
         ConditionalFluidEffect.init();
         ModItems.conditionalInit();
+        ModRecipes.conditionalInit();
+
+        /*
         LogHelper.info("DUMPING FLUID INFORMATION");
         LogHelper.info("-------------------------------------------------------------------------");
         for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
@@ -145,6 +143,16 @@ public class AdventureBackpack
             LogHelper.info("Name: " + fluid.getName());
         }
         LogHelper.info("-------------------------------------------------------------------------");
+        */
+        /*
+        LogHelper.info("DUMPING TILE INFORMATION");
+        LogHelper.info("-------------------------------------------------------------------------");
+        for (Block block : GameData.getBlockRegistry().typeSafeIterable())
+        {
+            LogHelper.info("Block= " + block.getUnlocalizedName());
+        }
+        LogHelper.info("-------------------------------------------------------------------------");
+        */
     }
 
 }
