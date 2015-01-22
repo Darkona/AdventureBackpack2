@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.util;
 
 import com.darkona.adventurebackpack.events.WearableEvent;
-import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -28,7 +27,7 @@ public class BackpackUtils
             player.openContainer.onContainerClosed(player);
             ItemStack gimme = backpack.copy();
             prop.setWearable(gimme);
-            ((IBackWearableItem)gimme.getItem()).onEquipped(player.worldObj,player,gimme);
+            BackpackProperty.get(player).executeWearableEquipProtocol();
             backpack.stackSize--;
             WearableEvent event = new WearableEvent.EquipWearableEvent(player, prop.getWearable());
             MinecraftForge.EVENT_BUS.post(event);
@@ -47,11 +46,11 @@ public class BackpackUtils
         {
             player.openContainer.onContainerClosed(player);
             ItemStack gimme = prop.getWearable().copy();
-            ((IBackWearableItem)gimme.getItem()).onUnequipped(player.worldObj,player,gimme);
+            BackpackProperty.get(player).executeWearableUnequipProtocol();
             prop.setWearable(null);
             if(!player.inventory.addItemStackToInventory(gimme))
             {
-                player.entityDropItem(gimme,0.5f);
+                player.dropPlayerItemWithRandomChoice(gimme,false);
             }
             WearableEvent event = new WearableEvent.UnequipWearableEvent(player, gimme);
             MinecraftForge.EVENT_BUS.post(event);
