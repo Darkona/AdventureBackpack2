@@ -5,7 +5,9 @@ import com.darkona.adventurebackpack.item.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
- * Created by Darkona on 10/10/2014.
+ * Created on 10/10/2014
+ * @author Darkona
+ *
  */
 public class ModItems
 {

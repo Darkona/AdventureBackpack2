@@ -147,10 +147,6 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        if(wearing)
-        {
-            inventory.openInventory();
-        }
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
         inventory.openInventory();
@@ -158,17 +154,6 @@ public class GuiAdvBackpack extends GuiWithTanks
         rgt = inventory.getRightTank();
         tankLeft.draw(this, lft);
         tankRight.draw(this, rgt);
-/*
-        if (tankLeft.inTank(this, mouseX, mouseY))
-        {
-            drawHoveringText(tankLeft.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
-        }
-
-        if (tankRight.inTank(this, mouseX, mouseY))
-        {
-            drawHoveringText(tankRight.getTankTooltip(), mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
-        }
-*/
         if(!ConfigHandler.HOVERING_TEXT_TANKS){
             GL11.glPushMatrix();
             //GL11.glTranslatef(8f,64f,0f);

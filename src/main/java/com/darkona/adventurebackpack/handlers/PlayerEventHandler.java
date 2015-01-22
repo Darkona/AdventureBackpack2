@@ -275,7 +275,8 @@ public class PlayerEventHandler
                     if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
                     {
                         playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
-                    } else
+                        BackpackProperty.syncToNear(event.player);
+                    }else
                     {
                         BackpackProperty.syncToNear(event.player);
                     }

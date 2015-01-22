@@ -18,7 +18,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 import java.util.Calendar;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
 public class Utils
 {
@@ -51,8 +53,7 @@ public class Utils
                 n = (h - m + r + 90) / 25,
                 p = (h - m + r + n + 19) % 32;
 
-        int[] result = {n, p};
-        return result;
+        return new int[]{n, p};
     }
 
     public static String getHoliday()
@@ -70,11 +71,11 @@ public class Utils
         if (month == 1)
         {
             if (day == 1) dia = "NewYear";
-            if (day == 28) dia = "Challenger";
+            if (day == 28) dia = "Shuttle";//Challenger
         }
         if (month == 2)
         {
-            if (day == 1) dia = "Columbia";
+            if (day == 1) dia = "Shuttle";//Columbia
             if (day == 14) dia = "Valentines";
             if (day == 23) dia = "Fatherland";
         }
@@ -243,9 +244,8 @@ public class Utils
         float pointZ = cosYaw * cosPitch;
         Vec3 vecPoint = vecPlayer.addVector(pointX * reach, pointY * reach,
                 pointZ * reach);
-        MovingObjectPosition movingobjectposition = world.func_147447_a/*rayTraceBlocks_do_do*/(
+        return world.func_147447_a/*rayTraceBlocks_do_do*/(
                 vecPlayer, vecPoint, flag, !flag, flag);
-        return movingobjectposition;
     }
 
     public static String printCoordinates(int x, int y, int z)
@@ -253,10 +253,7 @@ public class Utils
         return "X= " + x + ", Y= " + y + ", Z= " + z;
     }
 
-    /**
-     * @param seconds
-     * @return
-     */
+
     public static int secondsToTicks(int seconds)
     {
         return seconds * 20;
@@ -312,9 +309,9 @@ public class Utils
      * @param world  The world object.
      * @param origX  Original X coordinate
      * @param origZ  Original Z coordinate
-     * @param X
-     * @param Y
-     * @param Z      The coordinates of the central point of the search.
+     * @param X      Moving X coordinate, should be the same as origX when called.
+     * @param Y      Y coordinate, does not move.
+     * @param Z      Moving Z coordinate, should be the same as origZ when called.
      * @param radius The radius of the search. If set to high numbers, will create a ton of lag
      * @param except Wether to include the origin of the search as a valid block.
      * @param steps  Number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
@@ -440,7 +437,7 @@ public class Utils
 
     /**
      * Seriously why doesn't Java's instanceof check for null?
-     * @return
+     * @return true if the object is not null and is an instance of the supplied class.
      */
     public static boolean notNullAndInstanceOf(Object object, Class clazz)
     {

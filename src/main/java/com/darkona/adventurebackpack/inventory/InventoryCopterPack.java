@@ -17,18 +17,16 @@ import net.minecraftforge.fluids.FluidTank;
 public class InventoryCopterPack implements IInventoryTanks
 {
     private ItemStack containerStack;
-    public FluidTank fuelTank;
-    public int tickCounter;
-    public byte status;
-    private ItemStack[] inventory;
+    public FluidTank fuelTank = new FluidTank(6000);
+    public int tickCounter = 0;
+    public byte status = ItemCopterPack.OFF_MODE;
+    private ItemStack[] inventory = new ItemStack[2];
 
 
 
     public InventoryCopterPack(ItemStack copterPack)
     {
-        fuelTank = new FluidTank(6000);
         status = ItemCopterPack.OFF_MODE;
-        inventory = new ItemStack[2];
         containerStack = copterPack;
         if(!copterPack.hasTagCompound())
         {

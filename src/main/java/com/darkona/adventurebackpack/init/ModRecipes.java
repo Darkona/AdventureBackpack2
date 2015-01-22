@@ -94,7 +94,7 @@ public class ModRecipes
                 'C', Items.leather_helmet,
                 'L', Items.leather
         );
-
+/*
         GameRegistry.addRecipe(new ItemStack(ModItems.adventureSuit),
                 " V ",
                 " W ",
@@ -103,7 +103,7 @@ public class ModRecipes
                 'W', Blocks.wool,
                 'P', Items.leather_leggings
         );
-
+*/
         GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
                 " B ",
                 "PSP",

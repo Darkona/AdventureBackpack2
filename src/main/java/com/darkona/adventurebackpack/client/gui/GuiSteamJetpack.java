@@ -141,7 +141,7 @@ public class GuiSteamJetpack extends GuiWithTanks
         GL11.glPushMatrix();
         GL11.glTranslatef(145,8,0);
         GL11.glScalef(0.9f, 0.9f, 0.9f);
-        fontRendererObj.drawString((inventory.getTemperature()) + "ºC", 0, 0, 0x373737, false);
+        fontRendererObj.drawString((inventory.getTemperature()) + " C", 0, 0, 0x373737, false);
         GL11.glScalef(1, 1, 1);
         GL11.glPopMatrix();
 

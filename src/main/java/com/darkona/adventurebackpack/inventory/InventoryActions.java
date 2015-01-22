@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.util.FluidUtils;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -25,14 +26,14 @@ public class InventoryActions
      * into a different slot, consuming the first one. If there is no empty container, such as the Forestry Cells,
      * it simply fills the tank.
      *
-     * @param backpack The backpack type thing that will have its tank updated.
+     * @param inventory The inventory type thing that will have its tank updated.
      * @param tank     The tank that's going to be updated.
      * @param slotIn   The slot in which the fluid container item must be to update the tank.
      * @return True if the tank was filled and the resulting filled or empty container item was placed in the other slot.
      */
-    public static boolean transferContainerTank(IInventoryTanks backpack, FluidTank tank, int slotIn)
+    public static boolean transferContainerTank(IInventoryTanks inventory, FluidTank tank, int slotIn)
     {
-        ItemStack stackIn = backpack.getStackInSlot(slotIn);
+        ItemStack stackIn = inventory.getStackInSlot(slotIn);
         if (tank == null || stackIn == null) return false;
 
         //Set slot out for whatever number the output slot should be.
@@ -49,20 +50,26 @@ public class InventoryActions
                 //Get the empty container for the input, if there's any.
                 ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
 
-                if (backpack.getStackInSlot(slotOut) == null || stackOut == null)
+                if (inventory.getStackInSlot(slotOut) == null || stackOut == null)
                 {
-                    backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
+
                     tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
-                    backpack.decrStackSizeNoSave(slotIn, 1);
+                    //inventory.dirtyTanks();
+                    inventory.decrStackSizeNoSave(slotIn, 1);
+                    inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
+                    //inventory.dirtyInventory();
                     return true;
-                } else if (backpack.getStackInSlot(slotOut).getItem() == stackOut.getItem())
+                } else if (inventory.getStackInSlot(slotOut).getItem() == stackOut.getItem())
                 {
-                    int maxStack = backpack.getStackInSlot(slotOut).getMaxStackSize();
-                    if (maxStack > 1 && (backpack.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
+                    int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
+                    if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
                     {
-                        backpack.getStackInSlot(slotOut).stackSize++;
+
                         tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
-                        backpack.decrStackSizeNoSave(slotIn, 1);
+                        //inventory.dirtyTanks();
+                        inventory.decrStackSizeNoSave(slotIn, 1);
+                        inventory.getStackInSlot(slotOut).stackSize++;
+                       // inventory.dirtyInventory();
                         return true;
                     }
                 }
@@ -71,7 +78,7 @@ public class InventoryActions
 
         //TANK =====> CONTAINER
 
-        if (tank.getFluid() != null && tank.getFluidAmount() > 0 && FluidContainerRegistry.isEmptyContainer(stackIn))
+        if (tank.getFluid() != null && tank.getFluidAmount() > 0 && FluidUtils.isEmptyContainerForFluid(stackIn, tank.getFluid().getFluid()))
         {
             //How much fluid can this container hold.
             int amount = FluidContainerRegistry.getContainerCapacity(tank.getFluid(), stackIn);
@@ -82,22 +89,26 @@ public class InventoryActions
 
             if (drain.amount == amount)
             {
-                if (backpack.getStackInSlot(slotOut) == null)
+                if (inventory.getStackInSlot(slotOut) == null)
                 {
                     tank.drain(amount, true);
-                    backpack.decrStackSizeNoSave(slotIn, 1);
-                    backpack.setInventorySlotContentsNoSave(slotOut, stackOut);
+                    //inventory.dirtyTanks();
+                    inventory.decrStackSizeNoSave(slotIn, 1);
+                    inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
+                    //inventory.dirtyInventory();
                     return true;
                 } else
                 if (stackOut.getItem() != null
-                    && stackOut.getItem() == backpack.getStackInSlot(slotOut).getItem())
+                    && stackOut.getItem() == inventory.getStackInSlot(slotOut).getItem())
                 {
-                    int maxStack = backpack.getStackInSlot(slotOut).getMaxStackSize();
-                    if (maxStack > 1 && (backpack.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
+                    int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
+                    if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
                     {
                         tank.drain(amount, true);
-                        backpack.decrStackSizeNoSave(slotIn, 1);
-                        backpack.getStackInSlot(slotOut).stackSize++;
+                        //inventory.dirtyTanks();
+                        inventory.decrStackSizeNoSave(slotIn, 1);
+                        inventory.getStackInSlot(slotOut).stackSize++;
+                       // inventory.dirtyInventory();
                         return true;
                     }
                 }

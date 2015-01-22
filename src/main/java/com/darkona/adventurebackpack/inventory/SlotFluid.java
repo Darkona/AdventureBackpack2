@@ -5,7 +5,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014
+ * @author Darkona
+ *
  */
 public class SlotFluid extends SlotAdventureBackpack
 {
@@ -29,9 +31,12 @@ public class SlotFluid extends SlotAdventureBackpack
     @Override
     public void onSlotChanged()
     {
-        if(inventory instanceof IInventoryTanks)
+       // if (Utils.inServer())
         {
-            ((IInventoryTanks)this.inventory).updateTankSlots();
+            if (inventory instanceof IInventoryTanks)
+            {
+                ((IInventoryTanks) this.inventory).updateTankSlots();
+            }
         }
         super.onSlotChanged();
     }
@@ -39,7 +44,6 @@ public class SlotFluid extends SlotAdventureBackpack
     @Override
     public void putStack(ItemStack par1ItemStack)
     {
-        // TODO Auto-generated method stub
         super.putStack(par1ItemStack);
     }
 }

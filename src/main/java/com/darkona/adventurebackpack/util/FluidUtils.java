@@ -14,14 +14,17 @@ public class FluidUtils
 
     public static boolean isContainerForFluid(ItemStack container, Fluid fluid)
     {
-        for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
+        if(container != null && fluid != null)
         {
-            if (
-                    (data.fluid.getFluid().getID() == fluid.getID()) &&
-                            (data.emptyContainer.getItem().equals(container.getItem()) || data.filledContainer.getItem().equals(container.getItem()))
-                    )
+            for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
             {
-                return true;
+                if (
+                        (data.fluid.getFluid().getID() == fluid.getID()) &&
+                                (data.emptyContainer.getItem().equals(container.getItem()) || data.filledContainer.getItem().equals(container.getItem()))
+                        )
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -29,14 +32,17 @@ public class FluidUtils
 
     public static boolean isEmptyContainerForFluid(ItemStack container, Fluid fluid)
     {
-        for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
+        if (container != null && fluid != null)
         {
-            if (
-                    (data.fluid.getFluid().getID() == fluid.getID()) &&
-                    (data.emptyContainer.getItem().equals(container.getItem()))
-                    )
+            for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
             {
-                return true;
+                if (
+                        (data.fluid.getFluid().getID() == fluid.getID()) &&
+                                (data.emptyContainer.getItem().equals(container.getItem()))
+                        )
+                {
+                    return true;
+                }
             }
         }
         return false;

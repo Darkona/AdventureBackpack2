@@ -6,13 +6,13 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Wearing;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -36,7 +36,7 @@ public class GuiCopterPack extends GuiWithTanks
     public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
     {
         super(new ContainerCopter(player, inv, wearing));
-        this.inventory = inv;
+        this.inventory = wearing ? (InventoryCopterPack)BackpackProperty.get(player).getInventory() : inv;
         xSize = 176;
         ySize = 166;
         this.wearing = wearing;
@@ -47,10 +47,6 @@ public class GuiCopterPack extends GuiWithTanks
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseY)
     {
         GL11.glColor4f(1, 1, 1, 1);
-       /* if(wearing)
-        {
-            inventory = new InventoryCopterPack(Wearing.getWearingCopter(player));
-        }*/
         this.mc.renderEngine.bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -82,14 +78,13 @@ public class GuiCopterPack extends GuiWithTanks
     {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
-        if(wearing) inventory = new InventoryCopterPack(Wearing.getWearingCopter(player));
+        inventory.openInventory();
         FluidTank fuel = inventory.getFuelTank();
         fuelTank.draw(this, fuel);
-        FluidStack fuelStack = fuel.getFluid();
 
         GL11.glPushMatrix();
-        String name = (fuelStack != null) ? fuelStack.getFluid().getName() : "None";
-        String amount = (fuelStack != null) ? ""+fuelStack.amount : "0";
+        String name = (fuel.getFluid() != null) ? Utils.capitalize(fuel.getFluid().getFluid().getName()) : "None";
+        String amount = (fuel.getFluid() != null) ? ""+ fuel.getFluid().amount : "0";
         String capacity = Integer.toString(fuel.getCapacity());
         int offsetY = 8;
         int offsetX = 83;
@@ -97,7 +92,7 @@ public class GuiCopterPack extends GuiWithTanks
         fontRendererObj.drawString(amount, 1 + offsetX, 10 + offsetY, 0x373737, false);
         fontRendererObj.drawString(capacity, 1 + offsetX, 20 + offsetY, 0x373737, false);
 
-        if(fuelStack!=null)
+        if(fuel.getFluid()!=null)
         {
             Float f = GeneralReference.liquidFuels.get(name);
             String conLev = (f != null) ? f.toString() : "0";

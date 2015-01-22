@@ -24,7 +24,7 @@ public class ModelCopterPack extends ModelWearable
     public ModelRenderer Base;
     public ModelRenderer EngineBody;
     public ModelRenderer TankTop;
-    public ModelRenderer ChestTop;
+
     public ModelRenderer EnginePistonLeft;
     public ModelRenderer EnginePistonRight;
     public ModelRenderer Axis;
@@ -202,7 +202,7 @@ public class ModelCopterPack extends ModelWearable
             if (copterPack.stackTagCompound.getByte("status") != ItemCopterPack.OFF_MODE)
             {
                 Axis.isHidden = false;
-                int degrees = 0;
+                int degrees;
                 if (entity.onGround || (entity.isSneaking()))
                 {
                     degrees = 16;
@@ -216,7 +216,7 @@ public class ModelCopterPack extends ModelWearable
         }
         this.Base.render(scale);
         this.Axis.render(scale);
-        renderFluidInTank(copterInv.getFuelTank(), new Vector3(0, .25f, 0), new Vector3(.25f, 0, .25f), new Vector3(0f, 0.0625f, 0.0625f), TankTop);
+        renderFluidInTank(copterInv.getFuelTank(), new Vector3(0, .25f, 0), new Vector3(.25f, 0, .25f), new Vector3(0f, 0.0625f, 0.0f), TankTop);
     }
 
    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)

@@ -175,6 +175,7 @@ public class BackpackProperty implements IExtendedEntityProperties
             if(inventory != null && inventory instanceof InventoryBackpack)
             {
                 ((InventoryBackpack) inventory).setContainerStack(wearable);
+                //inventory.openInventory();
                 ((ContainerBackpack) container).refresh();
             }else
             {
@@ -187,6 +188,7 @@ public class BackpackProperty implements IExtendedEntityProperties
             if (inventory != null && inventory instanceof InventoryCopterPack)
             {
                 ((InventoryCopterPack) inventory).setContainerStack(wearable);
+                //inventory.openInventory();
                 ((ContainerCopter) container).refresh();
             } else
             {
@@ -199,6 +201,7 @@ public class BackpackProperty implements IExtendedEntityProperties
             if (inventory != null && inventory instanceof InventorySteamJetpack)
             {
                 ((InventorySteamJetpack) inventory).setContainerStack(wearable);
+                //inventory.openInventory();
                 ((ContainerJetpack) container).refresh();
             } else
             {
