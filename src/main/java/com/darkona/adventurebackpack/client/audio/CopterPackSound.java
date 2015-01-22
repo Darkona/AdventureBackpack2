@@ -23,19 +23,11 @@ public class CopterPackSound extends MovingSound
 
     protected float pitch;
 
-    public CopterPackSound()
-    {
-        super(new ResourceLocation(ModInfo.MOD_ID, "helicopter"));
-        this.repeat = true;
-        this.volume = 0.8f;
-        this.pitch = 1.0F;
-    }
-
 
     public CopterPackSound(EntityPlayer player)
     {
         super(new ResourceLocation(ModInfo.MOD_ID, "helicopter"));
-        volume = 0.8f;
+        volume = 0.6f;
         pitch = 1.0F;
         thePlayer = player;
     }
@@ -87,7 +79,7 @@ public class CopterPackSound extends MovingSound
             }else{
                 if(status == ItemCopterPack.HOVER_MODE)
                 {
-                    pitch = (thePlayer.motionY == 0) ? 1.0f : (thePlayer.motionY > 0) ? 1.2f : 0.8f;
+                    pitch = (thePlayer.motionY > 0) ? 1.2f : (thePlayer.motionY < -0.1) ? 0.8f : 1.0f;
                 }
                 if(status == ItemCopterPack.NORMAL_MODE)
                 {

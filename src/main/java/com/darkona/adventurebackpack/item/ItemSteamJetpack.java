@@ -83,35 +83,33 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             inv.currentItemBurnTime = 0;
             if (coolTicks % inv.getDecreasingFactor() == 0)
             {
-                int minTemp = 25;
-                BiomeDictionary.Type[] thisBiome = BiomeDictionary.getTypesForBiome(world.getBiomeGenForCoords((int) player.posX, (int) player.posZ));
-                for (BiomeDictionary.Type type : thisBiome)
-                {
-                    switch (type)
-                    {
-                        case COLD:
-                            minTemp = 0;
-                            break;
-                        case HOT:
-                            minTemp = 30;
-                            break;
-                        case NETHER:
-                            minTemp = 45;
-                            break;
-                        case SNOWY:
-                            minTemp = 0;
-                            break;
-                        default:
-                            minTemp = 25;
-                            break;
-                    }
-                }
-                temperature = (temperature - 1 >= minTemp) ? temperature - 1 : 0;
+                temperature = (temperature - 1 >= getBiomeMinTemp(player, world)) ? temperature - 1 : 0;
             }
         }
         inv.setTemperature(temperature);
         inv.setCoolTicks(coolTicks);
         inv.setBurnTicks(burnTicks <= 0 ? 0 : burnTicks);
+    }
+
+    private int getBiomeMinTemp(EntityPlayer player, World world)
+    {
+        BiomeDictionary.Type[] thisBiomeTypes = BiomeDictionary.getTypesForBiome(world.getBiomeGenForCoords((int) player.posX, (int) player.posZ));
+        for (BiomeDictionary.Type type : thisBiomeTypes)
+        {
+            if (type == BiomeDictionary.Type.COLD || type == BiomeDictionary.Type.SNOWY)
+            {
+                return 0;
+            }
+            if (type == BiomeDictionary.Type.HOT || type == BiomeDictionary.Type.BEACH)
+            {
+                return 30;
+            }
+            if (type == BiomeDictionary.Type.NETHER)
+            {
+                return 40;
+            }
+        }
+        return 25;
     }
 
     @Override
@@ -264,6 +262,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     {
         InventorySteamJetpack inv = new InventorySteamJetpack(stack);
         inv.calculateLostTime();
+        if(inv.getTemperature() == 0)inv.setTemperature(getBiomeMinTemp(player, world));
     }
 
     @Override

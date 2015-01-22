@@ -20,6 +20,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -359,7 +360,7 @@ public class ServerActions
             if (mode == ItemCopterPack.OFF_MODE)
             {
                 newMode = ItemCopterPack.NORMAL_MODE;
-                message = "normal mode.";
+                message = "adventurebackpack:messages.copterpack.normal";
                 actionPerformed = true;
                 if (!player.worldObj.isRemote)
                 {
@@ -369,7 +370,7 @@ public class ServerActions
             } else
             {
                 newMode = ItemCopterPack.OFF_MODE;
-                message = "off.";
+                message = "adventurebackpack:messages.copterpack.off";
                 actionPerformed = true;
             }
         }
@@ -379,13 +380,13 @@ public class ServerActions
             if (mode == ItemCopterPack.NORMAL_MODE)
             {
                 newMode = ItemCopterPack.HOVER_MODE;
-                message = "hover mode.";
+                message = "adventurebackpack:messages.copterpack.hover";
                 actionPerformed = true;
             }
             if (mode == ItemCopterPack.HOVER_MODE)
             {
                 newMode = ItemCopterPack.NORMAL_MODE;
-                message = "normal mode.";
+                message = "adventurebackpack:messages.copterpack.normal";
                 actionPerformed = true;
             }
         }
@@ -395,7 +396,7 @@ public class ServerActions
             copter.stackTagCompound.setByte("status", newMode);
             if (player.worldObj.isRemote)
             {
-                player.addChatComponentMessage(new ChatComponentText("CopterPack: " + message));
+                player.addChatComponentMessage(new ChatComponentTranslation(message));
             }
 
         }
@@ -410,14 +411,14 @@ public class ServerActions
             inv.markDirty();
             if (player.worldObj.isRemote)
             {
-                player.addChatComponentMessage(new ChatComponentText("Steam Jetpack: Off."));
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.jetpack.off"));
             }
         }else{
             inv.setStatus(true);
             inv.markDirty();
             if (player.worldObj.isRemote)
             {
-                player.addChatComponentMessage(new ChatComponentText("Steam Jetpack: On."));
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.jetpack.on"));
             }
         }
     }

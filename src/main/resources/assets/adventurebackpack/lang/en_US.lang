@@ -38,7 +38,7 @@ item.adventurebackpack:adventureHat.name=Adventurer's Fedora
 item.adventurebackpack:pistonBoots.name=Piston Boots
 
 ## Blocks
-block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Base
+block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Block
 block.adventurebackpack:CampFire.name=Campfire
 block.adventurebackpack:SleepingBag.name=Sleeping Bag
 
@@ -56,5 +56,13 @@ fluid.milk=Milk
 fluid.mushroomsoup=Mushroom Stew
 
 ## Messages
-adventurebackpack:already.equipped=You are already equipping a backpack.
+adventurebackpack:messages.already.equipped=You are already equipping a backpack.
 adventurebackpack:messages.already.impossibru=You aren't wearing any backpacks.
+adventurebackpack:messages.copterpack.hover=CopterPack: Hover Mode.
+adventurebackpack:messages.copterpack.normal=CopterPack: Normal Mode.
+adventurebackpack:messages.copterpack.outoffuel=CopterPack: Out of fuel.
+adventurebackpack:messages.copterpack.cantwater=CopterPack: Can't function in water.
+adventurebackpack:messages.copterpack.off=CopterPack: Off.
+adventurebackpack:messages.jetpack.on=Steam Jetpack: On.
+adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
+adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.
