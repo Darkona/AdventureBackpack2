@@ -1,6 +1,7 @@
 # Items
+
 ## Component Items For Crafting
-item.adventurebackpack:backpackComponent.name=Backpack Component Item
+item.adventurebackpack:backpackComponent.name=Компонент рюкзака
 item.adventurebackpack:sleepingBag.name=Спальный мешок
 item.adventurebackpack:backpackTank.name=Резервуар для жидкости рюкзака
 item.adventurebackpack:macheteHandle=Ручка от мачете
@@ -10,40 +11,58 @@ item.adventurebackpack:copterBlades.name=Вертолётные лопасти
 item.adventurebackpack:hydroBlades.name=Водяные лопасти
 item.adventurebackpack:inflatableBoat.name=Надувная лодка
 item.adventurebackpack:inflatableBoatMotorized.name=Надувная лодка с мотором
+
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Арбалет с часовым механизмом
 item.adventurebackpack:melonJuiceBottle.name=Бутылка с арбузным соком
 item.adventurebackpack:machete.name=Мачете
+
 item.adventurebackpack:backpackHose.name=Трубка для жидкостей рюкзака
 item.adventurebackpack:hose_leftTank_suck.name=Трубка для жидкостей: Левая ёмкость / Режим закачивания
 item.adventurebackpack:hose_leftTank_spill.name=Трубка для жидкостей: Левая ёмкость / Режим откачивания
 item.adventurebackpack:hose_leftTank_drink.name=Трубка для жидкостей: Левая ёмкость / Режим питья
+
 item.adventurebackpack:hose_rightTank_suck.name=Трубка для жидкостей: Правая ёмкость / Режим закачивания
 item.adventurebackpack:hose_rightTank_spill.name=Трубка для жидкостей: Правая ёмкость / Режим откачивания
 item.adventurebackpack:hose_rightTank_drink.name=Трубка для жидкостей: Правая ёмкость / Режим питья
 item.adventurebackpack:hoseUseless.name=Трубка для жидкостей: Не используется / Нет рюкзака
+
 ## Wearables
 item.adventurebackpack:adventureBackpack.name=Рюкзак искателя приключений
 item.adventurebackpack:copterPack.name=Вертолётный ранец
-item.adventurebackpack:steamJetpack.name=Паровой рюкзак
+item.adventurebackpack:steamJetpack.name=Паровой ранец
+
 ## Armor
 item.adventurebackpack:adventureSuit.name=Костюм искателя приключений
 item.adventurebackpack:adventureHat.name=Фетровая шляпа искателя приключений
 item.adventurebackpack:pistonBoots.name=Поршневые ботинки
+
 ## Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Основа рюкзака искателя приключений
 block.adventurebackpack:blockCampFire.name=Костер
 block.adventurebackpack:blockSleepingBag.name=Спальный мешок
+
 ## CreativeTab
 itemGroup.adventurebackpack=Рюкзак искателя приключений
+
 ## Keybindings
 keys.adventureBackpack.category=Рюкзак искателя приключений
 keys.adventureBackpack.openBackpackInventory=Открыть инвентарь рюкзака
 keys.adventureBackpack.switchHoseTank=Сменить используемый резервуар
+
 ## Fluids
 fluid.melonJuice=Арбузный сок
 fluid.milk=Молоко
 fluid.mushroomStew=Тушеные грибы
+
 ## Messages
 adventurebackpack:already.equipped=Рюкзак уже одет на вас.
 adventurebackpack:messages.already.impossibru=Вы не можете одеть больше рюкзаков.
+adventurebackpack:messages.copterpack.hover=Вертолётный ранец: Режим зависания.
+adventurebackpack:messages.copterpack.normal=Вертолётный ранец: Обычный режим.
+adventurebackpack:messages.copterpack.outoffuel=Вертолётный ранец: Нет топлива.
+adventurebackpack:messages.copterpack.cantwater=Вертолётный ранец: Невозможно работать в воде.
+adventurebackpack:messages.copterpack.off=Вертолётный ранец: Выключен.
+adventurebackpack:messages.jetpack.on=Паровой ранец: Включен.
+adventurebackpack:messages.jetpack.off=Паровой ранец: Выключен.
+adventurebackpack:messages.crossbow.outofammo=Арбалет с часовым механизмом: Нет боеприпасов.
