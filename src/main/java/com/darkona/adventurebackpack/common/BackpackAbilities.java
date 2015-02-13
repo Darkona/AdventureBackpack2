@@ -6,7 +6,6 @@ import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
@@ -468,7 +467,7 @@ public class BackpackAbilities
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
         if (world.isRemote) return;
-        InventoryBackpack inv = (InventoryBackpack)BackpackProperty.get(player).getInventory();
+        InventoryBackpack inv = new InventoryBackpack(backpack);
         inv.openInventory();
 
         if (inv.getLeftTank().fill(milkStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0)
@@ -529,7 +528,7 @@ public class BackpackAbilities
     public void itemMooshroom(EntityPlayer player, World world, ItemStack backpack)
     {
         if (world.isRemote) return;
-        InventoryBackpack inv = (InventoryBackpack) BackpackProperty.get(player).getInventory();
+        InventoryBackpack inv = new InventoryBackpack(backpack);
         inv.openInventory();
 
         if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(soupStack, false) <= 0)

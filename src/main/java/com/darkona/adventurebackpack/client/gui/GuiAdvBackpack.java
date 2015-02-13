@@ -9,14 +9,12 @@ import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -31,7 +29,7 @@ public class GuiAdvBackpack extends GuiWithTanks
 {
 
     protected IInventoryAdventureBackpack inventory;
-    protected boolean source;
+    protected boolean isTile;
     protected boolean wearing;
     protected int X;
     protected int Y;
@@ -47,13 +45,12 @@ public class GuiAdvBackpack extends GuiWithTanks
     private FluidTank rgt;
     public int lefties;
     public int topsies;
-    ContainerBackpack containerBackpack;
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {
         super(new ContainerBackpack(player, tileBackpack, ContainerBackpack.SOURCE_TILE));
         this.inventory = tileBackpack;
-        this.source = true;
+        this.isTile = true;
         xSize = 248;
         ySize = 207;
         this.X = tileBackpack.xCoord;
@@ -66,11 +63,10 @@ public class GuiAdvBackpack extends GuiWithTanks
 
     public GuiAdvBackpack(EntityPlayer player, InventoryBackpack inventoryBackpack, boolean wearing)
     {
-//        super(new ContainerBackpack(player, item, wearing ? ContainerBackpack.SOURCE_WEARING : ContainerBackpack.SOURCE_HOLDING));
-        super(wearing ? BackpackProperty.get(player).getContainer() : new ContainerBackpack(player, inventoryBackpack, ContainerBackpack.SOURCE_HOLDING));
-        this.inventory = wearing ? (IInventoryAdventureBackpack)BackpackProperty.get(player).getInventory() : inventoryBackpack;
+        super(new ContainerBackpack(player, inventoryBackpack, wearing ? ContainerBackpack.SOURCE_WEARING : ContainerBackpack.SOURCE_HOLDING));
+        this.inventory = inventoryBackpack;
         this.wearing = wearing;
-        this.source = false;
+        this.isTile = false;
         xSize = 248;
         ySize = 207;
         this.player = player;
@@ -98,7 +94,7 @@ public class GuiAdvBackpack extends GuiWithTanks
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Buttons and button highlight
-        if (source)
+        if (isTile)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {
@@ -147,37 +143,37 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_BLEND);
+
         inventory.openInventory();
         lft = inventory.getLeftTank();
         rgt = inventory.getRightTank();
         tankLeft.draw(this, lft);
         tankRight.draw(this, rgt);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_BLEND);
+        /*
         if(!ConfigHandler.HOVERING_TEXT_TANKS){
             GL11.glPushMatrix();
             //GL11.glTranslatef(8f,64f,0f);
-            FluidStack leftFluid = lft.getFluid();
-            FluidStack rightFluid = rgt.getFluid();
             GL11.glScalef(0.6f, 0.6f, 0.6f);
-            String name = (leftFluid != null) ? leftFluid.getLocalizedName() : "None";
-            String amount = (leftFluid != null ? leftFluid.amount : "Empty").toString();
+            String name = (lft.getFluid() != null) ? lft.getFluid().getLocalizedName() : "None";
+            String amount = (lft.getFluid() != null ? lft.getFluid().amount : "Empty").toString();
             String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
             int offsetY = 32;
             int offsetX = 8;
-            fontRendererObj.drawString(getFirstWord(name), 1 + offsetX, 64 + offsetY, 0x373737, false);
+            fontRendererObj.drawString(Utils.getFirstWord(name), 1 + offsetX, 64 + offsetY, 0x373737, false);
             fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737, false);
             fontRendererObj.drawString(capacity, 1 + offsetX, 94 + offsetY, 0x373737, false);
 
-            name = (rightFluid != null) ? rightFluid.getLocalizedName() : "None";
-            amount = (rightFluid != null ? rightFluid.amount : "Empty").toString();
-            fontRendererObj.drawString(getFirstWord(name), 369 + offsetX, 64 + offsetY, 0x373737, false);
+            name = (rgt.getFluid() != null) ? rgt.getFluid().getLocalizedName() : "None";
+            amount = (rgt.getFluid() != null ? rgt.getFluid().amount : "Empty").toString();
+            fontRendererObj.drawString(Utils.getFirstWord(name), 369 + offsetX, 64 + offsetY, 0x373737, false);
             fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737, false);
             fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737, false);
 
             GL11.glPopMatrix();
         }
-
+        */
     }
 
     @Override
@@ -209,7 +205,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
         int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-        if(source)
+        if(isTile)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {

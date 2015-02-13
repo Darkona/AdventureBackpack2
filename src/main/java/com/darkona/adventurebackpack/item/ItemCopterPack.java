@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -130,7 +131,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
-        InventoryCopterPack inv = (InventoryCopterPack)BackpackProperty.get(player).getInventory();
+        InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
         inv.openInventory();
         boolean canElevate = true;
         int fuelConsumption = 0;

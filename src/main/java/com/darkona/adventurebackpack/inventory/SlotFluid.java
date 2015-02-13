@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -31,7 +32,8 @@ public class SlotFluid extends SlotAdventureBackpack
     @Override
     public void onSlotChanged()
     {
-       // if (Utils.inServer())
+
+        if (Utils.inServer())
         {
             if (inventory instanceof IInventoryTanks)
             {

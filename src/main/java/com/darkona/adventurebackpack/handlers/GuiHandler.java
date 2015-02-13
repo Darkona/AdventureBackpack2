@@ -5,11 +5,9 @@ import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
 import com.darkona.adventurebackpack.client.gui.GuiSteamJetpack;
 import com.darkona.adventurebackpack.inventory.*;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 /**
@@ -35,60 +33,48 @@ public class GuiHandler implements IGuiHandler
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        InventoryBackpack inv;
-        InventoryCopterPack inv2;
-        InventorySteamJetpack inv3;
-        TileEntity te;
-
         switch (ID)
         {
             case BACKPACK_TILE:
-                te = world.getTileEntity(x, y, z);
-                if (te != null && te instanceof TileAdventureBackpack)
+                if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack)
                 {
-                    return new ContainerBackpack(player, (TileAdventureBackpack) te, ContainerBackpack.SOURCE_TILE);
+                    return new ContainerBackpack(player, (TileAdventureBackpack) world.getTileEntity(x, y, z), ContainerBackpack.SOURCE_TILE);
                 }
                 break;
             case BACKPACK_WEARING:
-                inv = Wearing.getBackpackInv(player, true);
-                if (inv.getParentItemStack() != null)
+                if (Wearing.isWearingBackpack(player))
                 {
-                    return BackpackProperty.get(player).getContainer();
+                    return new ContainerBackpack(player, new InventoryBackpack(Wearing.getWearingBackpack(player)), ContainerBackpack.SOURCE_WEARING);
                 }
                 break;
             case BACKPACK_HOLDING:
-                inv = Wearing.getBackpackInv(player, false);
-                if (inv.getParentItemStack() != null)
+                if (Wearing.isHoldingBackpack(player))
                 {
-                    return new ContainerBackpack(player, inv, ContainerBackpack.SOURCE_HOLDING);
+                    return new ContainerBackpack(player, new InventoryBackpack(Wearing.getHoldingBackpack(player)), ContainerBackpack.SOURCE_HOLDING);
                 }
                 break;
             case COPTER_HOLDING:
-                inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
-                if (inv2.getParentItemStack() != null)
+                if (Wearing.isHoldingCopter(player))
                 {
-                    return new ContainerCopter(player, inv2,false);
+                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)),false);
                 }
                 break;
             case COPTER_WEARING:
-                inv2 = new InventoryCopterPack(Wearing.getWearingCopter(player));
-                if (inv2.getParentItemStack() != null)
+                if (Wearing.isWearingCopter(player))
                 {
-                    return BackpackProperty.get(player).getContainer();
+                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getWearingCopter(player)), true);
                 }
                 break;
             case JETPACK_HOLDING:
-                inv3 = new InventorySteamJetpack(Wearing.getHoldingSteam(player));
-                if (inv3.getParentItemStack() != null)
+                if (Wearing.isHoldingSteam(player))
                 {
-                    return new ContainerJetpack(player, inv3,false);
+                    return new ContainerJetpack(player, new InventorySteamJetpack(Wearing.getHoldingSteam(player)),false);
                 }
                 break;
             case JETPACK_WEARING:
-                inv3 = new InventorySteamJetpack(Wearing.getWearingSteam(player));
-                if (inv3.getParentItemStack() != null)
+                if (Wearing.isWearingSteam(player))
                 {
-                    return BackpackProperty.get(player).getContainer();
+                    return new ContainerJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
                 }
                 break;
             default:
@@ -103,59 +89,48 @@ public class GuiHandler implements IGuiHandler
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        InventoryBackpack inv;
-        InventoryCopterPack inv2;
-        InventorySteamJetpack inv3;
-        TileEntity te;
         switch (ID)
         {
             case BACKPACK_TILE:
-                te = world.getTileEntity(x, y, z);
-                if (te != null && te instanceof TileAdventureBackpack)
+                if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack)
                 {
-                    return new GuiAdvBackpack(player, (TileAdventureBackpack) te);
+                    return new GuiAdvBackpack(player, (TileAdventureBackpack) world.getTileEntity(x, y, z));
                 }
                 break;
             case BACKPACK_WEARING:
-                inv = Wearing.getBackpackInv(player, true);
-                if (inv.getParentItemStack() != null)
+                if (Wearing.isWearingBackpack(player))
                 {
-                    return new GuiAdvBackpack(player, inv, true);
+                    return new GuiAdvBackpack(player, new InventoryBackpack(Wearing.getWearingBackpack(player)), true);
                 }
                 break;
             case BACKPACK_HOLDING:
-                inv = Wearing.getBackpackInv(player, false);
-                if (inv.getParentItemStack() != null)
+                if (Wearing.isHoldingBackpack(player))
                 {
-                    return new GuiAdvBackpack(player, inv, false);
+                    return new GuiAdvBackpack(player, new InventoryBackpack(Wearing.getHoldingBackpack(player)), false);
                 }
                 break;
             case COPTER_HOLDING:
-                inv2 = new InventoryCopterPack(Wearing.getHoldingCopter(player));
-                if (inv2.getParentItemStack() != null)
+                if (Wearing.isHoldingCopter(player))
                 {
-                    return new GuiCopterPack(player, inv2,false);
+                    return new GuiCopterPack(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)),false);
                 }
                 break;
             case COPTER_WEARING:
-                inv2 = new InventoryCopterPack(Wearing.getWearingCopter(player));
-                if (inv2.getParentItemStack() != null)
+                if (Wearing.isWearingCopter(player))
                 {
-                    return new GuiCopterPack(player, inv2,true);
+                    return new GuiCopterPack(player, new InventoryCopterPack(Wearing.getWearingCopter(player)), true);
                 }
                 break;
             case JETPACK_HOLDING:
-                inv3 = new InventorySteamJetpack(Wearing.getHoldingSteam(player));
-                if (inv3.getParentItemStack() != null)
+                if (Wearing.isHoldingSteam(player))
                 {
-                    return new GuiSteamJetpack(player, inv3,false);
+                    return new GuiSteamJetpack(player, new InventorySteamJetpack(Wearing.getHoldingSteam(player)),false);
                 }
                 break;
             case JETPACK_WEARING:
-                inv3 = new InventorySteamJetpack(Wearing.getWearingSteam(player));
-                if (inv3.getParentItemStack() != null)
+                if (Wearing.isWearingSteam(player))
                 {
-                    return new GuiSteamJetpack(player, inv3,true);
+                    return new GuiSteamJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
                 }
                 break;
             default:

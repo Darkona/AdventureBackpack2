@@ -115,7 +115,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
-        InventorySteamJetpack inv = (InventorySteamJetpack)BackpackProperty.get(player).getInventory();
+        InventorySteamJetpack inv = new InventorySteamJetpack(stack);
         inv.openInventory();
         boolean mustFizzz = !inv.isInUse();
         int steamConsumed = 13;

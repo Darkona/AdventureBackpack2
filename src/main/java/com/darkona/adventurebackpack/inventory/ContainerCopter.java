@@ -23,7 +23,7 @@ public class ContainerCopter extends Container implements IWearableContainer
     EntityPlayer player;
     boolean wearing;
 
-    public ContainerCopter(EntityPlayer player, InventoryCopterPack copterPack,boolean wearing)
+    public ContainerCopter(EntityPlayer player, InventoryCopterPack copterPack, boolean wearing)
     {
         this.inventory = copterPack;
         makeSlots(player.inventory);

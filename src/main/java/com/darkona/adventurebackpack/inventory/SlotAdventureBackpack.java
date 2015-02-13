@@ -25,6 +25,4 @@ public abstract class SlotAdventureBackpack extends Slot
                 ((IInventoryTanks) this.inventory).dirtyInventory();
         }
     }
-
-
 }

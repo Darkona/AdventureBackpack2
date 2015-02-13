@@ -5,7 +5,6 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.item.ItemHose;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -106,7 +105,7 @@ public class GuiOverlay extends Gui
             EntityPlayer player= mc.thePlayer;
             if(Wearing.isWearingWearable(player))
             {
-                IInventoryTanks inv = (IInventoryTanks)BackpackProperty.get(player).getInventory();
+                IInventoryTanks inv = Wearing.getWearableInv(player);
                 inv.openInventory();
 
                 int textureHeight = 23;

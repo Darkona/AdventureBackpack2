@@ -193,7 +193,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        return placeBackpack(stack, player, world, x, y, z, side, true);
+        return player.canPlayerEdit(x, y, z, side, stack) && placeBackpack(stack, player, world, x, y, z, side, true);
     }
 
     @Override
@@ -293,9 +293,16 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
+        if(world.isRemote)return;
+
         if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
         {
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
+        }
+        if (world.getGameRules().getGameRuleBooleanValue("keepInventory"))
+        {
+            BackpackProperty.syncToNear(player);
+            return;
         }
         if(ConfigHandler.BACKPACK_DEATH_PLACE)
         {

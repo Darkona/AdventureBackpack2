@@ -14,6 +14,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 public class RenderHandler
 {
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     public void playerSpecialsRendering(RenderPlayerEvent.Specials.Pre event)
     {
 
@@ -31,18 +32,4 @@ public class RenderHandler
 
         event.renderCape = false;
     }
-
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void playerRendering(RenderPlayerEvent.Pre event)
-    {
-
-    }
-
-    public void playerRendering(RenderPlayerEvent.SetArmorModel event)
-    {
-
-    }
-
-
 }

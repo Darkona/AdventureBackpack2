@@ -6,7 +6,6 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
@@ -36,7 +35,7 @@ public class GuiCopterPack extends GuiWithTanks
     public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
     {
         super(new ContainerCopter(player, inv, wearing));
-        this.inventory = wearing ? (InventoryCopterPack)BackpackProperty.get(player).getInventory() : inv;
+        this.inventory = inv;
         xSize = 176;
         ySize = 166;
         this.wearing = wearing;

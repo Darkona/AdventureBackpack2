@@ -16,15 +16,10 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacket.Message, SyncPropertiesPacket.Message>
 {
-
-    /**
-     * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
-     * is needed.
-     *
-     * @param message The message
-     * @param ctx
-     * @return an optional return message
-     */
+    public static final byte DATA_ONLY = 0;
+    public static final byte TANKS_ONLY = 1;
+    public static final byte INVENTORY_ONLY = 2;
+    public static final byte FULL_DATA = 3;
 
     @Override
     public Message onMessage(Message message, MessageContext ctx)
@@ -45,6 +40,7 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
     {
 
         int ID;
+        byte type;
         NBTTagCompound properties;
 
 

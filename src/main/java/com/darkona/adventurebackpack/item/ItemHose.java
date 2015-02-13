@@ -6,7 +6,6 @@ import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -190,7 +189,7 @@ public class ItemHose extends ItemAB
     {
         if(!Wearing.isWearingBackpack(player))return true;
 
-        InventoryBackpack inv = (InventoryBackpack)BackpackProperty.get(player).getInventory();
+        InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
         inv.openInventory();
         FluidTank tank = getHoseTank(stack) == 0 ? inv.getLeftTank() : inv.getRightTank();
         TileEntity te = world.getTileEntity(x, y, z);
@@ -246,10 +245,10 @@ public class ItemHose extends ItemAB
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if(!Wearing.isWearingBackpack(player))return stack;
-        InventoryBackpack inventory = (InventoryBackpack) BackpackProperty.get(player).getInventory();
-        inventory.openInventory();
+        InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
+        inv.openInventory();
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
-        FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
+        FluidTank tank = getHoseTank(stack) == 0 ? inv.getLeftTank() : inv.getRightTank();
         if (tank != null)
         {
             switch (getHoseMode(stack))
@@ -261,11 +260,12 @@ public class ItemHose extends ItemAB
                        /* if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
                         {
                             return stack;
-                        }
+                        }*/
+
                         if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
                         {
                             return stack;
-                        }*/
+                        }
                         //TODO adjust for Adventure Mode
                         Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
                         if (fluidBlock != null)
@@ -281,7 +281,7 @@ public class ItemHose extends ItemAB
                                 }
                             }
                         }
-                        inventory.dirtyTanks();
+                        inv.dirtyTanks();
                     }
                     break;
 
@@ -291,9 +291,6 @@ public class ItemHose extends ItemAB
                         int x = mop.blockX;
                         int y = mop.blockY;
                         int z = mop.blockZ;
-                        int newX;
-                        int newY;
-                        int newZ;
                         if (world.getBlock(x, y, z).isBlockSolid(world, x, y, z, mop.sideHit))
                         {
 
@@ -374,7 +371,7 @@ public class ItemHose extends ItemAB
                                 }
                             }
                         }
-                        inventory.dirtyTanks();
+                        inv.dirtyTanks();
                     }
                     break;
                 case HOSE_DRINK_MODE:
@@ -418,15 +415,15 @@ public class ItemHose extends ItemAB
         }
         if (mode == HOSE_DRINK_MODE && tank > -1)
         {
-            InventoryBackpack inventory = (InventoryBackpack) BackpackProperty.get(player).getInventory();
-            inventory.openInventory();
-            FluidTank backpackTank = (tank == 0) ? inventory.getLeftTank() : (tank == 1) ? inventory.getRightTank() : null;
+            InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
+            inv.openInventory();
+            FluidTank backpackTank = (tank == 0) ? inv.getLeftTank() : (tank == 1) ? inv.getRightTank() : null;
             if (backpackTank != null)
             {
                 if (ServerActions.setFluidEffect(world, player, backpackTank))
                 {
                     backpackTank.drain(Constants.bucket, true);
-                    inventory.dirtyTanks();
+                    inv.dirtyTanks();
                 }
             }
         }
@@ -444,7 +441,7 @@ public class ItemHose extends ItemAB
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
     {
         if(!Wearing.isWearingBackpack(player))return false;
-        InventoryBackpack inventory = (InventoryBackpack) BackpackProperty.get(player).getInventory();
+        InventoryBackpack inventory = new InventoryBackpack(Wearing.getWearingBackpack(player));
         inventory.openInventory();
         if (entity instanceof EntityCow && !(entity instanceof EntityMooshroom))
         {

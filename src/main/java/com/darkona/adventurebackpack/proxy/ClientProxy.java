@@ -69,21 +69,11 @@ public class ClientProxy implements IProxy
     public void synchronizePlayer(int id, NBTTagCompound properties)
     {
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
-        if(entity != null && entity instanceof EntityPlayer)
+        if(entity != null && properties != null && entity instanceof EntityPlayer)
         {
-
             EntityPlayer player = (EntityPlayer)entity;
             if(BackpackProperty.get(player) == null) BackpackProperty.register(player);
             BackpackProperty.get(player).loadNBTData(properties);
-            if(player == Minecraft.getMinecraft().thePlayer)
-            {
-                /*
-                if (player.openContainer != null && player.openContainer instanceof IWearableContainer)
-                {
-                    player.openContainer.detectAndSendChanges();
-                }
-                */
-            }
         }
     }
 
@@ -123,7 +113,6 @@ public class ClientProxy implements IProxy
         ClientRegistry.registerKeyBinding(Keybindings.openBackpack);
         ClientRegistry.registerKeyBinding(Keybindings.toggleHose);
         FMLCommonHandler.instance().bus().register(new KeybindHandler());
-
     }
 
 }

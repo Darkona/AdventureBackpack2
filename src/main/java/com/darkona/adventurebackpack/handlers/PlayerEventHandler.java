@@ -55,7 +55,12 @@ public class PlayerEventHandler
         if (event.entity instanceof EntityPlayer && BackpackProperty.get((EntityPlayer) event.entity) == null)
         {
             BackpackProperty.register((EntityPlayer) event.entity);
+            /*if (!event.entity.worldObj.isRemote)
+            {
+                AdventureBackpack.proxy.joinPlayer((EntityPlayer)event.entity);
+            }*/
         }
+
     }
 
     @SubscribeEvent
@@ -63,6 +68,7 @@ public class PlayerEventHandler
     {
         if (event.entity instanceof EntityPlayer)
         {
+            LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
             AdventureBackpack.proxy.joinPlayer((EntityPlayer) event.entity);
         }
     }
@@ -167,11 +173,10 @@ public class PlayerEventHandler
                 BackpackProperty props = BackpackProperty.get(player);
                 if (props.hasWearable())
                 {
-                    ItemStack wearable = props.getWearable();
+                    ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
                    // LogHelper.info("Executing death protocol.");
-                    ((IBackWearableItem) wearable.getItem()).onPlayerDeath(player.worldObj, player, wearable);
                 }
-                if (props.isForceCampFire())
+                if (props.isForcedCampFire())
                 {
                     ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
                     if (lastCampFire != null)
@@ -180,7 +185,7 @@ public class PlayerEventHandler
                     }
                     //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
                 }
-                ServerProxy.storePlayerProps(player.getUniqueID(), props.getData());
+                ServerProxy.storePlayerProps(player);
             }
         }
         event.setResult(Event.Result.ALLOW);
@@ -274,8 +279,8 @@ public class PlayerEventHandler
                     EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
                     if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
                     {
-                        playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
-                        BackpackProperty.syncToNear(event.player);
+                        //playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
+                        //BackpackProperty.syncToNear(event.player);
                     }else
                     {
                         BackpackProperty.syncToNear(event.player);
