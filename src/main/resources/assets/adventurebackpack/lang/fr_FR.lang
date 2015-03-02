@@ -1,0 +1,68 @@
+# Items
+
+## Component Items For Crafting
+item.adventurebackpack:backpackComponent.name=Elément composant le sac à dos
+item.adventurebackpack:sleepingBag.name=Sac de couchage
+item.adventurebackpack:backpackTank.name=Réservoir du sac à dos
+item.adventurebackpack:macheteHandle.name=Poignée de machette
+item.adventurebackpack:hoseHead.name=Lance d'arrosage
+item.adventurebackpack:copterEngine.name=Moteur diesel à deux cylindres
+item.adventurebackpack:copterBlades.name=Lames d'hélico
+item.adventurebackpack:hydroBlades.name=Lames hydrauliques
+item.adventurebackpack:inflatableBoat.name=Bateau gonflable
+item.adventurebackpack:inflatableBoatMotorized.name=Bateau gonflable (Motorisé)
+
+## Tools and consumables
+item.adventurebackpack:clockworkCrossbow.name=Arbalète à rouage
+item.adventurebackpack:melonJuiceBottle.name=Bouteille de jus de melon
+item.adventurebackpack:machete.name=Machette
+
+item.adventurebackpack:backpackHose.name=Lance de sac à dos
+item.adventurebackpack:hose_leftTank_suck.name=Hose: Réservoir gauche / Aspiration
+item.adventurebackpack:hose_leftTank_spill.name=Hose: Réservoir gauche / Distribution
+item.adventurebackpack:hose_leftTank_drink.name=Hose: Réservoir gauche / Boisson
+
+item.adventurebackpack:hose_rightTank_suck.name=Hose: Réservoir droit / Aspiration
+item.adventurebackpack:hose_rightTank_spill.name=Hose: Réservoir droit / Distribution
+item.adventurebackpack:hose_rightTank_drink.name=Hose: Réservoir droit / Boisson
+item.adventurebackpack:hoseUseless.name=Hose: Inutile / Pas de sac à dos
+
+## Wearables
+item.adventurebackpack:adventureBackpack.name=Adventure Backpack
+item.adventurebackpack:copterPack.name=Paquet hélico
+item.adventurebackpack:steamJetpack.name=Propulseur à vapeur
+
+## Armor
+item.adventurebackpack:adventureSuit.name=Costume d'aventurier
+item.adventurebackpack:adventureHat.name=Chapeau d'aventurier
+item.adventurebackpack:pistonBoots.name=Bottes piston
+
+## Blocks
+block.adventurebackpack:AdventureBackpack.name=Bloc d'Adventure Backpack
+block.adventurebackpack:CampFire.name=Feu de camp
+block.adventurebackpack:SleepingBag.name=Sac de couchage
+
+## CreativeTab
+itemGroup.adventurebackpack=Adventure Backpack
+
+## Keybindings
+keys.adventureBackpack.category=Adventure Backpack
+keys.adventureBackpack.openBackpackInventory=Touche pour inventaire
+keys.adventureBackpack.switchHoseTank=Touche de bascule d'action
+
+## Fluids
+fluid.melonJuice=Jus de melon
+fluid.milk=Lait
+fluid.mushroomsoup=Soupe de champignon
+
+## Messages
+adventurebackpack:messages.already.equipped=Vous êtes déjà équipé d'un sac à dos.
+adventurebackpack:messages.already.impossibru=Vous ne portez aucun sac à dos.
+adventurebackpack:messages.copterpack.hover=Paquet hélico: Mode stationnaire.
+adventurebackpack:messages.copterpack.normal=Paquet hélico: Mode normal.
+adventurebackpack:messages.copterpack.outoffuel=Paquet hélico: Plus de carburant.
+adventurebackpack:messages.copterpack.cantwater=Paquet hélico: Ne fonctionne pas dans l'eau.
+adventurebackpack:messages.copterpack.off=Paquet hélico: Arrêt.
+adventurebackpack:messages.jetpack.on=Propulseur à vapeur: Marche.
+adventurebackpack:messages.jetpack.off=Propulseur à vapeur: Arrêt.
+adventurebackpack:messages.crossbow.outofammo=Arbalète à rouage: Plus de munitions.
