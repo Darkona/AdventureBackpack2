@@ -39,7 +39,7 @@ item.adventurebackpack:pistonBoots.name=Поршневые ботинки
 
 ## Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Основа рюкзака искателя приключений
-block.adventurebackpack:blockCampFire.name=Костер
+block.adventurebackpack:blockCampFire.name=Костёр
 block.adventurebackpack:blockSleepingBag.name=Спальный мешок
 
 ## CreativeTab
@@ -56,8 +56,8 @@ fluid.milk=Молоко
 fluid.mushroomStew=Тушеные грибы
 
 ## Messages
-adventurebackpack:already.equipped=Рюкзак уже одет на вас.
-adventurebackpack:messages.already.impossibru=Вы не можете одеть больше рюкзаков.
+adventurebackpack:already.equipped=Рюкзак уже надет на вас.
+adventurebackpack:messages.already.impossibru=Вы не можете надеть больше рюкзаков.
 adventurebackpack:messages.copterpack.hover=Вертолётный ранец: Режим зависания.
 adventurebackpack:messages.copterpack.normal=Вертолётный ранец: Обычный режим.
 adventurebackpack:messages.copterpack.outoffuel=Вертолётный ранец: Нет топлива.
