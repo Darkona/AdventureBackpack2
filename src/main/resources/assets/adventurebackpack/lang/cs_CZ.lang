@@ -1,0 +1,68 @@
+# Items
+
+## Component Items For Crafting
+item.adventurebackpack:backpackComponent.name=Backpack Component Item
+item.adventurebackpack:sleepingBag.name=Sleeping Bag
+item.adventurebackpack:backpackTank.name=Backpack Tank
+item.adventurebackpack:macheteHandle.name=Machete Handle
+item.adventurebackpack:hoseHead.name=Hose Nozzle
+item.adventurebackpack:copterEngine.name=Two-Cylinder Diesel Engine
+item.adventurebackpack:copterBlades.name=Copter Blades
+item.adventurebackpack:hydroBlades.name=Hydro Blades
+item.adventurebackpack:inflatableBoat.name=Inflatable Boat
+item.adventurebackpack:inflatableBoatMotorized.name=Inflatable Boat (Motorized)
+
+## Tools and consumables
+item.adventurebackpack:clockworkCrossbow.name=Clockwork Crossbow
+item.adventurebackpack:melonJuiceBottle.name=Melon Juice Bottle
+item.adventurebackpack:machete.name=Machete
+
+item.adventurebackpack:backpackHose.name=Backpack Hose
+item.adventurebackpack:hose_leftTank_suck.name=Hose: Left Tank / Suck Mode
+item.adventurebackpack:hose_leftTank_spill.name=Hose: Left Tank / Spill Mode
+item.adventurebackpack:hose_leftTank_drink.name=Hose: Left Tank / Drink Mode
+
+item.adventurebackpack:hose_rightTank_suck.name=Hose: Right Tank / Suck Mode
+item.adventurebackpack:hose_rightTank_spill.name=Hose: Right Tank / Spill Mode
+item.adventurebackpack:hose_rightTank_drink.name=Hose: Right Tank / Drink Mode
+item.adventurebackpack:hoseUseless.name=Hose: Useless / No Backpack
+
+## Wearables
+item.adventurebackpack:adventureBackpack.name=Adventure Backpack
+item.adventurebackpack:copterPack.name=Copter Pack
+item.adventurebackpack:steamJetpack.name=Steam Jetpack
+
+## Armor
+item.adventurebackpack:adventureSuit.name=Adventurer's Suit
+item.adventurebackpack:adventureHat.name=Adventurer's Fedora
+item.adventurebackpack:pistonBoots.name=Piston Boots
+
+## Blocks
+block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Block
+block.adventurebackpack:CampFire.name=Campfire
+block.adventurebackpack:SleepingBag.name=Sleeping Bag
+
+## CreativeTab
+itemGroup.adventurebackpack=Adventure Backpack
+
+## Keybindings
+keys.adventureBackpack.category=Adventure Backpack
+keys.adventureBackpack.openBackpackInventory=Open Inventory Key
+keys.adventureBackpack.switchHoseTank=Toggle Action Key
+
+## Fluids
+fluid.melonJuice=Melon Juice
+fluid.milk=Milk
+fluid.mushroomsoup=Mushroom Stew
+
+## Messages
+adventurebackpack:messages.already.equipped=You are already equipping a backpack.
+adventurebackpack:messages.already.impossibru=You aren't wearing any backpacks.
+adventurebackpack:messages.copterpack.hover=CopterPack: Hover Mode.
+adventurebackpack:messages.copterpack.normal=CopterPack: Normal Mode.
+adventurebackpack:messages.copterpack.outoffuel=CopterPack: Out of fuel.
+adventurebackpack:messages.copterpack.cantwater=CopterPack: Can't function in water.
+adventurebackpack:messages.copterpack.off=CopterPack: Off.
+adventurebackpack:messages.jetpack.on=Steam Jetpack: On.
+adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
+adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.
