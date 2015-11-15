@@ -4,7 +4,6 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
@@ -172,7 +171,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
                 }
             }
 
-            for (int i = 0; i < 9; ++i)
+            for (int i = 0; i < 9; i++)
             {
                 ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
 
@@ -283,9 +282,9 @@ public class ContainerBackpack extends Container implements IWearableContainer
     }
 
     @Override
-    public Slot getSlotFromInventory(IInventory p_75147_1_, int p_75147_2_)
+    public Slot getSlotFromInventory(IInventory inv, int slot)
     {
-        return super.getSlotFromInventory(p_75147_1_, p_75147_2_);
+        return super.getSlotFromInventory(inv, slot);
     }
 
     @Override
@@ -361,18 +360,13 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
-         if(source == SOURCE_WEARING)
+        refresh();
+        super.detectAndSendChanges();
+        /* if(source == SOURCE_WEARING && player instanceof EntityPlayerMP)
          {
-             refresh();
-             super.detectAndSendChanges();
-             if (player instanceof EntityPlayerMP)
-             {
-                // ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
-                // BackpackProperty.syncToNear(player);
-             }
-         }else{
-             super.detectAndSendChanges();
-         }
+             ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
+             BackpackProperty.syncToNear(player);
+         }*/
     }
 
     @Override

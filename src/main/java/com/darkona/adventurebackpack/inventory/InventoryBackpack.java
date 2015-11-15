@@ -211,11 +211,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
 
     public boolean updateTankSlots()
     {
-        boolean answer =  InventoryActions.transferContainerTank(this, getLeftTank(), Constants.bucketInLeft) ||
+        return InventoryActions.transferContainerTank(this, getLeftTank(), Constants.bucketInLeft) ||
                 InventoryActions.transferContainerTank(this, getRightTank(), Constants.bucketInRight);
-        dirtyInventory();
-        dirtyTanks();
-        return answer;
     }
 
     @Override
@@ -313,6 +310,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void markDirty()
     {
+
         saveToNBT(containerStack.stackTagCompound);
     }
 
@@ -383,6 +381,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
 
     public void dirtyInventory()
     {
+        if(updateTankSlots()){
+            dirtyTanks();
+        }
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {

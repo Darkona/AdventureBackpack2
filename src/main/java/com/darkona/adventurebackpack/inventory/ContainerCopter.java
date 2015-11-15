@@ -154,7 +154,7 @@ public class ContainerCopter extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
-        inventory.openInventory();
+        refresh();
         super.detectAndSendChanges();
     }
 
