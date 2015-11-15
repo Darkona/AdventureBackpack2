@@ -1,0 +1,77 @@
+# Items
+
+## Component Items For Crafting
+item.adventurebackpack:backpackComponent.name=Kostra nosiče batohu
+item.adventurebackpack:sleepingBag.name=Spacák
+item.adventurebackpack:backpackTank.name=Nádrž batohu
+item.adventurebackpack:macheteHandle.name=Rukojeť mačety
+item.adventurebackpack:hoseHead.name=Tryska hadice
+item.adventurebackpack:copterEngine.name=Dvouválcový dieslový motor
+item.adventurebackpack:copterBlades.name=Listy rotoru helikoptéry
+item.adventurebackpack:hydroBlades.name=Listy vodního rotoru
+item.adventurebackpack:inflatableBoat.name=Nafukovací člun
+item.adventurebackpack:inflatableBoatMotorized.name=Nafukovací člun (motorový)
+
+## Tools and consumables
+item.adventurebackpack:clockworkCrossbow.name=§6Mechanická kuš
+item.adventurebackpack:melonJuiceBottle.name=§6Láhev melounového džusu
+item.adventurebackpack:machete.name=§6Mačeta
+
+item.adventurebackpack:backpackHose.name=§2Hadice batohu
+item.adventurebackpack:hose_leftTank_suck.name=§2Hadice: §9Levá nádrž / Sací mód
+item.adventurebackpack:hose_leftTank_spill.name=§2Hadice: §9Levá nádrž / Vypouštěcí mód
+item.adventurebackpack:hose_leftTank_drink.name=§2Hadice: §9Levá nádrž / Pitný mód
+
+item.adventurebackpack:hose_rightTank_suck.name=§2Hadice: §4Pravá nádrž / Sací mód
+item.adventurebackpack:hose_rightTank_spill.name=§2Hadice: §4Pravá nádrž / Vypouštěcí mód
+item.adventurebackpack:hose_rightTank_drink.name=§2Hadice: §4Pravá nádrž / Pitný mód
+item.adventurebackpack:hoseUseless.name=§cHadice: Nezapojena / Není batoh
+
+## Wearables
+item.adventurebackpack:adventureBackpack.name=§2Dobrodružný batoh
+item.adventurebackpack:copterPack.name=§2Helikoptéra
+item.adventurebackpack:steamJetpack.name=§2Parní jetpack
+
+## Armor
+item.adventurebackpack:adventureSuit.name=§6Pancíř dobrodruha
+item.adventurebackpack:adventureHat.name=§6Fedora dobrodruha
+item.adventurebackpack:pistonBoots.name=§6Pistonové boty
+
+## Blocks
+block.adventurebackpack:AdventureBackpack.name=Dobrodružný batoh blok
+block.adventurebackpack:CampFire.name=§eOhniště
+block.adventurebackpack:SleepingBag.name=§aSpacák
+
+## CreativeTab
+itemGroup.adventurebackpack=Dobrodružný batoh
+
+## Keybindings
+keys.adventureBackpack.category=§6Dobrodružný batoh
+keys.adventureBackpack.openBackpackInventory=Klávesa pro otevření inventáře
+keys.adventureBackpack.switchHoseTank=Klávesa pro přepínání akce
+
+## Fluids
+fluid.melonJuice=Melounový džus
+fluid.milk=Mléko
+fluid.mushroomsoup=Houbová polévka
+
+## Messages
+adventurebackpack:messages.already.equipped=§cJiž máš batoh na zádech.
+adventurebackpack:messages.already.impossibru=§cNemáš nasazený žádný batoh.
+adventurebackpack:messages.copterpack.hover=§6Helikoptéra: §eMód HOVER -(vznášení).
+adventurebackpack:messages.copterpack.normal=§6Helikoptéra: §aMód NORMAL -(normální).
+adventurebackpack:messages.copterpack.outoffuel=§6Helikoptéra: §cDošlo palivo
+adventurebackpack:messages.copterpack.cantwater=§6Helikoptéra: §cNefunguje ve vodě
+adventurebackpack:messages.copterpack.off=§6Helikoptéra: §cOff.
+adventurebackpack:messages.jetpack.on=§6Parní jetpack: §aOn.
+adventurebackpack:messages.jetpack.off=§6Parní jetpack: §cOff.
+adventurebackpack:messages.crossbow.outofammo=§6Mechanická kuš: §cdošla munice.
+
+# Parent Language: en_US
+# by DeRigeurEx
+# Bonus .tip
+
+# Chybějící/Missing
+blockAdventureBackpack.name=Batoh dobrodruha - §aKemp
+blockCampFire.name=§eOhniště 
+blockSleepingBag.name=Lůžko dobrodruha - §aSpacák
