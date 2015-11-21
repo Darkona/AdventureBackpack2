@@ -69,15 +69,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     {
         NBTTagCompound data = new NBTTagCompound();
         saveNBTData(data);
-       /* if(wearable != null) data.setTag("wearable", wearable.writeToNBT(new NBTTagCompound()));
-        if (campFire != null)
-        {
-            data.setInteger("campFireX", campFire.posX);
-            data.setInteger("campFireY", campFire.posY);
-            data.setInteger("campFireZ", campFire.posZ);
-            data.setInteger("campFireDim", dimension);
-        }
-        data.setBoolean("forceCampfire",forceCampFire);*/
+
         return data;
     }
 

@@ -29,6 +29,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemNameTag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -66,11 +67,22 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void joinPlayer(EntityJoinWorldEvent event)
     {
-        if (event.entity instanceof EntityPlayer)
+        if (!event.world.isRemote)
         {
-            LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
-            AdventureBackpack.proxy.joinPlayer((EntityPlayer) event.entity);
+            if (Utils.notNullAndInstanceOf(event.entity,  EntityPlayer.class))
+            {
+                EntityPlayer player = (EntityPlayer) event.entity;
+                LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
+                NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
+                if (playerData != null)
+                {
+                    BackpackProperty.get(player).loadNBTData(playerData);
+                    BackpackProperty.syncToNear(player);
+                    LogHelper.info("Stored properties retrieved");
+                }
+            }
         }
+
     }
 
 
@@ -171,11 +183,17 @@ public class PlayerEventHandler
             {
                 //LogHelper.info("Player died");
                 BackpackProperty props = BackpackProperty.get(player);
+
                 if (props.hasWearable())
                 {
-                    ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
-                   // LogHelper.info("Executing death protocol.");
+                    if (player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+                    {
+                        LogHelper.info("Saving the backpack, maybe.");
+                    }else {
+                        ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
+                    }
                 }
+
                 if (props.isForcedCampFire())
                 {
                     ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
@@ -277,14 +295,15 @@ public class PlayerEventHandler
                 if (event.side.isServer())
                 {
                     EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
-                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
-                    {
-                        //playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
-                        //BackpackProperty.syncToNear(event.player);
-                    }else
-                    {
-                        BackpackProperty.syncToNear(event.player);
-                    }
+                    BackpackProperty.syncToNear(event.player);
+//                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
+//                    {
+//                        //playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
+//                        BackpackProperty.syncToNear(event.player);
+//                    }else
+//                    {
+//                        BackpackProperty.syncToNear(event.player);
+//                    }
                 }
             }
         }

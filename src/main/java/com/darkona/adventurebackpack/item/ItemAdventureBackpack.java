@@ -299,11 +299,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         {
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
         }
-        if (world.getGameRules().getGameRuleBooleanValue("keepInventory"))
-        {
-            BackpackProperty.syncToNear(player);
-            return;
-        }
+
         if(ConfigHandler.BACKPACK_DEATH_PLACE)
         {
             if (!tryPlace(world, player, stack))

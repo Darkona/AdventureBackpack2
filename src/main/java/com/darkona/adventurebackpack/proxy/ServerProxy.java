@@ -46,7 +46,7 @@ public class ServerProxy implements IProxy
         {
             LogHelper.info("Stored properties retrieved");
             BackpackProperty.get(player).loadNBTData(playerData);
-            BackpackProperty.sync(player);
+            BackpackProperty.syncToNear(player);
         }else{
             LogHelper.info("Data is null! WTF!");
         }
@@ -63,7 +63,10 @@ public class ServerProxy implements IProxy
         try
         {
             NBTTagCompound data = BackpackProperty.get(player).getData();
-            if(data.hasKey("wearable"))LogHelper.info("Storing wearable: " + ItemStack.loadItemStackFromNBT(data.getCompoundTag("wearable")).getDisplayName());
+            if(data.hasKey("wearable"))
+            {
+                LogHelper.info("Storing wearable: " + ItemStack.loadItemStackFromNBT(data.getCompoundTag("wearable")).getDisplayName());
+            }
             extendedEntityData.put(player.getUniqueID(), data);
             LogHelper.info("Stored player properties for dead player");
         }
