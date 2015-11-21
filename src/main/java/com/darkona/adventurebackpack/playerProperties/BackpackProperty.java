@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.playerProperties;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -200,7 +201,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     //Scary names for methods because why not
     public void executeWearableUpdateProtocol()
     {
-        if(wearable != null && wearable.getItem() instanceof IBackWearableItem)
+        if(Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
         {
             ((IBackWearableItem)wearable.getItem()).onEquippedUpdate(player.getEntityWorld(), player, wearable);
         }
@@ -208,7 +209,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public void executeWearableDeathProtocol()
     {
-        if (wearable != null && wearable.getItem() instanceof IBackWearableItem)
+        if (Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
         {
             ((IBackWearableItem) wearable.getItem()).onPlayerDeath(player.getEntityWorld(), player, wearable);
         }
@@ -216,7 +217,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public void executeWearableEquipProtocol()
     {
-        if (wearable != null && wearable.getItem() instanceof IBackWearableItem)
+        if (Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
         {
             ((IBackWearableItem) wearable.getItem()).onEquipped(player.getEntityWorld(), player, wearable);
         }
@@ -224,7 +225,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public void executeWearableUnequipProtocol()
     {
-        if (wearable != null && wearable.getItem() instanceof IBackWearableItem)
+        if (Utils.notNullAndInstanceOf(wearable.getItem() , IBackWearableItem.class))
         {
             ((IBackWearableItem) wearable.getItem()).onUnequipped(player.getEntityWorld(), player, wearable);
         }

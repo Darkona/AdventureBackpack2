@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -130,7 +131,8 @@ public class BackpackAbilities
                     invoke(backpackRemovals, player, world, backpack);
         } catch (Exception oops)
         {
-            //NOBODY CARES
+            LogHelper.error("---Something bad happened when removing a backpack---");
+            oops.printStackTrace();
         }
     }
     /**
@@ -196,9 +198,9 @@ public class BackpackAbilities
         if (player.isPotionActive(Potion.nightVision.id)) {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
-        if (nightVision == null || nightVision.getDuration() < 400 && nightVision.getAmplifier() != -3)
+        if (nightVision == null || nightVision.getDuration() < 40 && nightVision.getAmplifier() != -5)
         {
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 500, -5));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 50, -5));
         }
     }
 
@@ -206,10 +208,10 @@ public class BackpackAbilities
     {
         if (player.isInWater())
         {
-            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, 0));
+            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, -5));
             itemBat(player, world, backpack);
         }else{
-            backpackRemovals.itemBat(player,world,backpack);
+            backpackRemovals.itemSquid(player,world, backpack);
         }
     }
 
@@ -220,7 +222,14 @@ public class BackpackAbilities
 
     public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
     {
-        player.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), 1, 2));
+        PotionEffect potion = null;
+        if (player.isPotionActive(Potion.fireResistance.id)) {
+            potion = player.getActivePotionEffect(Potion.fireResistance);
+        }
+        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5)
+        {
+            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 20, -5));
+        }
     }
 
     /**
@@ -396,9 +405,22 @@ public class BackpackAbilities
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
         itemPigman(player,world,backpack);
-        player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 1, 1));
-        player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 1, 0));
         itemSquid(player, world, backpack);
+        PotionEffect potion = null;
+        if (player.isPotionActive(Potion.regeneration.id)) {
+            potion = player.getActivePotionEffect(Potion.regeneration);
+        }
+        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5)
+        {
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 50, -5));
+        }
+        potion = null;
+        if (player.isPotionActive(Potion.damageBoost.id)) {
+            potion = player.getActivePotionEffect(Potion.damageBoost);
+        }
+        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5) {
+            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 50, -5));
+        }
     }
 
     /**

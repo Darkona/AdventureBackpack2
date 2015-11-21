@@ -23,7 +23,7 @@ group = "com.darkona.adventurebackpack" // http://maven.apache.org/guides/mini/g
 archivesBaseName = "adventurebackpack"
 
 minecraft {
-    version = "1.7.10-10.13.2.1277"
+    version = "1.7.10-10.13.4.1558-1.7.10"
     runDir = "eclipse"
 }
 
@@ -65,3 +65,5 @@ processResources
                 exclude 'mcmod.info'
             }
         }
+
+idea { module { inheritOutputDirs = true } }

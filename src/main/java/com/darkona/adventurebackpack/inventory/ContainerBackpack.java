@@ -373,5 +373,6 @@ public class ContainerBackpack extends Container implements IWearableContainer
     public void refresh()
     {
         inventory.openInventory();
+        this.onCraftMatrixChanged(craftMatrix);
     }
 }

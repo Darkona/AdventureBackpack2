@@ -50,8 +50,15 @@ public class BlockSleepingBag extends BlockDirectional
     {
         super(Material.cloth);
         this.func_149978_e();
+        setBlockName(getUnlocalizedName());
     }
 
+
+    @SideOnly(Side.CLIENT)
+    protected String getTextureName()
+    {
+        return this.textureName == null ? "MISSING_ICON_BLOCK_" + getIdFromBlock(this) + "_" + getUnlocalizedName() : this.textureName;
+    }
 
     /**
      * Returns the unlocalized name of the block with "tile." appended to the front.
@@ -61,6 +68,7 @@ public class BlockSleepingBag extends BlockDirectional
     {
         return "blockSleepingBag";
     }
+
 
     private void func_149978_e()
     {

@@ -236,7 +236,7 @@ public class PlayerEventHandler
                         if (horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange) != null)
                         {
                             horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).setBaseValue(100.0D);
-                            LogHelper.info("the horse follow range is now: " + horse.getEntityAttribute(SharedMonsterAttributes.followRange).getBaseValue());
+                            LogHelper.info("The horse follow range is now: " + horse.getEntityAttribute(SharedMonsterAttributes.followRange).getBaseValue());
                         }
                     }
                 }

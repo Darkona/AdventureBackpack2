@@ -25,8 +25,7 @@ public class BackpackUtils
         if(prop.getWearable() == null)
         {
             player.openContainer.onContainerClosed(player);
-            ItemStack gimme = backpack.copy();
-            prop.setWearable(gimme);
+            prop.setWearable(backpack.copy());
             BackpackProperty.get(player).executeWearableEquipProtocol();
             backpack.stackSize--;
             WearableEvent event = new WearableEvent.EquipWearableEvent(player, prop.getWearable());
