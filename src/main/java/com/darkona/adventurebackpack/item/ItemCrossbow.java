@@ -115,7 +115,6 @@ public class ItemCrossbow extends ItemAB
         }
     }
 
-    private int reloadTime = 20;
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
@@ -125,7 +124,8 @@ public class ItemCrossbow extends ItemAB
         if(reloading <= 0){
             shootArrow(stack,player.worldObj,player, 1000);
             stack.stackTagCompound.setByte("Shot",(byte)4);
-            stack.stackTagCompound.setInteger("Reloading",reloadTime);
+            int reloadTime = 20;
+            stack.stackTagCompound.setInteger("Reloading", reloadTime);
 
         }
         return stack;

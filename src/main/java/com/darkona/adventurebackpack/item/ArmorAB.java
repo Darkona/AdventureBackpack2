@@ -12,7 +12,8 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 /**
- * Created by Darkona on 11/10/2014.
+ * Created on 11/10/2014.
+ * @author Javier Darkona
  */
 public class ArmorAB extends ItemArmor
 {

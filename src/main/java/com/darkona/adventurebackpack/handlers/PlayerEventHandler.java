@@ -1,13 +1,11 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.IWearableContainer;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
@@ -173,7 +171,7 @@ public class PlayerEventHandler
     }
 
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void playerDies(LivingDeathEvent event)
     {
         if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
@@ -186,10 +184,10 @@ public class PlayerEventHandler
 
                 if (props.hasWearable())
                 {
-                    if (player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+                    //We want to keep the wearables on the player if KeepInventory is active.
+                    if (!player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
                     {
-                        LogHelper.info("Saving the backpack, maybe.");
-                    }else {
+                        //So if it isn't, we drop it like it's hot, drop it like it's hot, drop it like it's hot.
                         ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
                     }
                 }

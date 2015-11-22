@@ -17,6 +17,7 @@ import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -71,7 +72,7 @@ public class ClientProxy implements IProxy
     public void synchronizePlayer(int id, NBTTagCompound properties)
     {
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
-        if(entity != null && properties != null && entity instanceof EntityPlayer)
+        if(Utils.notNullAndInstanceOf(entity, EntityPlayer.class)&& properties != null)
         {
             EntityPlayer player = (EntityPlayer)entity;
             if(BackpackProperty.get(player) == null) BackpackProperty.register(player);

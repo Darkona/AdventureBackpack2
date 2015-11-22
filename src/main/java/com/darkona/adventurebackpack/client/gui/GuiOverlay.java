@@ -106,6 +106,7 @@ public class GuiOverlay extends Gui
             if(Wearing.isWearingWearable(player))
             {
                 IInventoryTanks inv = Wearing.getWearableInv(player);
+                assert inv != null;
                 inv.openInventory();
 
                 int textureHeight = 23;

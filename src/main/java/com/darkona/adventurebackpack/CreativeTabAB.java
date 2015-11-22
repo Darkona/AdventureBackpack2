@@ -6,7 +6,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
 /**
- * Created by Darkona on 11/10/2014.
+ * Created on 11/10/2014.
+ * @author Javier Darkona
  */
 public class CreativeTabAB
 {

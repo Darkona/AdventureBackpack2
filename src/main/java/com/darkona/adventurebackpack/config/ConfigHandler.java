@@ -8,7 +8,8 @@ import net.minecraftforge.common.config.Configuration;
 import java.io.File;
 
 /**
- * Created by Darkona on 10/10/2014.
+ * Created on 10/10/2014.
+ * @author Javier Darkona
  */
 public class ConfigHandler
 {
@@ -64,7 +65,7 @@ public class ConfigHandler
         TANKS_OVERLAY = config.getBoolean("BackpackOverlay", config.CATEGORY_GENERAL,true, "Show the different wearable overlays on screen?");
         HOVERING_TEXT_TANKS = config.getBoolean("HoveringText", config.CATEGORY_GENERAL,false, "Show hovering text on fluid tanks?");
         FIX_LEAD = config.getBoolean("FixVanillaLead", config.CATEGORY_GENERAL,true, "Fix the vanilla Lead? (Checks mobs falling on a leash to not die of fall damage if they're not falling so fast)");
-
+        BACKPACK_DEATH_PLACE = config.getBoolean("BackpackDeathPlace", config.CATEGORY_GENERAL,true,"Place backpacks as a block when you die?");
         //RECIPES
         SADDLE_RECIPE = config.getBoolean("SaddleRecipe", config.CATEGORY_GENERAL,true, "Add recipe for saddle?");
         if (config.hasChanged())

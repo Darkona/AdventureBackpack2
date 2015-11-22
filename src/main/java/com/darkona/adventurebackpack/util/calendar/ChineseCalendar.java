@@ -168,22 +168,22 @@ public class ChineseCalendar
     };
     // Base date: 01-Jan-1901, 4598/11/11 in Chinese calendar
     private static int baseYear = 1901;
-    private static int baseMonth = 1;
-    private static int baseDate = 1;
     private static int baseIndex = 0;
     private static int baseChineseYear = 4598 - 1;
-    private static int baseChineseMonth = 11;
-    private static int baseChineseDate = 11;
 
     public int computeChineseFields()
     {
         // Gregorian year out of the computation range
         if (gregorianYear < 1901 || gregorianYear > 2100) return 1;
         int startYear = baseYear;
+        int baseMonth = 1;
         int startMonth = baseMonth;
+        int baseDate = 1;
         int startDate = baseDate;
         chineseYear = baseChineseYear;
+        int baseChineseMonth = 11;
         chineseMonth = baseChineseMonth;
+        int baseChineseDate = 11;
         chineseDate = baseChineseDate;
         // Switching to the second base to reduce the calculation process
         // Second base date: 01-Jan-2000, 4697/11/25 in Chinese calendar

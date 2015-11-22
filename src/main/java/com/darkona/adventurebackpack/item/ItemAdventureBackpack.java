@@ -125,6 +125,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public boolean placeBackpack(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, boolean from)
     {
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+        if (!player.canPlayerEdit(x, y, z, side, stack)) return false;
         if (!stack.stackTagCompound.hasKey("colorName") || stack.stackTagCompound.getString("colorName").isEmpty())
         {
             stack.stackTagCompound.setString("colorName", "Standard");
@@ -133,7 +134,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
         BlockAdventureBackpack backpack = ModBlocks.blockBackpack;
 
-        if (y <= 0 || y >= 255)
+        if (y <= 0 || y >= world.getHeight())
         {
             return false;
         }
@@ -317,12 +318,12 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     {
         int X = (int) player.posX;
         int Z = (int) player.posZ;
-        for (int Y = ((int) player.posY - 7); Y <= ((int) player.posY + 7); Y++)
+        int positions[] = {0,-1,1,-2,2,-3,3,-4,4,-5,5,-6,6};
+
+        for (int Y: positions)
         {
-
             ChunkCoordinates spawn =
-                    Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y, Z, 12, true, 1, (byte) 0, false);
-
+                    Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, (int)player.posY + Y, Z, 12, true, 1, (byte) 0, false);
             if (spawn != null)
             {
                 return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
@@ -368,4 +369,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         }
         return modelTexture;
     }
+
+
 }

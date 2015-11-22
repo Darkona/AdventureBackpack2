@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.inventory;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

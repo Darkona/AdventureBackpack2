@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -16,6 +17,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -23,6 +26,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -30,7 +34,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.Random;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014.
+ * @author Javier Darkona
  */
 public class BlockAdventureBackpack extends BlockContainer
 {
@@ -40,6 +45,7 @@ public class BlockAdventureBackpack extends BlockContainer
         super(new BackpackMaterial());
         setHardness(1.0f);
         setStepSound(soundTypeCloth);
+        setResistance(2000f);
     }
 
     /**
@@ -199,11 +205,6 @@ public class BlockAdventureBackpack extends BlockContainer
         return super.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, meta);
     }
 
-    @Override
-    public float getExplosionResistance(Entity p_149638_1_)
-    {
-        return 500f;
-    }
 
     @Override
     public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face)
@@ -429,8 +430,10 @@ public class BlockAdventureBackpack extends BlockContainer
                     world.spawnEntityInWorld(droppedItem);
                 }
             }
-        }
 
+
+        }
+        
         super.breakBlock(world, x, y, z, world.getBlock(x, y, z), meta);
     }
 
@@ -444,5 +447,21 @@ public class BlockAdventureBackpack extends BlockContainer
     public TileEntity createNewTileEntity(World world, int metadata)
     {
         return createTileEntity(world, metadata);
+    }
+
+    @Override
+    public boolean canDropFromExplosion(Explosion p_149659_1_)
+    {
+        return false;
+    }
+
+    @Override
+    public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion) {
+        world.func_147480_a(x, y, z, false);
+    }
+
+    @Override
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
+        LogHelper.info("BOOM SHACKALAKA");
     }
 }
