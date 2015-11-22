@@ -234,9 +234,9 @@ public class BackpackAbilities
         if (player.isPotionActive(Potion.fireResistance.id)) {
             potion = player.getActivePotionEffect(Potion.fireResistance);
         }
-        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5)
+        if (potion == null || potion.getDuration() < 5 && potion.getAmplifier() != -5)
         {
-            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 20, -5));
+            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 5000, -5));
         }
     }
 

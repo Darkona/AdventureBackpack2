@@ -50,7 +50,6 @@ public class BackpackRemovals
 
     public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
     {
-        itemBat(player, world, backpack);
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.fireResistance.id)) {
             potion = player.getActivePotionEffect(Potion.fireResistance);
@@ -67,7 +66,7 @@ public class BackpackRemovals
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
         itemBat(player, world, backpack);
-
+        itemPigman(player,world,backpack);
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.damageBoost.id)) {
             potion = player.getActivePotionEffect(Potion.damageBoost);
