@@ -433,7 +433,7 @@ public class BlockAdventureBackpack extends BlockContainer
 
 
         }
-        
+
         super.breakBlock(world, x, y, z, world.getBlock(x, y, z), meta);
     }
 
@@ -462,6 +462,6 @@ public class BlockAdventureBackpack extends BlockContainer
 
     @Override
     public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
-        LogHelper.info("BOOM SHACKALAKA");
+        //DO NOTHING
     }
 }

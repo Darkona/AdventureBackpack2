@@ -167,21 +167,29 @@ public class BackpackAbilities
                 MathHelper.floor_double(player.posZ));
     }
 
-
+    /**
+     * This backpack will feed you while you stay in the sun, slowly. At the very least you shouldn't starve.
+     * @param player
+     * @param world
+     * @param backpack
+     */
     public void itemSunflower(EntityPlayer player, World world, ItemStack backpack)
     {
+        InventoryBackpack inv = new InventoryBackpack(backpack);
 
-        if(world.isDaytime() && !world.isRemote)
+        if (inv.getLastTime() <= 0)
         {
-            InventoryBackpack inv = new InventoryBackpack(backpack);
-            int sunTime = inv.getLastTime()  - 1 ;
-            if( sunTime <= 0 && world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY),MathHelper.floor_double(player.posZ)))
-            {
-                player.getFoodStats().addStats(1,0.2f);
-                inv.setLastTime(Utils.secondsToTicks(35));
+            if(world.isDaytime() &&
+                    /*!world.isRemote &&*/
+                    world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY+1),MathHelper.floor_double(player.posZ))) {
+                player.getFoodStats().addStats(2, 0.2f);
+                //LogHelper.info("OMNOMNOMNOM");
             }
-           inv.dirtyTime();
+            inv.setLastTime(Utils.secondsToTicks(120));
+        }else{
+            inv.setLastTime(inv.getLastTime() - 1);
         }
+        inv.dirtyTime();
     }
 
     /**
