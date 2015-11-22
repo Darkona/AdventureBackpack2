@@ -89,7 +89,7 @@ public class ServerActions
     {
         FluidStack drained = tank.drain(Constants.bucket, false);
         boolean done = false;
-        if (drained != null && drained.amount >= Constants.bucket)
+        if (drained != null && drained.amount >= Constants.bucket && FluidEffectRegistry.hasFluidEffect(drained.getFluid()))
         {
             done = FluidEffectRegistry.executeFluidEffectsForFluid(drained.getFluid(), player, world);
         }

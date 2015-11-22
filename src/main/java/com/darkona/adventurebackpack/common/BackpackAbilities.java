@@ -420,14 +420,14 @@ public class BackpackAbilities
         }
         if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5)
         {
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 50, -5));
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 5000, -5));
         }
         potion = null;
         if (player.isPotionActive(Potion.damageBoost.id)) {
             potion = player.getActivePotionEffect(Potion.damageBoost);
         }
         if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5) {
-            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 50, -5));
+            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 5000, -5));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
 import adventurebackpack.api.FluidEffect;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -30,7 +31,8 @@ public class WaterEffect extends FluidEffect
             BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(player.serverPosX, player.serverPosZ);
 
             //If it's hot
-            if (BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.HOT) ||
+            if (
+                    BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.HOT) ||
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.DRY) ||
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.SANDY) ||
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.WASTELAND) ||
@@ -38,12 +40,14 @@ public class WaterEffect extends FluidEffect
                     )
             {
                 // player.getFoodStats().addStats(1, 0.1f);
-                player.addPotionEffect(new PotionEffect(Potion.regeneration.id, timeInSeconds * 20, 0));
+                if (player.isBurning())
+                {
+                    player.extinguish();
+                }else {
+                    player.addPotionEffect(new PotionEffect(Potion.regeneration.id, Utils.secondsToTicks(timeInSeconds), 0));
+                }
             }
-            if (player.isBurning())
-            {
-                player.extinguish();
-            }
+
         }
     }
 }
