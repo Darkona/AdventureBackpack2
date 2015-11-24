@@ -7,7 +7,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014.
+ *
+ * @author Javier Darkona
  */
 public class MilkEffect extends FluidEffect
 {

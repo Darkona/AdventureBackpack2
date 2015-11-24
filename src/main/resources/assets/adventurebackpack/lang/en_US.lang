@@ -53,7 +53,7 @@ keys.adventureBackpack.switchHoseTank=Toggle Action Key
 ## Fluids
 fluid.melonJuice=Melon Juice
 fluid.milk=Milk
-fluid.mushroomsoup=Mushroom Stew
+fluid.mushrromstew=Mushroom Stew
 
 ## Messages
 adventurebackpack:messages.already.equipped=You are already equipping a backpack.

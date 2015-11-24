@@ -47,10 +47,10 @@ public class FluidEffectRegistry
     public static int registerFluidEffect(FluidEffect effect)
     {
         String className = effect.getClass().getName();
-        effect.effectID = effectIDCounter;
         if (!EFFECT_REGISTRY.containsKey(className) && effect.fluid != null)
         {
             EFFECT_REGISTRY.put(className, effect);
+            effect.setEffectID(effectIDCounter);
             LogHelper.info("Registered the class " + className + " as a FluidEffect for " + effect.fluid.getName() + " with the ID " + effectIDCounter);
             effectIDCounter++;
             return effectIDCounter;

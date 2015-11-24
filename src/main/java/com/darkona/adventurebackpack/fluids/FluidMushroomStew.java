@@ -11,14 +11,13 @@ import net.minecraftforge.fluids.FluidStack;
  *
  * @author Darkona
  */
-public class FluidMushroomSoup extends Fluid
+public class FluidMushroomStew extends Fluid
 {
-    public FluidMushroomSoup()
+    public FluidMushroomStew()
     {
-        super("mushroomsoup");
+        super("mushroomStew");
         setDensity(1200);
         setViscosity(1200);
-        setUnlocalizedName("mushroomsoup");
         setLuminosity(0);
     }
 

@@ -480,9 +480,8 @@ public class BackpackAbilities
         inv.markDirty();
     }
 
-
-    private FluidStack milkStack = new FluidStack(ModFluids.milk, 1);
-    private FluidStack soupStack = new FluidStack(ModFluids.mushroomStew, 1);
+    private FluidStack milkStack = new FluidStack(FluidRegistry.getFluid("milk"), 1);
+    private FluidStack soupStack = new FluidStack(FluidRegistry.getFluid("mushroomstew"), 1);
     private FluidStack lavaStack = new FluidStack(FluidRegistry.LAVA, 1);
 
     /**

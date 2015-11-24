@@ -25,14 +25,15 @@ public abstract class FluidEffect
 
     public FluidEffect(Fluid fluid, int timeInSeconds)
     {
-
         this.timeInSeconds = timeInSeconds;
         this.fluid = fluid;
         this.timeInTicks = this.timeInSeconds * 20;
         this.effectID = 0;
-        com.darkona.adventurebackpack.fluids.FluidEffectRegistry.registerFluidEffect(this);
+        if (!(fluid == null))
+        {
+            com.darkona.adventurebackpack.fluids.FluidEffectRegistry.registerFluidEffect(this);
+        }
     }
-
 
     public FluidEffect(String fluidName, int timeInSeconds)
     {
@@ -41,8 +42,20 @@ public abstract class FluidEffect
         this.fluid = fluid;
         this.timeInTicks = this.timeInSeconds * 20;
         this.effectID = 0;
+        if (!(fluid == null))
+        {
+            com.darkona.adventurebackpack.fluids.FluidEffectRegistry.registerFluidEffect(this);
+        }
+    }
 
-        com.darkona.adventurebackpack.fluids.FluidEffectRegistry.registerFluidEffect(this);
+    public void setEffectID(int id)
+    {
+        effectID = id;
+    }
+
+    public int getEffectID()
+    {
+        return effectID;
     }
 
     /**

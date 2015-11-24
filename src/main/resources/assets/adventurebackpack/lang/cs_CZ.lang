@@ -53,7 +53,7 @@ keys.adventureBackpack.switchHoseTank=Klávesa pro přepínání akce
 ## Fluids
 fluid.melonJuice=Melounový džus
 fluid.milk=Mléko
-fluid.mushroomsoup=Houbová polévka
+fluid.mushrromstew=Houbová polévka
 
 ## Messages
 adventurebackpack:messages.already.equipped=§cJiž máš batoh na zádech.

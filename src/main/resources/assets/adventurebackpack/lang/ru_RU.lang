@@ -53,7 +53,7 @@ keys.adventureBackpack.switchHoseTank=Сменить используемый р
 ## Fluids
 fluid.melonJuice=Арбузный сок
 fluid.milk=Молоко
-fluid.mushroomStew=Тушеные грибы
+fluid.mushrromstew=Тушеные грибы
 
 ## Messages
 adventurebackpack:already.equipped=Рюкзак уже надет на вас.

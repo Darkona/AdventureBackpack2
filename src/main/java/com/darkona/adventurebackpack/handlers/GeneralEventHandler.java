@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -165,4 +166,9 @@ public class GeneralEventHandler
 
     }
 
+  /*  @SubscribeEvent
+    public void listFluids(FluidRegistry.FluidRegisterEvent event)
+    {
+        LogHelper.info("Registered fluid " + event.fluidName + " with id " +  event.fluidID);
+    }*/
 }

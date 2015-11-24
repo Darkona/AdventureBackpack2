@@ -8,6 +8,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 /**
  * Created on 12/10/2014
  * @author Darkona
+ * 
  *
  */
 public class SlotFluid extends SlotAdventureBackpack

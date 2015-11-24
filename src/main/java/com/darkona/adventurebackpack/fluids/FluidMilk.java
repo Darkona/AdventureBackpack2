@@ -8,7 +8,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
- * Created by Darkona on 12/10/2014.
+ * Created on 12/10/2014.
+ * @author Javier Darkona
  */
 public class FluidMilk extends Fluid
 {
@@ -18,7 +19,6 @@ public class FluidMilk extends Fluid
         super("milk");
         setDensity(1200);
         setViscosity(1200);
-        setUnlocalizedName("milk");
         setLuminosity(0);
     }
 

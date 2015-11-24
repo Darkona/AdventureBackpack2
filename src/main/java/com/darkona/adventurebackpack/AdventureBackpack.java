@@ -22,6 +22,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.Calendar;
 
@@ -74,7 +76,6 @@ public class AdventureBackpack
         ModBlocks.init();
         ModFluids.init();
         FluidEffectRegistry.init();
-
         ModEntities.init();
         ModNetwork.init();
         proxy.initNetwork();
@@ -108,17 +109,14 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        ConfigHandler.IS_BAUBLES = Loader.isModLoaded("Baubles");
+
         ConfigHandler.IS_TINKERS = Loader.isModLoaded("TConstruct");
         ConfigHandler.IS_THAUM = Loader.isModLoaded("Thaumcraft");
         ConfigHandler.IS_TWILIGHT = Loader.isModLoaded("TwilightForest");
         ConfigHandler.IS_ENVIROMINE = Loader.isModLoaded("EnviroMine");
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
         ConfigHandler.IS_RAILCRAFT = Loader.isModLoaded("Railcraft");
-        if (ConfigHandler.IS_BAUBLES)
-        {
-            LogHelper.info("Baubles is present. Acting accordingly");
-        }
+
 
         if (ConfigHandler.IS_BUILDCRAFT)
         {
@@ -134,13 +132,16 @@ public class AdventureBackpack
         ModItems.conditionalInit();
         ModRecipes.conditionalInit();
 
+
         /*
         LogHelper.info("DUMPING FLUID INFORMATION");
         LogHelper.info("-------------------------------------------------------------------------");
         for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
         {
+
             LogHelper.info("Unlocalized name: " + fluid.getUnlocalizedName());
             LogHelper.info("Name: " + fluid.getName());
+            LogHelper.info("");
         }
         LogHelper.info("-------------------------------------------------------------------------");
         */
