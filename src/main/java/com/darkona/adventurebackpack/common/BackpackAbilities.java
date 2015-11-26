@@ -206,9 +206,9 @@ public class BackpackAbilities
         if (player.isPotionActive(Potion.nightVision.id)) {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
-        if (nightVision == null || nightVision.getDuration() < 40 && nightVision.getAmplifier() != -5)
+        if (nightVision == null || nightVision.getDuration() < 40 && nightVision.getAmplifier() != -4)
         {
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 50, -5));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 5000, -4));
         }
     }
 
@@ -730,8 +730,8 @@ public class BackpackAbilities
         if (noteTime >= 0 && noteTime < Utils.secondsToTicks(147))
         {
             player.setSprinting(true);
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, 2));
-            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 1, 2));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 40, 2));
+            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 40, 2));
             if (noteTime % 2 == 0)
             {
                 //Visuals.NyanParticles(player, world);
@@ -740,6 +740,13 @@ public class BackpackAbilities
                     ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.NYAN_PARTICLE, player), player);
                 }
             }
+        }
+        PotionEffect potion = null;
+        if (player.isPotionActive(Potion.moveSpeed.id)) {
+            potion = player.getActivePotionEffect(Potion.moveSpeed);
+        }
+        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5) {
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 5000, -5));
         }
         inv.setLastTime(noteTime);
         inv.markDirty();
