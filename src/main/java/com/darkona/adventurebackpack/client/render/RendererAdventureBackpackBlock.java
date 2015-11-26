@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -64,7 +65,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         ResourceLocation modelTexture;
         if (BackpackNames.getBackpackColorName((TileAdventureBackpack) te).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString("Valentines");
+            modelTexture = Resources.backpackTextureFromString(Utils.getHoliday());
         } else
         {
             modelTexture = Resources.backpackTextureFromColor((TileAdventureBackpack) te);
