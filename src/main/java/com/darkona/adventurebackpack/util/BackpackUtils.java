@@ -19,6 +19,8 @@ public class BackpackUtils
     public enum reasons{
         SUCCESFUL,ALREADY_EQUIPPED
     }
+
+	public static Object packetHandler;
     public static reasons equipWearable(ItemStack backpack, EntityPlayer player)
     {
         BackpackProperty prop = BackpackProperty.get(player);

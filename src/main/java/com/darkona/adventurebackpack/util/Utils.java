@@ -439,7 +439,7 @@ public class Utils
      * Seriously why doesn't Java's instanceof check for null?
      * @return true if the object is not null and is an instance of the supplied class.
      */
-    public static boolean notNullAndInstanceOf(Object object, Class clazz)
+    public static boolean notNullAndInstanceOf(Object object, @SuppressWarnings("rawtypes") Class clazz)
     {
         return object != null && clazz.isInstance(object);
     }
