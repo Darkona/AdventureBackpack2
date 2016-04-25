@@ -305,7 +305,8 @@ public class ModelBackpackArmor extends ModelWearable
 
         isSneak = ((entity != null) && (entity).isSneaking());
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        float oV = (isSneak) ? 0 : .3F;
+        @SuppressWarnings("unused")
+		float oV = (isSneak) ? 0 : .3F;
 
         float scale = f5 * 0.9f;
 

@@ -13,7 +13,8 @@ import net.minecraftforge.common.config.Configuration;
 public class ModGuiConfig extends GuiConfig
 {
 
-    public ModGuiConfig(GuiScreen guiScreen)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public ModGuiConfig(GuiScreen guiScreen)
     {
         super(guiScreen,
                 new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),

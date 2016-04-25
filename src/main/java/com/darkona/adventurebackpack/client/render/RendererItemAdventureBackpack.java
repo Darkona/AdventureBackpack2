@@ -5,10 +5,23 @@ import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -16,9 +29,11 @@ import org.lwjgl.opengl.GL11;
  *
  * @author Darkona
  */
+@SuppressWarnings("unused")
 public class RendererItemAdventureBackpack implements IItemRenderer
 {
     private final ModelBackpackBlock model;
+	private Minecraft mc;
 
     public RendererItemAdventureBackpack()
     {
@@ -175,10 +190,8 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();
                 break;
-
             case FIRST_PERSON_MAP:
                 break;
         }
     }
-
-}
+ }

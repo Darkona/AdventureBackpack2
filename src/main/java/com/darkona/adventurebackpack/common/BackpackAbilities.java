@@ -150,7 +150,8 @@ public class BackpackAbilities
      *
      * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
      */
-    private static String[] validTileBackpacks = {"Cactus","Melon"};
+    @SuppressWarnings("unused")
+	private static String[] validTileBackpacks = {"Cactus","Melon"};
 
     /**
      * Detects if a player is under the rain. For detecting when it is Under The Sea (maybe to sing a nice Disney tune)
@@ -482,7 +483,8 @@ public class BackpackAbilities
 
     private FluidStack milkStack = new FluidStack(FluidRegistry.getFluid("milk"), 1);
     private FluidStack soupStack = new FluidStack(FluidRegistry.getFluid("mushroomstew"), 1);
-    private FluidStack lavaStack = new FluidStack(FluidRegistry.LAVA, 1);
+    @SuppressWarnings("unused")
+	private FluidStack lavaStack = new FluidStack(FluidRegistry.LAVA, 1);
 
     /**
      * The Cow Backpack fills itself with milk when there is wheat in the backpack's inventory, but it will do so slowly

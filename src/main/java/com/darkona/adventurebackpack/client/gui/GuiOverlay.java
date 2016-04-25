@@ -44,7 +44,8 @@ public class GuiOverlay extends Gui
     protected static RenderItem itemRender = new RenderItem();
     protected FontRenderer fontRendererObj;
     ScaledResolution resolution;
-    public GuiOverlay(Minecraft mc)
+    @SuppressWarnings("static-access")
+	public GuiOverlay(Minecraft mc)
     {
         super();
 
@@ -75,14 +76,16 @@ public class GuiOverlay extends Gui
         {
             int xPos = 2;
             int yPos = 2;
-            Collection collection = this.mc.thePlayer.getActivePotionEffects();
+            @SuppressWarnings("rawtypes")
+			Collection collection = this.mc.thePlayer.getActivePotionEffects();
             if (!collection.isEmpty())
             {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glDisable(GL11.GL_LIGHTING);
                 this.mc.renderEngine.bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
 
-                for (Iterator iterator = this.mc.thePlayer.getActivePotionEffects()
+                for (@SuppressWarnings("rawtypes")
+				Iterator iterator = this.mc.thePlayer.getActivePotionEffects()
                         .iterator(); iterator.hasNext(); xPos += BUFF_ICON_SPACING)
                 {
                     PotionEffect potioneffect = (PotionEffect) iterator.next();

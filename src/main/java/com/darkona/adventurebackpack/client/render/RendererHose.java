@@ -20,7 +20,8 @@ public class RendererHose implements IItemRenderer
 
     private static RenderItem renderHose = new RenderItem();
     private FontRenderer fontRenderer;
-    private Tessellator tessellator = Tessellator.instance;
+    @SuppressWarnings("unused")
+	private Tessellator tessellator = Tessellator.instance;
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -34,7 +35,6 @@ public class RendererHose implements IItemRenderer
         return false;
     }
 
-    @SuppressWarnings("incomplete-switch")
     @Override
     public void renderItem(ItemRenderType type, ItemStack hose, Object... data)
     {

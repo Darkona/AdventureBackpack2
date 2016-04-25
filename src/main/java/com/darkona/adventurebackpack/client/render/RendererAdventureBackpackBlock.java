@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL12;
  * @author Darkona
  */
 
+@SuppressWarnings("unused")
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
 
@@ -78,6 +79,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         GL11.glPopMatrix();
         GL11.glPopMatrix();
         GL11.glPopMatrix();
+
     }
 
 

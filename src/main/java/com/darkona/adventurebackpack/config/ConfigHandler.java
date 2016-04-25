@@ -53,7 +53,8 @@ public class ConfigHandler
     }
 
 
-    private static void loadConfiguration()
+    @SuppressWarnings("static-access")
+	private static void loadConfiguration()
     {
         GUI_TANK_RENDER = config.getInt("TankRenderType", config.CATEGORY_GENERAL, 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
         BONUS_CHEST_ALLOWED = config.getBoolean("BonusBackpack", config.CATEGORY_GENERAL, false, "Include a Standard Adventure Backpack in bonus chest?");

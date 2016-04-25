@@ -275,7 +275,8 @@ public class ModelBackpackBlock extends ModelBase
     {
 
         //scale*=0.9;
-        boolean sleepingbag = backpack.isSBDeployed();
+        @SuppressWarnings("unused")
+		boolean sleepingbag = backpack.isSBDeployed();
         FluidTank tankLeft = backpack.getLeftTank();
         FluidTank tankRight = backpack.getRightTank();
         setRotationAngles(f, f1, f2, f3, f4, scale, entity);
@@ -313,7 +314,8 @@ public class ModelBackpackBlock extends ModelBase
         }
     }
 
-    private void renderFluidsInTanks(FluidTank tankLeft, FluidTank tankRight, float scale)
+    @SuppressWarnings("unused")
+	private void renderFluidsInTanks(FluidTank tankLeft, FluidTank tankRight, float scale)
     {
         //Size of the cuboid
         //Y-- is up, Y++ is down
