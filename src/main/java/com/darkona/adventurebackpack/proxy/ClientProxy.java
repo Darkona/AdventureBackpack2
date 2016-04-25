@@ -118,4 +118,10 @@ public class ClientProxy implements IProxy
         FMLCommonHandler.instance().bus().register(new KeybindHandler());
     }
 
+	@Override
+	public void registerHandlers() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -21,4 +21,6 @@ public interface IProxy
 
     public void synchronizePlayer(int id, NBTTagCompound compound);
 
+	void registerHandlers();
+
 }

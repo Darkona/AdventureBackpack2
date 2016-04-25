@@ -5,16 +5,21 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.Packet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
+import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.FMLCommonHandler;
 /**
  * Created on 22/12/2014
  *
  * @author Darkona
  */
+@SuppressWarnings("unused")
 public class ServerProxy implements IProxy
 {
     private static final Map<UUID, NBTTagCompound> extendedEntityData = new HashMap<UUID, NBTTagCompound>();
@@ -82,4 +87,10 @@ public class ServerProxy implements IProxy
     {
         return extendedEntityData.remove(playerID);
     }
+
+	@Override
+	public void registerHandlers() {
+		// TODO Auto-generated method stub
+		
+	}
 }
