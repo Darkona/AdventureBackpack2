@@ -42,7 +42,7 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
                     }
                 }else
                 {
-                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:already.equipped"));
+                    player.addChatComponentMessage(new ChatComponentTranslation("You already have a adventurebackpack on your back please take it off if you want to equip this one"));
                 }
             }
             if(message.action == UNEQUIP_WEARABLE)

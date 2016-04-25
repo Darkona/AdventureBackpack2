@@ -17,7 +17,7 @@ import java.util.Set;
 public class ToolAB extends ItemTool
 {
 
-    public ToolAB(ToolMaterial material, Set breakableBlocks)
+    public ToolAB(ToolMaterial material, @SuppressWarnings("rawtypes") Set breakableBlocks)
     {
         super(1f, material, breakableBlocks);
         //setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);

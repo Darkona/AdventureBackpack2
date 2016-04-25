@@ -486,7 +486,8 @@ public class InventorySteamJetpack implements IInventoryTanks
 
     public void calculateLostTime()
     {
-        long elapsedTimesince = System.currentTimeMillis() - systemTime;
+        @SuppressWarnings("unused")
+		long elapsedTimesince = System.currentTimeMillis() - systemTime;
 
     }
 }

@@ -19,7 +19,8 @@ import java.lang.reflect.Field;
  */
 public class ModRecipes
 {
-    private static ItemStack bc(int damage)
+    @SuppressWarnings("unused")
+	private static ItemStack bc(int damage)
     {
         return BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), damage);
     }

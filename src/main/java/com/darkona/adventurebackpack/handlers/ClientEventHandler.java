@@ -78,6 +78,12 @@ public class ClientEventHandler
         {
             //LogHelper.debug("Mouse Wheel moving");
             EntityClientPlayerMP player = mc.thePlayer;
+            boolean hasCape = player.func_152122_n();
+            hasCape = event.buttonstate && hasCape;
+            @SuppressWarnings("unused")
+			float f4;
+
+            if (hasCape && !player.isInvisible() && !player.getHideCape())
             if (player != null && !player.isDead && player.isSneaking())
             {
                 ItemStack backpack = Wearing.getWearingBackpack(player);
@@ -102,11 +108,13 @@ public class ClientEventHandler
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
                             ServerActions.switchHose(player, ServerActions.HOSE_SWITCH, dWheel, slot);
                             event.setCanceled(true);
+                            {
+                                        
                         }
                     }
                 }
             }
         }
     }
-
+  }
 }

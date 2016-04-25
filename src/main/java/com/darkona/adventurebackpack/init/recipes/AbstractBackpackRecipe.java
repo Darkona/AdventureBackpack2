@@ -23,7 +23,8 @@ public class AbstractBackpackRecipe implements IRecipe
 
     final BackpackRecipes br = new BackpackRecipes();
     private ItemStack result;
-    private ItemStack[] recipe;
+    @SuppressWarnings("unused")
+	private ItemStack[] recipe;
 
     public boolean compareStacksForColor(ItemStack stack1, ItemStack stack2)
     {

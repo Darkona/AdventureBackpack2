@@ -85,7 +85,7 @@ public class ItemComponent extends ItemAB
 
     @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
     {
         for (int i = 1; i <= names.length; i++)
@@ -185,7 +185,8 @@ public class ItemComponent extends ItemAB
             Vec3 vec32 = player.getLook(f);
             boolean flag = false;
             float f9 = 1.0F;
-            List list = world.getEntitiesWithinAABBExcludingEntity(player, player.boundingBox.addCoord(vec32.xCoord * d3, vec32.yCoord * d3, vec32.zCoord * d3).expand((double) f9, (double) f9, (double) f9));
+            @SuppressWarnings("rawtypes")
+			List list = world.getEntitiesWithinAABBExcludingEntity(player, player.boundingBox.addCoord(vec32.xCoord * d3, vec32.yCoord * d3, vec32.zCoord * d3).expand((double) f9, (double) f9, (double) f9));
             int i;
 
             for (i = 0; i < list.size(); ++i)

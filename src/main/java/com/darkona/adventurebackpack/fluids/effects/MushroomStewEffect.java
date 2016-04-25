@@ -12,6 +12,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  *
  * @author Darkona
  */
+@SuppressWarnings("unused")
 public class MushroomStewEffect extends FluidEffect
 {
     public MushroomStewEffect()

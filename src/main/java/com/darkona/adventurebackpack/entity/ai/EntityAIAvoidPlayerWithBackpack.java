@@ -46,9 +46,10 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
     /**
      * The class of the com.darkona.adventurebackpack.entity we should avoid
      */
-    private Class targetEntityClass;
+    @SuppressWarnings("rawtypes")
+	private Class targetEntityClass;
 
-    public EntityAIAvoidPlayerWithBackpack(EntityCreature par1EntityCreature, Class par2Class, float par3, double par4, double par6, String colorName)
+    public EntityAIAvoidPlayerWithBackpack(EntityCreature par1EntityCreature, @SuppressWarnings("rawtypes") Class par2Class, float par3, double par4, double par6, String colorName)
     {
         this.theEntity = par1EntityCreature;
         this.targetEntityClass = par2Class;

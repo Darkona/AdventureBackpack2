@@ -25,7 +25,8 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
         float maxDist;
         float minDist;
         private boolean avoidWater;
-        private static final String __OBFID = "CL_00001585";
+        @SuppressWarnings("unused")
+		private static final String __OBFID = "CL_00001585";
 
         public EntityAIHorseFollowOwner(EntityHorse horse, double speed, float minDist, float maxDist)
         {

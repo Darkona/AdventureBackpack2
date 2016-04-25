@@ -37,6 +37,7 @@ import java.util.Random;
  * Created on 12/10/2014.
  * @author Javier Darkona
  */
+@SuppressWarnings("unused")
 public class BlockAdventureBackpack extends BlockContainer
 {
 

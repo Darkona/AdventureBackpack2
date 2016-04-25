@@ -77,7 +77,8 @@ public class ModWorldGen
          * @param recipeList
          * @param random
          */
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
         {
             //0 Farmer, 1 Librarian, 2Priest, 3 Blacksmith, 4 Butcher

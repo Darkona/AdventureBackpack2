@@ -57,13 +57,15 @@ public class SlotTool extends SlotAdventureBackpack
             // Just for extra compatibility and/or security and/or less annoyance
             for (String toolName : validToolNames)
             {
-                String a = toolName;
+                @SuppressWarnings("unused")
+				String a = toolName;
                 if (name.contains(toolName)) return true;
             }
 
             for (String toolName : invalidToolNames)
             {
-                String a = toolName;
+                @SuppressWarnings("unused")
+				String a = toolName;
                 if (name.contains(toolName)) return false;
             }
 

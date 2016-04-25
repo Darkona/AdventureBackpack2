@@ -134,7 +134,8 @@ public class BlockSleepingBag extends BlockDirectional
                 if (isBedOccupied(meta))
                 {
                     EntityPlayer entityplayer1 = null;
-                    Iterator iterator = world.playerEntities.iterator();
+                    @SuppressWarnings("rawtypes")
+					Iterator iterator = world.playerEntities.iterator();
 
                     while (iterator.hasNext())
                     {
@@ -328,7 +329,8 @@ public class BlockSleepingBag extends BlockDirectional
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
     {
         //LogHelper.info("onBlockDestroyedByPlayer() : BlockSleepingBag");
-        int direction = getDirection(meta);
+        @SuppressWarnings("unused")
+		int direction = getDirection(meta);
         int tileZ = z;
         int tileX = x;
         switch (meta)

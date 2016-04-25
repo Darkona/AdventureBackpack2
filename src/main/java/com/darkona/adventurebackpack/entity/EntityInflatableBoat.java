@@ -30,7 +30,8 @@ import java.util.List;
  */
 public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 {
-    private FluidTank fuelTank;
+    @SuppressWarnings("unused")
+	private FluidTank fuelTank;
     private boolean isBoatEmpty;
     private double speedMultiplier;
     private int boatPosRotationIncrements;
@@ -319,7 +320,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 
             if (!this.worldObj.isRemote)
             {
-                List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224D, 0.0D, 0.20000000298023224D));
+                @SuppressWarnings("rawtypes")
+				List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224D, 0.0D, 0.20000000298023224D));
 
                 if (list != null && !list.isEmpty())
                 {

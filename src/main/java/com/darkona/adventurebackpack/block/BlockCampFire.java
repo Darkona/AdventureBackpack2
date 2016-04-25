@@ -41,7 +41,8 @@ public class BlockCampFire extends BlockContainer
         this.setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
     }
 
-    private void blockBoundsForRender()
+    @SuppressWarnings("unused")
+	private void blockBoundsForRender()
     {
         this.func_149978_e();
     }

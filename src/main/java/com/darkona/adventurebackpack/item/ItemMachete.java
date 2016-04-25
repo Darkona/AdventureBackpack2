@@ -25,7 +25,8 @@ import java.util.Set;
  */
 public class ItemMachete extends ToolAB
 {
-    private static final Set breakableBlocks = Sets.newHashSet(Blocks.pumpkin,
+    @SuppressWarnings("rawtypes")
+	private static final Set breakableBlocks = Sets.newHashSet(Blocks.pumpkin,
             Blocks.web,
             Blocks.leaves,
             Blocks.leaves2,
@@ -48,7 +49,8 @@ public class ItemMachete extends ToolAB
             Blocks.waterlily,
             Blocks.wheat,
             Blocks.wool);
-    private float field_150934_a;
+    @SuppressWarnings("unused")
+	private float field_150934_a;
 
     public ItemMachete()
     {

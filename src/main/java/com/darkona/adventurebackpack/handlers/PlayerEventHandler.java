@@ -47,7 +47,8 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 public class PlayerEventHandler
 {
 
-    private static int tickCounter = 0;
+    @SuppressWarnings("unused")
+	private static int tickCounter = 0;
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {
@@ -292,7 +293,8 @@ public class PlayerEventHandler
             {
                 if (event.side.isServer())
                 {
-                    EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
+                    @SuppressWarnings("unused")
+					EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
                     BackpackProperty.syncToNear(event.player);
 //                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
 //                    {

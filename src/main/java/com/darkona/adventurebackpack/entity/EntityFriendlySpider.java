@@ -26,9 +26,12 @@ public class EntityFriendlySpider extends EntityCreature
 
     private float prevRearingAmount;
     private int jumpTicks;
-    private EntityPlayer owner;
-    private boolean tamed = false;
-    private final EntityAIControlledByPlayer aiControlledByPlayer;
+    @SuppressWarnings("unused")
+	private EntityPlayer owner;
+    @SuppressWarnings("unused")
+	private boolean tamed = false;
+    @SuppressWarnings("unused")
+	private final EntityAIControlledByPlayer aiControlledByPlayer;
 
     @Override
     protected void entityInit() {
@@ -484,7 +487,8 @@ public class EntityFriendlySpider extends EntityCreature
     public static class GroupData implements IEntityLivingData
     {
         public int field_111105_a;
-        private static final String __OBFID = "CL_00001700";
+        @SuppressWarnings("unused")
+		private static final String __OBFID = "CL_00001700";
 
         public void func_111104_a(Random p_111104_1_)
         {

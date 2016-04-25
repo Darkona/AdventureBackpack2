@@ -185,7 +185,8 @@ public class InventoryCopterPack implements IInventoryTanks
     public void onInventoryChanged()
     {
 
-        ItemStack container = getStackInSlot(0);
+        @SuppressWarnings("unused")
+		ItemStack container = getStackInSlot(0);
 
         closeInventory();
     }

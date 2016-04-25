@@ -39,14 +39,14 @@ public class ModNetwork
 
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void registerClientSide(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
         messages++;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static void registerMessage(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);

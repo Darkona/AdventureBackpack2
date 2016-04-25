@@ -4,6 +4,10 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import com.darkona.adventurebackpack.util.Utils;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 /**
@@ -18,6 +23,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
  *
  * @author Darkona
  */
+@SuppressWarnings("unused")
 public class BackpackProperty implements IExtendedEntityProperties
 {
 
@@ -28,6 +34,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
+	private RenderPlayerEvent.Specials.Pre event;
 
     public NBTTagCompound getWearableData()
     {
@@ -220,6 +227,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         if (Utils.notNullAndInstanceOf(wearable.getItem() , IBackWearableItem.class))
         {
             ((IBackWearableItem) wearable.getItem()).onUnequipped(player.getEntityWorld(), player, wearable);
+            }
         }
-    }
 }

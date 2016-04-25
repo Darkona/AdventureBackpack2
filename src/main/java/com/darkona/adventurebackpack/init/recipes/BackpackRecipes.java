@@ -592,7 +592,8 @@ public class BackpackRecipes
     public final ItemStack[] Zombie;
 
 
-    public static ItemStack[] reviewRecipe(Object... objects)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static ItemStack[] reviewRecipe(Object... objects)
     {
         String s = "";
         //BackpackRecipe recipe = new BackpackRecipe();

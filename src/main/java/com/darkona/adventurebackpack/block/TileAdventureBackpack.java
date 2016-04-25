@@ -549,7 +549,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         removeSleepingBag(world);
         if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.reasons.SUCCESFUL)
         {
-            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:already.equipped"));
+            player.addChatComponentMessage(new ChatComponentTranslation("You already have a adventurebackpack on your back please take it off if you want to equip this one"));
             if (!player.inventory.addItemStackToInventory(stacky))
             {
                 return drop(world, player, x, y, z);
