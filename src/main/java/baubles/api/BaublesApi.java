@@ -18,14 +18,16 @@ public class BaublesApi
     /**
      * Retrieves the baubles inventory for the supplied player
      */
-    public static IInventory getBaubles(EntityPlayer player)
+    @SuppressWarnings("unchecked")
+	public static IInventory getBaubles(EntityPlayer player)
     {
         IInventory ot = null;
         try
         {
             if (getBaubles == null)
             {
-                Class fake = Class.forName("baubles.common.lib.PlayerHandler");
+                @SuppressWarnings("rawtypes")
+				Class fake = Class.forName("baubles.common.lib.PlayerHandler");
                 getBaubles = fake.getMethod("getPlayerBaubles", EntityPlayer.class);
             }
             ot = (IInventory) getBaubles.invoke(null, player);
