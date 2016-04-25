@@ -135,7 +135,8 @@ public abstract class ConfigTagParent
         childtags.put(tag.name, tag);
     }
 
-    public <T extends ConfigTag> ArrayList<T> getSortedTagList()
+    @SuppressWarnings("unchecked")
+	public <T extends ConfigTag> ArrayList<T> getSortedTagList()
     {
         ArrayList<T> taglist = new ArrayList<T>(childtags.size());
         for (Entry<String, ConfigTag> tag : childtags.entrySet())

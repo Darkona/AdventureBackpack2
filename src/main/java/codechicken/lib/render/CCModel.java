@@ -69,7 +69,8 @@ public class CCModel implements CCRenderState.IVertexSource, Copyable<CCModel>
         return verts;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <T> T getAttributes(CCRenderState.VertexAttribute<T> attr)
     {
         if (attr.attributeIndex < attributes.size())
@@ -450,7 +451,8 @@ public class CCModel implements CCRenderState.IVertexSource, Copyable<CCModel>
         return this;
     }
 
-    public CCModel expand(int extraVerts)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public CCModel expand(int extraVerts)
     {
         int newLen = verts.length + extraVerts;
         verts = Arrays.copyOf(verts, newLen);

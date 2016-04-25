@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public class CCRenderPipeline
 {
-    private ArrayList<VertexAttribute> attribs = new ArrayList<VertexAttribute>();
+    @SuppressWarnings("rawtypes")
+	private ArrayList<VertexAttribute> attribs = new ArrayList<VertexAttribute>();
     private ArrayList<IVertexOperation> ops = new ArrayList<IVertexOperation>();
     private ArrayList<PipelineNode> nodes = new ArrayList<PipelineNode>();
     private ArrayList<IVertexOperation> sorted = new ArrayList<IVertexOperation>();
@@ -28,7 +29,8 @@ public class CCRenderPipeline
         unbuild();
     }
 
-    private void unbuild()
+    @SuppressWarnings("unchecked")
+	private void unbuild()
     {
         for (int i = 0; i < attribs.size(); i++)
             attribs.get(i).active = false;
@@ -36,7 +38,8 @@ public class CCRenderPipeline
         sorted.clear();
     }
 
-    public void rebuild()
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public void rebuild()
     {
         if (ops.isEmpty() || CCRenderState.model == null)
         {
@@ -92,13 +95,15 @@ public class CCRenderPipeline
         loading.deps.add(nodes.get(opRef));
     }
 
-    public void addDependency(VertexAttribute attrib)
+    @SuppressWarnings("rawtypes")
+	public void addDependency(VertexAttribute attrib)
     {
         loading.deps.add(nodes.get(attrib.operationID()));
         addAttribute(attrib);
     }
 
-    public void addAttribute(VertexAttribute attrib)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public void addAttribute(VertexAttribute attrib)
     {
         if (!attrib.active)
         {

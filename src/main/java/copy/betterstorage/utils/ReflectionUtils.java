@@ -25,7 +25,7 @@ public class ReflectionUtils
     }
 
 
-    public static Field findField(Class clazz, String srgName, String mcpName)
+    public static Field findField(@SuppressWarnings("rawtypes") Class clazz, String srgName, String mcpName)
     {
         try
         {
@@ -69,7 +69,8 @@ public class ReflectionUtils
         }
     }
 
-    public static <T, U extends T, V> V get(Class<T> clazz, U instance, String srgName, String mcpName)
+    @SuppressWarnings("unchecked")
+	public static <T, U extends T, V> V get(Class<T> clazz, U instance, String srgName, String mcpName)
     {
         try
         {
@@ -84,7 +85,8 @@ public class ReflectionUtils
     }
 
 
-    public static Method findMethod(Class clazz, String srgName, String mcpName, Class... parameterTypes)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Method findMethod(Class clazz, String srgName, String mcpName, Class... parameterTypes)
     {
         try
         {
@@ -114,7 +116,8 @@ public class ReflectionUtils
         throw new RuntimeException(String.format("Could not find method '%s' for class %s", mcpName, clazz.getName()));
     }
 
-    public static <T, U extends T, V> V invoke(Class<T> clazz, U instance, String srgName, String mcpName, Object... args)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T, U extends T, V> V invoke(Class<T> clazz, U instance, String srgName, String mcpName, Object... args)
     {
         Class[] parameterTypes = new Class[args.length / 2];
         Object[] parameters = new Object[args.length / 2];
@@ -141,10 +144,11 @@ public class ReflectionUtils
 
     private static class Cache
     {
-        public final Class clazz;
+        @SuppressWarnings("rawtypes")
+		public final Class clazz;
         public final String name;
 
-        public Cache(Class clazz, String name)
+        public Cache(@SuppressWarnings("rawtypes") Class clazz, String name)
         {
             this.clazz = clazz;
             this.name = name;
@@ -167,9 +171,11 @@ public class ReflectionUtils
 
     private static class MethodCache extends Cache
     {
-        public final Class[] types;
+        @SuppressWarnings("rawtypes")
+		public final Class[] types;
 
-        public MethodCache(Class clazz, String name, Class... parameterTypes)
+        @SuppressWarnings("rawtypes")
+		public MethodCache(Class clazz, String name, Class... parameterTypes)
         {
             super(clazz, name);
             this.types = parameterTypes;

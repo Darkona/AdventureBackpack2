@@ -46,7 +46,8 @@ public class QBImporter
         DataInputStream din = new DataInputStream(input);
 
         QBModel m = new QBModel();
-        int version = din.readInt();
+        @SuppressWarnings("unused")
+		int version = din.readInt();
         int colorFormat = din.readInt();
         m.rightHanded = din.readInt() != 0;
         boolean compressed = din.readInt() != 0;

@@ -3,9 +3,10 @@ package codechicken.lib.vec;
 @SuppressWarnings("serial")
 public class IrreversibleTransformationException extends RuntimeException
 {
-    public ITransformation t;
+    @SuppressWarnings("rawtypes")
+	public ITransformation t;
 
-    public IrreversibleTransformationException(ITransformation t)
+    public IrreversibleTransformationException(@SuppressWarnings("rawtypes") ITransformation t)
     {
         this.t = t;
     }

@@ -63,7 +63,8 @@ public class BlockRenderer
             return verts;
         }
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         public <T> T getAttributes(CCRenderState.VertexAttribute<T> attr)
         {
             return attr == CCRenderState.lightCoordAttrib && lcComputed ? (T) lightCoords : null;
@@ -190,7 +191,8 @@ public class BlockRenderer
             return verts;
         }
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         public <T> T getAttributes(VertexAttribute<T> attr)
         {
             return attr == CCRenderState.lightCoordAttrib ? (T) lightCoords : null;

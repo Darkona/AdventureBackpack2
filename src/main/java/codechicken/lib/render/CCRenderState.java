@@ -102,7 +102,8 @@ public class CCRenderState
         if (dst instanceof Copyable[])
         {
             Object[] oa = (Object[]) dst;
-            Copyable<Object>[] c = (Copyable[]) dst;
+            @SuppressWarnings("unchecked")
+			Copyable<Object>[] c = (Copyable[]) dst;
             for (int i = destPos; i < destPos + length; i++)
                 if (c[i] != null)
                 {

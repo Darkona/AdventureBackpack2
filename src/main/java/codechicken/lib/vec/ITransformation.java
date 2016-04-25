@@ -6,6 +6,7 @@ package codechicken.lib.vec;
  * @param <Vector>         The vector type
  * @param <Transformation> The transformation type
  */
+@SuppressWarnings({ "hiding", "rawtypes" })
 public abstract class ITransformation<Vector, Transformation extends ITransformation>
 {
     /**
