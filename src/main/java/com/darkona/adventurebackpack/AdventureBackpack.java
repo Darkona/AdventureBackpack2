@@ -32,6 +32,7 @@ import java.util.Calendar;
  *
  * @author Javier Darkona
  */
+@SuppressWarnings("unused")
 @Mod(modid = ModInfo.MOD_ID,
         name = ModInfo.MOD_NAME,
         version = ModInfo.MOD_VERSION,
