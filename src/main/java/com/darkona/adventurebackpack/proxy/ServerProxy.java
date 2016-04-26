@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.proxy;
 
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.develop.DeveloperJoining;
+import com.darkona.adventurebackpack.develop.msg;
 import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -14,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 /**
  * Created on 22/12/2014
  *
@@ -27,7 +30,7 @@ public class ServerProxy implements IProxy
     @Override
     public void init()
     {
-
+		FMLCommonHandler.instance().bus().register(new DeveloperJoining());
     }
 
     @Override
@@ -39,7 +42,6 @@ public class ServerProxy implements IProxy
     @Override
     public void initNetwork()
     {
-
     }
 
     @Override
@@ -81,7 +83,7 @@ public class ServerProxy implements IProxy
             ex.printStackTrace();
         }
     }
-
+    
 
     public static NBTTagCompound extractPlayerProps(UUID playerID)
     {
@@ -92,5 +94,15 @@ public class ServerProxy implements IProxy
 	public void registerHandlers() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+    public void registerRenderInformation()
+    {
+
+    }
+
+	@Override
+	public void init(FMLInitializationEvent event) {
+		FMLCommonHandler.instance().bus().register(new DeveloperJoining());
 	}
 }

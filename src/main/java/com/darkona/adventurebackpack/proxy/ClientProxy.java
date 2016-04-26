@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.proxy;
 
+import java.lang.reflect.Field;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileCampfire;
 import com.darkona.adventurebackpack.client.gui.GuiOverlay;
@@ -21,7 +23,9 @@ import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -49,7 +53,7 @@ public class ClientProxy implements IProxy
     public static ModelBackpackArmor modelAdventureBackpack = new ModelBackpackArmor();
     public static ModelCopterPack modelCopterPack = new ModelCopterPack();
 
-
+    public static Field camRollField;
     public void init()
     {
         initRenderers();
@@ -123,5 +127,35 @@ public class ClientProxy implements IProxy
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void init(FMLInitializationEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+    public void registerRenderInformation()
+    {
+        renderHandler = new RenderHandler();
+        MinecraftForge.EVENT_BUS.register(renderHandler);
+        rendererWearableEquipped = new RendererWearableEquipped();
+
+        rendererItemAdventureBackpack = new RendererItemAdventureBackpack();
+        MinecraftForgeClient.registerItemRenderer(ModItems.adventureBackpack, rendererItemAdventureBackpack);
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.blockBackpack), rendererItemAdventureBackpack);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileAdventureBackpack.class, new RendererAdventureBackpackBlock());
+        int i = 0;
+        for (Field curField : EntityRenderer.class.getDeclaredFields())
+        {
+            if (curField.getType() == float.class)
+            {
+                if (++i == 15)
+                {
+                    camRollField = curField;
+                    curField.setAccessible(true);
+                }
+            }
+        }
+    }
 
 }

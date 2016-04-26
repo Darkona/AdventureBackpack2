@@ -27,7 +27,7 @@ public class ItemPistonBoots extends ArmorAB
             player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1));
         } else
         {
-            player.stepHeight = 0.5001F;
+            player.stepHeight = 2.5001F;
         }
     }
 

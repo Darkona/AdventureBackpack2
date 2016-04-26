@@ -36,6 +36,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
+import com.darkona.adventurebackpack.develop.msg;
 
 /**
  * Created on 11/10/2014
@@ -72,6 +73,8 @@ public class PlayerEventHandler
             {
                 EntityPlayer player = (EntityPlayer) event.entity;
                 LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
+                BackpackProperty.syncToNear(player);
+                msg.handleJoin(player);
                 NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
                 if (playerData != null)
                 {
@@ -293,8 +296,6 @@ public class PlayerEventHandler
             {
                 if (event.side.isServer())
                 {
-                    @SuppressWarnings("unused")
-					EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
                     BackpackProperty.syncToNear(event.player);
 //                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
 //                    {
