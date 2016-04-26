@@ -319,7 +319,7 @@ public class BackpackAbilities
         // 4 is New Moon, 5 is Waxing Crescent, 6 is First Quarter and 7 is Waxing Gibbous
         if (world.getMoonPhase() == 0 && !world.isDaytime())
         {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, 1));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 100, 0));
         }
         if (player.onGround)
         {
@@ -732,8 +732,8 @@ public class BackpackAbilities
         if (noteTime >= 0 && noteTime < Utils.secondsToTicks(147))
         {
             player.setSprinting(true);
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 40, 2));
-            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 40, 2));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 100, 0));
+            player.addPotionEffect((new PotionEffect(Potion.jump.getId(), 100, 0)));
             if (noteTime % 2 == 0)
             {
                 //Visuals.NyanParticles(player, world);
@@ -748,7 +748,7 @@ public class BackpackAbilities
             potion = player.getActivePotionEffect(Potion.moveSpeed);
         }
         if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5) {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 5000, -5));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 500, -5));
         }
         inv.setLastTime(noteTime);
         inv.markDirty();
