@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  *
  * @author Javier Darkona
  */
+@SuppressWarnings("unused")
 public class WaterEffect extends FluidEffect
 {
 
@@ -30,16 +31,6 @@ public class WaterEffect extends FluidEffect
         if (entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
-            BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(player.serverPosX, player.serverPosZ);
-
-            //If it's hot
-            if (
-                    BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.HOT) ||
-                    BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.DRY) ||
-                    BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.SANDY) ||
-                    BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.WASTELAND) ||
-                    BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.NETHER)
-                    )
             {
                 // player.getFoodStats().addStats(1, 0.1f);
                 if (player.isBurning())
