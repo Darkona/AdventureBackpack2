@@ -16,12 +16,8 @@ public class GeneralReference
 
     public static void init()
     {
-        liquidFuels.put("fuel", 1.0f);
-        liquidFuels.put("oil", 1.5f);
-        liquidFuels.put("bioethanol", 1.2f);
-        liquidFuels.put("biofuel", 1.0f);
-        liquidFuels.put("creosote", 1.8f);
-        liquidFuels.put("coal", 0.8f);
+        liquidFuels.put("water", 1.6f);
+        liquidFuels.put("lava", 1.0f);
 
     }
 

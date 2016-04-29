@@ -7,7 +7,7 @@ import com.darkona.adventurebackpack.block.TileCampfire;
 import com.darkona.adventurebackpack.client.gui.GuiOverlay;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
-import com.darkona.adventurebackpack.client.models.ModelSteamJetpack;
+import com.darkona.adventurebackpack.client.models.ModelCoalJetpack;
 import com.darkona.adventurebackpack.client.render.*;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
@@ -49,7 +49,7 @@ public class ClientProxy implements IProxy
     public static RendererInflatableBoat renderInflatableBoat;
     public static RenderRideableSpider renderRideableSpider;
     public static RendererItemClockworkCrossbow renderCrossbow;
-    public static ModelSteamJetpack modelSteamJetpack = new ModelSteamJetpack();
+    public static ModelCoalJetpack modelCoalJetpack = new ModelCoalJetpack();
     public static ModelBackpackArmor modelAdventureBackpack = new ModelBackpackArmor();
     public static ModelCopterPack modelCopterPack = new ModelCopterPack();
 

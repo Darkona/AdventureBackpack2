@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.util;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
-import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.item.*;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -42,7 +42,7 @@ public class Wearing
 
     public static boolean isHoldingSteam(EntityPlayer player)
     {
-        return player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemSteamJetpack;
+        return player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemCoalJetpack;
     }
 
     public static ItemStack getHoldingSteam(EntityPlayer player)
@@ -52,7 +52,7 @@ public class Wearing
 
     public static boolean isWearingSteam(EntityPlayer player)
     {
-        return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemSteamJetpack;
+        return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemCoalJetpack;
     }
 
     public static ItemStack getWearingSteam(EntityPlayer player)
@@ -147,7 +147,7 @@ public class Wearing
     {
         ItemStack wearable = Wearing.getWearingWearable(player);
         if(wearable.getItem() instanceof ItemAdventureBackpack)return new InventoryBackpack(wearable);
-        if (wearable.getItem() instanceof ItemSteamJetpack) return new InventorySteamJetpack(wearable);
+        if (wearable.getItem() instanceof ItemCoalJetpack) return new InventoryCoalJetpack(wearable);
         if (wearable.getItem() instanceof ItemCopterPack) return new InventoryCopterPack(wearable);
         return null;
     }

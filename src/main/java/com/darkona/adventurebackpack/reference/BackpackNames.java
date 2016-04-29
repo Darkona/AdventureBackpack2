@@ -90,7 +90,8 @@ public class BackpackNames
             "White",
             "Wolf",
             "Yellow",
-            "Zombie"
+            "Zombie",
+            "ModdedNetwork"
     };
 
     public static ItemStack setBackpackColorNameFromDamage(ItemStack backpack, int damage)

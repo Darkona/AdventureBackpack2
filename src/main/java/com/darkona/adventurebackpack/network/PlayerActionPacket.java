@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.network;
 
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
-import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -33,7 +33,7 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
             {
                 if(Wearing.isWearingSteam(ctx.getServerHandler().playerEntity))
                 {
-                    InventorySteamJetpack inv = new InventorySteamJetpack(Wearing.getWearingSteam(ctx.getServerHandler().playerEntity));
+                    InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingSteam(ctx.getServerHandler().playerEntity));
                     inv.setInUse(message.type == JETPACK_IN_USE);
                     inv.markDirty();
                 }
