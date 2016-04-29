@@ -1,4 +1,4 @@
-# Items
+# Items THIS IS ALL UPDATED ALL OF THE OTHER LANGUAGE IS NOT
 
 ## Component Items For Crafting
 item.adventurebackpack:backpackComponent.name=Backpack Component Item
@@ -30,9 +30,10 @@ item.adventurebackpack:hoseUseless.name=Hose: Useless / No Backpack
 ## Wearables
 item.adventurebackpack:adventureBackpack.name=Adventure Backpack
 item.adventurebackpack:copterPack.name=Copter Pack
-item.adventurebackpack:steamJetpack.name=Steam Jetpack
+item.adventurebackpack:CoalJetpack.name=Coal Jetpack
 
 ## Armor
+item.adventurebackpack:pants.name=Adventurer's Pants
 item.adventurebackpack:adventureSuit.name=Adventurer's Suit
 item.adventurebackpack:adventureHat.name=Adventurer's Fedora
 item.adventurebackpack:pistonBoots.name=Piston Boots
@@ -41,9 +42,9 @@ item.adventurebackpack:pistonBoots.name=Piston Boots
 block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Block
 block.adventurebackpack:CampFire.name=Campfire
 block.adventurebackpack:SleepingBag.name=Sleeping Bag
-
+blockCampFire.name=CampFire
 ## CreativeTab
-itemGroup.adventurebackpack=Adventure Backpack
+itemGroup.adventurebackpack=Adventure Backpack Mod
 
 ## Keybindings
 keys.adventureBackpack.category=Adventure Backpack
@@ -63,6 +64,6 @@ adventurebackpack:messages.copterpack.normal=CopterPack: Normal Mode.
 adventurebackpack:messages.copterpack.outoffuel=CopterPack: Out of fuel.
 adventurebackpack:messages.copterpack.cantwater=CopterPack: Can't function in water.
 adventurebackpack:messages.copterpack.off=CopterPack: Off.
-adventurebackpack:messages.jetpack.on=Steam Jetpack: On.
-adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
+adventurebackpack:messages.jetpack.on=Coal Jetpack: On.
+adventurebackpack:messages.jetpack.off=Coal Jetpack: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.
