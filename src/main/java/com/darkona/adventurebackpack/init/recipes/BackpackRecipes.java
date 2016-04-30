@@ -85,6 +85,15 @@ public class BackpackRecipes
                 'm', Items.milk_bucket
         );
 
+        ModdedNetwork = reviewRecipe(
+                "EEE",
+                "DaD",
+                "DDD",
+                'a', ModItems.adventureBackpack,
+                'E', Items.emerald,
+                'D', Items.diamond
+        );
+        
         Chest = reviewRecipe(
                 "CWC",
                 "WaW",
@@ -590,6 +599,7 @@ public class BackpackRecipes
     public final ItemStack[] Wolf;
     public final ItemStack[] Yellow;
     public final ItemStack[] Zombie;
+    public final ItemStack[] ModdedNetwork;
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

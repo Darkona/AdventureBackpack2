@@ -114,6 +114,15 @@ public class BackpackRecipesList
                 'm', Items.milk_bucket
         );
 
+        ModdedNetwork = reviewRecipe(
+                "EEE",
+                "DaD",
+                "DDD",
+                'a', backpack,
+                'E', Items.emerald,
+                'D', Items.diamond
+        );
+        
         Chest = reviewRecipe(
                 "CWC",
                 "WaW",
@@ -678,6 +687,7 @@ public class BackpackRecipesList
     public final Object[] Wolf;
     public final Object[] Yellow;
     public final Object[] Zombie;
+    public final Object[] ModdedNetwork;
 
 
     public static Object[] reviewRecipe(Object... objects)
