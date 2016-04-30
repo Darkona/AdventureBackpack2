@@ -47,7 +47,6 @@ import com.darkona.adventurebackpack.develop.msg;
  */
 public class PlayerEventHandler
 {
-
     @SuppressWarnings("unused")
 	private static int tickCounter = 0;
     @SubscribeEvent
@@ -63,7 +62,6 @@ public class PlayerEventHandler
         }
 
     }
-
     @SubscribeEvent
     public void joinPlayer(EntityJoinWorldEvent event)
     {
@@ -80,6 +78,7 @@ public class PlayerEventHandler
                 {
                     BackpackProperty.get(player).loadNBTData(playerData);
                     BackpackProperty.syncToNear(player);
+                	BackpackProperty.sync(player);
                     LogHelper.info("Stored properties retrieved");
                 }
             }
@@ -87,15 +86,16 @@ public class PlayerEventHandler
 
     }
 
-
     @SubscribeEvent
-    public void playerLogsIn(PlayerEvent.PlayerLoggedInEvent event)
+    public NBTTagCompound playerLogsIn(PlayerEvent.PlayerLoggedInEvent event)
     {
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
+                return new NBTTagCompound();
+              }
+		return null;
         }
-    }
 
     @SubscribeEvent
     public void playerTravelsAcrossDimensions(PlayerEvent.PlayerChangedDimensionEvent event)

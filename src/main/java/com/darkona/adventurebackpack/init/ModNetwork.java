@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.init;
 import com.darkona.adventurebackpack.network.*;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -38,15 +39,12 @@ public class ModNetwork
         registerMessage(EquipUnequipBackWearablePacket.class, EquipUnequipBackWearablePacket.Message.class);
 
     }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void registerClientSide(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
         messages++;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static void registerMessage(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
@@ -71,5 +69,6 @@ public class ModNetwork
     public static void sendToDimension(IMessage message, EntityPlayer player)
     {
         net.sendToDimension(message, player.dimension);
+        BackpackProperty.sync(player);
     }
 }

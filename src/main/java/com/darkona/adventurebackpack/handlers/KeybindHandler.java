@@ -34,8 +34,8 @@ public class KeybindHandler
         {
             return Key.JUMP;
         }
-        return Key.UNKNOWN;
-    }
+            return Key.UNKNOWN;
+      }
 
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event)

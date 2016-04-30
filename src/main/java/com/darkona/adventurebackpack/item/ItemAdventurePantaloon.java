@@ -21,7 +21,7 @@ public class ItemAdventurePantaloon extends ArmorAB
     public ItemAdventurePantaloon()
     {
         super(2, 2);
-        setUnlocalizedName("adventureSuit");
+        setUnlocalizedName("pants");
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ItemAdventurePantaloon extends ArmorAB
     @SideOnly(Side.CLIENT)
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
-        return Resources.modelTextureResourceString("adventureSuit_texture.png");
+        return Resources.modelTextureResourceString("adventurepants_texture.png");
     }
 
     @Override

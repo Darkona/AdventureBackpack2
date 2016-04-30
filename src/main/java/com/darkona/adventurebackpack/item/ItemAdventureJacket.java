@@ -15,12 +15,13 @@ import net.minecraft.util.IIcon;
  *
  * @author Darkona
  */
+@SuppressWarnings("unused")
 public class ItemAdventureJacket extends ArmorAB
 {
 
     public ItemAdventureJacket()
     {
-        super(2, 2);
+        super(1, 1);
         setUnlocalizedName("adventureSuit");
     }
 
@@ -42,12 +43,4 @@ public class ItemAdventureJacket extends ArmorAB
     {
         return Resources.modelTextureResourceString("adventureSuit_texture.png");
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack itemStack, int armorSlot)
-    {
-        return new ModelFullArmor();
-    }
-
 }

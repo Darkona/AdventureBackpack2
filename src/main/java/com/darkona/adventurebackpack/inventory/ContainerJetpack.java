@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
  */
 public class ContainerJetpack extends Container implements IWearableContainer
 {
-    InventorySteamJetpack inventory;
+    InventoryCoalJetpack inventory;
     EntityPlayer player;
     private final int
     PLAYER_HOT_START = 0;
@@ -24,7 +24,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
     boolean wearing;
 
-    public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inventory, boolean wearing)
+    public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack inventory, boolean wearing)
     {
         this.player = player;
         this.inventory = inventory;
@@ -62,11 +62,11 @@ public class ContainerJetpack extends Container implements IWearableContainer
 
         //Bucket Slots
         // bucket in
-        addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_IN_SLOT, 30, 22));
+        addSlotToContainer(new SlotFluid(inventory, InventoryCoalJetpack.BUCKET_IN_SLOT, 30, 22));
         // bucket out
-        addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_OUT_SLOT, 30, 52));
+        addSlotToContainer(new SlotFluid(inventory, InventoryCoalJetpack.BUCKET_OUT_SLOT, 30, 52));
         // fuel
-        addSlotToContainer(new SlotFuel(inventory,InventorySteamJetpack.FUEL_SLOT, 77, 64));
+        addSlotToContainer(new SlotFuel(inventory,InventoryCoalJetpack.FUEL_SLOT, 77, 64));
 
     }
     @Override

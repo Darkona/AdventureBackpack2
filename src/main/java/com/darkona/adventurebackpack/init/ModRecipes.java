@@ -19,7 +19,6 @@ import java.lang.reflect.Field;
  */
 public class ModRecipes
 {
-    @SuppressWarnings("unused")
 	private static ItemStack bc(int damage)
     {
         return BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), damage);
@@ -37,7 +36,14 @@ public class ModRecipes
                 'x', Items.coal,
                 'c', "cobblestone"
         ));
-
+        //Inflatable Boat 
+        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 7),
+                "   ",
+                "w w",
+                "sws",
+                'w', Blocks.wool,
+                's', Blocks.sand
+        );
         //Sleeping Bag
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 1),
                 "  X",
@@ -53,6 +59,17 @@ public class ModRecipes
                 "GIG",
                 'G', Blocks.glass,
                 'I', Items.iron_ingot
+        );
+        
+        
+        //Inflatable Boat (Motorized)
+        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 8),
+                " B ",
+                " E ",
+                " H ",
+                'B', new ItemStack(ModItems.component, 1, 7),
+                'H', new ItemStack(ModItems.component, 1, 9),
+                'E', new ItemStack(ModItems.component, 1, 5)
         );
 
         //Hose Nozzle
@@ -78,7 +95,7 @@ public class ModRecipes
                 'S', Items.stick
         );
 
-
+        //Mechete
         GameRegistry.addRecipe(new ItemStack(ModItems.machete),
                 " I ",
                 " I ",
@@ -86,7 +103,7 @@ public class ModRecipes
                 'I', Items.iron_ingot,
                 'H', new ItemStack(ModItems.component, 1, 4)
         );
-
+        //Adventure Hats
         GameRegistry.addRecipe(new ItemStack(ModItems.adventureHat),
                 "   ",
                 "nC ",
@@ -95,16 +112,23 @@ public class ModRecipes
                 'C', Items.leather_helmet,
                 'L', Items.leather
         );
-/*
+        //Adventure Suit
         GameRegistry.addRecipe(new ItemStack(ModItems.adventureSuit),
                 " V ",
                 " W ",
-                " P ",
+                "   ",
                 'V', Items.leather_chestplate,
-                'W', Blocks.wool,
-                'P', Items.leather_leggings
+                'W', Blocks.wool
         );
-*/
+        //Adventure Pants
+        GameRegistry.addRecipe(new ItemStack(ModItems.Pantaloon),
+                " V ",
+                " W ",
+                "   ",
+                'V', Items.leather_leggings,
+                'W', Blocks.wool
+        );
+        //Piston Boots
         GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
                 " B ",
                 "PSP",
@@ -112,30 +136,17 @@ public class ModRecipes
                 'P', Blocks.piston,
                 'S', Items.slime_ball
         );
-
+        //Melon Juice Bottle
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.melonJuiceBottle),
                 Items.melon, Items.potionitem
         );
-
+       //Hose
         GameRegistry.addRecipe(new ItemStack(ModItems.hose),
                 "NGG",
-                "  G",
                 "  G",
                 'N', new ItemStack(ModItems.component, 1, 3),
                 'G', new ItemStack(Items.dye, 1, 2)
         );
-
-        /*GameRegistry.addRecipe(a,
-                "LGL",
-                "TCT",
-                "LSL",
-                'L', Items.leather,
-                'G', Items.gold_ingot,
-                'T', new ItemStack(ModItems.component, 1, 2),
-                'S', new ItemStack(ModItems.component, 1, 1),
-                'C', Blocks.chest
-        );*/
-
         BackpackRecipesList br = new BackpackRecipesList();
         int counter = 0;
         for (int i = 0; i < BackpackNames.backpackNames.length; i++)
@@ -196,7 +207,7 @@ public class ModRecipes
             );
         }
 
-        if(ConfigHandler.IS_BUILDCRAFT)
+        //change to make it not support BuildCraft there are people out there who dont like that mod 
         {
             //Copter Engine
             GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
@@ -220,6 +231,26 @@ public class ModRecipes
                     'F', Blocks.fence
             );
 
+            //Hydro Blades
+            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 9),
+                    " F ",
+                    " F ",
+                    "III",
+                    'I', Items.iron_ingot,
+                    'F', Blocks.fence
+            );
+            
+            //Clockwork Crossbow
+            GameRegistry.addRecipe(new ItemStack(ModItems.cwxbow),
+                    "   ",
+                    "BA ",
+                    "SW ",
+                    'B', Items.bow,
+                    'A', Items.arrow,
+                    'S', Items.stick,
+                    'W', Blocks.planks
+            );
+            
             //Copter Pack
             GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
                     "WBW",
@@ -233,37 +264,19 @@ public class ModRecipes
                     'D', Items.diamond,
                     'I', Items.iron_ingot
             );
-        }
 
-        //Ok let's try getting railcraft stuff.
-        //Seriously this is hard
-        if(ConfigHandler.IS_RAILCRAFT)
-        {
-            try
-            {
-                LogHelper.info("Railcraft is present. Adding Steam Jetpack.");
-                ItemStack firebox = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.firebox.solid", 1);
-                ItemStack boiler = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.tank.pressure.low", 1);
-                if(firebox != null && boiler != null)
-                {
-                    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.steamJetpack),
-                            "BWT",
-                            "GIG",
-                            "xWC",
-                            'W', "plankWood",
-                            'G', "ingotGold",
-                            'I',"ingotIron",
-                            'B', boiler,
-                            'x', firebox,
-                            'C', new ItemStack(Items.dye, 1, 2),
-                            'T', new ItemStack(ModItems.component, 1, 2)
-                    ));
-                }
-
-            }catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
+        //CoalJetpack (Broken Test out)
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.CoalJetpack),
+                "SWT",
+                "GIG",
+                "FWS",
+                'W', "plankWood",
+                'G', "ingotGold",
+                'I',"ingotIron",
+                'S', "Stone",
+                'F', "Furnace",
+                'T', new ItemStack(ModItems.component, 1, 2)
+          ));
         }
     }
 }

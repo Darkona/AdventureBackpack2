@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.handlers;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
-import com.darkona.adventurebackpack.client.gui.GuiSteamJetpack;
+import com.darkona.adventurebackpack.client.gui.GuiCoalJetpack;
 import com.darkona.adventurebackpack.inventory.*;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -68,13 +68,13 @@ public class GuiHandler implements IGuiHandler
             case JETPACK_HOLDING:
                 if (Wearing.isHoldingSteam(player))
                 {
-                    return new ContainerJetpack(player, new InventorySteamJetpack(Wearing.getHoldingSteam(player)),false);
+                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingSteam(player)),false);
                 }
                 break;
             case JETPACK_WEARING:
                 if (Wearing.isWearingSteam(player))
                 {
-                    return new ContainerJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
+                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getWearingSteam(player)), true);
                 }
                 break;
             default:
@@ -124,13 +124,13 @@ public class GuiHandler implements IGuiHandler
             case JETPACK_HOLDING:
                 if (Wearing.isHoldingSteam(player))
                 {
-                    return new GuiSteamJetpack(player, new InventorySteamJetpack(Wearing.getHoldingSteam(player)),false);
+                    return new GuiCoalJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingSteam(player)),false);
                 }
                 break;
             case JETPACK_WEARING:
                 if (Wearing.isWearingSteam(player))
                 {
-                    return new GuiSteamJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
+                    return new GuiCoalJetpack(player, new InventoryCoalJetpack(Wearing.getWearingSteam(player)), true);
                 }
                 break;
             default:
