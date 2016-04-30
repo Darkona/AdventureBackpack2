@@ -4,7 +4,7 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.WearableModePacket;
@@ -403,7 +403,7 @@ public class ServerActions
 
     public static void toggleSteamJetpack(EntityPlayer player, ItemStack jetpack, byte on_off)
     {
-        InventorySteamJetpack inv = new InventorySteamJetpack(jetpack);
+        InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
         if(inv.getStatus())
         {
             inv.setStatus(false);

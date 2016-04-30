@@ -20,7 +20,6 @@ public class RendererHose implements IItemRenderer
 
     private static RenderItem renderHose = new RenderItem();
     private FontRenderer fontRenderer;
-    @SuppressWarnings("unused")
 	private Tessellator tessellator = Tessellator.instance;
 
     @Override

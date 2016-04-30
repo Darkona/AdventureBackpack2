@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.client.audio;
 
-import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
@@ -61,8 +61,8 @@ public class BoilingBoilerSound extends MovingSound
             return;
         }
 
-        InventorySteamJetpack inv = new InventorySteamJetpack(Wearing.getWearingSteam(thePlayer));
-        if(inv.isBoiling() && inv.getWaterTank().getFluidAmount() > 0)
+        InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingSteam(thePlayer));
+        if(inv.isLava() && inv.getWaterTank().getFluidAmount() > 0)
         {
             xPosF = (float)thePlayer.posX;
             yPosF = (float)thePlayer.posY;

@@ -15,7 +15,7 @@ public class ModelFullArmor extends ModelBiped
 {
     public ModelFullArmor()
     {
-        super(0.1F);
+        super(0.2F);
     }
 
     @Override
