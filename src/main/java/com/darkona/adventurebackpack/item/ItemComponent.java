@@ -77,13 +77,6 @@ public class ItemComponent extends ItemAB
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        return super.getUnlocalizedName(names[getDamage(stack)-1]);
-
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
@@ -256,7 +249,6 @@ public class ItemComponent extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        LogHelper.info("Damage: " + stack.getItemDamage());
         if(stack.getItemDamage() == 7)return placeBoat(stack,world,player,false);
         if(stack.getItemDamage() == 8)return placeBoat(stack,world,player,true);
         return stack;
