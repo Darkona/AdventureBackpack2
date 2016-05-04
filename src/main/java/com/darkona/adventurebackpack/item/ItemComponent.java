@@ -77,8 +77,15 @@ public class ItemComponent extends ItemAB
     }
 
     @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        return super.getUnlocalizedName(names[getDamage(stack)-1]);
+
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
     {
         for (int i = 1; i <= names.length; i++)
@@ -105,38 +112,31 @@ public class ItemComponent extends ItemAB
             int i1 = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
             byte b0 = 0;
             byte b1 = 0;
-
             if (i1 == 0)
             {
                 b1 = 1;
             }
-
             if (i1 == 1)
             {
                 b0 = -1;
             }
-
             if (i1 == 2)
             {
                 b1 = -1;
             }
-
             if (i1 == 3)
             {
                 b0 = 1;
             }
-
             if (player.canPlayerEdit(x, y, z, meta, itemStack) && player.canPlayerEdit(x + b0, y, z + b1, meta, itemStack))
             {
                 if (world.isAirBlock(x, y, z) && world.isAirBlock(x + b0, y, z + b1) && World.doesBlockHaveSolidTopSurface(world, x, y - 1, z) && World.doesBlockHaveSolidTopSurface(world, x + b0, y - 1, z + b1))
                 {
                     world.setBlock(x, y, z, blockbed, i1, 3);
-
                     if (world.getBlock(x, y, z) == blockbed)
                     {
                         world.setBlock(x + b0, y, z + b1, blockbed, i1 + 8, 3);
                     }
-
                     --itemStack.stackSize;
                     return true;
                 } else
@@ -178,8 +178,7 @@ public class ItemComponent extends ItemAB
             Vec3 vec32 = player.getLook(f);
             boolean flag = false;
             float f9 = 1.0F;
-            @SuppressWarnings("rawtypes")
-			List list = world.getEntitiesWithinAABBExcludingEntity(player, player.boundingBox.addCoord(vec32.xCoord * d3, vec32.yCoord * d3, vec32.zCoord * d3).expand((double) f9, (double) f9, (double) f9));
+            List list = world.getEntitiesWithinAABBExcludingEntity(player, player.boundingBox.addCoord(vec32.xCoord * d3, vec32.yCoord * d3, vec32.zCoord * d3).expand((double) f9, (double) f9, (double) f9));
             int i;
 
             for (i = 0; i < list.size(); ++i)
