@@ -243,8 +243,8 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             player.motionY += 0.1;
         } else
         {
-            if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.32);
-            if (player.posY > 100) player.motionY = 0.32 - ((player.posY % 100) / 100);
+            if (player.posY < 256) player.motionY = Math.max(player.motionY, 0.32);
+            if (player.posY > 256) player.motionY = 0.32 - ((player.posY % 256) / 256);
         }
     }
 
