@@ -24,7 +24,7 @@ public class texturemsg {
 	  public static void handleJoin(EntityPlayer player)
 	  {
 	    if (istexture(player.getUniqueID().toString())) {
-	      ChatHandler.sendServerMessage("" + EnumChatFormatting.AQUA + "❤AdventureBackPack Mod Graphic Designer❤ " + EnumChatFormatting.UNDERLINE + player.getDisplayName() + EnumChatFormatting.AQUA + " has joined.");
+	      ChatHandler.sendServerMessage("" + EnumChatFormatting.AQUA + "~~AdventureBackPack Mod Graphic Designer~~ " + EnumChatFormatting.UNDERLINE + player.getDisplayName() + EnumChatFormatting.AQUA + " has joined.");
 	    }
 	  }
 	}
