@@ -265,16 +265,16 @@ public class ModRecipes
                     'I', Items.iron_ingot
             );
 
-        //CoalJetpack (Broken Test out)
+        //CoalJetpack
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.CoalJetpack),
                 "SWT",
                 "GIG",
                 "FWS",
-                'W', "plankWood",
-                'G', "ingotGold",
-                'I',"ingotIron",
-                'S', "Stone",
-                'F', "Furnace",
+                'W',  Blocks.planks,
+                'G', Items.gold_ingot,
+                'I', Items.iron_ingot,
+                'S', Blocks.stone,
+                'F', Blocks.furnace,
                 'T', new ItemStack(ModItems.component, 1, 2)
           ));
         }
