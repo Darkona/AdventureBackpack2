@@ -1,6 +1,6 @@
 {
   "Dev": {
-    "capeUrl": "https://github.com/runescapejon/AdventureBackpack2/blob/master/capes/fx_cape.png",
+    "capeUrl": "https://raw.githubusercontent.com/runescapejon/AdventureBackpack2/master/capes/fx_cape.png",
     "users": [
       "runescapejon",
       "ModdedNetwork"
@@ -13,7 +13,7 @@
   	]
   },
   "Fxzionz_Pure": {
-  	"capeUrl": "https://github.com/runescapejon/AdventureBackpack2/blob/master/capes/fx_cape.png",
+  	"capeUrl": "https://raw.githubusercontent.com/runescapejon/AdventureBackpack2/master/capes/fx_cape.png",
   	"users": [
   		"Fxzionz_Pure"
   	]
