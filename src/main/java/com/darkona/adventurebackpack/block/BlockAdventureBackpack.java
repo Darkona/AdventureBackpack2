@@ -110,7 +110,6 @@ public class BlockAdventureBackpack extends BlockContainer
     	final TileEntity tile = world.getTileEntity(x, y, z);
     	return (tile instanceof TileAdventureBackpack) ? ((TileAdventureBackpack) tile).getColorName() : "error";
     }
-    
     @Override
     public boolean canRenderInPass(int pass)
     {
@@ -126,7 +125,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public float getEnchantPowerBonus(World world, int x, int y, int z)
     {
-        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 10 : 0;
+        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 10 : 0; 
     }
 
     @Override
@@ -214,14 +213,18 @@ public class BlockAdventureBackpack extends BlockContainer
     {
         return false;
     }
-
     @Override
     public String getUnlocalizedName()
     {
         return "blockAdventureBackpack";
     }
 
-    @Override
+    private void setUnlocalizedName(String string) {
+        setUnlocalizedName("blockAdventureBackpack");
+		
+	}
+
+	@Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
     {
