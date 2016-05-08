@@ -131,7 +131,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         //Suction
         if(player.isInWater())
         {
-            inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER,2),true);
+            inv.getLavaTank().fill(new FluidStack(FluidRegistry.LAVA,2),true);
         }
 
         //Elevation
@@ -185,7 +185,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         boolean Lava = inv.isLava();
         boolean leaking = inv.isLeaking();
 
-        if (temperature >= 100 && inv.getWaterTank().getFluidAmount() > 0)
+        if (temperature >= 100 && inv.getLavaTank().getFluidAmount() > 0)
         {
             if(!Lava)Lava = true;
 
@@ -205,9 +205,9 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         {
             if (inv.getCoalTank().getFluidAmount() < inv.getCoalTank().getCapacity())
             {
-                if (inv.getWaterTank().getFluid() != null)
+                if (inv.getLavaTank().getFluid() != null)
                 {
-                    int lava = inv.getWaterTank().drain((temperature / 100), true).amount;
+                    int lava = inv.getLavaTank().drain((temperature / 100), true).amount;
                     inv.getCoalTank().fill(new FluidStack(FluidRegistry.getFluid("lava"), lava * 4), true);
                     inv.dirtyTanks();
                 }

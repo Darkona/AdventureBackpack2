@@ -19,7 +19,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
 {
     public static final boolean OFF = false;
     public static final boolean ON = true;
-    private FluidTank waterTank = new FluidTank(6000);
+    private FluidTank LavaTank = new FluidTank(6000);
     private FluidTank CoalTank = new FluidTank(12000);
     private ItemStack[] inventory = new ItemStack[3];
     private int temperature = 25;
@@ -72,7 +72,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
         if(compound.hasKey("jetpackData"))
         {
             NBTTagCompound jetpackData = compound.getCompoundTag("jetpackData");
-            waterTank.readFromNBT(jetpackData.getCompoundTag("waterTank"));
+            LavaTank.readFromNBT(jetpackData.getCompoundTag("LavaTank"));
             CoalTank.readFromNBT(jetpackData.getCompoundTag("CoalTank"));
             temperature = jetpackData.getInteger("temperature");
             status = jetpackData.getBoolean("status");
@@ -108,7 +108,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
             jetpackData = new NBTTagCompound();
         }
 
-        jetpackData.setTag("waterTank",waterTank.writeToNBT(new NBTTagCompound()));
+        jetpackData.setTag("LavaTank",LavaTank.writeToNBT(new NBTTagCompound()));
         jetpackData.setTag("CoalTank",CoalTank.writeToNBT(new NBTTagCompound()));
         jetpackData.setInteger("temperature", temperature);
         jetpackData.setBoolean("status", status);
@@ -138,7 +138,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public FluidTank[] getTanksArray()
     {
-        FluidTank[] tanks = {waterTank,CoalTank};
+        FluidTank[] tanks = {LavaTank,CoalTank};
         return tanks;
     }
 
@@ -163,7 +163,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.getCompoundTag("jetPackData").setTag("waterTank",waterTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag("jetPackData").setTag("LavaTank",LavaTank.writeToNBT(new NBTTagCompound()));
         containerStack.stackTagCompound.getCompoundTag("jetPackData").setTag("CoalTank",CoalTank.writeToNBT(new NBTTagCompound()));
     }
 
@@ -292,13 +292,13 @@ public class InventoryCoalJetpack implements IInventoryTanks
             if (i == 0)
             {
                 ItemStack container = getStackInSlot(i);
-                if(FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
+                if(FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isContainerForFluid(container, FluidRegistry.LAVA))
                 {
-                    InventoryActions.transferContainerTank(this, waterTank, i);
+                    InventoryActions.transferContainerTank(this, LavaTank, i);
                 }else
-                if(FluidContainerRegistry.isEmptyContainer(container) && waterTank.getFluid()!=null && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
+                if(FluidContainerRegistry.isEmptyContainer(container) && LavaTank.getFluid()!=null && FluidUtils.isContainerForFluid(container, FluidRegistry.LAVA))
                 {
-                    InventoryActions.transferContainerTank(this, waterTank, i);
+                    InventoryActions.transferContainerTank(this, LavaTank, i);
                 }
             }
         }
@@ -349,7 +349,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if(slot == BUCKET_IN_SLOT)return SlotFluid.valid(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.WATER);
+        if(slot == BUCKET_IN_SLOT)return SlotFluid.valid(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.LAVA);
         if(slot == FUEL_SLOT)return TileEntityFurnace.isItemFuel(stack);
         return false;
     }
@@ -359,9 +359,9 @@ public class InventoryCoalJetpack implements IInventoryTanks
         return containerStack;
     }
 
-    public FluidTank getWaterTank()
+    public FluidTank getLavaTank()
     {
-        return waterTank;
+        return LavaTank;
     }
 
     public FluidTank getCoalTank()
@@ -490,4 +490,9 @@ public class InventoryCoalJetpack implements IInventoryTanks
 		long elapsedTimesince = System.currentTimeMillis() - systemTime;
 
     }
+
+	public boolean isBoiling() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
