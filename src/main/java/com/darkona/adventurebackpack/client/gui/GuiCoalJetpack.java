@@ -87,7 +87,7 @@ public class GuiCoalJetpack extends GuiWithTanks
     {
         this.mc.renderEngine.bindTexture(texture);
         if(wearing) inventory = new InventoryCoalJetpack(Wearing.getWearingSteam(player));
-        FluidTank water = inventory.getWaterTank();
+        FluidTank water = inventory.getLavaTank();
         FluidTank steam = inventory.getCoalTank();
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
