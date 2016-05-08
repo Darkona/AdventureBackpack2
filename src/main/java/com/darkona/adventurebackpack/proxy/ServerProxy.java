@@ -105,4 +105,12 @@ public class ServerProxy implements IProxy
 	public void init(FMLInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(new DeveloperJoining());
 	}
+
+	  public void cape() {}
+
+	@Override
+	public void capes() {
+
+		
+	}
 }

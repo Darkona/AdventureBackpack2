@@ -29,4 +29,5 @@ public abstract class CommonProxy implements IProxy {
 		public void setPlayer(EntityPlayerMP player) {
 			this.player = player;
 		}
+		  public void cape() {}
 }

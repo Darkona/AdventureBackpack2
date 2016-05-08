@@ -20,6 +20,8 @@ import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
+import com.jadarstudios.developercapes.DevCapes;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -60,7 +62,8 @@ public class ClientProxy implements IProxy
         registerKeybindings();
         MinecraftForge.EVENT_BUS.register(new GuiOverlay(Minecraft.getMinecraft()));
     }
-
+    
+    
     public void initNetwork()
     {
 
@@ -157,5 +160,16 @@ public class ClientProxy implements IProxy
             }
         }
     }
+    public void initCapes()
+    {
+    DevCapes.getInstance().registerConfig("https://raw.githubusercontent.com/runescapejon/Adventurebackpack-Capes/master/capes.json");
+    }
+
+
+	@Override
+	public void capes() {
+		// TODO Auto-generated method stub
+		
+	} 
 
 }
