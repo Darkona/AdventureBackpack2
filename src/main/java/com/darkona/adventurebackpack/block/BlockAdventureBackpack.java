@@ -107,8 +107,10 @@ public class BlockAdventureBackpack extends BlockContainer
 
     private String getAssociatedTileColorName(IBlockAccess world, int x, int y, int z)
     {
-        return ((TileAdventureBackpack) world.getTileEntity(x, y, z)).getColorName();
+    	final TileEntity tile = world.getTileEntity(x, y, z);
+    	return (tile instanceof TileAdventureBackpack) ? ((TileAdventureBackpack) tile).getColorName() : "error";
     }
+    
     @Override
     public boolean canRenderInPass(int pass)
     {
