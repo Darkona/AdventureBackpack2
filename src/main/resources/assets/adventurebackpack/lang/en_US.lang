@@ -39,6 +39,8 @@ item.adventurebackpack:adventureHat.name=Adventurer's Fedora
 item.adventurebackpack:pistonBoots.name=Piston Boots
 
 ## Blocks
+blockAdventureBackpack.name=Adventure Backpacks
+block.adventurebackpack:block.AdventureBackpack.name=Adventure Backpack
 block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Block
 block.adventurebackpack:CampFire.name=Campfire
 block.adventurebackpack:SleepingBag.name=Sleeping Bag
@@ -48,7 +50,7 @@ itemGroup.adventurebackpack=Adventure Backpack Mod
 
 ## Keybindings
 keys.adventureBackpack.category=Adventure Backpack
-keys.adventureBackpack.openBackpackInventory=Open Inventory Key
+keys.adventureBackpack.openBackpackInventory=Open AdventureBackPack Key
 keys.adventureBackpack.switchHoseTank=Toggle Action Key
 
 ## Fluids
