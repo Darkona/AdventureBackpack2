@@ -64,7 +64,7 @@ public enum UserManager {
         if (capeInstance != null) {
             userInstance.capes.add(capeInstance);
         } else {
-            DevCapes.logger.error(String.format("Error parsing cape, %s", cape.toString()));
+            DevCapes.logger.info(String.format("Error parsing cape, %s", cape.toString()));
         }
 
         return userInstance;

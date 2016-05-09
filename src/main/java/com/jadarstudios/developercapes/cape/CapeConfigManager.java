@@ -130,6 +130,11 @@ public enum CapeConfigManager {
             instance = CapeConfigManager.INSTANCE.parse(json);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+        	try {
+        		is.close();
+        	} catch (IOException e) {
+        	}
         }
 
         return instance;

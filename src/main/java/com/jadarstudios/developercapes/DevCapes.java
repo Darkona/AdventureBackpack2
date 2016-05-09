@@ -9,7 +9,9 @@ package com.jadarstudios.developercapes;
 
 import com.jadarstudios.developercapes.cape.CapeConfig;
 import com.jadarstudios.developercapes.cape.CapeConfigManager;
+
 import net.minecraftforge.common.MinecraftForge;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +44,8 @@ public class DevCapes {
     /**
      * Gets and returns an InputStream for a URL.
      */
-    public InputStream getStreamForURL(URL url) {
+    @SuppressWarnings("finally")
+	public InputStream getStreamForURL(URL url) {
         InputStream is = null;
         try {
             URLConnection connection = url.openConnection();
@@ -59,8 +62,11 @@ public class DevCapes {
 
     /**
      * Gets and returns an InputStream for a file.
+     *
+     * InputStream.close() needs to be called on this after you're done!
      */
-    public InputStream getStreamForFile(File file) {
+    @SuppressWarnings({ "resource", "finally" })
+	public InputStream getStreamForFile(File file) {
         InputStream is = null;
         try {
             is = new FileInputStream(file);
@@ -93,7 +99,8 @@ public class DevCapes {
      *                to add
      * @return the id of the registered config
      */
-    public int registerConfig(String jsonUrl) {
+    @SuppressWarnings("finally")
+	public int registerConfig(String jsonUrl) {
         int id = -1;
         try {
             URL url = new URL(jsonUrl);

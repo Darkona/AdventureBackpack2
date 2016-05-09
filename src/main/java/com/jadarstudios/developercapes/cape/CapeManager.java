@@ -41,10 +41,11 @@ public enum CapeManager {
         return cape;
     }
 
-    public ICape parse(String name, Object object) {
+    @SuppressWarnings("finally")
+	public ICape parse(String name, Object object) {
         ICape cape = null;
         if (!(object instanceof String)) {
-            DevCapes.logger.error(String.format("Cape, %s, could not be parsed because it is not a String!", object));
+            DevCapes.logger.info(String.format("Cape, %s, could not be parsed because it is not a String!", object));
             return cape;
         }
 
