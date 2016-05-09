@@ -27,6 +27,6 @@ public interface IProxy
 	void init(FMLInitializationEvent event);
 
 	public void registerRenderInformation();
-	
-	public void capes();
+
+	void Capes();
 }

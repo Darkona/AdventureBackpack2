@@ -160,16 +160,9 @@ public class ClientProxy implements IProxy
             }
         }
     }
-    public void initCapes()
-    {
+	@Override
+    public void Capes(){
     DevCapes.getInstance().registerConfig("https://raw.githubusercontent.com/runescapejon/Adventurebackpack-Capes/master/capes.json");
     }
-
-
-	@Override
-	public void capes() {
-		// TODO Auto-generated method stub
 		
-	} 
-
-}
+	}
