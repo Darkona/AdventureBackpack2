@@ -115,6 +115,13 @@ public class AdventureBackpack
         ConfigHandler.IS_THAUM = Loader.isModLoaded("Thaumcraft");
         ConfigHandler.IS_TWILIGHT = Loader.isModLoaded("TwilightForest");
         ConfigHandler.IS_ENVIROMINE = Loader.isModLoaded("EnviroMine");
+        ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
+
+
+        if (ConfigHandler.IS_BUILDCRAFT)
+        {
+            LogHelper.info("Buildcraft is present. Acting accordingly");
+        }
 
         if (ConfigHandler.IS_TWILIGHT)
         {
