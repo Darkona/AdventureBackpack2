@@ -2,12 +2,15 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.Key;
+import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -78,12 +81,6 @@ public class ClientEventHandler
         {
             //LogHelper.debug("Mouse Wheel moving");
             EntityClientPlayerMP player = mc.thePlayer;
-            boolean hasCape = player.func_152122_n();
-            hasCape = event.buttonstate && hasCape;
-            @SuppressWarnings("unused")
-			float f4;
-
-            if (hasCape && !player.isInvisible() && !player.getHideCape())
             if (player != null && !player.isDead && player.isSneaking())
             {
                 ItemStack backpack = Wearing.getWearingBackpack(player);

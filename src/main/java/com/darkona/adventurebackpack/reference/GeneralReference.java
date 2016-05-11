@@ -16,13 +16,14 @@ public class GeneralReference
 
     public static void init()
     {
-        liquidFuels.put("lava", 1.0f);
+        liquidFuels.put("lava", 5.0f);
         liquidFuels.put("fuel", 1.0f);
-        liquidFuels.put("oil", 1.5f);
-        liquidFuels.put("bioethanol", 1.2f);
+        liquidFuels.put("oil", 3.0f);
+        liquidFuels.put("bioethanol", 1.5f);
         liquidFuels.put("biofuel", 1.0f);
-        liquidFuels.put("creosote", 1.8f);
-        liquidFuels.put("coal", 0.8f);
+        liquidFuels.put("creosote", 7.0f);
+        liquidFuels.put("coal", 2.0f);
+        liquidFuels.put("nitrofuel", 0.5f);
     }
 
     public static boolean isValidFuel(Fluid fluid)

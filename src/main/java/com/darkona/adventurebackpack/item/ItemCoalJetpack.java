@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -125,13 +126,13 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             runFirebox(inv);
         }
         runHeater(inv, world, player);
-        runLava(inv, world, player);
+        runWater(inv, world, player);
         inv.dirtyBoiler();
 
         //Suction
         if(player.isInWater())
         {
-            inv.getLavaTank().fill(new FluidStack(FluidRegistry.LAVA,2),true);
+            inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER,2),true);
         }
 
         //Elevation
@@ -177,17 +178,17 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.closeInventory();
     }
 
-    private void runLava(InventoryCoalJetpack inv, World world, EntityPlayer player)
+    private void runWater(InventoryCoalJetpack inv, World world, EntityPlayer player)
     {
         int temperature = inv.getTemperature();
         boolean mustSSSSS = !inv.isLeaking();
-        boolean mustBlublub = !inv.isLava();
-        boolean Lava = inv.isLava();
+        boolean mustBlublub = !inv.isWater();
+        boolean Water = inv.isWater();
         boolean leaking = inv.isLeaking();
 
-        if (temperature >= 100 && inv.getLavaTank().getFluidAmount() > 0)
+        if (temperature >= 100 && inv.getWaterTank().getFluidAmount() > 0)
         {
-            if(!Lava)Lava = true;
+            if(!Water)Water = true;
 
             if (!world.isRemote && mustBlublub)
             {
@@ -195,20 +196,20 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             }
         } else
         {
-            if (Lava)
+            if (Water)
             {
-                Lava = false;
+                Water = false;
             }
         }
 
-        if (Lava)
+        if (Water)
         {
             if (inv.getCoalTank().getFluidAmount() < inv.getCoalTank().getCapacity())
             {
-                if (inv.getLavaTank().getFluid() != null)
+                if (inv.getWaterTank().getFluid() != null)
                 {
-                    int lava = inv.getLavaTank().drain((temperature / 100), true).amount;
-                    inv.getCoalTank().fill(new FluidStack(FluidRegistry.getFluid("lava"), lava * 4), true);
+                    int water = inv.getWaterTank().drain((temperature / 100), true).amount;
+                    inv.getCoalTank().fill(new FluidStack(FluidRegistry.getFluid("water"), water * 4), true);
                     inv.dirtyTanks();
                 }
             }
@@ -231,7 +232,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
                 }
             }
         }
-        inv.setLava(Lava);
+        inv.setWater(Water);
         inv.setLeaking(leaking);
         inv.setTemperature(temperature);
     }
@@ -268,7 +269,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
-        inv.setLava(false);
+        inv.setWater(false);
         inv.setInUse(false);
         inv.setLeaking(false);
         inv.setStatus(false);
@@ -281,6 +282,15 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public ModelBiped getWearableModel(ItemStack wearable)
     {
         return ClientProxy.modelCoalJetpack.setWearable(wearable);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+    {
+        String modelTexture;
+        modelTexture = Resources.modelTextures("CoalJetpack").toString();
+
+        return modelTexture;
     }
 
     @Override

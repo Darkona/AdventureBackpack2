@@ -19,7 +19,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
 {
     public static final boolean OFF = false;
     public static final boolean ON = true;
-    private FluidTank LavaTank = new FluidTank(6000);
+    private FluidTank WaterTank = new FluidTank(6000);
     private FluidTank CoalTank = new FluidTank(12000);
     private ItemStack[] inventory = new ItemStack[3];
     private int temperature = 25;
@@ -27,7 +27,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
     private int burnTicks = 0;
     private ItemStack containerStack;
     private long systemTime = 0;
-    private boolean Lava = false;
+    private boolean Water = false;
     private boolean leaking = false;
     private boolean inUse = false;
     public int currentItemBurnTime = 0;
@@ -72,7 +72,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
         if(compound.hasKey("jetpackData"))
         {
             NBTTagCompound jetpackData = compound.getCompoundTag("jetpackData");
-            LavaTank.readFromNBT(jetpackData.getCompoundTag("LavaTank"));
+            WaterTank.readFromNBT(jetpackData.getCompoundTag("WaterTank"));
             CoalTank.readFromNBT(jetpackData.getCompoundTag("CoalTank"));
             temperature = jetpackData.getInteger("temperature");
             status = jetpackData.getBoolean("status");
@@ -80,7 +80,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
             coolTicks = jetpackData.getInteger("coolTicks");
             systemTime = jetpackData.getLong("systemTime");
             inUse = jetpackData.getBoolean("inUse");
-            Lava = jetpackData.getBoolean("lava");
+            Water = jetpackData.getBoolean("water");
             leaking = jetpackData.getBoolean("leaking");
             currentItemBurnTime = jetpackData.getInteger("currentBurn");
             NBTTagList items = jetpackData.getTagList("inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
@@ -108,7 +108,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
             jetpackData = new NBTTagCompound();
         }
 
-        jetpackData.setTag("LavaTank",LavaTank.writeToNBT(new NBTTagCompound()));
+        jetpackData.setTag("WaterTank",WaterTank.writeToNBT(new NBTTagCompound()));
         jetpackData.setTag("CoalTank",CoalTank.writeToNBT(new NBTTagCompound()));
         jetpackData.setInteger("temperature", temperature);
         jetpackData.setBoolean("status", status);
@@ -116,7 +116,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
         jetpackData.setInteger("coolTicks", coolTicks);
         jetpackData.setLong("systemTime",systemTime);
         jetpackData.setBoolean("inUse", inUse);
-        jetpackData.setBoolean("lava",Lava);
+        jetpackData.setBoolean("water",Water);
         jetpackData.setBoolean("leaking",leaking);
         jetpackData.setInteger("currentBurn",currentItemBurnTime);
         NBTTagList items = new NBTTagList();
@@ -138,7 +138,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public FluidTank[] getTanksArray()
     {
-        FluidTank[] tanks = {LavaTank,CoalTank};
+        FluidTank[] tanks = {WaterTank,CoalTank};
         return tanks;
     }
 
@@ -163,14 +163,14 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.getCompoundTag("jetPackData").setTag("LavaTank",LavaTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag("jetPackData").setTag("WaterTank",WaterTank.writeToNBT(new NBTTagCompound()));
         containerStack.stackTagCompound.getCompoundTag("jetPackData").setTag("CoalTank",CoalTank.writeToNBT(new NBTTagCompound()));
     }
 
     public void dirtyBoiler()
     {
         NBTTagCompound jetpackData = containerStack.stackTagCompound.getCompoundTag("jetPackData");
-        jetpackData.setBoolean("lava", Lava);
+        jetpackData.setBoolean("water", Water);
         jetpackData.setBoolean("leaking", leaking);
         jetpackData.setInteger("temperature", temperature);
         jetpackData.setInteger("burnTicks", burnTicks);
@@ -292,13 +292,13 @@ public class InventoryCoalJetpack implements IInventoryTanks
             if (i == 0)
             {
                 ItemStack container = getStackInSlot(i);
-                if(FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isContainerForFluid(container, FluidRegistry.LAVA))
+                if(FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
                 {
-                    InventoryActions.transferContainerTank(this, LavaTank, i);
+                    InventoryActions.transferContainerTank(this, WaterTank, i);
                 }else
-                if(FluidContainerRegistry.isEmptyContainer(container) && LavaTank.getFluid()!=null && FluidUtils.isContainerForFluid(container, FluidRegistry.LAVA))
+                if(FluidContainerRegistry.isEmptyContainer(container) && WaterTank.getFluid()!=null && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
                 {
-                    InventoryActions.transferContainerTank(this, LavaTank, i);
+                    InventoryActions.transferContainerTank(this, WaterTank, i);
                 }
             }
         }
@@ -349,7 +349,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if(slot == BUCKET_IN_SLOT)return SlotFluid.valid(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.LAVA);
+        if(slot == BUCKET_IN_SLOT)return SlotFluid.valid(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.WATER);
         if(slot == FUEL_SLOT)return TileEntityFurnace.isItemFuel(stack);
         return false;
     }
@@ -359,9 +359,9 @@ public class InventoryCoalJetpack implements IInventoryTanks
         return containerStack;
     }
 
-    public FluidTank getLavaTank()
+    public FluidTank getWaterTank()
     {
-        return LavaTank;
+        return WaterTank;
     }
 
     public FluidTank getCoalTank()
@@ -399,14 +399,14 @@ public class InventoryCoalJetpack implements IInventoryTanks
         this.inUse = inUse;
     }
 
-    public boolean isLava()
+    public boolean isWater()
     {
-        return Lava;
+        return Water;
     }
 
-    public void setLava(boolean Lava)
+    public void setWater(boolean Water)
     {
-        this.Lava = Lava;
+        this.Water = Water;
     }
 
     public boolean isLeaking()
