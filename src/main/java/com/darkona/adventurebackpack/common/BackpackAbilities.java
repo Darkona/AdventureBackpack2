@@ -419,9 +419,9 @@ public class BackpackAbilities
         if (player.isPotionActive(Potion.regeneration.id)) {
             potion = player.getActivePotionEffect(Potion.regeneration);
         }
-        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5)
+        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != 2)
         {
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 5000, -5));
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 5000, 2));
         }
         potion = null;
         if (player.isPotionActive(Potion.damageBoost.id)) {
