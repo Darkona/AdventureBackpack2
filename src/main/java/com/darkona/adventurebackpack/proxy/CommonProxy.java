@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.relauncher.Side;
 public abstract class CommonProxy implements IProxy {
     private EntityPlayerMP player;
@@ -23,6 +24,10 @@ public abstract class CommonProxy implements IProxy {
     }
     
  }
+        public void synchronizePlayer(int id, NBTTagCompound compound)
+        {
+
+        }
 		public EntityPlayerMP getPlayer() {
 			return player;
 		}

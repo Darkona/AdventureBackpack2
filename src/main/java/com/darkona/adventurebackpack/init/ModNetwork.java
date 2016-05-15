@@ -45,7 +45,8 @@ public class ModNetwork
         messages++;
     }
 
-    private static void registerMessage(Class handler, Class message)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private static void registerMessage(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
         net.registerMessage(handler, message, messages, Side.SERVER);

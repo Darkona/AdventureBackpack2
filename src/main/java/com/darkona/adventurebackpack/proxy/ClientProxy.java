@@ -18,7 +18,6 @@ import com.darkona.adventurebackpack.handlers.RenderHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.jadarstudios.developercapes.DevCapes;
 
@@ -72,7 +71,6 @@ public class ClientProxy implements IProxy
     @Override
     public void joinPlayer(EntityPlayer player)
     {
-        LogHelper.info("Joined Player in client");
     }
 
     @Override
