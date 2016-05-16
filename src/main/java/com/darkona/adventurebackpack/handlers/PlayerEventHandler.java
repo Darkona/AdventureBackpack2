@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.IWearableContainer;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
@@ -49,7 +50,7 @@ import com.darkona.adventurebackpack.develop.texturemsg;
 public class PlayerEventHandler
 {
     @SuppressWarnings("unused")
-	private static int tickCounter = 0;
+	private static int tickCounter = 20;
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {
@@ -299,14 +300,14 @@ public class PlayerEventHandler
                 if (event.side.isServer())
                 {
                     BackpackProperty.syncToNear(event.player);
-//                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
-//                    {
-//                        //playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
-//                        BackpackProperty.syncToNear(event.player);
-//                    }else
-//                    {
-//                        BackpackProperty.syncToNear(event.player);
-//                    }
+                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
+                    {
+                        //playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
+                        BackpackProperty.syncToNear(event.player);
+                    }else
+                    {
+                       BackpackProperty.syncToNear(event.player);
+                   }
                 }
             }
         }
