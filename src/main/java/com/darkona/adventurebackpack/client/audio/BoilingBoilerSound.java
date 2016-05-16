@@ -62,7 +62,7 @@ public class BoilingBoilerSound extends MovingSound
         }
 
         InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingSteam(thePlayer));
-        if(inv.isLava() && inv.getWaterTank().getFluidAmount() > 0)
+        if(inv.isBoiling() && inv.getCoalTank().getFluidAmount() > 0)
         {
             xPosF = (float)thePlayer.posX;
             yPosF = (float)thePlayer.posY;

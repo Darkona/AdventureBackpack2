@@ -87,12 +87,12 @@ public class GuiCoalJetpack extends GuiWithTanks
     {
         this.mc.renderEngine.bindTexture(texture);
         if(wearing) inventory = new InventoryCoalJetpack(Wearing.getWearingSteam(player));
-        FluidTank water = inventory.getLavaTank();
+        FluidTank water = inventory.getWaterTank();
         FluidTank steam = inventory.getCoalTank();
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        if(     inventory.isLava()
+        if(     inventory.isBoiling()
                 && steam.getFluidAmount() < steam.getCapacity()
                 && water.getFluidAmount() > 0)
         {
@@ -116,7 +116,7 @@ public class GuiCoalJetpack extends GuiWithTanks
 
 
         waterTank.draw(this, water);
-        steamTank.draw(this,steam);
+        steamTank.draw(this, steam);
 
         float factor = 0.7f;
 

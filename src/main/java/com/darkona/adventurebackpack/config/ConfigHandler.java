@@ -35,7 +35,6 @@ public class ConfigHandler
     public static boolean ALLOW_COPTER_SOUND = true;
     public static boolean ALLOW_JETPACK_SOUNDS = true;
 
-
     public static boolean STATUS_OVERLAY = true;
     public static boolean TANKS_OVERLAY = true;
     public static boolean HOVERING_TEXT_TANKS = false;

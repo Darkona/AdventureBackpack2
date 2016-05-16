@@ -73,6 +73,9 @@ public class ClientProxy implements IProxy
     {
     }
 
+    public void onPlayerLogin(EntityPlayer player) {
+	}
+
     @Override
     public void synchronizePlayer(int id, NBTTagCompound properties)
     {
