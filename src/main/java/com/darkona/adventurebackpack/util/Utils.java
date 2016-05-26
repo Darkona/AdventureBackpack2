@@ -256,12 +256,12 @@ public class Utils
 
     public static int secondsToTicks(int seconds)
     {
-        return (int) secondsToTicks(20);
+        return seconds * 20;
     }
 
     public static int secondsToTicks(float seconds)
     {
-        return (int) secondsToTicks(20);
+        return (int) seconds * 20;
     }
 
     public static boolean inServer()
