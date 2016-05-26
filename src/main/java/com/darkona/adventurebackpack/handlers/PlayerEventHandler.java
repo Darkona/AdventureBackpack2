@@ -298,15 +298,8 @@ public class PlayerEventHandler
             {
                 if (event.side.isServer())
                 {
-                    BackpackProperty.syncToNear(event.player);
-//                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
-//                    {
-//                        //playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
-//                        BackpackProperty.syncToNear(event.player);
-//                    }else
-//                    {
-//                        BackpackProperty.syncToNear(event.player);
-//                    }
+                	//Thanks @knoxz for fixing performance issue
+                    //BackpackProperty.syncToNear(event.player);
                 }
             }
         }

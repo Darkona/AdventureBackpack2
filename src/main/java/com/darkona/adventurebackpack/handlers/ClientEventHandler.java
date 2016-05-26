@@ -92,10 +92,9 @@ public class ClientEventHandler
                         ItemStack heldItem = player.inventory.getStackInSlot(slot);
                         Item theItem = heldItem.getItem();
 
-                        if (SlotTool.isValidTool(heldItem) ||
-                                (BackpackNames.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
+                        if (theItem instanceof ItemHose)
                         {
-                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
+                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
                             ServerActions.cycleTool(player, dWheel, slot);
                             event.setCanceled(true);
                         }
@@ -104,7 +103,7 @@ public class ClientEventHandler
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
                             ServerActions.switchHose(player, ServerActions.HOSE_SWITCH, dWheel, slot);
-                            event.setCanceled(true);
+                            event.setCanceled(true); 
                             {
                                         
                         }
