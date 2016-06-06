@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
+import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.WearableModePacket;
@@ -45,6 +46,7 @@ public class ServerActions
      *                  direction all the timeInSeconds. That's stupid.
      * @param slot      The slot that will be switched with the backpack.
      */
+    //Using @Sir-Will dupe fixed
     public static void cycleTool(EntityPlayer player, int direction, int slot)
     {
         try
@@ -52,20 +54,18 @@ public class ServerActions
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if (direction < 0)
-            {
-                //LogHelper.info("Item of class " + backpack.getStackInSlot(Constants.lowerTool).getItem().getClass().getName());
-                player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
-                backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
-                backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
+            if(SlotTool.isValidTool(current)) {
+                if (direction < 0) {
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
+                    backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
+                    backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
 
-            } else
-            {
-                if (direction > 0)
-                {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
-                    backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
-                    backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
+                } else {
+                    if (direction > 0) {
+                        player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
+                        backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
+                        backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
+                    }
                 }
             }
             backpack.markDirty();
