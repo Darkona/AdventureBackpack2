@@ -1,0 +1,68 @@
+# Items
+
+## Component Items For Crafting
+item.adventurebackpack:backpackComponent.name=Компонент рюкзака
+item.adventurebackpack:sleepingBag.name=Спальний мішок
+item.adventurebackpack:backpackTank.name=Резервуар для рідини в рюкзаку
+item.adventurebackpack:macheteHandle=Ручка від мачете
+item.adventurebackpack:hoseHead.name=Накінечник для трубки
+item.adventurebackpack:copterEngine.name=Двоциліндровий дизельний двигун
+item.adventurebackpack:copterBlades.name=Гелікоптерні лопаті
+item.adventurebackpack:hydroBlades.name=Водяні лопаті
+item.adventurebackpack:inflatableBoat.name=Надувний човен
+item.adventurebackpack:inflatableBoatMotorized.name=Моторний надувний човен
+
+## Tools and consumables
+item.adventurebackpack:clockworkCrossbow.name=Арбалет з часовим механізмом
+item.adventurebackpack:melonJuiceBottle.name=Пляшка кавунного соку
+item.adventurebackpack:machete.name=Мачете
+
+item.adventurebackpack:backpackHose.name=Трубка для рідин з рюкзаку
+item.adventurebackpack:hose_leftTank_suck.name=Трубка для рідин: Ліва ємність / Режим закачування
+item.adventurebackpack:hose_leftTank_spill.name=Трубка для рідин: Ліва ємність / Режим відкачування
+item.adventurebackpack:hose_leftTank_drink.name=Трубка для рідин: Ліва ємність / Режим пиття
+
+item.adventurebackpack:hose_rightTank_suck.name=Трубка для рідин: Права ємність / Режим закачування
+item.adventurebackpack:hose_rightTank_spill.name=Трубка для рідин: Права ємність / Режим відкачування
+item.adventurebackpack:hose_rightTank_drink.name=Трубка для рідин: Права ємність / Режим пиття
+item.adventurebackpack:hoseUseless.name=Трубка для рідин: Не використовується / Нема рюкзака
+
+## Wearables
+item.adventurebackpack:adventureBackpack.name=Ранець шукача пригод
+item.adventurebackpack:copterPack.name=Ранець-гелікоптер
+item.adventurebackpack:steamJetpack.name=Паровий ранець
+
+## Armor
+item.adventurebackpack:adventureSuit.name=Костюм шукача пригод
+item.adventurebackpack:adventureHat.name=Фетровий капелюх шукача пригод
+item.adventurebackpack:pistonBoots.name=Поршньові черевики
+
+## Blocks
+block.adventurebackpack:blockAdventureBackpack.name=Основа рюкзака шукача пригод
+block.adventurebackpack:blockCampFire.name=Вогнище
+block.adventurebackpack:blockSleepingBag.name=Спальний мішок
+
+## CreativeTab
+itemGroup.adventurebackpack=Adventure Backpack
+
+## Keybindings
+keys.adventureBackpack.category=Рюкзак шукача пригод
+keys.adventureBackpack.openBackpackInventory=Відкрити інвентар рюкзака
+keys.adventureBackpack.switchHoseTank=Змінити використовуваний резервуар
+
+## Fluids
+fluid.melonJuice=Кавунний сік
+fluid.milk=Молоко
+fluid.mushrromstew=Суп з грибів
+
+## Messages
+adventurebackpack:already.equipped=Ви вже надягнули рюкзак.
+adventurebackpack:messages.already.impossibru=Ви не можете надягнути більше рюкзаків.
+adventurebackpack:messages.copterpack.hover=Рюкзак-гелікоптер: режим зависання.
+adventurebackpack:messages.copterpack.normal=Рюкзак-гелікоптер: звичайний режим.
+adventurebackpack:messages.copterpack.outoffuel=Рюкзак-гелікоптер: нема пального.
+adventurebackpack:messages.copterpack.cantwater=Рюкзак-гелікоптер: праця під водою неможлива.
+adventurebackpack:messages.copterpack.off=Рюкзак-гелікоптер: вимкнений.
+adventurebackpack:messages.jetpack.on=Паровий рюкзак: увімкнений.
+adventurebackpack:messages.jetpack.off=Паровий рюкзак: вимкнений.
+adventurebackpack:messages.crossbow.outofammo=Арбалет з часовим механізмом: немає набоїв.
