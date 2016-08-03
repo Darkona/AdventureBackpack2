@@ -1,0 +1,77 @@
+##########永恒乐园汉化组——ilson_alex——汉化########
+# Items
+#物品
+## Component Items For Crafting
+item.adventurebackpack:backpackComponent.name=背包组件
+item.adventurebackpack:sleepingBag.name=睡袋
+item.adventurebackpack:backpackTank.name=储水箱
+item.adventurebackpack:macheteHandle.name=弯刀手柄
+item.adventurebackpack:hoseHead.name=软管喷嘴
+item.adventurebackpack:copterEngine.name=双缸柴油发动机
+item.adventurebackpack:copterBlades.name=直升机叶片
+item.adventurebackpack:hydroBlades.name=水力叶片
+item.adventurebackpack:inflatableBoat.name=充气船
+item.adventurebackpack:inflatableBoatMotorized.name=充气船(机动化的)
+
+## Tools and consumables
+##工具和耗材
+item.adventurebackpack:clockworkCrossbow.name=发条弩
+item.adventurebackpack:melonJuiceBottle.name=西瓜汁瓶
+item.adventurebackpack:machete.name=弯刀
+
+item.adventurebackpack:backpackHose.name=背包软管
+item.adventurebackpack:hose_leftTank_suck.name=软管:左侧储水箱 / 吸取模式
+item.adventurebackpack:hose_leftTank_spill.name=软管:左侧储水箱 / 喷洒模式
+item.adventurebackpack:hose_leftTank_drink.name=软管:左侧储水箱 / 饮水模式
+
+item.adventurebackpack:hose_rightTank_suck.name=右侧储水箱 / 吸取模式
+item.adventurebackpack:hose_rightTank_spill.name=右侧储水箱 / 喷洒模式
+item.adventurebackpack:hose_rightTank_drink.name=右侧储水箱 / 饮水模式
+item.adventurebackpack:hoseUseless.name=软管:无法使用 / 没有储水箱
+
+## Wearables
+##可穿戴
+item.adventurebackpack:adventureBackpack.name=探险背包
+item.adventurebackpack:copterPack.name=直升机背包
+item.adventurebackpack:steamJetpack.name=蒸汽喷射背包
+
+## Armor
+##护甲
+item.adventurebackpack:adventureSuit.name=探险者外套
+item.adventurebackpack:adventureHat.name=探险者软呢帽
+item.adventurebackpack:pistonBoots.name=活塞靴子
+
+## Blocks
+##方块
+block.adventurebackpack:AdventureBackpack.name=探险背包
+block.adventurebackpack:CampFire.name=篝火
+block.adventurebackpack:SleepingBag.name=睡袋
+
+## CreativeTab
+##创造模式标签
+itemGroup.adventurebackpack=探险背包
+
+## Keybindings
+##按键绑定
+keys.adventureBackpack.category=探险背包
+keys.adventureBackpack.openBackpackInventory=打开背包
+keys.adventureBackpack.switchHoseTank=选择储水箱
+
+## Fluids
+##流体
+fluid.melonJuice=西瓜汁瓶
+fluid.milk=牛奶
+fluid.mushrromstew=炖蘑菇
+
+## Messages
+##消息
+adventurebackpack:messages.already.equipped=您已经装备的背包。
+adventurebackpack:messages.already.impossibru=你没有穿任何背包。
+adventurebackpack:messages.copterpack.hover=直升机背包:悬停模式。
+adventurebackpack:messages.copterpack.normal=直升机背包:普通模式。
+adventurebackpack:messages.copterpack.outoffuel=直升机背包:燃料耗尽。
+adventurebackpack:messages.copterpack.cantwater=直升机背包:在水中无法运行。
+adventurebackpack:messages.copterpack.off=直升机背包:关闭。
+adventurebackpack:messages.jetpack.on=蒸汽喷射背包:开启
+adventurebackpack:messages.jetpack.off=蒸汽喷射背包:关闭。
+adventurebackpack:messages.crossbow.outofammo=发条弩:没有弹药。
