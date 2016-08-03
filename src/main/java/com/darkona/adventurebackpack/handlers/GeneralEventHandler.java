@@ -8,7 +8,6 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -17,9 +16,7 @@ import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemAppleGold;
-import net.minecraft.item.ItemGlassBottle;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -129,32 +126,36 @@ public class GeneralEventHandler
     public void makeHorsesFollowOwner(EntityJoinWorldEvent event)
     {
         if(!ConfigHandler.BACKPACK_ABILITIES)return;
-        if(event.entity instanceof EntityHorse && ((EntityHorse)event.entity).isTame())
+        if(event.entity instanceof EntityHorse)
         {
 
             EntityHorse horse = ((EntityHorse)event.entity);
-            if(!horse.isDead && horse.hasCustomNameTag())
+            if(!horse.isDead && horse.isTame() && horse.hasCustomNameTag())
             {
-                boolean set = true;
-                if(horse.worldObj.func_152378_a(UUID.fromString(horse.func_152119_ch())) != null)
+                String ownerUUIDstring = horse.func_152119_ch();
+                if (ownerUUIDstring != null && !ownerUUIDstring.isEmpty())
                 {
-                    for (Object entry : horse.tasks.taskEntries)
+                    boolean set = true;
+                    if(horse.worldObj.func_152378_a(UUID.fromString(ownerUUIDstring)) != null)
                     {
-                        if (((EntityAITasks.EntityAITaskEntry) entry).action instanceof EntityAIHorseFollowOwner)
+                        for (Object entry : horse.tasks.taskEntries)
                         {
-                            set = false;
+                            if (((EntityAITasks.EntityAITaskEntry) entry).action instanceof EntityAIHorseFollowOwner)
+                            {
+                            	set = false;
+                            }
                         }
                     }
-                }
-                if(set)
-                {
-                    horse.tasks.addTask(4, new EntityAIHorseFollowOwner(horse, 1.5d, 2.0f, 20.0f));
-
-                    if (horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange) != null)
+                    if(set)
                     {
-                        horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).setBaseValue(100.0D);
+                    	horse.tasks.addTask(4, new EntityAIHorseFollowOwner(horse, 1.5d, 2.0f, 20.0f));
+                    	
+                    	if (horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange) != null)
+                    	{
+                    		horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).setBaseValue(100.0D);
+                    	}
                     }
-                }
+            	}
             }
         }
     }
