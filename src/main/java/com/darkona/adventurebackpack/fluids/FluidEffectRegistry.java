@@ -22,7 +22,6 @@ public class FluidEffectRegistry
 {
     static BiMap<String, FluidEffect> EFFECT_REGISTRY = HashBiMap.create();
 
-    public static FluidEffect WATER_EFFECT;
     public static FluidEffect LAVA_EFFECT;
     public static FluidEffect MILK_EFFECT;
     public static FluidEffect MELON_EFFECT;
