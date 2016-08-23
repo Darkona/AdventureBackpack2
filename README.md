@@ -15,6 +15,6 @@ My only request is to provide a link to this github if not its fine by me
 * better Performance!
 * little more adventure backpack to you to enjoy
 * major bugfixe's 
-* fixes dupelication bugs
+* fixes duplication bugs
 * fixed missing texture's for holiday's
 * more to come!
