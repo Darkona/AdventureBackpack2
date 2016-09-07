@@ -34,7 +34,7 @@ public class SlotTool extends SlotAdventureBackpack
         };
 
         String[] invalidToolNames = {
-                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip"
+                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler"
         };
 
         if (stack != null && stack.getMaxStackSize() == 1)
@@ -74,6 +74,14 @@ public class SlotTool extends SlotAdventureBackpack
             {
                 // Tinker's Construct
                 if (item.getClass().getName().contains("tconstruct.items.tools")) return true;
+            } catch (Exception oops)
+            {
+                //  oops.printStackTrace();
+            }
+            try
+            {
+                // Mekanism
+                if (item.getClass().getName().contains("mekanism.common.item")) return true;
             } catch (Exception oops)
             {
                 //  oops.printStackTrace();
