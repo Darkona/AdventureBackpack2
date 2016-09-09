@@ -34,7 +34,7 @@ public class SlotTool extends SlotAdventureBackpack
         };
 
         String[] invalidToolNames = {
-                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler"
+                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"
         };
 
         if (stack != null && stack.getMaxStackSize() == 1)
