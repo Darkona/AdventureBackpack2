@@ -10,12 +10,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.IImageBuffer;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /**
- * This class is used by DevCapesOld as an implementation of {@link IImageBuffer}
- * that allows capes to be HD
+ * This class is an implementation of {@link IImageBuffer} that allows capes to be in HD
  *
  * @author Jadar
  */
@@ -38,8 +37,5 @@ public class HDImageBuffer implements IImageBuffer {
     }
 
     @Override
-    public void func_152634_a() {
-    }
-
-
+    public void func_152634_a() {}
 }

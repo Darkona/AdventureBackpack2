@@ -1,3 +1,9 @@
+/**
+ * DeveloperCapes by Jadar
+ * License: MIT License
+ * (https://raw.github.com/jadar/DeveloperCapes/master/LICENSE)
+ * version 4.0.0.x
+ */
 package com.jadarstudios.developercapes.cape;
 
 import com.google.common.collect.HashBiMap;
@@ -9,6 +15,7 @@ import com.jadarstudios.developercapes.user.Group;
 import com.jadarstudios.developercapes.user.GroupManager;
 import com.jadarstudios.developercapes.user.User;
 import com.jadarstudios.developercapes.user.UserManager;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,11 +25,14 @@ import java.util.BitSet;
 import java.util.Map;
 
 /**
+ * All configs need a manager, this is it.
+ * 
  * @author jadar
  */
-public enum CapeConfigManager {
-    INSTANCE;
+public class CapeConfigManager {
 
+    protected static CapeConfigManager instance;
+    
     protected static BitSet availableIds = new BitSet(256);
     protected HashBiMap<Integer, CapeConfig> configs;
 
@@ -30,21 +40,35 @@ public enum CapeConfigManager {
         availableIds.clear(availableIds.size());
     }
 
-    private CapeConfigManager() {
+    public CapeConfigManager() {
         configs = HashBiMap.create();
     }
 
-    public void addConfig(int id, CapeConfig config) {
-        int realId = claimId(id);
-        this.configs.put(id, config);
-        try {
-            for (User u : config.users.values()) {
-                UserManager.INSTANCE.addUser(u);
-            }
+    public static CapeConfigManager getInstance() {
+        if (instance == null) {
+            instance = new CapeConfigManager();
+        }
+        return instance;
+    }
 
-            for (Group g : config.groups.values()) {
-                GroupManager.INSTANCE.addGroup(g);
-            }
+    public void addConfig(int id, CapeConfig config) throws InvalidCapeConfigIdException {
+        int realId = claimId(id);
+        this.configs.put(realId, config);
+        addUsers(config.users);
+        addGroups(config.groups);
+    }
+    
+    protected void addUsers(Map<String, User> users){
+    	try {
+    		UserManager.getInstance().addUsers(users.values());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    protected void addGroups(Map<String, Group> groups){
+    	try {
+    		GroupManager.getInstance().addGroups(groups.values());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,14 +79,17 @@ public enum CapeConfigManager {
     }
 
     public int getIdForConfig(CapeConfig config) {
-        return this.configs.inverse().get(config).intValue();
+        return this.configs.inverse().get(config);
     }
 
     public static int getUniqueId() {
-        return availableIds.nextClearBit(0);
+        return availableIds.nextClearBit(1);
     }
 
-    public static int claimId(int id) {
+    public static int claimId(int id) throws InvalidCapeConfigIdException {
+        if(id <= 0){
+            throw new InvalidCapeConfigIdException("The config ID must be a positive non-zero integer");
+        }
         try {
             UnsignedBytes.checkedCast(id);
         } catch (IllegalArgumentException e) {
@@ -71,72 +98,79 @@ public enum CapeConfigManager {
 
         boolean isRegistered = availableIds.get(id);
         if (isRegistered) {
-            DevCapes.logger.error(String.format("The config ID %d was attempted to be claimed but is already claimed.", id));
+            throw new InvalidCapeConfigIdException(String.format("The config ID %d is already claimed.", id));
         }
 
         availableIds.set(id);
         return id;
     }
 
-//    public CapeConfig newInstance() {
-//        CapeConfig instance = new CapeConfig();
-//        this.addConfig(this.getUniqueId(), );
-//        return instance;
-//    }
+    public CapeConfig parse(InputStream is) {
+        if (is == null) {
+            throw new NullPointerException("Can not parse a null input stream!");
+        }
 
-    public CapeConfig parse(String config) {
         CapeConfig instance = new CapeConfig();
+        InputStreamReader isr = new InputStreamReader(is);
 
         try {
-            Map<String, Object> entries = new Gson().fromJson(config, Map.class);
+            Map<String, Object> entries = new Gson().fromJson(isr, Map.class);
 
             for (Map.Entry<String, Object> entry : entries.entrySet()) {
                 final String nodeName = entry.getKey();
                 final Object obj = entry.getValue();
                 if (obj instanceof Map) {
-                    Map group = (Map) obj;
-
-                    Group g = GroupManager.INSTANCE.parse(nodeName, group);
-                    if (g != null) {
-                        instance.groups.put(g.name, g);
-                    }
+                    parseGroup(instance, nodeName, (Map) obj);
                 } else if (obj instanceof String) {
-                    User u = UserManager.INSTANCE.parse(nodeName, obj);
-                    if (u != null) {
-                        instance.users.put(nodeName, u);
-                    }
+                	parseUser(instance, nodeName, (String) obj);
                 }
             }
-
         } catch (JsonSyntaxException e) {
+        	DevCapes.logger.error("CapeConfig could not be parsed because:");
             e.printStackTrace();
         }
 
         return instance;
     }
+    
+    protected void parseGroup(CapeConfig config, String node, Map group) {
+        Group g = GroupManager.getInstance().parse(node, group);
+        if (g != null) {
+        	config.groups.put(g.name, g);
+        }
+    }
+    
+    protected void parseUser(CapeConfig config, String node, String user) {
+    	User u = UserManager.getInstance().parse(node, user);
+        if (u != null) {
+        	config.users.put(node, u);
+        }
+    }
 
+    /**
+     * DEPRECATED! Please use {@link com.jadarstudios.developercapes.cape.CapeConfigManager#parse(java.io.InputStream is)}
+     * This will be removed in the next major release.
+     */
+    @Deprecated
     public CapeConfig parseFromStream(InputStream is) {
-        if (is == null) {
-            DevCapes.logger.error("Can't parse a null input stream!");
-            return null;
-        }
-        CapeConfig instance = null;
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String json = "";
-            while (reader.ready()) {
-                json += reader.readLine();
-            }
-            instance = CapeConfigManager.INSTANCE.parse(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-        	try {
-        		is.close();
-        	} catch (IOException e) {
-        	}
+        return this.parse(is);
+    }
+
+    public static class InvalidCapeConfigIdException extends Exception {
+        public InvalidCapeConfigIdException() {
+            super();
         }
 
-        return instance;
+        public InvalidCapeConfigIdException(String s) {
+            super(s);
+        }
+
+        public InvalidCapeConfigIdException(Throwable cause) {
+            super(cause);
+        }
+
+        public InvalidCapeConfigIdException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

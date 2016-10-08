@@ -4,14 +4,11 @@
  * (https://raw.github.com/jadar/DeveloperCapes/master/LICENSE)
  * version 4.0.0.x
  */
-
 package com.jadarstudios.developercapes;
 
 import com.jadarstudios.developercapes.cape.CapeConfig;
 import com.jadarstudios.developercapes.cape.CapeConfigManager;
-
 import net.minecraftforge.common.MinecraftForge;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,10 +39,11 @@ public class DevCapes {
     }
 
     /**
-     * Gets and returns an InputStream for a URL.
+     * InputStream.close() needs to be called on this after you're done!
+     * 
+     * @return {@link InputStream} for the {@link URL}
      */
-    @SuppressWarnings("finally")
-	public InputStream getStreamForURL(URL url) {
+    public InputStream getStreamForURL(URL url) {
         InputStream is = null;
         try {
             URLConnection connection = url.openConnection();
@@ -55,72 +53,69 @@ public class DevCapes {
             is = connection.getInputStream();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            return is;
         }
+        return is;
     }
 
     /**
-     * Gets and returns an InputStream for a file.
-     *
      * InputStream.close() needs to be called on this after you're done!
+     * 
+     * @return {@link InputStream} for the {@link File}
      */
-    @SuppressWarnings({ "resource", "finally" })
-	public InputStream getStreamForFile(File file) {
+    public InputStream getStreamForFile(File file) {
         InputStream is = null;
         try {
             is = new FileInputStream(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } finally {
-            return is;
         }
+        return is;
     }
 
     @Deprecated
     /**
-     * Registers a config with DevCapes. DEPRECATED: Please use registerConfig(String jsonUrl) instead
+     * DEPRECATED: Please use {@link #registerConfig(String jsonUrl)} instead.<p>
+     * Registers a config with DevCapes.
      *
      * @param jsonUrl
      *            The URL as a String that links to the Json file that you want
      *            to add
      * @param identifier
      *            A unique Identifier, normally your mod id
-     *                 * @return the id of the registered config
+     * @return The id of the registered config
      */
     public int registerConfig(String jsonURL, String identifier) {
         return this.registerConfig(jsonURL);
     }
 
     /**
-     * Registers a config with DevCapes. DEPRECATED: Please use registerConfig(String jsonUrl) instead
+     * Registers a config with DevCapes.
      *
      * @param jsonUrl The URL as a String that links to the Json file that you want
      *                to add
-     * @return the id of the registered config
+     * @return The id of the registered config
      */
-    @SuppressWarnings("finally")
-	public int registerConfig(String jsonUrl) {
+    public int registerConfig(String jsonUrl) {
         int id = -1;
         try {
             URL url = new URL(jsonUrl);
             id = this.registerConfig(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } finally {
-            return id;
         }
+        return id;
     }
 
     @Deprecated
     /**
-     * Registers a config with DevCapes. DEPRECATED: Please use registerConfig(URL url) instead
+     * DEPRECATED: Please use {@link #registerConfig(URL url)} instead.<p>
+     * Registers a config with DevCapes.
      *
      * @param jsonUrl
      *            A {@link URL} that links to the Json file that you want to add
      * @param identifier
      *            A unique Identifier, normally your mod id
-     * @return the id of the registered config
+     * @return The id of the registered config
      */
     public int registerConfig(URL url, String identifier) {
         return this.registerConfig(url);
@@ -130,13 +125,35 @@ public class DevCapes {
      * Registers a config with DevCapes and returns the ID of the config.
      *
      * @param jsonUrl A {@link URL} that links to the Json file that you want to add
-     * @return the id of the registered config
+     * @return The id of the registered config
      */
     public int registerConfig(URL jsonUrl) {
+        int id = -1;
         InputStream is = this.getStreamForURL(jsonUrl);
-        CapeConfig config = CapeConfigManager.INSTANCE.parseFromStream(is);
-        int id = CapeConfigManager.getUniqueId();
-        CapeConfigManager.INSTANCE.addConfig(id, config);
+
+        if (is == null) {
+            DevCapes.logger.error(String.format("Unable to establish a connection to the server, %s", jsonUrl.getHost()));
+            return id;
+        }
+
+        CapeConfig config = CapeConfigManager.getInstance().parse(is);
+
+        try {
+            id = CapeConfigManager.getUniqueId();
+            CapeConfigManager.getInstance().addConfig(id, config);
+        } catch (CapeConfigManager.InvalidCapeConfigIdException e) {
+            e.printStackTrace();
+        }
+
+        silentClose(is);
+
         return id;
+    }
+
+    private static void silentClose(InputStream is) {
+        try {
+            is.close();
+        } catch (IOException ignored) {
+        }
     }
 }
