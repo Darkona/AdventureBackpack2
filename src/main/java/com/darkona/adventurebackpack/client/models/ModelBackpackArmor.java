@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.client.models;
 import codechicken.lib.vec.Vector3;
 import com.darkona.adventurebackpack.client.render.RendererStack;
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -257,8 +258,11 @@ public class ModelBackpackArmor extends ModelWearable
         setOffset(lowerTool, -.28F, 0.8F, -.1F);
         setOffset(upperTool, 0.0f, 0.04f, 0.25f);
 
-        lowerTool.stack = backpack.getStackInSlot(Constants.lowerTool);
-        upperTool.stack = backpack.getStackInSlot(Constants.upperTool);
+        if (ConfigHandler.ENABLE_TOOLS_RENDER)
+        {
+	    lowerTool.stack = backpack.getStackInSlot(Constants.lowerTool);
+	    upperTool.stack = backpack.getStackInSlot(Constants.upperTool);	
+        }	
 
         if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
         {

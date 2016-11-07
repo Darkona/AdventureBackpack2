@@ -26,6 +26,7 @@ public class ConfigHandler
     public static boolean IS_RAILCRAFT = false;
 
     public static int GUI_TANK_RENDER = 2;
+    public static boolean ENABLE_TOOLS_RENDER = true;
     public static boolean BONUS_CHEST_ALLOWED = false;
     public static boolean PIGMAN_ALLOWED = false;
 
@@ -56,6 +57,7 @@ public class ConfigHandler
 	private static void loadConfiguration()
     {
         GUI_TANK_RENDER = config.getInt("TankRenderType", config.CATEGORY_GENERAL, 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
+        ENABLE_TOOLS_RENDER = config.getBoolean("EnableToolsRender", config.CATEGORY_GENERAL, true, "Enable rendering for tools in the backpack tool slots. May cause visual glitches with Gregtech tools");
         BONUS_CHEST_ALLOWED = config.getBoolean("BonusBackpack", config.CATEGORY_GENERAL, false, "Include a Standard Adventure Backpack in bonus chest?");
         PIGMAN_ALLOWED = config.getBoolean("PigmanBackpacks", config.CATEGORY_GENERAL, false, "Allow generation of Pigman Backpacks in dungeon loot and villager trades");
         ALLOW_COPTER_SOUND = config.getBoolean("CopterPackSound", config.CATEGORY_GENERAL, true, "Allow playing the CopterPack sound (Client Only, other players may hear it)");
