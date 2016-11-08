@@ -53,6 +53,21 @@ public class ModRecipes
                 'I', Items.iron_ingot
             );
           }
+        //CoalJetpack
+        if(ConfigHandler.CoalJetPackRecipe);
+        {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.CoalJetpack),
+                "SWT",
+                "GIG",
+                "FWS",
+                'W',  Blocks.planks,
+                'G', Items.gold_ingot,
+                'I', Items.iron_ingot,
+                'S', Blocks.stone,
+                'F', Blocks.furnace,
+                'T', new ItemStack(ModItems.component, 1, 2)
+          ));
+        }
         
         //change to make it not support BuildCraft there are people out there who dont like that mod 
         //CampFire
@@ -266,19 +281,6 @@ public class ModRecipes
                     'S', Items.stick,
                     'W', Blocks.planks
             );
-
-        //CoalJetpack
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.CoalJetpack),
-                "SWT",
-                "GIG",
-                "FWS",
-                'W',  Blocks.planks,
-                'G', Items.gold_ingot,
-                'I', Items.iron_ingot,
-                'S', Blocks.stone,
-                'F', Blocks.furnace,
-                'T', new ItemStack(ModItems.component, 1, 2)
-          ));
         }
     }
   }
