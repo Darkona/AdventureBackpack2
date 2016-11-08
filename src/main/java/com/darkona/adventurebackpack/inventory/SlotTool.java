@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 
 /**
  * Created on 12/10/2014
@@ -12,7 +13,6 @@ import net.minecraft.item.*;
  */
 public class SlotTool extends SlotAdventureBackpack
 {
-
     public SlotTool(IInventory inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
@@ -21,7 +21,7 @@ public class SlotTool extends SlotAdventureBackpack
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return isValidTool(stack);
+    	return isValidTool(stack);
     }
 
     public static boolean isValidTool(ItemStack stack)

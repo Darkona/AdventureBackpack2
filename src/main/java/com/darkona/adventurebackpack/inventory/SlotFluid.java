@@ -1,16 +1,8 @@
 package com.darkona.adventurebackpack.inventory;
-
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemFishingRod;
-import net.minecraft.item.ItemFlintAndSteel;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
 /**
@@ -43,30 +35,29 @@ public class SlotFluid extends SlotAdventureBackpack {
 
 		String[] invalidToolNames = { "cell" };
 
-        if (stack != null && stack.getMaxStackSize() == 1)
-        {
-            Item item = stack.getItem();
-            String name = item.getUnlocalizedName().toLowerCase();
+		if (stack != null && stack.getMaxStackSize() <= 16) {
+			Item item = stack.getItem();
+			String name = item.getUnlocalizedName().toLowerCase();
 
-            for (String toolName : validToolNames)
-            {
-                @SuppressWarnings("unused")
+			for (String toolName : validToolNames) {
+				@SuppressWarnings("unused")
 				String a = toolName;
-                if (name.contains(toolName)) return true;
-            }
+				if (name.contains(toolName))
+					return true;
+			}
 
-            for (String toolName : invalidToolNames)
-            {
-                @SuppressWarnings("unused")
+			for (String toolName : invalidToolNames) {
+				@SuppressWarnings("unused")
 				String a = toolName;
-                if (name.contains(toolName)) return false;
-            }
+				if (name.contains(toolName))
+					return false;
+			}
 
-        }
+		}
 
-	return valid;
+		return valid;
 
-}
+	}
 
 	@Override
 	public void onSlotChanged() {
