@@ -207,7 +207,7 @@ public class BackpackAbilities
         if (player.isPotionActive(Potion.nightVision.id)) {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
-        if (nightVision == null || nightVision.getDuration() < 40 && nightVision.getAmplifier() != -4)
+        if (nightVision == null || nightVision.getDuration() < 220)
         {
             player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 5000, -4));
         }
