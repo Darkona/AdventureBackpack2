@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
@@ -54,7 +55,7 @@ public class ServerActions
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if(SlotTool.isValidTool(current)) {
+            if(SlotTool.isValidTool(current) && ConfigHandler.ENABLE_TOOLS) {
                 if (direction < 0) {
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
                     backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
