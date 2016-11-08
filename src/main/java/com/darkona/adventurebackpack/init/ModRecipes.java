@@ -26,7 +26,35 @@ public class ModRecipes
 
     public static void init()
     {
+        if(ConfigHandler.SADDLE_RECIPE)
+        {
+            GameRegistry.addRecipe(new ItemStack(Items.saddle),
+                    "LLL",
+                    "L L",
+                    "I I",
+                    'L', Items.leather,
+                    'I', Items.iron_ingot
+            );
+        }
 
+        //Copter Pack
+        if(ConfigHandler.Copterpack_Recipe) 
+        {	
+            GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
+                "WBW",
+                "TEI",
+                "CDI",
+                'W', Blocks.planks,
+                'B', new ItemStack(ModItems.component, 1, 6),
+                'T', new ItemStack(ModItems.component, 1, 2),
+                'E', new ItemStack(ModItems.component, 1, 5),
+                'C', new ItemStack(Items.dye, 1, 2),
+                'D', Items.diamond,
+                'I', Items.iron_ingot
+            );
+          }
+        
+        //change to make it not support BuildCraft there are people out there who dont like that mod 
         //CampFire
         GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.blockCampFire,
                 " S ",
@@ -196,18 +224,6 @@ public class ModRecipes
 
     public static void conditionalInit()
     {
-        if(ConfigHandler.SADDLE_RECIPE)
-        {
-            GameRegistry.addRecipe(new ItemStack(Items.saddle),
-                    "LLL",
-                    "L L",
-                    "I I",
-                    'L', Items.leather,
-                    'I', Items.iron_ingot
-            );
-        }
-
-        //change to make it not support BuildCraft there are people out there who dont like that mod 
         {
             //Copter Engine
             GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
@@ -250,20 +266,6 @@ public class ModRecipes
                     'S', Items.stick,
                     'W', Blocks.planks
             );
-            
-            //Copter Pack
-            GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
-                    "WBW",
-                    "TEI",
-                    "CDI",
-                    'W', Blocks.planks,
-                    'B', new ItemStack(ModItems.component, 1, 6),
-                    'T', new ItemStack(ModItems.component, 1, 2),
-                    'E', new ItemStack(ModItems.component, 1, 5),
-                    'C', new ItemStack(Items.dye, 1, 2),
-                    'D', Items.diamond,
-                    'I', Items.iron_ingot
-            );
 
         //CoalJetpack
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.CoalJetpack),
@@ -279,4 +281,4 @@ public class ModRecipes
           ));
         }
     }
-}
+  }
