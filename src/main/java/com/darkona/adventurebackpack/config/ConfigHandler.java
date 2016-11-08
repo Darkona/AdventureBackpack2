@@ -43,6 +43,7 @@ public class ConfigHandler
     public static boolean SADDLE_RECIPE = true;
     public static boolean FIX_LEAD = true;
     public static boolean Copterpack_Recipe = true;
+    public static boolean CoalJetPackRecipe = true;
 
 
     public static void init(File configFile)
@@ -74,6 +75,7 @@ public class ConfigHandler
         //RECIPES
         SADDLE_RECIPE = config.getBoolean("SaddleRecipe", config.CATEGORY_GENERAL,true, "Add recipe for saddle?");
         Copterpack_Recipe = config.getBoolean("Copterpack_Recipe", config.CATEGORY_GENERAL, true, "Enable/Disable CopterPack recipe");
+        CoalJetPackRecipe = config.getBoolean("CoalJetPackRecipe", config.CATEGORY_GENERAL, true, "Enable/Disable CoalJetPack recipe");
         if (config.hasChanged())
         {
             config.save();
