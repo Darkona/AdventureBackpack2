@@ -32,7 +32,6 @@ public class FluidEffectRegistry
     public static void init()
     {
         EFFECT_REGISTRY.clear();
-        WATER_EFFECT = new WaterEffect();
         LAVA_EFFECT = new LavaEffect();
         MILK_EFFECT = new MilkEffect();
         MELON_EFFECT = new MelonJuiceEffect();
