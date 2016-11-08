@@ -42,6 +42,7 @@ public class ConfigHandler
     public static boolean HOVERING_TEXT_TANKS = false;
     public static boolean SADDLE_RECIPE = true;
     public static boolean FIX_LEAD = true;
+    public static boolean Copterpack_Recipe = true;
 
 
     public static void init(File configFile)
@@ -72,6 +73,7 @@ public class ConfigHandler
         BACKPACK_DEATH_PLACE = config.getBoolean("BackpackDeathPlace", config.CATEGORY_GENERAL,true,"Place backpacks as a block when you die?");
         //RECIPES
         SADDLE_RECIPE = config.getBoolean("SaddleRecipe", config.CATEGORY_GENERAL,true, "Add recipe for saddle?");
+        Copterpack_Recipe = config.getBoolean("Copterpack_Recipe", config.CATEGORY_GENERAL, true, "Enable/Disable CopterPack recipe");
         if (config.hasChanged())
         {
             config.save();
