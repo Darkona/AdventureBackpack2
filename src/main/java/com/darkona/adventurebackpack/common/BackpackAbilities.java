@@ -142,7 +142,7 @@ public class BackpackAbilities
             "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"};
 
     private static String[] validRemovalBackpacks = {
-            "Bat", "Squid", "Dragon", "Rainbow"
+            "Bat", "Squid", "Pigman", "Dragon", "Rainbow"
     };
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
