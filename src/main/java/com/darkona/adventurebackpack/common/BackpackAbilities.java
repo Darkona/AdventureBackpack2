@@ -142,7 +142,7 @@ public class BackpackAbilities
             "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"};
 
     private static String[] validRemovalBackpacks = {
-            "Bat", "Squid", "Dragon", "Rainbow"
+            "Bat", "Squid", "Pigman", "Dragon", "Rainbow"
     };
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -207,7 +207,7 @@ public class BackpackAbilities
         if (player.isPotionActive(Potion.nightVision.id)) {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
-        if (nightVision == null || nightVision.getDuration() < 40 && nightVision.getAmplifier() != -4)
+        if (nightVision == null || nightVision.getDuration() < 220)
         {
             player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 5000, -4));
         }
@@ -413,8 +413,9 @@ public class BackpackAbilities
      */
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
-        itemPigman(player,world,backpack);
-        itemSquid(player, world, backpack);
+        itemBat(player, world, backpack);
+	itemPigman(player,world,backpack);
+        //itemSquid(player, world, backpack);
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.regeneration.id)) {
             potion = player.getActivePotionEffect(Potion.regeneration);
