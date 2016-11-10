@@ -413,8 +413,9 @@ public class BackpackAbilities
      */
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
-        itemPigman(player,world,backpack);
-        itemSquid(player, world, backpack);
+        itemBat(player, world, backpack);
+	itemPigman(player,world,backpack);
+        //itemSquid(player, world, backpack);
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.regeneration.id)) {
             potion = player.getActivePotionEffect(Potion.regeneration);
