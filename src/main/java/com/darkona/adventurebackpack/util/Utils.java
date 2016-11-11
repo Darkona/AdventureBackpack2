@@ -77,7 +77,7 @@ public class Utils
         {
             if (day == 1) dia = "Shuttle";//Columbia
             if (day == 14) dia = "Valentines";
-            if (day == 23) dia = "Fatherland";
+            //if (day == 23) dia = "Fatherland";
         }
         if (month == 3)
         {
@@ -99,14 +99,14 @@ public class Utils
         {
             if (day == 4) dia = "USA";
             if (day == 24) dia = "Bolivar";
-            if (day == 14) dia = "Bastille";
+           //if (day == 14) dia = "Bastille";
         }
         if (month == 8)
         {
         }
         if (month == 9)
         {
-            if (day == 19) dia = "Pirate";
+            //if (day == 19) dia = "Pirate";
         }
         if (month == 10)
         {
@@ -116,7 +116,7 @@ public class Utils
         }
         if (month == 11)
         {
-            if (day == 2) dia = "Muertos";
+           // if (day == 2) dia = "Muertos";
         }
         if (month == 12)
         {
