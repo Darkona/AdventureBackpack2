@@ -45,6 +45,8 @@ block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Block
 block.adventurebackpack:CampFire.name=Campfire
 block.adventurebackpack:SleepingBag.name=Sleeping Bag
 blockCampFire.name=CampFire
+blockSleepingBag.name=Sleeping Bag
+
 ## CreativeTab
 itemGroup.adventurebackpack=Adventure Backpack Mod
 
