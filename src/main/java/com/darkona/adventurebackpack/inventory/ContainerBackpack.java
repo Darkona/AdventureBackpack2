@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
@@ -362,11 +363,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
     {
         refresh();
         super.detectAndSendChanges();
-        /* if(source == SOURCE_WEARING && player instanceof EntityPlayerMP)
+        if((source == SOURCE_WEARING || source == SOURCE_HOLDING) && player instanceof EntityPlayerMP)
          {
              ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
-             BackpackProperty.syncToNear(player);
-         }*/
+             //BackpackProperty.syncToNear(player);
+         }
     }
 
     @Override
