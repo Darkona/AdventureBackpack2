@@ -54,9 +54,9 @@ public class ModRecipes
             );
           }
         //CoalJetpack
-        if(ConfigHandler.CoalJetPackRecipe);
+        if(ConfigHandler.CoalJetPackRecipe)
         {
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.CoalJetpack),
+        GameRegistry.addRecipe(new ItemStack(ModItems.CoalJetpack),
                 "SWT",
                 "GIG",
                 "FWS",
@@ -66,7 +66,7 @@ public class ModRecipes
                 'S', Blocks.stone,
                 'F', Blocks.furnace,
                 'T', new ItemStack(ModItems.component, 1, 2)
-          ));
+          );
         }
         
         //change to make it not support BuildCraft there are people out there who dont like that mod 
