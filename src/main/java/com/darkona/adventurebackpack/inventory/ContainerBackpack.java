@@ -316,7 +316,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
                             return null;
                         }
                     }
-                } else if (SlotFluid.valid(stack))
+                } else if (SlotFluid.valid(stack) && SlotFluid.isValidTool(stack))
                 {
                     if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
                     {
