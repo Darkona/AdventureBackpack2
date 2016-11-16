@@ -133,7 +133,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
             }
             if (i < 36)
             {
-                if (SlotFluid.valid(stack))
+                if (SlotFluid.valid(stack) && SlotFluid.isValidTool(stack))
                 {
                     int JETPACK_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
