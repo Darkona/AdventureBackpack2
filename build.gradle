@@ -1,3 +1,10 @@
+println """
+*******************************************
+ You are building AdventureBackpack2 Mod! 
+
+ Output files will be in [project]/build/libs
+*******************************************
+"""
 buildscript {
     repositories {
         mavenCentral()
