@@ -131,6 +131,29 @@ public class PlayerEventHandler
         }
     }
 
+
+    boolean pistonBootsStepHeight=false;
+   
+    @SubscribeEvent
+    public void pistonBootsUnequipped(LivingEvent.LivingUpdateEvent event) 
+    { 
+    	if (event.entityLiving instanceof EntityPlayer)
+    	{
+    	    EntityPlayer player = (EntityPlayer)event.entityLiving;    		    		
+            if (Wearing.isWearingBoots(player))
+    	    {
+    		if (!pistonBootsStepHeight)
+    		{
+    		    pistonBootsStepHeight = true;    				
+    		}
+    	    } else if (pistonBootsStepHeight)
+    	    {
+    		player.stepHeight = 0.5F;
+    		pistonBootsStepHeight=false;    			
+    	    }
+        }      	
+    }  
+
     /**
      * Used by the Piston boots to lessen the fall damage. It's hacky, but I don't care.
      *
