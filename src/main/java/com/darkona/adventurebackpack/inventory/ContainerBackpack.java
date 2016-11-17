@@ -363,11 +363,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
     {
         refresh();
         super.detectAndSendChanges();
-        if((source == SOURCE_WEARING || source == SOURCE_HOLDING) && player instanceof EntityPlayerMP)
+        /*if((source == SOURCE_WEARING || source == SOURCE_HOLDING) && player instanceof EntityPlayerMP)
          {
              ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
              //BackpackProperty.syncToNear(player);
-         }
+         }*/
     }
 
     @Override

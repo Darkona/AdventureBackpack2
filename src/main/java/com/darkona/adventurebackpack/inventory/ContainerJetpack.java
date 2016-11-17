@@ -141,7 +141,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
 
                     }
                 }
-                else
+                else if (inventory.isFuel(stack) && !SlotFluid.valid(stack))
                 {
                     int JETPACK_FUEL_START = PLAYER_INV_END + 3;
                     if (inventory.isFuel(stack) && !mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false))
