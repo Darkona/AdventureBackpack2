@@ -328,9 +328,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
                             }
                         }
                     }
-
-
-                } else if (!(stack.getItem() instanceof ItemAdventureBackpack))
+                } else if (SlotBackpack.valid(stack))
                 {
                     if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
                     {
