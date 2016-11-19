@@ -60,6 +60,9 @@ public class KeybindHandler
                         if (Wearing.isWearingBackpack(player))
                         {
                             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
+                        } else if ((player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
+                        {
+                		    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
                         }
                         if (Wearing.isWearingCopter(player))
                         {
