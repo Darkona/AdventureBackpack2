@@ -21,13 +21,10 @@ public class ItemPistonBoots extends ArmorAB
 
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack)
     {
+        player.stepHeight = 1.001F;
         if (player.isSprinting())
         {
-            player.stepHeight = 1.001F;
             player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1));
-        } else
-        {
-            player.stepHeight = 2.5001F;
         }
     }
 
