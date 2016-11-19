@@ -14,6 +14,27 @@ import net.minecraft.item.ItemStack;
  */
 public class SlotBackpack extends SlotAdventureBackpack
 {
+	
+	private static String[] forbiddenItemClasses =
+    {
+        // Adventure Backpack 2
+        //"com.darkona.adventurebackpack.item.ItemAdventureBackpack",
+        // Jabba Dolly
+        "mcp.mobius.betterbarrels.common.items.dolly.ItemBarrelMover",   
+        "mcp.mobius.betterbarrels.common.items.dolly.ItemDiamondMover",
+        // Forestry Backpacks, includes Railcraft and MagicBees addons
+        "forestry.storage.items.ItemBackpack",
+        "forestry.storage.items.ItemBackpackNaturalist",
+        // Backpack Mod
+        "de.eydamos.backpack.item.ItemBackpack",
+        "de.eydamos.backpack.item.ItemWorkbenchBackpack"
+    };
+    
+    /*private	static String[] forbiddenItemNames = 
+    {
+        // "backpack", "blahblahblah"
+    };*/
+
 
     public SlotBackpack(IInventoryAdventureBackpack inventory, int id, int x, int y)
     {
@@ -26,39 +47,21 @@ public class SlotBackpack extends SlotAdventureBackpack
         
         if (ConfigHandler.DONT_GO_DEEPER) 
         {
-        	String[] forbiddenItemClasses = 
-        	{
-        		// Adventure Backpack 2
-        		//"com.darkona.adventurebackpack.item.ItemAdventureBackpack",
-        		// Jabba Dolly
-        		"mcp.mobius.betterbarrels.common.items.dolly.ItemBarrelMover",   
-                "mcp.mobius.betterbarrels.common.items.dolly.ItemDiamondMover",
-                // Forestry Backpacks, includes Railcraft and MagicBees addons
-                "forestry.storage.items.ItemBackpack",
-                "forestry.storage.items.ItemBackpackNaturalist",
-                // Backpack Mod
-                "de.eydamos.backpack.item.ItemBackpack",
-                "de.eydamos.backpack.item.ItemWorkbenchBackpack"
-            };
-        
-        	String[] forbiddenItemNames = {
-                // "backpack", "blahblahblah"
-            };
-
         	Item item = stack.getItem();
-        	String name = item.getUnlocalizedName().toLowerCase();
         
         	for (String itemClass : forbiddenItemClasses)
         	{
         		if (item.getClass().getName() == (itemClass)) return false;	
         	}
 
+        	/*String name = item.getUnlocalizedName().toLowerCase();
+            
         	for (String itemName : forbiddenItemNames)
         	{
         		@SuppressWarnings("unused")
         		String a = itemName;
         		if (name.contains(itemName)) return false;
-        	}
+        	}*/
         }
         return true;
     }
