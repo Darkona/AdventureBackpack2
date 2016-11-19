@@ -53,7 +53,7 @@ public class KeybindHandler
                 {
                 	if (player.isSneaking() && (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
                 	{
-                		ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
+                	    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
                 	} else 
                 	{
                         ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
@@ -71,7 +71,7 @@ public class KeybindHandler
                         if (Wearing.isWearingSteam(player))
                         {
                             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
-                		}
+                        }
                     }
                 }
             }
