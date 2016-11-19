@@ -73,7 +73,7 @@ public class ConfigHandler
         HOVERING_TEXT_TANKS = config.getBoolean("HoveringText", config.CATEGORY_GENERAL,false, "Show hovering text on fluid tanks?");
         FIX_LEAD = config.getBoolean("FixVanillaLead", config.CATEGORY_GENERAL,true, "Fix the vanilla Lead? (Checks mobs falling on a leash to not die of fall damage if they're not falling so fast)");
         BACKPACK_DEATH_PLACE = config.getBoolean("BackpackDeathPlace", config.CATEGORY_GENERAL,true,"Place backpacks as a block when you die?");
-        DONT_GO_DEEPER = config.getBoolean("ForbidRecursion", config.CATEGORY_GENERAL,true,"Disallow holding other mods backpacks in Adventure Backpack");
+        //DONT_GO_DEEPER = config.getBoolean("ForbidRecursion", config.CATEGORY_GENERAL,true,"Disallow holding other mods backpacks in Adventure Backpack");
         //RECIPES
         SADDLE_RECIPE = config.getBoolean("SaddleRecipe", config.CATEGORY_GENERAL,true, "Add recipe for saddle?");
         Copterpack_Recipe = config.getBoolean("Copterpack_Recipe", config.CATEGORY_GENERAL, true, "Enable/Disable CopterPack recipe");
