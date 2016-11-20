@@ -14,11 +14,11 @@ import net.minecraft.item.ItemStack;
  */
 public class SlotBackpack extends SlotAdventureBackpack
 {
-	
+
 	private static String[] forbiddenItemClasses =
     {
         // Adventure Backpack 2
-        //"com.darkona.adventurebackpack.item.ItemAdventureBackpack",
+        "com.darkona.adventurebackpack.item.ItemAdventureBackpack",
         // Jabba Dolly
         "mcp.mobius.betterbarrels.common.items.dolly.ItemBarrelMover",   
         "mcp.mobius.betterbarrels.common.items.dolly.ItemDiamondMover",
@@ -35,7 +35,6 @@ public class SlotBackpack extends SlotAdventureBackpack
         // "backpack", "blahblahblah"
     };*/
 
-
     public SlotBackpack(IInventoryAdventureBackpack inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
@@ -43,26 +42,18 @@ public class SlotBackpack extends SlotAdventureBackpack
 
     public static boolean valid(ItemStack stack)
     {
-        if ((stack != null) && (stack.getItem() instanceof ItemAdventureBackpack || stack.getItem() == Item.getItemFromBlock(ModBlocks.blockBackpack))) return false; 
-        
-        if (ConfigHandler.DONT_GO_DEEPER) 
-        {
-        	Item item = stack.getItem();
-        
-        	for (String itemClass : forbiddenItemClasses)
-        	{
-        		if (item.getClass().getName() == (itemClass)) return false;	
-        	}
-
-        	/*String name = item.getUnlocalizedName().toLowerCase();
-            
-        	for (String itemName : forbiddenItemNames)
-        	{
-        		@SuppressWarnings("unused")
-        		String a = itemName;
-        		if (name.contains(itemName)) return false;
-        	}*/
-        }
+    	for (String itemClass : forbiddenItemClasses)
+    	{
+    		if (stack.getItem().getClass().getName().equals(itemClass)) return false;	
+    	}
+        	
+    	//if (ConfigHandler.YOU_SHALL_NOT_PASS)
+    	{
+    		/*for (String itemName : forbiddenItemNames)
+    		{
+    			if (stack.getItem().getUnlocalizedName().toLowerCase().contains(itemName)) return false;
+    		}*/
+    	}
         return true;
     }
     
