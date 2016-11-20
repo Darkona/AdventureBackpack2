@@ -21,7 +21,12 @@ public class SlotFluid extends SlotAdventureBackpack
 
     public static boolean valid(ItemStack stack)
     {
-	return ((stack != null) && (FluidContainerRegistry.isContainer(stack)));
+	return ((stack != null) && FluidContainerRegistry.isContainer(stack));
+    }
+
+    public static boolean isEmpty(ItemStack stack)
+    {
+	return ((stack != null) && FluidContainerRegistry.isEmptyContainer(stack));
     }
 
     @Override
@@ -57,11 +62,8 @@ public class SlotFluid extends SlotAdventureBackpack
 		if (name.contains(toolName))
 		    return false;
 	    }
-
 	}
-
 	return valid;
-
     }
 
     @Override
@@ -81,4 +83,5 @@ public class SlotFluid extends SlotAdventureBackpack
     public void putStack(ItemStack par1ItemStack) {
 	super.putStack(par1ItemStack);
     }
+
 }

@@ -1,16 +1,17 @@
 package com.darkona.adventurebackpack.init;
 
+import java.lang.reflect.Field;
+
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-
-import java.lang.reflect.Field;
 
 /**
  * Created on 20/10/2014
@@ -38,8 +39,8 @@ public class ModRecipes
         }
 
         //Copter Pack
-        if(ConfigHandler.Copterpack_Recipe) 
-        {	
+        if(ConfigHandler.Copterpack_Recipe)
+        {
             GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
                 "WBW",
                 "TEI",
@@ -68,8 +69,8 @@ public class ModRecipes
                 'T', new ItemStack(ModItems.component, 1, 2)
           );
         }
-        
-        //change to make it not support BuildCraft there are people out there who dont like that mod 
+
+        //change to make it not support BuildCraft there are people out there who dont like that mod
         //CampFire
         GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.blockCampFire,
                 " S ",
@@ -79,7 +80,7 @@ public class ModRecipes
                 'x', Items.coal,
                 'c', "cobblestone"
         ));
-        //Inflatable Boat 
+        //Inflatable Boat
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 7),
                 "   ",
                 "w w",
@@ -103,8 +104,7 @@ public class ModRecipes
                 'G', Blocks.glass,
                 'I', Items.iron_ingot
         );
-        
-        
+
         //Inflatable Boat (Motorized)
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 8),
                 " B ",
@@ -138,7 +138,7 @@ public class ModRecipes
                 'S', Items.stick
         );
 
-        //Mechete
+        //Machete
         GameRegistry.addRecipe(new ItemStack(ModItems.machete),
                 " I ",
                 " I ",
@@ -146,7 +146,7 @@ public class ModRecipes
                 'I', Items.iron_ingot,
                 'H', new ItemStack(ModItems.component, 1, 4)
         );
-        //Adventure Hats
+        //Adventure Hat
         GameRegistry.addRecipe(new ItemStack(ModItems.adventureHat),
                 "   ",
                 "nC ",
@@ -157,19 +157,21 @@ public class ModRecipes
         );
         //Adventure Suit
         GameRegistry.addRecipe(new ItemStack(ModItems.adventureSuit),
-                " V ",
-                " W ",
+                "LWL",
+                "LVL",
                 "   ",
                 'V', Items.leather_chestplate,
-                'W', Blocks.wool
+                'W', Blocks.wool,
+                'L', Items.leather
         );
         //Adventure Pants
-        GameRegistry.addRecipe(new ItemStack(ModItems.Pantaloon),
-                " V ",
-                " W ",
+        GameRegistry.addRecipe(new ItemStack(ModItems.adventurePants),
+                "LVL",
+                "LWL",
                 "   ",
                 'V', Items.leather_leggings,
-                'W', Blocks.wool
+                'W', Blocks.wool,
+                'L', Items.leather
         );
         //Piston Boots
         GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
@@ -270,7 +272,7 @@ public class ModRecipes
                     'I', Items.iron_ingot,
                     'F', Blocks.fence
             );
-            
+
             //Clockwork Crossbow
             GameRegistry.addRecipe(new ItemStack(ModItems.cwxbow),
                     "   ",

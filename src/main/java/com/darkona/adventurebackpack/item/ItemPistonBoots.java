@@ -1,7 +1,8 @@
 package com.darkona.adventurebackpack.item;
 
-
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -16,9 +17,11 @@ public class ItemPistonBoots extends ArmorAB
     public ItemPistonBoots()
     {
         super(2, 3);
+        setMaxDamage(Items.iron_boots.getMaxDamage() + 55);
         setUnlocalizedName("pistonBoots");
     }
 
+    @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack)
     {
         player.stepHeight = 1.001F;
@@ -28,4 +31,9 @@ public class ItemPistonBoots extends ArmorAB
         }
     }
 
+    @Override
+    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    {
+	return par2ItemStack.isItemEqual(new ItemStack(Blocks.piston));
+    }
 }

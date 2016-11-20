@@ -2,11 +2,13 @@ package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.client.models.ModelAdventureHat;
 import com.darkona.adventurebackpack.util.Resources;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -18,6 +20,7 @@ public class ItemAdventureHat extends ArmorAB
     public ItemAdventureHat()
     {
         super(2, 0);
+        setMaxDamage(Items.leather_helmet.getMaxDamage() + 45);
         setUnlocalizedName("adventureHat");
     }
 
@@ -28,7 +31,6 @@ public class ItemAdventureHat extends ArmorAB
         return new ModelAdventureHat();
     }
 
-
     @SideOnly(Side.CLIENT)
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
@@ -38,5 +40,12 @@ public class ItemAdventureHat extends ArmorAB
 
         return modelTexture;
     }
+
+    @Override
+    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    {
+	return par2ItemStack.isItemEqual(new ItemStack(Items.leather));
+    }
+
 }
 
