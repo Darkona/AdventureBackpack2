@@ -82,11 +82,6 @@ public class ContainerJetpack extends Container implements IWearableContainer
         {
             refresh();
             super.detectAndSendChanges();
-            if (wearing && player instanceof EntityPlayerMP)
-            {
-                ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
-                BackpackProperty.syncToNear(player);
-            }
         }else{
             super.detectAndSendChanges();
         }
