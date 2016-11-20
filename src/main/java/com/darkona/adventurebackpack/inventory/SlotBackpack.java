@@ -1,12 +1,8 @@
 package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -20,7 +16,7 @@ public class SlotBackpack extends SlotAdventureBackpack
         // Adventure Backpack 2
         "com.darkona.adventurebackpack.item.ItemAdventureBackpack",
         // Jabba Dolly
-        "mcp.mobius.betterbarrels.common.items.dolly.ItemBarrelMover",   
+        "mcp.mobius.betterbarrels.common.items.dolly.ItemBarrelMover",
         "mcp.mobius.betterbarrels.common.items.dolly.ItemDiamondMover",
         // Forestry Backpacks, includes Railcraft and MagicBees addons
         "forestry.storage.items.ItemBackpack",
@@ -29,8 +25,8 @@ public class SlotBackpack extends SlotAdventureBackpack
         "de.eydamos.backpack.item.ItemBackpack",
         "de.eydamos.backpack.item.ItemWorkbenchBackpack"
     };
-    
-    /*private	static String[] forbiddenItemNames = 
+
+    /*private	static String[] forbiddenItemNames =
     {
         // "backpack", "blahblahblah"
     };*/
@@ -44,23 +40,23 @@ public class SlotBackpack extends SlotAdventureBackpack
     {
     	for (String itemClass : forbiddenItemClasses)
     	{
-    		if (stack.getItem().getClass().getName().equals(itemClass)) return false;	
+    	    if (stack.getItem().getClass().getName().equals(itemClass)) return false;
     	}
-        	
+
     	//if (ConfigHandler.YOU_SHALL_NOT_PASS)
-    	{
-    		/*for (String itemName : forbiddenItemNames)
-    		{
-    			if (stack.getItem().getUnlocalizedName().toLowerCase().contains(itemName)) return false;
-    		}*/
-    	}
+    	/*{
+    	    for (String itemName : forbiddenItemNames)
+    	    {
+    		if (stack.getItem().getUnlocalizedName().toLowerCase().contains(itemName)) return false;
+    	    }
+    	}*/
         return true;
     }
-    
+
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-    	return ((stack != null) && (valid(stack)));    	
+    	return ((stack != null) && (valid(stack)));
     }
 
     @Override
