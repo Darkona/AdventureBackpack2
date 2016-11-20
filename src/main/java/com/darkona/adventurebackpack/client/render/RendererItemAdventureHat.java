@@ -1,14 +1,16 @@
 package com.darkona.adventurebackpack.client.render;
 
 
+import org.lwjgl.opengl.GL11;
+
 import com.darkona.adventurebackpack.client.models.ModelAdventureHat;
 import com.darkona.adventurebackpack.util.Resources;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 
 /**
@@ -26,6 +28,7 @@ public class RendererItemAdventureHat implements IItemRenderer
         model = ModelAdventureHat.instance;
     }
 
+    @Override
     public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type)
     {
         switch (type)
@@ -44,6 +47,7 @@ public class RendererItemAdventureHat implements IItemRenderer
         return false;
     }
 
+    @Override
     public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item, IItemRenderer.ItemRendererHelper helper)
     {
         switch (type)
@@ -62,9 +66,10 @@ public class RendererItemAdventureHat implements IItemRenderer
         return false;
     }
 
+    @Override
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data)
     {
-        ResourceLocation modelTexture = Resources.modelTextures("adventureHat");
+        ResourceLocation modelTexture = Resources.modelTextures("adventureHat_texture");
         Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
         switch (type)
         {

@@ -1,12 +1,10 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.client.models.ModelAdventureHat;
-import com.darkona.adventurebackpack.util.Resources;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -29,16 +27,6 @@ public class ItemAdventureHat extends ArmorAB
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
     {
         return new ModelAdventureHat();
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
-    {
-        String modelTexture;
-        modelTexture = Resources.modelTextures("adventureHat").toString();
-
-        return modelTexture;
     }
 
     @Override
