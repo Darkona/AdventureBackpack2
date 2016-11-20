@@ -6,9 +6,14 @@ import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
-import com.darkona.adventurebackpack.network.*;
+import com.darkona.adventurebackpack.network.CycleToolPacket;
+import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.network.PlayerActionPacket;
+import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
+import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.reference.Key;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
@@ -35,7 +40,7 @@ public class KeybindHandler
         {
             return Key.JUMP;
         }
-            return Key.UNKNOWN;
+        return Key.UNKNOWN;
       }
 
     @SubscribeEvent
@@ -51,26 +56,26 @@ public class KeybindHandler
             {
                 if (mc.inGameHasFocus)
                 {
-                	if (player.isSneaking() && (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
+                    if (player.isSneaking() && (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
+                    {
+                	ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
+                    } else
+                    {
+                	ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
+                	if (Wearing.isWearingBackpack(player))
+                	{
+                	    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
+                	} else if ((player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
                 	{
                 	    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
-                	} else 
+                	}
+                	if (Wearing.isWearingCopter(player))
                 	{
-                        ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
-                        if (Wearing.isWearingBackpack(player))
-                        {
-                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
-                        } else if ((player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
-                        {
-                		    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
-                        }
-                        if (Wearing.isWearingCopter(player))
-                        {
-                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
-                        }
-                        if (Wearing.isWearingSteam(player))
-                        {
-                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
+                	    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
+                	}
+                	if (Wearing.isWearingSteam(player))
+                	{
+                	    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
                         }
                     }
                 }

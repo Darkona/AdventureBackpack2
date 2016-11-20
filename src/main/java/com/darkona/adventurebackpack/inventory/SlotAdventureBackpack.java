@@ -15,14 +15,4 @@ public abstract class SlotAdventureBackpack extends Slot
     {
         super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
     }
-
-    @Override
-    public void onSlotChanged()
-    {
-        if(Utils.inServer())
-        {
-            if (inventory instanceof IInventoryTanks)
-                ((IInventoryTanks) this.inventory).dirtyInventory();
-        }
-    }
 }

@@ -33,9 +33,9 @@ item.adventurebackpack:copterPack.name=Copter Pack
 item.adventurebackpack:CoalJetpack.name=Coal Jetpack
 
 ## Armor
-item.adventurebackpack:pants.name=Adventurer's Pants
-item.adventurebackpack:adventureSuit.name=Adventurer's Suit
 item.adventurebackpack:adventureHat.name=Adventurer's Fedora
+item.adventurebackpack:adventureSuit.name=Adventurer's Suit
+item.adventurebackpack:adventurePants.name=Adventurer's Pants
 item.adventurebackpack:pistonBoots.name=Piston Boots
 
 ## Blocks
