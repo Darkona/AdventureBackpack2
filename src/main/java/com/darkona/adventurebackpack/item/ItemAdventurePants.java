@@ -8,14 +8,14 @@ import net.minecraft.item.ItemStack;
  *
  * @author Darkona
  */
-public class ItemAdventureJacket extends ArmorAB
+public class ItemAdventurePants extends ArmorAB
 {
 
-    public ItemAdventureJacket()
+    public ItemAdventurePants()
     {
-        super(1, 1);
-        setMaxDamage(Items.leather_chestplate.getMaxDamage() + 70);
-        setUnlocalizedName("adventureSuit");
+        super(2, 2);
+        setMaxDamage(Items.leather_leggings.getMaxDamage() + 75);
+        setUnlocalizedName("adventurePants");
     }
 
     @Override

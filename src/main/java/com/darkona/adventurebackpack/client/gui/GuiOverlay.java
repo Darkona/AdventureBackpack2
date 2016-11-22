@@ -1,6 +1,11 @@
 package com.darkona.adventurebackpack.client.gui;
 
-import codechicken.lib.render.TextureUtils;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
@@ -8,6 +13,8 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
+
+import codechicken.lib.render.TextureUtils;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
@@ -25,11 +32,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Created on 09/01/2015
@@ -56,7 +58,7 @@ public class GuiOverlay extends Gui
     }
 
     private static final int BUFF_ICON_SIZE = 18;
-    private static final int BUFF_ICON_SPACING = BUFF_ICON_SIZE + 2; // 2 pixels between buff icons
+    private static final int BUFF_ICON_SPACING = 2; // 2 pixels between buff icons
     private static final int BUFF_ICON_BASE_U_OFFSET = 0;
     private static final int BUFF_ICON_BASE_V_OFFSET = 198;
     private static final int BUFF_ICONS_PER_ROW = 8;
@@ -74,8 +76,19 @@ public class GuiOverlay extends Gui
         screenHeight = resolution.getScaledHeight();
         if(ConfigHandler.STATUS_OVERLAY)
         {
-            int xPos = 2;
-            int yPos = 2;
+            int xPos = ConfigHandler.STATUS_OVERLAY_INDENT_H;
+            int xStep = BUFF_ICON_SIZE + BUFF_ICON_SPACING;;
+            if (!ConfigHandler.STATUS_OVERLAY_LEFT)
+            {
+        	xPos = screenWidth - BUFF_ICON_SIZE - ConfigHandler.STATUS_OVERLAY_INDENT_H;
+        	xStep = - BUFF_ICON_SIZE - BUFF_ICON_SPACING;;
+            }
+            int yPos = ConfigHandler.STATUS_OVERLAY_INDENT_V;
+            if (!ConfigHandler.STATUS_OVERLAY_TOP)
+            {
+        	yPos = screenHeight - BUFF_ICON_SIZE - ConfigHandler.STATUS_OVERLAY_INDENT_V;
+            }
+
             @SuppressWarnings("rawtypes")
 			Collection collection = this.mc.thePlayer.getActivePotionEffects();
             if (!collection.isEmpty())
@@ -85,19 +98,19 @@ public class GuiOverlay extends Gui
                 this.mc.renderEngine.bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
 
                 for (@SuppressWarnings("rawtypes")
-				Iterator iterator = this.mc.thePlayer.getActivePotionEffects()
-                        .iterator(); iterator.hasNext(); xPos += BUFF_ICON_SPACING)
+                	Iterator iterator = this.mc.thePlayer.getActivePotionEffects()
+                        .iterator(); iterator.hasNext(); xPos += xStep)
                 {
                     PotionEffect potioneffect = (PotionEffect) iterator.next();
                     Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
 
                     if (potion.hasStatusIcon())
                     {
-                        int iconIndex = potion.getStatusIconIndex();
-                        this.drawTexturedModalRect(
-                                xPos, yPos,
-                                BUFF_ICON_BASE_U_OFFSET + iconIndex % BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE, BUFF_ICON_BASE_V_OFFSET + iconIndex / BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
-                                BUFF_ICON_SIZE, BUFF_ICON_SIZE);
+                	int iconIndex = potion.getStatusIconIndex();
+                	this.drawTexturedModalRect(
+                		xPos, yPos,
+                		BUFF_ICON_BASE_U_OFFSET + iconIndex % BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE, BUFF_ICON_BASE_V_OFFSET + iconIndex / BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
+                		BUFF_ICON_SIZE, BUFF_ICON_SIZE);
                     }
                 }
             }
@@ -115,9 +128,16 @@ public class GuiOverlay extends Gui
                 int textureHeight = 23;
                 int textureWidth = 10;
 
-                int xPos = screenWidth - (textureWidth*3) - 4 ;
-                //int yPos = ((screenHeight / 3) * 2) - textureHeight - 2;
-                int yPos = (screenHeight) - textureHeight - 2;
+                int xPos = screenWidth - (textureWidth*3) - ConfigHandler.TANKS_OVERLAY_INDENT_H;
+                if (!ConfigHandler.TANKS_OVERLAY_RIGHT)
+                {
+                    xPos = ConfigHandler.TANKS_OVERLAY_INDENT_H;
+                }
+                int yPos = screenHeight - textureHeight - ConfigHandler.TANKS_OVERLAY_INDENT_V;
+                if (!ConfigHandler.TANKS_OVERLAY_BOTTOM)
+                {
+                    yPos = ConfigHandler.TANKS_OVERLAY_INDENT_V;
+                }
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glDisable(GL11.GL_LIGHTING);
@@ -161,7 +181,7 @@ public class GuiOverlay extends Gui
                     GL11.glPushMatrix();
                     GL11.glTranslatef(xStart[1] + textureWidth + 2, yStart[0], 0);
                     GL11.glScalef(0.5f, 0.5f, 0.5f);
-                    if (ConfigHandler.ENABLE_TOOLS_RENDER) 
+                    if (ConfigHandler.ENABLE_TOOLS_RENDER)
                     {
                         drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
                         drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);

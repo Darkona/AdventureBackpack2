@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,19 +12,25 @@ import net.minecraft.item.ItemStack;
 public class SlotBackpack extends SlotAdventureBackpack
 {
 
-	private static String[] forbiddenItemClasses =
+    public static String[] forbiddenItemClasses =
     {
         // Adventure Backpack 2
         "com.darkona.adventurebackpack.item.ItemAdventureBackpack",
+        // Backpack Mod
+        "de.eydamos.backpack.item.ItemBackpack",
+        "de.eydamos.backpack.item.ItemWorkbenchBackpack",
+        // Blue Power Canvas Bags
+        "com.bluepowermod.item.ItemCanvasBag",
+        // Extra Utilities Golden Bag of Holding
+        "com.rwtema.extrautils.item.ItemGoldenBag",
+        // Forestry Backpacks +addons
+        "forestry.storage.items.ItemBackpack",
+        "forestry.storage.items.ItemBackpackNaturalist",
         // Jabba Dolly
         "mcp.mobius.betterbarrels.common.items.dolly.ItemBarrelMover",
         "mcp.mobius.betterbarrels.common.items.dolly.ItemDiamondMover",
-        // Forestry Backpacks, includes Railcraft and MagicBees addons
-        "forestry.storage.items.ItemBackpack",
-        "forestry.storage.items.ItemBackpackNaturalist",
-        // Backpack Mod
-        "de.eydamos.backpack.item.ItemBackpack",
-        "de.eydamos.backpack.item.ItemWorkbenchBackpack"
+        // Project Red Exploration Backpacks
+        "mrtjp.projectred.exploration.ItemBackpack"
     };
 
     /*private	static String[] forbiddenItemNames =
@@ -38,25 +45,31 @@ public class SlotBackpack extends SlotAdventureBackpack
 
     public static boolean valid(ItemStack stack)
     {
+    	if (stack == null) {return false;}
+
     	for (String itemClass : forbiddenItemClasses)
     	{
     	    if (stack.getItem().getClass().getName().equals(itemClass)) return false;
     	}
 
-    	//if (ConfigHandler.YOU_SHALL_NOT_PASS)
-    	/*{
-    	    for (String itemName : forbiddenItemNames)
+    	if (ConfigHandler.YOU_SHALL_NOT_PASS)
+    	{
+    	    for (String itemName : ConfigHandler.NAME_LOCALIZED)
     	    {
-    		if (stack.getItem().getUnlocalizedName().toLowerCase().contains(itemName)) return false;
+    		if (stack.getDisplayName().toLowerCase().contains(itemName.toLowerCase())) return false;
     	    }
-    	}*/
-        return true;
+    	    for (String itemName : ConfigHandler.NAME_UNLOCALIZED)
+    	    {
+    		if (stack.getItem().getUnlocalizedName().toLowerCase().contains(itemName.toLowerCase())) return false;
+    	    }
+    	}
+    	return true;
     }
 
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-    	return ((stack != null) && (valid(stack)));
+    	return valid(stack);
     }
 
     @Override
