@@ -74,16 +74,3 @@ adventurebackpack:messages.copterpack.off=CopterPack: Off.
 adventurebackpack:messages.jetpack.on=Coal Jetpack: On.
 adventurebackpack:messages.jetpack.off=Coal Jetpack: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.
-
-## Config
-client.gui.ModGuiConfig.catGraphics.tooltip=Graphics Options
-client.gui.ModGuiConfig.catStatus.tooltip=Status Overlay Options
-client.gui.ModGuiConfig.catTanks.tooltip=Backpack Overlay Options
-client.gui.ModGuiConfig.catSound.tooltip=Sound Options
-client.gui.ModGuiConfig.catItems.tooltip=Items Options
-client.gui.ModGuiConfig.catDisallowed.tooltip=Disallowed Items Options
-client.gui.ModGuiConfig.catRecipes.tooltip=Item Recipes Options
-client.gui.ModGuiConfig.catWorldGen.tooltip=WorldGen Options
-client.gui.ModGuiConfig.catCommon.tooltip=Common Options
-
-

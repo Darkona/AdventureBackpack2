@@ -61,7 +61,7 @@ public class ClientActions
             switch (soundCode)
             {
                 case EntitySoundPacket.COPTER_SOUND:
-                    if (ConfigHandler.ALLOW_COPTER_SOUND)
+                    if (ConfigHandler.allowSoundCopter)
                     {
                         snd.playSound(new CopterPackSound(player));
                     }
@@ -70,7 +70,7 @@ public class ClientActions
                     snd.playSound(new NyanMovingSound(player));
                     break;
                 case EntitySoundPacket.JETPACK_FIZZ:
-                    if (ConfigHandler.ALLOW_JETPACK_SOUND)
+                    if (ConfigHandler.allowSoundJetpack)
                     {
                 	snd.playSound(new JetpackSoundOn(player));
                     }

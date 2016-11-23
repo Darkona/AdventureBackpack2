@@ -1,18 +1,27 @@
 package com.darkona.adventurebackpack;
 
+import java.util.Calendar;
+
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GeneralEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
-import com.darkona.adventurebackpack.init.*;
+import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModEntities;
+import com.darkona.adventurebackpack.init.ModFluids;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.init.ModRecipes;
+import com.darkona.adventurebackpack.init.ModWorldGen;
 import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.calendar.ChineseCalendar;
 import com.darkona.adventurebackpack.util.calendar.JewishCalendar;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -22,10 +31,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-
-import java.util.Calendar;
 
 /**
  * Created on 10/10/2014
@@ -118,6 +123,7 @@ public class AdventureBackpack
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
 
 
+
         if (ConfigHandler.IS_BUILDCRAFT)
         {
             LogHelper.info("Buildcraft is present. Acting accordingly");
@@ -152,7 +158,7 @@ public class AdventureBackpack
         }
         LogHelper.info("-------------------------------------------------------------------------");
         */
-        
+
     }
 
 }

@@ -71,7 +71,7 @@ public class RendererHose implements IItemRenderer
                 if (fontRenderer != null)
                 {
                     fontRenderer.drawString(mode, 0, 0, 0xFFFFFF);
-                    if (!ConfigHandler.TANKS_OVERLAY)
+                    if (!ConfigHandler.tanksOverlay)
                     {
                         fontRenderer.drawString(amount, 0, 18, 0xFFFFFF);
                         fontRenderer.drawString(name, 0, 24, 0xFFFFFF);

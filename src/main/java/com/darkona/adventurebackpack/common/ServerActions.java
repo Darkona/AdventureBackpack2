@@ -56,7 +56,7 @@ public class ServerActions
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if(SlotTool.isValidTool(current) && ConfigHandler.ENABLE_TOOLS) {
+            if(SlotTool.isValidTool(current) && ConfigHandler.enableToolsCycling) {
                 if (direction < 0) {
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
                     backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
@@ -115,7 +115,10 @@ public class ServerActions
             if (!action)
             {
                 int mode = ItemHose.getHoseMode(hose);
-                if (direction > 0)
+                if (!ConfigHandler.enableHoseDrink)
+                {
+                    mode = (mode + 1) % 2;
+                } else if (direction > 0)
                 {
                     mode = (mode + 1) % 3;
                 } else if (direction < 0)
@@ -334,7 +337,7 @@ public class ServerActions
     {
         //TODO add configuration for the playing of the sound effect.
         //TODO Maybe configurable jump height too, because why not.
-	if (ConfigHandler.ALLOW_PISTON_SOUND)
+	if (ConfigHandler.allowSoundPiston)
 	{
 	    player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
 	}

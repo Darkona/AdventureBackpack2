@@ -74,19 +74,19 @@ public class GuiOverlay extends Gui
         resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         screenWidth = resolution.getScaledWidth();
         screenHeight = resolution.getScaledHeight();
-        if(ConfigHandler.STATUS_OVERLAY)
+        if(ConfigHandler.statusOverlay)
         {
-            int xPos = ConfigHandler.STATUS_OVERLAY_INDENT_H;
-            int xStep = BUFF_ICON_SIZE + BUFF_ICON_SPACING;;
-            if (!ConfigHandler.STATUS_OVERLAY_LEFT)
+            int xPos = ConfigHandler.statusOverlayIndentH;
+            int xStep = BUFF_ICON_SIZE + BUFF_ICON_SPACING;
+            if (!ConfigHandler.statusOverlayLeft)
             {
-        	xPos = screenWidth - BUFF_ICON_SIZE - ConfigHandler.STATUS_OVERLAY_INDENT_H;
-        	xStep = - BUFF_ICON_SIZE - BUFF_ICON_SPACING;;
+        	xPos = screenWidth - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentH;
+        	xStep = - BUFF_ICON_SIZE - BUFF_ICON_SPACING;
             }
-            int yPos = ConfigHandler.STATUS_OVERLAY_INDENT_V;
-            if (!ConfigHandler.STATUS_OVERLAY_TOP)
+            int yPos = ConfigHandler.statusOverlayIndentV;
+            if (!ConfigHandler.statusOverlayTop)
             {
-        	yPos = screenHeight - BUFF_ICON_SIZE - ConfigHandler.STATUS_OVERLAY_INDENT_V;
+        	yPos = screenHeight - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentV;
             }
 
             @SuppressWarnings("rawtypes")
@@ -116,7 +116,7 @@ public class GuiOverlay extends Gui
             }
         }
 
-        if(ConfigHandler.TANKS_OVERLAY)
+        if(ConfigHandler.tanksOverlay)
         {
             EntityPlayer player= mc.thePlayer;
             if(Wearing.isWearingWearable(player))
@@ -128,15 +128,15 @@ public class GuiOverlay extends Gui
                 int textureHeight = 23;
                 int textureWidth = 10;
 
-                int xPos = screenWidth - (textureWidth*3) - ConfigHandler.TANKS_OVERLAY_INDENT_H;
-                if (!ConfigHandler.TANKS_OVERLAY_RIGHT)
+                int xPos = screenWidth - (textureWidth*3) - ConfigHandler.tanksOverlayIndentH;
+                if (!ConfigHandler.tanksOverlayRight)
                 {
-                    xPos = ConfigHandler.TANKS_OVERLAY_INDENT_H;
+                    xPos = ConfigHandler.tanksOverlayIndentH;
                 }
-                int yPos = screenHeight - textureHeight - ConfigHandler.TANKS_OVERLAY_INDENT_V;
-                if (!ConfigHandler.TANKS_OVERLAY_BOTTOM)
+                int yPos = screenHeight - textureHeight - ConfigHandler.tanksOverlayIndentV;
+                if (!ConfigHandler.tanksOverlayBottom)
                 {
-                    yPos = ConfigHandler.TANKS_OVERLAY_INDENT_V;
+                    yPos = ConfigHandler.tanksOverlayIndentV;
                 }
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -181,7 +181,7 @@ public class GuiOverlay extends Gui
                     GL11.glPushMatrix();
                     GL11.glTranslatef(xStart[1] + textureWidth + 2, yStart[0], 0);
                     GL11.glScalef(0.5f, 0.5f, 0.5f);
-                    if (ConfigHandler.ENABLE_TOOLS_RENDER)
+                    if (ConfigHandler.enableToolsRender)
                     {
                         drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
                         drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);

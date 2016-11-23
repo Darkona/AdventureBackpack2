@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 public class SlotBackpack extends SlotAdventureBackpack
 {
 
-    public static String[] forbiddenItemClasses =
+    private static final String[] forbiddenItemClasses =
     {
         // Adventure Backpack 2
         "com.darkona.adventurebackpack.item.ItemAdventureBackpack",
@@ -33,11 +33,6 @@ public class SlotBackpack extends SlotAdventureBackpack
         "mrtjp.projectred.exploration.ItemBackpack"
     };
 
-    /*private	static String[] forbiddenItemNames =
-    {
-        // "backpack", "blahblahblah"
-    };*/
-
     public SlotBackpack(IInventoryAdventureBackpack inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
@@ -45,20 +40,20 @@ public class SlotBackpack extends SlotAdventureBackpack
 
     public static boolean valid(ItemStack stack)
     {
-    	if (stack == null) {return false;}
+    	if (stack == null) return false;
 
     	for (String itemClass : forbiddenItemClasses)
     	{
     	    if (stack.getItem().getClass().getName().equals(itemClass)) return false;
     	}
 
-    	if (ConfigHandler.YOU_SHALL_NOT_PASS)
+    	if (ConfigHandler.enableItemFilters)
     	{
-    	    for (String itemName : ConfigHandler.NAME_LOCALIZED)
+    	    for (String itemName : ConfigHandler.nameLocalized)
     	    {
     		if (stack.getDisplayName().toLowerCase().contains(itemName.toLowerCase())) return false;
     	    }
-    	    for (String itemName : ConfigHandler.NAME_UNLOCALIZED)
+    	    for (String itemName : ConfigHandler.nameUnlocalized)
     	    {
     		if (stack.getItem().getUnlocalizedName().toLowerCase().contains(itemName.toLowerCase())) return false;
     	    }

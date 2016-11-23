@@ -27,7 +27,7 @@ public class ModRecipes
 
     public static void init()
     {
-        if(ConfigHandler.RECIPE_SADDLE)
+        if(ConfigHandler.recipeSaddle)
         {
             GameRegistry.addRecipe(new ItemStack(Items.saddle),
                     "LLL",
@@ -39,7 +39,7 @@ public class ModRecipes
         }
 
         //Copter Pack
-        if(ConfigHandler.RECIPE_COPTER_PACK)
+        if(ConfigHandler.recipeCopterPack)
         {
             GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
                 "WBW",
@@ -56,7 +56,7 @@ public class ModRecipes
         }
 
         //CoalJetpack
-        if(ConfigHandler.RECIPE_COAL_JETPACK)
+        if(ConfigHandler.recipeCoalJetpack)
         {
         GameRegistry.addRecipe(new ItemStack(ModItems.CoalJetpack),
                 "SWT",
@@ -128,7 +128,7 @@ public class ModRecipes
                 'L', Blocks.lever
         );
 
-        if (ConfigHandler.RECIPE_MACHETE)
+        if (ConfigHandler.recipeMachete)
         {
             //Machete Handle
             GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 4),
@@ -154,7 +154,7 @@ public class ModRecipes
         }
 
         //Clockwork Crossbow
-        if (ConfigHandler.RECIPE_CLOCKWORK_CROSSBOW)
+        if (ConfigHandler.recipeClockCrossbow)
         {
             GameRegistry.addRecipe(new ItemStack(ModItems.cwxbow),
         	"   ",
@@ -167,7 +167,7 @@ public class ModRecipes
             );
         }
 
-        if (ConfigHandler.RECIPE_ADVENTURES_SET)
+        if (ConfigHandler.recipeAdventuresSet)
         {
             //Adventure Hat
             GameRegistry.addRecipe(new ItemStack(ModItems.adventureHat),
@@ -201,7 +201,7 @@ public class ModRecipes
         }
 
         //Piston Boots
-        if (ConfigHandler.RECIPE_PISTON_BOOTS)
+        if (ConfigHandler.recipePitonBoots)
         {
             GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
                 " B ",

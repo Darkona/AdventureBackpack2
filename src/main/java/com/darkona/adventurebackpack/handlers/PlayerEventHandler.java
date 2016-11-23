@@ -162,7 +162,7 @@ public class PlayerEventHandler
     {
         if (event.entity != null)
         {
-            if (event.entityLiving instanceof EntityCreature && ConfigHandler.FIX_LEAD)
+            if (event.entityLiving instanceof EntityCreature && ConfigHandler.fixLead)
             {
                 EntityCreature creature = (EntityCreature) event.entityLiving;
                 if (creature.getLeashed() && creature.getLeashedToEntity() != null && creature.getLeashedToEntity() instanceof EntityPlayer)
@@ -191,7 +191,7 @@ public class PlayerEventHandler
                 {
                     event.setCanceled(true);
                 }
-                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.BACKPACK_ABILITIES)
+                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.backpackAbilities)
                 {
                     event.setCanceled(true);
                 }

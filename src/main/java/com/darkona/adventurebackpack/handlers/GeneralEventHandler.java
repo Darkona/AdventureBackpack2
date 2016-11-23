@@ -43,7 +43,7 @@ public class GeneralEventHandler
     public void eatGoldenApple(PlayerUseItemEvent.Finish event)
     {
         EntityPlayer player = event.entityPlayer;
-        if (ConfigHandler.BACKPACK_ABILITIES)
+        if (ConfigHandler.backpackAbilities)
         {
             if (event.item.getItem() instanceof ItemAppleGold &&
                     //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
@@ -83,7 +83,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectBow(ArrowNockEvent event)
     {
-        if (!ConfigHandler.BACKPACK_ABILITIES) return;
+        if (!ConfigHandler.backpackAbilities) return;
         if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -98,7 +98,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectArrow(ArrowLooseEvent event)
     {
-        if (!ConfigHandler.BACKPACK_ABILITIES) return;
+        if (!ConfigHandler.backpackAbilities) return;
         if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -125,7 +125,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void makeHorsesFollowOwner(EntityJoinWorldEvent event)
     {
-        if(!ConfigHandler.BACKPACK_ABILITIES)return;
+        if(!ConfigHandler.backpackAbilities)return;
         if(event.entity instanceof EntityHorse)
         {
 

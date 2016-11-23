@@ -39,8 +39,8 @@ public class GuiAdvBackpack extends GuiWithTanks
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 91, 18, 18);
-    private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
-    private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
+    private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.typeTankRender);
+    private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.typeTankRender);
     private FluidTank lft;
     private FluidTank rgt;
     public int lefties;
@@ -126,7 +126,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             }
         }
         //zLevel +=1;
-        if(ConfigHandler.HOVERING_TEXT_TANKS)
+        if(ConfigHandler.tanksHoveringText)
         {
             if (tankLeft.inTank(this, mouseX, mouseY))
             {

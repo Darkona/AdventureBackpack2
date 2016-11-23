@@ -25,7 +25,7 @@ public class GuiCopterPack extends GuiWithTanks
 {
     private InventoryCopterPack inventory;
     private static final ResourceLocation texture = Resources.guiTextures("guiCopterPack");
-    private static GuiTank fuelTank = new GuiTank(8, 8,72, 32, ConfigHandler.GUI_TANK_RENDER);
+    private static GuiTank fuelTank = new GuiTank(8, 8,72, 32, ConfigHandler.typeTankRender);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
 
