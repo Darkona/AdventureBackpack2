@@ -128,7 +128,7 @@ public class ConfigHandler
         recipeMachete = config.getBoolean("Machete", "items.recipes", true, "Enable/Disable Machete recipe");
 
         // Items.Disallowed
-        nameLocalized = config.getStringList("By Displaed Name", "items.disallowed", nameDefault, "FOR TEST ONLY. Disallowed items by dispaled (localized) name. Not case sensitive");
+        nameLocalized = config.getStringList("By Displayed Name", "items.disallowed", nameDefault, "FOR TEST ONLY. Disallowed items by displayed (localized) name. Not case sensitive");
         nameUnlocalized = config.getStringList("By Internal Name", "items.disallowed", nameDefault, "FOR TEST ONLY. Disallowed items by internal (unlocalized) name. Not case sensitive");
 
         // WorldGen
