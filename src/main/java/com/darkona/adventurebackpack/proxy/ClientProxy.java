@@ -102,7 +102,7 @@ public class ClientProxy implements IProxy
         rendererItemAdventureHat = new RendererItemAdventureHat();
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, rendererItemAdventureHat);
 
-        if(!ConfigHandler.TANKS_OVERLAY)
+        if(!ConfigHandler.tanksOverlay)
         {
             rendererHose = new RendererHose();
             MinecraftForgeClient.registerItemRenderer(ModItems.hose, rendererHose);

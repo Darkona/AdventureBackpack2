@@ -2,19 +2,20 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.develop.msg;
+import com.darkona.adventurebackpack.develop.texturemsg;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
-import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -38,8 +39,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
-import com.darkona.adventurebackpack.develop.msg;
-import com.darkona.adventurebackpack.develop.texturemsg;
 
 /**
  * Created on 11/10/2014
@@ -123,7 +122,6 @@ public class PlayerEventHandler
         {
             EntityPlayer player = (EntityPlayer) event.entity;
 
-
             if (Wearing.isWearingBoots(player) && player.onGround)
             {
                 ServerActions.pistonBootsJump(player);
@@ -133,26 +131,26 @@ public class PlayerEventHandler
 
 
     boolean pistonBootsStepHeight=false;
-   
+
     @SubscribeEvent
-    public void pistonBootsUnequipped(LivingEvent.LivingUpdateEvent event) 
-    { 
+    public void pistonBootsUnequipped(LivingEvent.LivingUpdateEvent event)
+    {
     	if (event.entityLiving instanceof EntityPlayer)
     	{
-    	    EntityPlayer player = (EntityPlayer)event.entityLiving;    		    		
+    	    EntityPlayer player = (EntityPlayer)event.entityLiving;
             if (Wearing.isWearingBoots(player))
     	    {
     		if (!pistonBootsStepHeight)
     		{
-    		    pistonBootsStepHeight = true;    				
+    		    pistonBootsStepHeight = true;
     		}
     	    } else if (pistonBootsStepHeight)
     	    {
     		player.stepHeight = 0.5001F;
-    		pistonBootsStepHeight=false;    			
+    		pistonBootsStepHeight=false;
     	    }
-        }      	
-    }  
+        }
+    }
 
     /**
      * Used by the Piston boots to lessen the fall damage. It's hacky, but I don't care.
@@ -164,7 +162,7 @@ public class PlayerEventHandler
     {
         if (event.entity != null)
         {
-            if (event.entityLiving instanceof EntityCreature && ConfigHandler.FIX_LEAD)
+            if (event.entityLiving instanceof EntityCreature && ConfigHandler.fixLead)
             {
                 EntityCreature creature = (EntityCreature) event.entityLiving;
                 if (creature.getLeashed() && creature.getLeashedToEntity() != null && creature.getLeashedToEntity() instanceof EntityPlayer)
@@ -193,7 +191,7 @@ public class PlayerEventHandler
                 {
                     event.setCanceled(true);
                 }
-                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.BACKPACK_ABILITIES)
+                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.backpackAbilities)
                 {
                     event.setCanceled(true);
                 }

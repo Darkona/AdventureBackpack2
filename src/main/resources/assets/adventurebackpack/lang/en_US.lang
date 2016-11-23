@@ -12,6 +12,9 @@ item.adventurebackpack:hydroBlades.name=Hydro Blades
 item.adventurebackpack:inflatableBoat.name=Inflatable Boat
 item.adventurebackpack:inflatableBoatMotorized.name=Inflatable Boat (Motorized)
 
+## Entity 
+entity.adventurebackpack.inflatableBoat.name=Inflatable Boat
+
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Clockwork Crossbow
 item.adventurebackpack:melonJuiceBottle.name=Melon Juice Bottle
@@ -70,4 +73,6 @@ adventurebackpack:messages.copterpack.cantwater=CopterPack: Can't function in wa
 adventurebackpack:messages.copterpack.off=CopterPack: Off.
 adventurebackpack:messages.jetpack.on=Coal Jetpack: On.
 adventurebackpack:messages.jetpack.off=Coal Jetpack: Off.
+adventurebackpack:messages.cycling.on=Tool Cycling: On.
+adventurebackpack:messages.cycling.off=Tool Cycling: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.

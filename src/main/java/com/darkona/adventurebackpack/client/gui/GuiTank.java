@@ -74,7 +74,7 @@ public class GuiTank
         tank = theFluid;
         liquidPerPixel = tank.getCapacity() / this.height;
         this.zLevel = gui.getZLevel()+1;
-        switch (ConfigHandler.GUI_TANK_RENDER)
+        switch (ConfigHandler.typeTankRender)
         {
             case 1:
                 drawMethodOne(gui);

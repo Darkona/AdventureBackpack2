@@ -1,9 +1,14 @@
 package com.darkona.adventurebackpack.client;
 
-import com.darkona.adventurebackpack.client.audio.*;
+import com.darkona.adventurebackpack.client.audio.BoilingBoilerSound;
+import com.darkona.adventurebackpack.client.audio.CopterPackSound;
+import com.darkona.adventurebackpack.client.audio.JetpackSoundOn;
+import com.darkona.adventurebackpack.client.audio.LeakingBoilerSound;
+import com.darkona.adventurebackpack.client.audio.NyanMovingSound;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -56,7 +61,7 @@ public class ClientActions
             switch (soundCode)
             {
                 case EntitySoundPacket.COPTER_SOUND:
-                    if (ConfigHandler.ALLOW_COPTER_SOUND)
+                    if (ConfigHandler.allowSoundCopter)
                     {
                         snd.playSound(new CopterPackSound(player));
                     }
@@ -65,7 +70,10 @@ public class ClientActions
                     snd.playSound(new NyanMovingSound(player));
                     break;
                 case EntitySoundPacket.JETPACK_FIZZ:
-                    snd.playSound(new JetpackSoundOn(player));
+                    if (ConfigHandler.allowSoundJetpack)
+                    {
+                	snd.playSound(new JetpackSoundOn(player));
+                    }
                     break;
                 case EntitySoundPacket.BOILING_BUBBLES:
                     snd.playSound(new BoilingBoilerSound(player));

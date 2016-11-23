@@ -282,7 +282,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
 
-        if (!ConfigHandler.BACKPACK_ABILITIES) return;
+        if (!ConfigHandler.backpackAbilities) return;
         if (world == null || player == null || stack == null) return;
 
         if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
@@ -301,7 +301,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
         }
 
-        if(ConfigHandler.BACKPACK_DEATH_PLACE)
+        if(ConfigHandler.backpackDeathPlace)
         {
             if (!tryPlace(world, player, stack))
             {

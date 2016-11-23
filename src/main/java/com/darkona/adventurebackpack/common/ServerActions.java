@@ -1,8 +1,11 @@
 package com.darkona.adventurebackpack.common;
 
+import java.util.Random;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
+import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
@@ -14,6 +17,7 @@ import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,8 +30,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-
-import java.util.Random;
 
 /**
  * Created on 23/12/2014
@@ -55,7 +57,8 @@ public class ServerActions
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if(SlotTool.isValidTool(current) && ConfigHandler.ENABLE_TOOLS) {
+            if(SlotTool.isValidTool(current) && KeybindHandler.currentToolCycling)
+            {
                 if (direction < 0) {
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
                     backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
@@ -114,7 +117,10 @@ public class ServerActions
             if (!action)
             {
                 int mode = ItemHose.getHoseMode(hose);
-                if (direction > 0)
+                if (!ConfigHandler.enableHoseDrink)
+                {
+                    mode = (mode + 1) % 2;
+                } else if (direction > 0)
                 {
                     mode = (mode + 1) % 3;
                 } else if (direction < 0)
@@ -333,7 +339,10 @@ public class ServerActions
     {
         //TODO add configuration for the playing of the sound effect.
         //TODO Maybe configurable jump height too, because why not.
-        player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
+	if (ConfigHandler.allowSoundPiston)
+	{
+	    player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
+	}
         player.motionY += 0.30;
         player.jumpMovementFactor += 0.3;
     }

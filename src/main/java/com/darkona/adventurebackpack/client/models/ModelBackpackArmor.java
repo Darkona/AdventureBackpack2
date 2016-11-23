@@ -258,7 +258,7 @@ public class ModelBackpackArmor extends ModelWearable
         setOffset(lowerTool, -.28F, 0.8F, -.1F);
         setOffset(upperTool, 0.0f, 0.04f, 0.25f);
 
-        if (ConfigHandler.ENABLE_TOOLS_RENDER)
+        if (ConfigHandler.enableToolsRender)
         {
 	    lowerTool.stack = backpack.getStackInSlot(Constants.lowerTool);
 	    upperTool.stack = backpack.getStackInSlot(Constants.upperTool);	

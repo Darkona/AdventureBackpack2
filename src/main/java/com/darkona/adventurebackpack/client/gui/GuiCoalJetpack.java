@@ -25,8 +25,8 @@ import org.lwjgl.opengl.GL11;
 public class GuiCoalJetpack extends GuiWithTanks
 {
     private static final ResourceLocation texture = Resources.guiTextures("guiSteamJetpack");
-    private static GuiTank waterTank = new GuiTank(8, 8,72, 16, ConfigHandler.GUI_TANK_RENDER);
-    private static GuiTank steamTank = new GuiTank(116, 8,72, 16, ConfigHandler.GUI_TANK_RENDER);
+    private static GuiTank waterTank = new GuiTank(8, 8,72, 16, ConfigHandler.typeTankRender);
+    private static GuiTank steamTank = new GuiTank(116, 8,72, 16, ConfigHandler.typeTankRender);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private boolean wearing;
