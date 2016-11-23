@@ -24,7 +24,7 @@ public class ConfigHandler
     public static boolean IS_TINKERS = false;
     public static boolean IS_THAUM = false;
     public static boolean IS_TWILIGHT = false;
-    public static boolean IS_ENVIROMINE	= false;
+    public static boolean IS_ENVIROMINE = false;
     public static boolean IS_RAILCRAFT = false;
 
     public static boolean backpackDeathPlace = true;
@@ -56,9 +56,10 @@ public class ConfigHandler
     public static boolean enableItemFilters = false;
 
     public static String[] nameLocalized;
+    public static String[] nameInternalID;
+    public static String[] nameInternalIDs;
     public static String[] nameUnlocalized;
     public static String[] nameDefault = {};
-    //public static String[] classDisallowed;
 
     public static boolean recipeAdventuresSet = true;
     public static boolean recipeClockCrossbow = true;
@@ -116,7 +117,7 @@ public class ConfigHandler
         allowSoundPiston = config.getBoolean("Piston Boots", "sound", true, "Allow playing the PistonBoots sound");
 
         // Items
-        enableItemFilters  = config.getBoolean("Enable Item Filters", "items", false, "FOR TEST ONLY. Enable filters from Disallowed category");
+        enableItemFilters  = config.getBoolean("Enable Item Filters", "items", true, "Enable filters from Disallow category");
 
         // Items.Recipes
         recipeAdventuresSet = config.getBoolean("Adventures Set", "items.recipes", true, "Enable/Disable recipe for Adventure's Hat, Suit and Pants");
@@ -128,8 +129,10 @@ public class ConfigHandler
         recipeMachete = config.getBoolean("Machete", "items.recipes", true, "Enable/Disable Machete recipe");
 
         // Items.Disallowed
-        nameLocalized = config.getStringList("By Displayed Name", "items.disallowed", nameDefault, "FOR TEST ONLY. Disallowed items by displayed (localized) name. Not case sensitive");
-        nameUnlocalized = config.getStringList("By Internal Name", "items.disallowed", nameDefault, "FOR TEST ONLY. Disallowed items by internal (unlocalized) name. Not case sensitive");
+        nameLocalized = config.getStringList("By Displayed Name", "items.disallowed", nameDefault, "Disallow items by displayed (localized) name. Not case sensitive. Worst option, use only when there is no choice. Example: Dirt");
+        nameInternalID = config.getStringList("By Internal ID", "items.disallowed", nameDefault, "Disallow items by internal ID. Case sensitive. Example: minecraft:dirt");
+        nameInternalIDs = config.getStringList("By Internal IDs", "items.disallowed", nameDefault, "Disallow items by internal ID. Case sensitive. Will be disallowed all items containing that word in their IDs. Use with caution. Example: minecraft:di");
+        nameUnlocalized = config.getStringList("By Internal Name", "items.disallowed", nameDefault, "Disallow items by internal (unlocalized) name. Not case sensitive. Example: tile.dirt");
 
         // WorldGen
         allowBonusGen = config.getBoolean("Bonus Backpack", "worldgen", false, "Include a Standard Adventure Backpack in bonus chest?");

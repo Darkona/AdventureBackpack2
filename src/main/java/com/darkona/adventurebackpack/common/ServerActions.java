@@ -5,6 +5,7 @@ import java.util.Random;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
+import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
@@ -56,7 +57,8 @@ public class ServerActions
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if(SlotTool.isValidTool(current) && ConfigHandler.enableToolsCycling) {
+            if(SlotTool.isValidTool(current) && KeybindHandler.currentToolCycling)
+            {
                 if (direction < 0) {
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
                     backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));

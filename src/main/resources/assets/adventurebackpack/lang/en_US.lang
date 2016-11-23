@@ -73,4 +73,6 @@ adventurebackpack:messages.copterpack.cantwater=CopterPack: Can't function in wa
 adventurebackpack:messages.copterpack.off=CopterPack: Off.
 adventurebackpack:messages.jetpack.on=Coal Jetpack: On.
 adventurebackpack:messages.jetpack.off=Coal Jetpack: Off.
+adventurebackpack:messages.cycling.on=Tool Cycling: On.
+adventurebackpack:messages.cycling.off=Tool Cycling: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.

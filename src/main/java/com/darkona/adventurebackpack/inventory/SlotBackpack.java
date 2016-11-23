@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -51,11 +52,19 @@ public class SlotBackpack extends SlotAdventureBackpack
     	{
     	    for (String itemName : ConfigHandler.nameLocalized)
     	    {
-    		if (stack.getDisplayName().toLowerCase().contains(itemName.toLowerCase())) return false;
+    		if (stack.getDisplayName().equalsIgnoreCase(itemName)) return false;
+    	    }
+    	    for (String itemName : ConfigHandler.nameInternalID)
+    	    {
+    		if (Item.itemRegistry.getNameForObject(stack.getItem()).equals(itemName)) return false;
+    	    }
+    	    for (String itemName : ConfigHandler.nameInternalIDs)
+    	    {
+    		if (Item.itemRegistry.getNameForObject(stack.getItem()).contains(itemName)) return false;
     	    }
     	    for (String itemName : ConfigHandler.nameUnlocalized)
     	    {
-    		if (stack.getItem().getUnlocalizedName().toLowerCase().contains(itemName.toLowerCase())) return false;
+    		if (stack.getItem().getUnlocalizedName().equalsIgnoreCase(itemName)) return false;
     	    }
     	}
     	return true;

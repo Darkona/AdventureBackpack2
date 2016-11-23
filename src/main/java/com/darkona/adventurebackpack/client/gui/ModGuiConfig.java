@@ -30,8 +30,8 @@ public class ModGuiConfig extends GuiConfig
 	List<String> topCategories = Arrays.asList("gameplay", "graphics", "sound", "items", "worldgen");
 	for (String categoryName : topCategories)
 	{
-		ConfigCategory category = ConfigHandler.config.getCategory(categoryName);
-		configElements.add(new ConfigElement(category));
+	    ConfigCategory category = ConfigHandler.config.getCategory(categoryName);
+	    configElements.add(new ConfigElement(category));
 	}
 	return configElements;
     }
