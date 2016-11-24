@@ -2,9 +2,15 @@ package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
+
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.*;
-import com.darkona.adventurebackpack.config.ConfigHandler;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemFishingRod;
+import net.minecraft.item.ItemFlintAndSteel;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemShears;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 
 /**
  * Created on 12/10/2014
@@ -24,19 +30,16 @@ public class SlotTool extends SlotAdventureBackpack
     	return isValidTool(stack);
     }
 
+    private static final String[] VALID_TOOL_NAMES = {
+            "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", //"hatchet","excavator","chisel"
+    };
+
+    private static final String[] INVALID_TOOL_NAMES = {
+	    "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"
+    };
+
     public static boolean isValidTool(ItemStack stack)
     {
-
-        boolean valid = false;
-
-        String[] validToolNames = {
-                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill",/*"hatchet","excavator","chisel"*/
-        };
-
-        String[] invalidToolNames = {
-                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"
-        };
-
         if (stack != null && stack.getMaxStackSize() == 1)
         {
             Item item = stack.getItem();
@@ -54,18 +57,26 @@ public class SlotTool extends SlotAdventureBackpack
                 return false;
             }
 
+            //GregTech
+            if (name.equals("gt.metatool.01"))
+            {
+        	//0 = sword, 170 = turbines
+        	if ((stack.getItemDamage() == 0) || (stack.getItemDamage() > 169)) return false;
+        	return true;
+            }
+
             // Just for extra compatibility and/or security and/or less annoyance
-            for (String toolName : validToolNames)
+            for (String toolName : VALID_TOOL_NAMES)
             {
                 @SuppressWarnings("unused")
-				String a = toolName;
+                String a = toolName;
                 if (name.contains(toolName)) return true;
             }
 
-            for (String toolName : invalidToolNames)
+            for (String toolName : INVALID_TOOL_NAMES)
             {
                 @SuppressWarnings("unused")
-				String a = toolName;
+                String a = toolName;
                 if (name.contains(toolName)) return false;
             }
 
@@ -112,11 +123,7 @@ public class SlotTool extends SlotAdventureBackpack
             {
                 // oops.printStackTrace();
             }
-
         }
-
-        return valid;
+        return false;
     }
-
-
 }

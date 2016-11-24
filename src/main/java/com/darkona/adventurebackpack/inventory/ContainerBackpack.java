@@ -2,11 +2,15 @@ package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCraftResult;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
@@ -311,7 +315,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
                 {
                     if (!mergeItemStack(stack, TOOL_START, TOOL_END + 1, false))
                     {
-                        if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                        if (SlotBackpack.isValidItem(stack) && (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false)))
                         {
                             return null;
                         }
@@ -322,13 +326,13 @@ public class ContainerBackpack extends Container implements IWearableContainer
                     {
                         if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
                         {
-                            if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                            if (SlotBackpack.isValidItem(stack) && (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false)))
                             {
                                 return null;
                             }
                         }
                     }
-                } else if (SlotBackpack.valid(stack))
+                } else if (SlotBackpack.isValidItem(stack))
                 {
                     if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
                     {
