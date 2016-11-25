@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.inventory;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.util.FluidUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -33,13 +34,14 @@ public class InventoryActions
      */
     public static boolean transferContainerTank(IInventoryTanks inventory, FluidTank tank, int slotIn)
     {
-        ItemStack stackIn = inventory.getStackInSlot(slotIn);
+	ItemStack stackIn = inventory.getStackInSlot(slotIn);
         if (tank == null || stackIn == null) return false;
 
         //Set slot out for whatever number the output slot should be.
         int slotOut = slotIn + 1;
 
         //CONTAINER ===========> TANK
+        //if (!SlotFluid.isEmpty(stackIn))
         if (FluidContainerRegistry.isFilledContainer(stackIn))
         {
             //See if the tank can accept moar fluid.

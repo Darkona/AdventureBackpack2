@@ -95,11 +95,11 @@ public class KeybindHandler
                     currentToolCycling=!currentToolCycling;
                     if (player.worldObj.isRemote)
                     {
-                	if (currentToolCycling !=true)
+                	if (currentToolCycling)
                 	{
-                	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
-                	} else {
                 	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.on"));
+                	} else {
+                	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
                 	}
                     }
                 }
