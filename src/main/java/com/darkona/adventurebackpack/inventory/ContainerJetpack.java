@@ -128,7 +128,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
             }
             if (i < 36)
             {
-                if (SlotFluid.valid(stack) && SlotFluid.isValidTool(stack))
+                if (SlotFluid.isValidItem(stack) && SlotFluid.isValidTool(stack))
                 {
                     int JETPACK_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
@@ -136,7 +136,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
 
                     }
                 }
-                else if (inventory.isFuel(stack) && !SlotFluid.valid(stack))
+                else if (inventory.isFuel(stack) && !SlotFluid.isValidItem(stack))
                 {
                     int JETPACK_FUEL_START = PLAYER_INV_END + 3;
                     if (inventory.isFuel(stack) && !mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false))

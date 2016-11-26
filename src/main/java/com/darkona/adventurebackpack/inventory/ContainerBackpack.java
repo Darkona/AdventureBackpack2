@@ -2,13 +2,18 @@ package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCraftResult;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.fluids.FluidTank;
 
 /**
  * Created on 12/10/2014
@@ -311,24 +316,82 @@ public class ContainerBackpack extends Container implements IWearableContainer
                 {
                     if (!mergeItemStack(stack, TOOL_START, TOOL_END + 1, false))
                     {
-                        if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                        if (SlotBackpack.isValidItem(stack) && (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false)))
                         {
                             return null;
                         }
                     }
-                } else if (SlotFluid.valid(stack) && SlotFluid.isValidTool(stack))
-                {
-                    if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
+                } else if (SlotFluid.isValidItem(stack) && SlotFluid.isValidTool(stack)) {
+
+                    FluidTank leftTank = inventory.getLeftTank();
+                    FluidTank rightTank = inventory.getRightTank();
+                    int maxAmount = leftTank.getCapacity();
+                    int leftAmount = leftTank.getFluidAmount();
+                    int rightAmount = rightTank.getFluidAmount();
+                    String leftFluidName = SlotFluid.getFluidName(leftTank);
+                    String rightFluidName = SlotFluid.getFluidName(rightTank);
+
+                    boolean containerFilled = !SlotFluid.isEmpty(stack);
+                    int containerCapacity = SlotFluid.getCapacity(stack);
+                    String containerFluidName = SlotFluid.getFluidName(stack);
+
+                    if (containerFilled)
+                    {
+                	if (leftAmount == 0)
+                	{
+                	    if ((rightAmount > 0) && (rightAmount + containerCapacity <= maxAmount) && (rightFluidName.equals(containerFluidName)))
+                	    {
+                		mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                	    }
+                	    else
+                	    {
+                		mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+                	    }
+                	}
+                	else if ((leftAmount + containerCapacity <= maxAmount) && (leftFluidName.equals(containerFluidName)))
+                	{
+                	    mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+                	}
+                	else if ((rightAmount == 0) || (rightAmount + containerCapacity <= maxAmount) && (rightFluidName.equals(containerFluidName)))
+                	{
+                	    mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                	}
+                	else if (SlotBackpack.isValidItem(stack));
+                	{
+                	    mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
+                	}
+                    }
+                    else if (!containerFilled)
+                    {
+                	if (leftAmount == 0)
+                	{
+                	    if (rightAmount != 0)
+                	    {
+                		mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                	    }
+                	    else if (SlotBackpack.isValidItem(stack));
+                	    {
+                		mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
+                	    }
+                	}
+                	else
+                	{
+                	    mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+                	}
+                    }
+
+                    /*if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
                     {
                         if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
                         {
-                            if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                            if (SlotBackpack.isValidItem(stack) && (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false)))
                             {
                                 return null;
                             }
                         }
-                    }
-                } else if (SlotBackpack.valid(stack))
+                    }*/
+
+                } else if (SlotBackpack.isValidItem(stack))
                 {
                     if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
                     {

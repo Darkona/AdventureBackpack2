@@ -349,7 +349,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if(slot == BUCKET_IN_SLOT)return SlotFluid.valid(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.WATER);
+        if(slot == BUCKET_IN_SLOT)return SlotFluid.isValidItem(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.WATER);
         if(slot == FUEL_SLOT)return TileEntityFurnace.isItemFuel(stack);
         return false;
     }

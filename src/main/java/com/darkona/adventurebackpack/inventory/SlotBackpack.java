@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 public class SlotBackpack extends SlotAdventureBackpack
 {
 
-    private static final String[] forbiddenItemClasses =
+    private static final String[] FORBIDDEN_CLASSES =
     {
         // Adventure Backpack 2
         "com.darkona.adventurebackpack.item.ItemAdventureBackpack",
@@ -39,32 +39,33 @@ public class SlotBackpack extends SlotAdventureBackpack
         super(inventory, id, x, y);
     }
 
-    public static boolean valid(ItemStack stack)
+    public static boolean isValidItem(ItemStack stack)
     {
     	if (stack == null) return false;
+    	Item itemCurrent = stack.getItem();
 
-    	for (String itemClass : forbiddenItemClasses)
+    	for (String classDisallowed : FORBIDDEN_CLASSES)
     	{
-    	    if (stack.getItem().getClass().getName().equals(itemClass)) return false;
+    	    if (itemCurrent.getClass().getName().equals(classDisallowed)) return false;
     	}
 
     	if (ConfigHandler.enableItemFilters)
     	{
-    	    for (String itemName : ConfigHandler.nameLocalized)
+    	    for (String itemDisallowed : ConfigHandler.nameLocalized)
     	    {
-    		if (stack.getDisplayName().equalsIgnoreCase(itemName)) return false;
+    		if (stack.getDisplayName().equalsIgnoreCase(itemDisallowed)) return false;
     	    }
-    	    for (String itemName : ConfigHandler.nameInternalID)
+    	    for (String itemDisallowed : ConfigHandler.nameInternalID)
     	    {
-    		if (Item.itemRegistry.getNameForObject(stack.getItem()).equals(itemName)) return false;
+    		if (Item.itemRegistry.getNameForObject(itemCurrent).equals(itemDisallowed)) return false;
     	    }
-    	    for (String itemName : ConfigHandler.nameInternalIDs)
+    	    for (String itemDisallowed : ConfigHandler.nameInternalIDs)
     	    {
-    		if (Item.itemRegistry.getNameForObject(stack.getItem()).contains(itemName)) return false;
+    		if (Item.itemRegistry.getNameForObject(itemCurrent).contains(itemDisallowed)) return false;
     	    }
-    	    for (String itemName : ConfigHandler.nameUnlocalized)
+    	    for (String itemDisallowed : ConfigHandler.nameUnlocalized)
     	    {
-    		if (stack.getItem().getUnlocalizedName().equalsIgnoreCase(itemName)) return false;
+    		if (itemCurrent.getUnlocalizedName().equalsIgnoreCase(itemDisallowed)) return false;
     	    }
     	}
     	return true;
@@ -73,7 +74,7 @@ public class SlotBackpack extends SlotAdventureBackpack
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-    	return valid(stack);
+    	return isValidItem(stack);
     }
 
     @Override

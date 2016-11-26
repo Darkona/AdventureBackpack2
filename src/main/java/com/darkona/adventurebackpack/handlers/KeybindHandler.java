@@ -90,17 +90,16 @@ public class KeybindHandler
                 {
                     ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
                     ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, (player).inventory.currentItem);
-                }
-                if (Wearing.isWearingBackpack(player))
+                } else if (Wearing.isWearingBackpack(player))
                 {
                     currentToolCycling=!currentToolCycling;
                     if (player.worldObj.isRemote)
                     {
-                	if (currentToolCycling !=true)
+                	if (currentToolCycling)
                 	{
-                	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
-                	} else {
                 	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.on"));
+                	} else {
+                	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
                 	}
                     }
                 }
