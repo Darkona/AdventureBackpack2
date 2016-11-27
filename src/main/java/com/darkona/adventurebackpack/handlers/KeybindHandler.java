@@ -19,7 +19,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * Created by Darkona on 11/10/2014.
@@ -90,7 +89,7 @@ public class KeybindHandler
                 {
                     ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
                     ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, (player).inventory.currentItem);
-                } else if (Wearing.isWearingBackpack(player))
+                } /*else if (Wearing.isWearingBackpack(player))
                 {
                     currentToolCycling=!currentToolCycling;
                     if (player.worldObj.isRemote)
@@ -102,7 +101,7 @@ public class KeybindHandler
                 	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
                 	}
                     }
-                }
+                }*/
                 if (Wearing.isWearingCopter(player))
                 {
                     if (!player.isSneaking())
