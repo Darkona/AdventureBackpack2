@@ -321,8 +321,8 @@ public class ContainerBackpack extends Container implements IWearableContainer
                             return null;
                         }
                     }
-                } else if (SlotFluid.isValidItem(stack) && SlotFluid.isValidTool(stack)) {
-
+                } else if (SlotFluid.isValidItem(stack) && SlotFluid.isValidTool(stack))
+                {
                     FluidTank leftTank = inventory.getLeftTank();
                     FluidTank rightTank = inventory.getRightTank();
                     int maxAmount = leftTank.getCapacity();
