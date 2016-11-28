@@ -62,6 +62,7 @@ public class InventoryActions
                     //inventory.dirtyInventory();
                     return true;
                 } else if (inventory.getStackInSlot(slotOut).getItem() == stackOut.getItem())
+                //} else if (inventory.getStackInSlot(slotOut).getItem().equals(stackOut.getItem()))
                 {
                     int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
                     if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
@@ -71,7 +72,7 @@ public class InventoryActions
                         //inventory.dirtyTanks();
                         inventory.decrStackSizeNoSave(slotIn, 1);
                         inventory.getStackInSlot(slotOut).stackSize++;
-                       // inventory.dirtyInventory();
+                        //inventory.dirtyInventory();
                         return true;
                     }
                 }
@@ -100,7 +101,7 @@ public class InventoryActions
                     //inventory.dirtyInventory();
                     return true;
                 } else
-                if (stackOut.getItem() != null
+                if (stackOut != null && stackOut.getItem() != null  // ??!
                     && stackOut.getItem() == inventory.getStackInSlot(slotOut).getItem())
                 {
                     int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
@@ -110,7 +111,7 @@ public class InventoryActions
                         //inventory.dirtyTanks();
                         inventory.decrStackSizeNoSave(slotIn, 1);
                         inventory.getStackInSlot(slotOut).stackSize++;
-                       // inventory.dirtyInventory();
+                        //inventory.dirtyInventory();
                         return true;
                     }
                 }

@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -36,6 +37,11 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     {
         this.containerStack = containerStack;
     }
+
+    public static final boolean OFF = false;
+    public static final boolean ON = true;
+
+    private boolean cyclingStatus = ON;
 
     private ItemStack containerStack;
     private String colorName = "Standard";
@@ -209,6 +215,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         return stack;
     }
 
+    @Override
     public boolean updateTankSlots()
     {
         return InventoryActions.transferContainerTank(this, getLeftTank(), Constants.bucketInLeft) ||
@@ -238,6 +245,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
             extendedProperties = backpackData.getCompoundTag("extendedProperties");
+            cyclingStatus = backpackData.getBoolean("cyclingStatus");
         }
     }
 
@@ -267,6 +275,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         backpackData.setTag("extendedProperties", extendedProperties);
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
+        backpackData.setBoolean("cyclingStatus", cyclingStatus);
 
         compound.setTag("backpackData",backpackData);
         //}
@@ -362,23 +371,27 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         return inventory[slot];
     }
 
+    @Override
     public void dirtyTanks()
     {
         containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("leftTank",leftTank.writeToNBT(new NBTTagCompound()));
         containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("rightTank",rightTank.writeToNBT(new NBTTagCompound()));
     }
 
+    @Override
     public void dirtyTime()
     {
         containerStack.stackTagCompound.getCompoundTag("backpackData").setInteger("lastTime",lastTime);
     }
 
+    @Override
     public void dirtyExtended()
     {
         containerStack.stackTagCompound.getCompoundTag("backpackData").removeTag("extendedProperties");
         containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("extendedProperties",extendedProperties);
     }
 
+    @Override
     public void dirtyInventory()
     {
         if(updateTankSlots()){
@@ -404,5 +417,16 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     {
         return InventoryActions.hasBlockItem(this, block);
     }
+
+    public boolean getCyclingStatus()
+    {
+        return cyclingStatus;
+    }
+
+    public void setCyclingStatus(boolean status)
+    {
+        this.cyclingStatus = status;
+    }
+
 }
 

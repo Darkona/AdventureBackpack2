@@ -18,12 +18,11 @@ public class SlotFluid extends SlotAdventureBackpack
 {
     private static final String[] VALID_TOOL_NAMES = {
 	    "bucket"
-
-    	};
+	    };
 
     private static final String[] INVALID_TOOL_NAMES = {
 	    "cell"
-    	};
+	    };
 
 
     public SlotFluid(IInventory inventory, int id, int x, int y) {
@@ -45,6 +44,8 @@ public class SlotFluid extends SlotAdventureBackpack
     {
 	if ((stack != null) && (stack.getFluidAmount() != 0))
 	{
+	//if (stack.getFluidAmount() == 0);
+	//if ((stack == null) || (isEmpty(stack))) return ""; // todo
         return stack.getFluid().getUnlocalizedName();
 	}
 	return "";

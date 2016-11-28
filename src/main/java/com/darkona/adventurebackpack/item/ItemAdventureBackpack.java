@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
+import java.util.List;
+
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
@@ -18,6 +20,7 @@ import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -35,8 +38,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.List;
 
 /**
  * Created on 12/10/2014
@@ -323,7 +324,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         for (int Y: positions)
         {
             ChunkCoordinates spawn =
-                    Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, (int)player.posY + Y, Z, 12, true, 1, (byte) 0, false);
+        	    Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, (int)player.posY + Y, Z, 5, true, 1, (byte) 0, false);
             if (spawn != null)
             {
                 return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);

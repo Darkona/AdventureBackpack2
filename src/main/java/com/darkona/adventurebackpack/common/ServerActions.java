@@ -56,7 +56,7 @@ public class ServerActions
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if(SlotTool.isValidTool(current) && ConfigHandler.enableToolsCycling)
+            if (ConfigHandler.enableToolsCycling && backpack.getCyclingStatus() && SlotTool.isValidTool(current))
             {
                 if (direction < 0) {
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
@@ -410,6 +410,30 @@ public class ServerActions
         }
     }
 
+    public static void toggleToolCycling(EntityPlayer player, ItemStack backpack, byte on_off)
+    {
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        if (ConfigHandler.enableToolsCycling)
+        {
+            if (inv.getCyclingStatus())
+            {
+        	inv.setCyclingStatus(false);
+        	inv.markDirty();
+        	if (player.worldObj.isRemote)
+        	{
+        	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
+        	}
+            } else {
+        	inv.setCyclingStatus(true);
+        	inv.markDirty();
+        	if (player.worldObj.isRemote)
+        	{
+        	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.on"));
+        	}
+            }
+        }
+    }
+
     public static void toggleSteamJetpack(EntityPlayer player, ItemStack jetpack, byte on_off)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
@@ -430,4 +454,5 @@ public class ServerActions
             }
         }
     }
+
 }
