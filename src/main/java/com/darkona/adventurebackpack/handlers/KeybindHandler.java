@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.ServerActions;
-import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -25,8 +24,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class KeybindHandler
 {
-    public static boolean currentToolCycling = ConfigHandler.enableToolsCycling;
-
     private static Key getPressedKeyBinding()
     {
         if (Keybindings.openBackpack.isPressed())
@@ -89,19 +86,11 @@ public class KeybindHandler
                 {
                     ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
                     ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, (player).inventory.currentItem);
-                } /*else if (Wearing.isWearingBackpack(player))
+                } else if (Wearing.isWearingBackpack(player))
                 {
-                    currentToolCycling=!currentToolCycling;
-                    if (player.worldObj.isRemote)
-                    {
-                	if (currentToolCycling)
-                	{
-                	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.on"));
-                	} else {
-                	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
-                	}
-                    }
-                }*/
+                    ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.CYCLING_ON_OFF, ""));
+                    ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player), WearableModePacket.CYCLING_ON_OFF);
+                }
                 if (Wearing.isWearingCopter(player))
                 {
                     if (!player.isSneaking())

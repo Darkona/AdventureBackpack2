@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.network;
 
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -19,6 +20,7 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
     public static byte COPTER_ON_OFF = 0;
     public static byte COPTER_TOGGLE = 1;
     public static byte JETPACK_ON_OFF = 2;
+    public static byte CYCLING_ON_OFF = 3;
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
@@ -33,6 +35,9 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
 
                 if(message.type == JETPACK_ON_OFF)
                     ServerActions.toggleSteamJetpack(player,Wearing.getWearingSteam(player),message.type);
+
+                if(message.type == CYCLING_ON_OFF)
+                    ServerActions.toggleToolCycling(player,Wearing.getWearingBackpack(player),message.type);
             }
 
         }
