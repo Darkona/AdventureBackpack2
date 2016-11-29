@@ -70,6 +70,14 @@ public class ServerActions
                         backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
                     }
                 }
+            } else if ((slot >= 0) && (slot <= 8))
+            {
+                int nextSlot = slot;
+                if (direction > 0) nextSlot = slot - 1;
+                if (direction < 0) nextSlot = slot + 1;
+                if (slot == 0 && direction > 0) nextSlot = 8;
+                if (slot == 8 && direction < 0) nextSlot = 0;
+                player.inventory.currentItem = nextSlot;
             }
             backpack.markDirty();
             player.inventory.closeInventory();
