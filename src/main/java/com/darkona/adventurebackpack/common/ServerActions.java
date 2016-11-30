@@ -55,40 +55,24 @@ public class ServerActions
         {
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             boolean enableBackpackCycling = backpack.getCyclingStatus();
-            if ((!ConfigHandler.enableToolsCycling || !enableBackpackCycling) && (slot >= 0 && slot <= 8))
+            ItemStack current = player.getCurrentEquippedItem();
+            backpack.openInventory();
+            if (SlotTool.isValidTool(current))
             {
-                int nextSlot = slot;
-                if (direction > 0)
-                {
-                    if (slot == 0) nextSlot = 8;
-                    else nextSlot = slot - 1;
-                }
-                else if (direction < 0)
-                {
-                    if (slot == 8) nextSlot = 0;
-                    else nextSlot = slot + 1;
-                }
-                player.inventory.currentItem = nextSlot;
-            } else {
-                ItemStack current = player.getCurrentEquippedItem();
-                backpack.openInventory();
-                if (SlotTool.isValidTool(current))
-                {
-                    if (direction < 0) {
-                        player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
-                        backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
-                        backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
-                    } else {
-                        if (direction > 0) {
-                            player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
-                            backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
-                            backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
-                        }
+                if (direction < 0) {
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
+                    backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
+                    backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
+                } else {
+                    if (direction > 0) {
+                        player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
+                        backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
+                        backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
                     }
                 }
-                backpack.markDirty();
-                player.inventory.closeInventory();
             }
+            backpack.markDirty();
+            player.inventory.closeInventory();
         } catch (Exception oops)
         {
             LogHelper.debug("Exception trying to cycle tools.");

@@ -2,16 +2,15 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.ServerActions;
-import com.darkona.adventurebackpack.config.Keybindings;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.reference.Key;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -91,7 +90,7 @@ public class ClientEventHandler
                         ItemStack heldItem = player.inventory.getStackInSlot(slot);
                         Item theItem = heldItem.getItem();
 
-                        if (SlotTool.isValidTool(heldItem) ||
+                        if (ConfigHandler.enableToolsCycling && Wearing.getBackpackInv(player, true).getCyclingStatus() && SlotTool.isValidTool(heldItem) ||
                                 (BackpackNames.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
