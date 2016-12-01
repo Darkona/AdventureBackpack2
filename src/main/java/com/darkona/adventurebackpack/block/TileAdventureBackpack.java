@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,27 +47,32 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     private int lastTime;
     private int luminosity;
     private NBTTagCompound extendedProperties;
+    private boolean cyclingStatus;
 
     public int getLuminosity()
     {
         return luminosity;
     }
 
+    @Override
     public int getLastTime()
     {
         return lastTime;
     }
 
+    @Override
     public void setLastTime(int lastTime)
     {
         this.lastTime = lastTime;
     }
 
+    @Override
     public NBTTagCompound getExtendedProperties()
     {
         return extendedProperties;
     }
 
+    @Override
     public void setExtendedProperties(NBTTagCompound extendedProperties)
     {
         this.extendedProperties = extendedProperties;
@@ -145,6 +151,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     //=====================================================GETTERS====================================================//
 
+    @Override
     public String getColorName()
     {
         return colorName;
@@ -213,11 +220,13 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) <= 64;
     }
 
+    @Override
     public boolean isSBDeployed()
     {
         return this.sleepingBagDeployed;
     }
 
+    @Override
     public boolean isSpecial()
     {
         return special;
@@ -272,6 +281,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
             extendedProperties = backpackData.getCompoundTag("extended");
+            cyclingStatus = backpackData.getBoolean("cyclingStatus");
         }
     }
 
@@ -298,6 +308,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         backpackData.setTag("extended", extendedProperties);
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
+        backpackData.setBoolean("cyclingStatus", cyclingStatus);
 
         compound.setTag("backpackData",backpackData);
     }
@@ -586,20 +597,24 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return false;
     }
 
+    @Override
     public void dirtyTanks()
     {
 
     }
 
+    @Override
     public void dirtyTime()
     {
     }
 
+    @Override
     public void dirtyExtended()
     {
 
     }
 
+    @Override
     public void dirtyInventory()
     {
 

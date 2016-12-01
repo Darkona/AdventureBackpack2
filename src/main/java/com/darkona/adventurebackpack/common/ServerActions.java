@@ -54,15 +54,15 @@ public class ServerActions
         try
         {
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
+            boolean enableBackpackCycling = backpack.getCyclingStatus();
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if (ConfigHandler.enableToolsCycling && backpack.getCyclingStatus() && SlotTool.isValidTool(current))
+            if (SlotTool.isValidTool(current))
             {
                 if (direction < 0) {
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
                     backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
                     backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
-
                 } else {
                     if (direction > 0) {
                         player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
