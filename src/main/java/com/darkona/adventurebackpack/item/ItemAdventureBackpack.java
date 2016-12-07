@@ -318,7 +318,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
     {
         int X = (int) player.posX;
+        if (player.posX < 0) X--;
         int Z = (int) player.posZ;
+        if (player.posZ < 0) Z--;
         int positions[] = {0,-1,1,-2,2,-3,3,-4,4,-5,5,-6,6};
 
         for (int Y: positions)
