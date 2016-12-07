@@ -54,6 +54,7 @@ public class ConfigHandler
     public static boolean allowSoundPiston = true;
 
     public static boolean enableItemFilters = false;
+    public static String[] forbiddenDimensions;
 
     public static String[] nameLocalized;
     public static String[] nameInternalID;
@@ -84,15 +85,15 @@ public class ConfigHandler
     @SuppressWarnings("static-access")
     private static void loadConfiguration()
     {
-	// Gameplay
-	backpackAbilities = config.getBoolean("Backpack Abilities", "gameplay", true, "Allow the backpacks to execute their special abilities, or be only cosmetic (Doesn't affect lightning transformation) Must be " +
-		"disabled in both Client and Server to work properly");
-	backpackDeathPlace = config.getBoolean("Backpack Death Place", "gameplay", true,"Place backpacks as a block when you die?");
-	fixLead = config.getBoolean("Fix Vanilla Lead", "gameplay", true, "Fix the vanilla Lead? (Checks mobs falling on a leash to not die of fall damage if they're not falling so fast)");
-	enableHoseDrink = config.getBoolean("Enable Hose Drink", "gameplay", true, "Enable/Disable hose drink mode");
-	enableToolsCycling = config.getBoolean("Enable Tools Cycling", "gameplay", true, "Enable/Disable tool cycling");
+        // Gameplay
+        backpackAbilities = config.getBoolean("Backpack Abilities", "gameplay", true, "Allow the backpacks to execute their special abilities, or be only cosmetic (Doesn't affect lightning transformation) Must be " +
+                "disabled in both Client and Server to work properly");
+        backpackDeathPlace = config.getBoolean("Backpack Death Place", "gameplay", true,"Place backpacks as a block when you die?");
+        fixLead = config.getBoolean("Fix Vanilla Lead", "gameplay", true, "Fix the vanilla Lead? (Checks mobs falling on a leash to not die of fall damage if they're not falling so fast)");
+        enableHoseDrink = config.getBoolean("Enable Hose Drink", "gameplay", true, "Enable/Disable hose drink mode");
+        enableToolsCycling = config.getBoolean("Enable Tools Cycling", "gameplay", true, "Enable/Disable tool cycling");
 
-	// Graphics
+        // Graphics
         typeTankRender = config.getInt("Tank Render Type", "graphics", 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
         enableToolsRender = config.getBoolean("Enable Tools Render", "graphics", true, "Enable rendering for tools in the backpack tool slots. May cause visual glitches with Gregtech tools");
         tanksHoveringText = config.getBoolean("Hovering Text", "graphics", false, "Show hovering text on fluid tanks?");
@@ -118,6 +119,7 @@ public class ConfigHandler
 
         // Items
         enableItemFilters  = config.getBoolean("Enable Item Filters", "items", true, "Enable filters from Disallow category");
+        forbiddenDimensions = config.getStringList("Forbidden Dimensions", "items", nameDefault, "Disallow opening backpack inventory for specific dimension ID");
 
         // Items.Recipes
         recipeAdventuresSet = config.getBoolean("Adventures Set", "items.recipes", true, "Enable/Disable recipe for Adventure's Hat, Suit and Pants");
