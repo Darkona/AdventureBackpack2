@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.handlers;
 
+import org.lwjgl.input.Keyboard;
+
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
@@ -8,6 +10,7 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.*;
 import com.darkona.adventurebackpack.reference.Key;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
@@ -53,7 +56,13 @@ public class KeybindHandler
                     ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
                     if (Wearing.isWearingBackpack(player))
                     {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
+                    	if(player.isSneaking()) 
+                    	{
+                    		ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE,false));
+                    	} else 
+                    	{
+                    		ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
+                    	}
                     }
                     if (Wearing.isWearingCopter(player))
                     {
@@ -62,6 +71,13 @@ public class KeybindHandler
                     if (Wearing.isWearingSteam(player))
                     {
                         ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
+                    }
+                    if (Wearing.isHoldingBackpack(player))
+                    {
+                    	if(player.isSneaking())
+                    	{
+                    		ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, false));
+                    	}
                     }
                 }
             }
