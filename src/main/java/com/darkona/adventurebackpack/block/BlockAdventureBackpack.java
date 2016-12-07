@@ -1,13 +1,16 @@
 package com.darkona.adventurebackpack.block;
 
+import java.util.Random;
+
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Icons;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
+import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
+
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,21 +20,23 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.Random;
 
 /**
  * Created on 12/10/2014.
@@ -82,6 +87,7 @@ public class BlockAdventureBackpack extends BlockContainer
         }
     }
 
+    @Override
     public int getMobilityFlag()
     {
         return 0;
@@ -125,7 +131,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public float getEnchantPowerBonus(World world, int x, int y, int z)
     {
-        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 10 : 0; 
+        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 10 : 0;
     }
 
     @Override
@@ -221,7 +227,7 @@ public class BlockAdventureBackpack extends BlockContainer
 
     private void setUnlocalizedName(String string) {
         setUnlocalizedName("blockAdventureBackpack");
-		
+
 	}
 
 	@Override
@@ -250,6 +256,7 @@ public class BlockAdventureBackpack extends BlockContainer
         }
     }
 
+    @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int meta)
     {
         return getAssociatedTileColorName(world, x, y, z).equals("Redstone") ? 15 : 0;
@@ -264,9 +271,12 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
-
-        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
-        return true;
+        if (KeybindHandler.isDimensionAllowed())
+        {
+            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
+            return true;
+        }
+        return false;
     }
 
 
