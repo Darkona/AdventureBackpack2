@@ -68,15 +68,15 @@ public class KeybindHandler
                         {
                             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
                         }
+                        if (Wearing.isWearingCopter(player))
+                        {
+                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
+                                     }
+                        if (Wearing.isWearingSteam(player))
+                        {
+                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
+                        }
                     }
-                }
-                if (Wearing.isWearingCopter(player))
-                {
-                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
-                }
-                if (Wearing.isWearingSteam(player))
-                {
-                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
                 }
             }
 
