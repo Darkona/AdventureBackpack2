@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.ServerActions;
-import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -41,18 +40,7 @@ public class KeybindHandler
             return Key.JUMP;
         }
         return Key.UNKNOWN;
-      }
-
-    public static boolean isDimensionAllowed()
-    {
-        Integer currentID = (Minecraft.getMinecraft().thePlayer.worldObj.provider.dimensionId);
-        for (String id : ConfigHandler.forbiddenDimensions)
-        {
-            if (id.equals(currentID.toString())) return false;
-        }
-        return true;
     }
-
 
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event)
@@ -67,32 +55,28 @@ public class KeybindHandler
             {
                 if (mc.inGameHasFocus)
                 {
-                    if (isDimensionAllowed())
+                    if (player.isSneaking() && (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
                     {
-                        if (player.isSneaking() && (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
+                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
+                    } else
+                    {
+                        ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
+                        if (Wearing.isWearingBackpack(player))
+                        {
+                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
+                        } else if ((player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
                         {
                             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
-                        } else
-                        {
-                            ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
-                            if (Wearing.isWearingBackpack(player))
-                            {
-                                ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
-                            } else if ((player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
-                            {
-                                ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
-                            }
                         }
                     }
-
-                	if (Wearing.isWearingCopter(player))
-                	{
-                	    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
-                	}
-                	if (Wearing.isWearingSteam(player))
-                	{
-                	    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
-                	}
+                }
+                if (Wearing.isWearingCopter(player))
+                {
+                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
+                }
+                if (Wearing.isWearingSteam(player))
+                {
+                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
                 }
             }
 
