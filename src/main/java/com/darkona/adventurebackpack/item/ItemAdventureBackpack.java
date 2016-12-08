@@ -9,7 +9,6 @@ import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.WearableEvent;
-import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -205,7 +204,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
         if (mop == null || mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
         {
-            if (world.isRemote && KeybindHandler.isDimensionAllowed())
+            if (world.isRemote)
             {
                 ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
             }
