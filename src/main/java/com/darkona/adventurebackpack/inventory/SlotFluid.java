@@ -17,97 +17,101 @@ import net.minecraftforge.fluids.FluidTank;
 public class SlotFluid extends SlotAdventureBackpack
 {
     private static final String[] VALID_TOOL_NAMES = {
-	    "bucket"
-	    };
+            "bucket",
+	};
+
+    private static final String[] VALID_TOOL_IDS = {
+            "minecraft:milk_bucket",
+            //"Railcraft:fluid.creosote.bottle",
+    };
 
     private static final String[] INVALID_TOOL_NAMES = {
-	    "cell"
-	    };
+            "cell",
+	};
 
 
     public SlotFluid(IInventory inventory, int id, int x, int y) {
-	super(inventory, id, x, y);
+        super(inventory, id, x, y);
     }
 
     public static boolean isEmpty(ItemStack stack)
     {
-	return ((stack != null) && FluidContainerRegistry.isEmptyContainer(stack));
+        return ((stack != null) && FluidContainerRegistry.isEmptyContainer(stack));
     }
 
     public static String getFluidName(ItemStack stack)
     {
-	if ((stack == null) || (isEmpty(stack))) return "";
+        if ((stack == null) || (isEmpty(stack))) return "";
         return FluidContainerRegistry.getFluidForFilledItem(stack).getUnlocalizedName();
     }
 
     public static String getFluidName(FluidTank stack)
     {
-	if ((stack != null) && (stack.getFluidAmount() != 0))
-	{
-	//if (stack.getFluidAmount() == 0);
-	//if ((stack == null) || (isEmpty(stack))) return ""; // todo
-        return stack.getFluid().getUnlocalizedName();
-	}
-	return "";
+        if ((stack != null) && (stack.getFluidAmount() != 0))
+        {
+            return stack.getFluid().getUnlocalizedName();
+        }
+	    return "";
     }
 
     public static int getCapacity(ItemStack stack)
     {
-	return FluidContainerRegistry.getContainerCapacity(stack);
+        return FluidContainerRegistry.getContainerCapacity(stack);
     }
-
-
 
     public static boolean isValidItem(ItemStack stack)
     {
-	return ((stack != null) && FluidContainerRegistry.isContainer(stack));
+        return ((stack != null) && FluidContainerRegistry.isContainer(stack));
     }
 
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-	return ((stack != null) && (FluidContainerRegistry.isContainer(stack)) && isValidTool(stack));
+        return ((stack != null) && (FluidContainerRegistry.isContainer(stack)) && isValidTool(stack));
     }
 
     public static boolean isValidTool(ItemStack stack)
     {
 
-	if (stack != null && stack.getMaxStackSize() <= 16)
-	{
-	    Item item = stack.getItem();
-	    String name = item.getUnlocalizedName().toLowerCase();
+        if (stack != null && stack.getMaxStackSize() <= 16)
+        {
+            Item itemCurrent = stack.getItem();
+            String nameCurrent = itemCurrent.getUnlocalizedName().toLowerCase();
 
-	    for (String toolName : VALID_TOOL_NAMES)
-	    {
-		if (name.contains(toolName))
-		    return true;
-	    }
+            for (String toolName : VALID_TOOL_NAMES)
+            {
+                if (nameCurrent.contains(toolName)) return true;
+            }
+            for (String toolID : VALID_TOOL_IDS)
+            {
+                if (Item.itemRegistry.getNameForObject(itemCurrent).equals(toolID)) return true;
+            }
 
-	    for (String toolName : INVALID_TOOL_NAMES)
-	    {
-		if (name.contains(toolName))
-		    return false;
-	    }
-	}
-	return false;
+            for (String toolName : INVALID_TOOL_NAMES)
+            {
+                if (nameCurrent.contains(toolName)) return false;
+            }
+        }
+        return false;
     }
 
     @Override
     public void onSlotChanged()
     {
-	if (Utils.inServer())
-	{
-	    if (inventory instanceof IInventoryTanks)
-	    {
-		((IInventoryTanks) this.inventory).updateTankSlots();
-	    }
-	}
-	super.onSlotChanged();
+        if (Utils.inServer())
+        {
+            if (inventory instanceof IInventoryTanks)
+            {
+                ((IInventoryTanks) this.inventory).updateTankSlots();
+            }
+        }
+        super.onSlotChanged();
     }
 
     @Override
-    public void putStack(ItemStack par1ItemStack) {
-	super.putStack(par1ItemStack);
+    public void putStack(ItemStack par1ItemStack)
+    {
+        super.putStack(par1ItemStack);
     }
 
 }

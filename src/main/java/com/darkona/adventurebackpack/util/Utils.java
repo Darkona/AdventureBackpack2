@@ -274,15 +274,13 @@ public class Utils
     private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
         //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
-	//if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
-        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) || world.isAirBlock(X, Y, Z) || isReplaceable(world, X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
+        /*if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
         {
             //LogHelper.info("Found spot with the exception of the death point");
             return new ChunkCoordinates(X, Y, Z);
-        }
+        }*/
         //if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z))
-        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) || world.isAirBlock(X, Y, Z) || isReplaceable(world, X, Y, Z))
-
+        if (world.isAirBlock(X, Y, Z) || isReplaceable(world, X, Y, Z))
         {
             //LogHelper.info("Found spot without exceptions");
             return new ChunkCoordinates(X, Y, Z);
@@ -292,8 +290,8 @@ public class Utils
 
     public static boolean isReplaceable(IBlockAccess world, int x, int y, int z)
     {
-	Block block = world.getBlock(x, y, z);
-	return block.isReplaceable(world, x, y, z);
+        Block block = world.getBlock(x, y, z);
+        return block.isReplaceable(world, x, y, z);
     }
 
     private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)

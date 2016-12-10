@@ -53,19 +53,19 @@ public class SlotBackpack extends SlotAdventureBackpack
     	{
     	    for (String itemDisallowed : ConfigHandler.nameLocalized)
     	    {
-    		if (stack.getDisplayName().equalsIgnoreCase(itemDisallowed)) return false;
+    	        if (stack.getDisplayName().equalsIgnoreCase(itemDisallowed)) return false;
     	    }
     	    for (String itemDisallowed : ConfigHandler.nameInternalID)
     	    {
-    		if (Item.itemRegistry.getNameForObject(itemCurrent).equals(itemDisallowed)) return false;
+    	        if (Item.itemRegistry.getNameForObject(itemCurrent).equals(itemDisallowed)) return false;
     	    }
     	    for (String itemDisallowed : ConfigHandler.nameInternalIDs)
     	    {
-    		if (Item.itemRegistry.getNameForObject(itemCurrent).contains(itemDisallowed)) return false;
+    	        if (Item.itemRegistry.getNameForObject(itemCurrent).contains(itemDisallowed)) return false;
     	    }
     	    for (String itemDisallowed : ConfigHandler.nameUnlocalized)
     	    {
-    		if (itemCurrent.getUnlocalizedName().equalsIgnoreCase(itemDisallowed)) return false;
+    	        if (itemCurrent.getUnlocalizedName().equalsIgnoreCase(itemDisallowed)) return false;
     	    }
     	}
     	return true;
