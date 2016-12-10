@@ -90,7 +90,7 @@ public class ClientEventHandler
                         ItemStack heldItem = player.inventory.getStackInSlot(slot);
                         Item theItem = heldItem.getItem();
 
-                        if (SlotTool.isValidTool(heldItem) ||
+                        if (ConfigHandler.enableToolsCycling && Wearing.getBackpackInv(player, true).getCyclingStatus() && SlotTool.isValidTool(heldItem) ||
                                 (BackpackNames.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
