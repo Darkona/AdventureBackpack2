@@ -295,7 +295,8 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        if(world.isRemote)return;
+        onUnequipped (world, player, stack);
+        if (world.isRemote) return;
 
         if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
         {
@@ -309,7 +310,8 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
                 player.dropPlayerItemWithRandomChoice(stack, false);
                 BackpackProperty.get(player).setWearable(null);
             }
-        }else{
+        } else
+        {
             player.dropPlayerItemWithRandomChoice(stack, false);
             BackpackProperty.get(player).setWearable(null);
         }

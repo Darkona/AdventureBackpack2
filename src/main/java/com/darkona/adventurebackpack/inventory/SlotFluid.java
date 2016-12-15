@@ -18,7 +18,7 @@ public class SlotFluid extends SlotAdventureBackpack
 {
     private static final String[] VALID_TOOL_NAMES = {
             "bucket",
-	};
+    };
 
     private static final String[] VALID_TOOL_IDS = {
             "minecraft:milk_bucket",
@@ -27,7 +27,7 @@ public class SlotFluid extends SlotAdventureBackpack
 
     private static final String[] INVALID_TOOL_NAMES = {
             "cell",
-	};
+    };
 
 
     public SlotFluid(IInventory inventory, int id, int x, int y) {
