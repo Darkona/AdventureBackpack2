@@ -70,7 +70,9 @@ public class ConfigHandler
     public static boolean recipeSaddle = true;
     public static boolean recipeMachete = true;
 
+    public static boolean allowBatGen = true;
     public static boolean allowBonusGen = false;
+    public static boolean allowGolemGen = true;
     public static boolean allowPigmanGen = false;
 
     public static void init(File configFile)
@@ -137,7 +139,9 @@ public class ConfigHandler
         nameUnlocalized = config.getStringList("By Internal Name", "items.disallowed", nameDefault, "Disallow items by internal (unlocalized) name. Not case sensitive. Example: tile.dirt");
 
         // WorldGen
+        allowBatGen = config.getBoolean("Bat Backpacks", "worldgen", true, "Allow generation of Bat Backpacks in dungeon and mineshaft loot. It cannot be obtained by crafting");
         allowBonusGen = config.getBoolean("Bonus Backpack", "worldgen", false, "Include a Standard Adventure Backpack in bonus chest?");
+        allowGolemGen = config.getBoolean("IronGolem Backpacks", "worldgen", true, "Allow generation of IronGolem Backpacks in village blacksmith loot. It cannot be obtained by crafting");
         allowPigmanGen = config.getBoolean("Pigman Backpacks", "worldgen", false, "Allow generation of Pigman Backpacks in dungeon loot and villager trades");
 
         if (config.hasChanged())
