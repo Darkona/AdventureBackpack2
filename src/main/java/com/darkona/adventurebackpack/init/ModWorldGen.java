@@ -1,7 +1,10 @@
 package com.darkona.adventurebackpack.init;
 
+import java.util.Random;
+
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
@@ -10,8 +13,6 @@ import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraftforge.common.ChestGenHooks;
-
-import java.util.Random;
 
 /**
  * Created on 24/12/2014
@@ -27,11 +28,11 @@ public class ModWorldGen
 
         for (int i = 0; i < BackpackNames.backpackNames.length; i++)
         {
-            if (BackpackNames.backpackNames[i].equals("IronGolem"))
+            if (BackpackNames.backpackNames[i].equals("IronGolem") && ConfigHandler.allowGolemGen)
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, new WeightedRandomChestContent(backpack, 1, 1, 2));
-            } else if (BackpackNames.backpackNames[i].equals("Bat"))
+            } else if (BackpackNames.backpackNames[i].equals("Bat") && ConfigHandler.allowBatGen)
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 2));
