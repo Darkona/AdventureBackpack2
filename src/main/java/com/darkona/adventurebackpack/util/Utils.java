@@ -2,8 +2,6 @@ package com.darkona.adventurebackpack.util;
 
 import java.util.Calendar;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
@@ -65,8 +63,8 @@ public class Utils
                 month = calendar.get(Calendar.MONTH) + 1,
                 day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        if (AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear";
-        if (AdventureBackpack.instance.hannukah) return "Hannukah";
+        //if (AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear";
+        //if (AdventureBackpack.instance.hannukah) return "Hannukah";
         if (month == Utils.calculateEaster(year)[0] && day == Utils.calculateEaster(year)[1]) return "Easter";
         String dia = "Standard";
         if (month == 1)

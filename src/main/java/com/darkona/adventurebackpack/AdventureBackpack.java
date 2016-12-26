@@ -19,8 +19,6 @@ import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.calendar.ChineseCalendar;
-import com.darkona.adventurebackpack.util.calendar.JewishCalendar;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -55,8 +53,8 @@ public class AdventureBackpack
     public static CreativeTabAB creativeTab = new CreativeTabAB();
 
 
-    public boolean chineseNewYear;
-    public boolean hannukah;
+    //public boolean chineseNewYear;
+    //public boolean hannukah;
     public String Holiday;
     PlayerEventHandler playerEventHandler;
     ClientEventHandler clientEventHandler;
@@ -73,8 +71,8 @@ public class AdventureBackpack
         //Configuration
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-        chineseNewYear = ChineseCalendar.isChineseNewYear(year, month, day);
-        hannukah = JewishCalendar.isHannukah(year, month, day);
+        //chineseNewYear = ChineseCalendar.isChineseNewYear(year, month, day);
+        //hannukah = JewishCalendar.isHannukah(year, month, day);
         Holiday = Utils.getHoliday();
 
         //ModStuff

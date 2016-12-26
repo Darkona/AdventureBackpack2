@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -34,6 +33,6 @@ public class ItemPistonBoots extends ArmorAB
     @Override
     public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
     {
-	return par2ItemStack.isItemEqual(new ItemStack(Blocks.piston));
+        return par2ItemStack.isItemEqual(new ItemStack(Items.leather));
     }
 }
