@@ -32,7 +32,7 @@ public class ItemAdventureHat extends ArmorAB
     @Override
     public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
     {
-	return par2ItemStack.isItemEqual(new ItemStack(Items.leather));
+        return par2ItemStack.isItemEqual(new ItemStack(Items.leather));
     }
 
 }
