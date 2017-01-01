@@ -323,15 +323,21 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         if (player.posX < 0) X--;
         int Z = (int) player.posZ;
         if (player.posZ < 0) Z--;
+        int Y = (int) player.posY;
+        if (Y < 1) Y = 1;
+
         int positions[] = {0,-1,1,-2,2,-3,3,-4,4,-5,5,-6,6};
 
-        for (int Y: positions)
+        for (int shiftY : positions)
         {
-            ChunkCoordinates spawn =
-        	    Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, (int)player.posY + Y, Z, 5, true, 1, (byte) 0, false);
-            if (spawn != null)
+            if (Y + shiftY >= 1)
             {
-                return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
+                ChunkCoordinates spawn =
+                        Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
+                if (spawn != null)
+                {
+                    return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
+                }
             }
         }
         return false;
