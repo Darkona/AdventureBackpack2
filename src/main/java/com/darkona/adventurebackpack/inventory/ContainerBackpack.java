@@ -337,59 +337,48 @@ public class ContainerBackpack extends Container implements IWearableContainer
 
                     if (containerFilled)
                     {
-                	if (leftAmount == 0)
-                	{
-                	    if ((rightAmount > 0) && (rightAmount + containerCapacity <= maxAmount) && (rightFluidName.equals(containerFluidName)))
-                	    {
-                		mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
-                	    }
-                	    else
-                	    {
-                		mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
-                	    }
-                	}
-                	else if ((leftAmount + containerCapacity <= maxAmount) && (leftFluidName.equals(containerFluidName)))
-                	{
-                	    mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
-                	}
-                	else if ((rightAmount == 0) || (rightAmount + containerCapacity <= maxAmount) && (rightFluidName.equals(containerFluidName)))
-                	{
-                	    mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
-                	}
-                	else if (SlotBackpack.isValidItem(stack));
-                	{
-                	    mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
-                	}
+                        if (leftAmount == 0)
+                        {
+                            if ((rightAmount > 0) && (rightAmount + containerCapacity <= maxAmount) && (rightFluidName.equals(containerFluidName)))
+                            {
+                                mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                            }
+                            else
+                            {
+                                mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+                            }
+                        }
+                        else if ((leftAmount + containerCapacity <= maxAmount) && (leftFluidName.equals(containerFluidName)))
+                        {
+                            mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+                        }
+                        else if ((rightAmount == 0) || (rightAmount + containerCapacity <= maxAmount) && (rightFluidName.equals(containerFluidName)))
+                        {
+                            mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                        }
+                        else if (SlotBackpack.isValidItem(stack))
+                        {
+                            mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
+                        }
                     }
                     else if (!containerFilled)
                     {
-                	if (leftAmount == 0)
-                	{
-                	    if (rightAmount != 0)
-                	    {
-                		mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
-                	    }
-                	    else if (SlotBackpack.isValidItem(stack));
-                	    {
-                		mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
-                	    }
-                	}
-                	else
-                	{
-                	    mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
-                	}
-                    }
-
-                    /*if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
-                    {
-                        if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
+                        if (leftAmount == 0)
                         {
-                            if (SlotBackpack.isValidItem(stack) && (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false)))
+                            if (rightAmount != 0)
                             {
-                                return null;
+                                mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                            }
+                            else if (SlotBackpack.isValidItem(stack))
+                            {
+                                mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
                             }
                         }
-                    }*/
+                        else
+                        {
+                            mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+                        }
+                    }
 
                 } else if (SlotBackpack.isValidItem(stack))
                 {
