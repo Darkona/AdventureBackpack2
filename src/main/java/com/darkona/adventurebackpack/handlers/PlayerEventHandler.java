@@ -247,7 +247,7 @@ public class PlayerEventHandler
         if (event.crafting.getItem() == ModItems.adventureBackpack)
         {
             LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + event.crafting.getTagCompound().getString("colorName"));
-            if (BackpackNames.getBackpackColorName(event.crafting).equals("Dragon"))
+            if (BackpackNames.getBackpackColorName(event.crafting).equals("Dragon") && !ConfigHandler.consumeDragonEgg)
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);
                 event.player.playSound("mob.enderdragon.growl", 1.0f, 5.0f);

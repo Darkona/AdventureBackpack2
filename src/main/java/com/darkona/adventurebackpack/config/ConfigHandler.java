@@ -62,6 +62,7 @@ public class ConfigHandler
     public static String[] nameUnlocalized;
     public static String[] nameDefault = {};
 
+    public static boolean consumeDragonEgg = false;
     public static boolean recipeAdventuresSet = true;
     public static boolean recipeClockCrossbow = true;
     public static boolean recipeCoalJetpack = true;
@@ -124,6 +125,7 @@ public class ConfigHandler
         forbiddenDimensions = config.getStringList("Forbidden Dimensions", "items", nameDefault, "Disallow opening backpack inventory for specific dimension ID");
 
         // Items.Recipes
+        consumeDragonEgg = config.getBoolean("Consume Dragon Egg", "items.recipes", false, "Consume Dragon Egg when Dragon backpack crafted?");
         recipeAdventuresSet = config.getBoolean("Adventures Set", "items.recipes", true, "Enable/Disable recipe for Adventure's Hat, Suit and Pants");
         recipeClockCrossbow = config.getBoolean("Clockwork Crossbow", "items.recipes", true, "Enable/Disable Clockwork Crossbow recipe");
         recipeCopterPack = config.getBoolean("Copter Pack", "items.recipes", true, "Enable/Disable CopterPack recipe");
