@@ -12,6 +12,7 @@ import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -136,15 +137,20 @@ public class BackpackAbilities
             oops.printStackTrace();
         }
     }
+
     /**
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
-    private static String[] validWearingBackpacks = {
-            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"};
+    private static String[] validWearingBackpacks =
+        {
+            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"
+        };
 
-    private static String[] validRemovalBackpacks = {
+    private static String[] validRemovalBackpacks =
+        {
             "Bat", "Squid", "Pigman", "Dragon", "Rainbow"
-    };
+        };
+
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
      * backpacks that have particularities while in block form necessarily have abilities.
@@ -152,7 +158,10 @@ public class BackpackAbilities
      * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
      */
     @SuppressWarnings("unused")
-	private static String[] validTileBackpacks = {"Cactus","Melon"};
+	private static String[] validTileBackpacks =
+        {
+            "Cactus", "Melon"
+        };
 
     /**
      * Detects if a player is under the rain. For detecting when it is Under The Sea (maybe to sing a nice Disney tune)
@@ -188,7 +197,8 @@ public class BackpackAbilities
                 //LogHelper.info("OMNOMNOMNOM");
             }
             inv.setLastTime(Utils.secondsToTicks(120));
-        }else{
+        } else
+        {
             inv.setLastTime(inv.getLastTime() - 1);
         }
         inv.dirtyTime();
@@ -205,12 +215,16 @@ public class BackpackAbilities
         //Shameless rip-off from Machinemuse. Thanks Claire, I don't have to reinvent the wheel thanks to you.
         //I will use a different potion id to avoid conflicting with her modular suits
         PotionEffect nightVision = null;
-        if (player.isPotionActive(Potion.nightVision.id)) {
+        if (player.isPotionActive(Potion.nightVision.id))
+        {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
-        if (nightVision == null || nightVision.getDuration() < 220)
+        if ((nightVision == null || nightVision.getDuration() < 220) && !Wearing.getBackpackInv(player, true).getDisableNightVision())
         {
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 5000, -1));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 6000, -1));
+        } else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNightVision())
+        {
+            backpackRemovals.itemBat(player, world, backpack);
         }
     }
 
@@ -220,7 +234,8 @@ public class BackpackAbilities
         {
             player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, -1));
             itemBat(player, world, backpack);
-        }else{
+        } else
+        {
             backpackRemovals.itemSquid(player,world, backpack);
         }
     }
@@ -228,12 +243,13 @@ public class BackpackAbilities
     public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
     {
         PotionEffect potion = null;
-        if (player.isPotionActive(Potion.fireResistance.id)) {
+        if (player.isPotionActive(Potion.fireResistance.id))
+        {
             potion = player.getActivePotionEffect(Potion.fireResistance);
         }
-        if (potion == null || potion.getDuration() < 5 && potion.getAmplifier() != -1)
+        if (potion == null || potion.getDuration() < 220 && potion.getAmplifier() <= -1)
         {
-            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 5000, -1));
+            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 6000, -1));
         }
     }
 
@@ -247,22 +263,24 @@ public class BackpackAbilities
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
         itemBat(player, world, backpack);
-    itemPigman(player,world,backpack);
-        //itemSquid(player, world, backpack);
+        itemPigman(player,world,backpack);
+
         PotionEffect potion = null;
-        if (player.isPotionActive(Potion.regeneration.id)) {
+        if (player.isPotionActive(Potion.regeneration.id))
+        {
             potion = player.getActivePotionEffect(Potion.regeneration);
         }
-        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != 2)
+        if (potion == null || potion.getDuration() < 220 && potion.getAmplifier() <= 2)
         {
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 5000, 2));
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 6000, 2));
         }
         potion = null;
-        if (player.isPotionActive(Potion.damageBoost.id)) {
+        if (player.isPotionActive(Potion.damageBoost.id))
+        {
             potion = player.getActivePotionEffect(Potion.damageBoost);
         }
-        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != 2) {
-            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 5000, 2));
+        if (potion == null || potion.getDuration() < 220 && potion.getAmplifier() <= 2) {
+            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 6000, 2));
         }
     }
 
@@ -285,11 +303,13 @@ public class BackpackAbilities
             }
         }
         PotionEffect moveSpeed = null;
-        if (player.isPotionActive(Potion.moveSpeed.id)) {
+        if (player.isPotionActive(Potion.moveSpeed.id))
+        {
             moveSpeed = player.getActivePotionEffect(Potion.moveSpeed);
         }
-        if (moveSpeed == null || moveSpeed.getDuration() < 40 && moveSpeed.getAmplifier() != 0) {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 5000, 0));
+        if (moveSpeed == null || moveSpeed.getDuration() < 220 && moveSpeed.getAmplifier() <= 0)
+        {
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 6000, 0));
         }
         inv.setLastTime(noteTime);
         inv.markDirty();
@@ -316,7 +336,7 @@ public class BackpackAbilities
     public void itemCactus(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in ticks for this backpack.
-        if(world.isRemote)return;
+        if (world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int drops = 0;
         if (player.isInWater())
@@ -334,7 +354,8 @@ public class BackpackAbilities
             FluidStack raindrop = new FluidStack(FluidRegistry.WATER, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
-        }else{
+        } else
+        {
             inv.setLastTime(inv.getLastTime() - 1);
         }
         inv.dirtyTime();

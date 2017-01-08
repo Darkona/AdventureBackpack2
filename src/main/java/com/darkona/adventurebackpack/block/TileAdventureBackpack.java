@@ -48,6 +48,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     private int luminosity;
     private NBTTagCompound extendedProperties;
     private boolean cyclingStatus;
+    private boolean disableNightVision;
+
 
     public int getLuminosity()
     {
@@ -282,6 +284,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             special = backpackData.getBoolean("special");
             extendedProperties = backpackData.getCompoundTag("extended");
             cyclingStatus = backpackData.getBoolean("cyclingStatus");
+            disableNightVision = backpackData.getBoolean("disableNightVision");
         }
     }
 
@@ -309,6 +312,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
         backpackData.setBoolean("cyclingStatus", cyclingStatus);
+        backpackData.setBoolean("disableNightVision", disableNightVision);
 
         compound.setTag("backpackData",backpackData);
     }

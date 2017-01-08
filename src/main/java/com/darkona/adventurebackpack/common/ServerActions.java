@@ -417,19 +417,42 @@ public class ServerActions
         {
             if (inv.getCyclingStatus())
             {
-        	inv.setCyclingStatus(false);
-        	inv.markDirty();
-        	if (player.worldObj.isRemote)
-        	{
-        	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
-        	}
-            } else {
-        	inv.setCyclingStatus(true);
-        	inv.markDirty();
-        	if (player.worldObj.isRemote)
-        	{
-        	    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.on"));
-        	}
+                inv.setCyclingStatus(false);
+                inv.markDirty();
+                if (player.worldObj.isRemote)
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
+                }
+            } else
+            {
+                inv.setCyclingStatus(true);
+                inv.markDirty();
+                if (player.worldObj.isRemote)
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.on"));
+                }
+            }
+        }
+    }
+
+    public static void toggleNightVision(EntityPlayer player, ItemStack backpack, byte on_off)
+    {
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        if (inv.getDisableNightVision())
+        {
+            inv.setDisableNightVision(false);
+            inv.markDirty();
+            if (player.worldObj.isRemote)
+            {
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.nightvision.on"));
+            }
+        } else
+        {
+            inv.setDisableNightVision(true);
+            inv.markDirty();
+            if (player.worldObj.isRemote)
+            {
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.nightvision.off"));
             }
         }
     }
@@ -445,7 +468,8 @@ public class ServerActions
             {
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.jetpack.off"));
             }
-        }else{
+        } else
+        {
             inv.setStatus(true);
             inv.markDirty();
             if (player.worldObj.isRemote)

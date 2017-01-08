@@ -22,6 +22,8 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Created by Darkona on 11/10/2014.
  */
+
+
 public class KeybindHandler
 {
     private static Key getPressedKeyBinding()
@@ -42,6 +44,8 @@ public class KeybindHandler
         return Key.UNKNOWN;
     }
 
+    private static final String[] NIGHTVISION_BACKPACKS = {"Bat", "Squid", "Dragon"};
+
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event)
     {
@@ -49,7 +53,7 @@ public class KeybindHandler
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
 
-        if(player != null)
+        if (player != null)
         {
             if (keypressed == Key.INVENTORY_KEY)
             {
@@ -71,7 +75,7 @@ public class KeybindHandler
                         if (Wearing.isWearingCopter(player))
                         {
                             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
-                                     }
+                        }
                         if (Wearing.isWearingSteam(player))
                         {
                             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
@@ -82,14 +86,27 @@ public class KeybindHandler
 
             if (keypressed == Key.TOGGLE_KEY)
             {
-                if(player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemHose)
+                if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemHose)
                 {
                     ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
                     ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, (player).inventory.currentItem);
                 } else if (Wearing.isWearingBackpack(player))
                 {
-                    ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.CYCLING_ON_OFF, ""));
-                    ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player), WearableModePacket.CYCLING_ON_OFF);
+                    if (player.isSneaking())
+                    {
+                        for (String valid : NIGHTVISION_BACKPACKS)
+                        {
+                            if (Wearing.getBackpackInv(player, true).getColorName().equals(valid))
+                            {
+                                ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.NIGHTVISION_ON_OFF, ""));
+                                ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player), WearableModePacket.NIGHTVISION_ON_OFF);
+                            }
+                        }
+                    } else
+                    {
+                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.CYCLING_ON_OFF, ""));
+                        ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player), WearableModePacket.CYCLING_ON_OFF);
+                    }
                 }
                 if (Wearing.isWearingCopter(player))
                 {

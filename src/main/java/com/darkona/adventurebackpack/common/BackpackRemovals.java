@@ -19,13 +19,17 @@ public class BackpackRemovals
     public void itemBat(EntityPlayer player, World world, ItemStack backpack)
     {
         PotionEffect potion = null;
-        if (player.isPotionActive(Potion.nightVision.id)) {
+        if (player.isPotionActive(Potion.nightVision.id))
+        {
             potion = player.getActivePotionEffect(Potion.nightVision);
 
-            if (potion != null && potion.getAmplifier() == -1) {
-                if (player.worldObj.isRemote) {
+            if (potion != null && potion.getAmplifier() == -1)
+            {
+                if (player.worldObj.isRemote)
+                {
                     player.removePotionEffectClient(Potion.nightVision.id);
-                } else {
+                } else
+                {
                     player.removePotionEffect(Potion.nightVision.id);
                 }
             }
@@ -36,13 +40,17 @@ public class BackpackRemovals
     {
         itemBat(player, world, backpack);
         PotionEffect potion = null;
-        if (player.isPotionActive(Potion.waterBreathing.id)) {
+        if (player.isPotionActive(Potion.waterBreathing.id))
+        {
             potion = player.getActivePotionEffect(Potion.waterBreathing);
 
-            if (potion != null && potion.getAmplifier() == -1) {
-                if (player.worldObj.isRemote) {
+            if (potion != null && potion.getAmplifier() == -1)
+            {
+                if (player.worldObj.isRemote)
+                {
                     player.removePotionEffectClient(Potion.waterBreathing.id);
-                } else {
+                } else
+                {
                     player.removePotionEffect(Potion.waterBreathing.id);
                 }
             }
@@ -52,13 +60,17 @@ public class BackpackRemovals
     public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
     {
         PotionEffect potion = null;
-        if (player.isPotionActive(Potion.fireResistance.id)) {
+        if (player.isPotionActive(Potion.fireResistance.id))
+        {
             potion = player.getActivePotionEffect(Potion.fireResistance);
 
-            if (potion != null && potion.getAmplifier() == -1) {
-                if (player.worldObj.isRemote) {
+            if (potion != null && potion.getAmplifier() == -1)
+            {
+                if (player.worldObj.isRemote)
+                {
                     player.removePotionEffectClient(Potion.fireResistance.id);
-                } else {
+                } else
+                {
                     player.removePotionEffect(Potion.fireResistance.id);
                 }
             }
@@ -70,24 +82,32 @@ public class BackpackRemovals
         itemBat(player, world, backpack);
         itemPigman(player,world,backpack);
         PotionEffect potion = null;
-        if (player.isPotionActive(Potion.damageBoost.id)) {
+        if (player.isPotionActive(Potion.damageBoost.id))
+        {
             potion = player.getActivePotionEffect(Potion.damageBoost);
-            if (potion != null && potion.getAmplifier() == 2) {
-                if (player.worldObj.isRemote) {
+            if (potion != null && potion.getAmplifier() == 2)
+            {
+                if (player.worldObj.isRemote)
+                {
                     player.removePotionEffectClient(Potion.damageBoost.id);
-                } else {
+                } else
+                {
                     player.removePotionEffect(Potion.damageBoost.id);
                 }
             }
         }
         potion = null;
-        if (player.isPotionActive(Potion.regeneration.id)) {
+        if (player.isPotionActive(Potion.regeneration.id))
+        {
             potion = player.getActivePotionEffect(Potion.regeneration);
 
-            if (potion != null && potion.getAmplifier() == 2) {
-                if (player.worldObj.isRemote) {
+            if (potion != null && potion.getAmplifier() == 2)
+            {
+                if (player.worldObj.isRemote)
+                {
                     player.removePotionEffectClient(Potion.regeneration.id);
-                } else {
+                } else
+                {
                     player.removePotionEffect(Potion.regeneration.id);
                 }
             }
@@ -101,12 +121,16 @@ public class BackpackRemovals
         inv.setLastTime(0);
         inv.dirtyTime();
         PotionEffect potion = null;
-        if (player.isPotionActive(Potion.moveSpeed.id)) {
+        if (player.isPotionActive(Potion.moveSpeed.id))
+        {
             potion = player.getActivePotionEffect(Potion.moveSpeed);
-            if (potion != null && potion.getAmplifier() == 0) {
-                if (player.worldObj.isRemote) {
+            if (potion != null && potion.getAmplifier() == 0)
+            {
+                if (player.worldObj.isRemote)
+                {
                     player.removePotionEffectClient(Potion.moveSpeed.id);
-                } else {
+                } else
+                {
                     player.removePotionEffect(Potion.moveSpeed.id);
                 }
             }
@@ -114,10 +138,13 @@ public class BackpackRemovals
         /*potion = null;
         if (player.isPotionActive(Potion.jump.id)) {
             potion = player.getActivePotionEffect(Potion.jump);
-            if (potion != null && potion.getAmplifier() == 1) {
-                if (player.worldObj.isRemote) {
+            if (potion != null && potion.getAmplifier() == 1)
+            {
+                if (player.worldObj.isRemote)
+                {
                     player.removePotionEffectClient(Potion.jump.id);
-                } else {
+                } else
+                {
                     player.removePotionEffect(Potion.jump.id);
                 }
             }
