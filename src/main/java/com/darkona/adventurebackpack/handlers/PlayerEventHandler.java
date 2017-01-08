@@ -86,7 +86,6 @@ public class PlayerEventHandler
                 }
             }
         }
-
     }
 
     @SubscribeEvent
@@ -95,10 +94,10 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
-                return new NBTTagCompound();
-              }
-		return null;
+            return new NBTTagCompound();
         }
+		return null;
+    }
 
     @SubscribeEvent
     public void playerTravelsAcrossDimensions(PlayerEvent.PlayerChangedDimensionEvent event)
@@ -130,26 +129,26 @@ public class PlayerEventHandler
     }
 
 
-    boolean pistonBootsStepHeight=false;
+    boolean pistonBootsStepHeight = false;
 
     @SubscribeEvent
     public void pistonBootsUnequipped(LivingEvent.LivingUpdateEvent event)
     {
-    	if (event.entityLiving instanceof EntityPlayer)
-    	{
+        if (event.entityLiving instanceof EntityPlayer)
+        {
     	    EntityPlayer player = (EntityPlayer)event.entityLiving;
             if (Wearing.isWearingBoots(player))
     	    {
-    		if (!pistonBootsStepHeight)
-    		{
-    		    pistonBootsStepHeight = true;
-    		}
+                if (!pistonBootsStepHeight)
+                {
+                    pistonBootsStepHeight = true;
+                }
     	    } else if (pistonBootsStepHeight)
     	    {
-    		player.stepHeight = 0.5001F;
-    		pistonBootsStepHeight=false;
+    	        player.stepHeight = 0.5001F;
+    	        pistonBootsStepHeight=false;
     	    }
-        }
+    	}
     }
 
     /**
@@ -322,14 +321,14 @@ public class PlayerEventHandler
             {
                 BackpackProperty.get(event.player).executeWearableUpdateProtocol();
             }
-            if (event.phase == TickEvent.Phase.END)
+            /*if (event.phase == TickEvent.Phase.END)
             {
                 if (event.side.isServer())
                 {
                 	//Thanks @knoxz for fixing performance issue
                     //BackpackProperty.syncToNear(event.player);
                 }
-            }
+            }*/
         }
     }
 

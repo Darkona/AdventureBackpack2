@@ -190,9 +190,10 @@ public class BackpackAbilities
 
         if (inv.getLastTime() <= 0)
         {
-            if(world.isDaytime() &&
+            if (world.isDaytime() &&
                     /*!world.isRemote &&*/
-                    world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY+1),MathHelper.floor_double(player.posZ))) {
+                    world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY+1),MathHelper.floor_double(player.posZ)))
+            {
                 player.getFoodStats().addStats(2, 0.2f);
                 //LogHelper.info("OMNOMNOMNOM");
             }
@@ -247,7 +248,7 @@ public class BackpackAbilities
         {
             potion = player.getActivePotionEffect(Potion.fireResistance);
         }
-        if (potion == null || potion.getDuration() < 220 && potion.getAmplifier() <= -1)
+        if (potion == null || potion.getDuration() < 220)
         {
             player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 6000, -1));
         }
@@ -270,7 +271,7 @@ public class BackpackAbilities
         {
             potion = player.getActivePotionEffect(Potion.regeneration);
         }
-        if (potion == null || potion.getDuration() < 220 && potion.getAmplifier() <= 2)
+        if (potion == null || (potion.getDuration() < 220 && potion.getAmplifier() <= 2) || potion.getDuration() < 40)
         {
             player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 6000, 2));
         }
@@ -279,7 +280,8 @@ public class BackpackAbilities
         {
             potion = player.getActivePotionEffect(Potion.damageBoost);
         }
-        if (potion == null || potion.getDuration() < 220 && potion.getAmplifier() <= 2) {
+        if (potion == null || (potion.getDuration() < 220 && potion.getAmplifier() <= 2) || potion.getDuration() < 40)
+        {
             player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 6000, 2));
         }
     }
@@ -314,8 +316,6 @@ public class BackpackAbilities
         inv.setLastTime(noteTime);
         inv.markDirty();
     }
-
-
 
     public void itemIronGolem(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -461,7 +461,7 @@ public class BackpackAbilities
     public void itemMelon(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in ticks for this backpack.
-        if(world.isRemote)return;
+        if (world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int drops = 0;
         if (player.isInWater())
@@ -479,7 +479,8 @@ public class BackpackAbilities
             FluidStack raindrop = new FluidStack(ModFluids.melonJuice, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
-        }else{
+        } else
+        {
             inv.setLastTime(inv.getLastTime() - 1);
         }
         inv.dirtyTime();
@@ -601,7 +602,7 @@ public class BackpackAbilities
         inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
         inv.extendedProperties.setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
-      //  inv.setLastTime(eatTime);
+        //inv.setLastTime(eatTime);
         inv.dirtyExtended();
         //inv.dirtyTanks();
         inv.dirtyTime();
@@ -662,7 +663,7 @@ public class BackpackAbilities
         inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
         inv.extendedProperties.setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
-        //  inv.setLastTime(eatTime);
+        //inv.setLastTime(eatTime);
         inv.dirtyExtended();
         //inv.dirtyTanks();
         inv.dirtyTime();
