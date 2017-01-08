@@ -41,6 +41,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     public static final boolean OFF = false;
     public static final boolean ON = true;
 
+    private boolean disableNightVision = OFF;
     private boolean cyclingStatus = ON;
 
     private ItemStack containerStack;
@@ -246,6 +247,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
             special = backpackData.getBoolean("special");
             extendedProperties = backpackData.getCompoundTag("extendedProperties");
             cyclingStatus = backpackData.getBoolean("cyclingStatus");
+            disableNightVision = backpackData.getBoolean("disableNightVision");
         }
     }
 
@@ -276,6 +278,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
         backpackData.setBoolean("cyclingStatus", cyclingStatus);
+        backpackData.setBoolean("disableNightVision", disableNightVision);
 
         compound.setTag("backpackData",backpackData);
         //}
@@ -428,5 +431,14 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         this.cyclingStatus = status;
     }
 
-}
+    public boolean getDisableNightVision()
+    {
+        return disableNightVision;
+    }
 
+    public void setDisableNightVision(boolean vision)
+    {
+        this.disableNightVision = vision;
+    }
+
+}
