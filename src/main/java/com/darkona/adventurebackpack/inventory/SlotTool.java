@@ -30,13 +30,15 @@ public class SlotTool extends SlotAdventureBackpack
     	return isValidTool(stack);
     }
 
-    private static final String[] VALID_TOOL_NAMES = {
-            "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", //"hatchet","excavator","chisel"
-    };
+    private static final String[] VALID_TOOL_NAMES =
+        {
+                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", //"hatchet", "excavator", "chisel"
+        };
 
-    private static final String[] INVALID_TOOL_NAMES = {
-	    "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"
-    };
+    private static final String[] INVALID_TOOL_NAMES =
+        {
+                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"
+        };
 
     public static boolean isValidTool(ItemStack stack)
     {
@@ -60,10 +62,12 @@ public class SlotTool extends SlotAdventureBackpack
             //GregTech
             if (name.equals("gt.metatool.01"))
             {
-        	//0 = sword, 170 = turbines
-        	if ((stack.getItemDamage() == 0) || (stack.getItemDamage() > 169)) return false;
+                //0 = sword, 170 = turbines
+                if (stack.getItemDamage() == 0 || stack.getItemDamage() > 169) return false;
         	return true;
             }
+            //Charged baterries and such
+            if (name.contains("gt.metaitem")) return false;
 
             // Just for extra compatibility and/or security and/or less annoyance
             for (String toolName : VALID_TOOL_NAMES)
