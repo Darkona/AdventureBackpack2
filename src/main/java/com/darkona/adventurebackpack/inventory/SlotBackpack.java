@@ -14,25 +14,25 @@ public class SlotBackpack extends SlotAdventureBackpack
 {
 
     private static final String[] FORBIDDEN_CLASSES =
-    {
-        // Adventure Backpack 2
-        "com.darkona.adventurebackpack.item.ItemAdventureBackpack",
-        // Backpack Mod
-        "de.eydamos.backpack.item.ItemBackpack",
-        "de.eydamos.backpack.item.ItemWorkbenchBackpack",
-        // Blue Power Canvas Bags
-        "com.bluepowermod.item.ItemCanvasBag",
-        // Extra Utilities Golden Bag of Holding
-        "com.rwtema.extrautils.item.ItemGoldenBag",
-        // Forestry Backpacks +addons
-        "forestry.storage.items.ItemBackpack",
-        "forestry.storage.items.ItemBackpackNaturalist",
-        // Jabba Dolly
-        "mcp.mobius.betterbarrels.common.items.dolly.ItemBarrelMover",
-        "mcp.mobius.betterbarrels.common.items.dolly.ItemDiamondMover",
-        // Project Red Exploration Backpacks
-        "mrtjp.projectred.exploration.ItemBackpack"
-    };
+        {
+                // Adventure Backpack 2
+                "com.darkona.adventurebackpack.item.ItemAdventureBackpack",
+                // Backpack Mod
+                "de.eydamos.backpack.item.ItemBackpack",
+                "de.eydamos.backpack.item.ItemWorkbenchBackpack",
+                // Blue Power Canvas Bags
+                "com.bluepowermod.item.ItemCanvasBag",
+                // Extra Utilities Golden Bag of Holding
+                "com.rwtema.extrautils.item.ItemGoldenBag",
+                // Forestry Backpacks +addons
+                "forestry.storage.items.ItemBackpack",
+                "forestry.storage.items.ItemBackpackNaturalist",
+                // Jabba Dolly
+                "mcp.mobius.betterbarrels.common.items.dolly.ItemBarrelMover",
+                "mcp.mobius.betterbarrels.common.items.dolly.ItemDiamondMover",
+                // Project Red Exploration Backpacks
+                "mrtjp.projectred.exploration.ItemBackpack",
+        };
 
     public SlotBackpack(IInventoryAdventureBackpack inventory, int id, int x, int y)
     {
@@ -74,7 +74,7 @@ public class SlotBackpack extends SlotAdventureBackpack
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-    	return isValidItem(stack);
+        return isValidItem(stack);
     }
 
     @Override
