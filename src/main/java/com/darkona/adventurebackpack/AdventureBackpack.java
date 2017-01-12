@@ -36,11 +36,7 @@ import net.minecraftforge.common.MinecraftForge;
  * @author Javier Darkona
  */
 @SuppressWarnings("unused")
-@Mod(modid = ModInfo.MOD_ID,
-        name = ModInfo.MOD_NAME,
-        version = ModInfo.MOD_VERSION,
-        guiFactory = ModInfo.GUI_FACTORY_CLASS
-)
+@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, version = ModInfo.MOD_VERSION, guiFactory = ModInfo.GUI_FACTORY_CLASS)
 public class AdventureBackpack
 {
 
@@ -51,7 +47,6 @@ public class AdventureBackpack
 
     //Static things
     public static CreativeTabAB creativeTab = new CreativeTabAB();
-
 
     //public boolean chineseNewYear;
     //public boolean hannukah;
@@ -83,11 +78,11 @@ public class AdventureBackpack
         ModEntities.init();
         ModNetwork.init();
         proxy.initNetwork();
-        // EVENTS
+
+        //EVENTS
         playerEventHandler = new PlayerEventHandler();
         generalEventHandler = new GeneralEventHandler();
         clientEventHandler = new ClientEventHandler();
-
 
         MinecraftForge.EVENT_BUS.register(generalEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
@@ -120,8 +115,6 @@ public class AdventureBackpack
         ConfigHandler.IS_ENVIROMINE = Loader.isModLoaded("EnviroMine");
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
 
-
-
         if (ConfigHandler.IS_BUILDCRAFT)
         {
             LogHelper.info("Buildcraft is present. Acting accordingly");
@@ -133,7 +126,6 @@ public class AdventureBackpack
         }
 
         ModRecipes.conditionalInit();
-
 
         /*
         LogHelper.info("DUMPING FLUID INFORMATION");
