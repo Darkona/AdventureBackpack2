@@ -1,8 +1,10 @@
 package com.darkona.adventurebackpack.reference;
 
-import net.minecraftforge.fluids.Fluid;
-
 import java.util.HashMap;
+
+import com.darkona.adventurebackpack.config.ConfigHandler;
+
+import net.minecraftforge.fluids.Fluid;
 
 /**
  * Created on 16/01/2015
@@ -13,26 +15,25 @@ public class GeneralReference
 {
     public static HashMap<String, Float> liquidFuels = new HashMap<String, Float>();
 
-
     public static void init()
     {
-        liquidFuels.put("lava", 5.0f);
-        liquidFuels.put("fuel", 1.0f);
-        liquidFuels.put("oil", 3.0f);
-        liquidFuels.put("bioethanol", 1.5f);
-        liquidFuels.put("biofuel", 1.0f);
-        liquidFuels.put("creosote", 7.0f);
-        liquidFuels.put("coal", 2.0f);
-        liquidFuels.put("nitrofuel", 0.5f);
+        liquidFuels.put("biofuel", ConfigHandler.fuelRateBioFuel);
+        liquidFuels.put("bioethanol", ConfigHandler.fuelRateBioEthanol);
+        liquidFuels.put("coal", ConfigHandler.fuelRateCoal);
+        liquidFuels.put("creosote", ConfigHandler.fuelRateCreosote);
+        liquidFuels.put("fuel", ConfigHandler.fuelRateFuel);
+        liquidFuels.put("lava", ConfigHandler.fuelRateLava);
+        liquidFuels.put("nitrofuel", ConfigHandler.fuelRateNitroFuel);
+        liquidFuels.put("oil", ConfigHandler.fuelRateOil);
     }
 
     public static boolean isValidFuel(Fluid fluid)
     {
-        if(fluid != null)
+        if (fluid != null)
         {
-            for(String fuel : liquidFuels.keySet())
+            for (String fuel : liquidFuels.keySet())
             {
-                if(fuel.equals(fluid.getName()))
+                if (fuel.equals(fluid.getName()))
                 {
                     return true;
                 }

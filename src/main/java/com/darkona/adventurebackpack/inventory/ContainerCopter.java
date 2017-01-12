@@ -15,8 +15,7 @@ public class ContainerCopter extends Container implements IWearableContainer
 {
 
     public InventoryCopterPack inventory;
-    private final int
-            PLAYER_HOT_START = 0;
+    private final int PLAYER_HOT_START = 0;
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
@@ -104,7 +103,6 @@ public class ContainerCopter extends Container implements IWearableContainer
         return super.slotClick(slot, button, flag, player);
     }
 
-
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
@@ -124,7 +122,7 @@ public class ContainerCopter extends Container implements IWearableContainer
             }
             if (i < 36)
             {
-                if (SlotFluid.isValidItem(stack) && SlotFluid.isValidTool(stack))
+                if (SlotFluid.isValidItem(stack) /*&& SlotFluid.isValidTool(stack)*/)
                 {
                     int COPTER_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))

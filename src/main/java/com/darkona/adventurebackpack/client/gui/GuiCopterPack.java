@@ -92,10 +92,12 @@ public class GuiCopterPack extends GuiWithTanks
 
         if (fuel.getFluid() != null)
         {
-            Float f = GeneralReference.liquidFuels.get(name);
+            Float f = GeneralReference.liquidFuels.get(name.toLowerCase());
             String conLev = (f != null) ? f.toString() : "0";
             if (conLev != null && !conLev.isEmpty())
+            {
                 fontRendererObj.drawString("Consumption: " + conLev, 1 + offsetX, 40 + offsetY, 0x373737, false);
+            }
         }
         GL11.glPopMatrix();
     }
