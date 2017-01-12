@@ -30,6 +30,7 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
             EntityPlayer player = ctx.getServerHandler().playerEntity;
             if (message.action == EQUIP_WEARABLE)
             {
+                //before reenable make sure to takes into account the delay in unequipWearable()
                 /*if (message.force && Wearing.isWearingWearable(player))
                 {
                     BackpackUtils.unequipWearable(player);
