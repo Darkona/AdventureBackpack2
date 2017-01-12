@@ -36,7 +36,7 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
                     ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), message.type);
 
                 if(message.type == JETPACK_ON_OFF)
-                    ServerActions.toggleSteamJetpack(player,Wearing.getWearingSteam(player),message.type);
+                    ServerActions.toggleCoalJetpack(player,Wearing.getWearingJetpack(player),message.type);
 
                 if(message.type == CYCLING_ON_OFF)
                     ServerActions.toggleToolCycling(player,Wearing.getWearingBackpack(player),message.type);

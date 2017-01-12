@@ -457,7 +457,7 @@ public class ServerActions
         }
     }
 
-    public static void toggleSteamJetpack(EntityPlayer player, ItemStack jetpack, byte on_off)
+    public static void toggleCoalJetpack(EntityPlayer player, ItemStack jetpack, byte on_off)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
         if(inv.getStatus())

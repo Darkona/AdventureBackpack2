@@ -64,7 +64,9 @@ fluid.milk=Milk
 fluid.mushrromstew=Mushroom Stew
 
 ## Messages
-adventurebackpack:messages.already.equipped=You are already equipping a backpack.
+adventurebackpack:messages.already.equipped.backpack=You are already equipping an Adventure Backpack. Take it off if you want to equip this one.
+adventurebackpack:messages.already.equipped.copterpack=You are already equipping a Copter Pack. Take it off if you want to equip this one.
+adventurebackpack:messages.already.equipped.jetpack=You are already equipping a Coal Jetpack. Take it off if you want to equip this one.
 adventurebackpack:messages.already.impossibru=You aren't wearing any backpacks.
 adventurebackpack:messages.copterpack.hover=CopterPack: Hover Mode.
 adventurebackpack:messages.copterpack.normal=CopterPack: Normal Mode.

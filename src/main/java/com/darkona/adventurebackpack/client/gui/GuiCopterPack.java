@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -9,12 +11,10 @@ import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created on 03/01/2015
@@ -25,7 +25,7 @@ public class GuiCopterPack extends GuiWithTanks
 {
     private InventoryCopterPack inventory;
     private static final ResourceLocation texture = Resources.guiTextures("guiCopterPack");
-    private static GuiTank fuelTank = new GuiTank(8, 8,72, 32, ConfigHandler.typeTankRender);
+    private static GuiTank fuelTank = new GuiTank(8, 8, 72, 32, ConfigHandler.typeTankRender);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
 
@@ -49,26 +49,25 @@ public class GuiCopterPack extends GuiWithTanks
         this.mc.renderEngine.bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        if(wearing)
+        if (wearing)
         {
-            if(unequipButton.inButton(this,mouseX,mouseY))
+            if (unequipButton.inButton(this, mouseX, mouseY))
             {
-                unequipButton.draw(this,20,186);
-            }else
+                unequipButton.draw(this, 20, 186);
+            } else
             {
-                unequipButton.draw(this,1,186);
+                unequipButton.draw(this, 1, 186);
             }
-        }else
+        } else
         {
-            if(equipButton.inButton(this,mouseX,mouseY))
+            if (equipButton.inButton(this, mouseX, mouseY))
             {
-                equipButton.draw(this,20,167);
-            }else
+                equipButton.draw(this, 20, 167);
+            } else
             {
-                equipButton.draw(this,1,167);
+                equipButton.draw(this, 1, 167);
             }
         }
-
 
     }
 
@@ -83,7 +82,7 @@ public class GuiCopterPack extends GuiWithTanks
 
         GL11.glPushMatrix();
         String name = (fuel.getFluid() != null) ? Utils.capitalize(fuel.getFluid().getFluid().getName()) : "None";
-        String amount = (fuel.getFluid() != null) ? ""+ fuel.getFluid().amount : "0";
+        String amount = (fuel.getFluid() != null) ? "" + fuel.getFluid().amount : "0";
         String capacity = Integer.toString(fuel.getCapacity());
         int offsetY = 8;
         int offsetX = 83;
@@ -91,12 +90,12 @@ public class GuiCopterPack extends GuiWithTanks
         fontRendererObj.drawString(amount, 1 + offsetX, 10 + offsetY, 0x373737, false);
         fontRendererObj.drawString(capacity, 1 + offsetX, 20 + offsetY, 0x373737, false);
 
-        if(fuel.getFluid()!=null)
+        if (fuel.getFluid() != null)
         {
             Float f = GeneralReference.liquidFuels.get(name);
             String conLev = (f != null) ? f.toString() : "0";
-            if(conLev != null && !conLev.isEmpty())
-                fontRendererObj.drawString("Consumption: " + conLev , 1 + offsetX, 40 + offsetY, 0x373737, false);
+            if (conLev != null && !conLev.isEmpty())
+                fontRendererObj.drawString("Consumption: " + conLev, 1 + offsetX, 40 + offsetY, 0x373737, false);
         }
         GL11.glPopMatrix();
     }
@@ -122,19 +121,20 @@ public class GuiCopterPack extends GuiWithTanks
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-        if(wearing)
+        //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
+        if (wearing)
         {
-            if(unequipButton.inButton(this,mouseX,mouseY))
+            if (unequipButton.inButton(this, mouseX, mouseY))
             {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE,false));
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE, false));
                 player.closeScreen();
             }
         } else
         {
-            if(equipButton.inButton(this,mouseX,mouseY))
+            if (equipButton.inButton(this, mouseX, mouseY))
             {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, false));
+                //ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
                 player.closeScreen();
             }
         }

@@ -31,9 +31,9 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
 
             if(message.type == JETPACK_IN_USE || message.type == JETPACK_NOT_IN_USE)
             {
-                if(Wearing.isWearingSteam(ctx.getServerHandler().playerEntity))
+                if(Wearing.isWearingJetpack(ctx.getServerHandler().playerEntity))
                 {
-                    InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingSteam(ctx.getServerHandler().playerEntity));
+                    InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingJetpack(ctx.getServerHandler().playerEntity));
                     inv.setInUse(message.type == JETPACK_IN_USE);
                     inv.markDirty();
                 }
