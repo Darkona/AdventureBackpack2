@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -10,14 +12,12 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created on 12/10/2014
@@ -103,30 +103,30 @@ public class GuiAdvBackpack extends GuiWithTanks
             {
                 bedButton.draw(this, 1, 227);
             }
-        }else
+        } else
         {
-            if(wearing)
+            if (wearing)
             {
-                if(unequipButton.inButton(this,mouseX,mouseY))
+                if (unequipButton.inButton(this, mouseX, mouseY))
                 {
-                    unequipButton.draw(this,96,227);
-                }else
+                    unequipButton.draw(this, 96, 227);
+                } else
                 {
-                    unequipButton.draw(this,77,227);
+                    unequipButton.draw(this, 77, 227);
                 }
-            }else
+            } else
             {
-                if(equipButton.inButton(this,mouseX,mouseY))
+                if (equipButton.inButton(this, mouseX, mouseY))
                 {
-                    equipButton.draw(this,96,208);
-                }else
+                    equipButton.draw(this, 96, 208);
+                } else
                 {
-                    equipButton.draw(this,77,208);
+                    equipButton.draw(this, 77, 208);
                 }
             }
         }
         //zLevel +=1;
-        if(ConfigHandler.tanksHoveringText)
+        if (ConfigHandler.tanksHoveringText)
         {
             if (tankLeft.inTank(this, mouseX, mouseY))
             {
@@ -151,10 +151,11 @@ public class GuiAdvBackpack extends GuiWithTanks
         tankRight.draw(this, rgt);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
-        /*
-        if(!ConfigHandler.HOVERING_TEXT_TANKS){
+
+        /*if (!ConfigHandler.HOVERING_TEXT_TANKS)
+        {
             GL11.glPushMatrix();
-            //GL11.glTranslatef(8f,64f,0f);
+            // GL11.glTranslatef(8f,64f,0f);
             GL11.glScalef(0.6f, 0.6f, 0.6f);
             String name = (lft.getFluid() != null) ? lft.getFluid().getLocalizedName() : "None";
             String amount = (lft.getFluid() != null ? lft.getFluid().amount : "Empty").toString();
@@ -172,8 +173,8 @@ public class GuiAdvBackpack extends GuiWithTanks
             fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737, false);
 
             GL11.glPopMatrix();
-        }
-        */
+        }*/
+
     }
 
     @Override
@@ -204,28 +205,29 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-        int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-        if(isTile)
+        //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
+        if (isTile)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {
                 TileAdventureBackpack te = (TileAdventureBackpack) inventory;
                 ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
             }
-        }else
+        } else
         {
-            if(wearing)
+            if (wearing)
             {
-                if(unequipButton.inButton(this,mouseX,mouseY))
+                if (unequipButton.inButton(this, mouseX, mouseY))
                 {
-                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE,false));
+                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE, false));
                     player.closeScreen();
                 }
             } else
             {
-                if(equipButton.inButton(this,mouseX,mouseY))
+                if (equipButton.inButton(this, mouseX, mouseY))
                 {
-                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
+                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, false));
+                    //ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
                     player.closeScreen();
                 }
 
@@ -244,4 +246,3 @@ public class GuiAdvBackpack extends GuiWithTanks
         super.keyTyped(key, keycode);
     }
 }
-
