@@ -134,14 +134,14 @@ public class ConfigHandler
         forbiddenDimensions = config.getStringList("Forbidden Dimensions", "items", nameDefault, "Disallow opening backpack inventory for specific dimension ID");
 
         // Items.Fuel
-        fuelRateBioFuel = config.getFloat("BioFuel", "items.fuel", 1.0f, 0.1f, 10.0f, "BioFuel consumption rate");
-        fuelRateBioEthanol = config.getFloat("BioEthanol", "items.fuel", 1.5f, 0.1f, 10.0f, "BioEthanol consumption rate");
-        fuelRateCoal = config.getFloat("Coal", "items.fuel", 2.0f, 0.1f, 10.0f, "Coal consumption rate");
-        fuelRateCreosote = config.getFloat("Creosote", "items.fuel", 7.0f, 0.1f, 10.0f, "Creosote consumption rate");
-        fuelRateFuel = config.getFloat("Fuel", "items.fuel", 1.0f, 0.1f, 10.0f, "Fuel consumption rate");
-        fuelRateLava = config.getFloat("Lava", "items.fuel", 5.0f, 0.1f, 10.0f, "Lava consumption rate");
-        fuelRateNitroFuel = config.getFloat("NitroFuel", "items.fuel", 0.5f, 0.1f, 10.0f, "NitroFuel consumption rate");
-        fuelRateOil = config.getFloat("Oil", "items.fuel", 3.0f, 0.1f, 10.0f, "Oil consumption rate");
+        /*fuelRateBioFuel = config.getFloat("BioFuel", "items.fuel", 1.0f, 0.05f, 20.0f, "BioFuel consumption rate");
+        fuelRateBioEthanol = config.getFloat("BioEthanol", "items.fuel", 1.5f, 0.05f, 20.0f, "BioEthanol consumption rate");
+        fuelRateCoal = config.getFloat("Coal", "items.fuel", 2.0f, 0.05f, 20.0f, "Coal consumption rate");
+        fuelRateCreosote = config.getFloat("Creosote", "items.fuel", 7.0f, 0.05f, 20.0f, "Creosote consumption rate");
+        fuelRateFuel = config.getFloat("Fuel", "items.fuel", 1.0f, 0.05f, 20.0f, "Fuel consumption rate");
+        fuelRateLava = config.getFloat("Lava", "items.fuel", 5.0f, 0.05f, 20.0f, "Lava consumption rate");
+        fuelRateNitroFuel = config.getFloat("NitroFuel", "items.fuel", 0.5f, 0.05f, 20.0f, "NitroFuel consumption rate");
+        fuelRateOil = config.getFloat("Oil", "items.fuel", 3.0f, 0.05f, 20.0f, "Oil consumption rate");*/
 
         // Items.Recipes
         consumeDragonEgg = config.getBoolean("Consume Dragon Egg", "items.recipes", false, "Consume Dragon Egg when Dragon backpack crafted?");

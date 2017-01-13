@@ -132,7 +132,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
         inv.openInventory();
         boolean canElevate = true;
-        float fuelConsumption = 0.0f;
+        int fuelConsumption = 0;
         if (inv.getStatus() != OFF_MODE)
         {
             if (player.isInWater())
@@ -196,7 +196,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                     player.motionY = -0.3;
                 } else
                 {
-                    fuelConsumption *= 2;
+                    fuelConsumption += 2;
                     player.motionY = 0.0f;
                 }
             }
@@ -226,7 +226,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 if (Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
                 {
-                    if (inv.canConsumeFuel(fuelConsumption * 2) && canElevate)
+                    if (inv.canConsumeFuel(fuelConsumption + 2) && canElevate)
                     {
                         elevate(player, stack);
                     }
@@ -236,14 +236,14 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             //Elevation serverside
             if (!player.onGround && player.motionY > 0)
             {
-                fuelConsumption *= 2;
+                fuelConsumption += 2;
             }
             int ticks = inv.tickCounter - 1;
             if (inv.fuelTank.getFluid() != null)
             {
                 if (GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
                 {
-                    fuelConsumption = (float) Math.floor(fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName()));
+                    fuelConsumption = (int) Math.floor(fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName()));
                 }
             }
             if (ticks <= 0)

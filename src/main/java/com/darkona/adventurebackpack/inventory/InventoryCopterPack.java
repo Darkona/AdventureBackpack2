@@ -41,19 +41,15 @@ public class InventoryCopterPack implements IInventoryTanks
         return fuelTank;
     }
 
-    public void consumeFuel(float quantity)
+    public void consumeFuel(int quantity)
     {
-        int q = (int) quantity;
-        if (q < 1) q = 1;
-        fuelTank.drain(q, true);
+        fuelTank.drain(quantity, true);
         dirtyTanks();
     }
 
-    public boolean canConsumeFuel(float quantity)
+    public boolean canConsumeFuel(int quantity)
     {
-        int q = (int) quantity;
-        if (q < 1) q = 1;
-        return fuelTank.drain(q, false) != null && fuelTank.drain(q, false).amount > 0;
+        return fuelTank.drain(quantity, false) != null && fuelTank.drain(quantity, false).amount > 0;
     }
 
     @Override
