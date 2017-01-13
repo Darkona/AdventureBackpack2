@@ -55,13 +55,13 @@ public class BoilingBoilerSound extends MovingSound
     public void update()
     {
 
-        if (thePlayer == null || thePlayer.isDead || thePlayer.worldObj == null || !Wearing.isWearingSteam(thePlayer))
+        if (thePlayer == null || thePlayer.isDead || thePlayer.worldObj == null || !Wearing.isWearingJetpack(thePlayer))
         {
             setDonePlaying();
             return;
         }
 
-        InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingSteam(thePlayer));
+        InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingJetpack(thePlayer));
         if(inv.isBoiling() && inv.getCoalTank().getFluidAmount() > 0)
         {
             xPosF = (float)thePlayer.posX;

@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
+import java.util.List;
+
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
@@ -10,6 +12,7 @@ import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -24,8 +27,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 /**
  * Created on 31/12/2014
@@ -62,7 +63,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     {
     }
 
-
     @SuppressWarnings(value = "unchecked")
     public void pushEntities(World world, EntityPlayer player, float speed)
     {
@@ -70,10 +70,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         double posY = player.posY;
         double posZ = player.posZ;
         List<EntityItem> groundItems = world.getEntitiesWithinAABB(
-                EntityItem.class,
-                AxisAlignedBB.getBoundingBox(posX, posY, posZ,
-                        posX + 1.0D, posY + 1.0D,
-                        posZ + 1.0D).expand(4.0D, 4.0D, 4.0D));
+                EntityItem.class, AxisAlignedBB.getBoundingBox(
+                        posX, posY, posZ, posX + 1.0D, posY + 1.0D, posZ + 1.0D).expand(4.0D, 4.0D, 4.0D));
 
         for (EntityItem groundItem : groundItems)
         {
@@ -105,14 +103,14 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         }
     }
 
-
+    @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
         return ModelCopterPack.instance.setWearable(stack);
     }
 
-
+    @Override
     @SideOnly(Side.CLIENT)
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
@@ -141,7 +139,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 inv.setStatus(OFF_MODE);
                 inv.dirtyStatus();
-                if (!world.isRemote){
+                if (!world.isRemote)
+                {
                     player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.copterpack.cantwater"));
                 }
                 return;
@@ -195,8 +194,9 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 if (player.isSneaking())
                 {
                     player.motionY = -0.3;
-                }else{
-                    fuelConsumption+=2;
+                } else
+                {
+                    fuelConsumption += 2;
                     player.motionY = 0.0f;
                 }
             }
@@ -209,14 +209,13 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             }
             //Sound
 
-
             float factor = 0.05f;
             if (!player.onGround)
             {
                 //Airwave
                 pushEntities(world, player, 0.2f);
                 //movement boost
-                player.moveFlying(player.moveStrafing,player.moveForward,factor);
+                player.moveFlying(player.moveStrafing, player.moveForward, factor);
             } else
             {
                 pushEntities(world, player, factor + 0.4f);
@@ -242,9 +241,9 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             int ticks = inv.tickCounter - 1;
             if (inv.fuelTank.getFluid() != null)
             {
-                if(GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
+                if (GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
                 {
-                    fuelConsumption = (int)Math.floor(fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName()));
+                    fuelConsumption = (int) Math.floor(fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName()));
                 }
             }
             if (ticks <= 0)
@@ -257,29 +256,29 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 inv.tickCounter = ticks;
             }
         }
-       // if(!world.isRemote)inv.closeInventory();
+        //if(!world.isRemote)inv.closeInventory();
         inv.closeInventory();
     }
 
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        onUnequipped(world,player,stack);
-        player.dropPlayerItemWithRandomChoice(stack.copy(),false);
+        onUnequipped(world, player, stack);
+        player.dropPlayerItemWithRandomChoice(stack.copy(), false);
         BackpackProperty.get(player).setWearable(null);
     }
 
     @Override
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-        if(!stack.hasTagCompound())stack.setTagCompound(new NBTTagCompound());
-        stack.stackTagCompound.setByte("status",OFF_MODE);
+        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+        stack.stackTagCompound.setByte("status", OFF_MODE);
     }
 
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.setByte("status",OFF_MODE);
+        stack.stackTagCompound.setByte("status", OFF_MODE);
     }
 
     @Override
@@ -295,6 +294,5 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     {
         return Resources.modelTextures("copterPack");
     }
-
 
 }

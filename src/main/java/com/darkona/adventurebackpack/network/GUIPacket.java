@@ -67,7 +67,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                 {
                     if(message.from == FROM_KEYBIND)
                     {
-                        if (Wearing.isWearingSteam(player))
+                        if (Wearing.isWearingJetpack(player))
                         {
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_WEARING, world, playerX, playerY, playerZ);
                             return null;
@@ -75,7 +75,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                     }
                     if(message.from == FROM_HOLDING)
                     {
-                        if (Wearing.isHoldingSteam(player))
+                        if (Wearing.isHoldingJetpack(player))
                         {
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_HOLDING, world, playerX, playerY, playerZ);
                             return null;

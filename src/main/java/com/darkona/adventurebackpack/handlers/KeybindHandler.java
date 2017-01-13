@@ -76,7 +76,7 @@ public class KeybindHandler
                         {
                             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
                         }
-                        if (Wearing.isWearingSteam(player))
+                        if (Wearing.isWearingJetpack(player))
                         {
                             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
                         }
@@ -120,12 +120,12 @@ public class KeybindHandler
                         ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_ON_OFF);
                     }
                 }
-                if (Wearing.isWearingSteam(player))
+                if (Wearing.isWearingJetpack(player))
                 {
                     if (player.isSneaking())
                     {
                         ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.JETPACK_ON_OFF, ""));
-                        ServerActions.toggleSteamJetpack(player, Wearing.getWearingSteam(player), WearableModePacket.JETPACK_ON_OFF);
+                        ServerActions.toggleCoalJetpack(player, Wearing.getWearingJetpack(player), WearableModePacket.JETPACK_ON_OFF);
                     }
                 }
             }

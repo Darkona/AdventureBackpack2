@@ -1,17 +1,19 @@
 package com.darkona.adventurebackpack.client.models;
 
-import codechicken.lib.vec.Vector3;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
+
+import codechicken.lib.vec.Vector3;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
-import java.util.List;
-
-
-public class ModelCoalJetpack extends ModelWearable {
+public class ModelCoalJetpack extends ModelWearable
+{
     public ModelRenderer Base;
     public ModelRenderer tubeStraightLeft;
     public ModelRenderer tubeStraightRight;
@@ -30,7 +32,8 @@ public class ModelCoalJetpack extends ModelWearable {
     private ItemStack jetpack;
 
     @SuppressWarnings("unchecked")
-    public ModelCoalJetpack() {
+    public ModelCoalJetpack()
+    {
         this.textureWidth = 64;
         this.textureHeight = 32;
 
@@ -103,7 +106,6 @@ public class ModelCoalJetpack extends ModelWearable {
         bipedBody.addChild(tankWallLeft);
         bipedBody.addChild(tankWallRight);
 
-
         float offsetZ = 0.08F;
         float offsetY = 0.0F;
         for (ModelRenderer part : (List<ModelRenderer>) bipedBody.childModels)
@@ -118,10 +120,11 @@ public class ModelCoalJetpack extends ModelWearable {
         return this;
     }
 
+    @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)
     {
         this.jetpack = stack;
-        render(entity, f, f1,f2,f3,f4,f5);
+        render(entity, f, f1, f2, f3, f4, f5);
     }
 
     @Override
@@ -142,11 +145,11 @@ public class ModelCoalJetpack extends ModelWearable {
             {
                 if (bipedBody.rotationPointX == 0.0F && bipedBody.rotationPointY == 0.0F && bipedBody.rotationPointZ == 0.0F)
                 {
-                    renderSteamPack(f5);
+                    renderCoalJetpack(f5);
                 } else
                 {
                     GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);
-                    renderSteamPack(f5);
+                    renderCoalJetpack(f5);
                     GL11.glTranslatef(-bipedBody.rotationPointX * f5, -bipedBody.rotationPointY * f5, -bipedBody.rotationPointZ * f5);
                 }
             } else
@@ -168,7 +171,7 @@ public class ModelCoalJetpack extends ModelWearable {
                 {
                     GL11.glRotatef(bipedBody.rotateAngleX * (180F / (float) Math.PI), 1.0F, 0.0F, 0.0F);
                 }
-                renderSteamPack(f5);
+                renderCoalJetpack(f5);
                 GL11.glPopMatrix();
             }
             GL11.glTranslatef(-bipedBody.offsetX, -bipedBody.offsetY, -(bipedBody.offsetZ));
@@ -177,7 +180,7 @@ public class ModelCoalJetpack extends ModelWearable {
 
     }
 
-    public void renderSteamPack(float f5)
+    public void renderCoalJetpack(float f5)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
 

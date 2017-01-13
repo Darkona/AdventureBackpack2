@@ -155,7 +155,7 @@ public class GuiAdvBackpack extends GuiWithTanks
         /*if (!ConfigHandler.HOVERING_TEXT_TANKS)
         {
             GL11.glPushMatrix();
-            // GL11.glTranslatef(8f,64f,0f);
+            //GL11.glTranslatef(8f,64f,0f);
             GL11.glScalef(0.6f, 0.6f, 0.6f);
             String name = (lft.getFluid() != null) ? lft.getFluid().getLocalizedName() : "None";
             String amount = (lft.getFluid() != null ? lft.getFluid().amount : "Empty").toString();
