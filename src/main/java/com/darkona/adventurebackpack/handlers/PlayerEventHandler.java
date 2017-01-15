@@ -17,6 +17,7 @@ import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -34,6 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -202,7 +204,7 @@ public class PlayerEventHandler
     {
         EntityPlayer entityPlayer = event.entityPlayer;
 
-        if (Wearing.isWearingWearable(entityPlayer) && !entityPlayer.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+        if (Wearing.isWearingWearable(entityPlayer))
         {
             if (Wearing.isWearingBackpack(entityPlayer))
             {
@@ -236,44 +238,24 @@ public class PlayerEventHandler
                 event.drops.add(new EntityItem(entityPlayer.worldObj, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, pack));
             }
         }
-
     }
 
-    /*@SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void playerDies(LivingDeathEvent event)
     {
         if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
         {
             EntityPlayer player = (EntityPlayer) event.entity;
-            if (!player.worldObj.isRemote)
+            if (!player.worldObj.isRemote
+                    && player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
             {
                 //LogHelper.info("Player died");
                 BackpackProperty props = BackpackProperty.get(player);
-
-                if (props.hasWearable())
-                {
-                    //We want to keep the wearables on the player if KeepInventory is active.
-                    if (!player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
-                    {
-                        //So if it isn't, we drop it like it's hot, drop it like it's hot, drop it like it's hot.
-                        ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
-                    }
-                }
-
-                if (props.isForcedCampFire())
-                {
-                    ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
-                    if (lastCampFire != null)
-                    {
-                        player.setSpawnChunk(lastCampFire, false, player.dimension);
-                    }
-                    //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
-                }
                 ServerProxy.storePlayerProps(player);
             }
         }
         event.setResult(Event.Result.ALLOW);
-    }*/
+    }
 
     @SubscribeEvent
     public void playerRespawn(PlayerEvent.PlayerRespawnEvent event)
