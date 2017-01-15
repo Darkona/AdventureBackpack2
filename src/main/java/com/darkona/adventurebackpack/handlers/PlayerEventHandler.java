@@ -17,12 +17,12 @@ import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,15 +34,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
 /**
- * Created on 11/10/2014
- * Handle ALL the events!
+ * Created on 11/10/2014 Handle ALL the events!
  *
  * @author Darkona
  * @see com.darkona.adventurebackpack.client.ClientActions
@@ -50,7 +49,8 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 public class PlayerEventHandler
 {
     @SuppressWarnings("unused")
-	private static int tickCounter = 0;
+    private static int tickCounter = 0;
+
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {
@@ -64,12 +64,13 @@ public class PlayerEventHandler
         }
 
     }
+
     @SubscribeEvent
     public void joinPlayer(EntityJoinWorldEvent event)
     {
         if (!event.world.isRemote)
         {
-            if (Utils.notNullAndInstanceOf(event.entity,  EntityPlayer.class))
+            if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
             {
                 EntityPlayer player = (EntityPlayer) event.entity;
                 LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
@@ -81,7 +82,7 @@ public class PlayerEventHandler
                 {
                     BackpackProperty.get(player).loadNBTData(playerData);
                     BackpackProperty.syncToNear(player);
-                	BackpackProperty.sync(player);
+                    BackpackProperty.sync(player);
                     LogHelper.info("Stored properties retrieved");
                 }
             }
@@ -96,7 +97,7 @@ public class PlayerEventHandler
             BackpackProperty.sync(event.player);
             return new NBTTagCompound();
         }
-		return null;
+        return null;
     }
 
     @SubscribeEvent
@@ -116,8 +117,7 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void onPlayerJump(LivingEvent.LivingJumpEvent event)
     {
-        if (event.entity != null &&
-                event.entityLiving instanceof EntityPlayer)
+        if (event.entity != null && event.entityLiving instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) event.entity;
 
@@ -128,7 +128,6 @@ public class PlayerEventHandler
         }
     }
 
-
     boolean pistonBootsStepHeight = false;
 
     @SubscribeEvent
@@ -136,19 +135,19 @@ public class PlayerEventHandler
     {
         if (event.entityLiving instanceof EntityPlayer)
         {
-    	    EntityPlayer player = (EntityPlayer)event.entityLiving;
+            EntityPlayer player = (EntityPlayer) event.entityLiving;
             if (Wearing.isWearingBoots(player))
-    	    {
+            {
                 if (!pistonBootsStepHeight)
                 {
                     pistonBootsStepHeight = true;
                 }
-    	    } else if (pistonBootsStepHeight)
-    	    {
-    	        player.stepHeight = 0.5001F;
-    	        pistonBootsStepHeight=false;
-    	    }
-    	}
+            } else if (pistonBootsStepHeight)
+            {
+                player.stepHeight = 0.5001F;
+                pistonBootsStepHeight = false;
+            }
+        }
     }
 
     /**
@@ -190,7 +189,7 @@ public class PlayerEventHandler
                 {
                     event.setCanceled(true);
                 }
-                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.backpackAbilities)
+                if (Wearing.isWearingTheRightBackpack((EntityPlayer) event.entityLiving, "IronGolem") && ConfigHandler.backpackAbilities)
                 {
                     event.setCanceled(true);
                 }
@@ -198,8 +197,49 @@ public class PlayerEventHandler
         }
     }
 
+    @SubscribeEvent
+    public void finallyYouDied(PlayerDropsEvent event)
+    {
+        EntityPlayer entityPlayer = event.entityPlayer;
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+        if (Wearing.isWearingWearable(entityPlayer) && !entityPlayer.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+        {
+            if (Wearing.isWearingBackpack(entityPlayer))
+            {
+                if (ConfigHandler.backpackDeathPlace)
+                {
+                    BackpackProperty props = BackpackProperty.get(entityPlayer);
+                    ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(entityPlayer.worldObj, entityPlayer, props.getWearable());
+                    if (props.isForcedCampFire())
+                    {
+                        ChunkCoordinates lastCampFire = BackpackProperty.get(entityPlayer).getCampFire();
+                        if (lastCampFire != null)
+                        {
+                            entityPlayer.setSpawnChunk(lastCampFire, false, entityPlayer.dimension);
+                        }
+                        //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
+                    }
+                    ServerProxy.storePlayerProps(entityPlayer);
+                } else
+                {
+                    ItemStack pack = Wearing.getWearingBackpack(entityPlayer);
+                    event.drops.add(new EntityItem(entityPlayer.worldObj, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, pack));
+                    //TODO get rid of campfire
+                }
+            } else if (Wearing.isWearingCopter(entityPlayer))
+            {
+                ItemStack pack = Wearing.getWearingCopter(entityPlayer);
+                event.drops.add(new EntityItem(entityPlayer.worldObj, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, pack));
+            } else if (Wearing.isWearingJetpack(entityPlayer))
+            {
+                ItemStack pack = Wearing.getWearingJetpack(entityPlayer);
+                event.drops.add(new EntityItem(entityPlayer.worldObj, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, pack));
+            }
+        }
+
+    }
+
+    /*@SubscribeEvent(priority = EventPriority.LOW)
     public void playerDies(LivingDeathEvent event)
     {
         if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
@@ -233,11 +273,12 @@ public class PlayerEventHandler
             }
         }
         event.setResult(Event.Result.ALLOW);
-    }
+    }*/
 
     @SubscribeEvent
-    public void playerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-    	BackpackProperty.sync(event.player);
+    public void playerRespawn(PlayerEvent.PlayerRespawnEvent event)
+    {
+        BackpackProperty.sync(event.player);
     }
 
     @SubscribeEvent
@@ -311,13 +352,12 @@ public class PlayerEventHandler
         }
     }
 
-
     @SubscribeEvent
     public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
         if (event.player != null && !event.player.isDead && Wearing.isWearingWearable(event.player))
         {
-            if(event.phase == TickEvent.Phase.START)
+            if (event.phase == TickEvent.Phase.START)
             {
                 BackpackProperty.get(event.player).executeWearableUpdateProtocol();
             }
@@ -332,6 +372,4 @@ public class PlayerEventHandler
         }
     }
 
-
 }
-
