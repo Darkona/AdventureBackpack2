@@ -295,7 +295,8 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        onUnequipped (world, player, stack);
+        onUnequipped(world, player, stack);
+
         if (world.isRemote) return;
 
         if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
@@ -303,18 +304,15 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
         }
 
-        if(ConfigHandler.backpackDeathPlace)
+        if (ConfigHandler.backpackDeathPlace)
         {
             if (!tryPlace(world, player, stack))
             {
                 player.dropPlayerItemWithRandomChoice(stack, false);
-                BackpackProperty.get(player).setWearable(null);
             }
-        } else
-        {
-            player.dropPlayerItemWithRandomChoice(stack, false);
-            BackpackProperty.get(player).setWearable(null);
         }
+
+        BackpackProperty.get(player).setWearable(null);
     }
 
     private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
@@ -326,14 +324,13 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         int Y = (int) player.posY;
         if (Y < 1) Y = 1;
 
-        int positions[] = {0,-1,1,-2,2,-3,3,-4,4,-5,5,-6,6};
+        int positions[] = { 0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5, -6, 6 };
 
         for (int shiftY : positions)
         {
             if (Y + shiftY >= 1)
             {
-                ChunkCoordinates spawn =
-                        Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
+                ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
                 if (spawn != null)
                 {
                     return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
@@ -380,6 +377,4 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         }
         return modelTexture;
     }
-
-
 }

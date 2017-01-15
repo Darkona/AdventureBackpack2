@@ -264,7 +264,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
         onUnequipped(world, player, stack);
-        player.dropPlayerItemWithRandomChoice(stack.copy(), false);
+        //player.dropPlayerItemWithRandomChoice(stack.copy(), false);
         BackpackProperty.get(player).setWearable(null);
     }
 
