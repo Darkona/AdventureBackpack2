@@ -444,6 +444,7 @@ public class ServerActions
             inv.markDirty();
             if (player.worldObj.isRemote)
             {
+                player.playSound("mob.bat.idle", 0.2F, 1);
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.nightvision.on"));
             }
         } else
@@ -452,6 +453,7 @@ public class ServerActions
             inv.markDirty();
             if (player.worldObj.isRemote)
             {
+                player.playSound("mob.bat.death", 0.2F, 2);
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.nightvision.off"));
             }
         }

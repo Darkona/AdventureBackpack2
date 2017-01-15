@@ -69,6 +69,10 @@ public class SlotTool extends SlotAdventureBackpack
             //Charged baterries and such
             if (name.contains("gt.metaitem")) return false;
 
+            //Ender IO
+            //Yeta Wrench uses shift+Scroll for switch own modes
+            if (Item.itemRegistry.getNameForObject(item).equals("EnderIO:itemYetaWrench")) return false;
+
             // Just for extra compatibility and/or security and/or less annoyance
             for (String toolName : VALID_TOOL_NAMES)
             {

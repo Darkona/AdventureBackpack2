@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
+import com.darkona.adventurebackpack.util.Wearing;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -564,7 +565,19 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         removeSleepingBag(world);
         if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.reasons.SUCCESFUL)
         {
-            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.backpack"));
+            if (Wearing.isWearingWearable(player))
+            {
+                if (Wearing.isWearingBackpack(player))
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.backpack"));
+                } else if (Wearing.isWearingCopter(player))
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.copterpack"));
+                } else if (Wearing.isWearingJetpack(player))
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.jetpack"));
+                }
+            }
             if (!player.inventory.addItemStackToInventory(stacky))
             {
                 return drop(world, player, x, y, z);
