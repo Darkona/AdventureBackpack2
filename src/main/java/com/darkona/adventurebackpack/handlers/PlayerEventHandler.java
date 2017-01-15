@@ -202,40 +202,41 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void finallyYouDied(PlayerDropsEvent event)
     {
-        EntityPlayer entityPlayer = event.entityPlayer;
+        EntityPlayer player = event.entityPlayer;
 
-        if (Wearing.isWearingWearable(entityPlayer))
+        if (Wearing.isWearingWearable(player))
         {
-            if (Wearing.isWearingBackpack(entityPlayer))
+            if (Wearing.isWearingBackpack(player))
             {
                 if (ConfigHandler.backpackDeathPlace)
                 {
-                    BackpackProperty props = BackpackProperty.get(entityPlayer);
-                    ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(entityPlayer.worldObj, entityPlayer, props.getWearable());
+                    BackpackProperty props = BackpackProperty.get(player);
+                    ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
                     if (props.isForcedCampFire())
                     {
-                        ChunkCoordinates lastCampFire = BackpackProperty.get(entityPlayer).getCampFire();
+                        ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
                         if (lastCampFire != null)
                         {
-                            entityPlayer.setSpawnChunk(lastCampFire, false, entityPlayer.dimension);
+                            player.setSpawnChunk(lastCampFire, false, player.dimension);
                         }
                         //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
                     }
-                    ServerProxy.storePlayerProps(entityPlayer);
+                    ServerProxy.storePlayerProps(player);
                 } else
                 {
-                    ItemStack pack = Wearing.getWearingBackpack(entityPlayer);
-                    event.drops.add(new EntityItem(entityPlayer.worldObj, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, pack));
+                    ItemStack pack = Wearing.getWearingBackpack(player);
+                    event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
                     //TODO get rid of campfire
                 }
-            } else if (Wearing.isWearingCopter(entityPlayer))
+            } else if (Wearing.isWearingCopter(player))
             {
-                ItemStack pack = Wearing.getWearingCopter(entityPlayer);
-                event.drops.add(new EntityItem(entityPlayer.worldObj, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, pack));
-            } else if (Wearing.isWearingJetpack(entityPlayer))
+                ItemStack pack = Wearing.getWearingCopter(player);
+                //TODO set it to OFF, disable sound
+                event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+            } else if (Wearing.isWearingJetpack(player))
             {
-                ItemStack pack = Wearing.getWearingJetpack(entityPlayer);
-                event.drops.add(new EntityItem(entityPlayer.worldObj, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, pack));
+                ItemStack pack = Wearing.getWearingJetpack(player);
+                event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
             }
         }
     }
