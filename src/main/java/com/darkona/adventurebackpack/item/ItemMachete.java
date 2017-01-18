@@ -1,8 +1,11 @@
 package com.darkona.adventurebackpack.item;
 
+import java.util.Set;
+
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.init.ModMaterials;
 import com.google.common.collect.Sets;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,8 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.oredict.OreDictionary;
-
-import java.util.Set;
 
 /**
  * Created on 10/10/2014
@@ -49,8 +50,9 @@ public class ItemMachete extends ToolAB
             Blocks.waterlily,
             Blocks.wheat,
             Blocks.wool);
+
     @SuppressWarnings("unused")
-	private float field_150934_a;
+    private float field_150934_a;
 
     public ItemMachete()
     {
@@ -110,8 +112,8 @@ public class ItemMachete extends ToolAB
         }
         int id = player.worldObj.getBlockId(x, y, z);
         for(ItemStack stacky : OreDictionary.getOres("treeLeaves")){
-			if (stacky.itemID == id) return false;
-		}
+        	if (stacky.itemID == id) return false;
+        }
 
         if (Block.blocksList[id] instanceof IShearable )
         {

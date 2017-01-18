@@ -120,7 +120,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.openInventory();
         boolean mustFizzz = !inv.isInUse();
         int CoalConsumed = 13;
-        boolean canUse = inv.getCoalTank().drain(CoalConsumed,false) != null;
+        boolean canUse = inv.getCoalTank().drain(CoalConsumed, false) != null;
 
         if (inv.getStatus())
         {
@@ -131,9 +131,9 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.dirtyBoiler();
 
         //Suction
-        if(player.isInWater())
+        if (player.isInWater())
         {
-            inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER,2),true);
+            inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER, 2), true);
         }
 
         //Elevation
@@ -164,16 +164,15 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
                 inv.setInUse(false);
             }
             player.moveFlying(player.moveStrafing, player.moveForward, 0.02f);
-            if(player.fallDistance > 1)
+            if (player.fallDistance > 1)
             {
                 player.fallDistance -= 1;
             }
-            if(player.motionY >= 0)
+            if (player.motionY >= 0)
             {
                 player.fallDistance = 0;
             }
-            if(!world.isRemote)
-            ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE, player), player);
+            if (!world.isRemote) ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE, player), player);
 
         }
         inv.closeInventory();
@@ -189,7 +188,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 
         if (temperature >= 100 && inv.getWaterTank().getFluidAmount() > 0)
         {
-            if(!Water)Water = true;
+            if (!Water) Water = true;
 
             if (!world.isRemote && mustBlublub)
             {
@@ -263,7 +262,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
         inv.calculateLostTime();
-        if(inv.getTemperature() == 0)inv.setTemperature(getBiomeMinTemp(player, world));
+        if (inv.getTemperature() == 0) inv.setTemperature(getBiomeMinTemp(player, world));
     }
 
     @Override

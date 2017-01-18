@@ -1,4 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
+
 import com.darkona.adventurebackpack.util.Utils;
 
 import net.minecraft.inventory.IInventory;
@@ -14,30 +15,25 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class SlotFluid extends SlotAdventureBackpack
 {
-    private static final String[] VALID_TOOL_NAMES =
-        {
-                "bucket",
-        };
+    private static final String[] VALID_CONTAINER_NAMES = { "bucket" };
 
-    private static final String[] VALID_TOOL_IDS =
-        {
-            "minecraft:milk_bucket",
-            //"Railcraft:fluid.creosote.bottle",
-        };
+    private static final String[] VALID_CONTAINER_IDS = { "minecraft:milk_bucket" };
 
-    private static final String[] INVALID_TOOL_NAMES =
-        {
-                "cell",
-        };
+    private static final String[] INVALID_CONTAINER_NAMES = { "cell" };
 
-
-    public SlotFluid(IInventory inventory, int id, int x, int y) {
+    public SlotFluid(IInventory inventory, int id, int x, int y)
+    {
         super(inventory, id, x, y);
     }
 
     public static boolean isEmpty(ItemStack stack)
     {
-        return ((stack != null) && FluidContainerRegistry.isEmptyContainer(stack));
+        return (stack != null && FluidContainerRegistry.isEmptyContainer(stack));
+    }
+
+    public static boolean isFilled(ItemStack stack)
+    {
+        return (stack != null && FluidContainerRegistry.isFilledContainer(stack));
     }
 
     public static String getFluidName(ItemStack stack)
@@ -52,7 +48,7 @@ public class SlotFluid extends SlotAdventureBackpack
         {
             return stack.getFluid().getUnlocalizedName();
         }
-	    return "";
+        return "";
     }
 
     public static int getCapacity(ItemStack stack)
@@ -60,7 +56,7 @@ public class SlotFluid extends SlotAdventureBackpack
         return FluidContainerRegistry.getContainerCapacity(stack);
     }
 
-    public static boolean isValidItem(ItemStack stack)
+    public static boolean isContainer(ItemStack stack)
     {
         return (stack != null && FluidContainerRegistry.isContainer(stack));
     }
@@ -68,10 +64,10 @@ public class SlotFluid extends SlotAdventureBackpack
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return (stack != null && FluidContainerRegistry.isContainer(stack) && isValidTool(stack));
+        return (stack != null && FluidContainerRegistry.isContainer(stack) && isValidContainer(stack));
     }
 
-    public static boolean isValidTool(ItemStack stack)
+    public static boolean isValidContainer(ItemStack stack)
     {
 
         if (stack != null && stack.getMaxStackSize() <= 16)
@@ -79,16 +75,16 @@ public class SlotFluid extends SlotAdventureBackpack
             Item itemCurrent = stack.getItem();
             String nameCurrent = itemCurrent.getUnlocalizedName().toLowerCase();
 
-            for (String toolName : VALID_TOOL_NAMES)
+            for (String toolName : VALID_CONTAINER_NAMES)
             {
                 if (nameCurrent.contains(toolName)) return true;
             }
-            for (String toolID : VALID_TOOL_IDS)
+            for (String toolID : VALID_CONTAINER_IDS)
             {
                 if (Item.itemRegistry.getNameForObject(itemCurrent).equals(toolID)) return true;
             }
 
-            for (String toolName : INVALID_TOOL_NAMES)
+            for (String toolName : INVALID_CONTAINER_NAMES)
             {
                 if (nameCurrent.contains(toolName)) return false;
             }

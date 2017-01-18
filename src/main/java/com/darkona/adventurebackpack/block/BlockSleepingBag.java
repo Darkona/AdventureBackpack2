@@ -1,10 +1,14 @@
 package com.darkona.adventurebackpack.block;
 
+import java.util.Iterator;
+import java.util.Random;
+
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -25,9 +29,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
-
-import java.util.Iterator;
-import java.util.Random;
 
 /**
  * Created on 14/10/2014
@@ -54,6 +55,7 @@ public class BlockSleepingBag extends BlockDirectional
     }
 
 
+    @Override
     @SideOnly(Side.CLIENT)
     protected String getTextureName()
     {
@@ -233,6 +235,7 @@ public class BlockSleepingBag extends BlockDirectional
         return (meta & 4) != 0;
     }
 
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
         int meta = world.getBlockMetadata(x, y, z);
@@ -255,6 +258,7 @@ public class BlockSleepingBag extends BlockDirectional
         }
     }
 
+    @Override
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
         this.blockBoundsForRender();
@@ -265,6 +269,7 @@ public class BlockSleepingBag extends BlockDirectional
         this.func_149978_e();
     }
 
+    @Override
     public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
     {
         return null;
@@ -362,6 +367,7 @@ public class BlockSleepingBag extends BlockDirectional
         return true;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta)
     {
@@ -377,6 +383,7 @@ public class BlockSleepingBag extends BlockDirectional
         }
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
     {
@@ -396,6 +403,7 @@ public class BlockSleepingBag extends BlockDirectional
         };
     }
 
+    @Override
     public int getRenderType()
     {
         return 14;

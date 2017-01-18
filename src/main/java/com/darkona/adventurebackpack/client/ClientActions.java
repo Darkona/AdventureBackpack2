@@ -72,7 +72,7 @@ public class ClientActions
                 case EntitySoundPacket.JETPACK_FIZZ:
                     if (ConfigHandler.allowSoundJetpack)
                     {
-                	snd.playSound(new JetpackSoundOn(player));
+                        snd.playSound(new JetpackSoundOn(player));
                     }
                     break;
                 case EntitySoundPacket.BOILING_BUBBLES:

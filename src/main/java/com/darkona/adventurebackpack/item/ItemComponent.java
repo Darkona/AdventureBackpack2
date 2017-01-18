@@ -1,6 +1,10 @@
 package com.darkona.adventurebackpack.item;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -10,16 +14,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created on 11/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class ItemComponent extends ItemAB
 {
@@ -34,7 +39,6 @@ public class ItemComponent extends ItemAB
             "inflatableBoat",
             "inflatableBoatMotorized",
             "hydroBlades",
-
     };
 
 
@@ -51,11 +55,11 @@ public class ItemComponent extends ItemAB
     public void registerIcons(IIconRegister iconRegister)
     {
 
-        for(String name : names){
+        for (String name : names)
+        {
             IIcon temporalIcon = iconRegister.registerIcon(super.getUnlocalizedName(name).substring(this.getUnlocalizedName().indexOf(".") + 1));
             componentIcons.put(name, temporalIcon);
         }
-
 
         itemIcon = iconRegister.registerIcon(super.getUnlocalizedName("sleepingBag").substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
@@ -66,19 +70,18 @@ public class ItemComponent extends ItemAB
         return super.getIcon(stack, renderPass, player, usingItem, useRemaining);
     }
 
-
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int damage)
     {
-        return componentIcons.get(names[damage-1]);
+        return componentIcons.get(names[damage - 1]);
 
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        return super.getUnlocalizedName(names[getDamage(stack)-1]);
+        return super.getUnlocalizedName(names[getDamage(stack) - 1]);
 
     }
 
@@ -148,7 +151,6 @@ public class ItemComponent extends ItemAB
             }
         }*/
     }
-
 
     private ItemStack placeBoat(ItemStack stack, World world, EntityPlayer player, boolean motorized)
     {
@@ -235,8 +237,6 @@ public class ItemComponent extends ItemAB
         }
     }
 
-
-
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      *
@@ -247,8 +247,8 @@ public class ItemComponent extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if(stack.getItemDamage() == 7)return placeBoat(stack,world,player,false);
-        if(stack.getItemDamage() == 8)return placeBoat(stack,world,player,true);
+        if (stack.getItemDamage() == 7) return placeBoat(stack, world, player, false);
+        if (stack.getItemDamage() == 8) return placeBoat(stack, world, player, true);
         return stack;
     }
 }

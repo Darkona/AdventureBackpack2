@@ -27,18 +27,12 @@ public class SlotTool extends SlotAdventureBackpack
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-    	return isValidTool(stack);
+        return isValidTool(stack);
     }
 
-    private static final String[] VALID_TOOL_NAMES =
-        {
-                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", //"hatchet", "excavator", "chisel"
-        };
+    private static final String[] VALID_TOOL_NAMES = { "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", };
 
-    private static final String[] INVALID_TOOL_NAMES =
-        {
-                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"
-        };
+    private static final String[] INVALID_TOOL_NAMES = { "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit" };
 
     public static boolean isValidTool(ItemStack stack)
     {
@@ -64,7 +58,7 @@ public class SlotTool extends SlotAdventureBackpack
             {
                 //0 = sword, 170 = turbines
                 if (stack.getItemDamage() == 0 || stack.getItemDamage() > 169) return false;
-        	return true;
+                return true;
             }
             //Charged baterries and such
             if (name.contains("gt.metaitem")) return false;

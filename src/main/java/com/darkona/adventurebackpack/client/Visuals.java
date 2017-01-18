@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.client;
 
 import com.darkona.adventurebackpack.entity.fx.SteamFX;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,13 +68,12 @@ public class Visuals
         victoria.rotateAroundY(-player.renderYawOffset * 3.141593F / 180.0F);
         Vec3 leftPosition = victor.addVector(playerPosition.xCoord, playerPosition.yCoord, playerPosition.zCoord);
         Vec3 rightPosition = victoria.addVector(playerPosition.xCoord, playerPosition.yCoord, playerPosition.zCoord);
-        for(int i = 0; i< 4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            spawnParticle("steam", leftPosition.xCoord, leftPosition.yCoord, leftPosition.zCoord, 0.04*world.rand.nextGaussian(), -0.8, 0.04 * world.rand.nextGaussian());
+            spawnParticle("steam", leftPosition.xCoord, leftPosition.yCoord, leftPosition.zCoord, 0.04 * world.rand.nextGaussian(), -0.8, 0.04 * world.rand.nextGaussian());
             spawnParticle("steam", rightPosition.xCoord, rightPosition.yCoord, rightPosition.zCoord, 0.04 * world.rand.nextGaussian(), -0.8, 0.04 * world.rand.nextGaussian());
         }
     }
-
 
     private static Minecraft mc = Minecraft.getMinecraft();
     private static World theWorld = mc.theWorld;
@@ -98,12 +98,10 @@ public class Visuals
             if (renderX * renderX + renderY * renderY + renderZ * renderZ > var22 * var22)
             {
                 return null;
-            }
-            else if (particleSetting > 1)
+            } else if (particleSetting > 1)
             {
                 return null;
-            }
-            else
+            } else
             {
                 if (particleName.equals("steam"))
                 {

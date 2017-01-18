@@ -47,7 +47,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 {
 
-
     public ItemAdventureBackpack()
     {
         super();
@@ -55,7 +54,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         setFull3D();
         setMaxStackSize(1);
     }
-
 
     public static Item getItemFromBlock(Block block)
     {
@@ -212,7 +210,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         return stack;
     }
 
-
     @Override
     public boolean isDamageable()
     {
@@ -248,7 +245,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
@@ -262,8 +259,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         }
     }
 
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems)
@@ -349,7 +345,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        if(BackpackAbilities.hasRemoval(BackpackNames.getBackpackColorName(stack)))
+        if (BackpackAbilities.hasRemoval(BackpackNames.getBackpackColorName(stack)))
         {
             BackpackAbilities.backpackAbilities.executeRemoval(player, world, stack);
         }
@@ -364,7 +360,8 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ResourceLocation getWearableTexture(ItemStack wearable){
+    public ResourceLocation getWearableTexture(ItemStack wearable)
+    {
 
         ResourceLocation modelTexture;
 

@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidTank;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class ContainerBackpack extends Container implements IWearableContainer
 {
@@ -129,7 +129,6 @@ public class ContainerBackpack extends Container implements IWearableContainer
         // bucket out right 21
         addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutRight, 226, 37));
 
-
         //Craft Matrix
         startX = 152;
         for (int y = 0; y < 3; y++)
@@ -161,7 +160,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
-        if(source == SOURCE_WEARING)
+        if (source == SOURCE_WEARING)
         {
             this.crafters.remove(player);
         }
@@ -296,7 +295,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
-        if(source == SOURCE_WEARING)refresh();
+        if (source == SOURCE_WEARING) refresh();
         Slot slot = getSlot(i);
         ItemStack result = null;
         if (slot != null && slot.getHasStack())
@@ -321,25 +320,24 @@ public class ContainerBackpack extends Container implements IWearableContainer
                             return null;
                         }
                     }
-                } else if (SlotFluid.isValidItem(stack) && SlotFluid.isValidTool(stack))
+                } else if (SlotFluid.isContainer(stack) && SlotFluid.isValidContainer(stack))
                 {
                     FluidTank leftTank = inventory.getLeftTank();
                     FluidTank rightTank = inventory.getRightTank();
                     int maxAmount = leftTank.getCapacity();
                     int leftAmount = leftTank.getFluidAmount();
                     int rightAmount = rightTank.getFluidAmount();
-                    String leftFluidName = SlotFluid.getFluidName(leftTank);
-                    String rightFluidName = SlotFluid.getFluidName(rightTank);
+                    String leftFluid = SlotFluid.getFluidName(leftTank);
+                    String rightFluid = SlotFluid.getFluidName(rightTank);
 
-                    boolean containerFilled = !SlotFluid.isEmpty(stack);
                     int containerCapacity = SlotFluid.getCapacity(stack);
-                    String containerFluidName = SlotFluid.getFluidName(stack);
+                    String containerFluid = SlotFluid.getFluidName(stack);
 
-                    if (containerFilled)
+                    if (SlotFluid.isFilled(stack))
                     {
                         if (leftAmount == 0)
                         {
-                            if ((rightAmount > 0) && (rightAmount + containerCapacity <= maxAmount) && (rightFluidName.equals(containerFluidName)))
+                            if (rightAmount > 0 && (rightAmount + containerCapacity <= maxAmount) && rightFluid.equals(containerFluid))
                             {
                                 mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
                             }
@@ -348,11 +346,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
                                 mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
                             }
                         }
-                        else if ((leftAmount + containerCapacity <= maxAmount) && (leftFluidName.equals(containerFluidName)))
+                        else if ((leftAmount + containerCapacity <= maxAmount) && leftFluid.equals(containerFluid))
                         {
                             mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
                         }
-                        else if ((rightAmount == 0) || (rightAmount + containerCapacity <= maxAmount) && (rightFluidName.equals(containerFluidName)))
+                        else if (rightAmount == 0 || (rightAmount + containerCapacity <= maxAmount) && rightFluid.equals(containerFluid))
                         {
                             mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
                         }
@@ -361,7 +359,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
                             mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
                         }
                     }
-                    else if (!containerFilled)
+                    else if (SlotFluid.isEmpty(stack))
                     {
                         if (leftAmount == 0)
                         {

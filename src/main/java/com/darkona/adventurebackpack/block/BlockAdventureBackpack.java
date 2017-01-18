@@ -40,6 +40,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created on 12/10/2014.
+ *
  * @author Javier Darkona
  */
 @SuppressWarnings("unused")
@@ -70,7 +71,7 @@ public class BlockAdventureBackpack extends BlockContainer
         if (getAssociatedTileColorName(world, x, y, z).equals("Bookshelf"))
         {
             ChunkCoordinates enchTable = Utils.findBlock3D(world, x, y, z, Blocks.enchanting_table, 2, 2);
-            if(enchTable !=null)
+            if (enchTable != null)
             {
                 if (!world.isAirBlock((enchTable.posX - x) / 2 + x, enchTable.posY, (enchTable.posZ - z) / 2 + z))
                 {
@@ -78,7 +79,7 @@ public class BlockAdventureBackpack extends BlockContainer
                 }
                 for (int o = 0; o < 4; o++)
                 {
-                    world.spawnParticle("enchantmenttable",enchTable.posX + 0.5D,enchTable.posY + 2.0D,enchTable.posZ + 0.5D,
+                    world.spawnParticle("enchantmenttable", enchTable.posX + 0.5D, enchTable.posY + 2.0D, enchTable.posZ + 0.5D,
                             ((x - enchTable.posX) + random.nextFloat()) - 0.5D,
                             ((y - enchTable.posY) - random.nextFloat() - 1.0F),
                             ((z - enchTable.posZ) + random.nextFloat()) - 0.5D);
@@ -113,9 +114,10 @@ public class BlockAdventureBackpack extends BlockContainer
 
     private String getAssociatedTileColorName(IBlockAccess world, int x, int y, int z)
     {
-    	final TileEntity tile = world.getTileEntity(x, y, z);
-    	return (tile instanceof TileAdventureBackpack) ? ((TileAdventureBackpack) tile).getColorName() : "error";
+        final TileEntity tile = world.getTileEntity(x, y, z);
+        return (tile instanceof TileAdventureBackpack) ? ((TileAdventureBackpack) tile).getColorName() : "error";
     }
+
     @Override
     public boolean canRenderInPass(int pass)
     {
@@ -213,24 +215,25 @@ public class BlockAdventureBackpack extends BlockContainer
         return super.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, meta);
     }
 
-
     @Override
     public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face)
     {
         return false;
     }
+
     @Override
     public String getUnlocalizedName()
     {
         return "blockAdventureBackpack";
     }
 
-    private void setUnlocalizedName(String string) {
+    private void setUnlocalizedName(String string)
+    {
         setUnlocalizedName("blockAdventureBackpack");
 
-	}
+    }
 
-	@Override
+    @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
     {
@@ -380,7 +383,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int par1, int par2)
     {
-        return Blocks.wool.getIcon(par1,par2);
+        return Blocks.wool.getIcon(par1, par2);
     }
 
     @Override
@@ -452,7 +455,6 @@ public class BlockAdventureBackpack extends BlockContainer
                 }
             }
 
-
         }
 
         super.breakBlock(world, x, y, z, world.getBlock(x, y, z), meta);
@@ -477,12 +479,14 @@ public class BlockAdventureBackpack extends BlockContainer
     }
 
     @Override
-    public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion) {
+    public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion)
+    {
         world.func_147480_a(x, y, z, false);
     }
 
     @Override
-    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion)
+    {
         //DO NOTHING
     }
 }

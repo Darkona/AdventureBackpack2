@@ -29,12 +29,10 @@ public class ArmorAB extends ItemArmor
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
-
     protected String getUnwrappedUnlocalizedName(String unlocalizedName)
     {
         return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
     }
-
 
     @Override
     public String getUnlocalizedName(ItemStack stack)

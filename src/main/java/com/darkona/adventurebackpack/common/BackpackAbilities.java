@@ -45,7 +45,6 @@ public class BackpackAbilities
     public static BackpackRemovals backpackRemovals = new BackpackRemovals();
 
     /**
-     *
      * @param colorName
      * @return
      */
@@ -84,13 +83,13 @@ public class BackpackAbilities
     {
         if (backpack instanceof ItemStack)
         {
-            String colorName = BackpackNames.getBackpackColorName((ItemStack)backpack);
+            String colorName = BackpackNames.getBackpackColorName((ItemStack) backpack);
             try
             {
                 //This is black magic and shouldn't be attempted by the faint of heart.
                 this.getClass()
-                        .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class).
-                        invoke(backpackAbilities, player, world, backpack);
+                .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
+                .invoke(backpackAbilities, player, world, backpack);
             } catch (Exception oops)
             {
                 //NOBODY CARES
@@ -102,17 +101,17 @@ public class BackpackAbilities
             String colorName = ((TileAdventureBackpack) backpack).getColorName();
             try
             {
-                    /*
-                        This is witchery, witchery I say!
-                        But seriously, if you want to know how this works just pay very close attention:
-                        invoke will execute any method of a given class, okay? so this should be obvious.
-                        Look at the names of the methods in this class and you'll figure it out.
-                        You have to indicate exactly the classes that the method should use as parameters so
-                        be very careful with "getMethod".
-                     */
+                /*
+                    This is witchery, witchery I say!
+                    But seriously, if you want to know how this works just pay very close attention:
+                    invoke will execute any method of a given class, okay? so this should be obvious.
+                    Look at the names of the methods in this class and you'll figure it out.
+                    You have to indicate exactly the classes that the method should use as parameters so
+                    be very careful with "getMethod".
+                 */
                 this.getClass()
-                        .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
-                        .invoke(backpackAbilities, world, backpack);
+                .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
+                .invoke(backpackAbilities, world, backpack);
             } catch (Exception oops)
             {
                 //Seriously, nobody cares if this can't work, this is just so the game won't explode.
@@ -121,7 +120,7 @@ public class BackpackAbilities
 
     }
 
-    public void executeRemoval(EntityPlayer player, World world,ItemStack backpack )
+    public void executeRemoval(EntityPlayer player, World world, ItemStack backpack)
     {
 
         String colorName = BackpackNames.getBackpackColorName(backpack);
@@ -129,8 +128,8 @@ public class BackpackAbilities
         {
             //This is black magic and shouldn't be attempted by the faint of heart.
             backpackRemovals.getClass()
-                    .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class).
-                    invoke(backpackRemovals, player, world, backpack);
+            .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
+            .invoke(backpackRemovals, player, world, backpack);
         } catch (Exception oops)
         {
             LogHelper.error("---Something bad happened when removing a backpack---");
@@ -143,7 +142,7 @@ public class BackpackAbilities
      */
     private static String[] validWearingBackpacks =
         {
-            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"
+            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower", "Mooshroom"
         };
 
     private static String[] validRemovalBackpacks =
@@ -158,10 +157,7 @@ public class BackpackAbilities
      * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
      */
     @SuppressWarnings("unused")
-	private static String[] validTileBackpacks =
-        {
-            "Cactus", "Melon"
-        };
+    private static String[] validTileBackpacks = { "Cactus", "Melon" };
 
     /**
      * Detects if a player is under the rain. For detecting when it is Under The Sea (maybe to sing a nice Disney tune)
@@ -172,10 +168,8 @@ public class BackpackAbilities
      */
     private boolean isUnderRain(EntityPlayer player)
     {
-        return player.worldObj.canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY),
-                MathHelper.floor_double(player.posZ))
-                || player.worldObj.canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY + player.height),
-                MathHelper.floor_double(player.posZ));
+        return player.worldObj.canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ)) || player.worldObj
+                .canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY + player.height), MathHelper.floor_double(player.posZ));
     }
 
     /**
@@ -192,7 +186,7 @@ public class BackpackAbilities
         {
             if (world.isDaytime() &&
                     /*!world.isRemote &&*/
-                    world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY+1),MathHelper.floor_double(player.posZ)))
+                    world.canBlockSeeTheSky(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY + 1), MathHelper.floor_double(player.posZ)))
             {
                 player.getFoodStats().addStats(2, 0.2f);
                 //LogHelper.info("OMNOMNOMNOM");
@@ -220,9 +214,9 @@ public class BackpackAbilities
         {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
-        if ((nightVision == null || nightVision.getDuration() < 220) && !Wearing.getBackpackInv(player, true).getDisableNightVision())
+        if ((nightVision == null || nightVision.getDuration() < 222) && !Wearing.getBackpackInv(player, true).getDisableNightVision())
         {
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 6000, -1));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 239, -1));
         } else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNightVision())
         {
             backpackRemovals.itemBat(player, world, backpack);
@@ -237,7 +231,7 @@ public class BackpackAbilities
             itemBat(player, world, backpack);
         } else
         {
-            backpackRemovals.itemSquid(player,world, backpack);
+            backpackRemovals.itemSquid(player, world, backpack);
         }
     }
 
@@ -248,9 +242,9 @@ public class BackpackAbilities
         {
             potion = player.getActivePotionEffect(Potion.fireResistance);
         }
-        if (potion == null || potion.getDuration() < 220)
+        if (potion == null || potion.getDuration() < 222)
         {
-            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 6000, -1));
+            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 239, -1));
         }
     }
 
@@ -264,25 +258,25 @@ public class BackpackAbilities
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
         itemBat(player, world, backpack);
-        itemPigman(player,world,backpack);
+        itemPigman(player, world, backpack);
 
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.regeneration.id))
         {
             potion = player.getActivePotionEffect(Potion.regeneration);
         }
-        if (potion == null || (potion.getDuration() < 220 && potion.getAmplifier() <= 2) || potion.getDuration() < 40)
+        if (potion == null || (potion.getDuration() < 222 && potion.getAmplifier() <= 2) || potion.getDuration() < 20)
         {
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 6000, 2));
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 239, 2));
         }
         potion = null;
         if (player.isPotionActive(Potion.damageBoost.id))
         {
             potion = player.getActivePotionEffect(Potion.damageBoost);
         }
-        if (potion == null || (potion.getDuration() < 220 && potion.getAmplifier() <= 2) || potion.getDuration() < 40)
+        if (potion == null || (potion.getDuration() < 222 && potion.getAmplifier() <= 2) || potion.getDuration() < 20)
         {
-            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 6000, 2));
+            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 239, 2));
         }
     }
 
@@ -309,9 +303,9 @@ public class BackpackAbilities
         {
             moveSpeed = player.getActivePotionEffect(Potion.moveSpeed);
         }
-        if (moveSpeed == null || moveSpeed.getDuration() < 220 && moveSpeed.getAmplifier() <= 0)
+        if (moveSpeed == null || moveSpeed.getDuration() < 222 && moveSpeed.getAmplifier() <= 0)
         {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 6000, 0));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 239, 0));
         }
         inv.setLastTime(noteTime);
         inv.markDirty();
@@ -406,7 +400,7 @@ public class BackpackAbilities
         if (player.onGround)
         {
 
-            if ((player.moveForward == 0 && player.moveStrafing == 0) && (Math.abs(player.moveForward) < 3 && Math.abs(player.moveStrafing)<3) )
+            if ((player.moveForward == 0 && player.moveStrafing == 0) && (Math.abs(player.moveForward) < 3 && Math.abs(player.moveStrafing) < 3))
             {
                 player.addVelocity(player.motionX *= 0.828, 0, player.motionZ *= 0.828);
             }
@@ -439,7 +433,7 @@ public class BackpackAbilities
     public void itemChicken(EntityPlayer player, World world, ItemStack backpack)
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
-        int eggTime = inv.getLastTime() - 1 ;
+        int eggTime = inv.getLastTime() - 1;
         if (eggTime <= 0)
         {
             player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
@@ -509,10 +503,8 @@ public class BackpackAbilities
             pssstTime = 20;
             if (player.isSneaking())
             {
-                List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity(player,
-                        AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
-                                player.posX + 1.0D, player.posY + 1.0D,
-                                player.posZ + 1.0D).expand(5.0D, 1.0D, 5.0D));
+                List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity
+                        (player, AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ, player.posX + 1.0D, player.posY + 1.0D, player.posZ + 1.0D).expand(5.0D, 1.0D, 5.0D));
                 if (entities.isEmpty())
                 {
                     pssstTime -= 1;
@@ -539,7 +531,7 @@ public class BackpackAbilities
     private FluidStack milkStack = new FluidStack(FluidRegistry.getFluid("milk"), 1);
     private FluidStack soupStack = new FluidStack(FluidRegistry.getFluid("mushroomstew"), 1);
     @SuppressWarnings("unused")
-	private FluidStack lavaStack = new FluidStack(FluidRegistry.LAVA, 1);
+    private FluidStack lavaStack = new FluidStack(FluidRegistry.LAVA, 1);
 
     /**
      * The Cow Backpack fills itself with milk when there is wheat in the backpack's inventory, but it will do so slowly
@@ -686,16 +678,14 @@ public class BackpackAbilities
     {
         //lastTime is in Ticks for this backpack
         InventoryBackpack inv = new InventoryBackpack(backpack);
-        int lastCheckTime =  inv.getLastTime() - 1;
+        int lastCheckTime = inv.getLastTime() - 1;
 
         if (lastCheckTime <= 0)
         {
             lastCheckTime = 20;
-            List<EntityWolf> wolves = world.getEntitiesWithinAABB(
-                    EntityWolf.class,
-                    AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
-                            player.posX + 1.0D, player.posY + 1.0D,
-                            player.posZ + 1.0D).expand(16.0D, 4.0D, 16.0D));
+            List<EntityWolf> wolves = world.getEntitiesWithinAABB
+                    (EntityWolf.class, AxisAlignedBB.getBoundingBox
+                            (player.posX, player.posY, player.posZ, player.posX + 1.0D, player.posY + 1.0D, player.posZ + 1.0D).expand(16.0D, 4.0D, 16.0D));
             if (wolves.isEmpty()) return;
 
             for (EntityWolf wolf : wolves)
@@ -748,11 +738,9 @@ public class BackpackAbilities
         if (lastCheckTime <= 0)
         {
             lastCheckTime = 20;
-            List<EntityCreeper> creepers = player.worldObj.getEntitiesWithinAABB(
-                    EntityCreeper.class,
-                    AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
-                            player.posX + 1.0D, player.posY + 1.0D,
-                            player.posZ + 1.0D).expand(16.0D, 4.0D, 16.0D));
+            List<EntityCreeper> creepers = player.worldObj.getEntitiesWithinAABB
+                    (EntityCreeper.class, AxisAlignedBB.getBoundingBox
+                            (player.posX, player.posY, player.posZ, player.posX + 1.0D, player.posY + 1.0D, player.posZ + 1.0D).expand(16.0D, 4.0D, 16.0D));
 
             for (EntityCreeper creeper : creepers)
             {
@@ -807,7 +795,6 @@ public class BackpackAbilities
     {
         fillWithRain(world, backpack, new FluidStack(FluidRegistry.WATER, 2), 5);
     }
-
 
     public void tileMelon(World world, TileAdventureBackpack backpack)
     {

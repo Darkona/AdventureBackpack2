@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.util.Resources;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -28,7 +29,6 @@ public class ItemJuiceBottle extends ItemAB
         setMaxStackSize(1);
     }
 
-
     @Override
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
     {
@@ -49,13 +49,11 @@ public class ItemJuiceBottle extends ItemAB
         return false;
     }
 
-
     @Override
     public EnumAction getItemUseAction(ItemStack p_77661_1_)
     {
         return EnumAction.drink;
     }
-
 
     @Override
     public int getMaxItemUseDuration(ItemStack p_77626_1_)
