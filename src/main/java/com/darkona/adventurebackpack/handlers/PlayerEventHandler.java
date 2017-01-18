@@ -76,30 +76,26 @@ public class PlayerEventHandler
             {
                 EntityPlayer player = (EntityPlayer) event.entity;
                 LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
-                BackpackProperty.syncToNear(player); //TODO check side, zero etc.
-                msg.handleJoin(player);
-                texturemsg.handleJoin(player);
                 NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
                 if (playerData != null)
                 {
                     BackpackProperty.get(player).loadNBTData(playerData);
-                    BackpackProperty.syncToNear(player);
-                    BackpackProperty.sync(player); //TODO check side, zero etc.
+                    BackpackProperty.sync(player);
                     LogHelper.info("Stored properties retrieved");
                 }
+                msg.handleJoin(player);
+                texturemsg.handleJoin(player);
             }
         }
     }
 
     @SubscribeEvent
-    public NBTTagCompound playerLogsIn(PlayerEvent.PlayerLoggedInEvent event)
+    public void playerLogsIn(PlayerEvent.PlayerLoggedInEvent event)
     {
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
-            return new NBTTagCompound();
         }
-        return null;
     }
 
     @SubscribeEvent
@@ -200,7 +196,7 @@ public class PlayerEventHandler
     }
 
     @SubscribeEvent
-    public void finallyYouDied(PlayerDropsEvent event)
+    public void playerDeathDrop(PlayerDropsEvent event)
     {
         EntityPlayer player = event.entityPlayer;
 
@@ -257,11 +253,11 @@ public class PlayerEventHandler
         event.setResult(Event.Result.ALLOW);
     }
 
-    @SubscribeEvent
-    public void playerRespawn(PlayerEvent.PlayerRespawnEvent event) //TODO server side, zero etc.
+    /*@SubscribeEvent
+    public void playerRespawn(PlayerEvent.PlayerRespawnEvent event)
     {
         BackpackProperty.sync(event.player);
-    }
+    }*/
 
     @SubscribeEvent
     public void playerCraftsBackpack(PlayerEvent.ItemCraftedEvent event)
