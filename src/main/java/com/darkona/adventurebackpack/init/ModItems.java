@@ -3,8 +3,8 @@ package com.darkona.adventurebackpack.init;
 import com.darkona.adventurebackpack.item.ArmorAB;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureHat;
-import com.darkona.adventurebackpack.item.ItemAdventureSuit;
 import com.darkona.adventurebackpack.item.ItemAdventurePants;
+import com.darkona.adventurebackpack.item.ItemAdventureSuit;
 import com.darkona.adventurebackpack.item.ItemCoalJetpack;
 import com.darkona.adventurebackpack.item.ItemComponent;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
@@ -36,7 +36,6 @@ public class ModItems
     public static final ItemComponent component = new ItemComponent();
     public static final ItemHose hose = new ItemHose();
     public static final ItemJuiceBottle melonJuiceBottle = new ItemJuiceBottle();
-
 
     public static void init()
     {

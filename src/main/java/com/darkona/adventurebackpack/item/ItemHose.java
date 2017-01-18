@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -28,7 +29,11 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidHandler;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -54,23 +59,22 @@ public class ItemHose extends ItemAB
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
-
     // ================================================ GETTERS  =====================================================//
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int pass)
     {
-       switch(getHoseMode(stack))
-       {
-           case HOSE_SUCK_MODE:
-               return suckIcon;
-           case HOSE_SPILL_MODE:
-               return spillIcon;
-           case HOSE_DRINK_MODE:
-               return drinkIcon;
-           default:
-               return itemIcon;
-       }
+        switch (getHoseMode(stack))
+        {
+            case HOSE_SUCK_MODE:
+                return suckIcon;
+            case HOSE_SPILL_MODE:
+                return spillIcon;
+            case HOSE_DRINK_MODE:
+                return drinkIcon;
+            default:
+                return itemIcon;
+        }
     }
 
     @Override
@@ -156,7 +160,6 @@ public class ItemHose extends ItemAB
         EntityPlayer player = (EntityPlayer) entity;
         if (world.isRemote && player.getItemInUse() != null && player.getItemInUse().getItem().equals(this)) return;
 
-
         NBTTagCompound nbt = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack != null)
@@ -187,7 +190,7 @@ public class ItemHose extends ItemAB
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        if(!Wearing.isWearingBackpack(player))return true;
+        if (!Wearing.isWearingBackpack(player)) return true;
 
         InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
         inv.openInventory();
@@ -244,7 +247,7 @@ public class ItemHose extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if(!Wearing.isWearingBackpack(player))return stack;
+        if (!Wearing.isWearingBackpack(player)) return stack;
         InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
         inv.openInventory();
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
@@ -257,10 +260,10 @@ public class ItemHose extends ItemAB
 
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
-                       /* if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
-                        {
-                            return stack;
-                        }*/
+                        /* if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
+                         {
+                         return stack;
+                         }*/
 
                         if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
                         {
@@ -329,19 +332,18 @@ public class ItemHose extends ItemAB
                                     {
                                         return stack;
                                     }
-                                /* IN HELL DIMENSION No, I won't let you put water in the nether. You freak*/
+                                    /* IN HELL DIMENSION No, I won't let you put water in the nether. You freak*/
                                     if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER)
                                     {
                                         tank.drain(Constants.bucket, true);
-                                        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F,
-                                                2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                                        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
                                         for (int l = 0; l < 12; ++l)
                                         {
                                             world.spawnParticle("largesmoke", x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
                                         }
                                     } else
                                     {
-                                    /* NOT IN HELL DIMENSION. */
+                                        /* NOT IN HELL DIMENSION. */
                                         FluidStack drainedFluid = tank.drain(Constants.bucket, false);
                                         if (drainedFluid != null && drainedFluid.amount >= Constants.bucket)
                                         {
@@ -405,7 +407,7 @@ public class ItemHose extends ItemAB
     @Override
     public ItemStack onEaten(ItemStack hose, World world, EntityPlayer player)
     {
-        if(!Wearing.isWearingBackpack(player))return hose;
+        if (!Wearing.isWearingBackpack(player)) return hose;
         int mode = -1;
         int tank = -1;
         if (hose.stackTagCompound != null)
@@ -440,7 +442,7 @@ public class ItemHose extends ItemAB
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
     {
-        if(!Wearing.isWearingBackpack(player))return false;
+        if (!Wearing.isWearingBackpack(player)) return false;
         InventoryBackpack inventory = new InventoryBackpack(Wearing.getWearingBackpack(player));
         inventory.openInventory();
         if (entity instanceof EntityCow && !(entity instanceof EntityMooshroom))

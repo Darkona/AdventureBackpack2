@@ -1,8 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -17,8 +15,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
 {
     InventoryCoalJetpack inventory;
     EntityPlayer player;
-    private final int
-    PLAYER_HOT_START = 0;
+    private final int PLAYER_HOT_START = 0;
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
@@ -66,9 +63,10 @@ public class ContainerJetpack extends Container implements IWearableContainer
         // bucket out
         addSlotToContainer(new SlotFluid(inventory, InventoryCoalJetpack.BUCKET_OUT_SLOT, 30, 52));
         // fuel
-        addSlotToContainer(new SlotFuel(inventory,InventoryCoalJetpack.FUEL_SLOT, 77, 64));
+        addSlotToContainer(new SlotFuel(inventory, InventoryCoalJetpack.FUEL_SLOT, 77, 64));
 
     }
+
     @Override
     public boolean canInteractWith(EntityPlayer p_75145_1_)
     {
@@ -78,15 +76,17 @@ public class ContainerJetpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
-        if(wearing)
+        if (wearing)
         {
             refresh();
             super.detectAndSendChanges();
-        }else{
+        } else
+        {
             super.detectAndSendChanges();
         }
     }
 
+    @Override
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
@@ -128,15 +128,14 @@ public class ContainerJetpack extends Container implements IWearableContainer
             }
             if (i < 36)
             {
-                if (SlotFluid.isValidItem(stack) && SlotFluid.isValidTool(stack))
+                if (SlotFluid.isContainer(stack) && SlotFluid.isValidContainer(stack))
                 {
                     int JETPACK_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
                     {
 
                     }
-                }
-                else if (inventory.isFuel(stack) && !SlotFluid.isValidItem(stack))
+                } else if (inventory.isFuel(stack) && !SlotFluid.isContainer(stack))
                 {
                     int JETPACK_FUEL_START = PLAYER_INV_END + 3;
                     if (inventory.isFuel(stack) && !mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false))

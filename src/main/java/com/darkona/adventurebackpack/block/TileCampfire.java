@@ -15,7 +15,7 @@ public class TileCampfire extends TileEntity
     }
 
     @SuppressWarnings("unused")
-	private int burnTicks;
+    private int burnTicks;
     @SuppressWarnings("unused")
-	private ItemStack[] foodCooking = new ItemStack[4];
+    private ItemStack[] foodCooking = new ItemStack[4];
 }

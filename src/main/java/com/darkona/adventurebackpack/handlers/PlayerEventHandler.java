@@ -76,7 +76,7 @@ public class PlayerEventHandler
             {
                 EntityPlayer player = (EntityPlayer) event.entity;
                 LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
-                BackpackProperty.syncToNear(player);
+                BackpackProperty.syncToNear(player); //TODO check side, zero etc.
                 msg.handleJoin(player);
                 texturemsg.handleJoin(player);
                 NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
@@ -84,7 +84,7 @@ public class PlayerEventHandler
                 {
                     BackpackProperty.get(player).loadNBTData(playerData);
                     BackpackProperty.syncToNear(player);
-                    BackpackProperty.sync(player);
+                    BackpackProperty.sync(player); //TODO check side, zero etc.
                     LogHelper.info("Stored properties retrieved");
                 }
             }
@@ -259,7 +259,7 @@ public class PlayerEventHandler
     }
 
     @SubscribeEvent
-    public void playerRespawn(PlayerEvent.PlayerRespawnEvent event)
+    public void playerRespawn(PlayerEvent.PlayerRespawnEvent event) //TODO server side, zero etc.
     {
         BackpackProperty.sync(event.player);
     }

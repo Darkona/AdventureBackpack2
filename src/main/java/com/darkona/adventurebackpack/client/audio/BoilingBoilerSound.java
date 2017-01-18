@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.client.audio;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -34,11 +35,12 @@ public class BoilingBoilerSound extends MovingSound
         return thePlayer;
     }
 
-    public void setThePlayer(EntityPlayer player){
+    public void setThePlayer(EntityPlayer player)
+    {
         thePlayer = player;
     }
 
-     public void setDonePlaying()
+    public void setDonePlaying()
     {
         repeat = false;
         donePlaying = true;
@@ -62,12 +64,12 @@ public class BoilingBoilerSound extends MovingSound
         }
 
         InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingJetpack(thePlayer));
-        if(inv.isBoiling() && inv.getCoalTank().getFluidAmount() > 0)
+        if (inv.isBoiling() && inv.getCoalTank().getFluidAmount() > 0)
         {
-            xPosF = (float)thePlayer.posX;
-            yPosF = (float)thePlayer.posY;
-            zPosF = (float)thePlayer.posZ;
-        }else
+            xPosF = (float) thePlayer.posX;
+            yPosF = (float) thePlayer.posY;
+            zPosF = (float) thePlayer.posZ;
+        } else
         {
             setDonePlaying();
         }
@@ -92,7 +94,10 @@ public class BoilingBoilerSound extends MovingSound
     }
 
     @Override
-    public int getRepeatDelay(){ return this.repeatDelay; }
+    public int getRepeatDelay()
+    {
+        return this.repeatDelay;
+    }
 
     @Override
     public AttenuationType getAttenuationType()

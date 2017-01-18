@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.client.audio;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -34,11 +35,12 @@ public class JetpackSoundOn extends MovingSound
         return thePlayer;
     }
 
-    public void setThePlayer(EntityPlayer player){
+    public void setThePlayer(EntityPlayer player)
+    {
         thePlayer = player;
     }
 
-     public void setDonePlaying()
+    public void setDonePlaying()
     {
         repeat = false;
         donePlaying = true;
@@ -61,12 +63,12 @@ public class JetpackSoundOn extends MovingSound
         }
 
         InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingJetpack(thePlayer));
-        if(inv.isInUse())
+        if (inv.isInUse())
         {
-            xPosF = (float)thePlayer.posX;
-            yPosF = (float)thePlayer.posY;
-            zPosF = (float)thePlayer.posZ;
-        }else
+            xPosF = (float) thePlayer.posX;
+            yPosF = (float) thePlayer.posY;
+            zPosF = (float) thePlayer.posZ;
+        } else
         {
             setDonePlaying();
         }
@@ -91,7 +93,10 @@ public class JetpackSoundOn extends MovingSound
     }
 
     @Override
-    public int getRepeatDelay(){ return this.repeatDelay; }
+    public int getRepeatDelay()
+    {
+        return this.repeatDelay;
+    }
 
     @Override
     public AttenuationType getAttenuationType()

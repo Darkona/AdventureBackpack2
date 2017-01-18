@@ -1,10 +1,18 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.network.*;
+import com.darkona.adventurebackpack.network.CowAbilityPacket;
+import com.darkona.adventurebackpack.network.CycleToolPacket;
+import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
+import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.network.PlayerActionPacket;
+import com.darkona.adventurebackpack.network.SleepingBagPacket;
+import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
+import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.ModInfo;
+
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -39,6 +47,7 @@ public class ModNetwork
         registerMessage(EquipUnequipBackWearablePacket.class, EquipUnequipBackWearablePacket.Message.class);
 
     }
+
     public static void registerClientSide(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
@@ -46,7 +55,7 @@ public class ModNetwork
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	private static void registerMessage(Class handler, Class message)
+    private static void registerMessage(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
         net.registerMessage(handler, message, messages, Side.SERVER);
@@ -55,7 +64,7 @@ public class ModNetwork
 
     public static void sendToNearby(IMessage message, EntityPlayer player)
     {
-        if(player!=null && player.worldObj instanceof WorldServer)
+        if (player != null && player.worldObj instanceof WorldServer)
         {
             try
             {

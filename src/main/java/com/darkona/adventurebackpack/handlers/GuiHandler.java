@@ -2,10 +2,16 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
-import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
 import com.darkona.adventurebackpack.client.gui.GuiCoalJetpack;
-import com.darkona.adventurebackpack.inventory.*;
+import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
+import com.darkona.adventurebackpack.inventory.ContainerBackpack;
+import com.darkona.adventurebackpack.inventory.ContainerCopter;
+import com.darkona.adventurebackpack.inventory.ContainerJetpack;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
+import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.util.Wearing;
+
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -24,7 +30,6 @@ public class GuiHandler implements IGuiHandler
     public static final byte BACKPACK_HOLDING = 2;
     public static final byte BACKPACK_WEARING = 1;
     public static final byte BACKPACK_TILE = 0;
-
 
     public GuiHandler()
     {
@@ -56,7 +61,7 @@ public class GuiHandler implements IGuiHandler
             case COPTER_HOLDING:
                 if (Wearing.isHoldingCopter(player))
                 {
-                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)),false);
+                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)), false);
                 }
                 break;
             case COPTER_WEARING:
@@ -68,7 +73,7 @@ public class GuiHandler implements IGuiHandler
             case JETPACK_HOLDING:
                 if (Wearing.isHoldingJetpack(player))
                 {
-                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)),false);
+                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)), false);
                 }
                 break;
             case JETPACK_WEARING:
@@ -112,7 +117,7 @@ public class GuiHandler implements IGuiHandler
             case COPTER_HOLDING:
                 if (Wearing.isHoldingCopter(player))
                 {
-                    return new GuiCopterPack(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)),false);
+                    return new GuiCopterPack(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)), false);
                 }
                 break;
             case COPTER_WEARING:
@@ -124,7 +129,7 @@ public class GuiHandler implements IGuiHandler
             case JETPACK_HOLDING:
                 if (Wearing.isHoldingJetpack(player))
                 {
-                    return new GuiCoalJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)),false);
+                    return new GuiCoalJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)), false);
                 }
                 break;
             case JETPACK_WEARING:

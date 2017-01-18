@@ -57,7 +57,6 @@ public class ModWorldGen
 
         //Villager Trade
 
-
     }
 
     public static class TradeHandler implements VillagerRegistry.IVillageTradeHandler
@@ -79,7 +78,7 @@ public class ModWorldGen
          * @param random
          */
         @SuppressWarnings("unchecked")
-		@Override
+        @Override
         public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
         {
             //0 Farmer, 1 Librarian, 2Priest, 3 Blacksmith, 4 Butcher

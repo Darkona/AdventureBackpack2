@@ -23,7 +23,6 @@ import net.minecraft.entity.player.EntityPlayer;
  * Created by Darkona on 11/10/2014.
  */
 
-
 public class KeybindHandler
 {
     private static Key getPressedKeyBinding()
@@ -44,7 +43,7 @@ public class KeybindHandler
         return Key.UNKNOWN;
     }
 
-    private static final String[] NIGHTVISION_BACKPACKS = {"Bat", "Squid", "Dragon"};
+    private static final String[] NIGHTVISION_BACKPACKS = { "Bat", "Squid", "Dragon" };
 
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event)
@@ -130,12 +129,12 @@ public class KeybindHandler
                 }
             }
 
-            if(keypressed == Key.JUMP )
+            if (keypressed == Key.JUMP)
             {
-                if(player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
+                if (player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
                 {
                     ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.spiderJump));
-                    ((EntityFriendlySpider)player.ridingEntity).setJumping(true);
+                    ((EntityFriendlySpider) player.ridingEntity).setJumping(true);
                 }
             }
         }

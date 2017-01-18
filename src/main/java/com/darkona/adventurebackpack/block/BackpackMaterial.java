@@ -11,7 +11,6 @@ import net.minecraft.block.material.Material;
 public class BackpackMaterial extends Material
 {
 
-
     public BackpackMaterial()
     {
         super(MapColor.brownColor);

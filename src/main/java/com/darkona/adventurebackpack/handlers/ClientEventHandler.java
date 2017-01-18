@@ -65,6 +65,7 @@ public class ClientEventHandler
             }
         }
     }
+
     /**
      * @param event
      */
@@ -90,8 +91,8 @@ public class ClientEventHandler
                         ItemStack heldItem = player.inventory.getStackInSlot(slot);
                         Item theItem = heldItem.getItem();
 
-                        if (ConfigHandler.enableToolsCycling && Wearing.getBackpackInv(player, true).getCyclingStatus() && SlotTool.isValidTool(heldItem) ||
-                                (BackpackNames.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
+                        if ((ConfigHandler.enableToolsCycling && Wearing.getBackpackInv(player, true).getCyclingStatus() && SlotTool.isValidTool(heldItem))
+                                || ((BackpackNames.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow))))
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
                             ServerActions.cycleTool(player, dWheel, slot);
@@ -103,10 +104,10 @@ public class ClientEventHandler
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
                             ServerActions.switchHose(player, ServerActions.HOSE_SWITCH, dWheel, slot);
                             event.setCanceled(true);
+                        }
                     }
                 }
             }
         }
     }
-  }
 }

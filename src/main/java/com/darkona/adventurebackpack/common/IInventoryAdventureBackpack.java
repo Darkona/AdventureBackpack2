@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,7 +45,6 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
     boolean isSBDeployed();
 
     void setLastTime(int time);
-
 
     public void dirtyTime();
 

@@ -122,7 +122,7 @@ public class ContainerCopter extends Container implements IWearableContainer
             }
             if (i < 36)
             {
-                if (SlotFluid.isValidItem(stack) && SlotFluid.isValidTool(stack))
+                if (SlotFluid.isContainer(stack) && SlotFluid.isValidContainer(stack))
                 {
                     int COPTER_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))

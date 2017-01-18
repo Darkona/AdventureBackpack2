@@ -59,12 +59,15 @@ public class ServerActions
             backpack.openInventory();
             if (SlotTool.isValidTool(current))
             {
-                if (direction < 0) {
+                if (direction < 0)
+                {
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
                     backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
                     backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
-                } else {
-                    if (direction > 0) {
+                } else
+                {
+                    if (direction > 0)
+                    {
                         player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
                         backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
                         backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
@@ -323,7 +326,7 @@ public class ServerActions
                     break;
             }
         }
-        int result[] = {newMeta, coordX, coordY, coordZ};
+        int result[] = { newMeta, coordX, coordY, coordZ };
         return result;
     }
 
@@ -338,10 +341,10 @@ public class ServerActions
     {
         //TODO add configuration for the playing of the sound effect.
         //TODO Maybe configurable jump height too, because why not.
-	if (ConfigHandler.allowSoundPiston)
-	{
-	    player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
-	}
+        if (ConfigHandler.allowSoundPiston)
+        {
+            player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
+        }
         player.motionY += 0.30;
         player.jumpMovementFactor += 0.3;
     }
@@ -372,7 +375,7 @@ public class ServerActions
                 actionPerformed = true;
                 if (!player.worldObj.isRemote)
                 {
-                    ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.COPTER_SOUND,player), player);
+                    ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.COPTER_SOUND, player), player);
 
                 }
             } else
@@ -462,7 +465,7 @@ public class ServerActions
     public static void toggleCoalJetpack(EntityPlayer player, ItemStack jetpack, byte on_off)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
-        if(inv.getStatus())
+        if (inv.getStatus())
         {
             inv.setStatus(false);
             inv.markDirty();
