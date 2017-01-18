@@ -22,11 +22,11 @@ public interface IProxy
 
     public void synchronizePlayer(int id, NBTTagCompound compound);
 
-	void registerHandlers();
+    void registerHandlers();
 
-	void init(FMLInitializationEvent event);
+    void init(FMLInitializationEvent event);
 
-	public void registerRenderInformation();
+    public void registerRenderInformation();
 
-	void Capes();
+    void Capes();
 }

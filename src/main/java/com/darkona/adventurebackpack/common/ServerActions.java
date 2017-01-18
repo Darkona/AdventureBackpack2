@@ -54,7 +54,6 @@ public class ServerActions
         try
         {
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
-            boolean enableBackpackCycling = backpack.getCyclingStatus();
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
             if (SlotTool.isValidTool(current))
@@ -418,21 +417,21 @@ public class ServerActions
         InventoryBackpack inv = new InventoryBackpack(backpack);
         if (ConfigHandler.enableToolsCycling)
         {
-            if (inv.getCyclingStatus())
+            if (inv.getDisableCycling())
             {
-                inv.setCyclingStatus(false);
-                inv.markDirty();
-                if (player.worldObj.isRemote)
-                {
-                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
-                }
-            } else
-            {
-                inv.setCyclingStatus(true);
+                inv.setDisableCycling(false);
                 inv.markDirty();
                 if (player.worldObj.isRemote)
                 {
                     player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.on"));
+                }
+            } else
+            {
+                inv.setDisableCycling(true);
+                inv.markDirty();
+                if (player.worldObj.isRemote)
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.off"));
                 }
             }
         }
@@ -441,22 +440,22 @@ public class ServerActions
     public static void toggleNightVision(EntityPlayer player, ItemStack backpack, byte on_off)
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
-        if (inv.getDisableNightVision())
+        if (inv.getDisableNVision())
         {
-            inv.setDisableNightVision(false);
+            inv.setDisableNVision(false);
             inv.markDirty();
             if (player.worldObj.isRemote)
             {
-                player.playSound("mob.bat.idle", 0.2F, 1);
+                player.playSound("mob.bat.idle", 0.2F, 1.0F);
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.nightvision.on"));
             }
         } else
         {
-            inv.setDisableNightVision(true);
+            inv.setDisableNVision(true);
             inv.markDirty();
             if (player.worldObj.isRemote)
             {
-                player.playSound("mob.bat.death", 0.2F, 2);
+                player.playSound("mob.bat.death", 0.2F, 2.0F);
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.nightvision.off"));
             }
         }

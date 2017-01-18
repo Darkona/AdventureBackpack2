@@ -31,17 +31,16 @@ public class BackpackProperty implements IExtendedEntityProperties
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
-	private RenderPlayerEvent.Specials.Pre event;
+    private RenderPlayerEvent.Specials.Pre event;
 
     public NBTTagCompound getWearableData()
     {
         return wearableData;
     }
 
-
     public static void sync(EntityPlayer player)
     {
-        if(player instanceof EntityPlayerMP)
+        if (player instanceof EntityPlayerMP)
         {
             syncToNear(player);
         }
@@ -50,15 +49,13 @@ public class BackpackProperty implements IExtendedEntityProperties
     public static void syncToNear(EntityPlayer player)
     {
         //Thanks diesieben07!!!
-        if(player != null && player instanceof EntityPlayerMP)
+        if (player != null && player instanceof EntityPlayerMP)
         {
             try
             {
-                ((EntityPlayerMP) player)
-                        .getServerForPlayer()
-                        .getEntityTracker()
-                        .func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData())));
-            }catch(Exception ex){
+                ((EntityPlayerMP) player).getServerForPlayer().getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData())));
+            } catch (Exception ex)
+            {
                 ex.printStackTrace();
             }
         }
@@ -96,7 +93,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     @Override
     public void saveNBTData(NBTTagCompound compound)
     {
-        if(wearable != null) compound.setTag("wearable", wearable.writeToNBT(new NBTTagCompound()));
+        if (wearable != null) compound.setTag("wearable", wearable.writeToNBT(new NBTTagCompound()));
         if (campFire != null)
         {
             compound.setInteger("campFireX", campFire.posX);
@@ -105,7 +102,7 @@ public class BackpackProperty implements IExtendedEntityProperties
             compound.setInteger("campFireDim", dimension);
 
         }
-        compound.setBoolean("forceCampFire",forceCampFire);
+        compound.setBoolean("forceCampFire", forceCampFire);
     }
 
     /**
@@ -118,10 +115,10 @@ public class BackpackProperty implements IExtendedEntityProperties
     @Override
     public void loadNBTData(NBTTagCompound compound)
     {
-        if(compound!=null)
+        if (compound != null)
         {
-            setWearable( compound.hasKey("wearable") ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null);
-            setCampFire( new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")));
+            setWearable(compound.hasKey("wearable") ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null);
+            setCampFire(new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")));
             dimension = compound.getInteger("compFireDim");
             forceCampFire = compound.getBoolean("forceCampfire");
         }
@@ -140,7 +137,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     @Override
     public void init(Entity entity, World world)
     {
-        this.player = (EntityPlayer)entity;
+        this.player = (EntityPlayer) entity;
     }
 
     public void setWearable(ItemStack bp)
@@ -148,10 +145,9 @@ public class BackpackProperty implements IExtendedEntityProperties
         wearable = bp;
     }
 
-
     public ItemStack getWearable()
     {
-        return wearable != null ? wearable : null ;
+        return wearable != null ? wearable : null;
     }
 
     public void setCampFire(ChunkCoordinates cf)
@@ -197,9 +193,9 @@ public class BackpackProperty implements IExtendedEntityProperties
     //Scary names for methods because why not
     public void executeWearableUpdateProtocol()
     {
-        if(Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
+        if (Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
         {
-            ((IBackWearableItem)wearable.getItem()).onEquippedUpdate(player.getEntityWorld(), player, wearable);
+            ((IBackWearableItem) wearable.getItem()).onEquippedUpdate(player.getEntityWorld(), player, wearable);
         }
     }
 
@@ -221,9 +217,9 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public void executeWearableUnequipProtocol()
     {
-        if (Utils.notNullAndInstanceOf(wearable.getItem() , IBackWearableItem.class))
+        if (Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
         {
             ((IBackWearableItem) wearable.getItem()).onUnequipped(player.getEntityWorld(), player, wearable);
-            }
         }
+    }
 }

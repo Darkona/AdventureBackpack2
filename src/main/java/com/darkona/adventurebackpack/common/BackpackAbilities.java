@@ -214,10 +214,10 @@ public class BackpackAbilities
         {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
-        if ((nightVision == null || nightVision.getDuration() < 222) && !Wearing.getBackpackInv(player, true).getDisableNightVision())
+        if ((nightVision == null || nightVision.getDuration() < 222) && !Wearing.getBackpackInv(player, true).getDisableNVision())
         {
             player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 239, -1));
-        } else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNightVision())
+        } else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNVision())
         {
             backpackRemovals.itemBat(player, world, backpack);
         }
@@ -265,18 +265,18 @@ public class BackpackAbilities
         {
             potion = player.getActivePotionEffect(Potion.regeneration);
         }
-        if (potion == null || (potion.getDuration() < 222 && potion.getAmplifier() <= 2) || potion.getDuration() < 20)
+        if (potion == null || potion.getDuration() < 222)
         {
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 239, 2));
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 239, 0));
         }
         potion = null;
         if (player.isPotionActive(Potion.damageBoost.id))
         {
             potion = player.getActivePotionEffect(Potion.damageBoost);
         }
-        if (potion == null || (potion.getDuration() < 222 && potion.getAmplifier() <= 2) || potion.getDuration() < 20)
+        if (potion == null || (potion.getDuration() < 222 && potion.getAmplifier() <= 1) || potion.getDuration() < 20)
         {
-            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 239, 2));
+            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 239, 1));
         }
     }
 

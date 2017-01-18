@@ -85,7 +85,7 @@ public class BackpackRemovals
         if (player.isPotionActive(Potion.damageBoost.id))
         {
             potion = player.getActivePotionEffect(Potion.damageBoost);
-            if (potion != null && potion.getAmplifier() == 2)
+            if (potion != null && potion.getAmplifier() == 1)
             {
                 if (player.worldObj.isRemote)
                 {
@@ -101,7 +101,7 @@ public class BackpackRemovals
         {
             potion = player.getActivePotionEffect(Potion.regeneration);
 
-            if (potion != null && potion.getAmplifier() == 2)
+            if (potion != null && potion.getAmplifier() == 0)
             {
                 if (player.worldObj.isRemote)
                 {

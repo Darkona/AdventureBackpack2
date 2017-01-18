@@ -41,8 +41,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     public static final boolean OFF = false;
     public static final boolean ON = true;
 
-    private boolean disableNightVision = OFF;
-    private boolean cyclingStatus = ON;
+    private boolean disableNVision = OFF;
+    private boolean disableCycling = OFF;
 
     private ItemStack containerStack;
     private String colorName = "Standard";
@@ -246,8 +246,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
             extendedProperties = backpackData.getCompoundTag("extendedProperties");
-            cyclingStatus = backpackData.getBoolean("cyclingStatus");
-            disableNightVision = backpackData.getBoolean("disableNightVision");
+            disableCycling = backpackData.getBoolean("disableCycling");
+            disableNVision = backpackData.getBoolean("disableNVision");
         }
     }
 
@@ -277,8 +277,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         backpackData.setTag("extendedProperties", extendedProperties);
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
-        backpackData.setBoolean("cyclingStatus", cyclingStatus);
-        backpackData.setBoolean("disableNightVision", disableNightVision);
+        backpackData.setBoolean("disableCycling", disableCycling);
+        backpackData.setBoolean("disableNVision", disableNVision);
 
         compound.setTag("backpackData",backpackData);
         //}
@@ -421,24 +421,24 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         return InventoryActions.hasBlockItem(this, block);
     }
 
-    public boolean getCyclingStatus()
+    public boolean getDisableCycling()
     {
-        return cyclingStatus;
+        return disableCycling;
     }
 
-    public void setCyclingStatus(boolean status)
+    public void setDisableCycling(boolean b)
     {
-        this.cyclingStatus = status;
+        this.disableCycling = b;
     }
 
-    public boolean getDisableNightVision()
+    public boolean getDisableNVision()
     {
-        return disableNightVision;
+        return disableNVision;
     }
 
-    public void setDisableNightVision(boolean vision)
+    public void setDisableNVision(boolean b)
     {
-        this.disableNightVision = vision;
+        this.disableNVision = b;
     }
 
 }

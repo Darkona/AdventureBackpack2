@@ -1,22 +1,19 @@
 package com.darkona.adventurebackpack.proxy;
 
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.develop.DeveloperJoining;
-import com.darkona.adventurebackpack.develop.msg;
-import com.darkona.adventurebackpack.util.LogHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.Packet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import net.minecraftforge.common.MinecraftForge;
+
+import com.darkona.adventurebackpack.develop.DeveloperJoining;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.util.LogHelper;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
 /**
  * Created on 22/12/2014
  *
@@ -30,7 +27,7 @@ public class ServerProxy implements IProxy
     @Override
     public void init()
     {
-		FMLCommonHandler.instance().bus().register(new DeveloperJoining());
+        FMLCommonHandler.instance().bus().register(new DeveloperJoining());
     }
 
     @Override
@@ -54,7 +51,8 @@ public class ServerProxy implements IProxy
             LogHelper.info("Stored properties retrieved");
             BackpackProperty.get(player).loadNBTData(playerData);
             BackpackProperty.syncToNear(player);
-        }else{
+        } else
+        {
             LogHelper.info("Data is null! WTF!");
         }
     }
@@ -70,45 +68,45 @@ public class ServerProxy implements IProxy
         try
         {
             NBTTagCompound data = BackpackProperty.get(player).getData();
-            if(data.hasKey("wearable"))
+            if (data.hasKey("wearable"))
             {
                 LogHelper.info("Storing wearable: " + ItemStack.loadItemStackFromNBT(data.getCompoundTag("wearable")).getDisplayName());
             }
             extendedEntityData.put(player.getUniqueID(), data);
             LogHelper.info("Stored player properties for dead player");
-        }
-        catch(Exception ex)
+        } catch (Exception ex)
         {
             LogHelper.error("Something went wrong while saving player properties: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
-    
 
     public static NBTTagCompound extractPlayerProps(UUID playerID)
     {
         return extendedEntityData.remove(playerID);
     }
 
-	@Override
-	public void registerHandlers() {
-		// TODO Auto-generated method stub
-		
-	}
-	
+    @Override
+    public void registerHandlers()
+    {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
     public void registerRenderInformation()
     {
 
     }
 
-	@Override
-	public void init(FMLInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(new DeveloperJoining());
-	}
+    @Override
+    public void init(FMLInitializationEvent event)
+    {
+        FMLCommonHandler.instance().bus().register(new DeveloperJoining());
+    }
 
-	@Override
-	public void Capes() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void Capes()
+    {
+        // TODO Auto-generated method stub
+    }
 }

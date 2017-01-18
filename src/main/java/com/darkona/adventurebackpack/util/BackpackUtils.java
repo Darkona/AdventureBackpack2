@@ -1,15 +1,16 @@
 package com.darkona.adventurebackpack.util;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created on 08/01/2015
@@ -21,13 +22,15 @@ public class BackpackUtils
     private static Timer timer = new Timer();
     private static TimerTask unequipTask;
 
-    public enum reasons{
-        SUCCESFUL,ALREADY_EQUIPPED
+    public enum reasons
+    {
+        SUCCESFUL, ALREADY_EQUIPPED
     }
+
     public static reasons equipWearable(ItemStack backpack, EntityPlayer player)
     {
         BackpackProperty prop = BackpackProperty.get(player);
-        if(prop.getWearable() == null)
+        if (prop.getWearable() == null)
         {
             player.openContainer.onContainerClosed(player);
             prop.setWearable(backpack.copy());
@@ -37,7 +40,7 @@ public class BackpackUtils
             MinecraftForge.EVENT_BUS.post(event);
             BackpackProperty.sync(player);
             return reasons.SUCCESFUL;
-        }else
+        } else
         {
             return reasons.ALREADY_EQUIPPED;
         }
@@ -51,7 +54,7 @@ public class BackpackUtils
 
     public static NBTTagCompound getBackpackData(ItemStack backpack)
     {
-        if(backpack.hasTagCompound() && backpack.stackTagCompound.hasKey("backpackData"))
+        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey("backpackData"))
         {
             return backpack.stackTagCompound.getCompoundTag("backpackData");
         }
@@ -60,34 +63,37 @@ public class BackpackUtils
 
     public static void setBackpackData(ItemStack stack, NBTTagCompound compound)
     {
-        if(!stack.hasTagCompound())stack.stackTagCompound = new NBTTagCompound();
-        stack.stackTagCompound.setTag("backpackData",compound);
+        if (!stack.hasTagCompound()) stack.stackTagCompound = new NBTTagCompound();
+        stack.stackTagCompound.setTag("backpackData", compound);
     }
 
-    private static class DelayUnequipTask extends TimerTask {
+    private static class DelayUnequipTask extends TimerTask
+    {
         private EntityPlayer player;
 
-        DelayUnequipTask(EntityPlayer player) {
+        DelayUnequipTask(EntityPlayer player)
+        {
             this.player = player;
         }
 
         @Override
-        public void run() {
+        public void run()
+        {
             BackpackProperty prop = BackpackProperty.get(player);
-            if(prop.getWearable() != null)
+            if (prop.getWearable() != null)
             {
                 player.openContainer.onContainerClosed(player);
                 ItemStack gimme = prop.getWearable().copy();
                 BackpackProperty.get(player).executeWearableUnequipProtocol();
                 prop.setWearable(null);
-                if(!player.inventory.addItemStackToInventory(gimme))
+                if (!player.inventory.addItemStackToInventory(gimme))
                 {
-                    player.dropPlayerItemWithRandomChoice(gimme,false);
+                    player.dropPlayerItemWithRandomChoice(gimme, false);
                 }
                 WearableEvent event = new WearableEvent.UnequipWearableEvent(player, gimme);
                 MinecraftForge.EVENT_BUS.post(event);
                 BackpackProperty.sync(player);
-            }else
+            } else
             {
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.impossibru"));
             }

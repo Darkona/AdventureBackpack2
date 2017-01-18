@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.network.messages;
 
 import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -21,8 +22,6 @@ public class EntityParticlePacket implements IMessageHandler<EntityParticlePacke
     public static final byte SLIME_PARTICLE = 2;
     public static final byte JETPACK_PARTICLE = 3;
 
-
-
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
@@ -30,10 +29,9 @@ public class EntityParticlePacket implements IMessageHandler<EntityParticlePacke
         {
             Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID);
             ClientActions.showParticlesAtEntity(entity, message.particleCode);
-        }
-        else
+        } else
         {
-            ModNetwork.sendToNearby(message,ctx.getServerHandler().playerEntity);
+            ModNetwork.sendToNearby(message, ctx.getServerHandler().playerEntity);
         }
         return null;
     }

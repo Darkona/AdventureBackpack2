@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.network.messages;
 
 import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -42,7 +43,6 @@ public class EntitySoundPacket implements IMessageHandler<EntitySoundPacket.Mess
 
     public static class Message implements IMessage
     {
-
 
         private byte soundCode;
         private int entityID;

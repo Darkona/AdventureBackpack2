@@ -1,7 +1,8 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
-import adventurebackpack.api.FluidEffect;
 import com.darkona.adventurebackpack.util.Utils;
+
+import adventurebackpack.api.FluidEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -14,7 +15,6 @@ import net.minecraftforge.fluids.FluidRegistry;
  *
  * @author Darkona
  */
-
 
 public class FuelEffect extends FluidEffect
 {
