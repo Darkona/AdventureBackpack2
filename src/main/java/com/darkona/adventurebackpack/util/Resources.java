@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.util;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -65,6 +66,5 @@ public class Resources
     {
         return TEXTURE_LOCATION + ":" + name;
     }
-
 
 }

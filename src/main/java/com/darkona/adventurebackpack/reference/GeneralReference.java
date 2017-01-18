@@ -19,7 +19,7 @@ public class GeneralReference
     {
         liquidFuels.put("biofuel", ConfigHandler.fuelRateBioFuel);
         liquidFuels.put("bioethanol", ConfigHandler.fuelRateBioEthanol);
-        liquidFuels.put("coal", ConfigHandler.fuelRateCoal);
+        liquidFuels.put("coal", ConfigHandler.fuelRateCoal);  //TODO liquid coal? o_O
         liquidFuels.put("creosote", ConfigHandler.fuelRateCreosote);
         liquidFuels.put("fuel", ConfigHandler.fuelRateFuel);
         liquidFuels.put("lava", ConfigHandler.fuelRateLava);

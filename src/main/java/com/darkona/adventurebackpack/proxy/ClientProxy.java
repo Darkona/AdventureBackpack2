@@ -6,9 +6,17 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileCampfire;
 import com.darkona.adventurebackpack.client.gui.GuiOverlay;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
-import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.client.models.ModelCoalJetpack;
-import com.darkona.adventurebackpack.client.render.*;
+import com.darkona.adventurebackpack.client.models.ModelCopterPack;
+import com.darkona.adventurebackpack.client.render.RenderRideableSpider;
+import com.darkona.adventurebackpack.client.render.RendererAdventureBackpackBlock;
+import com.darkona.adventurebackpack.client.render.RendererCampFire;
+import com.darkona.adventurebackpack.client.render.RendererHose;
+import com.darkona.adventurebackpack.client.render.RendererInflatableBoat;
+import com.darkona.adventurebackpack.client.render.RendererItemAdventureBackpack;
+import com.darkona.adventurebackpack.client.render.RendererItemAdventureHat;
+import com.darkona.adventurebackpack.client.render.RendererItemClockworkCrossbow;
+import com.darkona.adventurebackpack.client.render.RendererWearableEquipped;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
@@ -55,14 +63,16 @@ public class ClientProxy implements IProxy
     public static ModelCopterPack modelCopterPack = new ModelCopterPack();
 
     public static Field camRollField;
+
+    @Override
     public void init()
     {
         initRenderers();
         registerKeybindings();
         MinecraftForge.EVENT_BUS.register(new GuiOverlay(Minecraft.getMinecraft()));
     }
-    
-    
+
+    @Override
     public void initNetwork()
     {
 
@@ -73,17 +83,18 @@ public class ClientProxy implements IProxy
     {
     }
 
-    public void onPlayerLogin(EntityPlayer player) {
-	}
+    public void onPlayerLogin(EntityPlayer player)
+    {
+    }
 
     @Override
     public void synchronizePlayer(int id, NBTTagCompound properties)
     {
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
-        if(Utils.notNullAndInstanceOf(entity, EntityPlayer.class)&& properties != null)
+        if (Utils.notNullAndInstanceOf(entity, EntityPlayer.class) && properties != null)
         {
-            EntityPlayer player = (EntityPlayer)entity;
-            if(BackpackProperty.get(player) == null) BackpackProperty.register(player);
+            EntityPlayer player = (EntityPlayer) entity;
+            if (BackpackProperty.get(player) == null) BackpackProperty.register(player);
             BackpackProperty.get(player).loadNBTData(properties);
         }
     }
@@ -102,7 +113,7 @@ public class ClientProxy implements IProxy
         rendererItemAdventureHat = new RendererItemAdventureHat();
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, rendererItemAdventureHat);
 
-        if(!ConfigHandler.tanksOverlay)
+        if (!ConfigHandler.tanksOverlay)
         {
             rendererHose = new RendererHose();
             MinecraftForgeClient.registerItemRenderer(ModItems.hose, rendererHose);
@@ -119,6 +130,7 @@ public class ClientProxy implements IProxy
         MinecraftForgeClient.registerItemRenderer(ModItems.cwxbow, renderCrossbow);
     }
 
+    @Override
     public void registerKeybindings()
     {
         ClientRegistry.registerKeyBinding(Keybindings.openBackpack);
@@ -126,18 +138,19 @@ public class ClientProxy implements IProxy
         FMLCommonHandler.instance().bus().register(new KeybindHandler());
     }
 
-	@Override
-	public void registerHandlers() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void registerHandlers()
+    {
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public void init(FMLInitializationEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
+    @Override
+    public void init(FMLInitializationEvent event)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
     public void registerRenderInformation()
     {
         renderHandler = new RenderHandler();
@@ -161,9 +174,11 @@ public class ClientProxy implements IProxy
             }
         }
     }
-	@Override
-    public void Capes(){
-    DevCapes.getInstance().registerConfig("https://raw.githubusercontent.com/runescapejon/Adventurebackpack-Capes/master/capes.json");
+
+    @Override
+    public void Capes()
+    {
+        DevCapes.getInstance().registerConfig("https://raw.githubusercontent.com/runescapejon/Adventurebackpack-Capes/master/capes.json");
     }
-		
-	}
+
+}

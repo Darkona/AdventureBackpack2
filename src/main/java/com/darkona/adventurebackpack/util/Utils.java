@@ -37,7 +37,6 @@ public class Utils
     public static int[] calculateEaster(int year)
     {
 
-
         int a = year % 19,
                 b = year / 100,
                 c = year % 100,
@@ -52,7 +51,7 @@ public class Utils
                 n = (h - m + r + 90) / 25,
                 p = (h - m + r + n + 19) % 32;
 
-        return new int[]{n, p};
+        return new int[] { n, p };
     }
 
     public static String getHoliday()
@@ -98,7 +97,7 @@ public class Utils
         {
             if (day == 4) dia = "USA";
             if (day == 24) dia = "Bolivar";
-           //if (day == 14) dia = "Bastille";
+            //if (day == 14) dia = "Bastille";
         }
         if (month == 8)
         {
@@ -115,7 +114,7 @@ public class Utils
         }
         if (month == 11)
         {
-           // if (day == 2) dia = "Muertos";
+            // if (day == 2) dia = "Muertos";
         }
         if (month == 12)
         {
@@ -131,10 +130,10 @@ public class Utils
     {
         /*
          * for (Map.Entry<String,Fluid> fluid :
-		 * getRegisteredFluids().entrySet()) { int ID =
-		 * (fluid.getValue().getBlockID() == BlockID) ? fluid.getValue().getID()
-		 * : -1; if (ID > 0) return ID; }
-		 */
+         * getRegisteredFluids().entrySet()) { int ID =
+         * (fluid.getValue().getBlockID() == BlockID) ? fluid.getValue().getID()
+         * : -1; if (ID > 0) return ID; }
+         */
         int fluidID = -1;
         for (Fluid fluid : FluidRegistry.getRegisteredFluids().values())
         {
@@ -221,19 +220,12 @@ public class Utils
     public static MovingObjectPosition getMovingObjectPositionFromPlayersHat(World world, EntityPlayer player, boolean flag, double reach)
     {
         float f = 1.0F;
-        float playerPitch = player.prevRotationPitch
-                + (player.rotationPitch - player.prevRotationPitch) * f;
-        float playerYaw = player.prevRotationYaw
-                + (player.rotationYaw - player.prevRotationYaw) * f;
-        double playerPosX = player.prevPosX + (player.posX - player.prevPosX)
-                * f;
-        double playerPosY = (player.prevPosY + (player.posY - player.prevPosY)
-                * f + 1.6200000000000001D)
-                - player.yOffset;
-        double playerPosZ = player.prevPosZ + (player.posZ - player.prevPosZ)
-                * f;
-        Vec3 vecPlayer = Vec3.createVectorHelper(playerPosX, playerPosY,
-                playerPosZ);
+        float playerPitch = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
+        float playerYaw = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
+        double playerPosX = player.prevPosX + (player.posX - player.prevPosX) * f;
+        double playerPosY = (player.prevPosY + (player.posY - player.prevPosY) * f + 1.6200000000000001D) - player.yOffset;
+        double playerPosZ = player.prevPosZ + (player.posZ - player.prevPosZ) * f;
+        Vec3 vecPlayer = Vec3.createVectorHelper(playerPosX, playerPosY, playerPosZ);
         float cosYaw = (float) Math.cos(-playerYaw * 0.01745329F - 3.141593F);
         float sinYaw = (float) Math.sin(-playerYaw * 0.01745329F - 3.141593F);
         float cosPitch = (float) -Math.cos(-playerPitch * 0.01745329F);
@@ -241,17 +233,14 @@ public class Utils
         float pointX = sinYaw * cosPitch;
         float pointY = sinPitch;
         float pointZ = cosYaw * cosPitch;
-        Vec3 vecPoint = vecPlayer.addVector(pointX * reach, pointY * reach,
-                pointZ * reach);
-        return world.func_147447_a/*rayTraceBlocks_do_do*/(
-                vecPlayer, vecPoint, flag, !flag, flag);
+        Vec3 vecPoint = vecPlayer.addVector(pointX * reach, pointY * reach, pointZ * reach);
+        return world.func_147447_a/*rayTraceBlocks_do_do*/(vecPlayer, vecPoint, flag, !flag, flag);
     }
 
     public static String printCoordinates(int x, int y, int z)
     {
         return "X= " + x + ", Y= " + y + ", Z= " + z;
     }
-
 
     public static int secondsToTicks(int seconds)
     {
@@ -286,13 +275,13 @@ public class Utils
 
     private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
-        LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
-        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X,Y+1,Z) && !areCoordinatesTheSame2D(origX, origZ, X, Z))
+        LogHelper.info("Checking coordinates in X=" + X + ", Y=" + Y + ", Z=" + Z);
+        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP, true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X, Y + 1, Z) && !areCoordinatesTheSame2D(origX, origZ, X, Z))
         {
             LogHelper.info("Found spot with the exception of the origin point");
             return new ChunkCoordinates(X, Y, Z);
         }
-        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z)&& world.isAirBlock(X,Y+1,Z))
+        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP, true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X, Y + 1, Z))
         {
             LogHelper.info("Found spot without exceptions");
             return new ChunkCoordinates(X, Y, Z);
@@ -391,8 +380,8 @@ public class Utils
             }
         }
 
-       /* Old code. Still works, though.
-       for (int i = x - radius; i <= x + radius; i++)
+        /* Old code. Still works, though.
+        for (int i = x - radius; i <= x + radius; i++)
         {
             for (int j = y - (radius / 2); j <= y + (radius / 2); j++)
             {
@@ -430,7 +419,7 @@ public class Utils
 
     private static boolean areCoordinatesTheSame2D(int X1, int Z1, int X2, int Z2)
     {
-        return (X1 == X2 &&  Z1 == Z2);
+        return (X1 == X2 && Z1 == Z2);
     }
 
     /**

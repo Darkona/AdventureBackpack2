@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
 import adventurebackpack.api.FluidEffect;
-import com.darkona.adventurebackpack.init.ModFluids;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -19,12 +18,13 @@ public class MushroomStewEffect extends FluidEffect
     {
         super(FluidRegistry.getFluid("mushroomstew"));
     }
+
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if(entity instanceof EntityPlayer)
+        if (entity instanceof EntityPlayer)
         {
-            ((EntityPlayer)entity).getFoodStats().addStats(6,0.6F);
+            ((EntityPlayer) entity).getFoodStats().addStats(6, 0.6F);
         }
     }
 }

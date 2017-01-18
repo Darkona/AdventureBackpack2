@@ -14,14 +14,13 @@ public class FluidUtils
 
     public static boolean isContainerForFluid(ItemStack container, Fluid fluid)
     {
-        if(container != null && fluid != null)
+        if (container != null && fluid != null)
         {
             for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
             {
-                if (
-                        (data.fluid.getFluid().getID() == fluid.getID()) &&
-                                (data.emptyContainer.getItem().equals(container.getItem()) || data.filledContainer.getItem().equals(container.getItem()))
-                        )
+                if ((data.fluid.getFluid().getID() == fluid.getID())
+                        && (data.emptyContainer.getItem().equals(container.getItem())
+                                || data.filledContainer.getItem().equals(container.getItem())))
                 {
                     return true;
                 }
@@ -36,10 +35,8 @@ public class FluidUtils
         {
             for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
             {
-                if (
-                        (data.fluid.getFluid().getID() == fluid.getID()) &&
-                                (data.emptyContainer.getItem().equals(container.getItem()))
-                        )
+                if ((data.fluid.getFluid().getID() == fluid.getID())
+                        && (data.emptyContainer.getItem().equals(container.getItem())))
                 {
                     return true;
                 }

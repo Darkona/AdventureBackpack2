@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.reference;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -99,11 +100,11 @@ public class BackpackNames
 
         if (backpack == null) return null;
         if (!(backpack.getItem() instanceof ItemAdventureBackpack)) return null;
-        NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound() ;
+        NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound();
         backpack.setItemDamage(damage);
         assert backpackData != null;
         backpackData.setString("colorName", backpackNames[damage]);
-        BackpackUtils.setBackpackData(backpack,backpackData);
+        BackpackUtils.setBackpackData(backpack, backpackData);
         return backpack;
     }
 
@@ -124,7 +125,7 @@ public class BackpackNames
     public static String getBackpackColorName(ItemStack backpack)
     {
         if (backpack == null) return "";
-        NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound() ;
+        NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound();
         assert backpackData != null;
         if (backpackData.getString("colorName").isEmpty())
         {
@@ -137,7 +138,7 @@ public class BackpackNames
     {
         if (backpack != null)
         {
-            NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound() ;
+            NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound();
             assert backpackData != null;
             backpackData.setString("colorName", newName);
             BackpackUtils.setBackpackData(backpack, backpackData);
