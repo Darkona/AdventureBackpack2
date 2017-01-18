@@ -291,7 +291,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        onUnequipped(world, player, stack);
+        //onUnequipped(world, player, stack);
 
         if (world.isRemote) return;
 
