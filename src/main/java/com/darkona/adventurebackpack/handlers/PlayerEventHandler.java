@@ -231,7 +231,6 @@ public class PlayerEventHandler
             } else if (Wearing.isWearingCopter(player))
             {
                 ItemStack pack = Wearing.getWearingCopter(player);
-                //TODO set it to OFF, disable sound
                 event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
             } else if (Wearing.isWearingJetpack(player))
             {
