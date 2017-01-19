@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -209,15 +210,18 @@ public class BackpackAbilities
     {
         //Shameless rip-off from Machinemuse. Thanks Claire, I don't have to reinvent the wheel thanks to you.
         //I will use a different potion id to avoid conflicting with her modular suits
+
         PotionEffect nightVision = null;
+
         if (player.isPotionActive(Potion.nightVision.id))
         {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
         if ((nightVision == null || nightVision.getDuration() < 222) && !Wearing.getBackpackInv(player, true).getDisableNVision())
         {
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 239, -1));
-        } else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNVision())
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 239, -1, true));
+        }
+        else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNVision())
         {
             backpackRemovals.itemBat(player, world, backpack);
         }
@@ -227,9 +231,10 @@ public class BackpackAbilities
     {
         if (player.isInWater())
         {
-            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, -1));
+            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 19, -1, true));
             itemBat(player, world, backpack);
-        } else
+        }
+        else if (player.isPotionActive(Potion.waterBreathing.id) && player.getActivePotionEffect(Potion.waterBreathing).getAmplifier() == -1)
         {
             backpackRemovals.itemSquid(player, world, backpack);
         }
@@ -238,13 +243,14 @@ public class BackpackAbilities
     public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
     {
         PotionEffect potion = null;
+
         if (player.isPotionActive(Potion.fireResistance.id))
         {
             potion = player.getActivePotionEffect(Potion.fireResistance);
         }
         if (potion == null || potion.getDuration() < 222)
         {
-            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 239, -1));
+            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 239, -1, true));
         }
     }
 
@@ -261,22 +267,42 @@ public class BackpackAbilities
         itemPigman(player, world, backpack);
 
         PotionEffect potion = null;
-        if (player.isPotionActive(Potion.regeneration.id))
+
+        if (ConfigHandler.dragonBackpackRegen != 0)
         {
-            potion = player.getActivePotionEffect(Potion.regeneration);
+            if (player.isPotionActive(Potion.regeneration.id))
+            {
+                potion = player.getActivePotionEffect(Potion.regeneration);
+            }
+            if (player.getHealth() < player.getMaxHealth())
+            {
+                if (potion == null || potion.getDuration() < 20)
+                {
+                    player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 900, ConfigHandler.dragonBackpackRegen - 1, true));
+                }
+            }
+            else if (potion != null && potion.getAmplifier() == ConfigHandler.dragonBackpackRegen - 1)
+            {
+                if (player.worldObj.isRemote)
+                {
+                    player.removePotionEffectClient(Potion.regeneration.id);
+                } else
+                {
+                    player.removePotionEffect(Potion.regeneration.id);
+                }
+            }
         }
-        if (potion == null || potion.getDuration() < 222)
+
+        if (ConfigHandler.dragonBackpackDamage != 0)
         {
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 239, 0));
-        }
-        potion = null;
-        if (player.isPotionActive(Potion.damageBoost.id))
-        {
-            potion = player.getActivePotionEffect(Potion.damageBoost);
-        }
-        if (potion == null || (potion.getDuration() < 222 && potion.getAmplifier() <= 1) || potion.getDuration() < 20)
-        {
-            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 239, 1));
+            if (player.isPotionActive(Potion.damageBoost.id))
+            {
+                potion = player.getActivePotionEffect(Potion.damageBoost);
+            }
+            if (potion == null || potion.getDuration() < 222)
+            {
+                player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 239, ConfigHandler.dragonBackpackDamage - 1, true));
+            }
         }
     }
 
@@ -284,11 +310,18 @@ public class BackpackAbilities
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int noteTime = inv.getLastTime() - 1;
+
         if (noteTime >= 0 && noteTime < Utils.secondsToTicks(147))
         {
             //player.setSprinting(true);
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 60, 3));
-            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 60, 1));
+            if (ConfigHandler.rainbowBackpackSSpeed != 0)
+            {
+                player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 60, ConfigHandler.rainbowBackpackSSpeed - 1, true));
+            }
+            if (ConfigHandler.rainbowBackpackSJump != 0)
+            {
+                player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 60, ConfigHandler.rainbowBackpackSJump - 1, true));
+            }
             if (noteTime % 2 == 0)
             {
                 //Visuals.NyanParticles(player, world);
@@ -298,14 +331,16 @@ public class BackpackAbilities
                 }
             }
         }
+
         PotionEffect moveSpeed = null;
+
         if (player.isPotionActive(Potion.moveSpeed.id))
         {
             moveSpeed = player.getActivePotionEffect(Potion.moveSpeed);
         }
-        if (moveSpeed == null || moveSpeed.getDuration() < 222 && moveSpeed.getAmplifier() <= 0)
+        if (ConfigHandler.rainbowBackpackSpeed != 0 && (moveSpeed == null || moveSpeed.getDuration() < 222))
         {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 239, 0));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 239, ConfigHandler.rainbowBackpackSpeed - 1, true));
         }
         inv.setLastTime(noteTime);
         inv.markDirty();
@@ -395,7 +430,7 @@ public class BackpackAbilities
         // 4 is New Moon, 5 is Waxing Crescent, 6 is First Quarter and 7 is Waxing Gibbous
         if (world.getMoonPhase() == 0 && !world.isDaytime())
         {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 100, 0));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 100, 0, true));
         }
         if (player.onGround)
         {

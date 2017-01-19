@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -23,11 +25,10 @@ public class ItemPistonBoots extends ArmorAB
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack)
     {
-        player.stepHeight = 1.001F;
-        if (player.isSprinting())
-        {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1));
-        }
+        if (ConfigHandler.pistonBootsAutoStep)
+            player.stepHeight = 1.001F;
+        if (ConfigHandler.pistonBootsSprintBoost !=0 && player.isSprinting())
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, ConfigHandler.pistonBootsSprintBoost - 1));
     }
 
     @Override

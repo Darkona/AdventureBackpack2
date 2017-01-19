@@ -338,13 +338,11 @@ public class ServerActions
      */
     public static void pistonBootsJump(EntityPlayer player)
     {
-        //TODO add configuration for the playing of the sound effect.
-        //TODO Maybe configurable jump height too, because why not.
         if (ConfigHandler.allowSoundPiston)
         {
             player.playSound("tile.piston.out", 0.5F, player.getRNG().nextFloat() * 0.25F + 0.6F);
         }
-        player.motionY += 0.30;
+        player.motionY += ConfigHandler.pistonBootsJumpHeight / 10.0F;
         player.jumpMovementFactor += 0.3;
     }
 
