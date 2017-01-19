@@ -80,6 +80,15 @@ public class ConfigHandler
     public static boolean recipeSaddle = true;
     public static boolean recipeMachete = true;
 
+    public static boolean pistonBootsAutoStep = true;
+    public static int pistonBootsJumpHeight = 3;
+    public static int pistonBootsSprintBoost = 1;
+    public static int dragonBackpackRegen = 1;
+    public static int dragonBackpackDamage = 2;
+    public static int rainbowBackpackSpeed = 1;
+    public static int rainbowBackpackSSpeed = 3;
+    public static int rainbowBackpackSJump = 1;
+
     public static boolean allowBatGen = true;
     public static boolean allowBonusGen = false;
     public static boolean allowGolemGen = true;
@@ -133,6 +142,12 @@ public class ConfigHandler
         enableItemFilters  = config.getBoolean("Enable Item Filters", "items", true, "Enable filters from Disallow category");
         forbiddenDimensions = config.getStringList("Forbidden Dimensions", "items", nameDefault, "Disallow opening backpack inventory for specific dimension ID");
 
+        // Items.Disallowed
+        nameLocalized = config.getStringList("By Displayed Name", "items.disallowed", nameDefault, "Disallow items by displayed (localized) name. Not case sensitive. Worst option, use only when there is no choice. Example: Dirt");
+        nameInternalID = config.getStringList("By Internal ID", "items.disallowed", nameDefault, "Disallow items by internal ID. Case sensitive. Example: minecraft:dirt");
+        nameInternalIDs = config.getStringList("By Internal IDs", "items.disallowed", nameDefault, "Disallow items by internal ID. Case sensitive. Will be disallowed all items containing that word in their IDs. Use with caution. Example: minecraft:di");
+        nameUnlocalized = config.getStringList("By Internal Name", "items.disallowed", nameDefault, "Disallow items by internal (unlocalized) name. Not case sensitive. Example: tile.dirt");
+
         // Items.Fuel
         /*fuelRateBioFuel = config.getFloat("BioFuel", "items.fuel", 1.0f, 0.05f, 20.0f, "BioFuel consumption rate");
         fuelRateBioEthanol = config.getFloat("BioEthanol", "items.fuel", 1.5f, 0.05f, 20.0f, "BioEthanol consumption rate");
@@ -153,11 +168,15 @@ public class ConfigHandler
         recipeSaddle = config.getBoolean("Saddle", "items.recipes", true, "Add recipe for saddle?");
         recipeMachete = config.getBoolean("Machete", "items.recipes", true, "Enable/Disable Machete recipe");
 
-        // Items.Disallowed
-        nameLocalized = config.getStringList("By Displayed Name", "items.disallowed", nameDefault, "Disallow items by displayed (localized) name. Not case sensitive. Worst option, use only when there is no choice. Example: Dirt");
-        nameInternalID = config.getStringList("By Internal ID", "items.disallowed", nameDefault, "Disallow items by internal ID. Case sensitive. Example: minecraft:dirt");
-        nameInternalIDs = config.getStringList("By Internal IDs", "items.disallowed", nameDefault, "Disallow items by internal ID. Case sensitive. Will be disallowed all items containing that word in their IDs. Use with caution. Example: minecraft:di");
-        nameUnlocalized = config.getStringList("By Internal Name", "items.disallowed", nameDefault, "Disallow items by internal (unlocalized) name. Not case sensitive. Example: tile.dirt");
+        // Items.Settings
+        pistonBootsAutoStep = config.getBoolean("Piston Boots Auto Step", "items.settings", true, "Allow Piston Boots auto step blocks");
+        pistonBootsJumpHeight = config.getInt("Piston Boots Jump Height", "items.settings", 3, 1, 8, "Piston Boots jump height in blocks");
+        pistonBootsSprintBoost = config.getInt("Piston Boots Sprint", "items.settings", 1, 0, 4, "Piston Boots sprint boost. 0 - disable");
+        dragonBackpackRegen = config.getInt("Dragon Regeneration", "items.settings", 1, 0, 4, "Dragon Backpack regeneration level. 0 - disable");
+        dragonBackpackDamage = config.getInt("Dragon Damage Boost", "items.settings", 2, 0, 4, "Dragon Backpack damage boost. 0 - disable");
+        rainbowBackpackSpeed = config.getInt("Rainbow Speed", "items.settings", 1, 0, 4, "Rainbow Backpack speed boost. 0 - disable");
+        rainbowBackpackSSpeed = config.getInt("Rainbow Special Speed", "items.settings", 3, 0, 4, "Rainbow Backpack special speed. 0 - disable");
+        rainbowBackpackSJump = config.getInt("Rainbow Special Jump", "items.settings", 1, 0, 4, "Rainbow Backpack special jump. 0 - disable");
 
         // WorldGen
         allowBatGen = config.getBoolean("Bat Backpacks", "worldgen", true, "Allow generation of Bat Backpacks in dungeon and mineshaft loot. It cannot be obtained by crafting");

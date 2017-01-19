@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
 
@@ -85,7 +86,7 @@ public class BackpackRemovals
         if (player.isPotionActive(Potion.damageBoost.id))
         {
             potion = player.getActivePotionEffect(Potion.damageBoost);
-            if (potion != null && potion.getAmplifier() == 1)
+            if (potion != null && potion.getAmplifier() == ConfigHandler.dragonBackpackDamage - 1)
             {
                 if (player.worldObj.isRemote)
                 {
@@ -101,7 +102,7 @@ public class BackpackRemovals
         {
             potion = player.getActivePotionEffect(Potion.regeneration);
 
-            if (potion != null && potion.getAmplifier() == 0)
+            if (potion != null && potion.getAmplifier() == ConfigHandler.dragonBackpackRegen - 1)
             {
                 if (player.worldObj.isRemote)
                 {
@@ -124,7 +125,7 @@ public class BackpackRemovals
         if (player.isPotionActive(Potion.moveSpeed.id))
         {
             potion = player.getActivePotionEffect(Potion.moveSpeed);
-            if (potion != null && potion.getAmplifier() == 0)
+            if (potion != null && potion.getAmplifier() == ConfigHandler.rainbowBackpackSpeed - 1)
             {
                 if (player.worldObj.isRemote)
                 {
