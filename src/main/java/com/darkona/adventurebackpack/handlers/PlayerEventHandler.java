@@ -27,7 +27,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemNameTag;
 import net.minecraft.item.ItemStack;
@@ -92,19 +91,13 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void playerLogsIn(PlayerEvent.PlayerLoggedInEvent event)
     {
-        if (event.player instanceof EntityPlayerMP)
-        {
-            BackpackProperty.sync(event.player);
-        }
+        BackpackProperty.sync(event.player);
     }
 
     @SubscribeEvent
     public void playerTravelsAcrossDimensions(PlayerEvent.PlayerChangedDimensionEvent event)
     {
-        if (event.player instanceof EntityPlayerMP)
-        {
-            BackpackProperty.sync(event.player);
-        }
+        BackpackProperty.sync(event.player);
     }
 
     /**
@@ -126,7 +119,7 @@ public class PlayerEventHandler
         }
     }
 
-    boolean pistonBootsStepHeight = false;
+    private boolean pistonBootsStepHeight = false;
 
     @SubscribeEvent
     public void pistonBootsUnequipped(LivingEvent.LivingUpdateEvent event)
@@ -253,11 +246,11 @@ public class PlayerEventHandler
         event.setResult(Event.Result.ALLOW);
     }
 
-    /*@SubscribeEvent
+    @SubscribeEvent
     public void playerRespawn(PlayerEvent.PlayerRespawnEvent event)
     {
         BackpackProperty.sync(event.player);
-    }*/
+    }
 
     @SubscribeEvent
     public void playerCraftsBackpack(PlayerEvent.ItemCraftedEvent event)

@@ -73,6 +73,8 @@ public class ConfigHandler
 
     public static boolean consumeDragonEgg = false;
     public static boolean recipeAdventuresSet = true;
+    public static boolean recipeInflatableBoat = true;
+    public static boolean recipeInflatableBoatM = false;
     public static boolean recipeClockCrossbow = true;
     public static boolean recipeCoalJetpack = true;
     public static boolean recipeCopterPack = true;
@@ -161,6 +163,8 @@ public class ConfigHandler
         // Items.Recipes
         consumeDragonEgg = config.getBoolean("Consume Dragon Egg", "items.recipes", false, "Consume Dragon Egg when Dragon backpack crafted?");
         recipeAdventuresSet = config.getBoolean("Adventures Set", "items.recipes", true, "Enable/Disable recipe for Adventure's Hat, Suit and Pants");
+        recipeInflatableBoat = config.getBoolean("Inflatable Boat", "items.recipes", true, "Enable/Disable recipe for Inflatable Boat");
+        recipeInflatableBoatM = config.getBoolean("Inflatable Boat Motorized", "items.recipes", false, "Enable/Disable recipe for Inflatable Boat (motorized). For aesthetic only, not fully implemented (yet?)");
         recipeClockCrossbow = config.getBoolean("Clockwork Crossbow", "items.recipes", true, "Enable/Disable Clockwork Crossbow recipe");
         recipeCopterPack = config.getBoolean("Copter Pack", "items.recipes", true, "Enable/Disable CopterPack recipe");
         recipeCoalJetpack = config.getBoolean("Coal Jetpack", "items.recipes", true, "Enable/Disable CoalJetpack recipe");
