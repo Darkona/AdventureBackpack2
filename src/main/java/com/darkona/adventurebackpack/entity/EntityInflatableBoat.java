@@ -5,8 +5,10 @@ import java.util.List;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -29,7 +31,7 @@ import net.minecraftforge.fluids.FluidTank;
  *
  * @author Darkona
  */
-public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
+public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks, IEntityAdditionalSpawnData
 {
     @SuppressWarnings("unused")
     private FluidTank fuelTank;
@@ -50,7 +52,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     private boolean inflated = false;
     public float inflation = 0.25f;
 
-    private static boolean motorized;
+    private boolean motorized;
 
     public boolean isMotorized()
     {
@@ -635,5 +637,17 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
     {
         return false;
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf data)
+    {
+        data.writeBoolean(this.motorized);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf data)
+    {
+        this.motorized = data.readBoolean();
     }
 }
