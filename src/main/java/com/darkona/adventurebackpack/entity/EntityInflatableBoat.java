@@ -1,7 +1,10 @@
 package com.darkona.adventurebackpack.entity;
 
+import java.util.List;
+
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -21,8 +24,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 
-import java.util.List;
-
 /**
  * Created on 05/01/2015
  *
@@ -31,7 +32,7 @@ import java.util.List;
 public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 {
     @SuppressWarnings("unused")
-	private FluidTank fuelTank;
+    private FluidTank fuelTank;
     private boolean isBoatEmpty;
     private double speedMultiplier;
     private int boatPosRotationIncrements;
@@ -49,12 +50,12 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     private boolean inflated = false;
     public float inflation = 0.25f;
 
+    private static boolean motorized;
+
     public boolean isMotorized()
     {
         return motorized;
     }
-
-    private boolean motorized;
 
     public EntityInflatableBoat(World world)
     {
@@ -79,7 +80,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     @Override
     public void onUpdate()
     {
-        if(!inflated)
+        if (!inflated)
         {
             inflation += 0.025;
             if (inflation >= 1.0f)
@@ -87,7 +88,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
                 inflation = 1;
                 inflated = true;
             }
-        }else{
+        } else
+        {
             inflation = 1;
         }
 
@@ -269,7 +271,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 
             this.moveEntity(this.motionX, this.motionY, this.motionZ);
 
-           /* if (this.isCollidedHorizontally && d10 > 0.2D)
+            /* if (this.isCollidedHorizontally && d10 > 0.2D)
             {
                 if (!this.worldObj.isRemote && !this.isDead)
                 {
@@ -321,7 +323,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
             if (!this.worldObj.isRemote)
             {
                 @SuppressWarnings("rawtypes")
-				List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224D, 0.0D, 0.20000000298023224D));
+                List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224D, 0.0D, 0.20000000298023224D));
 
                 if (list != null && !list.isEmpty())
                 {
@@ -367,7 +369,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 
                 if (!flag)
                 {
-                    this.entityDropItem(new ItemStack(ModItems.component, 1, motorized ? 8:7), 0.0f);
+                    this.entityDropItem(new ItemStack(ModItems.component, 1, motorized ? 8 : 7), 0.0f);
                 }
 
                 this.setDead();
@@ -389,12 +391,11 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     @Override
     public boolean interactFirst(EntityPlayer p_130002_1_)
     {
-        if(inflation < 1.0f) return false;
+        if (inflation < 1.0f) return false;
         if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != p_130002_1_)
         {
             return true;
-        }
-        else
+        } else
         {
             if (!this.worldObj.isRemote)
             {
@@ -430,19 +431,21 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {
-        compound.setFloat("Inflation",inflation);
-        compound.setBoolean("Motorized",motorized);
-        compound.setBoolean("Inflated",inflated);
+    protected void writeEntityToNBT(NBTTagCompound compound)
+    {
+        compound.setFloat("Inflation", inflation);
+        compound.setBoolean("Motorized", motorized);
+        compound.setBoolean("Inflated", inflated);
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {
+    protected void readEntityFromNBT(NBTTagCompound compound)
+    {
         if (compound.hasKey("Inflation"))
         {
             inflation = compound.getFloat("Inflation");
         }
-        if(compound.hasKey("Motorized"))
+        if (compound.hasKey("Motorized"))
         {
             motorized = compound.getBoolean("Motorized");
         }
