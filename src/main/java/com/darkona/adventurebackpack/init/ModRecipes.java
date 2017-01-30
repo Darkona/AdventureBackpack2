@@ -129,15 +129,15 @@ public class ModRecipes
         {
             //Machete Handle
             GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 4),
-                            "YIY",
-                            "BSB",
-                            "RbR",
-                            'Y', new ItemStack(Items.dye, 1, 11),
-                            'B', new ItemStack(Items.dye, 1, 4),
-                            'R', new ItemStack(Items.dye, 1, 1),
-                            'b', new ItemStack(Items.dye, 1, 0),
-                            'I', Items.iron_ingot,
-                            'S', Items.stick);
+                    "YIY",
+                    "BSB",
+                    "RbR",
+                    'Y', new ItemStack(Items.dye, 1, 11),
+                    'B', new ItemStack(Items.dye, 1, 4),
+                    'R', new ItemStack(Items.dye, 1, 1),
+                    'b', new ItemStack(Items.dye, 1, 0),
+                    'I', Items.iron_ingot,
+                    'S', Items.stick);
 
             //Machete
             GameRegistry.addRecipe(new ItemStack(ModItems.machete),

@@ -221,17 +221,20 @@ public class PlayerEventHandler
                 } else
                 {
                     ItemStack pack = Wearing.getWearingBackpack(player);
-                    event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                    if (Utils.isSoulBounded(pack)) ServerProxy.storePlayerProps(player);
+                    else event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
                     //TODO get rid of campfire
                 }
             } else if (Wearing.isWearingCopter(player))
             {
                 ItemStack pack = Wearing.getWearingCopter(player);
-                event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                if (Utils.isSoulBounded(pack)) ServerProxy.storePlayerProps(player);
+                else event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
             } else if (Wearing.isWearingJetpack(player))
             {
                 ItemStack pack = Wearing.getWearingJetpack(player);
-                event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                if (Utils.isSoulBounded(pack)) ServerProxy.storePlayerProps(player);
+                else event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
             }
         }
     }
@@ -246,7 +249,6 @@ public class PlayerEventHandler
                     && player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
             {
                 //LogHelper.info("Player died");
-                BackpackProperty props = BackpackProperty.get(player);
                 ServerProxy.storePlayerProps(player);
             }
         }

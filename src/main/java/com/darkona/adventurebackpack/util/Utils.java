@@ -5,8 +5,10 @@ import java.util.Calendar;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -442,5 +444,32 @@ public class Utils
         {
             return text; // Text is the first word itself.
         }
+    }
+
+    private static int soulBoundID()
+    {
+        int soulBoundID = -1;
+        for (Enchantment ench : Enchantment.enchantmentsList)
+        {
+            if (ench != null && ench.getName().equals("enchantment.enderio.soulBound"))
+                soulBoundID = ench.effectId;
+        }
+        return soulBoundID;
+    }
+
+    public static boolean isSoulBounded(ItemStack stack)
+    {
+        boolean soulBounded = false;
+        int soulBoundID = soulBoundID();
+        NBTTagList stackEnch = stack.getEnchantmentTagList();
+        if (stackEnch != null && soulBoundID >= 0)
+        {
+            for (int i = 0; i < stackEnch.tagCount(); ++i)
+            {
+                int id = stackEnch.getCompoundTagAt(i).getInteger("id");
+                if (id == soulBoundID) soulBounded = true;
+            }
+        }
+        return soulBounded;
     }
 }

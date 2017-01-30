@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -253,8 +254,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
         onUnequipped(world, player, stack);
-        //player.dropPlayerItemWithRandomChoice(stack.copy(), false);
-        BackpackProperty.get(player).setWearable(null);
+        if (!Utils.isSoulBounded(stack)) BackpackProperty.get(player).setWearable(null);
     }
 
     @Override

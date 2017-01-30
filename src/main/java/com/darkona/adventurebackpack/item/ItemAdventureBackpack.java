@@ -300,6 +300,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
         }
 
+        if (Utils.isSoulBounded(stack))
+            return;
+
         if (ConfigHandler.backpackDeathPlace)
         {
             if (!tryPlace(world, player, stack))

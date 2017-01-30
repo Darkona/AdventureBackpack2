@@ -48,6 +48,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     private int lastTime;
     private int luminosity;
     private NBTTagCompound extendedProperties;
+    private NBTTagList ench;
     private boolean disableCycling;
     private boolean disableNVision;
 
@@ -263,6 +264,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
+        if (compound.hasKey("ench"))
+            ench = compound.getTagList("ench", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
         if (compound.hasKey("backpackData"))
         {
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
@@ -290,6 +293,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
+        if (ench != null) compound.setTag("ench", ench);
         NBTTagCompound backpackData = new NBTTagCompound();
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
