@@ -69,6 +69,12 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         return 0;
     }
 
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+    {
+        return (Utils.isSoulBook(book));
+    }
+
     /**
      * Return whether this item is repairable in an anvil.
      *

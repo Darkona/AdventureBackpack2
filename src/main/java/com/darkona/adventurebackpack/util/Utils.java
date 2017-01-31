@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
@@ -448,18 +449,16 @@ public class Utils
 
     private static int soulBoundID()
     {
-        int soulBoundID = -1;
         for (Enchantment ench : Enchantment.enchantmentsList)
         {
             if (ench != null && ench.getName().equals("enchantment.enderio.soulBound"))
-                soulBoundID = ench.effectId;
+                return ench.effectId;
         }
-        return soulBoundID;
+        return -1;
     }
 
     public static boolean isSoulBounded(ItemStack stack)
     {
-        boolean soulBounded = false;
         int soulBoundID = soulBoundID();
         NBTTagList stackEnch = stack.getEnchantmentTagList();
         if (stackEnch != null && soulBoundID >= 0)
@@ -467,9 +466,29 @@ public class Utils
             for (int i = 0; i < stackEnch.tagCount(); ++i)
             {
                 int id = stackEnch.getCompoundTagAt(i).getInteger("id");
-                if (id == soulBoundID) soulBounded = true;
+                if (id == soulBoundID) return true;
             }
         }
-        return soulBounded;
+        return false;
     }
+
+    public static boolean isSoulBook(ItemStack book)
+    {
+        int soulBoundID = soulBoundID();
+        if (soulBoundID >= 0 && book.hasTagCompound())
+        {
+            NBTTagCompound bookData = book.stackTagCompound;
+            if (bookData.hasKey("StoredEnchantments"))
+            {
+                NBTTagList bookEnch = bookData.getTagList("StoredEnchantments", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+                if (!bookEnch.getCompoundTagAt(1).getBoolean("id"))
+                {
+                    int id = bookEnch.getCompoundTagAt(0).getInteger("id");
+                    if (id == soulBoundID) return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

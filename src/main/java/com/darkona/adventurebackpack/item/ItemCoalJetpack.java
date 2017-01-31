@@ -45,6 +45,18 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
+    public int getItemEnchantability()
+    {
+        return 0;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+    {
+        return (Utils.isSoulBook(book));
+    }
+
+    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (world.isRemote)
