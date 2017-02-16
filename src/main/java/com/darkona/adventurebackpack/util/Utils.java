@@ -2,6 +2,8 @@ package com.darkona.adventurebackpack.util;
 
 import java.util.Calendar;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
@@ -447,26 +449,47 @@ public class Utils
         }
     }
 
-    private static int soulBoundID()
+    // -6 - not initialized
+    // -3 - disabled by config
+    // -2 - EnderIO not found
+    // -1 - enchantment not found
+    private static int soulBoundID = -6;
+
+    public static int getSoulBoundID()
     {
-        for (Enchantment ench : Enchantment.enchantmentsList)
+        if (soulBoundID == -6) setSoulBoundID(); // initialize
+        return soulBoundID;
+    }
+
+    private static void setSoulBoundID()
+    {
+        if (ConfigHandler.allowSoulBound)
         {
-            if (ench != null && ench.getName().equals("enchantment.enderio.soulBound"))
-                return ench.effectId;
-        }
-        return -1;
+            if (ConfigHandler.IS_ENDERIO)
+            {
+                for (Enchantment ench : Enchantment.enchantmentsList)
+                {
+                    if (ench != null && ench.getName().equals("enchantment.enderio.soulBound"))
+                    {
+                        soulBoundID = ench.effectId;
+                        return;
+                    }
+                }
+                soulBoundID = -1;
+            } else soulBoundID = -2;
+        } else soulBoundID = -3;
     }
 
     public static boolean isSoulBounded(ItemStack stack)
     {
-        int soulBoundID = soulBoundID();
+        int soulBound = getSoulBoundID();
         NBTTagList stackEnch = stack.getEnchantmentTagList();
-        if (stackEnch != null && soulBoundID >= 0)
+        if (soulBound >= 0 && stackEnch != null)
         {
-            for (int i = 0; i < stackEnch.tagCount(); ++i)
+            for (int i = 0; i < stackEnch.tagCount(); i++)
             {
                 int id = stackEnch.getCompoundTagAt(i).getInteger("id");
-                if (id == soulBoundID) return true;
+                if (id == soulBound) return true;
             }
         }
         return false;
@@ -474,8 +497,8 @@ public class Utils
 
     public static boolean isSoulBook(ItemStack book)
     {
-        int soulBoundID = soulBoundID();
-        if (soulBoundID >= 0 && book.hasTagCompound())
+        int soulBound = getSoulBoundID();
+        if (soulBound >= 0 && book.hasTagCompound())
         {
             NBTTagCompound bookData = book.stackTagCompound;
             if (bookData.hasKey("StoredEnchantments"))
@@ -484,7 +507,7 @@ public class Utils
                 if (!bookEnch.getCompoundTagAt(1).getBoolean("id"))
                 {
                     int id = bookEnch.getCompoundTagAt(0).getInteger("id");
-                    if (id == soulBoundID) return true;
+                    if (id == soulBound) return true;
                 }
             }
         }

@@ -20,13 +20,13 @@ public class ConfigHandler
     public static Configuration config;
 
     public static boolean IS_BUILDCRAFT = false;
-    public static boolean IS_BAUBLES = false;
-    public static boolean IS_TINKERS = false;
-    public static boolean IS_THAUM = false;
-    public static boolean IS_TWILIGHT = false;
-    public static boolean IS_ENVIROMINE = false;
-    public static boolean IS_RAILCRAFT = false;
+    public static boolean IS_ENDERIO = false;
+    //public static boolean IS_RAILCRAFT = false;
+    //public static boolean IS_THAUM = false;
+    //public static boolean IS_TINKERS = false;
+    //public static boolean IS_TWILIGHT = false;
 
+    public static boolean allowSoulBound = true;
     public static boolean backpackDeathPlace = true;
     public static boolean backpackAbilities = true;
     public static boolean enableToolsCycling = true;
@@ -109,6 +109,7 @@ public class ConfigHandler
     private static void loadConfiguration()
     {
         // Gameplay
+        allowSoulBound = config.getBoolean("Allow SoulBound", "gameplay", true, "Allow SoulBound enchant on wearable packs");
         backpackAbilities = config.getBoolean("Backpack Abilities", "gameplay", true, "Allow the backpacks to execute their special abilities, or be only cosmetic (Doesn't affect lightning transformation) Must be " +
                 "disabled in both Client and Server to work properly");
         backpackDeathPlace = config.getBoolean("Backpack Death Place", "gameplay", true,"Place backpacks as a block when you die?");

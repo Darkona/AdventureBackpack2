@@ -109,21 +109,26 @@ public class AdventureBackpack
     public void postInit(FMLPostInitializationEvent event)
     {
 
-        ConfigHandler.IS_TINKERS = Loader.isModLoaded("TConstruct");
-        ConfigHandler.IS_THAUM = Loader.isModLoaded("Thaumcraft");
-        ConfigHandler.IS_TWILIGHT = Loader.isModLoaded("TwilightForest");
-        ConfigHandler.IS_ENVIROMINE = Loader.isModLoaded("EnviroMine");
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
+        ConfigHandler.IS_ENDERIO = Loader.isModLoaded("EnderIO");
+        //ConfigHandler.IS_TINKERS = Loader.isModLoaded("TConstruct");
+        //ConfigHandler.IS_THAUM = Loader.isModLoaded("Thaumcraft");
+        //ConfigHandler.IS_TWILIGHT = Loader.isModLoaded("TwilightForest");
 
         if (ConfigHandler.IS_BUILDCRAFT)
         {
             LogHelper.info("Buildcraft is present. Acting accordingly");
         }
 
-        if (ConfigHandler.IS_TWILIGHT)
+        if (ConfigHandler.IS_ENDERIO)
+        {
+            LogHelper.info("EnderIO is present. Acting accordingly");
+        }
+
+        /*if (ConfigHandler.IS_TWILIGHT)
         {
             LogHelper.info("Twilight Forest is present. Acting accordingly");
-        }
+        }*/
 
         ModRecipes.conditionalInit();
 
