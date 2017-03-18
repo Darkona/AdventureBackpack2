@@ -221,20 +221,38 @@ public class PlayerEventHandler
                 } else
                 {
                     ItemStack pack = Wearing.getWearingBackpack(player);
-                    if (Utils.isSoulBounded(pack)) ServerProxy.storePlayerProps(player);
-                    else event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                    if (Utils.isSoulBounded(pack))
+                    {
+                        ServerProxy.storePlayerProps(player);
+                    } else
+                    {
+                        event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                        BackpackProperty.get(player).setWearable(null);
+                    }
                     //TODO get rid of campfire
                 }
             } else if (Wearing.isWearingCopter(player))
             {
                 ItemStack pack = Wearing.getWearingCopter(player);
-                if (Utils.isSoulBounded(pack)) ServerProxy.storePlayerProps(player);
-                else event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                if (Utils.isSoulBounded(pack))
+                {
+                    ServerProxy.storePlayerProps(player);
+                } else
+                {
+                    event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                    BackpackProperty.get(player).setWearable(null);
+                }
             } else if (Wearing.isWearingJetpack(player))
             {
                 ItemStack pack = Wearing.getWearingJetpack(player);
-                if (Utils.isSoulBounded(pack)) ServerProxy.storePlayerProps(player);
-                else event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                if (Utils.isSoulBounded(pack))
+                {
+                    ServerProxy.storePlayerProps(player);
+                } else
+                {
+                    event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                    BackpackProperty.get(player).setWearable(null);
+                }
             }
         }
     }
