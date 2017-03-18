@@ -299,22 +299,20 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     {
         //onUnequipped(world, player, stack);
 
-        if (world.isRemote) return;
+        if (world.isRemote)
+            return;
 
         if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
         {
             player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
         }
 
-        if (Utils.isSoulBounded(stack))
+        if (Utils.isSoulBounded(stack) || !ConfigHandler.backpackDeathPlace)
             return;
 
-        if (ConfigHandler.backpackDeathPlace)
+        if (!tryPlace(world, player, stack))
         {
-            if (!tryPlace(world, player, stack))
-            {
-                player.dropPlayerItemWithRandomChoice(stack, false);
-            }
+            player.dropPlayerItemWithRandomChoice(stack, false);
         }
 
         BackpackProperty.get(player).setWearable(null);
