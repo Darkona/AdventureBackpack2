@@ -84,10 +84,11 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                 }
                 if (message.type == BACKPACK_GUI)
                 {
-                    Integer currentDimID = (player.worldObj.provider.dimensionId);
+                    Integer currentDimID = player.worldObj.provider.dimensionId;
                     for (String id : ConfigHandler.forbiddenDimensions)
                     {
-                        if (id.equals(currentDimID.toString())) return null;
+                        if (id.equals(currentDimID.toString()))
+                            return null;
                     }
 
                     if (message.from == FROM_KEYBIND)

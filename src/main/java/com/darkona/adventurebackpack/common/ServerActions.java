@@ -51,6 +51,13 @@ public class ServerActions
     //Using @Sir-Will dupe fixed
     public static void cycleTool(EntityPlayer player, int direction, int slot)
     {
+        Integer currentDimID = player.worldObj.provider.dimensionId;
+        for (String id : ConfigHandler.forbiddenDimensions)
+        {
+            if (id.equals(currentDimID.toString()))
+                return;
+        }
+
         try
         {
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);

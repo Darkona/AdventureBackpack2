@@ -206,11 +206,6 @@ public class PlayerEventHandler
             ItemStack pack = Wearing.getWearingWearable(player);
             BackpackProperty props = BackpackProperty.get(player);
 
-            if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
-            {
-                player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
-            }
-
             if (Utils.isSoulBounded(pack)
                     || (ConfigHandler.backpackDeathPlace && pack.getItem() instanceof ItemAdventureBackpack))
             {
@@ -248,11 +243,18 @@ public class PlayerEventHandler
                     //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
                 }
 
-                if (Wearing.isWearingWearable(player)
-                        && player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+                if (Wearing.isWearingWearable(player))
                 {
-                    ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
-                    ServerProxy.storePlayerProps(player);
+                    if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
+                    {
+                        player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
+                    }
+
+                    if (player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+                    {
+                        ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
+                        ServerProxy.storePlayerProps(player);
+                    }
                 }
             }
         }
