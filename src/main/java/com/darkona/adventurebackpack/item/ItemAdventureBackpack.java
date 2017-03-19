@@ -19,7 +19,6 @@ import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -297,17 +296,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        //onUnequipped(world, player, stack);
-
-        if (world.isRemote)
-            return;
-
-        if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
-        {
-            player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
-        }
-
-        if (Utils.isSoulBounded(stack) || !ConfigHandler.backpackDeathPlace)
+        if (world.isRemote || !ConfigHandler.backpackDeathPlace || Utils.isSoulBounded(stack))
             return;
 
         if (!tryPlace(world, player, stack))

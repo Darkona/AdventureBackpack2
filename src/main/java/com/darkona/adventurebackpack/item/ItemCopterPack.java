@@ -276,8 +276,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
         onUnequipped(world, player, stack);
-        /*if (!Utils.isSoulBounded(stack))
-            BackpackProperty.get(player).setWearable(null);*/
     }
 
     @Override

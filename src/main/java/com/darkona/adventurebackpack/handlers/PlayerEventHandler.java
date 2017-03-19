@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -202,57 +203,33 @@ public class PlayerEventHandler
 
         if (Wearing.isWearingWearable(player))
         {
-            if (Wearing.isWearingBackpack(player))
+            ItemStack pack = Wearing.getWearingWearable(player);
+            BackpackProperty props = BackpackProperty.get(player);
+
+            if (props.isForcedCampFire()) //TODO check campfire behavior, dim respected, special dim cases, 0/0/0 spawn sometimes etc.
             {
-                if (ConfigHandler.backpackDeathPlace)
+                ChunkCoordinates lastCampFire = props.getCampFire();
+                if (lastCampFire != null)
                 {
-                    BackpackProperty props = BackpackProperty.get(player);
-                    ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
-                    if (props.isForcedCampFire())
-                    {
-                        ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
-                        if (lastCampFire != null)
-                        {
-                            player.setSpawnChunk(lastCampFire, false, player.dimension);
-                        }
-                        //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
-                    }
-                    ServerProxy.storePlayerProps(player);
-                } else
-                {
-                    ItemStack pack = Wearing.getWearingBackpack(player);
-                    if (Utils.isSoulBounded(pack))
-                    {
-                        ServerProxy.storePlayerProps(player);
-                    } else
-                    {
-                        event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
-                        BackpackProperty.get(player).setWearable(null);
-                    }
-                    //TODO get rid of campfire
+                    player.setSpawnChunk(lastCampFire, false, player.dimension);
                 }
-            } else if (Wearing.isWearingCopter(player))
+                //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
+            }
+
+            if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
             {
-                ItemStack pack = Wearing.getWearingCopter(player);
-                if (Utils.isSoulBounded(pack))
-                {
-                    ServerProxy.storePlayerProps(player);
-                } else
-                {
-                    event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
-                    BackpackProperty.get(player).setWearable(null);
-                }
-            } else if (Wearing.isWearingJetpack(player))
+                player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
+            }
+
+            if (Utils.isSoulBounded(pack)
+                    || (ConfigHandler.backpackDeathPlace && pack.getItem() instanceof ItemAdventureBackpack))
             {
-                ItemStack pack = Wearing.getWearingJetpack(player);
-                if (Utils.isSoulBounded(pack))
-                {
-                    ServerProxy.storePlayerProps(player);
-                } else
-                {
-                    event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
-                    BackpackProperty.get(player).setWearable(null);
-                }
+                ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
+                ServerProxy.storePlayerProps(player);
+            } else
+            {
+                event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                props.setWearable(null);
             }
         }
     }
