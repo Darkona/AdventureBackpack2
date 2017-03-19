@@ -296,8 +296,11 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        if (world.isRemote || !ConfigHandler.backpackDeathPlace || Utils.isSoulBounded(stack))
+        if (world.isRemote || !ConfigHandler.backpackDeathPlace || Utils.isSoulBounded(stack)
+                || player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+        {
             return;
+        }
 
         if (!tryPlace(world, player, stack))
         {

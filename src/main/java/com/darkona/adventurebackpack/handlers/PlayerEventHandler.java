@@ -206,16 +206,6 @@ public class PlayerEventHandler
             ItemStack pack = Wearing.getWearingWearable(player);
             BackpackProperty props = BackpackProperty.get(player);
 
-            if (props.isForcedCampFire()) //TODO check campfire behavior, dim respected, special dim cases, 0/0/0 spawn sometimes etc.
-            {
-                ChunkCoordinates lastCampFire = props.getCampFire();
-                if (lastCampFire != null)
-                {
-                    player.setSpawnChunk(lastCampFire, false, player.dimension);
-                }
-                //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
-            }
-
             if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
             {
                 player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
@@ -240,11 +230,30 @@ public class PlayerEventHandler
         if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
         {
             EntityPlayer player = (EntityPlayer) event.entity;
-            if (!player.worldObj.isRemote
-                    && player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+
+            if (!player.worldObj.isRemote)
             {
-                //LogHelper.info("Player died");
-                ServerProxy.storePlayerProps(player);
+                BackpackProperty props = BackpackProperty.get(player);
+
+                if (ConfigHandler.enableSpawnAtCampfire && props.isForcedCampFire())
+                //TODO check campfire behavior, dim respected, special dim cases, 0/0/0 spawn sometimes, override bed spawn? etc.
+                {
+                    ChunkCoordinates lastCampFire = props.getCampFire();
+
+                    if (lastCampFire != null)
+                    {
+                        //TODO check negative coords shift, min<Y<max, radius 3(?). dim ofc
+                        player.setSpawnChunk(lastCampFire, false, player.dimension);
+                    }
+                    //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
+                }
+
+                if (Wearing.isWearingWearable(player)
+                        && player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+                {
+                    ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
+                    ServerProxy.storePlayerProps(player);
+                }
             }
         }
         event.setResult(Event.Result.ALLOW);

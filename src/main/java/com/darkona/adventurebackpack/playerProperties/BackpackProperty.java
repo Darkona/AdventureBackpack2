@@ -119,7 +119,7 @@ public class BackpackProperty implements IExtendedEntityProperties
         {
             setWearable(compound.hasKey("wearable") ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null);
             setCampFire(new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")));
-            dimension = compound.getInteger("compFireDim");
+            dimension = compound.getInteger("campFireDim");
             forceCampFire = compound.getBoolean("forceCampfire");
         }
     }
