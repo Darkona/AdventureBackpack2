@@ -73,15 +73,11 @@ public class SlotTool extends SlotAdventureBackpack
             // Just for extra compatibility and/or security and/or less annoyance
             for (String toolName : VALID_TOOL_NAMES)
             {
-                @SuppressWarnings("unused")
-                String a = toolName;
                 if (name.contains(toolName)) return true;
             }
 
             for (String toolName : INVALID_TOOL_NAMES)
             {
-                @SuppressWarnings("unused")
-                String a = toolName;
                 if (name.contains(toolName)) return false;
             }
 
@@ -119,6 +115,7 @@ public class SlotTool extends SlotAdventureBackpack
                 //  oops.printStackTrace();
             }
             //Thaumcraft
+            //TODO add Thaumcraft wands
             try
             {
                 //Thermal Expansion

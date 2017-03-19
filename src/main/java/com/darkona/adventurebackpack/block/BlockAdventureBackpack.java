@@ -276,10 +276,11 @@ public class BlockAdventureBackpack extends BlockContainer
     {
         if (!world.isRemote)
         {
-            Integer currentDimID = (player.worldObj.provider.dimensionId);
+            Integer currentDimID = player.worldObj.provider.dimensionId;
             for (String id : ConfigHandler.forbiddenDimensions)
             {
-                if (id.equals(currentDimID.toString())) return false;
+                if (id.equals(currentDimID.toString()))
+                    return false;
             }
 
             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
