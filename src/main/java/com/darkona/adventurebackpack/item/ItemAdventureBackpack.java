@@ -130,8 +130,8 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     public boolean placeBackpack(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, boolean from)
     {
+        if (stack.stackSize == 0 || !player.canPlayerEdit(x, y, z, side, stack)) return false;
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        if (!player.canPlayerEdit(x, y, z, side, stack)) return false;
         if (!stack.stackTagCompound.hasKey("colorName") || stack.stackTagCompound.getString("colorName").isEmpty())
         {
             stack.stackTagCompound.setString("colorName", "Standard");
@@ -183,7 +183,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
                     ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(stack.stackTagCompound);
                     if (from)
                     {
-                        player.inventory.decrStackSize(player.inventory.currentItem, 1);
+                        stack.stackSize--;
                     } else
                     {
                         BackpackProperty.get(player).setWearable(null);
