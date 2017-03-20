@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
@@ -21,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -113,6 +115,16 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
+    {
+        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerCopter)
+        {
+            player.closeScreen();
+        }
+        return super.onDroppedByPlayer(stack, player);
     }
 
     @Override
