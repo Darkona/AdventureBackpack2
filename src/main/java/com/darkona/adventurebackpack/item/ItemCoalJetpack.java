@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.ContainerJetpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
@@ -285,6 +286,16 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.setStatus(false);
         inv.setSystemTime(System.currentTimeMillis());
         inv.markDirty();
+    }
+
+    @Override
+    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
+    {
+        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerJetpack)
+        {
+            player.closeScreen();
+        }
+        return super.onDroppedByPlayer(stack, player);
     }
 
     @Override
