@@ -196,29 +196,6 @@ public class PlayerEventHandler
         }
     }
 
-    @SubscribeEvent
-    public void playerDeathDrop(PlayerDropsEvent event)
-    {
-        EntityPlayer player = event.entityPlayer;
-
-        if (Wearing.isWearingWearable(player))
-        {
-            ItemStack pack = Wearing.getWearingWearable(player);
-            BackpackProperty props = BackpackProperty.get(player);
-
-            if (Utils.isSoulBounded(pack)
-                    || (ConfigHandler.backpackDeathPlace && pack.getItem() instanceof ItemAdventureBackpack))
-            {
-                ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
-                ServerProxy.storePlayerProps(player);
-            } else
-            {
-                event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
-                props.setWearable(null);
-            }
-        }
-    }
-
     @SubscribeEvent(priority = EventPriority.LOW)
     public void playerDies(LivingDeathEvent event)
     {
@@ -230,14 +207,11 @@ public class PlayerEventHandler
             {
                 BackpackProperty props = BackpackProperty.get(player);
 
-                if (ConfigHandler.enableSpawnAtCampfire && props.isForcedCampFire())
-                //TODO check campfire behavior, dim respected, special dim cases, 0/0/0 spawn sometimes, override bed spawn? etc.
+                if (ConfigHandler.enableCampfireSpawn && props.isForcedCampFire())
                 {
                     ChunkCoordinates lastCampFire = props.getCampFire();
-
                     if (lastCampFire != null)
                     {
-                        //TODO check negative coords shift, min<Y<max, radius 3(?). dim ofc
                         player.setSpawnChunk(lastCampFire, false, player.dimension);
                     }
                     //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
@@ -259,6 +233,29 @@ public class PlayerEventHandler
             }
         }
         event.setResult(Event.Result.ALLOW);
+    }
+
+    @SubscribeEvent
+    public void playerDeathDrop(PlayerDropsEvent event)
+    {
+        EntityPlayer player = event.entityPlayer;
+
+        if (Wearing.isWearingWearable(player))
+        {
+            ItemStack pack = Wearing.getWearingWearable(player);
+            BackpackProperty props = BackpackProperty.get(player);
+
+            if (Utils.isSoulBounded(pack)
+                    || (ConfigHandler.backpackDeathPlace && pack.getItem() instanceof ItemAdventureBackpack))
+            {
+                ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
+                ServerProxy.storePlayerProps(player);
+            } else
+            {
+                event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
+                props.setWearable(null);
+            }
+        }
     }
 
     @SubscribeEvent

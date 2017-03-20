@@ -40,6 +40,8 @@ public class SlotTool extends SlotAdventureBackpack
         {
             Item item = stack.getItem();
             String name = item.getUnlocalizedName().toLowerCase();
+            String nameObj = Item.itemRegistry.getNameForObject(item);
+            String clazz = item.getClass().getName();
 
             // Vanilla
             if (item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemShears || item instanceof ItemFishingRod || item instanceof ItemFlintAndSteel)
@@ -61,14 +63,17 @@ public class SlotTool extends SlotAdventureBackpack
                 return true;
             }
             //Charged baterries and such
-            if (name.contains("gt.metaitem")) return false;
+            if (name.startsWith("gt.metaitem")) return false;
 
             //Ender IO
             //Yeta Wrench uses shift+Scroll for switch own modes
-            if (Item.itemRegistry.getNameForObject(item).equals("EnderIO:itemYetaWrench")) return false;
+            if (nameObj.equals("EnderIO:itemYetaWrench")) return false;
 
             //Extra Utilities
-            if (item.getClass().getName().equals("com.rwtema.extrautils.item.ItemBuildersWand")) return true;
+            if (clazz.equals("com.rwtema.extrautils.item.ItemBuildersWand")) return true;
+
+            // Better builders Wands
+            if (nameObj.startsWith("betterbuilderswands:wand")) return true;
 
             // Just for extra compatibility and/or security and/or less annoyance
             for (String toolName : VALID_TOOL_NAMES)
@@ -85,7 +90,7 @@ public class SlotTool extends SlotAdventureBackpack
             try
             {
                 // Tinker's Construct
-                if (item.getClass().getName().contains("tconstruct.items.tools")) return true;
+                if (clazz.contains("tconstruct.items.tools")) return true;
             } catch (Exception oops)
             {
                 //  oops.printStackTrace();
@@ -93,7 +98,7 @@ public class SlotTool extends SlotAdventureBackpack
             try
             {
                 // Mekanism
-                if (item.getClass().getName().contains("mekanism.common.item")) return true;
+                if (clazz.contains("mekanism.common.item")) return true;
             } catch (Exception oops)
             {
                 //  oops.printStackTrace();
@@ -114,8 +119,14 @@ public class SlotTool extends SlotAdventureBackpack
             {
                 //  oops.printStackTrace();
             }
-            //Thaumcraft
-            //TODO add Thaumcraft wands
+            try
+            {
+                //Thaumcraft
+                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item)) return true;
+            } catch (Exception oops)
+            {
+                //  oops.printStackTrace();
+            }
             try
             {
                 //Thermal Expansion
