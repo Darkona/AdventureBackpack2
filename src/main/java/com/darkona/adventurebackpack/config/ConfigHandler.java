@@ -25,8 +25,8 @@ public class ConfigHandler
     public static boolean allowSoulBound = true;
     public static boolean backpackDeathPlace = true;
     public static boolean backpackAbilities = true;
+    public static boolean enableCampfireSpawn = false;
     public static boolean enableHoseDrink = true;
-    public static boolean enableSpawnAtCampfire = false;
     public static boolean enableToolsCycling = true;
     public static boolean fixLead = true;
 
@@ -111,8 +111,8 @@ public class ConfigHandler
                 "disabled in both Client and Server to work properly");
         backpackDeathPlace = config.getBoolean("Backpack Death Place", "gameplay", true,"Place backpacks as a block when you die?");
         fixLead = config.getBoolean("Fix Vanilla Lead", "gameplay", true, "Fix the vanilla Lead? (Checks mobs falling on a leash to not die of fall damage if they're not falling so fast)");
+        enableCampfireSpawn = config.getBoolean("Enable Campfire Spawn", "gameplay", false, "Enable/Disable ability to spawn at campfire");
         enableHoseDrink = config.getBoolean("Enable Hose Drink", "gameplay", true, "Enable/Disable hose drink mode");
-        enableSpawnAtCampfire = config.getBoolean("Enable Spawn at Campfire", "gameplay", false, "Enable/Disable ability to spawn at campfire");
         enableToolsCycling = config.getBoolean("Enable Tools Cycling", "gameplay", true, "Enable/Disable tool cycling");
 
         // Graphics
