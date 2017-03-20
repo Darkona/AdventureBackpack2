@@ -12,6 +12,7 @@ import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
@@ -28,6 +29,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -224,7 +226,11 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
     {
-        return true;
+        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerBackpack)
+        {
+            player.closeScreen();
+        }
+        return super.onDroppedByPlayer(stack, player);
     }
 
     @SideOnly(Side.CLIENT)
