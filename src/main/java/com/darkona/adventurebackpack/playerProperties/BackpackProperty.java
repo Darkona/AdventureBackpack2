@@ -99,7 +99,7 @@ public class BackpackProperty implements IExtendedEntityProperties
             compound.setInteger("campFireX", campFire.posX);
             compound.setInteger("campFireY", campFire.posY);
             compound.setInteger("campFireZ", campFire.posZ);
-            compound.setInteger("campFireDim", dimension);
+            compound.setInteger("campFireDim", dimension); //TODO use it for check dim
 
         }
         compound.setBoolean("forceCampFire", forceCampFire);
@@ -120,7 +120,7 @@ public class BackpackProperty implements IExtendedEntityProperties
             setWearable(compound.hasKey("wearable") ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null);
             setCampFire(new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")));
             dimension = compound.getInteger("campFireDim");
-            forceCampFire = compound.getBoolean("forceCampfire");
+            forceCampFire = compound.getBoolean("forceCampFire");
         }
     }
 
