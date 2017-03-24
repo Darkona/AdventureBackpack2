@@ -2,20 +2,6 @@ package com.darkona.adventurebackpack.item;
 
 import java.util.List;
 
-import com.darkona.adventurebackpack.client.models.ModelCopterPack;
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.ContainerCopter;
-import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
-import com.darkona.adventurebackpack.network.GUIPacket;
-import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
-import com.darkona.adventurebackpack.proxy.ClientProxy;
-import com.darkona.adventurebackpack.reference.GeneralReference;
-import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
@@ -29,6 +15,20 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.client.models.ModelCopterPack;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.ContainerCopter;
+import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
+import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
+import com.darkona.adventurebackpack.proxy.ClientProxy;
+import com.darkona.adventurebackpack.reference.GeneralReference;
+import com.darkona.adventurebackpack.util.EnchUtils;
+import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 31/12/2014
@@ -59,7 +59,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book)
     {
-        return (Utils.isSoulBook(book));
+        return EnchUtils.isSoulBook(book);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     {
     }
 
-    @SuppressWarnings(value = "unchecked")
+    @SuppressWarnings("unchecked")
     public void pushEntities(World world, EntityPlayer player, float speed)
     {
         double posX = player.posX;

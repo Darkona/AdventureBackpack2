@@ -1,12 +1,14 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.client.models.ModelCampFire;
-import com.darkona.adventurebackpack.util.Resources;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+
+import com.darkona.adventurebackpack.client.models.ModelCampFire;
+import com.darkona.adventurebackpack.util.Resources;
 
 /**
  * Created on 05/01/2015

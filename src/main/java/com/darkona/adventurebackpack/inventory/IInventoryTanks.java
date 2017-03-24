@@ -10,15 +10,15 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public interface IInventoryTanks extends IAsynchronousInventory
 {
-    public boolean updateTankSlots();
+    boolean updateTankSlots();
 
-    public void loadFromNBT(NBTTagCompound compound);
+    void loadFromNBT(NBTTagCompound compound);
 
-    public void saveToNBT(NBTTagCompound compound);
+    void saveToNBT(NBTTagCompound compound);
 
-    public FluidTank[] getTanksArray();
+    FluidTank[] getTanksArray();
 
-    public void dirtyInventory();
+    void dirtyInventory();
 
-    public void dirtyTanks();
+    void dirtyTanks();
 }

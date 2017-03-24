@@ -1,14 +1,15 @@
 package com.darkona.adventurebackpack.network;
 
-import com.darkona.adventurebackpack.common.ServerActions;
-import com.darkona.adventurebackpack.util.Wearing;
+import io.netty.buffer.ByteBuf;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
+
+import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 12/10/2014
@@ -32,17 +33,17 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
 
             if (player != null)
             {
-                if((message.type == COPTER_ON_OFF || message.type == COPTER_TOGGLE))
+                if ((message.type == COPTER_ON_OFF || message.type == COPTER_TOGGLE))
                     ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), message.type);
 
-                if(message.type == JETPACK_ON_OFF)
-                    ServerActions.toggleCoalJetpack(player,Wearing.getWearingJetpack(player),message.type);
+                if (message.type == JETPACK_ON_OFF)
+                    ServerActions.toggleCoalJetpack(player, Wearing.getWearingJetpack(player), message.type);
 
-                if(message.type == CYCLING_ON_OFF)
-                    ServerActions.toggleToolCycling(player,Wearing.getWearingBackpack(player),message.type);
+                if (message.type == CYCLING_ON_OFF)
+                    ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player), message.type);
 
-                if(message.type == NIGHTVISION_ON_OFF)
-                    ServerActions.toggleNightVision(player,Wearing.getWearingBackpack(player),message.type);
+                if (message.type == NIGHTVISION_ON_OFF)
+                    ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player), message.type);
             }
 
         }

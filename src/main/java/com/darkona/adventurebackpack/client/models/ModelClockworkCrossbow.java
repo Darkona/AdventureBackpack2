@@ -1,13 +1,15 @@
 package com.darkona.adventurebackpack.client.models;
 
-import com.darkona.adventurebackpack.client.render.RendererStack;
-import com.darkona.adventurebackpack.util.Utils;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
+
+import com.darkona.adventurebackpack.client.render.RendererStack;
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * clockworkCrossbow - Darkona
@@ -98,7 +100,6 @@ public class ModelClockworkCrossbow extends ModelBase
         this.sniperLeg1_1.setRotationPoint(2.0F, 3.0F, -12.0F);
         this.sniperLeg1_1.addBox(-0.5F, 0.0F, -0.5F, 1, 7, 1, 0.0F);
         this.setRotateAngle(sniperLeg1_1, 0.0F, 0.0F, -0.4363323129985824F);
-
 
 
         this.hookTooth2 = new ModelRenderer(this, 0, 0);
@@ -200,8 +201,9 @@ public class ModelClockworkCrossbow extends ModelBase
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack xbow)
     {
         this.xbow = xbow;
-        render(entity,f,f1,f2,f3,f4,f5);
+        render(entity, f, f1, f2, f3, f4, f5);
     }
+
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
@@ -217,7 +219,7 @@ public class ModelClockworkCrossbow extends ModelBase
         this.point.render(f5);
 
         this.handle2.render(f5);
-        this.handle.render(1/18f);
+        this.handle.render(1 / 18f);
         this.magazine.render(f5);
 
 
@@ -233,17 +235,18 @@ public class ModelClockworkCrossbow extends ModelBase
             setOffset(arrow, -.75f, .1f, -.2f);
             arrow.render(f5);
         }
-        if(xbow != null && xbow.hasTagCompound() && xbow.stackTagCompound.hasKey("Shot"))
+        if (xbow != null && xbow.hasTagCompound() && xbow.stackTagCompound.hasKey("Shot"))
         {
-            if((xbow.stackTagCompound.getByte("Shot")>0))
+            if ((xbow.stackTagCompound.getByte("Shot") > 0))
             {
                 setRotateAngle(stringLeft, 1.5707963267948966F, -0.5235987755982988F, 0.0F);
                 setRotateAngle(stringRight, -1.5707963267948966F, 0.5235987755982988F, 0.0F);
-            }else
+            } else
             {
-               renderNormal();
+                renderNormal();
             }
-        }else{
+        } else
+        {
             renderNormal();
         }
         this.leftArc1.render(f5);
@@ -258,7 +261,7 @@ public class ModelClockworkCrossbow extends ModelBase
         setRotateAngle(arrow, Utils.degreesToRadians(-90), Utils.degreesToRadians(0), Utils.degreesToRadians(90));
         arrow.setRotationPoint(xbowBody.rotationPointX, xbowBody.rotationPointY, xbowBody.rotationPointZ);
         GL11.glPushMatrix();
-        GL11.glScalef(1.0f,1.0f,2f);
+        GL11.glScalef(1.0f, 1.0f, 2f);
         arrow.render(1 / 14);
         GL11.glPopMatrix();
     }

@@ -1,12 +1,13 @@
 package com.darkona.adventurebackpack.init.recipes;
 
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import java.util.List;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import java.util.List;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 
 /**
  * Created on 20/10/2014
@@ -122,7 +123,7 @@ public class BackpackRecipesList
                 'E', Items.emerald,
                 'D', Items.diamond
         );
-        
+
         Chest = reviewRecipe(
                 "CWC",
                 "WaW",

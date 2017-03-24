@@ -2,9 +2,9 @@ package com.darkona.adventurebackpack.reference;
 
 import java.util.HashMap;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
-
 import net.minecraftforge.fluids.Fluid;
+
+import com.darkona.adventurebackpack.config.ConfigHandler;
 
 /**
  * Created on 16/01/2015

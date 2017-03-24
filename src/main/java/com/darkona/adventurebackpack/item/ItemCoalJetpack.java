@@ -1,18 +1,5 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.ContainerJetpack;
-import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
-import com.darkona.adventurebackpack.network.GUIPacket;
-import com.darkona.adventurebackpack.network.PlayerActionPacket;
-import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
-import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
-import com.darkona.adventurebackpack.proxy.ClientProxy;
-import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
@@ -24,6 +11,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.ContainerJetpack;
+import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
+import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.network.PlayerActionPacket;
+import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
+import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
+import com.darkona.adventurebackpack.proxy.ClientProxy;
+import com.darkona.adventurebackpack.util.EnchUtils;
+import com.darkona.adventurebackpack.util.Resources;
 
 /**
  * Created on 15/01/2015
@@ -53,7 +53,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book)
     {
-        return (Utils.isSoulBook(book));
+        return EnchUtils.isSoulBook(book);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.openInventory();
         boolean mustFizzz = !inv.isInUse();
         int CoalConsumed = 13;
-        boolean canUse = inv.getCoalTank().drain(CoalConsumed, false) != null;
+        boolean canUse = inv.getSteamTank().drain(CoalConsumed, false) != null;
 
         if (inv.getStatus())
         {
@@ -171,8 +171,8 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         {
 
             elevate(player);
-            inv.getCoalTank().drain(CoalConsumed, true);
-            if (inv.getCoalTank().getFluidAmount() == 0)
+            inv.getSteamTank().drain(CoalConsumed, true);
+            if (inv.getSteamTank().getFluidAmount() == 0)
             {
                 inv.setInUse(false);
             }
@@ -185,7 +185,8 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             {
                 player.fallDistance = 0;
             }
-            if (!world.isRemote) ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE, player), player);
+            if (!world.isRemote)
+                ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE, player), player);
 
         }
         inv.closeInventory();
@@ -195,8 +196,8 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     {
         int temperature = inv.getTemperature();
         boolean mustSSSSS = !inv.isLeaking();
-        boolean mustBlublub = !inv.isWater();
-        boolean Water = inv.isWater();
+        boolean mustBlublub = !inv.isBoiling();
+        boolean Water = inv.isBoiling();
         boolean leaking = inv.isLeaking();
 
         if (temperature >= 100 && inv.getWaterTank().getFluidAmount() > 0)
@@ -217,18 +218,18 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 
         if (Water)
         {
-            if (inv.getCoalTank().getFluidAmount() < inv.getCoalTank().getCapacity())
+            if (inv.getSteamTank().getFluidAmount() < inv.getSteamTank().getCapacity())
             {
                 if (inv.getWaterTank().getFluid() != null)
                 {
                     int water = inv.getWaterTank().drain((temperature / 100), true).amount;
-                    inv.getCoalTank().fill(new FluidStack(FluidRegistry.getFluid("water"), water * 4), true);
+                    inv.getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("water"), water * 4), true);
                     inv.dirtyTanks();
                 }
             }
         }
 
-        if (inv.getCoalTank().getFluidAmount() < inv.getCoalTank().getCapacity() - 100)
+        if (inv.getSteamTank().getFluidAmount() < inv.getSteamTank().getCapacity() - 100)
         {
             if (leaking)
             {
@@ -245,7 +246,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
                 }
             }
         }
-        inv.setWater(Water);
+        inv.setBoiling(Water);
         inv.setLeaking(leaking);
         inv.setTemperature(temperature);
     }
@@ -280,7 +281,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
-        inv.setWater(false);
+        inv.setBoiling(false);
         inv.setInUse(false);
         inv.setLeaking(false);
         inv.setStatus(false);

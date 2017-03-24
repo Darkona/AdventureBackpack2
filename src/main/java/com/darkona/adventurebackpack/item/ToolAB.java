@@ -2,15 +2,15 @@ package com.darkona.adventurebackpack.item;
 
 import java.util.Set;
 
-import com.darkona.adventurebackpack.reference.ModInfo;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.reference.ModInfo;
 
 /**
  * Created by Darkona on 11/10/2014.
@@ -18,7 +18,7 @@ import net.minecraft.item.ItemTool;
 public class ToolAB extends ItemTool
 {
 
-    public ToolAB(ToolMaterial material, @SuppressWarnings("rawtypes") Set breakableBlocks)
+    public ToolAB(ToolMaterial material, Set breakableBlocks)
     {
         super(1f, material, breakableBlocks);
         //setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);

@@ -1,11 +1,11 @@
 package com.darkona.adventurebackpack.util;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * Created on 10/10/2014

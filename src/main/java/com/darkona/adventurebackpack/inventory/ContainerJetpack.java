@@ -18,6 +18,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
     private final int PLAYER_HOT_START = 0;
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
+    @SuppressWarnings("FieldCanBeLocal")
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
     boolean wearing;
 

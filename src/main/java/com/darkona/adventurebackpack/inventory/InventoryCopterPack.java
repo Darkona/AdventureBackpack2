@@ -1,14 +1,15 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.item.ItemCopterPack;
-import com.darkona.adventurebackpack.reference.GeneralReference;
-import com.darkona.adventurebackpack.util.FluidUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.reference.GeneralReference;
+import com.darkona.adventurebackpack.util.FluidUtils;
 
 /**
  * Created on 02/01/2015
@@ -18,7 +19,7 @@ import net.minecraftforge.fluids.FluidTank;
 public class InventoryCopterPack implements IInventoryTanks
 {
     private ItemStack containerStack;
-    public FluidTank fuelTank = new FluidTank(6000);
+    public FluidTank fuelTank = new FluidTank(Constants.copterTankCapacity);
     public int tickCounter = 0;
     public byte status = ItemCopterPack.OFF_MODE;
     private ItemStack[] inventory = new ItemStack[2];
@@ -182,8 +183,6 @@ public class InventoryCopterPack implements IInventoryTanks
 
     public void onInventoryChanged()
     {
-
-        @SuppressWarnings("unused")
         ItemStack container = getStackInSlot(0);
 
         closeInventory();
@@ -262,7 +261,7 @@ public class InventoryCopterPack implements IInventoryTanks
     @Override
     public FluidTank[] getTanksArray()
     {
-        FluidTank[] tanks = { fuelTank };
+        FluidTank[] tanks = {fuelTank};
         return tanks;
     }
 

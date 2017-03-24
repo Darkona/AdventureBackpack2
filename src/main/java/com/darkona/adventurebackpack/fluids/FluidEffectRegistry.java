@@ -1,17 +1,22 @@
 package com.darkona.adventurebackpack.fluids;
 
-import adventurebackpack.api.FluidEffect;
-import com.darkona.adventurebackpack.fluids.effects.*;
-import com.darkona.adventurebackpack.util.LogHelper;
+import java.util.ArrayList;
+import java.util.Map;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
-import java.util.ArrayList;
-import java.util.Map;
+import com.darkona.adventurebackpack.fluids.effects.LavaEffect;
+import com.darkona.adventurebackpack.fluids.effects.MelonJuiceEffect;
+import com.darkona.adventurebackpack.fluids.effects.MilkEffect;
+import com.darkona.adventurebackpack.fluids.effects.MushroomStewEffect;
+import com.darkona.adventurebackpack.util.LogHelper;
+import adventurebackpack.api.FluidEffect;
 
 /**
  * Created on 12/10/2014

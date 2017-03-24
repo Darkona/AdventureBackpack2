@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.proxy;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -12,21 +11,14 @@ import net.minecraft.nbt.NBTTagCompound;
 public interface IProxy
 {
 
-    public void init();
+    void init();
 
-    public void registerKeybindings();
+    void registerKeybindings();
 
     void initNetwork();
 
-    public void joinPlayer(EntityPlayer player);
+    void joinPlayer(EntityPlayer player);
 
-    public void synchronizePlayer(int id, NBTTagCompound compound);
+    void synchronizePlayer(int id, NBTTagCompound compound);
 
-    void registerHandlers();
-
-    void init(FMLInitializationEvent event);
-
-    public void registerRenderInformation();
-
-    void Capes();
 }

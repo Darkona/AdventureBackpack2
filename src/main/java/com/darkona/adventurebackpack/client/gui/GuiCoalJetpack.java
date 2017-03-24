@@ -2,6 +2,11 @@ package com.darkona.adventurebackpack.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidTank;
+
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -11,11 +16,6 @@ import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidTank;
 
 /**
  * Created on 15/01/2015
@@ -70,9 +70,7 @@ public class GuiCoalJetpack extends GuiWithTanks
                 equipButton.draw(this, 1, 167);
             }
         }
-
         //if (wearing) inventory = new InventoryCoalJetpack(Wearing.getWearingJetpack(player));
-
     }
 
     @Override
@@ -82,7 +80,7 @@ public class GuiCoalJetpack extends GuiWithTanks
         if (wearing)
             inventory = new InventoryCoalJetpack(Wearing.getWearingJetpack(player));
         FluidTank water = inventory.getWaterTank();
-        FluidTank steam = inventory.getCoalTank();
+        FluidTank steam = inventory.getSteamTank();
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

@@ -7,13 +7,10 @@ package com.darkona.adventurebackpack.reference;
  */
 public final class Names
 {
-
     public static final class keys
     {
-
         public static final String CATEGORY = "keys.adventureBackpack.category";
         public static String OPEN_BACKPACK_INVENTORY = "keys.adventureBackpack.openBackpackInventory";
-        public static String TOGGLE_HOSE_TANK = "keys.adventureBackpack.switchHoseTank";
+        public static String TOGGLE_BACKPACK_ACTIONS = "keys.adventureBackpack.switchHoseTank";
     }
-
 }

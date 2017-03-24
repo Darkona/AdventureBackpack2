@@ -1,8 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemHose;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
@@ -11,6 +8,9 @@ import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.item.ItemHose;
 
 /**
  * Created on 12/10/2014
@@ -30,9 +30,9 @@ public class SlotTool extends SlotAdventureBackpack
         return isValidTool(stack);
     }
 
-    private static final String[] VALID_TOOL_NAMES = { "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", };
+    private static final String[] VALID_TOOL_NAMES = {"wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill",};
 
-    private static final String[] INVALID_TOOL_NAMES = { "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit" };
+    private static final String[] INVALID_TOOL_NAMES = {"bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"};
 
     public static boolean isValidTool(ItemStack stack)
     {
@@ -122,7 +122,8 @@ public class SlotTool extends SlotAdventureBackpack
             try
             {
                 //Thaumcraft
-                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item)) return true;
+                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item))
+                    return true;
             } catch (Exception oops)
             {
                 //  oops.printStackTrace();

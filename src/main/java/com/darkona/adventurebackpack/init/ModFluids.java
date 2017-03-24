@@ -1,14 +1,14 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.fluids.FluidMelonJuice;
-import com.darkona.adventurebackpack.fluids.FluidMilk;
-import com.darkona.adventurebackpack.fluids.FluidMushroomStew;
-import com.darkona.adventurebackpack.reference.GeneralReference;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+
+import com.darkona.adventurebackpack.fluids.FluidMelonJuice;
+import com.darkona.adventurebackpack.fluids.FluidMilk;
+import com.darkona.adventurebackpack.fluids.FluidMushroomStew;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 
 /**
  * Created on 12/10/2014.

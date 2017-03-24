@@ -1,9 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.util.FluidUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -11,6 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.util.FluidUtils;
 
 /**
  * Created on 16/10/2014
@@ -28,13 +28,13 @@ public class InventoryActions
      * it simply fills the tank.
      *
      * @param inventory The inventory type thing that will have its tank updated.
-     * @param tank     The tank that's going to be updated.
-     * @param slotIn   The slot in which the fluid container item must be to update the tank.
+     * @param tank      The tank that's going to be updated.
+     * @param slotIn    The slot in which the fluid container item must be to update the tank.
      * @return True if the tank was filled and the resulting filled or empty container item was placed in the other slot.
      */
     public static boolean transferContainerTank(IInventoryTanks inventory, FluidTank tank, int slotIn)
     {
-	ItemStack stackIn = inventory.getStackInSlot(slotIn);
+        ItemStack stackIn = inventory.getStackInSlot(slotIn);
         if (tank == null || stackIn == null) return false;
 
         //Set slot out for whatever number the output slot should be.
@@ -100,9 +100,8 @@ public class InventoryActions
                     inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
                     //inventory.dirtyInventory();
                     return true;
-                } else
-                if (stackOut != null && stackOut.getItem() != null  // ??!
-                    && stackOut.getItem() == inventory.getStackInSlot(slotOut).getItem())
+                } else if (stackOut != null && stackOut.getItem() != null  // ??!
+                        && stackOut.getItem() == inventory.getStackInSlot(slotOut).getItem())
                 {
                     int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
                     if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
@@ -133,7 +132,7 @@ public class InventoryActions
         }
         if (i >= 0)
         {
-           backpack.decrStackSize(i,1);
+            backpack.decrStackSize(i, 1);
         }
     }
 

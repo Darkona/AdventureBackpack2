@@ -4,22 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.darkona.adventurebackpack.develop.DeveloperJoining;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.util.LogHelper;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.util.LogHelper;
 
 /**
  * Created on 22/12/2014
  *
  * @author Darkona
  */
-@SuppressWarnings("unused")
 public class ServerProxy implements IProxy
 {
     private static final Map<UUID, NBTTagCompound> extendedEntityData = new HashMap<UUID, NBTTagCompound>();
@@ -27,13 +23,11 @@ public class ServerProxy implements IProxy
     @Override
     public void init()
     {
-        FMLCommonHandler.instance().bus().register(new DeveloperJoining());
     }
 
     @Override
     public void registerKeybindings()
     {
-
     }
 
     @Override
@@ -84,29 +78,5 @@ public class ServerProxy implements IProxy
     public static NBTTagCompound extractPlayerProps(UUID playerID)
     {
         return extendedEntityData.remove(playerID);
-    }
-
-    @Override
-    public void registerHandlers()
-    {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void registerRenderInformation()
-    {
-
-    }
-
-    @Override
-    public void init(FMLInitializationEvent event)
-    {
-        FMLCommonHandler.instance().bus().register(new DeveloperJoining());
-    }
-
-    @Override
-    public void Capes()
-    {
-        // TODO Auto-generated method stub
     }
 }

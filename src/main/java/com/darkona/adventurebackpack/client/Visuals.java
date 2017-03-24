@@ -1,13 +1,13 @@
 package com.darkona.adventurebackpack.client;
 
-import com.darkona.adventurebackpack.entity.fx.SteamFX;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
+import com.darkona.adventurebackpack.entity.fx.SteamFX;
 
 /**
  * Created on 17/10/2014

@@ -1,16 +1,17 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 /**
  * Created on 12/10/2014
@@ -18,11 +19,10 @@ import org.lwjgl.opengl.GL12;
  * @author Darkona
  */
 
-@SuppressWarnings("unused")
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
 
-    //    private ModelAdventureBackpackBlock model;
+    //private ModelAdventureBackpackBlock model;
     private ModelBackpackBlock model;
 
     public RendererAdventureBackpackBlock()
@@ -81,6 +81,5 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         GL11.glPopMatrix();
 
     }
-
 
 }

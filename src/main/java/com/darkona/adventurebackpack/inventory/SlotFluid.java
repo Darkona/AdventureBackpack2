@@ -1,12 +1,12 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.util.Utils;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 12/10/2014
@@ -15,11 +15,11 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class SlotFluid extends SlotAdventureBackpack
 {
-    private static final String[] VALID_CONTAINER_NAMES = { "bucket" };
+    private static final String[] VALID_CONTAINER_NAMES = {"bucket"};
 
-    private static final String[] VALID_CONTAINER_IDS = { "minecraft:milk_bucket" };
+    private static final String[] VALID_CONTAINER_IDS = {"minecraft:milk_bucket"};
 
-    private static final String[] INVALID_CONTAINER_NAMES = { "cell" };
+    private static final String[] INVALID_CONTAINER_NAMES = {"cell"};
 
     public SlotFluid(IInventory inventory, int id, int x, int y)
     {

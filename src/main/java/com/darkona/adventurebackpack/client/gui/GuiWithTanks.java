@@ -25,6 +25,9 @@ public abstract class GuiWithTanks extends GuiContainer
         return guiTop;
     }
 
-    public float getZLevel() {return zLevel;}
+    public float getZLevel()
+    {
+        return zLevel;
+    }
 
 }

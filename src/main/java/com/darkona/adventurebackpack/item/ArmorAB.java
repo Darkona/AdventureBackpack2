@@ -1,19 +1,20 @@
 package com.darkona.adventurebackpack.item;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.init.ModMaterials;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Resources;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
-
 /**
  * Created on 11/10/2014.
+ *
  * @author Javier Darkona
  */
 public class ArmorAB extends ItemArmor

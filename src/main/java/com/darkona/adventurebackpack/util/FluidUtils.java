@@ -20,7 +20,7 @@ public class FluidUtils
             {
                 if ((data.fluid.getFluid().getID() == fluid.getID())
                         && (data.emptyContainer.getItem().equals(container.getItem())
-                                || data.filledContainer.getItem().equals(container.getItem())))
+                        || data.filledContainer.getItem().equals(container.getItem())))
                 {
                     return true;
                 }

@@ -1,12 +1,12 @@
 package com.darkona.adventurebackpack.client.audio;
 
-import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
-import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.Wearing;
-
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+
+import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
+import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 16/01/2015

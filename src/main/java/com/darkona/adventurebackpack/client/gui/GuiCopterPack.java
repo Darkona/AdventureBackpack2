@@ -2,6 +2,10 @@ package com.darkona.adventurebackpack.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidTank;
+
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -11,10 +15,6 @@ import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidTank;
 
 /**
  * Created on 03/01/2015

@@ -1,11 +1,11 @@
 package com.darkona.adventurebackpack.reference;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created on 15/10/2014
