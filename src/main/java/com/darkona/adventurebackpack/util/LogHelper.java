@@ -2,10 +2,10 @@ package com.darkona.adventurebackpack.util;
 
 import org.apache.logging.log4j.Level;
 
-import com.darkona.adventurebackpack.reference.ModInfo;
-
-import cpw.mods.fml.common.FMLLog;
 import net.minecraft.util.ChunkCoordinates;
+import cpw.mods.fml.common.FMLLog;
+
+import com.darkona.adventurebackpack.reference.ModInfo;
 
 /**
  * Created by Darkona on 12/10/2014.

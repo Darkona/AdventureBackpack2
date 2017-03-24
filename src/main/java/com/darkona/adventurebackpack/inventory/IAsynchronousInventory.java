@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
  */
 public interface IAsynchronousInventory extends IInventory
 {
-    public void setInventorySlotContentsNoSave(int slot, ItemStack stack);
+    void setInventorySlotContentsNoSave(int slot, ItemStack stack);
 
-    public ItemStack decrStackSizeNoSave(int slot, int amount);
+    ItemStack decrStackSizeNoSave(int slot, int amount);
 }

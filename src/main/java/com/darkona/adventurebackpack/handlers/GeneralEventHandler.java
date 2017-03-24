@@ -2,18 +2,6 @@ package com.darkona.adventurebackpack.handlers;
 
 import java.util.UUID;
 
-import com.darkona.adventurebackpack.common.ServerActions;
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
-import com.darkona.adventurebackpack.events.WearableEvent;
-import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
-import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.passive.EntityHorse;
@@ -29,6 +17,18 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fluids.FluidRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
+import com.darkona.adventurebackpack.events.WearableEvent;
+import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
+import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 17/10/2014
@@ -47,7 +47,7 @@ public class GeneralEventHandler
         if (ConfigHandler.backpackAbilities)
         {
             if (event.item.getItem() instanceof ItemAppleGold &&
-            //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
+                    //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
                     Wearing.isWearingTheRightBackpack(player, "Rainbow"))
             {
 

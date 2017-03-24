@@ -1,16 +1,18 @@
 package com.darkona.adventurebackpack.client.models;
 
-import codechicken.lib.vec.Vector3;
-import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
-import com.darkona.adventurebackpack.item.ItemCopterPack;
-import com.darkona.adventurebackpack.util.Utils;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
+import codechicken.lib.vec.Vector3;
 
-import java.util.List;
+import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
+import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 31/12/2014
@@ -55,7 +57,6 @@ public class ModelCopterPack extends ModelWearable
         this.Base.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.Base.addBox(-4.0F, 0.0F, 2.0F, 8, 12, 1);
 
-
         //TANK
 
         this.TankTop = new ModelRenderer(this, 0, 33);
@@ -97,7 +98,6 @@ public class ModelCopterPack extends ModelWearable
         this.FuelLine2.setRotationPoint(0.0F, 8.0F, 0.0F);
         this.FuelLine2.addBox(1.0F, 1.0F, 2.0F, 1, 1, 1, 0.0F);
         this.TankBottom.addChild(this.FuelLine2);
-
 
         //ENGINE
         this.EngineBody = new ModelRenderer(this, 0, 23);
@@ -181,6 +181,7 @@ public class ModelCopterPack extends ModelWearable
         this.copterPack = wearable;
         return this;
     }
+
     public ModelCopterPack(ItemStack wearable)
     {
         this.copterPack = wearable;
@@ -219,11 +220,12 @@ public class ModelCopterPack extends ModelWearable
         renderFluidInTank(copterInv.getFuelTank(), new Vector3(0, .25f, 0), new Vector3(.25f, 0, .25f), new Vector3(0f, 0.0625f, 0.0f), TankTop);
     }
 
-   public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)
-   {
-       this.copterPack = stack;
-       render(entity, f, f1,f2,f3,f4,f5);
-   }
+    @Override
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)
+    {
+        this.copterPack = stack;
+        render(entity, f, f1, f2, f3, f4, f5);
+    }
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)

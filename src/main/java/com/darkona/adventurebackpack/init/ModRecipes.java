@@ -2,16 +2,16 @@ package com.darkona.adventurebackpack.init;
 
 import java.lang.reflect.Field;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import cpw.mods.fml.common.registry.GameRegistry;
+
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.LogHelper;
 
 /**
  * Created on 20/10/2014
@@ -56,7 +56,7 @@ public class ModRecipes
         //CoalJetpack
         if (ConfigHandler.recipeCoalJetpack)
         {
-            GameRegistry.addRecipe(new ItemStack(ModItems.CoalJetpack),
+            GameRegistry.addRecipe(new ItemStack(ModItems.coalJetpack),
                     "SWT",
                     "GIG",
                     "FWS",

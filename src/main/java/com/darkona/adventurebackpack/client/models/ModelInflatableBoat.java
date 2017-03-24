@@ -2,12 +2,12 @@ package com.darkona.adventurebackpack.client.models;
 
 import org.lwjgl.opengl.GL11;
 
-import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
-import com.darkona.adventurebackpack.util.Utils;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+
+import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * InflatableBoat - Darkona

@@ -1,19 +1,20 @@
 package com.darkona.adventurebackpack.network;
 
+import io.netty.buffer.ByteBuf;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -46,7 +47,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
 
                 if (message.type == COPTER_GUI)
                 {
-                    if(message.from == FROM_KEYBIND)
+                    if (message.from == FROM_KEYBIND)
                     {
                         if (Wearing.isWearingCopter(player))
                         {
@@ -54,7 +55,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                             return null;
                         }
                     }
-                    if(message.from == FROM_HOLDING)
+                    if (message.from == FROM_HOLDING)
                     {
                         if (Wearing.isHoldingCopter(player))
                         {
@@ -65,7 +66,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                 }
                 if (message.type == JETPACK_GUI)
                 {
-                    if(message.from == FROM_KEYBIND)
+                    if (message.from == FROM_KEYBIND)
                     {
                         if (Wearing.isWearingJetpack(player))
                         {
@@ -73,7 +74,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                             return null;
                         }
                     }
-                    if(message.from == FROM_HOLDING)
+                    if (message.from == FROM_HOLDING)
                     {
                         if (Wearing.isHoldingJetpack(player))
                         {

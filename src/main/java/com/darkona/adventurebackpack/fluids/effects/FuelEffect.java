@@ -1,14 +1,14 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
-import com.darkona.adventurebackpack.util.Utils;
-
-import adventurebackpack.api.FluidEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
+
+import com.darkona.adventurebackpack.util.Utils;
+import adventurebackpack.api.FluidEffect;
 
 /**
  * Created on 12/10/2014
@@ -31,7 +31,7 @@ public class FuelEffect extends FluidEffect
      * conditions based on where the player is.
      *
      * @param world  The World.
-     * @param player The Player.
+     * @param entity The Player.
      */
     @Override
     public void affectDrinker(World world, Entity entity)

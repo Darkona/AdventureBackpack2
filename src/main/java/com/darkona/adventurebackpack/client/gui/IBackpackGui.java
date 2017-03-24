@@ -10,13 +10,13 @@ import net.minecraft.util.IIcon;
 public interface IBackpackGui
 {
 
-    public void drawTexturedModelRectFromIcon(int i, int j, IIcon icon, int h, int w);
+    void drawTexturedModelRectFromIcon(int i, int j, IIcon icon, int h, int w);
 
-    public int getLeft();
+    int getLeft();
 
-    public int getTop();
+    int getTop();
 
     //public void drawTexturedModalRect(int i, int j, int srcX, int srcY, int w, int h);
 
-    public float getZLevel();
+    float getZLevel();
 }

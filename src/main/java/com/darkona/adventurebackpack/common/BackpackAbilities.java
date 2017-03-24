@@ -3,18 +3,6 @@ package com.darkona.adventurebackpack.common;
 import java.util.Iterator;
 import java.util.List;
 
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
-import com.darkona.adventurebackpack.init.ModFluids;
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -30,6 +18,18 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
+import com.darkona.adventurebackpack.init.ModFluids;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 12/10/2014
@@ -89,8 +89,8 @@ public class BackpackAbilities
             {
                 //This is black magic and shouldn't be attempted by the faint of heart.
                 this.getClass()
-                .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
-                .invoke(backpackAbilities, player, world, backpack);
+                        .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
+                        .invoke(backpackAbilities, player, world, backpack);
             } catch (Exception oops)
             {
                 //NOBODY CARES
@@ -111,8 +111,8 @@ public class BackpackAbilities
                     be very careful with "getMethod".
                  */
                 this.getClass()
-                .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
-                .invoke(backpackAbilities, world, backpack);
+                        .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
+                        .invoke(backpackAbilities, world, backpack);
             } catch (Exception oops)
             {
                 //Seriously, nobody cares if this can't work, this is just so the game won't explode.
@@ -129,8 +129,8 @@ public class BackpackAbilities
         {
             //This is black magic and shouldn't be attempted by the faint of heart.
             backpackRemovals.getClass()
-            .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
-            .invoke(backpackRemovals, player, world, backpack);
+                    .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
+                    .invoke(backpackRemovals, player, world, backpack);
         } catch (Exception oops)
         {
             LogHelper.error("---Something bad happened when removing a backpack---");
@@ -142,14 +142,14 @@ public class BackpackAbilities
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static String[] validWearingBackpacks =
-        {
-            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower", "Mooshroom"
-        };
+            {
+                    "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower", "Mooshroom"
+            };
 
     private static String[] validRemovalBackpacks =
-        {
-            "Bat", "Squid", "Pigman", "Dragon", "Rainbow"
-        };
+            {
+                    "Bat", "Squid", "Pigman", "Dragon", "Rainbow"
+            };
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -157,8 +157,7 @@ public class BackpackAbilities
      *
      * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
      */
-    @SuppressWarnings("unused")
-    private static String[] validTileBackpacks = { "Cactus", "Melon" };
+    private static String[] validTileBackpacks = {"Cactus", "Melon"};
 
     /**
      * Detects if a player is under the rain. For detecting when it is Under The Sea (maybe to sing a nice Disney tune)
@@ -169,12 +168,13 @@ public class BackpackAbilities
      */
     private boolean isUnderRain(EntityPlayer player)
     {
-        return player.worldObj.canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ)) || player.worldObj
-                .canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY + player.height), MathHelper.floor_double(player.posZ));
+        return player.worldObj.canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ))
+                || player.worldObj.canLightningStrikeAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY + player.height), MathHelper.floor_double(player.posZ));
     }
 
     /**
      * This backpack will feed you while you stay in the sun, slowly. At the very least you shouldn't starve.
+     *
      * @param player
      * @param world
      * @param backpack
@@ -202,6 +202,7 @@ public class BackpackAbilities
 
     /**
      * Nana nana nana nana Bat - Batpack! See in the dark!
+     *
      * @param player
      * @param world
      * @param backpack
@@ -220,8 +221,7 @@ public class BackpackAbilities
         if ((nightVision == null || nightVision.getDuration() < 222) && !Wearing.getBackpackInv(player, true).getDisableNVision())
         {
             player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 239, -1, true));
-        }
-        else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNVision())
+        } else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNVision())
         {
             backpackRemovals.itemBat(player, world, backpack);
         }
@@ -233,8 +233,7 @@ public class BackpackAbilities
         {
             player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 19, -1, true));
             itemBat(player, world, backpack);
-        }
-        else if (player.isPotionActive(Potion.waterBreathing.id) && player.getActivePotionEffect(Potion.waterBreathing).getAmplifier() == -1)
+        } else if (player.isPotionActive(Potion.waterBreathing.id) && player.getActivePotionEffect(Potion.waterBreathing).getAmplifier() == -1)
         {
             backpackRemovals.itemSquid(player, world, backpack);
         }
@@ -280,8 +279,7 @@ public class BackpackAbilities
                 {
                     player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 900, ConfigHandler.dragonBackpackRegen - 1, true));
                 }
-            }
-            else if (potion != null && potion.getAmplifier() == ConfigHandler.dragonBackpackRegen - 1)
+            } else if (potion != null && potion.getAmplifier() == ConfigHandler.dragonBackpackRegen - 1)
             {
                 if (player.worldObj.isRemote)
                 {
@@ -565,7 +563,6 @@ public class BackpackAbilities
 
     private FluidStack milkStack = new FluidStack(FluidRegistry.getFluid("milk"), 1);
     private FluidStack soupStack = new FluidStack(FluidRegistry.getFluid("mushroomstew"), 1);
-    @SuppressWarnings("unused")
     private FluidStack lavaStack = new FluidStack(FluidRegistry.LAVA, 1);
 
     /**

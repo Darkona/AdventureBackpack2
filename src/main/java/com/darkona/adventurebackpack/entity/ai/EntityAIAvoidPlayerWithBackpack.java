@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.entity.ai;
 
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.Wearing;
+import java.util.List;
+
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -13,7 +13,8 @@ import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.Vec3;
 
-import java.util.List;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -46,10 +47,9 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
     /**
      * The class of the com.darkona.adventurebackpack.entity we should avoid
      */
-    @SuppressWarnings("rawtypes")
-	private Class targetEntityClass;
+    private Class targetEntityClass;
 
-    public EntityAIAvoidPlayerWithBackpack(EntityCreature par1EntityCreature, @SuppressWarnings("rawtypes") Class par2Class, float par3, double par4, double par6, String colorName)
+    public EntityAIAvoidPlayerWithBackpack(EntityCreature par1EntityCreature, Class par2Class, float par3, double par4, double par6, String colorName)
     {
         this.theEntity = par1EntityCreature;
         this.targetEntityClass = par2Class;
@@ -64,6 +64,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
+    @Override
     public boolean shouldExecute()
     {
         if (this.targetEntityClass == EntityPlayer.class)
@@ -93,7 +94,6 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
                 return false;
             }
 
-
             Vec3 vec3 = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.theEntity, 16, 7, Vec3.createVectorHelper(this.closestLivingEntity.posX, this.closestLivingEntity.posY, this.closestLivingEntity.posZ));
 
             if (vec3 == null)
@@ -114,6 +114,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
+    @Override
     public boolean continueExecuting()
     {
         return !this.entityPathNavigate.noPath();
@@ -122,6 +123,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
     /**
      * Execute a one shot task or start executing a continuous task
      */
+    @Override
     public void startExecuting()
     {
         this.entityPathNavigate.setPath(this.entityPathEntity, this.farSpeed);
@@ -130,6 +132,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
     /**
      * Resets the task
      */
+    @Override
     public void resetTask()
     {
         this.closestLivingEntity = null;
@@ -138,6 +141,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
     /**
      * Updates the task
      */
+    @Override
     public void updateTask()
     {
         if (this.theEntity.getDistanceSqToEntity(this.closestLivingEntity) < 49.0D)

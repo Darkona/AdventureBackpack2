@@ -2,27 +2,6 @@ package com.darkona.adventurebackpack.item;
 
 import java.util.List;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
-import com.darkona.adventurebackpack.common.BackpackAbilities;
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.events.WearableEvent;
-import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.ContainerBackpack;
-import com.darkona.adventurebackpack.network.GUIPacket;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.proxy.ClientProxy;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.BackpackUtils;
-import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
@@ -39,6 +18,28 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.AdventureBackpack;
+import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
+import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.events.WearableEvent;
+import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.ContainerBackpack;
+import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.proxy.ClientProxy;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.BackpackUtils;
+import com.darkona.adventurebackpack.util.EnchUtils;
+import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 12/10/2014
@@ -73,7 +74,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book)
     {
-        return (Utils.isSoulBook(book));
+        return EnchUtils.isSoulBook(book);
     }
 
     /**
@@ -184,6 +185,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
                     if (from)
                     {
                         stack.stackSize--;
+
                     } else
                     {
                         BackpackProperty.get(player).setWearable(null);
@@ -256,7 +258,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
@@ -270,8 +272,8 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems)
     {
@@ -302,7 +304,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        if (world.isRemote || !ConfigHandler.backpackDeathPlace || Utils.isSoulBounded(stack)
+        if (world.isRemote || !ConfigHandler.backpackDeathPlace || EnchUtils.isSoulBounded(stack)
                 || player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
         {
             return;
@@ -325,7 +327,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         int Y = (int) player.posY;
         if (Y < 1) Y = 1;
 
-        int positions[] = { 0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5, -6, 6 };
+        int positions[] = {0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5, -6, 6};
 
         for (int shiftY : positions)
         {

@@ -1,10 +1,11 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.proxy.ClientProxy;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+
+import com.darkona.adventurebackpack.proxy.ClientProxy;
 
 /**
  * Created on 25/12/2014
@@ -30,6 +31,6 @@ public class RenderHandler
         float yaw = event.entity.rotationYaw;
         ClientProxy.rendererWearableEquipped.render(event.entity, x, y, z, rotationX, rotationY, rotationZ, pitch, yaw);
 
-        event.renderCape = true;
+        event.renderCape = false;
     }
 }

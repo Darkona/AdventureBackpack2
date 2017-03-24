@@ -1,16 +1,5 @@
 package com.darkona.adventurebackpack.block;
 
-import com.darkona.adventurebackpack.common.BackpackAbilities;
-import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.InventoryActions;
-import com.darkona.adventurebackpack.inventory.SlotTool;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.util.BackpackUtils;
-import com.darkona.adventurebackpack.util.Wearing;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +16,17 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.InventoryActions;
+import com.darkona.adventurebackpack.inventory.SlotTool;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.util.BackpackUtils;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -251,7 +251,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        super.writeToNBT(compound);
         saveToNBT(compound);
         compound.setBoolean("sleepingbag", sleepingBagDeployed);
         compound.setInteger("sbx", sbx);
@@ -259,6 +258,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         compound.setInteger("sbz", sbz);
         compound.setInteger("lumen", luminosity);
         compound.setInteger("sbdir", sbdir);
+        super.writeToNBT(compound);
     }
 
     @Override
@@ -323,7 +323,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public FluidTank[] getTanksArray()
     {
-        FluidTank[] tanks = { leftTank, rightTank };
+        FluidTank[] tanks = {leftTank, rightTank};
         return tanks;
     }
 

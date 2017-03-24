@@ -1,9 +1,19 @@
 package com.darkona.adventurebackpack.entity;
 
-import com.darkona.adventurebackpack.util.Wearing;
+import java.util.Random;
+
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIControlledByPlayer;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -14,7 +24,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.Random;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 11/01/2015
@@ -26,17 +36,16 @@ public class EntityFriendlySpider extends EntityCreature
 
     private float prevRearingAmount;
     private int jumpTicks;
-    @SuppressWarnings("unused")
-	private EntityPlayer owner;
-    @SuppressWarnings("unused")
-	private boolean tamed = false;
-    @SuppressWarnings("unused")
-	private final EntityAIControlledByPlayer aiControlledByPlayer;
+    private EntityPlayer owner;
+    private boolean tamed = false;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final EntityAIControlledByPlayer aiControlledByPlayer;
 
     @Override
-    protected void entityInit() {
+    protected void entityInit()
+    {
         super.entityInit();
-        this.dataWatcher.addObject(16, (byte)0);
+        this.dataWatcher.addObject(16, (byte) 0);
     }
 
     @Override
@@ -48,7 +57,8 @@ public class EntityFriendlySpider extends EntityCreature
         this.getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(40.0D);
     }
 
-    public EntityFriendlySpider(World world) {
+    public EntityFriendlySpider(World world)
+    {
         super(world);
         this.setSize(1.4F, 0.9F);
         this.tasks.addTask(0, new EntityAISwimming(this));
@@ -57,16 +67,19 @@ public class EntityFriendlySpider extends EntityCreature
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
     }
+
     @Override
     protected boolean isAIEnabled()
     {
         return true;
     }
+
     @Override
     public int getTalkInterval()
     {
         return 300;
     }
+
     /**
      * Returns the sound this mob makes while it's alive.
      */
@@ -118,8 +131,7 @@ public class EntityFriendlySpider extends EntityCreature
         if (this.isEntityInvulnerable())
         {
             return false;
-        }
-        else if (super.attackEntityFrom(damageSource, amount))
+        } else if (super.attackEntityFrom(damageSource, amount))
         {
             Entity entity = damageSource.getEntity();
 
@@ -131,13 +143,11 @@ public class EntityFriendlySpider extends EntityCreature
                 }
 
                 return true;
-            }
-            else
+            } else
             {
                 return true;
             }
-        }
-        else
+        } else
         {
             return false;
         }
@@ -167,6 +177,7 @@ public class EntityFriendlySpider extends EntityCreature
     {
         return true;
     }
+
     /**
      * Returns the item that this EntityLiving is holding, if any.
      */
@@ -178,7 +189,7 @@ public class EntityFriendlySpider extends EntityCreature
 
     /**
      * 0: Tool in Hand; 1-4: Armor
-     * */
+     */
     @Override
     public ItemStack getEquipmentInSlot(int slot)
     {
@@ -204,12 +215,14 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
     @Override
-    public boolean canRiderInteract() {
+    public boolean canRiderInteract()
+    {
         return false;
     }
 
     @Override
-    protected boolean interact(EntityPlayer player) {
+    protected boolean interact(EntityPlayer player)
+    {
 
         try
         {
@@ -226,12 +239,14 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
     @Override
-    public boolean canBeSteered() {
+    public boolean canBeSteered()
+    {
         return true;
     }
 
     @Override
-    protected Entity findPlayerToAttack() {
+    protected Entity findPlayerToAttack()
+    {
         if (this.riddenByEntity != null)
             return null;
         float f = this.getBrightness(1.0F);
@@ -247,14 +262,17 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith()
+    {
         return !isDead;
     }
 
     @Override
-    public boolean shouldRiderFaceForward(EntityPlayer player) {
+    public boolean shouldRiderFaceForward(EntityPlayer player)
+    {
         return true;
     }
+
     public boolean isBesideClimbableBlock()
     {
         return (this.dataWatcher.getWatchableObjectByte(16) & 1) != 0;
@@ -270,9 +288,8 @@ public class EntityFriendlySpider extends EntityCreature
 
         if (p_70839_1_)
         {
-            b0 = (byte)(b0 | 1);
-        }
-        else
+            b0 = (byte) (b0 | 1);
+        } else
         {
             b0 &= -2;
         }
@@ -281,7 +298,8 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate()
+    {
         super.onUpdate();
         if (this.worldObj.isRemote && this.dataWatcher.hasChanges())
         {
@@ -301,7 +319,8 @@ public class EntityFriendlySpider extends EntityCreature
         }
     }
 
-    private void normalLivingUpdateWithNoAI(){
+    private void normalLivingUpdateWithNoAI()
+    {
         if (this.jumpTicks > 0)
         {
             --this.jumpTicks;
@@ -309,17 +328,16 @@ public class EntityFriendlySpider extends EntityCreature
 
         if (this.newPosRotationIncrements > 0)
         {
-            double d0 = this.posX + (this.newPosX - this.posX) / (double)this.newPosRotationIncrements;
-            double d1 = this.posY + (this.newPosY - this.posY) / (double)this.newPosRotationIncrements;
-            double d2 = this.posZ + (this.newPosZ - this.posZ) / (double)this.newPosRotationIncrements;
+            double d0 = this.posX + (this.newPosX - this.posX) / (double) this.newPosRotationIncrements;
+            double d1 = this.posY + (this.newPosY - this.posY) / (double) this.newPosRotationIncrements;
+            double d2 = this.posZ + (this.newPosZ - this.posZ) / (double) this.newPosRotationIncrements;
             double d3 = MathHelper.wrapAngleTo180_double(this.newRotationYaw - (double) this.rotationYaw);
-            this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.newPosRotationIncrements);
-            this.rotationPitch = (float)((double)this.rotationPitch + (this.newRotationPitch - (double)this.rotationPitch) / (double)this.newPosRotationIncrements);
+            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.newPosRotationIncrements);
+            this.rotationPitch = (float) ((double) this.rotationPitch + (this.newRotationPitch - (double) this.rotationPitch) / (double) this.newPosRotationIncrements);
             --this.newPosRotationIncrements;
             this.setPosition(d0, d1, d2);
             this.setRotation(this.rotationYaw, this.rotationPitch);
-        }
-        else if (!this.isClientWorld())
+        } else if (!this.isClientWorld())
         {
             this.motionX *= 0.98D;
             this.motionY *= 0.98D;
@@ -349,8 +367,7 @@ public class EntityFriendlySpider extends EntityCreature
             this.moveStrafing = 0.0F;
             this.moveForward = 0.0F;
             this.randomYawVelocity = 0.0F;
-        }
-        else if (this.isClientWorld())
+        } else if (this.isClientWorld())
         {
 
         }
@@ -367,13 +384,11 @@ public class EntityFriendlySpider extends EntityCreature
                     this.jump();
                     this.jumpTicks = 10;
                 }
-            }
-            else
+            } else
             {
                 this.motionY += 0.03999999910593033D;
             }
-        }
-        else
+        } else
         {
             this.jumpTicks = 0;
         }
@@ -396,7 +411,8 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void onLivingUpdate()
+    {
         if (this.riddenByEntity != null)
         {
             normalLivingUpdateWithNoAI();
@@ -408,20 +424,22 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
     @Override
-    public double getMountedYOffset() {
+    public double getMountedYOffset()
+    {
         return super.getMountedYOffset();
     }
 
     @Override
-    public void moveEntityWithHeading(float strafe, float forward) {
+    public void moveEntityWithHeading(float strafe, float forward)
+    {
         if (this.riddenByEntity != null)
         {
             this.prevRotationYaw = this.rotationYaw = this.riddenByEntity.rotationYaw;
             this.rotationPitch = this.riddenByEntity.rotationPitch * 0.5F;
             this.setRotation(this.rotationYaw, this.rotationPitch);
             this.rotationYawHead = this.renderYawOffset = this.rotationYaw;
-            strafe = ((EntityLivingBase)this.riddenByEntity).moveStrafing * 0.5F;
-            forward = ((EntityLivingBase)this.riddenByEntity).moveForward;
+            strafe = ((EntityLivingBase) this.riddenByEntity).moveStrafing * 0.5F;
+            forward = ((EntityLivingBase) this.riddenByEntity).moveForward;
 
             if (forward <= 0.0F)
             {
@@ -432,7 +450,7 @@ public class EntityFriendlySpider extends EntityCreature
 
             if (!this.worldObj.isRemote)
             {
-                this.setAIMoveSpeed((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
+                this.setAIMoveSpeed((float) this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
                 super.moveEntityWithHeading(strafe, forward);
             }
 
@@ -448,8 +466,7 @@ public class EntityFriendlySpider extends EntityCreature
 
             this.limbSwingAmount += (f4 - this.limbSwingAmount) * 0.4F;
             this.limbSwing += this.limbSwingAmount;
-        }
-        else
+        } else
         {
             this.stepHeight = 0.5F;
             this.jumpMovementFactor = 0.02F;
@@ -458,23 +475,24 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
     @Override
-    public void updateRiderPosition() {
+    public void updateRiderPosition()
+    {
         super.updateRiderPosition();
 
-		if (this.prevRearingAmount > 0.0F)
-		{
-			float f = MathHelper.sin(this.renderYawOffset * (float) Math.PI / 180.0F);
-			float f1 = MathHelper.cos(this.renderYawOffset * (float) Math.PI / 180.0F);
-			float f2 = 0.7F * this.prevRearingAmount;
-			float f3 = 0.15F * this.prevRearingAmount;
-			this.riddenByEntity.setPosition(this.posX + (f2 * f), this.posY + this.getMountedYOffset() + this.riddenByEntity.getYOffset()
-					+  f3, this.posZ -  (f2 * f1));
+        if (this.prevRearingAmount > 0.0F)
+        {
+            float f = MathHelper.sin(this.renderYawOffset * (float) Math.PI / 180.0F);
+            float f1 = MathHelper.cos(this.renderYawOffset * (float) Math.PI / 180.0F);
+            float f2 = 0.7F * this.prevRearingAmount;
+            float f3 = 0.15F * this.prevRearingAmount;
+            this.riddenByEntity.setPosition(this.posX + (f2 * f), this.posY + this.getMountedYOffset() + this.riddenByEntity.getYOffset()
+                    + f3, this.posZ - (f2 * f1));
 
-			if (this.riddenByEntity instanceof EntityLivingBase)
-			{
-				((EntityLivingBase) this.riddenByEntity).renderYawOffset = this.renderYawOffset;
-			}
-		}
+            if (this.riddenByEntity instanceof EntityLivingBase)
+            {
+                ((EntityLivingBase) this.riddenByEntity).renderYawOffset = this.renderYawOffset;
+            }
+        }
     }
 
 
@@ -487,8 +505,7 @@ public class EntityFriendlySpider extends EntityCreature
     public static class GroupData implements IEntityLivingData
     {
         public int field_111105_a;
-        @SuppressWarnings("unused")
-		private static final String __OBFID = "CL_00001700";
+        private static final String __OBFID = "CL_00001700";
 
         public void func_111104_a(Random p_111104_1_)
         {
@@ -497,16 +514,13 @@ public class EntityFriendlySpider extends EntityCreature
             if (i <= 1)
             {
                 this.field_111105_a = Potion.moveSpeed.id;
-            }
-            else if (i <= 2)
+            } else if (i <= 2)
             {
                 this.field_111105_a = Potion.damageBoost.id;
-            }
-            else if (i <= 3)
+            } else if (i <= 3)
             {
                 this.field_111105_a = Potion.regeneration.id;
-            }
-            else if (i <= 4)
+            } else if (i <= 4)
             {
                 this.field_111105_a = Potion.invisibility.id;
             }
@@ -524,8 +538,7 @@ public class EntityFriendlySpider extends EntityCreature
         if (f1 > 0.5F && this.rand.nextInt(100) == 0)
         {
             this.entityToAttack = null;
-        }
-        else
+        } else
         {
             if (p_70785_2_ > 2.0F && p_70785_2_ < 6.0F && this.rand.nextInt(10) == 0)
             {
@@ -534,12 +547,11 @@ public class EntityFriendlySpider extends EntityCreature
                     double d0 = p_70785_1_.posX - this.posX;
                     double d1 = p_70785_1_.posZ - this.posZ;
                     float f2 = MathHelper.sqrt_double(d0 * d0 + d1 * d1);
-                    this.motionX = d0 / (double)f2 * 0.5D * 0.800000011920929D + this.motionX * 0.20000000298023224D;
-                    this.motionZ = d1 / (double)f2 * 0.5D * 0.800000011920929D + this.motionZ * 0.20000000298023224D;
+                    this.motionX = d0 / (double) f2 * 0.5D * 0.800000011920929D + this.motionX * 0.20000000298023224D;
+                    this.motionZ = d1 / (double) f2 * 0.5D * 0.800000011920929D + this.motionZ * 0.20000000298023224D;
                     this.motionY = 0.4000000059604645D;
                 }
-            }
-            else
+            } else
             {
                 super.attackEntity(p_70785_1_, p_70785_2_);
             }
@@ -580,7 +592,9 @@ public class EntityFriendlySpider extends EntityCreature
      * Sets the Entity inside a web block.
      */
     @Override
-    public void setInWeb() {}
+    public void setInWeb()
+    {
+    }
 
     /**
      * Get this Entity's EnumCreatureAttribute

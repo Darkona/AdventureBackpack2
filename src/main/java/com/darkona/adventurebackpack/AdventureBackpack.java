@@ -2,12 +2,23 @@ package com.darkona.adventurebackpack;
 
 import java.util.Calendar;
 
+import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GeneralEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
+import com.darkona.adventurebackpack.handlers.TooltipsHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModEntities;
 import com.darkona.adventurebackpack.init.ModFluids;
@@ -20,23 +31,13 @@ import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import net.minecraftforge.common.MinecraftForge;
-
 /**
  * Created on 10/10/2014
  *
  * @author Javier Darkona
  */
-@SuppressWarnings("unused")
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, version = ModInfo.MOD_VERSION, guiFactory = ModInfo.GUI_FACTORY_CLASS)
+@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, version = ModInfo.MOD_VERSION, guiFactory = ModInfo.GUI_FACTORY_CLASS,
+        dependencies = "required-after:CodeChickenCore@[1.0.7.47,)")
 public class AdventureBackpack
 {
 
@@ -54,13 +55,13 @@ public class AdventureBackpack
     PlayerEventHandler playerEventHandler;
     ClientEventHandler clientEventHandler;
     GeneralEventHandler generalEventHandler;
+    TooltipsHandler tooltipsHandler;
 
     GuiHandler guiHandler;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        proxy.Capes();
         int year = Calendar.getInstance().get(Calendar.YEAR), month = Calendar.getInstance().get(Calendar.MONTH) + 1, day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
         //Configuration
@@ -83,10 +84,12 @@ public class AdventureBackpack
         playerEventHandler = new PlayerEventHandler();
         generalEventHandler = new GeneralEventHandler();
         clientEventHandler = new ClientEventHandler();
+        tooltipsHandler = new TooltipsHandler();
 
         MinecraftForge.EVENT_BUS.register(generalEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
         MinecraftForge.EVENT_BUS.register(playerEventHandler);
+        MinecraftForge.EVENT_BUS.register(tooltipsHandler);
 
         FMLCommonHandler.instance().bus().register(playerEventHandler);
 
@@ -95,7 +98,6 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
-
         proxy.init();
         ModRecipes.init();
 
@@ -108,7 +110,6 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
         ConfigHandler.IS_ENDERIO = Loader.isModLoaded("EnderIO");
 
@@ -122,6 +123,8 @@ public class AdventureBackpack
             LogHelper.info("EnderIO is present. Acting accordingly");
         }
 
+        //ConditionalFluidEffect.init(); //TODO
+        //ModItems.conditionalInit();
         ModRecipes.conditionalInit();
 
         /*
@@ -145,7 +148,5 @@ public class AdventureBackpack
         }
         LogHelper.info("-------------------------------------------------------------------------");
         */
-
     }
-
 }

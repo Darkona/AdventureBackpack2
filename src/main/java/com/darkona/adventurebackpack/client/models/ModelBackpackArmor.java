@@ -1,16 +1,18 @@
 package com.darkona.adventurebackpack.client.models;
 
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import codechicken.lib.vec.Vector3;
+
 import com.darkona.adventurebackpack.client.render.RendererStack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 /**
  * Created on 17/12/2014
@@ -205,7 +207,6 @@ public class ModelBackpackArmor extends ModelWearable
         lowerTool = new RendererStack(this, true);
         upperTool = new RendererStack(this, false);
 
-
         bipedBody.addChild(mainBody);
         bipedBody.addChild(bed);
         bipedBody.addChild(tankLeftTop);
@@ -216,10 +217,8 @@ public class ModelBackpackArmor extends ModelWearable
         mainBody.addChild(lowerTool);
         mainBody.addChild(upperTool);
 
-
         float offsetZ = 0.4F;
         float offsetY = 0.2F;
-
 
         for (ModelRenderer part : (List<ModelRenderer>) bipedBody.childModels)
         {
@@ -233,6 +232,7 @@ public class ModelBackpackArmor extends ModelWearable
         this.backpack = wearable;
         return this;
     }
+
     public ModelBackpackArmor()
     {
         init();
@@ -243,6 +243,7 @@ public class ModelBackpackArmor extends ModelWearable
         init();
         this.backpack = backpack;
     }
+
     @SuppressWarnings("unchecked")
     private void renderBackpack(Float scale)
     {
@@ -260,9 +261,9 @@ public class ModelBackpackArmor extends ModelWearable
 
         if (ConfigHandler.enableToolsRender)
         {
-	    lowerTool.stack = backpack.getStackInSlot(Constants.lowerTool);
-	    upperTool.stack = backpack.getStackInSlot(Constants.upperTool);	
-        }	
+            lowerTool.stack = backpack.getStackInSlot(Constants.lowerTool);
+            upperTool.stack = backpack.getStackInSlot(Constants.upperTool);
+        }
 
         if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
         {
@@ -297,9 +298,9 @@ public class ModelBackpackArmor extends ModelWearable
         GL11.glPushMatrix();
         GL11.glTranslatef(bipedBody.offsetX + 0, bipedBody.offsetY + 0.2F, bipedBody.offsetZ + 0.3f);
 
-        renderFluidInTank(backpack.getLeftTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(-.17f, .05f, .2f), tankLeftTop);
+        renderFluidInTank(backpack.getLeftTank(), new Vector3(0f, .5f, 0f), new Vector3(.17f, 0, .17f), new Vector3(-.17f, .05f, .2f), tankLeftTop);
 
-        renderFluidInTank(backpack.getRightTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(.41f, .05f, .2f), tankRightTop);
+        renderFluidInTank(backpack.getRightTank(), new Vector3(0f, .5f, 0f), new Vector3(.17f, 0, .17f), new Vector3(.41f, .05f, .2f), tankRightTop);
         GL11.glPopMatrix();
     }
 
@@ -309,8 +310,7 @@ public class ModelBackpackArmor extends ModelWearable
 
         isSneak = ((entity != null) && (entity).isSneaking());
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        @SuppressWarnings("unused")
-		float oV = (isSneak) ? 0 : .3F;
+        float oV = (isSneak) ? 0 : .3F;
 
         float scale = f5 * 0.9f;
 
@@ -360,6 +360,6 @@ public class ModelBackpackArmor extends ModelWearable
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)
     {
         this.backpack = stack;
-        render(entity, f, f1,f2,f3,f4,f5);
+        render(entity, f, f1, f2, f3, f4, f5);
     }
 }

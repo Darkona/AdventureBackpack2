@@ -2,10 +2,6 @@ package com.darkona.adventurebackpack.init;
 
 import java.util.Random;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-
-import cpw.mods.fml.common.registry.VillagerRegistry;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -13,6 +9,10 @@ import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraftforge.common.ChestGenHooks;
+import cpw.mods.fml.common.registry.VillagerRegistry;
+
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 
 /**
  * Created on 24/12/2014
@@ -77,8 +77,8 @@ public class ModWorldGen
          * @param recipeList
          * @param random
          */
-        @SuppressWarnings("unchecked")
         @Override
+        @SuppressWarnings("unchecked")
         public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
         {
             //0 Farmer, 1 Librarian, 2Priest, 3 Blacksmith, 4 Butcher

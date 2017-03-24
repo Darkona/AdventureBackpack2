@@ -1,12 +1,12 @@
 package com.darkona.adventurebackpack.common;
 
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.inventory.IInventoryTanks;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -14,31 +14,31 @@ import net.minecraftforge.fluids.FluidTank;
 public interface IInventoryAdventureBackpack extends IInventoryTanks
 {
 
-    public FluidTank getLeftTank();
+    FluidTank getLeftTank();
 
-    public FluidTank getRightTank();
+    FluidTank getRightTank();
 
-    public ItemStack[] getInventory();
+    ItemStack[] getInventory();
 
-    public TileAdventureBackpack getTile();
+    TileAdventureBackpack getTile();
 
-    public ItemStack getParentItemStack();
+    ItemStack getParentItemStack();
 
-    public String getColorName();
+    String getColorName();
 
-    public int getLastTime();
+    int getLastTime();
 
-    public NBTTagCompound getExtendedProperties();
+    NBTTagCompound getExtendedProperties();
 
-    public void setExtendedProperties(NBTTagCompound properties);
+    void setExtendedProperties(NBTTagCompound properties);
 
-    public boolean isSpecial();
+    boolean isSpecial();
 
-    public void saveTanks(NBTTagCompound compound);
+    void saveTanks(NBTTagCompound compound);
 
-    public void loadTanks(NBTTagCompound compound);
+    void loadTanks(NBTTagCompound compound);
 
-    public boolean hasItem(Item item);
+    boolean hasItem(Item item);
 
     void consumeInventoryItem(Item item);
 
@@ -46,8 +46,8 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
 
     void setLastTime(int time);
 
-    public void dirtyTime();
+    void dirtyTime();
 
-    public void dirtyExtended();
+    void dirtyExtended();
 
 }

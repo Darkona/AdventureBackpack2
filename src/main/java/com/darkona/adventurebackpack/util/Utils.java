@@ -2,16 +2,9 @@ package com.darkona.adventurebackpack.util;
 
 import java.util.Calendar;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -20,15 +13,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class Utils
 {
-
     public static float degreesToRadians(float degrees)
     {
         return degrees / 57.2957795f;
@@ -56,7 +50,7 @@ public class Utils
                 n = (h - m + r + 90) / 25,
                 p = (h - m + r + n + 19) % 32;
 
-        return new int[] { n, p };
+        return new int[]{n, p};
     }
 
     public static String getHoliday()
@@ -298,6 +292,7 @@ public class Utils
      * Gets you the nearest Empty Chunk Coordinates, free of charge! Looks in two dimensions and finds a block
      * that a: can have stuff placed on it and b: has space above it.
      * This is a spiral search, will begin at close range and move out.
+     *
      * @param world  The world object.
      * @param origX  Original X coordinate
      * @param origZ  Original Z coordinate
@@ -429,9 +424,10 @@ public class Utils
 
     /**
      * Seriously why doesn't Java's instanceof check for null?
+     *
      * @return true if the object is not null and is an instance of the supplied class.
      */
-    public static boolean notNullAndInstanceOf(Object object, @SuppressWarnings("rawtypes") Class clazz)
+    public static boolean notNullAndInstanceOf(Object object, Class clazz)
     {
         return object != null && clazz.isInstance(object);
     }
@@ -447,71 +443,6 @@ public class Utils
         {
             return text; // Text is the first word itself.
         }
-    }
-
-    // -6 - not initialized
-    // -3 - disabled by config
-    // -2 - EnderIO not found
-    // -1 - enchantment not found
-    private static int soulBoundID = -6;
-
-    public static int getSoulBoundID()
-    {
-        if (soulBoundID == -6) setSoulBoundID(); // initialize
-        return soulBoundID;
-    }
-
-    private static void setSoulBoundID()
-    {
-        if (ConfigHandler.allowSoulBound)
-        {
-            if (ConfigHandler.IS_ENDERIO)
-            {
-                for (Enchantment ench : Enchantment.enchantmentsList)
-                {
-                    if (ench != null && ench.getName().equals("enchantment.enderio.soulBound"))
-                    {
-                        soulBoundID = ench.effectId;
-                        return;
-                    }
-                }
-                soulBoundID = -1;
-            } else soulBoundID = -2;
-        } else soulBoundID = -3;
-    }
-
-    public static boolean isSoulBounded(ItemStack stack)
-    {
-        int soulBound = getSoulBoundID();
-        NBTTagList stackEnch = stack.getEnchantmentTagList();
-        if (soulBound >= 0 && stackEnch != null)
-        {
-            for (int i = 0; i < stackEnch.tagCount(); i++)
-            {
-                int id = stackEnch.getCompoundTagAt(i).getInteger("id");
-                if (id == soulBound) return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean isSoulBook(ItemStack book)
-    {
-        int soulBound = getSoulBoundID();
-        if (soulBound >= 0 && book.hasTagCompound())
-        {
-            NBTTagCompound bookData = book.stackTagCompound;
-            if (bookData.hasKey("StoredEnchantments"))
-            {
-                NBTTagList bookEnch = bookData.getTagList("StoredEnchantments", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-                if (!bookEnch.getCompoundTagAt(1).getBoolean("id"))
-                {
-                    int id = bookEnch.getCompoundTagAt(0).getInteger("id");
-                    if (id == soulBound) return true;
-                }
-            }
-        }
-        return false;
     }
 
 }

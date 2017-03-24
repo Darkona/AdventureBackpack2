@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
-
-import codechicken.lib.vec.Vector3;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import codechicken.lib.vec.Vector3;
+
+import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 
 public class ModelCoalJetpack extends ModelWearable
 {

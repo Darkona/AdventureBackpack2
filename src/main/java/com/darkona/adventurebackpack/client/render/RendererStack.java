@@ -1,12 +1,12 @@
 package com.darkona.adventurebackpack.client.render;
 
-import copy.betterstorage.utils.RenderUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class RendererStack extends ModelRenderer
 {
@@ -52,7 +52,7 @@ public class RendererStack extends ModelRenderer
                 GL11.glRotatef(45F, 0, 0, 1);
 
             }
-            RenderUtils.renderItemIn3d(stack);
+            CopygirlRenderUtils.renderItemIn3d(stack);
             GL11.glPopAttrib();
             GL11.glPopMatrix();
             GL11.glPopMatrix();

@@ -1,8 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -14,6 +11,9 @@ import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 
 /**
  * Created on 12/10/2014
@@ -32,6 +32,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
     public IInventory craftResult = new InventoryCraftResult();
     EntityPlayer player;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final int
             PLAYER_HOT_START = 0,
             PLAYER_HOT_END = PLAYER_HOT_START + 8,
@@ -340,39 +341,32 @@ public class ContainerBackpack extends Container implements IWearableContainer
                             if (rightAmount > 0 && (rightAmount + containerCapacity <= maxAmount) && rightFluid.equals(containerFluid))
                             {
                                 mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
-                            }
-                            else
+                            } else
                             {
                                 mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
                             }
-                        }
-                        else if ((leftAmount + containerCapacity <= maxAmount) && leftFluid.equals(containerFluid))
+                        } else if ((leftAmount + containerCapacity <= maxAmount) && leftFluid.equals(containerFluid))
                         {
                             mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
-                        }
-                        else if (rightAmount == 0 || (rightAmount + containerCapacity <= maxAmount) && rightFluid.equals(containerFluid))
+                        } else if (rightAmount == 0 || (rightAmount + containerCapacity <= maxAmount) && rightFluid.equals(containerFluid))
                         {
                             mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
-                        }
-                        else if (SlotBackpack.isValidItem(stack))
+                        } else if (SlotBackpack.isValidItem(stack))
                         {
                             mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
                         }
-                    }
-                    else if (SlotFluid.isEmpty(stack))
+                    } else if (SlotFluid.isEmpty(stack))
                     {
                         if (leftAmount == 0)
                         {
                             if (rightAmount != 0)
                             {
                                 mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
-                            }
-                            else if (SlotBackpack.isValidItem(stack))
+                            } else if (SlotBackpack.isValidItem(stack))
                             {
                                 mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
                             }
-                        }
-                        else
+                        } else
                         {
                             mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
                         }

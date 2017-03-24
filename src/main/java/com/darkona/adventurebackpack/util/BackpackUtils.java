@@ -3,14 +3,14 @@ package com.darkona.adventurebackpack.util;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.darkona.adventurebackpack.events.WearableEvent;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
+
+import com.darkona.adventurebackpack.events.WearableEvent;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 
 /**
  * Created on 08/01/2015
@@ -20,7 +20,6 @@ import net.minecraftforge.common.MinecraftForge;
 public class BackpackUtils
 {
     private static Timer timer = new Timer();
-    private static TimerTask unequipTask;
 
     public enum reasons
     {
@@ -48,7 +47,7 @@ public class BackpackUtils
 
     public static void unequipWearable(EntityPlayer player)
     {
-        unequipTask = new DelayUnequipTask(player);
+        TimerTask unequipTask = new DelayUnequipTask(player);
         timer.schedule(unequipTask, 200);
     }
 

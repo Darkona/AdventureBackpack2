@@ -1,14 +1,16 @@
 package com.darkona.adventurebackpack.client.render;
 
 
-import com.darkona.adventurebackpack.client.models.ModelClockworkCrossbow;
-import com.darkona.adventurebackpack.util.Resources;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
+
+import com.darkona.adventurebackpack.client.models.ModelClockworkCrossbow;
+import com.darkona.adventurebackpack.util.Resources;
 
 
 /**

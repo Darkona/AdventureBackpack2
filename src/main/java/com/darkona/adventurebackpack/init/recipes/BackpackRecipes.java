@@ -1,14 +1,15 @@
 package com.darkona.adventurebackpack.init.recipes;
 
-import com.darkona.adventurebackpack.init.ModItems;
+import java.util.HashMap;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.util.HashMap;
-import java.util.List;
+import com.darkona.adventurebackpack.init.ModItems;
 
 /**
  * Created on 20/10/2014
@@ -93,7 +94,7 @@ public class BackpackRecipes
                 'E', Items.emerald,
                 'D', Items.diamond
         );
-        
+
         Chest = reviewRecipe(
                 "CWC",
                 "WaW",
@@ -602,8 +603,8 @@ public class BackpackRecipes
     public final ItemStack[] ModdedNetwork;
 
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public static ItemStack[] reviewRecipe(Object... objects)
+    @SuppressWarnings("unchecked")
+    public static ItemStack[] reviewRecipe(Object... objects)
     {
         String s = "";
         //BackpackRecipe recipe = new BackpackRecipe();

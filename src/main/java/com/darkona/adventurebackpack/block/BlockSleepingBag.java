@@ -3,14 +3,6 @@ package com.darkona.adventurebackpack.block;
 import java.util.Iterator;
 import java.util.Random;
 
-import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
@@ -29,6 +21,14 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 14/10/2014
@@ -54,7 +54,6 @@ public class BlockSleepingBag extends BlockDirectional
         setBlockName(getUnlocalizedName());
     }
 
-
     @Override
     @SideOnly(Side.CLIENT)
     protected String getTextureName()
@@ -70,7 +69,6 @@ public class BlockSleepingBag extends BlockDirectional
     {
         return "blockSleepingBag";
     }
-
 
     private void func_149978_e()
     {
@@ -136,8 +134,7 @@ public class BlockSleepingBag extends BlockDirectional
                 if (isBedOccupied(meta))
                 {
                     EntityPlayer entityplayer1 = null;
-                    @SuppressWarnings("rawtypes")
-					Iterator iterator = world.playerEntities.iterator();
+                    Iterator iterator = world.playerEntities.iterator();
 
                     while (iterator.hasNext())
                     {
@@ -170,7 +167,7 @@ public class BlockSleepingBag extends BlockDirectional
                     setBedOccupied(world, x, y, z, true);
                     //This is so the wake up event can detect it. It fires before the player wakes up.
                     //and the bed location isn't set until then, normally.
-                    player.setSpawnChunk(new ChunkCoordinates(x,y,z),true,player.dimension);
+                    player.setSpawnChunk(new ChunkCoordinates(x, y, z), true, player.dimension);
                     LogHelper.info("Looking for a campfire nearby...");
                     ChunkCoordinates campfire = Utils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
                     if (campfire != null)
@@ -323,7 +320,6 @@ public class BlockSleepingBag extends BlockDirectional
         }
     }
 
-
     @Override
     public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion boom)
     {
@@ -334,8 +330,7 @@ public class BlockSleepingBag extends BlockDirectional
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
     {
         //LogHelper.info("onBlockDestroyedByPlayer() : BlockSleepingBag");
-        @SuppressWarnings("unused")
-		int direction = getDirection(meta);
+        int direction = getDirection(meta);
         int tileZ = z;
         int tileX = x;
         switch (meta)

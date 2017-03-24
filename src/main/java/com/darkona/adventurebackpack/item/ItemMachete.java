@@ -2,8 +2,6 @@ package com.darkona.adventurebackpack.item;
 
 import java.util.Set;
 
-import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.init.ModMaterials;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
@@ -19,6 +17,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.darkona.adventurebackpack.CreativeTabAB;
+import com.darkona.adventurebackpack.init.ModMaterials;
+
 /**
  * Created on 10/10/2014
  *
@@ -26,8 +27,8 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public class ItemMachete extends ToolAB
 {
-    @SuppressWarnings("rawtypes")
-	private static final Set breakableBlocks = Sets.newHashSet(Blocks.pumpkin,
+    private static final Set breakableBlocks = Sets.newHashSet(
+            Blocks.pumpkin,
             Blocks.web,
             Blocks.leaves,
             Blocks.leaves2,
@@ -51,7 +52,7 @@ public class ItemMachete extends ToolAB
             Blocks.wheat,
             Blocks.wool);
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("FieldCanBeLocal")
     private float field_150934_a;
 
     public ItemMachete()
@@ -105,14 +106,13 @@ public class ItemMachete extends ToolAB
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
     {
-        /*
-        if (player.worldObj.isRemote)
+        /*if (player.worldObj.isRemote)
         {
             return false;
         }
         int id = player.worldObj.getBlockId(x, y, z);
         for(ItemStack stacky : OreDictionary.getOres("treeLeaves")){
-        	if (stacky.itemID == id) return false;
+            if (stacky.itemID == id) return false;
         }
 
         if (Block.blocksList[id] instanceof IShearable )
@@ -121,7 +121,7 @@ public class ItemMachete extends ToolAB
             if (target.isShearable(itemstack, player.worldObj, x, y, z))
             {
                 ArrayList<ItemStack> drops = target.onSheared(itemstack, player.worldObj, x, y, z,
-                		EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemstack));
+                        EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemstack));
                 Random rand = new Random();
 
                 for(ItemStack stack : drops)
@@ -139,8 +139,8 @@ public class ItemMachete extends ToolAB
                 player.addStat(StatList.mineBlockStatArray[id], 1);
             }
         }
-        return false;
-         */
+        return false;*/
+
         return new ItemStack(new ItemShears()).getItem().onBlockStartBreak(itemstack, x, y, z, player);
     }
 

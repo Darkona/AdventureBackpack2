@@ -1,5 +1,10 @@
 package com.darkona.adventurebackpack.handlers;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
+
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
@@ -14,11 +19,6 @@ import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.reference.Key;
 import com.darkona.adventurebackpack.util.Wearing;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-
 /**
  * Created by Darkona on 11/10/2014.
  */
@@ -31,7 +31,7 @@ public class KeybindHandler
         {
             return Key.INVENTORY_KEY;
         }
-        if (Keybindings.toggleHose.isPressed())
+        if (Keybindings.toggleActions.isPressed())
         {
             return Key.TOGGLE_KEY;
         }
@@ -43,7 +43,7 @@ public class KeybindHandler
         return Key.UNKNOWN;
     }
 
-    private static final String[] NIGHTVISION_BACKPACKS = { "Bat", "Squid", "Dragon" };
+    private static final String[] NIGHTVISION_BACKPACKS = {"Bat", "Squid", "Dragon"};
 
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event)

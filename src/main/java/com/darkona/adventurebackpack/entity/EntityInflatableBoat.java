@@ -2,13 +2,8 @@ package com.darkona.adventurebackpack.entity;
 
 import java.util.List;
 
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.IInventoryTanks;
-
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -25,6 +20,12 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 
 /**
  * Created on 05/01/2015
@@ -33,7 +34,7 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks, IEntityAdditionalSpawnData
 {
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"FieldCanBeLocal"})
     private FluidTank fuelTank;
     private boolean isBoatEmpty;
     private double speedMultiplier;
@@ -324,7 +325,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
 
             if (!this.worldObj.isRemote)
             {
-                @SuppressWarnings("rawtypes")
                 List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224D, 0.0D, 0.20000000298023224D));
 
                 if (list != null && !list.isEmpty())
