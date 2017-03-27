@@ -45,6 +45,8 @@ public class ContainerBackpack extends Container implements IWearableContainer
             BUCKET_LEFT = TOOL_END + 1,
             BUCKET_RIGHT = BUCKET_LEFT + 2;
 
+    //IDEA redesign container layout/craft slots behavior, so it will be rectangular and compatible with invTweaks. this also makes more slots available cuz craft ones will not drop content on close
+
     public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, byte source)
     {
         this.player = player;

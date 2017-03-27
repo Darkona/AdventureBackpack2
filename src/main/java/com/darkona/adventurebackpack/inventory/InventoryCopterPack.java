@@ -33,7 +33,6 @@ public class InventoryCopterPack implements IInventoryTanks
             copterPack.stackTagCompound = new NBTTagCompound();
             saveToNBT(copterPack.stackTagCompound);
         }
-
         openInventory();
     }
 

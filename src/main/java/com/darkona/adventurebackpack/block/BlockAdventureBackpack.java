@@ -226,11 +226,10 @@ public class BlockAdventureBackpack extends BlockContainer
         return "blockAdventureBackpack";
     }
 
-    private void setUnlocalizedName(String string)
+    /*private void setUnlocalizedName(String string) //care recursion
     {
         setUnlocalizedName("blockAdventureBackpack");
-
-    }
+    }*/
 
     @Override
     @SideOnly(Side.CLIENT)

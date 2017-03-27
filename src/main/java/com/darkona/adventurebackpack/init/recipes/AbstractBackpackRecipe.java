@@ -19,10 +19,10 @@ import com.darkona.adventurebackpack.util.LogHelper;
  *
  * @author Darkona
  */
-public class AbstractBackpackRecipe implements IRecipe
+class AbstractBackpackRecipe implements IRecipe
 {
 
-    final BackpackRecipes br = new BackpackRecipes();
+    private final BackpackRecipes br = new BackpackRecipes();
     private ItemStack result;
     private ItemStack[] recipe;
 

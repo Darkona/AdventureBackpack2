@@ -59,8 +59,7 @@ public class SlotTool extends SlotAdventureBackpack
             if (name.equals("gt.metatool.01"))
             {
                 //0 = sword, 170 = turbines
-                if (stack.getItemDamage() == 0 || stack.getItemDamage() > 169) return false;
-                return true;
+                return !(stack.getItemDamage() == 0 || stack.getItemDamage() > 169);
             }
             //Charged baterries and such
             if (name.startsWith("gt.metaitem")) return false;

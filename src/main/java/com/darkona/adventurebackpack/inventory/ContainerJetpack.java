@@ -22,12 +22,12 @@ public class ContainerJetpack extends Container implements IWearableContainer
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
     boolean wearing;
 
-    public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack inventory, boolean wearing)
+    public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack jetpack, boolean wearing)
     {
         this.player = player;
-        this.inventory = inventory;
+        inventory = jetpack;
         makeSlots(player.inventory);
-        this.inventory.openInventory();
+        inventory.openInventory();
         this.wearing = wearing;
     }
 

@@ -38,7 +38,7 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
                 } else */
                 if (Wearing.isHoldingWearable(player) && !Wearing.isWearingWearable(player))
                 {
-                    if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.reasons.SUCCESFUL)
+                    if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.reasons.SUCCESSFUL)
                     {
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                         player.inventoryContainer.detectAndSendChanges();

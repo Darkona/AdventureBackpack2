@@ -23,7 +23,7 @@ public class BackpackUtils
 
     public enum reasons
     {
-        SUCCESFUL, ALREADY_EQUIPPED
+        SUCCESSFUL, ALREADY_EQUIPPED
     }
 
     public static reasons equipWearable(ItemStack backpack, EntityPlayer player)
@@ -38,7 +38,7 @@ public class BackpackUtils
             WearableEvent event = new WearableEvent.EquipWearableEvent(player, prop.getWearable());
             MinecraftForge.EVENT_BUS.post(event);
             BackpackProperty.sync(player);
-            return reasons.SUCCESFUL;
+            return reasons.SUCCESSFUL;
         } else
         {
             return reasons.ALREADY_EQUIPPED;
