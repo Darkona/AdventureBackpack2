@@ -32,7 +32,6 @@ import com.darkona.adventurebackpack.util.Resources;
  */
 public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 {
-
     public static byte OFF_MODE = 0;
     public static byte NORMAL_MODE = 1;
 
@@ -251,8 +250,9 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.setTemperature(temperature);
     }
 
-    public static void elevate(EntityPlayer player)
+    private static void elevate(EntityPlayer player)
     {
+        //TODO rework formulas, add height restriction, maybe configurable
         if (player.motionY <= 0.32 && player.posY < 100)
         {
             player.motionY += 0.1;

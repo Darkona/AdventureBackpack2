@@ -13,22 +13,21 @@ import net.minecraft.item.ItemStack;
  */
 public class ContainerCopter extends Container implements IWearableContainer
 {
-
-    public InventoryCopterPack inventory;
+    InventoryCopterPack inventory;
+    EntityPlayer player;
     private final int PLAYER_HOT_START = 0;
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     @SuppressWarnings("FieldCanBeLocal")
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
-    EntityPlayer player;
     boolean wearing;
 
-    public ContainerCopter(EntityPlayer player, InventoryCopterPack copterPack, boolean wearing)
+    public ContainerCopter(EntityPlayer player, InventoryCopterPack copter, boolean wearing)
     {
-        this.inventory = copterPack;
+        this.player = player;
+        inventory = copter;
         makeSlots(player.inventory);
         inventory.openInventory();
-        this.player = player;
         this.wearing = wearing;
     }
 

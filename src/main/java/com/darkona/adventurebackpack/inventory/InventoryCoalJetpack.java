@@ -43,7 +43,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
 
     public InventoryCoalJetpack(final ItemStack jetpack)
     {
-        this.containerStack = jetpack;
+        containerStack = jetpack;
         if (!containerStack.hasTagCompound())
         {
             containerStack.stackTagCompound = new NBTTagCompound();

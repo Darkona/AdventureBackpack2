@@ -19,6 +19,7 @@ public class ConfigHandler
     //public static final String configVersion = "1.0.0";
     public static Configuration config;
 
+    public static boolean IS_DEVENV = false;
     public static boolean IS_BUILDCRAFT = false;
     public static boolean IS_ENDERIO = false;
 
@@ -118,7 +119,7 @@ public class ConfigHandler
         // Graphics
         typeTankRender = config.getInt("Tank Render Type", "graphics", 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
         enableToolsRender = config.getBoolean("Enable Tools Render", "graphics", true, "Enable rendering for tools in the backpack tool slots. May cause visual glitches with Gregtech tools");
-        enableTooltips = config.getBoolean("Enable Tooltips", "graphics", true, "Enable tooltips?");
+        enableTooltips = config.getBoolean("Enable Tooltips", "graphics", true, "Enable tooltips? Client side");
         tanksHoveringText = config.getBoolean("Hovering Text", "graphics", false, "Show hovering text on fluid tanks?");
 
         // Graphics.Status

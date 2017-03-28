@@ -124,7 +124,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onCreated(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer)
     {
-
         super.onCreated(stack, par2World, par3EntityPlayer);
         BackpackNames.setBackpackColorNameFromDamage(stack, stack.getItemDamage());
     }

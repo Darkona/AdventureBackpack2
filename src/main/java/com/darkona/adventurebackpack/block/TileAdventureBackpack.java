@@ -565,7 +565,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
         transferToItemStack(stacky);
         removeSleepingBag(world);
-        if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.reasons.SUCCESFUL)
+        if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.reasons.SUCCESSFUL)
         {
             if (Wearing.isWearingWearable(player))
             {

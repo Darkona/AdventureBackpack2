@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack;
 
 import java.util.Calendar;
 
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -18,7 +19,7 @@ import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GeneralEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
-import com.darkona.adventurebackpack.handlers.TooltipsHandler;
+import com.darkona.adventurebackpack.handlers.TooltipEventHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModEntities;
 import com.darkona.adventurebackpack.init.ModFluids;
@@ -55,7 +56,7 @@ public class AdventureBackpack
     PlayerEventHandler playerEventHandler;
     ClientEventHandler clientEventHandler;
     GeneralEventHandler generalEventHandler;
-    TooltipsHandler tooltipsHandler;
+    TooltipEventHandler tooltipEventHandler;
 
     GuiHandler guiHandler;
 
@@ -84,12 +85,12 @@ public class AdventureBackpack
         playerEventHandler = new PlayerEventHandler();
         generalEventHandler = new GeneralEventHandler();
         clientEventHandler = new ClientEventHandler();
-        tooltipsHandler = new TooltipsHandler();
+        tooltipEventHandler = new TooltipEventHandler();
 
         MinecraftForge.EVENT_BUS.register(generalEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
         MinecraftForge.EVENT_BUS.register(playerEventHandler);
-        MinecraftForge.EVENT_BUS.register(tooltipsHandler);
+        MinecraftForge.EVENT_BUS.register(tooltipEventHandler);
 
         FMLCommonHandler.instance().bus().register(playerEventHandler);
 
@@ -110,18 +111,18 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
+        ConfigHandler.IS_DEVENV = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
+        if (ConfigHandler.IS_DEVENV)
+            LogHelper.info("Dev environment detected. All hail the creator");
+
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
         ConfigHandler.IS_ENDERIO = Loader.isModLoaded("EnderIO");
 
         if (ConfigHandler.IS_BUILDCRAFT)
-        {
             LogHelper.info("Buildcraft is present. Acting accordingly");
-        }
-
         if (ConfigHandler.IS_ENDERIO)
-        {
             LogHelper.info("EnderIO is present. Acting accordingly");
-        }
 
         //ConditionalFluidEffect.init(); //TODO
         //ModItems.conditionalInit();

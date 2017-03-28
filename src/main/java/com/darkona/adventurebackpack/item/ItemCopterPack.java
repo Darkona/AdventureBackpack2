@@ -37,6 +37,9 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class ItemCopterPack extends ItemAB implements IBackWearableItem
 {
+    public static byte OFF_MODE = 0;
+    public static byte NORMAL_MODE = 1;
+    public static byte HOVER_MODE = 2;
 
     public ItemCopterPack()
     {
@@ -45,10 +48,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         setFull3D();
         setMaxStackSize(1);
     }
-
-    public static byte OFF_MODE = 0;
-    public static byte NORMAL_MODE = 1;
-    public static byte HOVER_MODE = 2;
 
     @Override
     public int getItemEnchantability()
@@ -144,10 +143,13 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         return modelTexture;
     }
 
-    public static void elevate(EntityPlayer player, ItemStack copter)
+    private static void elevate(EntityPlayer player, ItemStack copter)
     {
-        if (player.posY < 256) player.motionY = Math.max(player.motionY, 0.18);
-        if (player.posY > 256) player.motionY = 0.18 - ((player.posY % 256) / 256);
+        //TODO rework formulas, add height restriction, maybe configurable
+        if (player.posY < 256)
+            player.motionY = Math.max(player.motionY, 0.18);
+        if (player.posY > 256)
+            player.motionY = 0.18 - ((player.posY % 256) / 256);
     }
 
     @Override

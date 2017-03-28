@@ -323,7 +323,6 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void markDirty()
     {
-
         saveToNBT(containerStack.stackTagCompound);
     }
 
@@ -342,10 +341,10 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void closeInventory()
     {
-       /* if(Utils.inServer())
+        /*if(Utils.inServer())
         {*/
         saveToNBT(containerStack.stackTagCompound);
-        // }
+        //}
     }
 
     @Override
