@@ -347,7 +347,7 @@ public class ModelBackpackBlock extends ModelBase
 
             Cuboid6 left = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
             //Thanks Chickenbones!
-            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), left.add(victor), ((1.0F * tankLeft.getFluidAmount()) / (1.0F * Constants.basicTankCapacity)), 0.2);
+            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), left.add(victor), ((1.0F * tankLeft.getFluidAmount()) / (1.0F * Constants.BASIC_TANK_CAPACITY)), 0.2);
         }
 
         if (tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getFluid().getIcon() != null)
@@ -365,7 +365,7 @@ public class ModelBackpackBlock extends ModelBase
             CCRenderState.useNormals = true;
 
             Cuboid6 right = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
-            RenderUtils.renderFluidCuboid(tankRight.getFluid(), right.add(victor), ((1.0F * tankRight.getFluidAmount()) / (1.0F * Constants.basicTankCapacity)), 0.2);
+            RenderUtils.renderFluidCuboid(tankRight.getFluid(), right.add(victor), ((1.0F * tankRight.getFluidAmount()) / (1.0F * Constants.BASIC_TANK_CAPACITY)), 0.2);
         }
 
     }

@@ -182,8 +182,8 @@ public class GuiOverlay extends Gui
                     GL11.glScalef(0.5f, 0.5f, 0.5f);
                     if (ConfigHandler.enableToolsRender)
                     {
-                        drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
-                        drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);
+                        drawItemStack(inv.getStackInSlot(Constants.UPPER_TOOL), 0, 0);
+                        drawItemStack(inv.getStackInSlot(Constants.LOWER_TOOL), 0, 16);
                     }
                     GL11.glPopMatrix();
                     RenderHelper.disableStandardItemLighting();

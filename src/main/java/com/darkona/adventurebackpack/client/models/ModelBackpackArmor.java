@@ -261,8 +261,8 @@ public class ModelBackpackArmor extends ModelWearable
 
         if (ConfigHandler.enableToolsRender)
         {
-            lowerTool.stack = backpack.getStackInSlot(Constants.lowerTool);
-            upperTool.stack = backpack.getStackInSlot(Constants.upperTool);
+            lowerTool.stack = backpack.getStackInSlot(Constants.LOWER_TOOL);
+            upperTool.stack = backpack.getStackInSlot(Constants.UPPER_TOOL);
         }
 
         if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))

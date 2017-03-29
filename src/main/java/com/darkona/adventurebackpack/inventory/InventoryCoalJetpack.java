@@ -13,6 +13,13 @@ import net.minecraftforge.fluids.FluidTank;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.util.FluidUtils;
 
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_BUCKET_IN;
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_COMPOUND_TAG;
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_INVENTORY;
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_STEAM_TANK;
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_WATER_TANK;
+
 /**
  * Created on 15/01/2015
  *
@@ -20,15 +27,10 @@ import com.darkona.adventurebackpack.util.FluidUtils;
  */
 public class InventoryCoalJetpack implements IInventoryTanks
 {
-    private static final String compoundTag = Constants.jetpackCompoundTag;
 
-    private static final String inventoryName = Constants.jetpackInventoryName;
-    private ItemStack[] inventory = new ItemStack[Constants.jetpackInventorySize];
-
-    private static final String waterTankName = Constants.jetpackWaterTankName;
-    private static final String steamTankName = Constants.jetpackSteamTankName;
-    private FluidTank waterTank = new FluidTank(Constants.jetpackWaterTankCapacity);
-    private FluidTank steamTank = new FluidTank(Constants.jetpackSteamTankCapacity);
+    private ItemStack[] inventory = new ItemStack[Constants.JETPACK_INVENTORY_SIZE];
+    private FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
+    private FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
 
     private static final boolean OFF = false;
     private static final boolean ON = true;
@@ -44,19 +46,11 @@ public class InventoryCoalJetpack implements IInventoryTanks
     public int currentItemBurnTime = 0;
 
     public static final int MAX_TEMPERATURE = 200;
-    public static final int BUCKET_IN_SLOT = 0;
-    public static final int BUCKET_OUT_SLOT = 1;
-    public static final int FUEL_SLOT = 2;
     private int coolTicks = 5000;
 
     public InventoryCoalJetpack(final ItemStack jetpack)
     {
         containerStack = jetpack;
-        /*if (!containerStack.hasTagCompound()) //TODO checkit
-        {
-            containerStack.stackTagCompound = new NBTTagCompound();
-            closeInventory();
-        }*/
         openInventory();
     }
 
@@ -79,9 +73,9 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
-        NBTTagCompound jetpackTag = compound.getCompoundTag(compoundTag);
-        waterTank.readFromNBT(jetpackTag.getCompoundTag(waterTankName));
-        steamTank.readFromNBT(jetpackTag.getCompoundTag(steamTankName));
+        NBTTagCompound jetpackTag = compound.getCompoundTag(JETPACK_COMPOUND_TAG);
+        waterTank.readFromNBT(jetpackTag.getCompoundTag(JETPACK_WATER_TANK));
+        steamTank.readFromNBT(jetpackTag.getCompoundTag(JETPACK_STEAM_TANK));
         temperature = jetpackTag.getInteger("temperature");
         status = jetpackTag.getBoolean("status");
         burnTicks = jetpackTag.getInteger("burnTicks");
@@ -91,7 +85,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
         boiling = jetpackTag.getBoolean("boiling");
         leaking = jetpackTag.getBoolean("leaking");
         currentItemBurnTime = jetpackTag.getInteger("currentBurn");
-        NBTTagList items = jetpackTag.getTagList(inventoryName, NBT.TAG_COMPOUND);
+        NBTTagList items = jetpackTag.getTagList(JETPACK_INVENTORY, NBT.TAG_COMPOUND);
         for (int i = 0; i < items.tagCount(); i++)
         {
             NBTTagCompound item = items.getCompoundTagAt(i);
@@ -106,9 +100,9 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
-        NBTTagCompound jetpackTag = compound.getCompoundTag(compoundTag);
-        jetpackTag.setTag(waterTankName, waterTank.writeToNBT(new NBTTagCompound()));
-        jetpackTag.setTag(steamTankName, steamTank.writeToNBT(new NBTTagCompound()));
+        NBTTagCompound jetpackTag = compound.getCompoundTag(JETPACK_COMPOUND_TAG);
+        jetpackTag.setTag(JETPACK_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
+        jetpackTag.setTag(JETPACK_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
         jetpackTag.setInteger("temperature", temperature);
         jetpackTag.setBoolean("status", status);
         jetpackTag.setInteger("burnTicks", burnTicks);
@@ -130,8 +124,8 @@ public class InventoryCoalJetpack implements IInventoryTanks
                 items.appendTag(item);
             }
         }
-        jetpackTag.setTag(inventoryName, items);
-        compound.setTag(compoundTag, jetpackTag);
+        jetpackTag.setTag(JETPACK_INVENTORY, items);
+        compound.setTag(JETPACK_COMPOUND_TAG, jetpackTag);
     }
 
     @Override
@@ -156,19 +150,19 @@ public class InventoryCoalJetpack implements IInventoryTanks
                 items.appendTag(item);
             }
         }
-        containerStack.stackTagCompound.getCompoundTag(compoundTag).setTag(inventoryName, items);
+        containerStack.stackTagCompound.getCompoundTag(JETPACK_COMPOUND_TAG).setTag(JETPACK_INVENTORY, items);
     }
 
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.getCompoundTag(compoundTag).setTag(waterTankName, waterTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.getCompoundTag(compoundTag).setTag(steamTankName, steamTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(JETPACK_COMPOUND_TAG).setTag(JETPACK_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(JETPACK_COMPOUND_TAG).setTag(JETPACK_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
     }
 
     public void dirtyBoiler()
     {
-        NBTTagCompound jetpackTag = containerStack.stackTagCompound.getCompoundTag(compoundTag);
+        NBTTagCompound jetpackTag = containerStack.stackTagCompound.getCompoundTag(JETPACK_COMPOUND_TAG);
         jetpackTag.setBoolean("boiling", boiling);
         jetpackTag.setBoolean("leaking", leaking);
         jetpackTag.setInteger("temperature", temperature);
@@ -180,13 +174,13 @@ public class InventoryCoalJetpack implements IInventoryTanks
     public int consumeFuel()
     {
         int result = 0;
-        if (isFuel(inventory[FUEL_SLOT]))
+        if (isFuel(inventory[JETPACK_FUEL_SLOT]))
         {
-            result = TileEntityFurnace.getItemBurnTime(inventory[FUEL_SLOT]);
-            --inventory[FUEL_SLOT].stackSize;
-            if (inventory[FUEL_SLOT].stackSize == 0)
+            result = TileEntityFurnace.getItemBurnTime(inventory[JETPACK_FUEL_SLOT]);
+            --inventory[JETPACK_FUEL_SLOT].stackSize;
+            if (inventory[JETPACK_FUEL_SLOT].stackSize == 0)
             {
-                inventory[FUEL_SLOT] = inventory[FUEL_SLOT].getItem().getContainerItem(inventory[FUEL_SLOT]);
+                inventory[JETPACK_FUEL_SLOT] = inventory[JETPACK_FUEL_SLOT].getItem().getContainerItem(inventory[JETPACK_FUEL_SLOT]);
             }
             dirtyInventory();
         }
@@ -246,7 +240,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
         {
             if (itemstack.stackSize <= quantity)
             {
-                if (slot == FUEL_SLOT)
+                if (slot == JETPACK_FUEL_SLOT)
                 {
                     setInventorySlotContents(slot, itemstack.getItem().getContainerItem(itemstack));
                 } else
@@ -275,7 +269,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
         {
             stack.stackSize = getInventoryStackLimit();
         }
-        if (slot < FUEL_SLOT) onInventoryChanged();
+        if (slot < JETPACK_FUEL_SLOT) onInventoryChanged();
         dirtyInventory();
 
     }
@@ -344,9 +338,9 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if (slot == BUCKET_IN_SLOT)
+        if (slot == JETPACK_BUCKET_IN)
             return SlotFluid.isContainer(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.WATER);
-        if (slot == FUEL_SLOT)
+        if (slot == JETPACK_FUEL_SLOT)
             return TileEntityFurnace.isItemFuel(stack);
         return false;
     }

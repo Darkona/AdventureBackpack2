@@ -60,7 +60,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         ItemStack iStack = new ItemStack(item, 1, 0);
         NBTTagCompound compound = new NBTTagCompound();
         iStack.setTagCompound(compound);
-        compound.setTag(Constants.copterTankName, new FluidTank(Constants.copterTankCapacity).writeToNBT(new NBTTagCompound()));
+        compound.setTag(Constants.COPTER_FUEL_TANK, new FluidTank(Constants.COPTER_FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
 
         list.add(iStack);
     }

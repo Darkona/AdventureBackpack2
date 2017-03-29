@@ -30,6 +30,10 @@ import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 
+import static com.darkona.adventurebackpack.common.Constants.BUCKET;
+import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
+import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
+
 /**
  * Created on 23/12/2014
  *
@@ -67,16 +71,16 @@ public class ServerActions
             {
                 if (direction < 0)
                 {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
-                    backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
-                    backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(UPPER_TOOL);
+                    backpack.setInventorySlotContentsNoSave(UPPER_TOOL, backpack.getStackInSlot(LOWER_TOOL));
+                    backpack.setInventorySlotContentsNoSave(LOWER_TOOL, current);
                 } else
                 {
                     if (direction > 0)
                     {
-                        player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
-                        backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
-                        backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
+                        player.inventory.mainInventory[slot] = backpack.getStackInSlot(LOWER_TOOL);
+                        backpack.setInventorySlotContentsNoSave(LOWER_TOOL, backpack.getStackInSlot(UPPER_TOOL));
+                        backpack.setInventorySlotContentsNoSave(UPPER_TOOL, current);
                     }
                 }
             }
@@ -99,9 +103,9 @@ public class ServerActions
      */
     public static boolean setFluidEffect(World world, EntityPlayer player, FluidTank tank)
     {
-        FluidStack drained = tank.drain(Constants.bucket, false);
+        FluidStack drained = tank.drain(BUCKET, false);
         boolean done = false;
-        if (drained != null && drained.amount >= Constants.bucket && FluidEffectRegistry.hasFluidEffect(drained.getFluid()))
+        if (drained != null && drained.amount >= BUCKET && FluidEffectRegistry.hasFluidEffect(drained.getFluid()))
         {
             done = FluidEffectRegistry.executeFluidEffectsForFluid(drained.getFluid(), player, world);
         }

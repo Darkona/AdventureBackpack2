@@ -122,7 +122,7 @@ public class InventoryActions
     public static void consumeItemInInventory(IInventory backpack, Item item)
     {
         int i = -1;
-        for (int j = 0; j < Constants.inventorySize - 7; ++j)
+        for (int j = 0; j < Constants.INVENTORY_SIZE - 7; ++j)
         {
             if (backpack.getStackInSlot(j) != null && backpack.getStackInSlot(j).getItem() == item)
             {

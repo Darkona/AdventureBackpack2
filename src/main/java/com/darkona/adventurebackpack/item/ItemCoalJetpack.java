@@ -44,7 +44,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public ItemCoalJetpack()
     {
         super();
-        setUnlocalizedName("CoalJetpack");
+        setUnlocalizedName("coalJetpack");
         setFull3D();
         setMaxStackSize(1);
     }
@@ -58,10 +58,10 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         iStack.setTagCompound(compound);
 
         NBTTagCompound jetpackTag = new NBTTagCompound();
-        //jetpackTag.setTag(Constants.jetpackWaterTankName, new FluidTank(Constants.jetpackWaterTankCapacity).writeToNBT(new NBTTagCompound()));
-        //jetpackTag.setTag(Constants.jetpackSteamTankName, new FluidTank(Constants.jetpackSteamTankCapacity).writeToNBT(new NBTTagCompound()));
-        //jetpackTag.setTag(Constants.jetpackInventoryName, new NBTTagList());
-        compound.setTag(Constants.jetpackCompoundTag, jetpackTag);
+        //jetpackTag.setTag(Constants.JETPACK_WATER_TANK, new FluidTank(Constants.JETPACK_WATER_CAPACITY).writeToNBT(new NBTTagCompound()));
+        //jetpackTag.setTag(Constants.JETPACK_STEAM_TANK, new FluidTank(Constants.JETPACK_STEAM_CAPACITY).writeToNBT(new NBTTagCompound()));
+        //jetpackTag.setTag(Constants.JETPACK_INVENTORY, new NBTTagList());
+        compound.setTag(Constants.JETPACK_COMPOUND_TAG, jetpackTag);
 
         list.add(iStack);
     }
@@ -334,7 +334,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String modelTexture;
-        modelTexture = Resources.modelTextures("CoalJetpack").toString();
+        modelTexture = Resources.modelTextures("coalJetpack").toString();
 
         return modelTexture;
     }
@@ -343,6 +343,6 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     @SideOnly(Side.CLIENT)
     public ResourceLocation getWearableTexture(ItemStack wearable)
     {
-        return Resources.modelTextures("CoalJetpack");
+        return Resources.modelTextures("coalJetpack");
     }
 }
