@@ -1,11 +1,16 @@
 package com.darkona.adventurebackpack.item;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
@@ -14,6 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerJetpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
@@ -41,6 +47,23 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         setUnlocalizedName("CoalJetpack");
         setFull3D();
         setMaxStackSize(1);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void getSubItems(Item item, CreativeTabs tab, List list)
+    {
+        ItemStack iStack = new ItemStack(item, 1, 0);
+        NBTTagCompound compound = new NBTTagCompound();
+        iStack.setTagCompound(compound);
+
+        NBTTagCompound jetpackTag = new NBTTagCompound();
+        //jetpackTag.setTag(Constants.jetpackWaterTankName, new FluidTank(Constants.jetpackWaterTankCapacity).writeToNBT(new NBTTagCompound()));
+        //jetpackTag.setTag(Constants.jetpackSteamTankName, new FluidTank(Constants.jetpackSteamTankCapacity).writeToNBT(new NBTTagCompound()));
+        //jetpackTag.setTag(Constants.jetpackInventoryName, new NBTTagList());
+        compound.setTag(Constants.jetpackCompoundTag, jetpackTag);
+
+        list.add(iStack);
     }
 
     @Override

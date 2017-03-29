@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -33,10 +34,20 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class TileAdventureBackpack extends TileEntity implements IInventoryAdventureBackpack
 {
+    private static final String compoundTag = Constants.compoundTag;
 
-    public ItemStack[] inventory;
+    private static final String inventoryName = Constants.inventoryName;
+    public ItemStack[] inventory = new ItemStack[Constants.inventorySize];
+
+    private static final String leftTankName = Constants.leftTankName;
+    private static final String rightTankName = Constants.rightTankName;
+    private FluidTank leftTank = new FluidTank(Constants.basicTankCapacity);
+    private FluidTank rightTank = new FluidTank(Constants.basicTankCapacity);
+
+    /*public ItemStack[] inventory;
     private FluidTank leftTank;
-    private FluidTank rightTank;
+    private FluidTank rightTank;*/
+
     public boolean sleepingBagDeployed;
     private boolean special;
     private int sbdir;
@@ -83,9 +94,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     public TileAdventureBackpack()
     {
-        leftTank = new FluidTank(Constants.basicTankCapacity);
+        /*leftTank = new FluidTank(Constants.basicTankCapacity); //TODO checkit
         rightTank = new FluidTank(Constants.basicTankCapacity);
-        inventory = new ItemStack[Constants.inventorySize];
+        inventory = new ItemStack[Constants.inventorySize];*/
         sleepingBagDeployed = false;
         setColorName("Standard");
         luminosity = 0;
@@ -251,13 +262,13 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        saveToNBT(compound);
         compound.setBoolean("sleepingbag", sleepingBagDeployed);
         compound.setInteger("sbx", sbx);
         compound.setInteger("sby", sby);
         compound.setInteger("sbz", sbz);
         compound.setInteger("lumen", luminosity);
         compound.setInteger("sbdir", sbdir);
+        saveToNBT(compound);
         super.writeToNBT(compound);
     }
 
@@ -265,36 +276,34 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void loadFromNBT(NBTTagCompound compound)
     {
         if (compound.hasKey("ench"))
-            ench = compound.getTagList("ench", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-        if (compound.hasKey("backpackData"))
+            ench = compound.getTagList("ench", NBT.TAG_COMPOUND);
+
+        NBTTagCompound backpackTag = compound.getCompoundTag(compoundTag);
+        NBTTagList items = backpackTag.getTagList(inventoryName, NBT.TAG_COMPOUND);
+        for (int i = 0; i < items.tagCount(); i++)
         {
-            NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
-            NBTTagList items = backpackData.getTagList("ABPItems", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < items.tagCount(); i++)
+            NBTTagCompound item = items.getCompoundTagAt(i);
+            byte slot = item.getByte("Slot");
+            if (slot >= 0 && slot < inventory.length)
             {
-                NBTTagCompound item = items.getCompoundTagAt(i);
-                byte slot = item.getByte("Slot");
-                if (slot >= 0 && slot < inventory.length)
-                {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(item);
-                }
+                inventory[slot] = ItemStack.loadItemStackFromNBT(item);
             }
-            leftTank.readFromNBT(backpackData.getCompoundTag("leftTank"));
-            rightTank.readFromNBT(backpackData.getCompoundTag("rightTank"));
-            colorName = backpackData.getString("colorName");
-            lastTime = backpackData.getInteger("lastTime");
-            special = backpackData.getBoolean("special");
-            extendedProperties = backpackData.getCompoundTag("extended");
-            disableCycling = backpackData.getBoolean("disableCycling");
-            disableNVision = backpackData.getBoolean("disableNVision");
         }
+        leftTank.readFromNBT(backpackTag.getCompoundTag(leftTankName));
+        rightTank.readFromNBT(backpackTag.getCompoundTag(rightTankName));
+        colorName = backpackTag.getString("colorName");
+        lastTime = backpackTag.getInteger("lastTime");
+        special = backpackTag.getBoolean("special");
+        extendedProperties = backpackTag.getCompoundTag("extended");
+        disableCycling = backpackTag.getBoolean("disableCycling");
+        disableNVision = backpackTag.getBoolean("disableNVision");
     }
 
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
         if (ench != null) compound.setTag("ench", ench);
-        NBTTagCompound backpackData = new NBTTagCompound();
+        NBTTagCompound backpackTag = new NBTTagCompound();
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {
@@ -307,17 +316,17 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 items.appendTag(item);
             }
         }
-        backpackData.setTag("ABPItems", items);
-        backpackData.setString("colorName", colorName);
-        backpackData.setInteger("lastTime", lastTime);
-        backpackData.setBoolean("special", BackpackAbilities.hasAbility(colorName));
-        backpackData.setTag("extended", extendedProperties);
-        backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
-        backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
-        backpackData.setBoolean("disableCycling", disableCycling);
-        backpackData.setBoolean("disableNVision", disableNVision);
+        backpackTag.setTag(inventoryName, items);
+        backpackTag.setString("colorName", colorName);
+        backpackTag.setInteger("lastTime", lastTime);
+        backpackTag.setBoolean("special", BackpackAbilities.hasAbility(colorName));
+        backpackTag.setTag("extended", extendedProperties);
+        backpackTag.setTag(rightTankName, rightTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setTag(leftTankName, leftTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setBoolean("disableCycling", disableCycling);
+        backpackTag.setBoolean("disableNVision", disableNVision);
 
-        compound.setTag("backpackData", backpackData);
+        compound.setTag(compoundTag, backpackTag);
     }
 
     @Override
@@ -515,28 +524,18 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void saveTanks(NBTTagCompound compound)
     {
-        NBTTagCompound backpackData;
-        if (compound.hasKey("backpackData"))
-        {
-            backpackData = compound.getCompoundTag("backpackData");
-        } else
-        {
-            backpackData = new NBTTagCompound();
-        }
-        backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
-        backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
-        compound.setTag("backpackData", backpackData);
+        NBTTagCompound backpackTag = compound.getCompoundTag(compoundTag);
+        backpackTag.setTag(rightTankName, rightTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setTag(leftTankName, leftTank.writeToNBT(new NBTTagCompound()));
+        compound.setTag(compoundTag, backpackTag);
     }
 
     @Override
     public void loadTanks(NBTTagCompound compound)
     {
-        if (compound.hasKey("backpackData"))
-        {
-            NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
-            leftTank.readFromNBT(backpackData.getCompoundTag("leftTank"));
-            rightTank.readFromNBT(backpackData.getCompoundTag("rightTank"));
-        }
+        NBTTagCompound backpackTag = compound.getCompoundTag(compoundTag);
+        leftTank.readFromNBT(backpackTag.getCompoundTag(leftTankName));
+        rightTank.readFromNBT(backpackTag.getCompoundTag(rightTankName));
     }
 
     @Override

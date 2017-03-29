@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -24,27 +25,32 @@ import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
  */
 public class InventoryBackpack implements IInventoryAdventureBackpack
 {
+    private static final String compoundTag = Constants.compoundTag;
+
+    private static final String inventoryName = Constants.inventoryName;
     public ItemStack[] inventory = new ItemStack[Constants.inventorySize];
+
+    private static final String leftTankName = Constants.leftTankName;
+    private static final String rightTankName = Constants.rightTankName;
     private FluidTank leftTank = new FluidTank(Constants.basicTankCapacity);
     private FluidTank rightTank = new FluidTank(Constants.basicTankCapacity);
 
+    private static final boolean OFF = false;
+
+    private static final boolean ON = true;
+    private boolean disableNVision = OFF;
+    private boolean disableCycling = OFF;
+
+    private ItemStack containerStack;
     public ItemStack getContainerStack()
     {
         return containerStack;
     }
-
     public void setContainerStack(ItemStack containerStack)
     {
         this.containerStack = containerStack;
     }
 
-    public static final boolean OFF = false;
-    public static final boolean ON = true;
-
-    private boolean disableNVision = OFF;
-    private boolean disableCycling = OFF;
-
-    private ItemStack containerStack;
     private String colorName = "Standard";
     private int lastTime = 0;
     private boolean special = false;
@@ -53,12 +59,12 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     public InventoryBackpack(ItemStack backpack)
     {
         containerStack = backpack;
-        if (!backpack.hasTagCompound())
+        /*if (!backpack.hasTagCompound()) //TODO checkit
         {
             backpack.stackTagCompound = new NBTTagCompound();
             saveToNBT(backpack.stackTagCompound);
-        }
-        loadFromNBT(backpack.stackTagCompound);
+        }*/
+        openInventory();
     }
 
     @Override
@@ -124,15 +130,15 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void saveTanks(NBTTagCompound compound)
     {
-        compound.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
-        compound.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
+        compound.setTag(rightTankName, rightTank.writeToNBT(new NBTTagCompound()));
+        compound.setTag(leftTankName, leftTank.writeToNBT(new NBTTagCompound()));
     }
 
     @Override
     public void loadTanks(NBTTagCompound compound)
     {
-        leftTank.readFromNBT(compound.getCompoundTag("leftTank"));
-        rightTank.readFromNBT(compound.getCompoundTag("rightTank"));
+        leftTank.readFromNBT(compound.getCompoundTag(leftTankName));
+        rightTank.readFromNBT(compound.getCompoundTag(rightTankName));
     }
 
     @Override
@@ -227,37 +233,34 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
-        if (compound.hasKey("backpackData"))
-        {
-            NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
-            NBTTagList items = backpackData.getTagList("ABPItems", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < items.tagCount(); i++)
-            {
-                NBTTagCompound item = items.getCompoundTagAt(i);
-                byte slot = item.getByte("Slot");
-                if (slot >= 0 && slot < inventory.length)
-                {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(item);
-                }
-            }
+        if (compound == null) return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
 
-            leftTank.readFromNBT(backpackData.getCompoundTag("leftTank"));
-            rightTank.readFromNBT(backpackData.getCompoundTag("rightTank"));
-            colorName = backpackData.getString("colorName");
-            lastTime = backpackData.getInteger("lastTime");
-            special = backpackData.getBoolean("special");
-            extendedProperties = backpackData.getCompoundTag("extendedProperties");
-            disableCycling = backpackData.getBoolean("disableCycling");
-            disableNVision = backpackData.getBoolean("disableNVision");
+        NBTTagCompound backpackTag = compound.getCompoundTag(compoundTag);
+        NBTTagList items = backpackTag.getTagList(inventoryName, NBT.TAG_COMPOUND);
+        for (int i = 0; i < items.tagCount(); i++)
+        {
+            NBTTagCompound item = items.getCompoundTagAt(i);
+            byte slot = item.getByte("Slot");
+            if (slot >= 0 && slot < inventory.length)
+            {
+                inventory[slot] = ItemStack.loadItemStackFromNBT(item);
+            }
         }
+
+        leftTank.readFromNBT(backpackTag.getCompoundTag(leftTankName));
+        rightTank.readFromNBT(backpackTag.getCompoundTag(rightTankName));
+        colorName = backpackTag.getString("colorName");
+        lastTime = backpackTag.getInteger("lastTime");
+        special = backpackTag.getBoolean("special");
+        extendedProperties = backpackTag.getCompoundTag("extendedProperties");
+        disableCycling = backpackTag.getBoolean("disableCycling");
+        disableNVision = backpackTag.getBoolean("disableNVision");
     }
 
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
-        // if(Utils.inServer())
-        // {
-        NBTTagCompound backpackData = new NBTTagCompound();
+        NBTTagCompound backpackTag = new NBTTagCompound();
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {
@@ -270,19 +273,18 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
                 items.appendTag(item);
             }
         }
-        backpackData.removeTag("ABPItems");
-        backpackData.setTag("ABPItems", items);
-        backpackData.setString("colorName", colorName);
-        backpackData.setInteger("lastTime", lastTime);
-        backpackData.setBoolean("special", BackpackAbilities.hasAbility(colorName));
-        backpackData.setTag("extendedProperties", extendedProperties);
-        backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
-        backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
-        backpackData.setBoolean("disableCycling", disableCycling);
-        backpackData.setBoolean("disableNVision", disableNVision);
+        backpackTag.removeTag(inventoryName);
+        backpackTag.setTag(inventoryName, items);
+        backpackTag.setString("colorName", colorName);
+        backpackTag.setInteger("lastTime", lastTime);
+        backpackTag.setBoolean("special", BackpackAbilities.hasAbility(colorName));
+        backpackTag.setTag("extendedProperties", extendedProperties);
+        backpackTag.setTag(rightTankName, rightTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setTag(leftTankName, leftTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setBoolean("disableCycling", disableCycling);
+        backpackTag.setBoolean("disableNVision", disableNVision);
 
-        compound.setTag("backpackData", backpackData);
-        //}
+        compound.setTag(compoundTag, backpackTag);
     }
 
     @Override
@@ -341,7 +343,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void closeInventory()
     {
-        /*if(Utils.inServer())
+        /*if(Utils.inServer()) //TODO side?
         {*/
         saveToNBT(containerStack.stackTagCompound);
         //}
@@ -377,21 +379,21 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(compoundTag).setTag(leftTankName, leftTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(compoundTag).setTag(rightTankName, rightTank.writeToNBT(new NBTTagCompound()));
     }
 
     @Override
     public void dirtyTime()
     {
-        containerStack.stackTagCompound.getCompoundTag("backpackData").setInteger("lastTime", lastTime);
+        containerStack.stackTagCompound.getCompoundTag(compoundTag).setInteger("lastTime", lastTime);
     }
 
     @Override
     public void dirtyExtended()
     {
-        containerStack.stackTagCompound.getCompoundTag("backpackData").removeTag("extendedProperties");
-        containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("extendedProperties", extendedProperties);
+        containerStack.stackTagCompound.getCompoundTag(compoundTag).removeTag("extendedProperties");
+        containerStack.stackTagCompound.getCompoundTag(compoundTag).setTag("extendedProperties", extendedProperties);
     }
 
     @Override
@@ -413,8 +415,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
                 items.appendTag(item);
             }
         }
-        containerStack.stackTagCompound.getCompoundTag("backpackData").removeTag("ABPItems");
-        containerStack.stackTagCompound.getCompoundTag("backpackData").setTag("ABPItems", items);
+        containerStack.stackTagCompound.getCompoundTag(compoundTag).removeTag(inventoryName);
+        containerStack.stackTagCompound.getCompoundTag(compoundTag).setTag(inventoryName, items);
     }
 
     public boolean hasBlock(Block block)

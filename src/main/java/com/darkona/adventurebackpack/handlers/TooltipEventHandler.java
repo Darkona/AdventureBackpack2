@@ -27,6 +27,7 @@ public class TooltipEventHandler
 {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings("unused")
     public void wearableTooltips(ItemTooltipEvent event)
     {
         if (!ConfigHandler.enableTooltips)
@@ -38,37 +39,28 @@ public class TooltipEventHandler
         {
             FluidTank tank = new FluidTank(Constants.basicTankCapacity);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
-            NBTTagCompound backpackData = null;
-            if (compound != null && compound.hasKey("backpackData"))
-                backpackData = compound.getCompoundTag("backpackData");
+            NBTTagCompound backpackTag = compound.getCompoundTag(Constants.compoundTag);
 
-            if (ConfigHandler.IS_DEVENV && GuiScreen.isCtrlKeyDown()) //no nbt checks in dev, let 'em burn
+            if (ConfigHandler.IS_DEVENV && GuiScreen.isCtrlKeyDown())
             {
-                tank.readFromNBT(backpackData.getCompoundTag("leftTank"));
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.leftTankName));
                 event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getUnlocalizedName());
-                tank.readFromNBT(backpackData.getCompoundTag("rightTank"));
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.rightTankName));
                 event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getUnlocalizedName());
             }
 
-            if (backpackData != null && GuiScreen.isShiftKeyDown())
+            if (GuiScreen.isShiftKeyDown())
             {
-                if (backpackData.hasKey("ABPItems"))
-                {
-                    NBTTagList itemList = backpackData.getTagList("ABPItems", NBT.TAG_COMPOUND);
-                    event.toolTip.add("Slots used: " + backpackTooltip(itemList));
-                }
-                if (backpackData.hasKey("leftTank"))
-                {
-                    tank.readFromNBT(backpackData.getCompoundTag("leftTank"));
-                    event.toolTip.add("Left Tank: " + tankTooltip(tank, true));
-                }
-                if (backpackData.hasKey("rightTank"))
-                {
-                    tank.readFromNBT(backpackData.getCompoundTag("rightTank"));
-                    event.toolTip.add("Right Tank: " + tankTooltip(tank, true));
-                }
                 //TODO add cycling status (on_of), nightvision status (if any), keys
-            } else if (backpackData != null && backpackData.hasKey("ABPItems"))
+                NBTTagList itemList = backpackTag.getTagList(Constants.inventoryName, NBT.TAG_COMPOUND);
+                event.toolTip.add("Slots used: " + backpackTooltip(itemList));
+
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.leftTankName));
+                event.toolTip.add("Left Tank: " + tankTooltip(tank, true));
+
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.rightTankName));
+                event.toolTip.add("Right Tank: " + tankTooltip(tank, true));
+            } else
             {
                 event.toolTip.add(holdTheShift);
             }
@@ -78,34 +70,22 @@ public class TooltipEventHandler
             FluidTank waterTank = new FluidTank(Constants.jetpackWaterTankCapacity);
             FluidTank steamTank = new FluidTank(Constants.jetpackSteamTankCapacity);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
-            NBTTagCompound jetpackData = null;
-            //FIXME why there is packs (jetpacks only?) w/o nbt? change spawn/register method [and delete all these checks]
-            if (compound != null && compound.hasKey("jetpackData"))
-                jetpackData = compound.getCompoundTag("jetpackData");
-            else if (compound == null && ConfigHandler.IS_DEVENV)
-                event.toolTip.add(EnumChatFormatting.RED + "No NBT");
+            NBTTagCompound jetpackTag = compound.getCompoundTag(Constants.jetpackCompoundTag);
 
-            if (jetpackData != null && GuiScreen.isShiftKeyDown())
+            if (GuiScreen.isShiftKeyDown())
             {
                 //TODO add temperature, help note with: max height, keys
-                if (jetpackData.hasKey("inventory"))
-                {
-                    NBTTagList itemList = jetpackData.getTagList("inventory", NBT.TAG_COMPOUND);
-                    event.toolTip.add("Fuel: " + fuelTooltip(itemList, Constants.jetpackFuel));
-                }
-                if (jetpackData.hasKey("waterTank"))
-                {
-                    waterTank.readFromNBT(jetpackData.getCompoundTag("waterTank"));
-                    event.toolTip.add("Left Tank: " + tankTooltip(waterTank, true));
-                }
-                if (jetpackData.hasKey("steamTank"))
-                {
-                    steamTank.readFromNBT(jetpackData.getCompoundTag("steamTank"));
-                    // special case for steam, have to set displayed fluid name manually
-                    String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + "Steam" : "";
-                    event.toolTip.add("Right Tank: " + tankTooltip(steamTank, false) + theSteam);
-                }
-            } else if (jetpackData != null && jetpackData.hasKey("waterTank"))
+                NBTTagList itemList = jetpackTag.getTagList(Constants.jetpackInventoryName, NBT.TAG_COMPOUND);
+                event.toolTip.add("Fuel: " + fuelTooltip(itemList, Constants.jetpackFuelSlot));
+
+                waterTank.readFromNBT(jetpackTag.getCompoundTag(Constants.jetpackWaterTankName));
+                event.toolTip.add("Left Tank: " + tankTooltip(waterTank, true));
+
+                steamTank.readFromNBT(jetpackTag.getCompoundTag(Constants.jetpackSteamTankName));
+                // special case for steam, have to set displayed fluid name manually
+                String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + "Steam" : "";
+                event.toolTip.add("Right Tank: " + tankTooltip(steamTank, false) + theSteam);
+            } else
             {
                 event.toolTip.add(holdTheShift);
             }
@@ -114,14 +94,12 @@ public class TooltipEventHandler
         {
             FluidTank fuelTank = new FluidTank(Constants.copterTankCapacity);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
-            if (compound != null && compound.hasKey("fuelTank"))
-                fuelTank.readFromNBT(compound.getCompoundTag("fuelTank"));
-
-            if (compound != null && GuiScreen.isShiftKeyDown())
+            fuelTank.readFromNBT(compound.getCompoundTag(Constants.copterTankName));
+            if (GuiScreen.isShiftKeyDown())
             {
                 //TODO add fuel consumption rate, help note with: max height, keys
                 event.toolTip.add("Fuel Tank: " + tankTooltip(fuelTank, true));
-            } else if (compound != null)
+            } else
             {
                 event.toolTip.add(holdTheShift);
             }
@@ -154,7 +132,7 @@ public class TooltipEventHandler
 
     private String mainSlotsFormat(int slotsUsed)
     {
-        String sFormatted = "" + slotsUsed;
+        String sFormatted = String.valueOf(slotsUsed);
         if (slotsUsed == 0)
             sFormatted = EnumChatFormatting.DARK_GRAY + sFormatted;
         else if (slotsUsed == Constants.inventoryMainSize)
@@ -173,11 +151,11 @@ public class TooltipEventHandler
 
     private String fluidAmountFormat(int fluidAmount, int tankCapacity)
     {
-        String aFormatted = "" + fluidAmount;
+        String aFormatted = String.valueOf(fluidAmount);
         if (fluidAmount == tankCapacity)
             aFormatted = EnumChatFormatting.WHITE + aFormatted;
         else if (fluidAmount == 0)
-            aFormatted = String.format("%s%sEmpty", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC);
+            aFormatted = emptyFormat();
         return aFormatted;
     }
 
@@ -223,20 +201,30 @@ public class TooltipEventHandler
     private String stackDataFormat(int id, int meta, int count)
     {
         if (count == 0)
-            return String.format("%s%sEmpty", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC);
+            return emptyFormat();
 
         String fStackData;
         try
         {
-            ItemStack fuelStack = new ItemStack(GameData.getItemRegistry().getObjectById(id));
-            fuelStack.setItemDamage(meta);
-            fStackData = fuelStack.getDisplayName() + " (" + count + ")";
+            ItemStack fuelStack = new ItemStack(GameData.getItemRegistry().getObjectById(id), 0, meta);
+            fStackData = fuelStack.getDisplayName() + " (" +  stackSizeFormat(fuelStack, count) + ")";
         } catch (Exception e)
         {
             fStackData = EnumChatFormatting.RED + "Error";
             //e.printStackTrace();
         }
         return fStackData;
+    }
+
+    private String stackSizeFormat(ItemStack stack, int count)
+    {
+        String sCount = String.valueOf(count);
+        return stack.getMaxStackSize() == count ? EnumChatFormatting.WHITE + sCount + EnumChatFormatting.GRAY : sCount;
+    }
+
+    private String emptyFormat()
+    {
+        return String.format("%s%sEmpty", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC);
     }
 
 }

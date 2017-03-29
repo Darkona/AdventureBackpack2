@@ -261,13 +261,14 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
-        NBTTagCompound backpackData = BackpackUtils.getBackpackData(stack);
-        if (backpackData != null)
+        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(stack);
+        if (backpackTag.hasKey("colorName"))
         {
-            if (backpackData.hasKey("colorName"))
-            {
-                list.add(backpackData.getString("colorName"));
-            }
+            //TODO MORE!
+            if (backpackTag.getString("colorName").equals("Rainbow"))
+                list.add(Utils.makeItRainbow("Rainbow"));
+            else
+                list.add(backpackTag.getString("colorName"));
         }
     }
 
@@ -282,7 +283,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             bp.setItemDamage(i);
             NBTTagCompound c = new NBTTagCompound();
             c.setString("colorName", BackpackNames.backpackNames[i]);
-            BackpackUtils.setBackpackData(bp, c);
+            BackpackUtils.setBackpackTag(bp, c);
             subItems.add(bp);
         }
     }

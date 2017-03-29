@@ -4,21 +4,25 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
@@ -47,6 +51,18 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         setUnlocalizedName("copterPack");
         setFull3D();
         setMaxStackSize(1);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void getSubItems(Item item, CreativeTabs tab, List list)
+    {
+        ItemStack iStack = new ItemStack(item, 1, 0);
+        NBTTagCompound compound = new NBTTagCompound();
+        iStack.setTagCompound(compound);
+        compound.setTag(Constants.copterTankName, new FluidTank(Constants.copterTankCapacity).writeToNBT(new NBTTagCompound()));
+
+        list.add(iStack);
     }
 
     @Override

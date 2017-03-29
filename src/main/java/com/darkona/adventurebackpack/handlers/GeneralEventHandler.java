@@ -10,7 +10,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
@@ -22,7 +21,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
-import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
@@ -57,14 +55,7 @@ public class GeneralEventHandler
                 inv.dirtyTime();
                 if (!player.worldObj.isRemote)
                 {
-                    String nyanString = EnumChatFormatting.RED +
-                            "N" + EnumChatFormatting.GOLD +
-                            "Y" + EnumChatFormatting.YELLOW +
-                            "A" + EnumChatFormatting.GREEN +
-                            "N" + EnumChatFormatting.AQUA +
-                            "C" + EnumChatFormatting.BLUE +
-                            "A" + EnumChatFormatting.DARK_PURPLE +
-                            "T";
+                    String nyanString = Utils.makeItRainbow("NYANCAT");
                     player.addChatComponentMessage(new ChatComponentText(nyanString));
                     ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.NYAN_SOUND, player), player);
                 }
@@ -160,11 +151,11 @@ public class GeneralEventHandler
         }
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void backpackUnequipped(WearableEvent.UnequipWearableEvent event)
     {
 
-    }
+    }*/
 
     /*  @SubscribeEvent
     public void listFluids(FluidRegistry.FluidRegisterEvent event)
