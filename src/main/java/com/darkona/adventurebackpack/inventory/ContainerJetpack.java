@@ -6,6 +6,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import com.darkona.adventurebackpack.common.Constants;
+
 /**
  * Created on 15/01/2015
  *
@@ -15,7 +17,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
 {
     InventoryCoalJetpack inventory;
     EntityPlayer player;
-    private final int PLAYER_HOT_START = 0;
+    private final int PLAYER_HOT_START = 0; //TODO constants to constants
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     @SuppressWarnings("FieldCanBeLocal")
@@ -60,11 +62,11 @@ public class ContainerJetpack extends Container implements IWearableContainer
 
         //Bucket Slots
         // bucket in
-        addSlotToContainer(new SlotFluid(inventory, InventoryCoalJetpack.BUCKET_IN_SLOT, 30, 22));
+        addSlotToContainer(new SlotFluid(inventory, Constants.JETPACK_BUCKET_IN, 30, 22));
         // bucket out
-        addSlotToContainer(new SlotFluid(inventory, InventoryCoalJetpack.BUCKET_OUT_SLOT, 30, 52));
+        addSlotToContainer(new SlotFluid(inventory, Constants.JETPACK_BUCKET_OUT, 30, 52));
         // fuel
-        addSlotToContainer(new SlotFuel(inventory, InventoryCoalJetpack.FUEL_SLOT, 77, 64));
+        addSlotToContainer(new SlotFuel(inventory, Constants.JETPACK_FUEL_SLOT, 77, 64));
 
     }
 

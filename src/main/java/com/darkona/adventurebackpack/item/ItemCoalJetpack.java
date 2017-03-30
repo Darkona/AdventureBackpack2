@@ -1,11 +1,16 @@
 package com.darkona.adventurebackpack.item;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
@@ -14,6 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerJetpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
@@ -38,9 +44,26 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public ItemCoalJetpack()
     {
         super();
-        setUnlocalizedName("CoalJetpack");
+        setUnlocalizedName("coalJetpack");
         setFull3D();
         setMaxStackSize(1);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void getSubItems(Item item, CreativeTabs tab, List list)
+    {
+        ItemStack iStack = new ItemStack(item, 1, 0);
+        NBTTagCompound compound = new NBTTagCompound();
+        iStack.setTagCompound(compound);
+
+        NBTTagCompound jetpackTag = new NBTTagCompound();
+        //jetpackTag.setTag(Constants.JETPACK_WATER_TANK, new FluidTank(Constants.JETPACK_WATER_CAPACITY).writeToNBT(new NBTTagCompound()));
+        //jetpackTag.setTag(Constants.JETPACK_STEAM_TANK, new FluidTank(Constants.JETPACK_STEAM_CAPACITY).writeToNBT(new NBTTagCompound()));
+        //jetpackTag.setTag(Constants.JETPACK_INVENTORY, new NBTTagList());
+        compound.setTag(Constants.JETPACK_COMPOUND_TAG, jetpackTag);
+
+        list.add(iStack);
     }
 
     @Override
@@ -311,7 +334,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String modelTexture;
-        modelTexture = Resources.modelTextures("CoalJetpack").toString();
+        modelTexture = Resources.modelTextures("coalJetpack").toString();
 
         return modelTexture;
     }
@@ -320,6 +343,6 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     @SideOnly(Side.CLIENT)
     public ResourceLocation getWearableTexture(ItemStack wearable)
     {
-        return Resources.modelTextures("CoalJetpack");
+        return Resources.modelTextures("coalJetpack");
     }
 }

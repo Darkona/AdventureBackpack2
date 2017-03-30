@@ -12,8 +12,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
 
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+
+import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
+import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
+import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
+import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
+import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
+import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 
 /**
  * Created on 12/10/2014
@@ -33,7 +39,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
     EntityPlayer player;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final int
+    private final int //TODO constants to constants
             PLAYER_HOT_START = 0,
             PLAYER_HOT_END = PLAYER_HOT_START + 8,
             PLAYER_INV_START = PLAYER_HOT_END + 1,
@@ -117,20 +123,20 @@ public class ContainerBackpack extends Container implements IWearableContainer
         }
 
         //Upper Tool Slot
-        addSlotToContainer(new SlotTool(inventory, Constants.upperTool, 44, 79));// Upper Tool 16
+        addSlotToContainer(new SlotTool(inventory, UPPER_TOOL, 44, 79));// Upper Tool 16
         //Lower Tool slot
-        addSlotToContainer(new SlotTool(inventory, Constants.lowerTool, 44, 97));// Lower Tool 17
+        addSlotToContainer(new SlotTool(inventory, LOWER_TOOL, 44, 97));// Lower Tool 17
 
         //Bucket Slots
 
         // bucket in left 18
-        addSlotToContainer(new SlotFluid(inventory, Constants.bucketInLeft, 6, 7));
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_LEFT, 6, 7));
         // bucket out left 19
-        addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutLeft, 6, 37));
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_LEFT, 6, 37));
         // bucket in right  20
-        addSlotToContainer(new SlotFluid(inventory, Constants.bucketInRight, 226, 7));
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_RIGHT, 226, 7));
         // bucket out right 21
-        addSlotToContainer(new SlotFluid(inventory, Constants.bucketOutRight, 226, 37));
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_RIGHT, 226, 37));
 
         //Craft Matrix
         startX = 152;
@@ -330,7 +336,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
                     int maxAmount = leftTank.getCapacity();
                     int leftAmount = leftTank.getFluidAmount();
                     int rightAmount = rightTank.getFluidAmount();
-                    String leftFluid = SlotFluid.getFluidName(leftTank);
+                    String leftFluid = SlotFluid.getFluidName(leftTank); //TODO name->id
                     String rightFluid = SlotFluid.getFluidName(rightTank);
 
                     int containerCapacity = SlotFluid.getCapacity(stack);

@@ -59,7 +59,7 @@ public class GuiTank
     {
         FluidStack fluid = tank.getFluid();
         String fluidName = (fluid != null) ? fluid.getLocalizedName() : "None";
-        String fluidAmount = (fluid != null) ? fluid.amount + "/" + Constants.basicTankCapacity : "Empty";
+        String fluidAmount = (fluid != null) ? fluid.amount + "/" + Constants.BASIC_TANK_CAPACITY : "Empty";
         ArrayList<String> tankTips = new ArrayList<String>();
         tankTips.add(fluidName);
         tankTips.add(fluidAmount);

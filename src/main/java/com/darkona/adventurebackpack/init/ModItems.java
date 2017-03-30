@@ -46,7 +46,7 @@ public class ModItems
         GameRegistry.registerItem(adventurePants, "adventurePants");
         GameRegistry.registerItem(pistonBoots, "pistonBoots");
         GameRegistry.registerItem(copterPack, "copterPack");
-        GameRegistry.registerItem(coalJetpack, "CoalJetpack"); //TODO rename to coalJetpack. will affect saved games
+        GameRegistry.registerItem(coalJetpack, "coalJetpack");
         GameRegistry.registerItem(adventureBackpack, "adventureBackpack");
         GameRegistry.registerItem(component, "backpackComponent");
         GameRegistry.registerItem(hose, "backpackHose");

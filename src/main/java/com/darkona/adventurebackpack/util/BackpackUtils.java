@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 
@@ -51,19 +52,22 @@ public class BackpackUtils
         timer.schedule(unequipTask, 200);
     }
 
-    public static NBTTagCompound getBackpackData(ItemStack backpack)
+    public static NBTTagCompound getBackpackTag(ItemStack backpack)
     {
-        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey("backpackData"))
+        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey(Constants.COMPOUND_TAG))
         {
-            return backpack.stackTagCompound.getCompoundTag("backpackData");
+            return backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
         }
         return null;
     }
 
-    public static void setBackpackData(ItemStack stack, NBTTagCompound compound)
+    public static void setBackpackTag(ItemStack stack, NBTTagCompound compound)
     {
-        if (!stack.hasTagCompound()) stack.stackTagCompound = new NBTTagCompound();
-        stack.stackTagCompound.setTag("backpackData", compound);
+        if (!stack.hasTagCompound())
+        {
+            stack.stackTagCompound = new NBTTagCompound();
+        }
+        stack.stackTagCompound.setTag(Constants.COMPOUND_TAG, compound);
     }
 
     private static class DelayUnequipTask extends TimerTask

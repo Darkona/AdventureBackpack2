@@ -15,7 +15,7 @@ public class ContainerCopter extends Container implements IWearableContainer
 {
     InventoryCopterPack inventory;
     EntityPlayer player;
-    private final int PLAYER_HOT_START = 0;
+    private final int PLAYER_HOT_START = 0; //TODO constants to constants
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     @SuppressWarnings("FieldCanBeLocal")

@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -443,6 +444,40 @@ public class Utils
         {
             return text; // Text is the first word itself.
         }
+    }
+
+    public static String makeItRainbow(String theString)
+    {
+        StringBuilder everyHunterWannaKnowWherePheasantSits = new StringBuilder();
+        for (int i = 0; i < theString.length(); i++)
+        {
+            char charAtI = theString.charAt(i);
+            switch (i % 7)
+            {
+                case 0:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.RED).append(charAtI);
+                    break;
+                case 1:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.GOLD).append(charAtI);
+                    break;
+                case 2:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.YELLOW).append(charAtI);
+                    break;
+                case 3:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.GREEN).append(charAtI);
+                    break;
+                case 4:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.AQUA).append(charAtI);
+                    break;
+                case 5:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.BLUE).append(charAtI);
+                    break;
+                case 6:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.DARK_PURPLE).append(charAtI);
+                    break;
+            }
+        }
+        return everyHunterWannaKnowWherePheasantSits.toString();
     }
 
 }

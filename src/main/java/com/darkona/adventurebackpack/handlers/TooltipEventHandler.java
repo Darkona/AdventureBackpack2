@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.handlers;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -16,116 +17,124 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemCoalJetpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 
 /**
- * Created by Ugachaga on 24.03.2017.
+ * Created on 24.03.2017
+ *
+ * @author Ugachaga
  */
 public class TooltipEventHandler
 {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings("unused")
     public void wearableTooltips(ItemTooltipEvent event)
     {
         if (!ConfigHandler.enableTooltips)
             return;
 
-        String holdTheShift = String.format("%s%s<Hold Shift>", EnumChatFormatting.WHITE, EnumChatFormatting.ITALIC);
-
         if (event.itemStack.getItem() instanceof ItemAdventureBackpack)
         {
-            FluidTank tank = new FluidTank(Constants.basicTankCapacity);
+            FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
-            NBTTagCompound backpackData = null;
-            if (compound != null && compound.hasKey("backpackData"))
-                backpackData = compound.getCompoundTag("backpackData");
+            NBTTagCompound backpackTag = compound.getCompoundTag(Constants.COMPOUND_TAG);
 
-            if (ConfigHandler.IS_DEVENV && GuiScreen.isCtrlKeyDown()) //no nbt checks in dev, let 'em burn
+            /*if (ConfigHandler.IS_DEVENV && GuiScreen.isCtrlKeyDown())
             {
-                tank.readFromNBT(backpackData.getCompoundTag("leftTank"));
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
                 event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getUnlocalizedName());
-                tank.readFromNBT(backpackData.getCompoundTag("rightTank"));
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.RIGHT_TANK));
                 event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getUnlocalizedName());
+            }*/
+
+            if (GuiScreen.isShiftKeyDown())
+            {
+                NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
+                event.toolTip.add("Slots used: " + backpackTooltip(itemList));
+
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
+                event.toolTip.add("Left Tank: " + tankTooltip(tank, true));
+
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.RIGHT_TANK));
+                event.toolTip.add("Right Tank: " + tankTooltip(tank, true));
+
+                if (!GuiScreen.isCtrlKeyDown())
+                    event.toolTip.add(holdThe(false));
+
+            } else if (!GuiScreen.isCtrlKeyDown())
+            {
+                event.toolTip.add(holdThe(true));
             }
 
-            if (backpackData != null && GuiScreen.isShiftKeyDown())
+            if (GuiScreen.isCtrlKeyDown())
             {
-                if (backpackData.hasKey("ABPItems"))
+                String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
+                boolean cycling = !backpackTag.getBoolean("disableCycling");
+                event.toolTip.add("Tool Cycling: " + switchTooltip(cycling, true));
+                event.toolTip.add("Press '" + actionKey + "' while wearing");
+                event.toolTip.add("backpack, for turn cycling " + switchTooltip(!cycling, false));
+
+                String color = backpackTag.getString("colorName");
+                for (String valid : Constants.NIGHTVISION_BACKPACKS)
                 {
-                    NBTTagList itemList = backpackData.getTagList("ABPItems", NBT.TAG_COMPOUND);
-                    event.toolTip.add("Slots used: " + backpackTooltip(itemList));
+                    if (color.equals(valid))
+                    {
+                        boolean vision = !backpackTag.getBoolean("disableNVision");
+                        event.toolTip.add("Night Vision: " + switchTooltip(vision, true));
+                        event.toolTip.add("Press Shift+'" + actionKey + "' while wearing");
+                        event.toolTip.add("backpack, for turn nightvision " + switchTooltip(!vision, false));
+                    }
                 }
-                if (backpackData.hasKey("leftTank"))
-                {
-                    tank.readFromNBT(backpackData.getCompoundTag("leftTank"));
-                    event.toolTip.add("Left Tank: " + tankTooltip(tank, true));
-                }
-                if (backpackData.hasKey("rightTank"))
-                {
-                    tank.readFromNBT(backpackData.getCompoundTag("rightTank"));
-                    event.toolTip.add("Right Tank: " + tankTooltip(tank, true));
-                }
-                //TODO add cycling status (on_of), nightvision status (if any), keys
-            } else if (backpackData != null && backpackData.hasKey("ABPItems"))
-            {
-                event.toolTip.add(holdTheShift);
             }
 
         } else if (event.itemStack.getItem() instanceof ItemCoalJetpack)
         {
-            FluidTank waterTank = new FluidTank(Constants.jetpackWaterTankCapacity);
-            FluidTank steamTank = new FluidTank(Constants.jetpackSteamTankCapacity);
+            FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
+            FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
-            NBTTagCompound jetpackData = null;
-            //FIXME why there is packs (jetpacks only?) w/o nbt? change spawn/register method [and delete all these checks]
-            if (compound != null && compound.hasKey("jetpackData"))
-                jetpackData = compound.getCompoundTag("jetpackData");
-            else if (compound == null && ConfigHandler.IS_DEVENV)
-                event.toolTip.add(EnumChatFormatting.RED + "No NBT");
+            NBTTagCompound jetpackTag = compound.getCompoundTag(Constants.JETPACK_COMPOUND_TAG);
 
-            if (jetpackData != null && GuiScreen.isShiftKeyDown())
+            if (GuiScreen.isShiftKeyDown())
             {
                 //TODO add temperature, help note with: max height, keys
-                if (jetpackData.hasKey("inventory"))
-                {
-                    NBTTagList itemList = jetpackData.getTagList("inventory", NBT.TAG_COMPOUND);
-                    event.toolTip.add("Fuel: " + fuelTooltip(itemList, Constants.jetpackFuel));
-                }
-                if (jetpackData.hasKey("waterTank"))
-                {
-                    waterTank.readFromNBT(jetpackData.getCompoundTag("waterTank"));
-                    event.toolTip.add("Left Tank: " + tankTooltip(waterTank, true));
-                }
-                if (jetpackData.hasKey("steamTank"))
-                {
-                    steamTank.readFromNBT(jetpackData.getCompoundTag("steamTank"));
-                    // special case for steam, have to set displayed fluid name manually
-                    String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + "Steam" : "";
-                    event.toolTip.add("Right Tank: " + tankTooltip(steamTank, false) + theSteam);
-                }
-            } else if (jetpackData != null && jetpackData.hasKey("waterTank"))
+                NBTTagList itemList = jetpackTag.getTagList(Constants.JETPACK_INVENTORY, NBT.TAG_COMPOUND);
+                event.toolTip.add("Fuel: " + slotStackTooltip(itemList, Constants.JETPACK_FUEL_SLOT));
+
+                waterTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_WATER_TANK));
+                event.toolTip.add("Left Tank: " + tankTooltip(waterTank, true));
+
+                steamTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_STEAM_TANK));
+                // special case for steam, have to set displayed fluid name manually
+                String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + "Steam" : "";
+                event.toolTip.add("Right Tank: " + tankTooltip(steamTank, false) + theSteam);
+            } else
             {
-                event.toolTip.add(holdTheShift);
+                event.toolTip.add(holdThe(true));
             }
 
         } else if (event.itemStack.getItem() instanceof ItemCopterPack)
         {
-            FluidTank fuelTank = new FluidTank(Constants.copterTankCapacity);
+            FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
-            if (compound != null && compound.hasKey("fuelTank"))
-                fuelTank.readFromNBT(compound.getCompoundTag("fuelTank"));
-
-            if (compound != null && GuiScreen.isShiftKeyDown())
+            fuelTank.readFromNBT(compound.getCompoundTag(Constants.COPTER_FUEL_TANK));
+            if (GuiScreen.isShiftKeyDown())
             {
                 //TODO add fuel consumption rate, help note with: max height, keys
                 event.toolTip.add("Fuel Tank: " + tankTooltip(fuelTank, true));
-            } else if (compound != null)
+            } else
             {
-                event.toolTip.add(holdTheShift);
+                event.toolTip.add(holdThe(true));
             }
         }
+    }
+
+    private String holdThe(boolean button)
+    {
+        return EnumChatFormatting.WHITE + "" + EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Control>");
     }
 
     private String backpackTooltip(NBTTagList itemList)
@@ -133,14 +142,14 @@ public class TooltipEventHandler
         int itemCount = itemList.tagCount();
         boolean toolSlotU = false;
         boolean toolSlotL = false;
-        for (int i = itemCount - 1; i >= 0; --i)
+        for (int i = itemCount - 1; i >= 0; i--)
         {
             int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
-            if (slotAtI < Constants.upperTool)
+            if (slotAtI < Constants.UPPER_TOOL)
                 break;
-            else if (slotAtI == Constants.upperTool)
+            else if (slotAtI == Constants.UPPER_TOOL)
                 toolSlotU = true;
-            else if (slotAtI == Constants.lowerTool)
+            else if (slotAtI == Constants.LOWER_TOOL)
                 toolSlotL = true;
         }
         itemCount -= (toolSlotU ? 1 : 0) + (toolSlotL ? 1 : 0);
@@ -154,14 +163,14 @@ public class TooltipEventHandler
 
     private String mainSlotsFormat(int slotsUsed)
     {
-        String sFormatted = "" + slotsUsed;
+        String sFormatted = String.valueOf(slotsUsed);
         if (slotsUsed == 0)
             sFormatted = EnumChatFormatting.DARK_GRAY + sFormatted;
-        else if (slotsUsed == Constants.inventoryMainSize)
+        else if (slotsUsed == Constants.INVENTORY_MAIN_SIZE)
             sFormatted = EnumChatFormatting.WHITE + sFormatted;
         else
             sFormatted = EnumChatFormatting.GRAY + sFormatted;
-        return sFormatted + "/" + Constants.inventoryMainSize;
+        return sFormatted + "/" + Constants.INVENTORY_MAIN_SIZE;
     }
 
     private String tankTooltip(FluidTank tank, boolean attachName)
@@ -173,11 +182,11 @@ public class TooltipEventHandler
 
     private String fluidAmountFormat(int fluidAmount, int tankCapacity)
     {
-        String aFormatted = "" + fluidAmount;
+        String aFormatted = String.valueOf(fluidAmount);
         if (fluidAmount == tankCapacity)
             aFormatted = EnumChatFormatting.WHITE + aFormatted;
         else if (fluidAmount == 0)
-            aFormatted = String.format("%s%sEmpty", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC);
+            aFormatted = emptyFormat();
         return aFormatted;
     }
 
@@ -203,40 +212,61 @@ public class TooltipEventHandler
         return nFormatted + fLocalized;
     }
 
-    private String fuelTooltip(NBTTagList itemList, int slot)
+    private String switchTooltip(boolean status, boolean doFormat)
     {
-        int fuelID, fuelMeta, fuelCount = fuelID = fuelMeta = 0;
+        return doFormat ? switchFormat(status) : status ? "ON" : "OFF";
+    }
+
+    private String switchFormat(boolean status)
+    {
+        String sFormatted = status ? EnumChatFormatting.WHITE + "ON" : EnumChatFormatting.DARK_GRAY + "OFF";
+        return "[" + sFormatted + EnumChatFormatting.GRAY + "]";
+    }
+
+    private String slotStackTooltip(NBTTagList itemList, int slot)
+    {
+        int slotID, slotMeta, slotCount = slotID = slotMeta = 0;
         for (int i = 0; i <= slot; i++)
         {
             int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
             if (slotAtI == slot)
             {
-                fuelID = itemList.getCompoundTagAt(i).getInteger("id");
-                fuelMeta = itemList.getCompoundTagAt(i).getInteger("Damage");
-                fuelCount = itemList.getCompoundTagAt(i).getInteger("Count");
+                slotID = itemList.getCompoundTagAt(i).getInteger("id");
+                slotMeta = itemList.getCompoundTagAt(i).getInteger("Damage");
+                slotCount = itemList.getCompoundTagAt(i).getInteger("Count");
                 break;
             }
         }
-        return stackDataFormat(fuelID, fuelMeta, fuelCount);
+        return stackDataFormat(slotID, slotMeta, slotCount);
     }
 
     private String stackDataFormat(int id, int meta, int count)
     {
         if (count == 0)
-            return String.format("%s%sEmpty", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC);
+            return emptyFormat();
 
-        String fStackData;
+        String dFormatted;
         try
         {
-            ItemStack fuelStack = new ItemStack(GameData.getItemRegistry().getObjectById(id));
-            fuelStack.setItemDamage(meta);
-            fStackData = fuelStack.getDisplayName() + " (" + count + ")";
+            ItemStack fuelStack = new ItemStack(GameData.getItemRegistry().getObjectById(id), 0, meta);
+            dFormatted = fuelStack.getDisplayName() + " (" + stackSizeFormat(fuelStack, count) + ")";
         } catch (Exception e)
         {
-            fStackData = EnumChatFormatting.RED + "Error";
+            dFormatted = EnumChatFormatting.RED + "Error";
             //e.printStackTrace();
         }
-        return fStackData;
+        return dFormatted;
+    }
+
+    private String stackSizeFormat(ItemStack stack, int count)
+    {
+        String sCount = String.valueOf(count);
+        return stack.getMaxStackSize() == count ? EnumChatFormatting.WHITE + sCount + EnumChatFormatting.GRAY : sCount;
+    }
+
+    private String emptyFormat()
+    {
+        return String.format("%s%sEmpty", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC);
     }
 
 }
