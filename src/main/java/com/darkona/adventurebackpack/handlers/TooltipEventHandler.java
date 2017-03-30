@@ -214,10 +214,10 @@ public class TooltipEventHandler
 
     private String switchTooltip(boolean status, boolean doFormat)
     {
-        return doFormat ? formatSwitch(status) : status ? "ON" : "OFF";
+        return doFormat ? switchFormat(status) : status ? "ON" : "OFF";
     }
 
-    private String formatSwitch(boolean status)
+    private String switchFormat(boolean status)
     {
         String sFormatted = status ? EnumChatFormatting.WHITE + "ON" : EnumChatFormatting.DARK_GRAY + "OFF";
         return "[" + sFormatted + EnumChatFormatting.GRAY + "]";

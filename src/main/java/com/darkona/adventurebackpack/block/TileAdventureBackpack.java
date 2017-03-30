@@ -29,6 +29,10 @@ import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Wearing;
 
+import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
+import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
+import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
+import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.COMPOUND_TAG;
 import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.LEFT_TANK;
@@ -341,7 +345,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    public boolean isItemValidForSlot(int slot, ItemStack stack) //TODO what is it for? what do slot numbers means?
     {
         if (stack.getItem() instanceof ItemAdventureBackpack || Block.getBlockFromItem(stack.getItem()) instanceof BlockAdventureBackpack)
         {
@@ -377,7 +381,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-        if (slot == Constants.BUCKET_IN_LEFT || slot == Constants.BUCKET_IN_RIGHT || slot == Constants.BUCKET_OUT_LEFT || slot == Constants.BUCKET_OUT_RIGHT)
+        if (slot == BUCKET_IN_LEFT || slot == BUCKET_IN_RIGHT || slot == BUCKET_OUT_LEFT || slot == BUCKET_OUT_RIGHT)
         {
             return inventory[slot];
         }
@@ -401,12 +405,12 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     {
         for (int i = 0; i < inventory.length; i++)
         {
-            if (i == Constants.BUCKET_IN_LEFT && inventory[i] != null)
+            if (i == BUCKET_IN_LEFT && inventory[i] != null)
             {
                 updateTankSlots(getLeftTank(), i);
             }
 
-            if (i == Constants.BUCKET_IN_RIGHT && inventory[i] != null)
+            if (i == BUCKET_IN_RIGHT && inventory[i] != null)
             {
                 updateTankSlots(getRightTank(), i);
             }
@@ -542,7 +546,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return null;
     }
 
-    private ItemStack transferToItemStack(ItemStack stack) //TODO usage?
+    private ItemStack transferToItemStack(ItemStack stack)
     {
         NBTTagCompound compound = new NBTTagCompound();
         saveToNBT(compound);

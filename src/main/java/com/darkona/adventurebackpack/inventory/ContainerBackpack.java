@@ -336,7 +336,7 @@ public class ContainerBackpack extends Container implements IWearableContainer
                     int maxAmount = leftTank.getCapacity();
                     int leftAmount = leftTank.getFluidAmount();
                     int rightAmount = rightTank.getFluidAmount();
-                    String leftFluid = SlotFluid.getFluidName(leftTank);
+                    String leftFluid = SlotFluid.getFluidName(leftTank); //TODO name->id
                     String rightFluid = SlotFluid.getFluidName(rightTank);
 
                     int containerCapacity = SlotFluid.getCapacity(stack);
