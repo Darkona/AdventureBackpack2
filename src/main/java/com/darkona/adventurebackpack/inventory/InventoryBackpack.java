@@ -8,15 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
-import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
@@ -25,9 +22,7 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.COMPOUND_TAG;
 import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.LEFT_TANK;
-import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
-import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 
 /**
  * Created on 12/10/2014
@@ -352,16 +347,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if (stack.getItem() instanceof ItemAdventureBackpack || Block.getBlockFromItem(stack.getItem()) instanceof BlockAdventureBackpack)
-        {
-            return false;
-        }
-        if (slot == BUCKET_IN_RIGHT || slot == BUCKET_IN_LEFT)
-        {
-            return FluidContainerRegistry.isContainer(stack);
-        }
-
-        return !(slot == UPPER_TOOL || slot == LOWER_TOOL) || SlotTool.isValidTool(stack);
+        return false;
     }
 
     @Override

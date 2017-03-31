@@ -15,7 +15,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.BackpackAbilities;
@@ -24,8 +23,8 @@ import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
+import com.darkona.adventurebackpack.inventory.SlotBackpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Wearing;
 
@@ -36,7 +35,9 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.COMPOUND_TAG;
 import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.LEFT_TANK;
+import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
+import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -345,18 +346,13 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack) //TODO what is it for? what do slot numbers means?
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if (stack.getItem() instanceof ItemAdventureBackpack || Block.getBlockFromItem(stack.getItem()) instanceof BlockAdventureBackpack)
+        if (slot <= Constants.END_OF_INVENTORY)
         {
-            return false;
+            return SlotBackpack.isValidItem(stack);
         }
-        if (slot == 6 || slot == 8)
-        {
-            return FluidContainerRegistry.isContainer(stack);
-        }
-
-        return !(slot == 0 || slot == 3) || SlotTool.isValidTool(stack);
+        return (slot == UPPER_TOOL || slot == LOWER_TOOL) && SlotTool.isValidTool(stack);
     }
 
     @Override

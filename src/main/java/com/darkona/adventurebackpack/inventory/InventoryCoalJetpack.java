@@ -13,7 +13,6 @@ import net.minecraftforge.fluids.FluidTank;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.util.FluidUtils;
 
-import static com.darkona.adventurebackpack.common.Constants.JETPACK_BUCKET_IN;
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_COMPOUND_TAG;
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_INVENTORY;
@@ -338,10 +337,6 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if (slot == JETPACK_BUCKET_IN)
-            return SlotFluid.isContainer(stack) && FluidUtils.isContainerForFluid(stack, FluidRegistry.WATER);
-        if (slot == JETPACK_FUEL_SLOT)
-            return TileEntityFurnace.isItemFuel(stack);
         return false;
     }
 

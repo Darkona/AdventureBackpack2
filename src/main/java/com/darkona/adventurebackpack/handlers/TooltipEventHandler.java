@@ -248,8 +248,8 @@ public class TooltipEventHandler
         String dFormatted;
         try
         {
-            ItemStack fuelStack = new ItemStack(GameData.getItemRegistry().getObjectById(id), 0, meta);
-            dFormatted = fuelStack.getDisplayName() + " (" + stackSizeFormat(fuelStack, count) + ")";
+            ItemStack iStack = new ItemStack(GameData.getItemRegistry().getObjectById(id), 0, meta);
+            dFormatted = iStack.getDisplayName() + " (" + stackSizeFormat(iStack, count) + ")";
         } catch (Exception e)
         {
             dFormatted = EnumChatFormatting.RED + "Error";
@@ -260,8 +260,7 @@ public class TooltipEventHandler
 
     private String stackSizeFormat(ItemStack stack, int count)
     {
-        String sCount = String.valueOf(count);
-        return stack.getMaxStackSize() == count ? EnumChatFormatting.WHITE + sCount + EnumChatFormatting.GRAY : sCount;
+        return stack.getMaxStackSize() == count ? EnumChatFormatting.WHITE + "" + count + EnumChatFormatting.GRAY : "" + count;
     }
 
     private String emptyFormat()

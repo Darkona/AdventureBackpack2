@@ -16,8 +16,8 @@ public class Constants
     public static final String INVENTORY = "ABPItems";
 
     // Inventory Special Slots
-    private static final int END_OF_INVENTORY = INVENTORY_SIZE - 7;
-    public static final int INVENTORY_MAIN_SIZE = END_OF_INVENTORY + 1;
+    public static final int END_OF_INVENTORY = INVENTORY_SIZE - 7; // 0 included
+    public static final int INVENTORY_MAIN_SIZE = END_OF_INVENTORY + 1; // 0 excluded
 
     public static final int UPPER_TOOL = END_OF_INVENTORY + 1;
     public static final int LOWER_TOOL = UPPER_TOOL + 1;
