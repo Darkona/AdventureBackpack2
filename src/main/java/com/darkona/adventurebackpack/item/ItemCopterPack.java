@@ -161,11 +161,12 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
 
     private static void elevate(EntityPlayer player, ItemStack copter)
     {
-        //TODO rework formulas, add height restriction, maybe configurable
-        if (player.posY < 256)
+        if (player.posY < 100)
             player.motionY = Math.max(player.motionY, 0.18);
-        if (player.posY > 256)
-            player.motionY = 0.18 - ((player.posY % 256) / 256);
+        else if (player.posY < 250)
+            player.motionY = 0.18 - (player.posY - 100) / 1000;
+        else if (player.posY >= 250)
+            player.motionY += 0;
     }
 
     @Override

@@ -29,7 +29,4 @@ public abstract class CommonProxy implements IProxy
         this.player = player;
     }
 
-    public void cape()
-    {
-    }
 }

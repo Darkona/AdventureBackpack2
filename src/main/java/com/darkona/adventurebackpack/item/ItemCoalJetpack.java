@@ -275,15 +275,15 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 
     private static void elevate(EntityPlayer player)
     {
-        //TODO rework formulas, add height restriction, maybe configurable
-        if (player.motionY <= 0.32 && player.posY < 100)
-        {
-            player.motionY += 0.1;
-        } else
-        {
-            if (player.posY < 256) player.motionY = Math.max(player.motionY, 0.32);
-            if (player.posY > 256) player.motionY = 0.32 - ((player.posY % 256) / 256);
-        }
+        if (player.posY < 135)
+            if (player.motionY <= 0.32)
+                player.motionY += 0.1;
+            else
+                player.motionY = Math.max(player.motionY, 0.32);
+        else if (player.posY < 185)
+            player.motionY = 0.32 - (player.posY - 135) / 160;
+        else if (player.posY >= 185)
+            player.motionY += 0;
     }
 
     @Override
