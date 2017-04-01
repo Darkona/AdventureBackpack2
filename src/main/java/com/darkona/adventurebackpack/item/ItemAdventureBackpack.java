@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -264,11 +265,28 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(stack);
         if (backpackTag.hasKey("colorName"))
         {
-            //TODO MORE!
-            if (backpackTag.getString("colorName").equals("Rainbow"))
-                list.add(Utils.makeItRainbow("Rainbow"));
-            else
-                list.add(backpackTag.getString("colorName"));
+            String color = backpackTag.getString("colorName");
+            switch (color)
+            {
+                case "Bat":
+                    list.add(EnumChatFormatting.DARK_PURPLE + color);
+                    break;
+                case "Dragon":
+                    list.add(EnumChatFormatting.RED + color);
+                    break;
+                case "Pigman":
+                    list.add(EnumChatFormatting.LIGHT_PURPLE + color);
+                    break;
+                case "Rainbow":
+                    list.add(Utils.makeItRainbow(color));
+                    break;
+                case "Squid":
+                    list.add(EnumChatFormatting.AQUA + color);
+                    break;
+                default:
+                    list.add(backpackTag.getString("colorName"));
+                    break;
+            }
         }
     }
 

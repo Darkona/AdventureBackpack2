@@ -134,7 +134,7 @@ public class TooltipEventHandler
 
     private String holdThe(boolean button)
     {
-        return EnumChatFormatting.WHITE + "" + EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Control>");
+        return EnumChatFormatting.WHITE + "" + EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Ctrl>");
     }
 
     private String backpackTooltip(NBTTagList itemList)
