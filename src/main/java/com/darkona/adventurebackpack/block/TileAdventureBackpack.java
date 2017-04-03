@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.block;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,6 +27,7 @@ import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotBackpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.util.BackpackUtils;
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
@@ -42,7 +44,7 @@ import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class TileAdventureBackpack extends TileEntity implements IInventoryAdventureBackpack
+public class TileAdventureBackpack extends TileEntity implements IInventoryAdventureBackpack, ISidedInventory
 {
     public ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
@@ -299,7 +301,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
-        if (ench != null) compound.setTag("ench", ench);
+        if (ench != null)
+            compound.setTag("ench", ench);
+
         NBTTagCompound backpackTag = new NBTTagCompound();
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
@@ -387,7 +391,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
-
         inventory[i] = itemstack;
         if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
         {
@@ -627,5 +630,51 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void dirtyInventory()
     {
 
+    }
+
+    /**
+     * Returns an array containing the indices of the slots that can be accessed by automation on the given side of this
+     * block.
+     */
+    @Override
+    public int[] getAccessibleSlotsFromSide(int side)
+    {
+        if (Utils.isDimensionAllowed(this.worldObj.provider.dimensionId))
+        {
+            return SLOTS;
+        }
+        return null;
+    }
+
+    private static final int[] SLOTS = createSlotArray(0, Constants.INVENTORY_MAIN_SIZE);
+
+    private static int[] createSlotArray(int first, int count)
+    {
+        int[] slots = new int[count];
+        for (int i = first; i < first + count; i++)
+        {
+            slots[i - first] = i;
+        }
+        return slots;
+    }
+
+    /**
+     * Returns true if automation can insert the given item in the given slot from the given side. Args: Slot, item,
+     * side
+     */
+    @Override
+    public boolean canInsertItem(int slot, ItemStack item, int side)
+    {
+        return true;
+    }
+
+    /**
+     * Returns true if automation can extract the given item in the given slot from the given side. Args: Slot, item,
+     * side
+     */
+    @Override
+    public boolean canExtractItem(int slot, ItemStack item, int side)
+    {
+        return true;
     }
 }

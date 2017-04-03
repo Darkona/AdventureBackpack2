@@ -17,6 +17,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
+
 /**
  * Created on 12/10/2014
  *
@@ -478,6 +480,19 @@ public class Utils
             }
         }
         return everyHunterWannaKnowWherePheasantSits.toString();
+    }
+
+    public static boolean isDimensionAllowed (int dimensionID)
+    {
+        String currentDimID = String.valueOf(dimensionID);
+        for (String forbiddenID : ConfigHandler.forbiddenDimensions)
+        {
+            if (currentDimID.equals(forbiddenID))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
