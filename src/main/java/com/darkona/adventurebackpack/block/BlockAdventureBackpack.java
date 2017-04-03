@@ -31,7 +31,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Icons;
-import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -272,15 +271,8 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
-        if (!world.isRemote)
+        if (!world.isRemote && Utils.isDimensionAllowed(player.worldObj.provider.dimensionId))
         {
-            Integer currentDimID = player.worldObj.provider.dimensionId;
-            for (String id : ConfigHandler.forbiddenDimensions)
-            {
-                if (id.equals(currentDimID.toString()))
-                    return false;
-            }
-
             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
             return true;
         }

@@ -11,9 +11,9 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -85,11 +85,9 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                 }
                 if (message.type == BACKPACK_GUI)
                 {
-                    Integer currentDimID = player.worldObj.provider.dimensionId;
-                    for (String id : ConfigHandler.forbiddenDimensions)
+                    if (!Utils.isDimensionAllowed(player.worldObj.provider.dimensionId))
                     {
-                        if (id.equals(currentDimID.toString()))
-                            return null;
+                        return null;
                     }
 
                     if (message.from == FROM_KEYBIND)

@@ -49,7 +49,6 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 {
-
     public ItemAdventureBackpack()
     {
         super();
@@ -272,19 +271,19 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
                     list.add(EnumChatFormatting.DARK_PURPLE + color);
                     break;
                 case "Dragon":
-                    list.add(EnumChatFormatting.RED + color);
+                    list.add(EnumChatFormatting.LIGHT_PURPLE + color);
                     break;
                 case "Pigman":
-                    list.add(EnumChatFormatting.LIGHT_PURPLE + color);
+                    list.add(EnumChatFormatting.RED + color);
                     break;
                 case "Rainbow":
                     list.add(Utils.makeItRainbow(color));
                     break;
                 case "Squid":
-                    list.add(EnumChatFormatting.AQUA + color);
+                    list.add(EnumChatFormatting.DARK_AQUA + color);
                     break;
                 default:
-                    list.add(backpackTag.getString("colorName"));
+                    list.add(color);
                     break;
             }
         }
