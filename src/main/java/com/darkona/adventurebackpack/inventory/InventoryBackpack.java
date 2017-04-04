@@ -338,10 +338,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void closeInventory()
     {
-        /*if(Utils.inServer()) //TODO side?
-        {*/
         saveToNBT(containerStack.stackTagCompound);
-        //}
     }
 
     @Override
