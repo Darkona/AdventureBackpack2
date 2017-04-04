@@ -21,6 +21,7 @@ import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemCoalJetpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 
 /**
  * Created on 24.03.2017
@@ -75,7 +76,7 @@ public class TooltipEventHandler
                 String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
                 boolean cycling = !backpackTag.getBoolean("disableCycling");
                 event.toolTip.add("Tool Cycling: " + switchTooltip(cycling, true));
-                event.toolTip.add("Press '" + actionKey + "' while wearing");
+                event.toolTip.add("Press '" + whiteFormat(actionKey) + "' while wearing");
                 event.toolTip.add("backpack, for turn cycling " + switchTooltip(!cycling, false));
 
                 String color = backpackTag.getString("colorName");
@@ -85,7 +86,7 @@ public class TooltipEventHandler
                     {
                         boolean vision = !backpackTag.getBoolean("disableNVision");
                         event.toolTip.add("Night Vision: " + switchTooltip(vision, true));
-                        event.toolTip.add("Press Shift+'" + actionKey + "' while wearing");
+                        event.toolTip.add("Press Shift+'" + whiteFormat(actionKey) + "' while wearing");
                         event.toolTip.add("backpack, for turn nightvision " + switchTooltip(!vision, false));
                     }
                 }
@@ -100,7 +101,6 @@ public class TooltipEventHandler
 
             if (GuiScreen.isShiftKeyDown())
             {
-                //TODO add temperature, help note with: max height, keys
                 NBTTagList itemList = jetpackTag.getTagList(Constants.JETPACK_INVENTORY, NBT.TAG_COMPOUND);
                 event.toolTip.add("Fuel: " + slotStackTooltip(itemList, Constants.JETPACK_FUEL_SLOT));
 
@@ -111,23 +111,49 @@ public class TooltipEventHandler
                 // special case for steam, have to set displayed fluid name manually
                 String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + "Steam" : "";
                 event.toolTip.add("Right Tank: " + tankTooltip(steamTank, false) + theSteam);
-            } else
+
+                if (!GuiScreen.isCtrlKeyDown())
+                    event.toolTip.add(holdThe(false));
+
+            } else if (!GuiScreen.isCtrlKeyDown())
             {
                 event.toolTip.add(holdThe(true));
+            }
+
+            if (GuiScreen.isCtrlKeyDown())
+            {
+                String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
+                event.toolTip.add("Maximum altitude: " + whiteFormat("185") + " meters");
+                event.toolTip.add("Press Shift+'" + whiteFormat(actionKey) + "' while wearing");
+                event.toolTip.add("jetpack, for turn it ON");
             }
 
         } else if (event.itemStack.getItem() instanceof ItemCopterPack)
         {
             FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
-            fuelTank.readFromNBT(compound.getCompoundTag(Constants.COPTER_FUEL_TANK));
             if (GuiScreen.isShiftKeyDown())
             {
-                //TODO add fuel consumption rate, help note with: max height, keys
+                fuelTank.readFromNBT(compound.getCompoundTag(Constants.COPTER_FUEL_TANK));
                 event.toolTip.add("Fuel Tank: " + tankTooltip(fuelTank, true));
-            } else
+                event.toolTip.add("Fuel comsuption rate: " + fuelConsumptionTooltip(fuelTank));
+
+                if (!GuiScreen.isCtrlKeyDown())
+                    event.toolTip.add(holdThe(false));
+
+            } else if (!GuiScreen.isCtrlKeyDown())
             {
                 event.toolTip.add(holdThe(true));
+            }
+
+            if (GuiScreen.isCtrlKeyDown())
+            {
+                String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
+                event.toolTip.add("Maximum altitude: " + whiteFormat("250") + " meters");
+                event.toolTip.add("Press Shift+'" + whiteFormat(actionKey) + "' while wearing");
+                event.toolTip.add("copterpack, for turn it ON");
+                event.toolTip.add("Press '" + whiteFormat(actionKey) + "' during flight to");
+                event.toolTip.add("switch hover mode");
             }
         }
     }
@@ -261,6 +287,20 @@ public class TooltipEventHandler
     private String stackSizeFormat(ItemStack stack, int count)
     {
         return stack.getMaxStackSize() == count ? EnumChatFormatting.WHITE + "" + count + EnumChatFormatting.GRAY : "" + count;
+    }
+
+    private String fuelConsumptionTooltip(FluidTank fTank)
+    {
+        if (fTank.getFluidAmount() > 0 && GeneralReference.isValidFuel(fTank.getFluid().getFluid()))
+        {
+            return String.format("x%.2f", GeneralReference.liquidFuels.get(fTank.getFluid().getFluid().getName()));
+        }
+        return EnumChatFormatting.DARK_GRAY + "-";
+    }
+
+    private String whiteFormat(String theString)
+    {
+        return EnumChatFormatting.WHITE + theString + EnumChatFormatting.GRAY;
     }
 
     private String emptyFormat()

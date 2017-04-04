@@ -659,18 +659,16 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     /**
-     * Returns true if automation can insert the given item in the given slot from the given side. Args: Slot, item,
-     * side
+     * Returns true if automation can insert the given item in the given slot from the given side.
      */
     @Override
     public boolean canInsertItem(int slot, ItemStack item, int side)
     {
-        return true;
+        return this.isItemValidForSlot(slot, item);
     }
 
     /**
-     * Returns true if automation can extract the given item in the given slot from the given side. Args: Slot, item,
-     * side
+     * Returns true if automation can extract the given item in the given slot from the given side.
      */
     @Override
     public boolean canExtractItem(int slot, ItemStack item, int side)
