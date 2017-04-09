@@ -110,7 +110,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                     {
                         if (player.openContainer instanceof ContainerBackpack)
                         {
-                            TileAdventureBackpack te = (TileAdventureBackpack) ((ContainerBackpack) player.openContainer).inventory;
+                            TileAdventureBackpack te = (TileAdventureBackpack) ((ContainerBackpack) player.openContainer).getInventoryBackpack();
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, te.xCoord, te.yCoord, te.zCoord);
                             return null;
                         }

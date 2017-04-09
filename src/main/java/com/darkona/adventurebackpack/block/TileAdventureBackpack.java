@@ -20,9 +20,9 @@ import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotBackpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;

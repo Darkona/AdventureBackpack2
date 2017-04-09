@@ -9,11 +9,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;

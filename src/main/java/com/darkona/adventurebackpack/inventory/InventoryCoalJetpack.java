@@ -26,15 +26,12 @@ import static com.darkona.adventurebackpack.common.Constants.JETPACK_WATER_TANK;
  */
 public class InventoryCoalJetpack implements IInventoryTanks
 {
-
+    public static final int MAX_TEMPERATURE = 200;
+    public int currentItemBurnTime = 0;
     private ItemStack[] inventory = new ItemStack[Constants.JETPACK_INVENTORY_SIZE];
     private FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
     private FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
-
-    private static final boolean OFF = false;
-    private static final boolean ON = true;
-    private boolean status = OFF;
-
+    private boolean status = false;
     private int temperature = 25;
     private int burnTicks = 0;
     private ItemStack containerStack;
@@ -42,9 +39,6 @@ public class InventoryCoalJetpack implements IInventoryTanks
     private boolean boiling = false;
     private boolean leaking = false;
     private boolean inUse = false;
-    public int currentItemBurnTime = 0;
-
-    public static final int MAX_TEMPERATURE = 200;
     private int coolTicks = 5000;
 
     public InventoryCoalJetpack(final ItemStack jetpack)
@@ -186,7 +180,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
         return result;
     }
 
-    public boolean isFuel(ItemStack stack)
+    boolean isFuel(ItemStack stack)
     {
         return TileEntityFurnace.isItemFuel(stack);
     }
@@ -273,25 +267,6 @@ public class InventoryCoalJetpack implements IInventoryTanks
 
     }
 
-    public void onInventoryChanged()
-    {
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (i == 0)
-            {
-                ItemStack container = getStackInSlot(i);
-                if (FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
-                {
-                    InventoryActions.transferContainerTank(this, waterTank, i);
-                } else if (FluidContainerRegistry.isEmptyContainer(container) && waterTank.getFluid() != null && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
-                {
-                    InventoryActions.transferContainerTank(this, waterTank, i);
-                }
-            }
-        }
-        markDirty();
-    }
-
     @Override
     public String getInventoryName()
     {
@@ -338,6 +313,25 @@ public class InventoryCoalJetpack implements IInventoryTanks
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
         return false;
+    }
+
+    public void onInventoryChanged()
+    {
+        for (int i = 0; i < inventory.length; i++)
+        {
+            if (i == 0)
+            {
+                ItemStack container = getStackInSlot(i);
+                if (FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
+                {
+                    InventoryActions.transferContainerTank(this, waterTank, i);
+                } else if (FluidContainerRegistry.isEmptyContainer(container) && waterTank.getFluid() != null && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
+                {
+                    InventoryActions.transferContainerTank(this, waterTank, i);
+                }
+            }
+        }
+        markDirty();
     }
 
     public ItemStack getParentItemStack()
@@ -461,14 +455,14 @@ public class InventoryCoalJetpack implements IInventoryTanks
         this.coolTicks = coolTicks;
     }
 
-    public void setContainerStack(ItemStack containerStack)
-    {
-        this.containerStack = containerStack;
-    }
-
     public ItemStack getContainerStack()
     {
         return containerStack;
+    }
+
+    public void setContainerStack(ItemStack containerStack)
+    {
+        this.containerStack = containerStack;
     }
 
     public void calculateLostTime()

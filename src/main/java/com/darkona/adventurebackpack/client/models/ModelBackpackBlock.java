@@ -12,7 +12,7 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 
 /**
  * Created on 17/12/2014

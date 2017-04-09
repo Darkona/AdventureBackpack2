@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 

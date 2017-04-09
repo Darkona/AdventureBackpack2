@@ -13,14 +13,14 @@ import net.minecraft.item.ItemStack;
  */
 public class ContainerCopter extends Container implements IWearableContainer
 {
-    InventoryCopterPack inventory;
-    EntityPlayer player;
     private final int PLAYER_HOT_START = 0; //TODO constants to constants
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     @SuppressWarnings("FieldCanBeLocal")
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
-    boolean wearing;
+    InventoryCopterPack inventory;
+    private EntityPlayer player;
+    private boolean wearing;
 
     public ContainerCopter(EntityPlayer player, InventoryCopterPack copter, boolean wearing)
     {
@@ -55,7 +55,6 @@ public class ContainerCopter extends Container implements IWearableContainer
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
-
         bindPlayerInventory(invPlayer);
         int slot = 0;
         //Bucket Slots
@@ -66,41 +65,10 @@ public class ContainerCopter extends Container implements IWearableContainer
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer p_75145_1_)
+    public void detectAndSendChanges()
     {
-        return true;
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-        if (wearing)
-        {
-            this.crafters.remove(player);
-        }
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
-            {
-                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                if (itemstack != null)
-                {
-                    inventory.setInventorySlotContents(i, null);
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-        }
-    }
-
-    @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
-    {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && !wearing)
-        {
-            return null;
-        }
-        return super.slotClick(slot, button, flag, player);
+        refresh();
+        super.detectAndSendChanges();
     }
 
     @Override
@@ -122,7 +90,7 @@ public class ContainerCopter extends Container implements IWearableContainer
             }
             if (i < 36)
             {
-                if (SlotFluid.isContainer(stack) && SlotFluid.isValidContainer(stack))
+                if (SlotFluid.isContainer(stack))
                 {
                     int COPTER_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
@@ -150,10 +118,41 @@ public class ContainerCopter extends Container implements IWearableContainer
     }
 
     @Override
-    public void detectAndSendChanges()
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        refresh();
-        super.detectAndSendChanges();
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && !wearing)
+        {
+            return null;
+        }
+        return super.slotClick(slot, button, flag, player);
+    }
+
+    @Override
+    public void onContainerClosed(EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+        if (wearing)
+        {
+            this.crafters.remove(player);
+        }
+        if (!player.worldObj.isRemote)
+        {
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
+            {
+                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
+                if (itemstack != null)
+                {
+                    inventory.setInventorySlotContents(i, null);
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer p_75145_1_)
+    {
+        return true;
     }
 
     @Override
