@@ -48,8 +48,10 @@ public class TooltipEventHandler
             {
                 tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
                 event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getUnlocalizedName());
+                event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getFluid().getName());
                 tank.readFromNBT(backpackTag.getCompoundTag(Constants.RIGHT_TANK));
                 event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getUnlocalizedName());
+                event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getFluid().getName());
             }*/
 
             if (GuiScreen.isShiftKeyDown())
@@ -136,7 +138,7 @@ public class TooltipEventHandler
             {
                 fuelTank.readFromNBT(compound.getCompoundTag(Constants.COPTER_FUEL_TANK));
                 event.toolTip.add("Fuel Tank: " + tankTooltip(fuelTank, true));
-                event.toolTip.add("Fuel comsuption rate: " + fuelConsumptionTooltip(fuelTank));
+                event.toolTip.add("Fuel consumption rate: " + fuelConsumptionTooltip(fuelTank));
 
                 if (!GuiScreen.isCtrlKeyDown())
                     event.toolTip.add(holdThe(false));
@@ -226,8 +228,8 @@ public class TooltipEventHandler
         else if (fUnlocalized.contains("water"))
             nFormatted += EnumChatFormatting.BLUE;
         else if (fUnlocalized.contains("oil"))
-            nFormatted += EnumChatFormatting.BLACK;
-        else if (fUnlocalized.contains("fuel"))
+            nFormatted += EnumChatFormatting.DARK_GRAY;
+        else if (fUnlocalized.contains("fuel") || fUnlocalized.contains("creosote"))
             nFormatted += EnumChatFormatting.YELLOW;
         else if (fUnlocalized.contains("milk"))
             nFormatted += EnumChatFormatting.WHITE;

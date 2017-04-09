@@ -23,8 +23,19 @@ public class GeneralReference
         liquidFuels.put("creosote", ConfigHandler.fuelRateCreosote);
         liquidFuels.put("fuel", ConfigHandler.fuelRateFuel);
         liquidFuels.put("lava", ConfigHandler.fuelRateLava);
-        liquidFuels.put("nitrofuel", ConfigHandler.fuelRateNitroFuel);
+        liquidFuels.put("liquid_light_oil", ConfigHandler.fuelRateOil);
+        liquidFuels.put("liquid_medium_oil", ConfigHandler.fuelRateOil);
+        liquidFuels.put("liquid_heavy_oil", ConfigHandler.fuelRateOil);
+        liquidFuels.put("liquid_light_fuel", ConfigHandler.fuelRateFuelLight);
+        liquidFuels.put("liquid_heavy_fuel", ConfigHandler.fuelRateFuelLight);
+        liquidFuels.put("nitrofuel", ConfigHandler.fuelRateFuelNitro);
         liquidFuels.put("oil", ConfigHandler.fuelRateOil);
+        liquidFuels.put("rocket_fuel", ConfigHandler.fuelRateFuel);
+
+        //liquidFuels.put("liquid_sulfuriclight_fuel", ConfigHandler.fuelRateFuel);
+        //liquidFuels.put("liquid_cracked_light_fuel", ConfigHandler.fuelRateFuel);
+        //liquidFuels.put("liquid_sulfuricheavy_fuel", ConfigHandler.fuelRateFuel);
+        //liquidFuels.put("liquid_cracked_heavy_fuel", ConfigHandler.fuelRateFuel);
     }
 
     public static boolean isValidFuel(Fluid fluid)

@@ -31,6 +31,7 @@ public class ConfigHandler
     public static boolean enableToolsCycling = true;
     public static boolean fixLead = true;
 
+    public static boolean enableFullnessBar = false;
     public static boolean enableToolsRender = true;
     public static boolean enableTooltips = true;
     public static int typeTankRender = 2;
@@ -66,8 +67,10 @@ public class ConfigHandler
     public static float fuelRateCoal = 2.0f;
     public static float fuelRateCreosote = 7.0f;
     public static float fuelRateFuel = 1.0f;
+    public static float fuelRateFuelLight = 0.6f;
+    public static float fuelRateFuelHeavy = 0.7f;
+    public static float fuelRateFuelNitro = 0.5f;
     public static float fuelRateLava = 5.0f;
-    public static float fuelRateNitroFuel = 0.5f;
     public static float fuelRateOil = 3.0f;
 
     public static boolean consumeDragonEgg = false;
@@ -118,6 +121,7 @@ public class ConfigHandler
 
         // Graphics
         typeTankRender = config.getInt("Tank Render Type", "graphics", 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
+        enableFullnessBar = config.getBoolean("Enable Fullness Bar", "graphics", false, "Enable durability bar showing fullness of backpacks inventory");
         enableToolsRender = config.getBoolean("Enable Tools Render", "graphics", true, "Enable rendering for tools in the backpack tool slots. May cause visual glitches with Gregtech tools");
         enableTooltips = config.getBoolean("Enable Tooltips", "graphics", true, "Enable tooltips? Client side");
         tanksHoveringText = config.getBoolean("Hovering Text", "graphics", false, "Show hovering text on fluid tanks?");
@@ -156,10 +160,13 @@ public class ConfigHandler
         fuelRateBioEthanol = config.getFloat("BioEthanol", "items.fuel", 1.5f, 0.05f, 20.0f, "BioEthanol consumption rate");
         fuelRateCoal = config.getFloat("Coal", "items.fuel", 2.0f, 0.05f, 20.0f, "Coal consumption rate");
         fuelRateCreosote = config.getFloat("Creosote", "items.fuel", 7.0f, 0.05f, 20.0f, "Creosote consumption rate");
-        fuelRateFuel = config.getFloat("Fuel", "items.fuel", 1.0f, 0.05f, 20.0f, "Fuel consumption rate");
+        fuelRateFuel = config.getFloat("Fuel", "items.fuel", 1.0f, 0.05f, 20.0f, "Fuel / rocket fuel consumption rate");
+        fuelRateFuelLight = config.getFloat("FuelLight", "items.fuel", 1.0f, 0.05f, 20.0f, "Light Fuel consumption rate");
+        fuelRateFuelHeavy = config.getFloat("FuelHeavy", "items.fuel", 1.0f, 0.05f, 20.0f, "Heavy Fuel consumption rate");
+        fuelRateFuelNitro = config.getFloat("FuelNitro", "items.fuel", 0.5f, 0.05f, 20.0f, "Nitro Fuel consumption rate");
         fuelRateLava = config.getFloat("Lava", "items.fuel", 5.0f, 0.05f, 20.0f, "Lava consumption rate");
-        fuelRateNitroFuel = config.getFloat("NitroFuel", "items.fuel", 0.5f, 0.05f, 20.0f, "NitroFuel consumption rate");
         fuelRateOil = config.getFloat("Oil", "items.fuel", 3.0f, 0.05f, 20.0f, "Oil consumption rate");*/
+        //TODO set default values, change copter fuel usage to float compatible
 
         // Items.Recipes
         consumeDragonEgg = config.getBoolean("Consume Dragon Egg", "items.recipes", false, "Consume Dragon Egg when Dragon backpack crafted?");

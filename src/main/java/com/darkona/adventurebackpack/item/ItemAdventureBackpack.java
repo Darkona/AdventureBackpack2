@@ -12,12 +12,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,6 +29,7 @@ import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
@@ -79,9 +82,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     /**
      * Return whether this item is repairable in an anvil.
-     *
-     * @param p_82789_1_
-     * @param p_82789_2_
      */
     @Override
     public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_)
@@ -91,34 +91,43 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     /**
      * Determines if the durability bar should be rendered for this item.
-     * Defaults to vanilla stack.isDamaged behavior.
-     * But modders can use this for any data they wish.
-     *
-     * @param stack The current Item Stack
-     * @return True if it should render the 'durability' bar.
      */
     @Override
     public boolean showDurabilityBar(ItemStack stack)
     {
-        return false;
+        return ConfigHandler.enableFullnessBar && getItemCount(stack) > 0;
     }
 
     /**
      * Queries the percentage of the 'Durability' bar that should be drawn.
-     *
-     * @param stack The current ItemStack
      * @return 1.0 for 100% 0 for 0%
      */
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
-        return 1;
+        return (float) getItemCount(stack)/Constants.INVENTORY_MAIN_SIZE;
+    }
+
+    private int getItemCount(ItemStack backpack)
+    {
+        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
+        NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
+        int itemCount = itemList.tagCount();
+        for (int i = itemCount - 1; i >= 0; i--)
+        {
+            int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
+            if (slotAtI < Constants.UPPER_TOOL)
+                break;
+            else if (slotAtI == Constants.UPPER_TOOL || slotAtI == Constants.LOWER_TOOL)
+                itemCount--;
+        }
+        return itemCount;
     }
 
     @Override
     public String getItemStackDisplayName(ItemStack stack)
     {
-        return "Adventure Backpack";// + stack.getTagCompound().getString("colorName");
+        return "Adventure Backpack";
     }
 
     @Override

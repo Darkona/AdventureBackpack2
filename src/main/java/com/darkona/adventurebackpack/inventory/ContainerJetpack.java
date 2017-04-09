@@ -15,14 +15,14 @@ import com.darkona.adventurebackpack.common.Constants;
  */
 public class ContainerJetpack extends Container implements IWearableContainer
 {
-    InventoryCoalJetpack inventory;
-    EntityPlayer player;
     private final int PLAYER_HOT_START = 0; //TODO constants to constants
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     @SuppressWarnings("FieldCanBeLocal")
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
-    boolean wearing;
+    InventoryCoalJetpack inventory;
+    private EntityPlayer player;
+    private boolean wearing;
 
     public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack jetpack, boolean wearing)
     {
@@ -71,12 +71,6 @@ public class ContainerJetpack extends Container implements IWearableContainer
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer p_75145_1_)
-    {
-        return true;
-    }
-
-    @Override
     public void detectAndSendChanges()
     {
         if (wearing)
@@ -86,28 +80,6 @@ public class ContainerJetpack extends Container implements IWearableContainer
         } else
         {
             super.detectAndSendChanges();
-        }
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-        if (wearing)
-        {
-            this.crafters.remove(player);
-        }
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                if (itemstack != null)
-                {
-                    inventory.setInventorySlotContents(i, null);
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
         }
     }
 
@@ -131,12 +103,12 @@ public class ContainerJetpack extends Container implements IWearableContainer
             }
             if (i < 36)
             {
-                if (SlotFluid.isContainer(stack) && SlotFluid.isValidContainer(stack))
+                if (SlotFluid.isContainer(stack))
                 {
                     int JETPACK_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
                     {
-
+                        return null;
                     }
                 } else if (inventory.isFuel(stack) && !SlotFluid.isContainer(stack))
                 {
@@ -163,6 +135,34 @@ public class ContainerJetpack extends Container implements IWearableContainer
             slot.onPickupFromSlot(player, stack);
         }
         return result;
+    }
+
+    @Override
+    public void onContainerClosed(EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+        if (wearing)
+        {
+            this.crafters.remove(player);
+        }
+        if (!player.worldObj.isRemote)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
+                if (itemstack != null)
+                {
+                    inventory.setInventorySlotContents(i, null);
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer p_75145_1_)
+    {
+        return true;
     }
 
     @Override

@@ -1,11 +1,11 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.util.Utils;
 
 /**
@@ -15,81 +15,64 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class SlotFluid extends SlotAdventureBackpack
 {
-    private static final String[] VALID_CONTAINER_NAMES = {"bucket"};
-
-    private static final String[] VALID_CONTAINER_IDS = {"minecraft:milk_bucket"};
-
-    private static final String[] INVALID_CONTAINER_NAMES = {"cell"};
-
-    public SlotFluid(IInventory inventory, int id, int x, int y)
+    SlotFluid(IInventory inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
     }
 
-    public static boolean isEmpty(ItemStack stack)
+    static boolean isContainer(ItemStack stack)
     {
-        return (stack != null && FluidContainerRegistry.isEmptyContainer(stack));
+        return FluidContainerRegistry.isContainer(stack);
     }
 
-    public static boolean isFilled(ItemStack stack)
+    static boolean isEmpty(ItemStack stack)
     {
-        return (stack != null && FluidContainerRegistry.isFilledContainer(stack));
+        return FluidContainerRegistry.isEmptyContainer(stack);
     }
 
-    public static String getFluidName(ItemStack stack)
+    static boolean isFilled(ItemStack stack)
     {
-        if (stack == null || isEmpty(stack)) return "";
-        return FluidContainerRegistry.getFluidForFilledItem(stack).getUnlocalizedName();
+        return FluidContainerRegistry.isFilledContainer(stack);
     }
 
-    public static String getFluidName(FluidTank stack)
+    static String getFluidName(ItemStack stack)
     {
-        if (stack != null && stack.getFluidAmount() != 0)
-        {
-            return stack.getFluid().getUnlocalizedName();
-        }
-        return "";
+        if (stack == null || isEmpty(stack))
+            return "";
+        return FluidContainerRegistry.getFluidForFilledItem(stack).getFluid().getName();
     }
 
-    public static int getCapacity(ItemStack stack)
+    static String getFluidName(FluidTank tank)
     {
+        if (tank == null || tank.getFluidAmount() <= 0)
+            return "";
+        return tank.getFluid().getFluid().getName();
+    }
+
+    static int getFluidID(ItemStack stack)
+    {
+        if (stack == null || isEmpty(stack))
+            return -1;
+        return FluidContainerRegistry.getFluidForFilledItem(stack).getFluid().getID();
+    }
+
+    static int getFluidID(FluidTank tank)
+    {
+        if (tank == null || tank.getFluidAmount() <= 0)
+            return -1;
+        return tank.getFluid().getFluid().getID();
+    }
+
+    static int getCapacity(ItemStack stack)
+    {
+        //TODO if bottle and water... -> 1000
         return FluidContainerRegistry.getContainerCapacity(stack);
-    }
-
-    public static boolean isContainer(ItemStack stack)
-    {
-        return (stack != null && FluidContainerRegistry.isContainer(stack));
     }
 
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return (stack != null && FluidContainerRegistry.isContainer(stack) && isValidContainer(stack));
-    }
-
-    public static boolean isValidContainer(ItemStack stack)
-    {
-
-        if (stack != null && stack.getMaxStackSize() <= 16)
-        {
-            Item itemCurrent = stack.getItem();
-            String nameCurrent = itemCurrent.getUnlocalizedName().toLowerCase();
-
-            for (String toolName : VALID_CONTAINER_NAMES)
-            {
-                if (nameCurrent.contains(toolName)) return true;
-            }
-            for (String toolID : VALID_CONTAINER_IDS)
-            {
-                if (Item.itemRegistry.getNameForObject(itemCurrent).equals(toolID)) return true;
-            }
-
-            for (String toolName : INVALID_CONTAINER_NAMES)
-            {
-                if (nameCurrent.contains(toolName)) return false;
-            }
-        }
-        return false;
+        return (stack != null && isContainer(stack)); //TODO universal fluid cells support
     }
 
     @Override
@@ -106,9 +89,10 @@ public class SlotFluid extends SlotAdventureBackpack
     }
 
     @Override
-    public void putStack(ItemStack par1ItemStack)
+    public int getSlotStackLimit()
     {
-        super.putStack(par1ItemStack);
+        return Constants.BASIC_TANK_CAPACITY / Constants.BUCKET; //TODO change for jet/copter
+        //return this.inventory.getInventoryStackLimit();
     }
 
 }

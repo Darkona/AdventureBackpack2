@@ -12,8 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
 
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
-
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
@@ -29,15 +27,9 @@ import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 public class ContainerBackpack extends Container implements IWearableContainer
 {
 
-    public IInventoryAdventureBackpack inventory;
-    public static byte SOURCE_TILE = 0;
-    public static byte SOURCE_WEARING = 1;
-    public static byte SOURCE_HOLDING = 2;
-    public byte source;
-    public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
-    public IInventory craftResult = new InventoryCraftResult();
-    EntityPlayer player;
-
+    public static final byte SOURCE_TILE = 0;
+    public static final byte SOURCE_WEARING = 1;
+    public static final byte SOURCE_HOLDING = 2;
     @SuppressWarnings("FieldCanBeLocal")
     private final int //TODO constants to constants
             PLAYER_HOT_START = 0,
@@ -50,6 +42,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
             TOOL_END = TOOL_START + 1,
             BUCKET_LEFT = TOOL_END + 1,
             BUCKET_RIGHT = BUCKET_LEFT + 2;
+    private IInventoryAdventureBackpack inventory;
+    private byte source;
+    private InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
+    private IInventory craftResult = new InventoryCraftResult();
+    private EntityPlayer player;
 
     //IDEA redesign container layout/craft slots behavior, so it will be rectangular and compatible with invTweaks. this also makes more slots available cuz craft ones will not drop content on close
 
@@ -153,152 +150,14 @@ public class ContainerBackpack extends Container implements IWearableContainer
         this.onCraftMatrixChanged(craftMatrix);
     }
 
+    /**
+     * Looks for changes made in the container, sends them to every listener.
+     */
     @Override
-    public boolean canInteractWith(EntityPlayer player)
+    public void detectAndSendChanges()
     {
-        return inventory.isUseableByPlayer(player);
-    }
-
-    @Override
-    public void onCraftMatrixChanged(IInventory par1IInventory)
-    {
-        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-        if (source == SOURCE_WEARING)
-        {
-            this.crafters.remove(player);
-        }
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
-            {
-                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                if (itemstack != null)
-                {
-                    inventory.setInventorySlotContents(i, null);
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-
-            for (int i = 0; i < 9; i++)
-            {
-                ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
-
-                if (itemstack != null)
-                {
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-        }
-    }
-
-    @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
-    {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
-        {
-            return null;
-        }
-        return super.slotClick(slot, button, flag, player);
-    }
-
-    @Override
-    protected boolean mergeItemStack(ItemStack stack, int minSlot, int maxSlot, boolean direction)
-    {
-        boolean changesMade = false;
-        int slotInit = minSlot;
-
-        if (direction)
-        {
-            slotInit = maxSlot - 1;
-        }
-
-        Slot slot;
-        ItemStack newItemStack;
-
-        if (stack.isStackable())
-        {
-            while (stack.stackSize > 0 && (!direction && slotInit < maxSlot || direction && slotInit >= minSlot))
-            {
-                slot = (Slot) this.inventorySlots.get(slotInit);
-                newItemStack = slot.getStack();
-
-                if (newItemStack != null && newItemStack.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == newItemStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, newItemStack))
-                {
-
-                    int newStackSize = newItemStack.stackSize + stack.stackSize;
-
-                    if (newStackSize <= stack.getMaxStackSize())
-                    {
-                        stack.stackSize = 0;
-                        newItemStack.stackSize = newStackSize;
-                        slot.onSlotChanged();
-                        changesMade = true;
-                    } else if (newItemStack.stackSize < stack.getMaxStackSize())
-                    {
-                        stack.stackSize -= stack.getMaxStackSize() - newItemStack.stackSize;
-                        newItemStack.stackSize = stack.getMaxStackSize();
-                        slot.onSlotChanged();
-                        changesMade = true;
-                    }
-                }
-
-                if (direction)
-                {
-                    --slotInit;
-                } else
-                {
-                    ++slotInit;
-                }
-            }
-        }
-
-        if (stack.stackSize > 0)
-        {
-            if (direction)
-            {
-                slotInit = maxSlot - 1;
-            } else
-            {
-                slotInit = minSlot;
-            }
-
-            while (!direction && slotInit < maxSlot || direction && slotInit >= minSlot)
-            {
-                slot = (Slot) this.inventorySlots.get(slotInit);
-                newItemStack = slot.getStack();
-
-                if (newItemStack == null)
-                {
-                    slot.putStack(stack.copy());
-                    slot.onSlotChanged();
-                    stack.stackSize = 0;
-                    changesMade = true;
-                    break;
-                }
-
-                if (direction)
-                {
-                    --slotInit;
-                } else
-                {
-                    ++slotInit;
-                }
-            }
-        }
-
-        return changesMade;
-    }
-
-    @Override
-    public Slot getSlotFromInventory(IInventory inv, int slot)
-    {
-        return super.getSlotFromInventory(inv, slot);
+        refresh();
+        super.detectAndSendChanges();
     }
 
     @Override
@@ -329,39 +188,55 @@ public class ContainerBackpack extends Container implements IWearableContainer
                             return null;
                         }
                     }
-                } else if (SlotFluid.isContainer(stack) && SlotFluid.isValidContainer(stack))
+
+                } else if (SlotFluid.isContainer(stack))
                 {
                     FluidTank leftTank = inventory.getLeftTank();
                     FluidTank rightTank = inventory.getRightTank();
                     int maxAmount = leftTank.getCapacity();
                     int leftAmount = leftTank.getFluidAmount();
                     int rightAmount = rightTank.getFluidAmount();
-                    String leftFluid = SlotFluid.getFluidName(leftTank); //TODO name->id
-                    String rightFluid = SlotFluid.getFluidName(rightTank);
+                    int leftFluid = SlotFluid.getFluidID(leftTank);
+                    int rightFluid = SlotFluid.getFluidID(rightTank);
 
                     int containerCapacity = SlotFluid.getCapacity(stack);
-                    String containerFluid = SlotFluid.getFluidName(stack);
+                    int containerFluid = SlotFluid.getFluidID(stack);
 
                     if (SlotFluid.isFilled(stack))
                     {
                         if (leftAmount == 0)
                         {
-                            if (rightAmount > 0 && (rightAmount + containerCapacity <= maxAmount) && rightFluid.equals(containerFluid))
+                            if (rightAmount > 0 && (rightAmount + containerCapacity <= maxAmount) && rightFluid == containerFluid)
                             {
-                                mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                                if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
+                                {
+                                    return null;
+                                }
                             } else
                             {
-                                mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+                                if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
+                                {
+                                    return null;
+                                }
                             }
-                        } else if ((leftAmount + containerCapacity <= maxAmount) && leftFluid.equals(containerFluid))
+                        } else if ((leftAmount + containerCapacity <= maxAmount) && leftFluid == containerFluid)
                         {
-                            mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
-                        } else if (rightAmount == 0 || (rightAmount + containerCapacity <= maxAmount) && rightFluid.equals(containerFluid))
+                            if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
+                            {
+                                return null;
+                            }
+                        } else if (rightAmount == 0 || (rightAmount + containerCapacity <= maxAmount) && rightFluid == containerFluid)
                         {
-                            mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                            if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
+                            {
+                                return null;
+                            }
                         } else if (SlotBackpack.isValidItem(stack))
                         {
-                            mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
+                            if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                            {
+                                return null;
+                            }
                         }
                     } else if (SlotFluid.isEmpty(stack))
                     {
@@ -369,14 +244,23 @@ public class ContainerBackpack extends Container implements IWearableContainer
                         {
                             if (rightAmount != 0)
                             {
-                                mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+                                if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
+                                {
+                                    return null;
+                                }
                             } else if (SlotBackpack.isValidItem(stack))
                             {
-                                mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
+                                if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                                {
+                                    return null;
+                                }
                             }
                         } else
                         {
-                            mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+                            if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
+                            {
+                                return null;
+                            }
                         }
                     }
 
@@ -405,14 +289,131 @@ public class ContainerBackpack extends Container implements IWearableContainer
         return result;
     }
 
-    /**
-     * Looks for changes made in the container, sends them to every listener.
-     */
     @Override
-    public void detectAndSendChanges()
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        refresh();
-        super.detectAndSendChanges();
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
+        {
+            return null;
+        }
+        return super.slotClick(slot, button, flag, player);
+    }
+
+    @Override
+    public void onContainerClosed(EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+        if (source == SOURCE_WEARING)
+        {
+            this.crafters.remove(player); //TODO crafters
+        }
+        if (!player.worldObj.isRemote)
+        {
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
+            {
+                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
+                if (itemstack != null)
+                {
+                    inventory.setInventorySlotContents(i, null);
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
+                }
+            }
+
+            for (int i = 0; i < 9; i++)
+            {
+                ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
+
+                if (itemstack != null)
+                {
+                    player.dropPlayerItemWithRandomChoice(itemstack, false);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onCraftMatrixChanged(IInventory par1IInventory)
+    {
+        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer player)
+    {
+        return inventory.isUseableByPlayer(player);
+    }
+
+    @Override
+    protected boolean mergeItemStack(ItemStack initStack, int minSlotID, int maxSlotID, boolean backward)
+    {
+        boolean changesMade = false;
+        int activeSlotID = (backward ? maxSlotID - 1 : minSlotID);
+        Slot activeSlot;
+        ItemStack activeStack;
+
+        if (initStack.isStackable())
+        {
+            while (initStack.stackSize > 0 && (!backward && activeSlotID < maxSlotID || backward && activeSlotID >= minSlotID))
+            {
+                activeSlot = (Slot) this.inventorySlots.get(activeSlotID);
+                activeStack = activeSlot.getStack();
+
+                if (activeStack != null && activeStack.getItem() == initStack.getItem()
+                        && (!initStack.getHasSubtypes() || initStack.getItemDamage() == activeStack.getItemDamage())
+                        && ItemStack.areItemStackTagsEqual(initStack, activeStack))
+                {
+                    int mergedSize = activeStack.stackSize + initStack.stackSize;
+                    int maxStackSize = Math.min(initStack.getMaxStackSize(), activeSlot.getSlotStackLimit());
+
+                    if (mergedSize <= maxStackSize)
+                    {
+                        initStack.stackSize = 0;
+                        activeStack.stackSize = mergedSize;
+                        activeSlot.onSlotChanged();
+                        changesMade = true;
+                    } else if (activeStack.stackSize < maxStackSize && activeSlot instanceof SlotBackpack)
+                    {
+                        initStack.stackSize -= maxStackSize - activeStack.stackSize;
+                        activeStack.stackSize = maxStackSize;
+                        activeSlot.onSlotChanged();
+                        changesMade = true;
+                    }
+                }
+                activeSlotID += (backward ? -1 : 1);
+            }
+        }
+
+        if (initStack.stackSize > 0)
+        {
+            activeSlotID = (backward ? maxSlotID - 1 : minSlotID);
+
+            while (!backward && activeSlotID < maxSlotID || backward && activeSlotID >= minSlotID)
+            {
+                activeSlot = (Slot) this.inventorySlots.get(activeSlotID);
+                activeStack = activeSlot.getStack();
+
+                if (activeStack == null /*&& activeSlot.isItemValid(initStack)*/)
+                {
+                    ItemStack copyStack = initStack.copy();
+                    int mergedSize = copyStack.stackSize = Math.min(copyStack.stackSize, activeSlot.getSlotStackLimit());
+
+                    activeSlot.putStack(copyStack);
+                    activeSlot.onSlotChanged();
+                    if (mergedSize >= initStack.stackSize)
+                    {
+                        initStack.stackSize = 0;
+                    } else
+                    {
+                        initStack.stackSize -= mergedSize;
+                    }
+                    changesMade = true;
+                    break;
+                }
+                activeSlotID += (backward ? -1 : 1);
+            }
+        }
+
+        return changesMade;
     }
 
     @Override
