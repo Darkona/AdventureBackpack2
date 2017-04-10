@@ -30,8 +30,8 @@ import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
  */
 public class InventoryBackpack implements IInventoryAdventureBackpack
 {
-    public ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     public NBTTagCompound extendedProperties = new NBTTagCompound();
+    private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private boolean disableNVision = false;
@@ -41,6 +41,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     private int lastTime = 0;
     private boolean special = false;
 
+    //TODO is inventory saved while GUI is open? can we sync it in realtime like tanks *sometimes* does? related to jetpack boiling while GIU open?
     public InventoryBackpack(ItemStack backpack)
     {
         containerStack = backpack;
@@ -200,8 +201,12 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT)
-                || InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT);
+        boolean result = false;
+        while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
+            result = true;
+        while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
+            result = true;
+        return result;
     }
 
     @Override
@@ -263,8 +268,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public FluidTank[] getTanksArray()
     {
-        FluidTank[] array = {leftTank, rightTank};
-        return array;
+        return new FluidTank[]{leftTank, rightTank};
     }
 
     @Override
@@ -341,9 +345,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     {
         if (slot > inventory.length) return;
         inventory[slot] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        if (stack != null && stack.stackSize > getInventoryStackLimit())
         {
-            stack.stackSize = this.getInventoryStackLimit();
+            stack.stackSize = getInventoryStackLimit();
         }
         dirtyInventory();
     }

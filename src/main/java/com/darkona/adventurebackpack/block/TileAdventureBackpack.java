@@ -50,14 +50,14 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
-    public boolean sleepingBagDeployed;
+    private boolean sleepingBagDeployed;
     private boolean special;
     private int sbdir;
     private int sbx;
     private int sby;
     private int sbz;
-    private int checkTime = 0;
     private String colorName;
+    private int checkTime = 0;
     private int lastTime;
     private int luminosity;
     private NBTTagCompound extendedProperties;
@@ -513,7 +513,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     public void updateTankSlots(FluidTank tank, int slotIn)
     {
-        InventoryActions.transferContainerTank(this, tank, slotIn);
+        updateTankSlots(); //TODO remove method
     }
 
     @Override
@@ -606,7 +606,12 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public boolean updateTankSlots()
     {
-        return false;
+        boolean result = false;
+        while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
+            result = true;
+        while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
+            result = true;
+        return result;
     }
 
     @Override

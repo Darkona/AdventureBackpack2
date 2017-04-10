@@ -17,12 +17,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
@@ -60,7 +58,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         ItemStack iStack = new ItemStack(item, 1, 0);
         NBTTagCompound compound = new NBTTagCompound();
         iStack.setTagCompound(compound);
-        compound.setTag(Constants.COPTER_FUEL_TANK, new FluidTank(Constants.COPTER_FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
+        //compound.setTag(Constants.COPTER_FUEL_TANK, new FluidTank(Constants.COPTER_FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
 
         list.add(iStack);
     }

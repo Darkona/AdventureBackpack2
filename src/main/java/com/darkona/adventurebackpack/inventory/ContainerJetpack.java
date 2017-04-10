@@ -2,9 +2,9 @@ package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
 
@@ -13,13 +13,15 @@ import com.darkona.adventurebackpack.common.Constants;
  *
  * @author Darkona
  */
-public class ContainerJetpack extends Container implements IWearableContainer
+public class ContainerJetpack extends ContainerAdventureBackpack implements IWearableContainer
 {
     private final int PLAYER_HOT_START = 0; //TODO constants to constants
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     @SuppressWarnings("FieldCanBeLocal")
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
+    private final int JETPACK_INV_START = PLAYER_INV_END + 1;
+    private final int JETPACK_FUEL_START = PLAYER_INV_END + 3;
     InventoryCoalJetpack inventory;
     private EntityPlayer player;
     private boolean wearing;
@@ -62,9 +64,9 @@ public class ContainerJetpack extends Container implements IWearableContainer
 
         //Bucket Slots
         // bucket in
-        addSlotToContainer(new SlotFluid(inventory, Constants.JETPACK_BUCKET_IN, 30, 22));
+        addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_IN, 30, 22));
         // bucket out
-        addSlotToContainer(new SlotFluid(inventory, Constants.JETPACK_BUCKET_OUT, 30, 52));
+        addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_OUT, 30, 52));
         // fuel
         addSlotToContainer(new SlotFuel(inventory, Constants.JETPACK_FUEL_SLOT, 77, 64));
 
@@ -73,47 +75,73 @@ public class ContainerJetpack extends Container implements IWearableContainer
     @Override
     public void detectAndSendChanges()
     {
-        if (wearing)
-        {
-            refresh();
-            super.detectAndSendChanges();
-        } else
-        {
-            super.detectAndSendChanges();
-        }
+        refresh();
+        super.detectAndSendChanges();
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i)
+    public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
     {
         refresh();
-        Slot slot = getSlot(i);
+        Slot slot = getSlot(fromSlot);
         ItemStack result = null;
 
         if (slot != null && slot.getHasStack())
         {
             ItemStack stack = slot.getStack();
             result = stack.copy();
-            if (i >= 36)
+            if (fromSlot >= 36)
             {
                 if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
                 {
                     return null;
                 }
             }
-            if (i < 36)
+            if (fromSlot < 36)
             {
                 if (SlotFluid.isContainer(stack))
                 {
-                    int JETPACK_INV_START = PLAYER_INV_END + 1;
-                    if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
+                    ItemStack outStack = getSlot(JETPACK_INV_START + 1).getStack();
+
+                    FluidTank waterTank = inventory.getWaterTank();
+                    int maxAmount = waterTank.getCapacity();
+                    int tankAmount = waterTank.getFluidAmount();
+                    int tankFluid = SlotFluid.getFluidID(waterTank);
+
+                    int containerCapacity = SlotFluid.getCapacity(stack);
+                    int containerFluid = SlotFluid.getFluidID(stack);
+
+                    if (SlotFluid.isFilled(stack))
                     {
-                        return null;
+                        if ((outStack == null || (SlotFluid.isEmptyBucket(outStack) && SlotFluid.isBucket(stack)))
+                                && SlotFluidWater.isValidItem(stack))
+                        {
+                            if ((tankAmount == 0 || (tankAmount > 0 && tankFluid == containerFluid))
+                                    && tankAmount + containerCapacity <= maxAmount)
+                            {
+                                if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
+                                {
+                                    return null;
+                                }
+                            }
+                        }
+                    } else if (SlotFluid.isEmpty(stack))
+                    {
+                        if (outStack == null && SlotFluidWater.isValidItem(stack))
+                        {
+                            if (tankAmount != 0 && tankAmount + containerCapacity <= maxAmount)
+                            {
+                                if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
+                                {
+                                    return null;
+                                }
+                            }
+                        }
                     }
-                } else if (inventory.isFuel(stack) && !SlotFluid.isContainer(stack))
+
+                } else if (SlotFuel.isValidItem(stack))
                 {
-                    int JETPACK_FUEL_START = PLAYER_INV_END + 3;
-                    if (inventory.isFuel(stack) && !mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false))
+                    if (!mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false))
                     {
                         return null;
                     }
@@ -138,6 +166,16 @@ public class ContainerJetpack extends Container implements IWearableContainer
     }
 
     @Override
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    {
+        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && !wearing)
+        {
+            return null;
+        }
+        return super.slotClick(slot, button, flag, player);
+    }
+
+    @Override
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
@@ -147,7 +185,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
         }
         if (!player.worldObj.isRemote)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
             {
                 ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
                 if (itemstack != null)

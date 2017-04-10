@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -35,6 +36,21 @@ public class SlotFluid extends SlotAdventureBackpack
         return FluidContainerRegistry.isFilledContainer(stack);
     }
 
+    static boolean isBucket(ItemStack stack)
+    {
+        return FluidContainerRegistry.isBucket(stack);
+    }
+
+    static boolean isEmptyBucket(ItemStack stack)
+    {
+        return FluidContainerRegistry.isBucket(stack) && isEmpty(stack);
+    }
+
+    static boolean isFilledBucket(ItemStack stack)
+    {
+        return FluidContainerRegistry.isBucket(stack) && isFilled(stack);
+    }
+
     static String getFluidName(ItemStack stack)
     {
         if (stack == null || isEmpty(stack))
@@ -63,16 +79,22 @@ public class SlotFluid extends SlotAdventureBackpack
         return tank.getFluid().getFluid().getID();
     }
 
+    static Fluid getFluid(ItemStack stack)
+    {
+        if (stack == null || isEmpty(stack))
+            return null;
+        return FluidContainerRegistry.getFluidForFilledItem(stack).getFluid();
+    }
+
     static int getCapacity(ItemStack stack)
     {
-        //TODO if bottle and water... -> 1000
         return FluidContainerRegistry.getContainerCapacity(stack);
     }
 
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return (stack != null && isContainer(stack)); //TODO universal fluid cells support
+        return stack != null && isContainer(stack);
     }
 
     @Override
@@ -91,8 +113,7 @@ public class SlotFluid extends SlotAdventureBackpack
     @Override
     public int getSlotStackLimit()
     {
-        return Constants.BASIC_TANK_CAPACITY / Constants.BUCKET; //TODO change for jet/copter
-        //return this.inventory.getInventoryStackLimit();
+        return Constants.BASIC_TANK_CAPACITY / Constants.BUCKET;
     }
 
 }

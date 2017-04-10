@@ -49,6 +49,9 @@ public class Constants
     public static final int JETPACK_WATER_CAPACITY = BUCKET * 6;
 
     // Copter
+    public static final int COPTER_INVENTORY_SIZE = 2;
+    public static final int COPTER_BUCKET_IN = 0;
+    public static final int COPTER_BUCKET_OUT = 1;
     public static final String COPTER_FUEL_TANK = "fuelTank";
     public static final int COPTER_FUEL_CAPACITY = BUCKET * 6;
 

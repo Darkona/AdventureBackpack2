@@ -162,7 +162,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             runFirebox(inv);
         }
         runHeater(inv, world, player);
-        runWater(inv, world, player);
+        runBoiler(inv, world, player);
         inv.dirtyBoiler();
 
         //Suction
@@ -214,17 +214,17 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.closeInventory();
     }
 
-    private void runWater(InventoryCoalJetpack inv, World world, EntityPlayer player)
+    private void runBoiler(InventoryCoalJetpack inv, World world, EntityPlayer player)
     {
         int temperature = inv.getTemperature();
         boolean mustSSSSS = !inv.isLeaking();
         boolean mustBlublub = !inv.isBoiling();
-        boolean Water = inv.isBoiling();
+        boolean boiling = inv.isBoiling();
         boolean leaking = inv.isLeaking();
 
         if (temperature >= 100 && inv.getWaterTank().getFluidAmount() > 0)
         {
-            if (!Water) Water = true;
+            if (!boiling) boiling = true;
 
             if (!world.isRemote && mustBlublub)
             {
@@ -232,13 +232,13 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             }
         } else
         {
-            if (Water)
+            if (boiling)
             {
-                Water = false;
+                boiling = false;
             }
         }
 
-        if (Water)
+        if (boiling)
         {
             if (inv.getSteamTank().getFluidAmount() < inv.getSteamTank().getCapacity())
             {
@@ -268,7 +268,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
                 }
             }
         }
-        inv.setBoiling(Water);
+        inv.setBoiling(boiling);
         inv.setLeaking(leaking);
         inv.setTemperature(temperature);
     }

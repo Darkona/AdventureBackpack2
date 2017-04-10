@@ -11,14 +11,19 @@ import net.minecraft.tileentity.TileEntityFurnace;
  */
 public class SlotFuel extends SlotAdventureBackpack
 {
-    public SlotFuel(IInventory inventory, int id, int x, int y)
+    SlotFuel(IInventory inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
+    }
+
+    static boolean isValidItem(ItemStack stack)
+    {
+        return TileEntityFurnace.isItemFuel(stack) && !SlotFluid.isContainer(stack); //fuel slot accept only solid fuel
     }
 
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return (stack != null && TileEntityFurnace.isItemFuel(stack) && !SlotFluid.isContainer(stack)); //fuel slot accept only solid fuel
+        return stack != null && isValidItem(stack);
     }
 }

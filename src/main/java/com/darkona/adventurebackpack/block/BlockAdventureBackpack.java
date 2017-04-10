@@ -55,12 +55,6 @@ public class BlockAdventureBackpack extends BlockContainer
 
     /**
      * Pretty effects for the bookshelf ;)
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     * @param random
      */
     @Override
     @SideOnly(Side.CLIENT)
@@ -181,12 +175,6 @@ public class BlockAdventureBackpack extends BlockContainer
 
     /**
      * Called when a player hits the block. Args: world, x, y, z, player
-     *
-     * @param p_149699_1_
-     * @param p_149699_2_
-     * @param p_149699_3_
-     * @param p_149699_4_
-     * @param p_149699_5_
      */
     @Override
     public void onBlockClicked(World p_149699_1_, int p_149699_2_, int p_149699_3_, int p_149699_4_, EntityPlayer p_149699_5_)
@@ -195,17 +183,7 @@ public class BlockAdventureBackpack extends BlockContainer
     }
 
     /**
-     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     * @param side
-     * @param hitX
-     * @param hitY
-     * @param hitZ
-     * @param meta
+     * Called when a block is placed using its ItemBlock.
      */
     @Override
     public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
@@ -224,11 +202,6 @@ public class BlockAdventureBackpack extends BlockContainer
     {
         return "blockAdventureBackpack";
     }
-
-    /*private void setUnlocalizedName(String string) //care recursion
-    {
-        setUnlocalizedName("blockAdventureBackpack");
-    }*/
 
     @Override
     @SideOnly(Side.CLIENT)
