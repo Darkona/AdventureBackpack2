@@ -2,22 +2,26 @@ package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidTank;
+
+import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_IN;
+import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
 
 /**
  * Created on 03/01/2015
  *
  * @author Darkona
  */
-public class ContainerCopter extends Container implements IWearableContainer
+public class ContainerCopter extends ContainerAdventureBackpack implements IWearableContainer
 {
     private final int PLAYER_HOT_START = 0; //TODO constants to constants
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     @SuppressWarnings("FieldCanBeLocal")
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
+    private final int COPTER_INV_START = PLAYER_INV_END + 1;
     InventoryCopterPack inventory;
     private EntityPlayer player;
     private boolean wearing;
@@ -59,9 +63,9 @@ public class ContainerCopter extends Container implements IWearableContainer
         int slot = 0;
         //Bucket Slots
         // bucket in
-        addSlotToContainer(new SlotFluid(inventory, slot++, 44, 23));
+        addSlotToContainer(new SlotFluidFuel(inventory, COPTER_BUCKET_IN, 44, 23));
         // bucket out
-        addSlotToContainer(new SlotFluid(inventory, slot++, 44, 53));
+        addSlotToContainer(new SlotFluidFuel(inventory, COPTER_BUCKET_OUT, 44, 53));
     }
 
     @Override
@@ -72,30 +76,62 @@ public class ContainerCopter extends Container implements IWearableContainer
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i)
+    public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
     {
-        Slot slot = getSlot(i);
+        Slot slot = getSlot(fromSlot);
         ItemStack result = null;
 
         if (slot != null && slot.getHasStack())
         {
             ItemStack stack = slot.getStack();
             result = stack.copy();
-            if (i >= 36)
+            if (fromSlot >= 36)
             {
                 if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
                 {
                     return null;
                 }
             }
-            if (i < 36)
+            if (fromSlot < 36)
             {
                 if (SlotFluid.isContainer(stack))
                 {
-                    int COPTER_INV_START = PLAYER_INV_END + 1;
-                    if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
+                    ItemStack outStack = getSlot(COPTER_INV_START + 1).getStack();
+
+                    FluidTank fuelTank = inventory.getFuelTank();
+                    int maxAmount = fuelTank.getCapacity();
+                    int tankAmount = fuelTank.getFluidAmount();
+                    int tankFluid = SlotFluid.getFluidID(fuelTank);
+
+                    int containerCapacity = SlotFluid.getCapacity(stack);
+                    int containerFluid = SlotFluid.getFluidID(stack);
+
+                    if (SlotFluid.isFilled(stack))
                     {
-                        return null;
+                        if ((outStack == null || (SlotFluid.isEmptyBucket(outStack) && SlotFluid.isBucket(stack)))
+                                && SlotFluidFuel.isValidItem(stack))
+                        {
+                            if ((tankAmount == 0 || (tankAmount > 0 && tankFluid == containerFluid))
+                                    && tankAmount + containerCapacity <= maxAmount)
+                            {
+                                if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
+                                {
+                                    return null;
+                                }
+                            }
+                        }
+                    } else if (SlotFluid.isEmpty(stack))
+                    {
+                        if (outStack == null && SlotFluidFuel.isValidItem(stack))
+                        {
+                            if (tankAmount != 0 && tankAmount + containerCapacity <= maxAmount)
+                            {
+                                if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
+                                {
+                                    return null;
+                                }
+                            }
+                        }
                     }
                 }
             }

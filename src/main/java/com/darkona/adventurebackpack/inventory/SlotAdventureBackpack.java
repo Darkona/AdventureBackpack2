@@ -8,9 +8,9 @@ import net.minecraft.inventory.Slot;
  *
  * @author Darkona
  */
-public abstract class SlotAdventureBackpack extends Slot
+abstract class SlotAdventureBackpack extends Slot
 {
-    public SlotAdventureBackpack(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_)
+    SlotAdventureBackpack(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) //TODO whats the point?
     {
         super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
     }

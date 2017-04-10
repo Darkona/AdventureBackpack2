@@ -19,7 +19,7 @@ import com.darkona.adventurebackpack.item.ItemHose;
  */
 public class SlotTool extends SlotAdventureBackpack
 {
-    public SlotTool(IInventory inventory, int id, int x, int y)
+    SlotTool(IInventory inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
     }

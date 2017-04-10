@@ -3,15 +3,15 @@ package com.darkona.adventurebackpack.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
-import com.darkona.adventurebackpack.reference.GeneralReference;
-import com.darkona.adventurebackpack.util.FluidUtils;
 
+import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_IN;
+import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
 import static com.darkona.adventurebackpack.common.Constants.COPTER_FUEL_TANK;
+import static com.darkona.adventurebackpack.common.Constants.COPTER_INVENTORY_SIZE;
 
 /**
  * Created on 02/01/2015
@@ -24,11 +24,12 @@ public class InventoryCopterPack implements IInventoryTanks
     public int tickCounter = 0;
     private byte status = ItemCopterPack.OFF_MODE;
     private ItemStack containerStack;
-    private ItemStack[] inventory = new ItemStack[2];
+    private ItemStack[] inventory = new ItemStack[COPTER_INVENTORY_SIZE];
 
+    //TODO copter sound doesn't init at login (status init, so you can keep flying)
     public InventoryCopterPack(ItemStack copterPack)
     {
-        status = ItemCopterPack.OFF_MODE;
+        //status = ItemCopterPack.OFF_MODE;
         containerStack = copterPack;
         openInventory();
     }
@@ -82,7 +83,7 @@ public class InventoryCopterPack implements IInventoryTanks
     @Override
     public ItemStack getStackInSlotOnClosing(int i)
     {
-        return inventory[i];
+        return (i == COPTER_BUCKET_IN || i == COPTER_BUCKET_OUT) ? inventory[i] : null;
     }
 
     @Override
@@ -93,14 +94,6 @@ public class InventoryCopterPack implements IInventoryTanks
         {
             stack.stackSize = getInventoryStackLimit();
         }
-        if (FluidContainerRegistry.isFilledContainer(stack) && GeneralReference.isValidFuel(FluidContainerRegistry.getFluidForFilledItem(stack).getFluid()))
-        {
-            InventoryActions.transferContainerTank(this, fuelTank, 0);
-        } else if (FluidContainerRegistry.isEmptyContainer(stack) && fuelTank.getFluid() != null && FluidUtils.isContainerForFluid(stack, fuelTank.getFluid().getFluid()))
-        {
-            InventoryActions.transferContainerTank(this, fuelTank, 0);
-        }
-        dirtyTanks();
         dirtyInventory();
     }
 
@@ -165,13 +158,6 @@ public class InventoryCopterPack implements IInventoryTanks
         containerStack.stackTagCompound.setInteger("tickCounter", this.tickCounter);
     }
 
-    public void onInventoryChanged()
-    {
-        ItemStack container = getStackInSlot(0);
-
-        closeInventory();
-    }
-
     @Override
     public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
     {
@@ -190,8 +176,7 @@ public class InventoryCopterPack implements IInventoryTanks
         {
             if (inventory[slot].stackSize > amount)
             {
-                ItemStack result = inventory[slot].splitStack(amount);
-                return result;
+                return inventory[slot].splitStack(amount);
             }
             ItemStack stack = inventory[slot];
             setInventorySlotContentsNoSave(slot, null);
@@ -228,7 +213,10 @@ public class InventoryCopterPack implements IInventoryTanks
     @Override
     public boolean updateTankSlots()
     {
-        return false;
+        boolean result = false;
+        while (InventoryActions.transferContainerTank(this, getFuelTank(), COPTER_BUCKET_IN))
+            result = true;
+        return result;
     }
 
     @Override
@@ -250,14 +238,16 @@ public class InventoryCopterPack implements IInventoryTanks
     @Override
     public FluidTank[] getTanksArray()
     {
-        FluidTank[] tanks = {fuelTank};
-        return tanks;
+        return new FluidTank[]{fuelTank};
     }
 
     @Override
     public void dirtyInventory()
     {
-
+        if (updateTankSlots())
+        {
+            dirtyTanks();
+        }
     }
 
     @Override

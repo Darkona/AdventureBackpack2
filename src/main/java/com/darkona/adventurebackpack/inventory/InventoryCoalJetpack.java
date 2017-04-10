@@ -6,13 +6,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.util.FluidUtils;
 
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_BUCKET_IN;
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_BUCKET_OUT;
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_COMPOUND_TAG;
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_INVENTORY;
@@ -41,6 +40,8 @@ public class InventoryCoalJetpack implements IInventoryTanks
     private boolean inUse = false;
     private int coolTicks = 5000;
 
+    //TODO if GUI is open while temp is going up, temp will drop to zero at 90C. just sync issue?
+    //TODO boiling sound work sometimes, and then it override leaking sound. check it
     public InventoryCoalJetpack(final ItemStack jetpack)
     {
         containerStack = jetpack;
@@ -60,7 +61,10 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public boolean updateTankSlots()
     {
-        return false;
+        boolean result = false;
+        while (InventoryActions.transferContainerTank(this, getWaterTank(), JETPACK_BUCKET_IN))
+            result = true;
+        return result;
     }
 
     @Override
@@ -124,13 +128,16 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public FluidTank[] getTanksArray()
     {
-        FluidTank[] tanks = {waterTank, steamTank};
-        return tanks;
+        return new FluidTank[]{waterTank, steamTank};
     }
 
     @Override
     public void dirtyInventory()
     {
+        if (updateTankSlots())
+        {
+            dirtyTanks();
+        }
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {
@@ -251,7 +258,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
     @Override
     public ItemStack getStackInSlotOnClosing(int i)
     {
-        return (i == 0 || i == 1) ? inventory[i] : null;
+        return (i == JETPACK_BUCKET_IN || i == JETPACK_BUCKET_OUT) ? inventory[i] : null;
     }
 
     @Override
@@ -262,9 +269,7 @@ public class InventoryCoalJetpack implements IInventoryTanks
         {
             stack.stackSize = getInventoryStackLimit();
         }
-        if (slot < JETPACK_FUEL_SLOT) onInventoryChanged();
         dirtyInventory();
-
     }
 
     @Override
@@ -313,25 +318,6 @@ public class InventoryCoalJetpack implements IInventoryTanks
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
         return false;
-    }
-
-    public void onInventoryChanged()
-    {
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (i == 0)
-            {
-                ItemStack container = getStackInSlot(i);
-                if (FluidContainerRegistry.isFilledContainer(container) && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
-                {
-                    InventoryActions.transferContainerTank(this, waterTank, i);
-                } else if (FluidContainerRegistry.isEmptyContainer(container) && waterTank.getFluid() != null && FluidUtils.isContainerForFluid(container, FluidRegistry.WATER))
-                {
-                    InventoryActions.transferContainerTank(this, waterTank, i);
-                }
-            }
-        }
-        markDirty();
     }
 
     public ItemStack getParentItemStack()

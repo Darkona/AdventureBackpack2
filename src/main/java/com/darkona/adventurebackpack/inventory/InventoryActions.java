@@ -38,7 +38,7 @@ public class InventoryActions
         //Set slot out for whatever number the output slot should be.
         int slotOut = slotIn + 1;
 
-        //CONTAINER ===========> TANK
+        //CONTAINER ===========> TANK //TODO сheck if container fluid amount exceeds tank free space
         if (FluidContainerRegistry.isFilledContainer(stackIn))
         {
             //See if the tank can accept moar fluid.
@@ -55,7 +55,8 @@ public class InventoryActions
                     inventory.decrStackSizeNoSave(slotIn, 1);
                     inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
                     return true;
-                } else if (inventory.getStackInSlot(slotOut).getItem().equals(stackOut.getItem()))
+                } else if (inventory.getStackInSlot(slotOut).getItem().equals(stackOut.getItem())
+                        && stackOut.getItemDamage() == inventory.getStackInSlot(slotOut).getItemDamage())
                 {
                     int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
                     if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
@@ -88,7 +89,8 @@ public class InventoryActions
                     inventory.decrStackSizeNoSave(slotIn, 1);
                     inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
                     return true;
-                } else if (stackOut.getItem().equals(inventory.getStackInSlot(slotOut).getItem()))
+                } else if (stackOut.getItem().equals(inventory.getStackInSlot(slotOut).getItem())
+                        && stackOut.getItemDamage() == inventory.getStackInSlot(slotOut).getItemDamage())
                 {
                     int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
                     if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
