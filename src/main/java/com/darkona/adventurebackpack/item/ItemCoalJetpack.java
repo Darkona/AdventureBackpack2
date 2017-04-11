@@ -20,6 +20,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerJetpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
@@ -38,9 +39,6 @@ import com.darkona.adventurebackpack.util.Resources;
  */
 public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 {
-    public static byte OFF_MODE = 0;
-    public static byte NORMAL_MODE = 1;
-
     public ItemCoalJetpack()
     {
         super();
@@ -67,18 +65,6 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    public int getItemEnchantability()
-    {
-        return 0;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
-    {
-        return EnchUtils.isSoulBook(book);
-    }
-
-    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (world.isRemote)
@@ -88,64 +74,12 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         return stack;
     }
 
-    private void runFirebox(InventoryCoalJetpack inv)
+    @Override
+    public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-        if (inv.getBurnTicks() <= 0)
-        {
-            inv.setBurnTicks(inv.consumeFuel());
-            inv.currentItemBurnTime = inv.getBurnTicks();
-        }
-        inv.dirtyInventory();
-    }
-
-    private void runHeater(InventoryCoalJetpack inv, World world, EntityPlayer player)
-    {
-        int temperature = inv.getTemperature();
-        int burnTicks = inv.getBurnTicks() - 1;
-        int coolTicks = inv.getCoolTicks() - 1;
-
-        if (burnTicks > 0)
-        {
-            if (temperature < InventoryCoalJetpack.MAX_TEMPERATURE)
-            {
-                if (burnTicks % inv.getIncreasingFactor() == 0)
-                {
-                    ++temperature;
-                    coolTicks = coolTicks < 5000 ? coolTicks + 100 : coolTicks;
-                }
-            }
-        } else if (burnTicks <= 0)
-        {
-            inv.currentItemBurnTime = 0;
-            if (coolTicks % inv.getDecreasingFactor() == 0)
-            {
-                temperature = (temperature - 1 >= getBiomeMinTemp(player, world)) ? temperature - 1 : 0;
-            }
-        }
-        inv.setTemperature(temperature);
-        inv.setCoolTicks(coolTicks);
-        inv.setBurnTicks(burnTicks <= 0 ? 0 : burnTicks);
-    }
-
-    private int getBiomeMinTemp(EntityPlayer player, World world)
-    {
-        BiomeDictionary.Type[] thisBiomeTypes = BiomeDictionary.getTypesForBiome(world.getBiomeGenForCoords((int) player.posX, (int) player.posZ));
-        for (BiomeDictionary.Type type : thisBiomeTypes)
-        {
-            if (type == BiomeDictionary.Type.COLD || type == BiomeDictionary.Type.SNOWY)
-            {
-                return 0;
-            }
-            if (type == BiomeDictionary.Type.HOT || type == BiomeDictionary.Type.BEACH)
-            {
-                return 30;
-            }
-            if (type == BiomeDictionary.Type.NETHER)
-            {
-                return 40;
-            }
-        }
-        return 25;
+        InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
+        inv.calculateLostTime();
+        if (inv.getTemperature() == 0) inv.setTemperature(getBiomeMinTemp(player, world));
     }
 
     @Override
@@ -214,6 +148,19 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.closeInventory();
     }
 
+    private static void elevate(EntityPlayer player)
+    {
+        if (player.posY < 135)
+            if (player.motionY <= 0.32)
+                player.motionY += 0.1;
+            else
+                player.motionY = Math.max(player.motionY, 0.32);
+        else if (player.posY < 185)
+            player.motionY = 0.32 - (player.posY - 135) / 160;
+        else if (player.posY >= 185)
+            player.motionY += 0;
+    }
+
     private void runBoiler(InventoryCoalJetpack inv, World world, EntityPlayer player)
     {
         int temperature = inv.getTemperature();
@@ -273,31 +220,43 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.setTemperature(temperature);
     }
 
-    private static void elevate(EntityPlayer player)
+    private void runFirebox(InventoryCoalJetpack inv)
     {
-        if (player.posY < 135)
-            if (player.motionY <= 0.32)
-                player.motionY += 0.1;
-            else
-                player.motionY = Math.max(player.motionY, 0.32);
-        else if (player.posY < 185)
-            player.motionY = 0.32 - (player.posY - 135) / 160;
-        else if (player.posY >= 185)
-            player.motionY += 0;
+        if (inv.getBurnTicks() <= 0)
+        {
+            inv.setBurnTicks(inv.consumeFuel());
+            inv.currentItemBurnTime = inv.getBurnTicks();
+        }
+        inv.dirtyInventory();
     }
 
-    @Override
-    public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
+    private void runHeater(InventoryCoalJetpack inv, World world, EntityPlayer player)
     {
-        onUnequipped(world, player, stack);
-    }
+        int temperature = inv.getTemperature();
+        int burnTicks = inv.getBurnTicks() - 1;
+        int coolTicks = inv.getCoolTicks() - 1;
 
-    @Override
-    public void onEquipped(World world, EntityPlayer player, ItemStack stack)
-    {
-        InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
-        inv.calculateLostTime();
-        if (inv.getTemperature() == 0) inv.setTemperature(getBiomeMinTemp(player, world));
+        if (burnTicks > 0)
+        {
+            if (temperature < Constants.JETPACK_MAX_TEMPERATURE)
+            {
+                if (burnTicks % inv.getIncreasingFactor() == 0)
+                {
+                    ++temperature;
+                    coolTicks = coolTicks < 5000 ? coolTicks + 100 : coolTicks;
+                }
+            }
+        } else if (burnTicks <= 0)
+        {
+            inv.currentItemBurnTime = 0;
+            if (coolTicks % inv.getDecreasingFactor() == 0)
+            {
+                temperature = (temperature - 1 >= getBiomeMinTemp(player, world)) ? temperature - 1 : 0;
+            }
+        }
+        inv.setTemperature(temperature);
+        inv.setCoolTicks(coolTicks);
+        inv.setBurnTicks(burnTicks <= 0 ? 0 : burnTicks);
     }
 
     @Override
@@ -323,10 +282,47 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getWearableModel(ItemStack wearable)
+    public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        return ClientProxy.modelCoalJetpack.setWearable(wearable);
+        onUnequipped(world, player, stack);
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack)
+    {
+        return (float) getTemperature(stack) / Constants.JETPACK_MAX_TEMPERATURE + 50;
+    }
+
+    private int getTemperature(ItemStack jetpack)
+    {
+        return jetpack.stackTagCompound.getCompoundTag(Constants.JETPACK_COMPOUND_TAG).getInteger("temperature");
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack)
+    {
+        return ConfigHandler.enableTemperatureBar && getTemperature(stack) > 50;
+    }
+
+    private int getBiomeMinTemp(EntityPlayer player, World world)
+    {
+        BiomeDictionary.Type[] thisBiomeTypes = BiomeDictionary.getTypesForBiome(world.getBiomeGenForCoords((int) player.posX, (int) player.posZ));
+        for (BiomeDictionary.Type type : thisBiomeTypes)
+        {
+            if (type == BiomeDictionary.Type.COLD || type == BiomeDictionary.Type.SNOWY)
+            {
+                return 0;
+            }
+            if (type == BiomeDictionary.Type.HOT || type == BiomeDictionary.Type.BEACH)
+            {
+                return 30;
+            }
+            if (type == BiomeDictionary.Type.NETHER)
+            {
+                return 40;
+            }
+        }
+        return 25;
     }
 
     @Override
@@ -341,8 +337,27 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 
     @Override
     @SideOnly(Side.CLIENT)
+    public ModelBiped getWearableModel(ItemStack wearable)
+    {
+        return ClientProxy.modelCoalJetpack.setWearable(wearable);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
     public ResourceLocation getWearableTexture(ItemStack wearable)
     {
         return Resources.modelTextures("coalJetpack");
+    }
+
+    @Override
+    public int getItemEnchantability()
+    {
+        return 0;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+    {
+        return EnchUtils.isSoulBook(book);
     }
 }

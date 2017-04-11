@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -98,7 +99,7 @@ public class GuiCoalJetpack extends GuiWithTanks
             this.drawTexturedModalRect(78, 48 + 12 - i1, 176, 12 - i1, 14, i1 + 1);
         }
 
-        int H = Math.round(((float) 72 / (float) InventoryCoalJetpack.MAX_TEMPERATURE) * (float) inventory.getTemperature());
+        int H = Math.round(((float) 72 / (float) Constants.JETPACK_MAX_TEMPERATURE) * (float) inventory.getTemperature());
         drawTexturedModalRect(139, 8 + (72 - H), 40, 167 + (72 - H), 5, H);
 
         GL11.glDisable(GL11.GL_BLEND);

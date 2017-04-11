@@ -34,13 +34,12 @@ public class Constants
     public static final int ADVANCED_TANK_CAPACITY = BUCKET * 8; // upgrade system?
     public static final int HEROIC_TANK_CAPACITY = BUCKET * 12;
 
-    //IDEA add ghost slot(s) for properly handle stacks of fluid containers
-
     // Jetpack
     public static final int JETPACK_INVENTORY_SIZE = 3;
     public static final int JETPACK_BUCKET_IN = 0;
     public static final int JETPACK_BUCKET_OUT = 1;
     public static final int JETPACK_FUEL_SLOT = 2;
+
     public static final String JETPACK_COMPOUND_TAG = "jetpackData";
     public static final String JETPACK_INVENTORY = "inventory";
     public static final String JETPACK_STEAM_TANK = "steamTank";
@@ -48,10 +47,13 @@ public class Constants
     public static final int JETPACK_STEAM_CAPACITY = BUCKET * 12;
     public static final int JETPACK_WATER_CAPACITY = BUCKET * 6;
 
+    public static final int JETPACK_MAX_TEMPERATURE = 200;
+
     // Copter
     public static final int COPTER_INVENTORY_SIZE = 2;
     public static final int COPTER_BUCKET_IN = 0;
     public static final int COPTER_BUCKET_OUT = 1;
+
     public static final String COPTER_FUEL_TANK = "fuelTank";
     public static final int COPTER_FUEL_CAPACITY = BUCKET * 6;
 

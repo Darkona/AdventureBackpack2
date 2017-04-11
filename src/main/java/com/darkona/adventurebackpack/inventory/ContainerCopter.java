@@ -60,7 +60,6 @@ public class ContainerCopter extends ContainerAdventureBackpack implements IWear
     private void makeSlots(InventoryPlayer invPlayer)
     {
         bindPlayerInventory(invPlayer);
-        int slot = 0;
         //Bucket Slots
         // bucket in
         addSlotToContainer(new SlotFluidFuel(inventory, COPTER_BUCKET_IN, 44, 23));

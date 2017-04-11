@@ -31,31 +31,23 @@ import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
 public class InventoryBackpack implements IInventoryAdventureBackpack
 {
     public NBTTagCompound extendedProperties = new NBTTagCompound();
+
     private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
+
     private boolean disableNVision = false;
     private boolean disableCycling = false;
-    private ItemStack containerStack;
-    private String colorName = "Standard";
-    private int lastTime = 0;
     private boolean special = false;
+    private int lastTime = 0;
+    private String colorName = "Standard";
+    private ItemStack containerStack;
 
     //TODO is inventory saved while GUI is open? can we sync it in realtime like tanks *sometimes* does? related to jetpack boiling while GIU open?
     public InventoryBackpack(ItemStack backpack)
     {
         containerStack = backpack;
         openInventory();
-    }
-
-    public ItemStack getContainerStack()
-    {
-        return containerStack;
-    }
-
-    public void setContainerStack(ItemStack containerStack)
-    {
-        this.containerStack = containerStack;
     }
 
     @Override

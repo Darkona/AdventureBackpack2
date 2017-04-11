@@ -154,7 +154,7 @@ public class GuiAdvBackpack extends GuiWithTanks
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
 
-        /*if (!ConfigHandler.HOVERING_TEXT_TANKS)
+        /*if (!ConfigHandler.tanksHoveringText);
         {
             GL11.glPushMatrix();
             //GL11.glTranslatef(8f,64f,0f);
