@@ -59,9 +59,7 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
-
         bindPlayerInventory(invPlayer);
-
         //Bucket Slots
         // bucket in
         addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_IN, 30, 22));
@@ -69,7 +67,6 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
         addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_OUT, 30, 52));
         // fuel
         addSlotToContainer(new SlotFuel(inventory, Constants.JETPACK_FUEL_SLOT, 77, 64));
-
     }
 
     @Override

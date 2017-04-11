@@ -65,69 +65,53 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         return block instanceof BlockAdventureBackpack ? ModItems.adventureBackpack : null;
     }
 
-    /**
-     * Return the enchantability factor of the item, most of the timeInSeconds is based on material.
-     */
     @Override
-    public int getItemEnchantability()
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems)
     {
-        return 0;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
-    {
-        return EnchUtils.isSoulBook(book);
-    }
-
-    /**
-     * Return whether this item is repairable in an anvil.
-     */
-    @Override
-    public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_)
-    {
-        return false;
-    }
-
-    /**
-     * Determines if the durability bar should be rendered for this item.
-     */
-    @Override
-    public boolean showDurabilityBar(ItemStack stack)
-    {
-        return ConfigHandler.enableFullnessBar && getItemCount(stack) > 0;
-    }
-
-    /**
-     * Queries the percentage of the 'Durability' bar that should be drawn.
-     * @return 1.0 for 100% 0 for 0%
-     */
-    @Override
-    public double getDurabilityForDisplay(ItemStack stack)
-    {
-        return (float) getItemCount(stack)/Constants.INVENTORY_MAIN_SIZE;
-    }
-
-    private int getItemCount(ItemStack backpack)
-    {
-        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
-        NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
-        int itemCount = itemList.tagCount();
-        for (int i = itemCount - 1; i >= 0; i--)
+        for (int i = 0; i < BackpackNames.backpackNames.length; i++)
         {
-            int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
-            if (slotAtI < Constants.UPPER_TOOL)
-                break;
-            else if (slotAtI == Constants.UPPER_TOOL || slotAtI == Constants.LOWER_TOOL)
-                itemCount--;
+            ItemStack bp = new ItemStack(this, 1, 0);
+            bp.setItemDamage(i);
+            NBTTagCompound c = new NBTTagCompound();
+            c.setString("colorName", BackpackNames.backpackNames[i]);
+            BackpackUtils.setBackpackTag(bp, c);
+            subItems.add(bp);
         }
-        return itemCount;
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack)
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
-        return "Adventure Backpack";
+        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(stack);
+        if (backpackTag.hasKey("colorName"))
+        {
+            String color = backpackTag.getString("colorName");
+            switch (color)
+            {
+                case "Bat":
+                    list.add(EnumChatFormatting.DARK_PURPLE + color);
+                    break;
+                case "Dragon":
+                    list.add(EnumChatFormatting.LIGHT_PURPLE + color);
+                    break;
+                case "Pigman":
+                    list.add(EnumChatFormatting.RED + color);
+                    break;
+                case "Rainbow":
+                    list.add(Utils.makeItRainbow(color));
+                    break;
+                case "Squid":
+                    list.add(EnumChatFormatting.DARK_AQUA + color);
+                    break;
+                default:
+                    list.add(color);
+                    break;
+            }
+        }
     }
 
     @Override
@@ -137,7 +121,79 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         BackpackNames.setBackpackColorNameFromDamage(stack, stack.getItemDamage());
     }
 
-    public boolean placeBackpack(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, boolean from)
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        return player.canPlayerEdit(x, y, z, side, stack) && placeBackpack(stack, player, world, x, y, z, side, true);
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    {
+        MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
+        if (mop == null || mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
+        {
+            if (world.isRemote)
+            {
+                ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
+            }
+        }
+        return stack;
+    }
+
+    @Override
+    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
+    {
+        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerBackpack)
+        {
+            player.closeScreen();
+        }
+        return super.onDroppedByPlayer(stack, player);
+    }
+
+    @Override
+    public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
+    {
+        if (world.isRemote || !ConfigHandler.backpackDeathPlace || EnchUtils.isSoulBounded(stack)
+                || player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+        {
+            return;
+        }
+
+        if (!tryPlace(world, player, stack))
+        {
+            player.dropPlayerItemWithRandomChoice(stack, false);
+        }
+
+        BackpackProperty.get(player).setWearable(null);
+    }
+
+    private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
+    {
+        int X = (int) player.posX;
+        if (player.posX < 0) X--;
+        int Z = (int) player.posZ;
+        if (player.posZ < 0) Z--;
+        int Y = (int) player.posY;
+        if (Y < 1) Y = 1;
+
+        int positions[] = {0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5, -6, 6};
+
+        for (int shiftY : positions)
+        {
+            if (Y + shiftY >= 1)
+            {
+                ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
+                if (spawn != null)
+                {
+                    return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean placeBackpack(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, boolean from)
     {
         if (stack.stackSize == 0 || !player.canPlayerEdit(x, y, z, side, stack)) return false;
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
@@ -208,39 +264,59 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-        return player.canPlayerEdit(x, y, z, side, stack) && placeBackpack(stack, player, world, x, y, z, side, true);
+
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
-        MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
-        if (mop == null || mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
+
+        if (!ConfigHandler.backpackAbilities) return;
+        if (world == null || player == null || stack == null) return;
+
+        if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
         {
-            if (world.isRemote)
-            {
-                ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
-            }
+            BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
         }
-        return stack;
     }
 
     @Override
-    public boolean isDamageable()
+    public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        return false;
-    }
-
-    @Override
-    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
-    {
-        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerBackpack)
+        if (BackpackAbilities.hasRemoval(BackpackNames.getBackpackColorName(stack)))
         {
-            player.closeScreen();
+            BackpackAbilities.backpackAbilities.executeRemoval(player, world, stack);
         }
-        return super.onDroppedByPlayer(stack, player);
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack)
+    {
+        return (float) getItemCount(stack) / Constants.INVENTORY_MAIN_SIZE;
+    }
+
+    private int getItemCount(ItemStack backpack)
+    {
+        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
+        NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
+        int itemCount = itemList.tagCount();
+        for (int i = itemCount - 1; i >= 0; i--)
+        {
+            int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
+            if (slotAtI < Constants.UPPER_TOOL)
+                break;
+            else if (slotAtI == Constants.UPPER_TOOL || slotAtI == Constants.LOWER_TOOL)
+                itemCount--;
+        }
+        return itemCount;
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack)
+    {
+        return ConfigHandler.enableFullnessBar && getItemCount(stack) > 0;
     }
 
     @SideOnly(Side.CLIENT)
@@ -266,125 +342,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
-    {
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(stack);
-        if (backpackTag.hasKey("colorName"))
-        {
-            String color = backpackTag.getString("colorName");
-            switch (color)
-            {
-                case "Bat":
-                    list.add(EnumChatFormatting.DARK_PURPLE + color);
-                    break;
-                case "Dragon":
-                    list.add(EnumChatFormatting.LIGHT_PURPLE + color);
-                    break;
-                case "Pigman":
-                    list.add(EnumChatFormatting.RED + color);
-                    break;
-                case "Rainbow":
-                    list.add(Utils.makeItRainbow(color));
-                    break;
-                case "Squid":
-                    list.add(EnumChatFormatting.DARK_AQUA + color);
-                    break;
-                default:
-                    list.add(color);
-                    break;
-            }
-        }
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems)
-    {
-        for (int i = 0; i < BackpackNames.backpackNames.length; i++)
-        {
-            ItemStack bp = new ItemStack(this, 1, 0);
-            bp.setItemDamage(i);
-            NBTTagCompound c = new NBTTagCompound();
-            c.setString("colorName", BackpackNames.backpackNames[i]);
-            BackpackUtils.setBackpackTag(bp, c);
-            subItems.add(bp);
-        }
-    }
-
-    @Override
-    public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
-    {
-
-        if (!ConfigHandler.backpackAbilities) return;
-        if (world == null || player == null || stack == null) return;
-
-        if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
-        {
-            BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
-        }
-    }
-
-    @Override
-    public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
-    {
-        if (world.isRemote || !ConfigHandler.backpackDeathPlace || EnchUtils.isSoulBounded(stack)
-                || player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
-        {
-            return;
-        }
-
-        if (!tryPlace(world, player, stack))
-        {
-            player.dropPlayerItemWithRandomChoice(stack, false);
-        }
-
-        BackpackProperty.get(player).setWearable(null);
-    }
-
-    private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
-    {
-        int X = (int) player.posX;
-        if (player.posX < 0) X--;
-        int Z = (int) player.posZ;
-        if (player.posZ < 0) Z--;
-        int Y = (int) player.posY;
-        if (Y < 1) Y = 1;
-
-        int positions[] = {0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5, -6, 6};
-
-        for (int shiftY : positions)
-        {
-            if (Y + shiftY >= 1)
-            {
-                ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
-                if (spawn != null)
-                {
-                    return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void onEquipped(World world, EntityPlayer player, ItemStack stack)
-    {
-
-    }
-
-    @Override
-    public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
-    {
-        if (BackpackAbilities.hasRemoval(BackpackNames.getBackpackColorName(stack)))
-        {
-            BackpackAbilities.backpackAbilities.executeRemoval(player, world, stack);
-        }
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getWearableModel(ItemStack wearable)
     {
@@ -406,5 +363,35 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             modelTexture = Resources.backpackTextureFromString(BackpackNames.getBackpackColorName(wearable));
         }
         return modelTexture;
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
+    {
+        return "Adventure Backpack";
+    }
+
+    @Override
+    public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_)
+    {
+        return false;
+    }
+
+    @Override
+    public int getItemEnchantability()
+    {
+        return 0;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+    {
+        return EnchUtils.isSoulBook(book);
+    }
+
+    @Override
+    public boolean isDamageable()
+    {
+        return false;
     }
 }

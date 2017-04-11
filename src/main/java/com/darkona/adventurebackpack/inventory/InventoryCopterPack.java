@@ -20,16 +20,17 @@ import static com.darkona.adventurebackpack.common.Constants.COPTER_INVENTORY_SI
  */
 public class InventoryCopterPack implements IInventoryTanks
 {
-    public FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
     public int tickCounter = 0;
+
+    private FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
+    private ItemStack[] inventory = new ItemStack[COPTER_INVENTORY_SIZE];
+
     private byte status = ItemCopterPack.OFF_MODE;
     private ItemStack containerStack;
-    private ItemStack[] inventory = new ItemStack[COPTER_INVENTORY_SIZE];
 
     //TODO copter sound doesn't init at login (status init, so you can keep flying)
     public InventoryCopterPack(ItemStack copterPack)
     {
-        //status = ItemCopterPack.OFF_MODE;
         containerStack = copterPack;
         openInventory();
     }

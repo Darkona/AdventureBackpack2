@@ -17,9 +17,8 @@ public class GeneralReference
 
     public static void init()
     {
-        liquidFuels.put("biofuel", ConfigHandler.fuelRateBioFuel);
-        liquidFuels.put("bioethanol", ConfigHandler.fuelRateBioEthanol);
-        liquidFuels.put("coal", ConfigHandler.fuelRateCoal);  //liquid coal? o_O
+        liquidFuels.put("biofuel", ConfigHandler.fuelRateBioFuel); // ?
+        liquidFuels.put("bioethanol", ConfigHandler.fuelRateBioEthanol); // ic2 ethanol
         liquidFuels.put("creosote", ConfigHandler.fuelRateCreosote);
         liquidFuels.put("fuel", ConfigHandler.fuelRateFuel);
         liquidFuels.put("lava", ConfigHandler.fuelRateLava);
@@ -27,15 +26,10 @@ public class GeneralReference
         liquidFuels.put("liquid_medium_oil", ConfigHandler.fuelRateOil);
         liquidFuels.put("liquid_heavy_oil", ConfigHandler.fuelRateOil);
         liquidFuels.put("liquid_light_fuel", ConfigHandler.fuelRateFuelLight);
-        liquidFuels.put("liquid_heavy_fuel", ConfigHandler.fuelRateFuelLight);
+        liquidFuels.put("liquid_heavy_fuel", ConfigHandler.fuelRateFuelHeavy);
         liquidFuels.put("nitrofuel", ConfigHandler.fuelRateFuelNitro);
         liquidFuels.put("oil", ConfigHandler.fuelRateOil);
         liquidFuels.put("rocket_fuel", ConfigHandler.fuelRateFuel);
-
-        //liquidFuels.put("liquid_sulfuriclight_fuel", ConfigHandler.fuelRateFuel);
-        //liquidFuels.put("liquid_cracked_light_fuel", ConfigHandler.fuelRateFuel);
-        //liquidFuels.put("liquid_sulfuricheavy_fuel", ConfigHandler.fuelRateFuel);
-        //liquidFuels.put("liquid_cracked_heavy_fuel", ConfigHandler.fuelRateFuel);
     }
 
     public static boolean isValidFuel(Fluid fluid)

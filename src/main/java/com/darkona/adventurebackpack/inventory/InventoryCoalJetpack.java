@@ -25,20 +25,21 @@ import static com.darkona.adventurebackpack.common.Constants.JETPACK_WATER_TANK;
  */
 public class InventoryCoalJetpack implements IInventoryTanks
 {
-    public static final int MAX_TEMPERATURE = 200;
     public int currentItemBurnTime = 0;
+
     private ItemStack[] inventory = new ItemStack[Constants.JETPACK_INVENTORY_SIZE];
     private FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
     private FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
+
+    private boolean boiling = false;
+    private boolean inUse = false;
+    private boolean leaking = false;
     private boolean status = false;
     private int temperature = 25;
     private int burnTicks = 0;
-    private ItemStack containerStack;
-    private long systemTime = 0;
-    private boolean boiling = false;
-    private boolean leaking = false;
-    private boolean inUse = false;
     private int coolTicks = 5000;
+    private long systemTime = 0;
+    private ItemStack containerStack;
 
     //TODO if GUI is open while temp is going up, temp will drop to zero at 90C. just sync issue?
     //TODO boiling sound work sometimes, and then it override leaking sound. check it
