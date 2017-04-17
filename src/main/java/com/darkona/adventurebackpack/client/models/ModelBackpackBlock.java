@@ -1,16 +1,18 @@
 package com.darkona.adventurebackpack.client.models;
 
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.RenderUtils;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Vector3;
-import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.opengl.GL11;
+import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.RenderUtils;
+import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Vector3;
+
+import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 
 /**
  * Created on 17/12/2014
@@ -275,8 +277,7 @@ public class ModelBackpackBlock extends ModelBase
     {
 
         //scale*=0.9;
-        @SuppressWarnings("unused")
-		boolean sleepingbag = backpack.isSBDeployed();
+        boolean sleepingbag = backpack.isSBDeployed();
         FluidTank tankLeft = backpack.getLeftTank();
         FluidTank tankRight = backpack.getRightTank();
         setRotationAngles(f, f1, f2, f3, f4, scale, entity);
@@ -288,7 +289,9 @@ public class ModelBackpackBlock extends ModelBase
 
         if (tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getIcon() != null)
         {
-            Vector3 victor = new Vector3((tankLeftTop.rotationPointX * 0.1f - 0.22f), (tankLeftTop.rotationPointY * 0.1f + 0.05f),
+            Vector3 victor = new Vector3(
+                    (tankLeftTop.rotationPointX * 0.1f - 0.22f),
+                    (tankLeftTop.rotationPointY * 0.1f + 0.05f),
                     (tankLeftTop.rotationPointZ * 0.1f + 0.15f));
             GL11.glPushMatrix();
             CCRenderState.reset();
@@ -302,7 +305,9 @@ public class ModelBackpackBlock extends ModelBase
 
         if (tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getFluid().getIcon() != null)
         {
-            Vector3 victor = new Vector3((tankRightTop.rotationPointX * 0.1f + 0.48f), (tankRightTop.rotationPointY * 0.1f + 0.05f),
+            Vector3 victor = new Vector3(
+                    (tankRightTop.rotationPointX * 0.1f + 0.48f),
+                    (tankRightTop.rotationPointY * 0.1f + 0.05f),
                     (tankRightTop.rotationPointZ * 0.1f + 0.15f));
             GL11.glPushMatrix();
             CCRenderState.reset();
@@ -314,8 +319,7 @@ public class ModelBackpackBlock extends ModelBase
         }
     }
 
-    @SuppressWarnings("unused")
-	private void renderFluidsInTanks(FluidTank tankLeft, FluidTank tankRight, float scale)
+    private void renderFluidsInTanks(FluidTank tankLeft, FluidTank tankRight, float scale)
     {
         //Size of the cuboid
         //Y-- is up, Y++ is down
@@ -343,7 +347,7 @@ public class ModelBackpackBlock extends ModelBase
 
             Cuboid6 left = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
             //Thanks Chickenbones!
-            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), left.add(victor), ((1.0F * tankLeft.getFluidAmount()) / (1.0F * Constants.basicTankCapacity)), 0.2);
+            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), left.add(victor), ((1.0F * tankLeft.getFluidAmount()) / (1.0F * Constants.BASIC_TANK_CAPACITY)), 0.2);
         }
 
         if (tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getFluid().getIcon() != null)
@@ -361,7 +365,7 @@ public class ModelBackpackBlock extends ModelBase
             CCRenderState.useNormals = true;
 
             Cuboid6 right = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
-            RenderUtils.renderFluidCuboid(tankRight.getFluid(), right.add(victor), ((1.0F * tankRight.getFluidAmount()) / (1.0F * Constants.basicTankCapacity)), 0.2);
+            RenderUtils.renderFluidCuboid(tankRight.getFluid(), right.add(victor), ((1.0F * tankRight.getFluidAmount()) / (1.0F * Constants.BASIC_TANK_CAPACITY)), 0.2);
         }
 
     }

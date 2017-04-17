@@ -1,10 +1,5 @@
 package com.darkona.adventurebackpack.playerProperties;
 
-import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.item.IBackWearableItem;
-import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
-import com.darkona.adventurebackpack.util.Utils;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,15 +7,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.IExtendedEntityProperties;
+
+import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 24/10/2014
  *
  * @author Darkona
  */
-@SuppressWarnings("unused")
 public class BackpackProperty implements IExtendedEntityProperties
 {
 
@@ -31,7 +29,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
-    private RenderPlayerEvent.Specials.Pre event;
+    //private RenderPlayerEvent.Specials.Pre event;
 
     public NBTTagCompound getWearableData()
     {

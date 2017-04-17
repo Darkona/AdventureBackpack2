@@ -2,15 +2,15 @@ package com.darkona.adventurebackpack.config;
 
 import java.io.File;
 
-import com.darkona.adventurebackpack.reference.ModInfo;
-
+import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.config.Configuration;
 
+import com.darkona.adventurebackpack.reference.ModInfo;
 
 /**
  * Created on 10/10/2014.
+ *
  * @author Javier Darkona
  */
 public class ConfigHandler
@@ -19,6 +19,7 @@ public class ConfigHandler
     //public static final String configVersion = "1.0.0";
     public static Configuration config;
 
+    public static boolean IS_DEVENV = false;
     public static boolean IS_BUILDCRAFT = false;
     public static boolean IS_ENDERIO = false;
 
@@ -30,7 +31,10 @@ public class ConfigHandler
     public static boolean enableToolsCycling = true;
     public static boolean fixLead = true;
 
+    public static boolean enableFullnessBar = false;
+    public static boolean enableTemperatureBar = false;
     public static boolean enableToolsRender = true;
+    public static boolean enableTooltips = true;
     public static int typeTankRender = 2;
     public static boolean tanksHoveringText = false;
 
@@ -61,11 +65,12 @@ public class ConfigHandler
 
     public static float fuelRateBioFuel = 1.0f;
     public static float fuelRateBioEthanol = 1.5f;
-    public static float fuelRateCoal = 2.0f;
     public static float fuelRateCreosote = 7.0f;
-    public static float fuelRateFuel = 1.0f;
+    public static float fuelRateFuel = 0.8f;
+    public static float fuelRateFuelLight = 1.0f;
+    public static float fuelRateFuelHeavy = 1.3f;
+    public static float fuelRateFuelNitro = 0.4f;
     public static float fuelRateLava = 5.0f;
-    public static float fuelRateNitroFuel = 0.5f;
     public static float fuelRateOil = 3.0f;
 
     public static boolean consumeDragonEgg = false;
@@ -102,14 +107,13 @@ public class ConfigHandler
         }
     }
 
-    @SuppressWarnings("static-access")
     private static void loadConfiguration()
     {
         // Gameplay
         allowSoulBound = config.getBoolean("Allow SoulBound", "gameplay", true, "Allow SoulBound enchant on wearable packs");
         backpackAbilities = config.getBoolean("Backpack Abilities", "gameplay", true, "Allow the backpacks to execute their special abilities, or be only cosmetic (Doesn't affect lightning transformation) Must be " +
                 "disabled in both Client and Server to work properly");
-        backpackDeathPlace = config.getBoolean("Backpack Death Place", "gameplay", true,"Place backpacks as a block when you die?");
+        backpackDeathPlace = config.getBoolean("Backpack Death Place", "gameplay", true, "Place backpacks as a block when you die?");
         fixLead = config.getBoolean("Fix Vanilla Lead", "gameplay", true, "Fix the vanilla Lead? (Checks mobs falling on a leash to not die of fall damage if they're not falling so fast)");
         enableCampfireSpawn = config.getBoolean("Enable Campfire Spawn", "gameplay", false, "Enable/Disable ability to spawn at campfire");
         enableHoseDrink = config.getBoolean("Enable Hose Drink", "gameplay", true, "Enable/Disable hose drink mode");
@@ -117,7 +121,10 @@ public class ConfigHandler
 
         // Graphics
         typeTankRender = config.getInt("Tank Render Type", "graphics", 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
+        enableFullnessBar = config.getBoolean("Enable Fullness Bar", "graphics", false, "Enable durability bar showing fullness of backpacks inventory");
+        enableTemperatureBar = config.getBoolean("Enable Temperature Bar", "graphics", false, "Enable durability bar showing temperature of jetpack");
         enableToolsRender = config.getBoolean("Enable Tools Render", "graphics", true, "Enable rendering for tools in the backpack tool slots. May cause visual glitches with Gregtech tools");
+        enableTooltips = config.getBoolean("Enable Tooltips", "graphics", true, "Enable tooltips? Client side");
         tanksHoveringText = config.getBoolean("Hovering Text", "graphics", false, "Show hovering text on fluid tanks?");
 
         // Graphics.Status
@@ -140,7 +147,7 @@ public class ConfigHandler
         allowSoundPiston = config.getBoolean("Piston Boots", "sound", true, "Allow playing the PistonBoots sound");
 
         // Items
-        enableItemFilters  = config.getBoolean("Enable Item Filters", "items", true, "Enable filters from Disallow category");
+        enableItemFilters = config.getBoolean("Enable Item Filters", "items", true, "Enable filters from Disallow category");
         forbiddenDimensions = config.getStringList("Forbidden Dimensions", "items", nameDefault, "Disallow opening backpack inventory for specific dimension ID");
 
         // Items.Disallowed
@@ -150,14 +157,15 @@ public class ConfigHandler
         nameUnlocalized = config.getStringList("By Internal Name", "items.disallowed", nameDefault, "Disallow items by internal (unlocalized) name. Not case sensitive. Example: tile.dirt");
 
         // Items.Fuel
-        /*fuelRateBioFuel = config.getFloat("BioFuel", "items.fuel", 1.0f, 0.05f, 20.0f, "BioFuel consumption rate");
+        fuelRateBioFuel = config.getFloat("BioFuel", "items.fuel", 1.0f, 0.05f, 20.0f, "BioFuel consumption rate");
         fuelRateBioEthanol = config.getFloat("BioEthanol", "items.fuel", 1.5f, 0.05f, 20.0f, "BioEthanol consumption rate");
-        fuelRateCoal = config.getFloat("Coal", "items.fuel", 2.0f, 0.05f, 20.0f, "Coal consumption rate");
         fuelRateCreosote = config.getFloat("Creosote", "items.fuel", 7.0f, 0.05f, 20.0f, "Creosote consumption rate");
-        fuelRateFuel = config.getFloat("Fuel", "items.fuel", 1.0f, 0.05f, 20.0f, "Fuel consumption rate");
+        fuelRateFuel = config.getFloat("Fuel", "items.fuel", 0.8f, 0.05f, 20.0f, "Fuel / rocket fuel consumption rate");
+        fuelRateFuelLight = config.getFloat("FuelLight", "items.fuel", 1.0f, 0.05f, 20.0f, "Light Fuel consumption rate");
+        fuelRateFuelHeavy = config.getFloat("FuelHeavy", "items.fuel", 1.3f, 0.05f, 20.0f, "Heavy Fuel consumption rate");
+        fuelRateFuelNitro = config.getFloat("FuelNitro", "items.fuel", 0.4f, 0.05f, 20.0f, "Nitro Fuel consumption rate");
         fuelRateLava = config.getFloat("Lava", "items.fuel", 5.0f, 0.05f, 20.0f, "Lava consumption rate");
-        fuelRateNitroFuel = config.getFloat("NitroFuel", "items.fuel", 0.5f, 0.05f, 20.0f, "NitroFuel consumption rate");
-        fuelRateOil = config.getFloat("Oil", "items.fuel", 3.0f, 0.05f, 20.0f, "Oil consumption rate");*/
+        fuelRateOil = config.getFloat("Oil", "items.fuel", 3.0f, 0.05f, 20.0f, "Oil consumption rate");
 
         // Items.Recipes
         consumeDragonEgg = config.getBoolean("Consume Dragon Egg", "items.recipes", false, "Consume Dragon Egg when Dragon backpack crafted?");
@@ -204,7 +212,7 @@ public class ConfigHandler
 
     /*private static boolean isConfigVersionWrong(Configuration configuration)
     {
-	    return !configuration.getLoadedConfigVersion().equals(configuration.getDefinedConfigVersion());
+        return !configuration.getLoadedConfigVersion().equals(configuration.getDefinedConfigVersion());
     }*/
 
 }

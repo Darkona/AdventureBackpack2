@@ -1,30 +1,30 @@
 package com.darkona.adventurebackpack.init.recipes;
 
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.LogHelper;
 
 /**
  * Created on 20/10/2014
  *
  * @author Darkona
  */
-public class AbstractBackpackRecipe implements IRecipe
+class AbstractBackpackRecipe implements IRecipe
 {
 
-    final BackpackRecipes br = new BackpackRecipes();
+    private final BackpackRecipes br = new BackpackRecipes();
     private ItemStack result;
-    @SuppressWarnings("unused")
-	private ItemStack[] recipe;
+    private ItemStack[] recipe;
 
     public boolean compareStacksForColor(ItemStack stack1, ItemStack stack2)
     {

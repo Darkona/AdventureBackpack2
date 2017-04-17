@@ -1,5 +1,12 @@
 package com.darkona.adventurebackpack.init;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.WorldServer;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
+
 import com.darkona.adventurebackpack.network.CowAbilityPacket;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
@@ -13,17 +20,10 @@ import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.ModInfo;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.WorldServer;
-
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class ModNetwork
 {
@@ -48,13 +48,14 @@ public class ModNetwork
 
     }
 
+    @SuppressWarnings("unchecked")
     public static void registerClientSide(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);
         messages++;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     private static void registerMessage(Class handler, Class message)
     {
         net.registerMessage(handler, message, messages, Side.CLIENT);

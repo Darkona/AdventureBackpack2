@@ -2,12 +2,6 @@ package com.darkona.adventurebackpack.block;
 
 import java.util.Random;
 
-import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.Utils;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,6 +13,12 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.CreativeTabAB;
+import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 05/01/2015
@@ -42,7 +42,6 @@ public class BlockCampFire extends BlockContainer
         this.setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
     }
 
-    @SuppressWarnings("unused")
     private void blockBoundsForRender()
     {
         this.func_149978_e();

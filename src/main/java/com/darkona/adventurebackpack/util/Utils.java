@@ -2,17 +2,11 @@ package com.darkona.adventurebackpack.util;
 
 import java.util.Calendar;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -20,15 +14,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+
+import com.darkona.adventurebackpack.config.ConfigHandler;
 
 /**
  * Created on 12/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class Utils
 {
-
     public static float degreesToRadians(float degrees)
     {
         return degrees / 57.2957795f;
@@ -56,29 +53,28 @@ public class Utils
                 n = (h - m + r + 90) / 25,
                 p = (h - m + r + n + 19) % 32;
 
-        return new int[] { n, p };
+        return new int[]{n, p};
     }
 
     public static String getHoliday()
     {
-
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR),
                 month = calendar.get(Calendar.MONTH) + 1,
                 day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        //if (AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear";
+        //if (AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear"; // here and below commented lines: textures are missing
         //if (AdventureBackpack.instance.hannukah) return "Hannukah";
-        if (month == Utils.calculateEaster(year)[0] && day == Utils.calculateEaster(year)[1]) return "Easter";
+        //if (month == Utils.calculateEaster(year)[0] && day == Utils.calculateEaster(year)[1]) return "Easter";
         String dia = "Standard";
         if (month == 1)
         {
             if (day == 1) dia = "NewYear";
-            if (day == 28) dia = "Shuttle";//Challenger
+            if (day == 28) dia = "Shuttle"; //Challenger
         }
         if (month == 2)
         {
-            if (day == 1) dia = "Shuttle";//Columbia
+            if (day == 1) dia = "Shuttle"; //Columbia
             if (day == 14) dia = "Valentines";
             //if (day == 23) dia = "Fatherland";
         }
@@ -119,16 +115,16 @@ public class Utils
         }
         if (month == 11)
         {
-            // if (day == 2) dia = "Muertos";
+            //if (day == 2) dia = "Muertos";
         }
         if (month == 12)
         {
             if (day >= 22 && day <= 26) dia = "Christmas";
             if (day == 31) dia = "NewYear";
         }
+
         //LogHelper.info("Today is: " + day + "/" + month + "/" + year + ". Which means today is: " + dia);
         return dia;
-
     }
 
     public static int isBlockRegisteredAsFluid(Block block)
@@ -298,6 +294,7 @@ public class Utils
      * Gets you the nearest Empty Chunk Coordinates, free of charge! Looks in two dimensions and finds a block
      * that a: can have stuff placed on it and b: has space above it.
      * This is a spiral search, will begin at close range and move out.
+     *
      * @param world  The world object.
      * @param origX  Original X coordinate
      * @param origZ  Original Z coordinate
@@ -429,9 +426,10 @@ public class Utils
 
     /**
      * Seriously why doesn't Java's instanceof check for null?
+     *
      * @return true if the object is not null and is an instance of the supplied class.
      */
-    public static boolean notNullAndInstanceOf(Object object, @SuppressWarnings("rawtypes") Class clazz)
+    public static boolean notNullAndInstanceOf(Object object, Class clazz)
     {
         return object != null && clazz.isInstance(object);
     }
@@ -449,69 +447,51 @@ public class Utils
         }
     }
 
-    // -6 - not initialized
-    // -3 - disabled by config
-    // -2 - EnderIO not found
-    // -1 - enchantment not found
-    private static int soulBoundID = -6;
-
-    public static int getSoulBoundID()
+    public static String makeItRainbow(String theString)
     {
-        if (soulBoundID == -6) setSoulBoundID(); // initialize
-        return soulBoundID;
-    }
-
-    private static void setSoulBoundID()
-    {
-        if (ConfigHandler.allowSoulBound)
+        StringBuilder everyHunterWannaKnowWherePheasantSits = new StringBuilder();
+        for (int i = 0; i < theString.length(); i++)
         {
-            if (ConfigHandler.IS_ENDERIO)
+            char charAtI = theString.charAt(i);
+            switch (i % 7)
             {
-                for (Enchantment ench : Enchantment.enchantmentsList)
-                {
-                    if (ench != null && ench.getName().equals("enchantment.enderio.soulBound"))
-                    {
-                        soulBoundID = ench.effectId;
-                        return;
-                    }
-                }
-                soulBoundID = -1;
-            } else soulBoundID = -2;
-        } else soulBoundID = -3;
-    }
-
-    public static boolean isSoulBounded(ItemStack stack)
-    {
-        int soulBound = getSoulBoundID();
-        NBTTagList stackEnch = stack.getEnchantmentTagList();
-        if (soulBound >= 0 && stackEnch != null)
-        {
-            for (int i = 0; i < stackEnch.tagCount(); i++)
-            {
-                int id = stackEnch.getCompoundTagAt(i).getInteger("id");
-                if (id == soulBound) return true;
+                case 0:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.RED).append(charAtI);
+                    break;
+                case 1:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.GOLD).append(charAtI);
+                    break;
+                case 2:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.YELLOW).append(charAtI);
+                    break;
+                case 3:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.GREEN).append(charAtI);
+                    break;
+                case 4:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.AQUA).append(charAtI);
+                    break;
+                case 5:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.BLUE).append(charAtI);
+                    break;
+                case 6:
+                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.DARK_PURPLE).append(charAtI);
+                    break;
             }
         }
-        return false;
+        return everyHunterWannaKnowWherePheasantSits.toString();
     }
 
-    public static boolean isSoulBook(ItemStack book)
+    public static boolean isDimensionAllowed (int dimensionID)
     {
-        int soulBound = getSoulBoundID();
-        if (soulBound >= 0 && book.hasTagCompound())
+        String currentDimID = String.valueOf(dimensionID);
+        for (String forbiddenID : ConfigHandler.forbiddenDimensions)
         {
-            NBTTagCompound bookData = book.stackTagCompound;
-            if (bookData.hasKey("StoredEnchantments"))
+            if (currentDimID.equals(forbiddenID))
             {
-                NBTTagList bookEnch = bookData.getTagList("StoredEnchantments", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-                if (!bookEnch.getCompoundTagAt(1).getBoolean("id"))
-                {
-                    int id = bookEnch.getCompoundTagAt(0).getInteger("id");
-                    if (id == soulBound) return true;
-                }
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
 }

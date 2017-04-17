@@ -1,17 +1,5 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.common.ServerActions;
-import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
-import com.darkona.adventurebackpack.init.ModFluids;
-import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -34,6 +22,19 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.CreativeTabAB;
+import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
+import com.darkona.adventurebackpack.init.ModFluids;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
+
+import static com.darkona.adventurebackpack.common.Constants.BUCKET;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -204,7 +205,7 @@ public class ItemHose extends ItemAB
             {
                 case HOSE_SUCK_MODE:
 
-                    accepted = tank.fill(exTank.drain(ForgeDirection.UNKNOWN, Constants.bucket, false), false);
+                    accepted = tank.fill(exTank.drain(ForgeDirection.UNKNOWN, BUCKET, false), false);
                     if (accepted > 0)
                     {
                         tank.fill(exTank.drain(ForgeDirection.UNKNOWN, accepted, true), true);
@@ -216,7 +217,7 @@ public class ItemHose extends ItemAB
 
                 case HOSE_SPILL_MODE:
 
-                    accepted = exTank.fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false);
+                    accepted = exTank.fill(ForgeDirection.UNKNOWN, tank.drain(BUCKET, false), false);
                     if (accepted > 0)
                     {
                         exTank.fill(ForgeDirection.UNKNOWN, tank.drain(accepted, true), true);
@@ -273,7 +274,7 @@ public class ItemHose extends ItemAB
                         Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
                         if (fluidBlock != null)
                         {
-                            FluidStack fluid = new FluidStack(fluidBlock, Constants.bucket);
+                            FluidStack fluid = new FluidStack(fluidBlock, BUCKET);
                             if (tank.getFluid() == null || tank.getFluid().containsFluid(fluid))
                             {
                                 int accepted = tank.fill(fluid, false);
@@ -335,7 +336,7 @@ public class ItemHose extends ItemAB
                                     /* IN HELL DIMENSION No, I won't let you put water in the nether. You freak*/
                                     if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER)
                                     {
-                                        tank.drain(Constants.bucket, true);
+                                        tank.drain(BUCKET, true);
                                         world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
                                         for (int l = 0; l < 12; ++l)
                                         {
@@ -344,8 +345,8 @@ public class ItemHose extends ItemAB
                                     } else
                                     {
                                         /* NOT IN HELL DIMENSION. */
-                                        FluidStack drainedFluid = tank.drain(Constants.bucket, false);
-                                        if (drainedFluid != null && drainedFluid.amount >= Constants.bucket)
+                                        FluidStack drainedFluid = tank.drain(BUCKET, false);
+                                        if (drainedFluid != null && drainedFluid.amount >= BUCKET)
                                         {
                                             if (!world.isRemote && flag && !material.isLiquid())
                                             {
@@ -356,17 +357,17 @@ public class ItemHose extends ItemAB
                                             {
                                                 if (world.setBlock(x, y, z, Blocks.flowing_water, 0, 3))
                                                 {
-                                                    tank.drain(Constants.bucket, true);
+                                                    tank.drain(BUCKET, true);
                                                 }
                                             } else if (fluid.getFluid().getBlock() == Blocks.lava)
                                             {
                                                 if (world.setBlock(x, y, z, Blocks.flowing_lava, 0, 3))
                                                 {
-                                                    tank.drain(Constants.bucket, true);
+                                                    tank.drain(BUCKET, true);
                                                 }
                                             } else if (world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3))
                                             {
-                                                tank.drain(Constants.bucket, true);
+                                                tank.drain(BUCKET, true);
                                             }
                                         }
                                     }
@@ -377,7 +378,7 @@ public class ItemHose extends ItemAB
                     }
                     break;
                 case HOSE_DRINK_MODE:
-                    if (tank.getFluid() != null && tank.getFluidAmount() >= Constants.bucket)
+                    if (tank.getFluid() != null && tank.getFluidAmount() >= BUCKET)
                     {
                         if (FluidEffectRegistry.hasFluidEffect(tank.getFluid().getFluid()))
                         {
@@ -424,7 +425,7 @@ public class ItemHose extends ItemAB
             {
                 if (ServerActions.setFluidEffect(world, player, backpackTank))
                 {
-                    backpackTank.drain(Constants.bucket, true);
+                    backpackTank.drain(BUCKET, true);
                     inv.dirtyTanks();
                 }
             }
@@ -449,7 +450,7 @@ public class ItemHose extends ItemAB
         {
 
             FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
-            tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
+            tank.fill(new FluidStack(ModFluids.milk, BUCKET), true);
             inventory.dirtyTanks();
 
             ((EntityCow) entity).faceEntity(player, 0.1f, 0.1f);
@@ -458,7 +459,7 @@ public class ItemHose extends ItemAB
         if (entity instanceof EntityMooshroom)
         {
             FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
-            tank.fill(new FluidStack(ModFluids.mushroomStew, Constants.bucket), true);
+            tank.fill(new FluidStack(ModFluids.mushroomStew, BUCKET), true);
             inventory.dirtyTanks();
 
             ((EntityMooshroom) entity).faceEntity(player, 0.1f, 0.1f);

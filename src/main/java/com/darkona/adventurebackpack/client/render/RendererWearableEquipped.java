@@ -1,7 +1,8 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.item.IBackWearableItem;
-import com.darkona.adventurebackpack.util.Wearing;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -12,8 +13,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+
+import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 25/12/2014
@@ -64,7 +66,7 @@ public class RendererWearableEquipped extends RendererLivingEntity
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
             GL11.glPopMatrix();
-        }catch(Exception ex)
+        } catch (Exception ex)
         {
             //discard silently because NO ONE CARES
         }
@@ -76,8 +78,7 @@ public class RendererWearableEquipped extends RendererLivingEntity
         if (!entity.isInvisible())
         {
             modelBipedMain.render(entity, limbSwing1, limbswing2, z, yaw, whatever, scale);
-        } else
-        if (!entity.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer))
+        } else if (!entity.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer))
         {
             GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.15F);

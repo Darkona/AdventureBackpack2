@@ -2,6 +2,19 @@ package com.darkona.adventurebackpack.common;
 
 import java.util.Random;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
@@ -15,20 +28,12 @@ import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import static com.darkona.adventurebackpack.common.Constants.BUCKET;
+import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
+import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 
 /**
  * Created on 23/12/2014
@@ -51,11 +56,9 @@ public class ServerActions
     //Using @Sir-Will dupe fixed
     public static void cycleTool(EntityPlayer player, int direction, int slot)
     {
-        Integer currentDimID = player.worldObj.provider.dimensionId;
-        for (String id : ConfigHandler.forbiddenDimensions)
+        if (!Utils.isDimensionAllowed(player.worldObj.provider.dimensionId))
         {
-            if (id.equals(currentDimID.toString()))
-                return;
+            return;
         }
 
         try
@@ -67,16 +70,16 @@ public class ServerActions
             {
                 if (direction < 0)
                 {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
-                    backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
-                    backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(UPPER_TOOL);
+                    backpack.setInventorySlotContentsNoSave(UPPER_TOOL, backpack.getStackInSlot(LOWER_TOOL));
+                    backpack.setInventorySlotContentsNoSave(LOWER_TOOL, current);
                 } else
                 {
                     if (direction > 0)
                     {
-                        player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
-                        backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
-                        backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
+                        player.inventory.mainInventory[slot] = backpack.getStackInSlot(LOWER_TOOL);
+                        backpack.setInventorySlotContentsNoSave(LOWER_TOOL, backpack.getStackInSlot(UPPER_TOOL));
+                        backpack.setInventorySlotContentsNoSave(UPPER_TOOL, current);
                     }
                 }
             }
@@ -99,9 +102,9 @@ public class ServerActions
      */
     public static boolean setFluidEffect(World world, EntityPlayer player, FluidTank tank)
     {
-        FluidStack drained = tank.drain(Constants.bucket, false);
+        FluidStack drained = tank.drain(BUCKET, false);
         boolean done = false;
-        if (drained != null && drained.amount >= Constants.bucket && FluidEffectRegistry.hasFluidEffect(drained.getFluid()))
+        if (drained != null && drained.amount >= BUCKET && FluidEffectRegistry.hasFluidEffect(drained.getFluid()))
         {
             done = FluidEffectRegistry.executeFluidEffectsForFluid(drained.getFluid(), player, world);
         }
@@ -332,7 +335,7 @@ public class ServerActions
                     break;
             }
         }
-        int result[] = { newMeta, coordX, coordY, coordZ };
+        int result[] = {newMeta, coordX, coordY, coordZ};
         return result;
     }
 

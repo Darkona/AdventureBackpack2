@@ -1,14 +1,15 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
+
+import com.darkona.adventurebackpack.config.ConfigHandler;
 
 /**
  * Created on 13/10/2014
@@ -19,8 +20,9 @@ public class RendererHose implements IItemRenderer
 {
 
     private static RenderItem renderHose = new RenderItem();
+    @SuppressWarnings("FieldCanBeLocal")
     private FontRenderer fontRenderer;
-	private Tessellator tessellator = Tessellator.instance;
+    //private Tessellator tessellator = Tessellator.instance;
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -35,6 +37,7 @@ public class RendererHose implements IItemRenderer
     }
 
     @Override
+    @SuppressWarnings("incomplete-switch")
     public void renderItem(ItemRenderType type, ItemStack hose, Object... data)
     {
 

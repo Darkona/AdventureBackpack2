@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.init;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+
 import com.darkona.adventurebackpack.item.ArmorAB;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureHat;
@@ -14,12 +16,10 @@ import com.darkona.adventurebackpack.item.ItemJuiceBottle;
 import com.darkona.adventurebackpack.item.ItemMachete;
 import com.darkona.adventurebackpack.item.ItemPistonBoots;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-
 /**
  * Created on 10/10/2014
- * @author Darkona
  *
+ * @author Darkona
  */
 public class ModItems
 {
@@ -31,7 +31,7 @@ public class ModItems
     public static final ArmorAB adventurePants = new ItemAdventurePants();
     public static final ArmorAB pistonBoots = new ItemPistonBoots();
     public static final ItemCopterPack copterPack = new ItemCopterPack();
-    public static final ItemCoalJetpack CoalJetpack = new ItemCoalJetpack();
+    public static final ItemCoalJetpack coalJetpack = new ItemCoalJetpack();
     public static final ItemAdventureBackpack adventureBackpack = new ItemAdventureBackpack();
     public static final ItemComponent component = new ItemComponent();
     public static final ItemHose hose = new ItemHose();
@@ -46,10 +46,24 @@ public class ModItems
         GameRegistry.registerItem(adventurePants, "adventurePants");
         GameRegistry.registerItem(pistonBoots, "pistonBoots");
         GameRegistry.registerItem(copterPack, "copterPack");
-        GameRegistry.registerItem(CoalJetpack, "CoalJetpack");
+        GameRegistry.registerItem(coalJetpack, "coalJetpack");
         GameRegistry.registerItem(adventureBackpack, "adventureBackpack");
         GameRegistry.registerItem(component, "backpackComponent");
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
     }
+
+    /*public static void conditionalInit()
+    {
+        if (ConfigHandler.IS_BUILDCRAFT)
+        {
+            GameRegistry.registerItem(copterPack, "copterPack");
+        }
+
+        if (ConfigHandler.IS_RAILCRAFT)
+        {
+            GameRegistry.registerItem(steamJetpack, "steamJetpack");
+        }
+    }*/
+
 }

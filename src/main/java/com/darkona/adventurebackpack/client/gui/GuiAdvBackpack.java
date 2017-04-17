@@ -2,22 +2,22 @@ package com.darkona.adventurebackpack.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidTank;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidTank;
 
 /**
  * Created on 12/10/2014
@@ -41,7 +41,9 @@ public class GuiAdvBackpack extends GuiWithTanks
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.typeTankRender);
     private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.typeTankRender);
+    @SuppressWarnings("FieldCanBeLocal")
     private FluidTank lft;
+    @SuppressWarnings("FieldCanBeLocal")
     private FluidTank rgt;
     public int lefties;
     public int topsies;
@@ -152,7 +154,7 @@ public class GuiAdvBackpack extends GuiWithTanks
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
 
-        /*if (!ConfigHandler.HOVERING_TEXT_TANKS)
+        /*if (!ConfigHandler.tanksHoveringText);
         {
             GL11.glPushMatrix();
             //GL11.glTranslatef(8f,64f,0f);

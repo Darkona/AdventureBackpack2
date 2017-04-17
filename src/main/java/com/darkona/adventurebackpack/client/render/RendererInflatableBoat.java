@@ -1,13 +1,15 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.client.models.ModelInflatableBoat;
-import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
-import com.darkona.adventurebackpack.util.Resources;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+
+import com.darkona.adventurebackpack.client.models.ModelInflatableBoat;
+import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
+import com.darkona.adventurebackpack.util.Resources;
 
 /**
  * Created on 05/01/2015
@@ -17,8 +19,8 @@ import org.lwjgl.opengl.GL11;
 public class RendererInflatableBoat extends Render
 {
 
-    private  ResourceLocation boatTexture = Resources.modelTextures("inflatableBoat");
-    private  ModelInflatableBoat boatModel = new ModelInflatableBoat();
+    private ResourceLocation boatTexture = Resources.modelTextures("inflatableBoat");
+    private ModelInflatableBoat boatModel = new ModelInflatableBoat();
 
     public RendererInflatableBoat()
     {

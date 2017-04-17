@@ -3,14 +3,15 @@ package com.darkona.adventurebackpack.util;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.darkona.adventurebackpack.events.WearableEvent;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
+
+import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.events.WearableEvent;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 
 /**
  * Created on 08/01/2015
@@ -20,11 +21,10 @@ import net.minecraftforge.common.MinecraftForge;
 public class BackpackUtils
 {
     private static Timer timer = new Timer();
-    private static TimerTask unequipTask;
 
     public enum reasons
     {
-        SUCCESFUL, ALREADY_EQUIPPED
+        SUCCESSFUL, ALREADY_EQUIPPED
     }
 
     public static reasons equipWearable(ItemStack backpack, EntityPlayer player)
@@ -39,7 +39,7 @@ public class BackpackUtils
             WearableEvent event = new WearableEvent.EquipWearableEvent(player, prop.getWearable());
             MinecraftForge.EVENT_BUS.post(event);
             BackpackProperty.sync(player);
-            return reasons.SUCCESFUL;
+            return reasons.SUCCESSFUL;
         } else
         {
             return reasons.ALREADY_EQUIPPED;
@@ -48,23 +48,26 @@ public class BackpackUtils
 
     public static void unequipWearable(EntityPlayer player)
     {
-        unequipTask = new DelayUnequipTask(player);
+        TimerTask unequipTask = new DelayUnequipTask(player);
         timer.schedule(unequipTask, 200);
     }
 
-    public static NBTTagCompound getBackpackData(ItemStack backpack)
+    public static NBTTagCompound getBackpackTag(ItemStack backpack)
     {
-        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey("backpackData"))
+        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey(Constants.COMPOUND_TAG))
         {
-            return backpack.stackTagCompound.getCompoundTag("backpackData");
+            return backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
         }
         return null;
     }
 
-    public static void setBackpackData(ItemStack stack, NBTTagCompound compound)
+    public static void setBackpackTag(ItemStack stack, NBTTagCompound compound)
     {
-        if (!stack.hasTagCompound()) stack.stackTagCompound = new NBTTagCompound();
-        stack.stackTagCompound.setTag("backpackData", compound);
+        if (!stack.hasTagCompound())
+        {
+            stack.stackTagCompound = new NBTTagCompound();
+        }
+        stack.stackTagCompound.setTag(Constants.COMPOUND_TAG, compound);
     }
 
     private static class DelayUnequipTask extends TimerTask

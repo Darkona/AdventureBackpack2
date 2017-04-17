@@ -1,14 +1,14 @@
 package com.darkona.adventurebackpack.fluids.effects;
 
-import com.darkona.adventurebackpack.init.ModFluids;
-import com.darkona.adventurebackpack.util.Utils;
-
-import adventurebackpack.api.FluidEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+
+import com.darkona.adventurebackpack.init.ModFluids;
+import com.darkona.adventurebackpack.util.Utils;
+import adventurebackpack.api.FluidEffect;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -27,10 +27,8 @@ public class MelonJuiceEffect extends FluidEffect
      * heal, fill hunger, etc. You can use the world parameter to make
      * conditions based on where the player is.
      *
-     * @param world
-     *            The World.
-     * @param player
-     *            The Player.
+     * @param world  The World.
+     * @param entity The Player.
      */
     @Override
     public void affectDrinker(World world, Entity entity)

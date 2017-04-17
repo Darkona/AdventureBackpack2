@@ -2,11 +2,9 @@
 {
   "modid": "adventurebackpack",
   "name": "Adventure Backpack",
-  "dependencies": ["Buildcraft|Core","Railcraft"],
-  "useDependencyInformation" : true,
   "description": "Useful and pretty backpacks for Minecraft",
   "version": "${version}",
-  "mcversion": "1.7.10",
+  "mcversion": "${mcversion}",
   "url": "https://github.com/runescapejon/AdventureBackpack2/releases",
   "updateUrl": "",
   "authorList": [
@@ -20,6 +18,7 @@
   ],
   "parent": "",
   "dependencies": [
+    "CodeChickenLib"
   ]
 }
 ]

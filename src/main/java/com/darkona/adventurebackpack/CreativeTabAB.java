@@ -1,12 +1,14 @@
 package com.darkona.adventurebackpack;
 
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.reference.ModInfo;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.reference.ModInfo;
+
 /**
  * Created on 11/10/2014.
+ *
  * @author Javier Darkona
  */
 public class CreativeTabAB

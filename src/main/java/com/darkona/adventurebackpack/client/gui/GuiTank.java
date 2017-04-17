@@ -1,19 +1,21 @@
 package com.darkona.adventurebackpack.client.gui;
 
-import codechicken.lib.render.TextureUtils;
-import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.util.LogHelper;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.opengl.GL11;
+import codechicken.lib.render.TextureUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.util.LogHelper;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -34,7 +36,7 @@ public class GuiTank
     /**
      * Draws the fluid from a fluidTank in a GUI.
      *
-     * @param X     The startX coordinate to start drawing from.
+     * @param X          The startX coordinate to start drawing from.
      * @param Y          The startY coordinate to start drawing from.
      * @param H          The height in pixels of the tank.
      * @param W          The width in pixels of the tank.
@@ -57,7 +59,7 @@ public class GuiTank
     {
         FluidStack fluid = tank.getFluid();
         String fluidName = (fluid != null) ? fluid.getLocalizedName() : "None";
-        String fluidAmount = (fluid != null) ? fluid.amount + "/" + Constants.basicTankCapacity : "Empty";
+        String fluidAmount = (fluid != null) ? fluid.amount + "/" + Constants.BASIC_TANK_CAPACITY : "Empty";
         ArrayList<String> tankTips = new ArrayList<String>();
         tankTips.add(fluidName);
         tankTips.add(fluidAmount);
@@ -73,7 +75,7 @@ public class GuiTank
 
         tank = theFluid;
         liquidPerPixel = tank.getCapacity() / this.height;
-        this.zLevel = gui.getZLevel()+1;
+        this.zLevel = gui.getZLevel() + 1;
         switch (ConfigHandler.typeTankRender)
         {
             case 1:
@@ -105,7 +107,7 @@ public class GuiTank
      */
     private void drawMethodOne(GuiWithTanks gui)
     {
-        if(tank.getFluid() != null)
+        if (tank.getFluid() != null)
         {
             FluidStack fluid = tank.getFluid();
 
@@ -131,7 +133,7 @@ public class GuiTank
      */
     private void drawMethodTwo()
     {
-        if(tank.getFluid() != null)
+        if (tank.getFluid() != null)
         {
             FluidStack fluid = tank.getFluid();
 
@@ -160,7 +162,7 @@ public class GuiTank
      */
     private void drawMethodThree()
     {
-        if(tank.getFluid() != null)
+        if (tank.getFluid() != null)
         {
             FluidStack fluid = tank.getFluid();
 

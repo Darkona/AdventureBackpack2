@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
@@ -9,10 +8,10 @@ import net.minecraft.inventory.Slot;
  *
  * @author Darkona
  */
-public abstract class SlotAdventureBackpack extends Slot
+abstract class SlotAdventureBackpack extends Slot
 {
-    public SlotAdventureBackpack(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_)
+    SlotAdventureBackpack(IInventory inventory, int slotIndex, int posX, int posY)
     {
-        super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
+        super(inventory, slotIndex, posX, posY);
     }
 }

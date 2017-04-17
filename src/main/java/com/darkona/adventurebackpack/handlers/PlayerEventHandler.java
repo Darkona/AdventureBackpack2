@@ -1,27 +1,5 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.common.ServerActions;
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.develop.msg;
-import com.darkona.adventurebackpack.develop.texturemsg;
-import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
-import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
-import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.item.IBackWearableItem;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.proxy.ServerProxy;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
-
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
@@ -42,16 +20,37 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+
+import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
+import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
+import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.proxy.ServerProxy;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.EnchUtils;
+import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
- * Created on 11/10/2014 Handle ALL the events!
+ * Created on 11/10/2014
+ * Handle ALL the events!
  *
  * @author Darkona
  * @see com.darkona.adventurebackpack.client.ClientActions
  */
 public class PlayerEventHandler
 {
-    @SuppressWarnings("unused")
     private static int tickCounter = 0;
 
     @SubscribeEvent
@@ -65,7 +64,6 @@ public class PlayerEventHandler
                 AdventureBackpack.proxy.joinPlayer((EntityPlayer)event.entity);
             }*/
         }
-
     }
 
     @SubscribeEvent
@@ -84,8 +82,6 @@ public class PlayerEventHandler
                     BackpackProperty.sync(player);
                     LogHelper.info("Stored properties retrieved");
                 }
-                msg.handleJoin(player);
-                texturemsg.handleJoin(player);
             }
         }
     }
@@ -245,7 +241,7 @@ public class PlayerEventHandler
             ItemStack pack = Wearing.getWearingWearable(player);
             BackpackProperty props = BackpackProperty.get(player);
 
-            if (Utils.isSoulBounded(pack)
+            if (EnchUtils.isSoulBounded(pack)
                     || (ConfigHandler.backpackDeathPlace && pack.getItem() instanceof ItemAdventureBackpack))
             {
                 ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
@@ -347,14 +343,6 @@ public class PlayerEventHandler
             {
                 BackpackProperty.get(event.player).executeWearableUpdateProtocol();
             }
-            /*if (event.phase == TickEvent.Phase.END)
-            {
-                if (event.side.isServer())
-                {
-                	//Thanks @knoxz for fixing performance issue
-                    //BackpackProperty.syncToNear(event.player);
-                }
-            }*/
         }
     }
 

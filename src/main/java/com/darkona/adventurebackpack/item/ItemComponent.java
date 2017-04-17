@@ -3,10 +3,6 @@ package com.darkona.adventurebackpack.item;
 import java.util.HashMap;
 import java.util.List;
 
-import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -20,6 +16,10 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 
 /**
  * Created on 11/10/2014
@@ -86,8 +86,8 @@ public class ItemComponent extends ItemAB
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
+    @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
     {
         for (int i = 1; i <= names.length; i++)

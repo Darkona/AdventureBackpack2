@@ -1,14 +1,15 @@
 package com.darkona.adventurebackpack.network;
 
-import com.darkona.adventurebackpack.util.BackpackUtils;
-import com.darkona.adventurebackpack.util.Wearing;
+import io.netty.buffer.ByteBuf;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentTranslation;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentTranslation;
+
+import com.darkona.adventurebackpack.util.BackpackUtils;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 08/01/2015
@@ -34,9 +35,10 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
                 /*if (message.force && Wearing.isWearingWearable(player))
                 {
                     BackpackUtils.unequipWearable(player);
-                } else */if (Wearing.isHoldingWearable(player) && !Wearing.isWearingWearable(player))
+                } else */
+                if (Wearing.isHoldingWearable(player) && !Wearing.isWearingWearable(player))
                 {
-                    if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.reasons.SUCCESFUL)
+                    if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.reasons.SUCCESSFUL)
                     {
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                         player.inventoryContainer.detectAndSendChanges();

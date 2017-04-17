@@ -1,22 +1,23 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.model.ModelSpider;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 
 @SideOnly(Side.CLIENT)
 public class RenderRideableSpider extends RenderLiving
 {
     private static final ResourceLocation spiderEyesTextures = new ResourceLocation("textures/entity/spider_eyes.png");
     private static final ResourceLocation spiderTextures = new ResourceLocation("textures/entity/spider/spider.png");
-    @SuppressWarnings("unused")
-	private static final String __OBFID = "CL_00001027";
+    private static final String __OBFID = "CL_00001027";
 
     public RenderRideableSpider()
     {
@@ -37,8 +38,7 @@ public class RenderRideableSpider extends RenderLiving
         if (p_77032_2_ != 0)
         {
             return -1;
-        }
-        else
+        } else
         {
             this.bindTexture(spiderEyesTextures);
             GL11.glEnable(GL11.GL_BLEND);
@@ -48,8 +48,7 @@ public class RenderRideableSpider extends RenderLiving
             if (p_77032_1_.isInvisible())
             {
                 GL11.glDepthMask(false);
-            }
-            else
+            } else
             {
                 GL11.glDepthMask(true);
             }
@@ -57,7 +56,7 @@ public class RenderRideableSpider extends RenderLiving
             char c0 = 61680;
             int j = c0 % 65536;
             int k = c0 / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             return 1;
         }
@@ -74,8 +73,9 @@ public class RenderRideableSpider extends RenderLiving
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
+    @Override
     protected ResourceLocation getEntityTexture(Entity p_110775_1_)
     {
-        return this.getEntityTexture((EntityFriendlySpider)p_110775_1_);
+        return this.getEntityTexture((EntityFriendlySpider) p_110775_1_);
     }
 }

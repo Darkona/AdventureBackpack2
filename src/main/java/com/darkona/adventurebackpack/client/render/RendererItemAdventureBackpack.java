@@ -1,45 +1,34 @@
 package com.darkona.adventurebackpack.client.render;
 
+import org.lwjgl.opengl.GL11;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.IItemRenderer;
+
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import org.lwjgl.opengl.GL11;
-
 /**
  * Created on 12/10/2014
  *
  * @author Darkona
  */
-@SuppressWarnings("unused")
+
 public class RendererItemAdventureBackpack implements IItemRenderer
 {
     private final ModelBackpackBlock model;
-	private Minecraft mc;
 
     public RendererItemAdventureBackpack()
     {
         model = new ModelBackpackBlock();
     }
 
+    @Override
     public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type)
     {
         switch (type)
@@ -58,6 +47,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
         return false;
     }
 
+    @Override
     public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item, IItemRenderer.ItemRendererHelper helper)
     {
         switch (type)
@@ -76,6 +66,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
         return false;
     }
 
+    @Override
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack backpack, Object... data)
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
@@ -190,8 +181,9 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 GL11.glPopMatrix();
                 GL11.glPopMatrix();
                 break;
+
             case FIRST_PERSON_MAP:
                 break;
         }
     }
- }
+}

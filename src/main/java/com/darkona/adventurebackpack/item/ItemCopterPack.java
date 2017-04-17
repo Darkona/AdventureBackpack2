@@ -2,6 +2,24 @@ package com.darkona.adventurebackpack.item;
 
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerCopter;
@@ -10,25 +28,9 @@ import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.GeneralReference;
+import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 /**
  * Created on 31/12/2014
@@ -37,6 +39,10 @@ import net.minecraft.world.World;
  */
 public class ItemCopterPack extends ItemAB implements IBackWearableItem
 {
+    public static byte OFF_MODE = 0;
+    public static byte NORMAL_MODE = 1;
+    public static byte HOVER_MODE = 2;
+    private float fuelSpent;
 
     public ItemCopterPack()
     {
@@ -46,20 +52,22 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         setMaxStackSize(1);
     }
 
-    public static byte OFF_MODE = 0;
-    public static byte NORMAL_MODE = 1;
-    public static byte HOVER_MODE = 2;
-
     @Override
-    public int getItemEnchantability()
+    @SuppressWarnings("unchecked")
+    public void getSubItems(Item item, CreativeTabs tab, List list)
     {
-        return 0;
+        ItemStack iStack = new ItemStack(item, 1, 0);
+        NBTTagCompound compound = new NBTTagCompound();
+        iStack.setTagCompound(compound);
+        //compound.setTag(Constants.COPTER_FUEL_TANK, new FluidTank(Constants.COPTER_FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
+
+        list.add(iStack);
     }
 
     @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isCurrent)
     {
-        return (Utils.isSoulBook(book));
+        //TODO
     }
 
     @Override
@@ -73,81 +81,9 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isCurrent)
+    public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-    }
-
-    @SuppressWarnings(value = "unchecked")
-    public void pushEntities(World world, EntityPlayer player, float speed)
-    {
-        double posX = player.posX;
-        double posY = player.posY;
-        double posZ = player.posZ;
-        List<EntityItem> groundItems = world.getEntitiesWithinAABB(
-                EntityItem.class, AxisAlignedBB.getBoundingBox(
-                        posX, posY, posZ, posX + 1.0D, posY + 1.0D, posZ + 1.0D).expand(4.0D, 4.0D, 4.0D));
-
-        for (EntityItem groundItem : groundItems)
-        {
-            if (!groundItem.isInWater())
-            {
-                if (groundItem.posX > posX)
-                {
-                    groundItem.motionX = speed;
-                }
-                if (groundItem.posX < posX)
-                {
-                    groundItem.motionX = -speed;
-                }
-
-                if (groundItem.posZ > posZ)
-                {
-                    groundItem.motionZ = speed;
-                }
-                if (groundItem.posZ < posZ)
-                {
-                    groundItem.motionZ = -speed;
-                }
-
-                if (groundItem.posY < posY)
-                {
-                    groundItem.motionY -= speed;
-                }
-            }
-        }
-    }
-
-    @Override
-    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
-    {
-        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerCopter)
-        {
-            player.closeScreen();
-        }
-        return super.onDroppedByPlayer(stack, player);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
-    {
-        return ModelCopterPack.instance.setWearable(stack);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
-    {
-        String modelTexture;
-        modelTexture = Resources.modelTextures("copterPack").toString();
-
-        return modelTexture;
-    }
-
-    public static void elevate(EntityPlayer player, ItemStack copter)
-    {
-        if (player.posY < 256) player.motionY = Math.max(player.motionY, 0.18);
-        if (player.posY > 256) player.motionY = 0.18 - ((player.posY % 256) / 256);
+        stack.stackTagCompound.setByte("status", OFF_MODE);
     }
 
     @Override
@@ -156,7 +92,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
         inv.openInventory();
         boolean canElevate = true;
-        int fuelConsumption = 0;
+        float fuelConsumption = 0.0f;
         if (inv.getStatus() != OFF_MODE)
         {
             if (player.isInWater())
@@ -169,7 +105,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 }
                 return;
             }
-            if (inv.fuelTank.getFluidAmount() == 0)
+            if (inv.getFuelTank().getFluidAmount() == 0)
             {
                 canElevate = false;
                 if (player.onGround)
@@ -220,7 +156,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                     player.motionY = -0.3;
                 } else
                 {
-                    fuelConsumption += 2;
+                    fuelConsumption *= 2;
                     player.motionY = 0.0f;
                 }
             }
@@ -250,7 +186,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 if (Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
                 {
-                    if (inv.canConsumeFuel(fuelConsumption + 2) && canElevate)
+                    if (inv.canConsumeFuel((int) Math.ceil(fuelConsumption * 2)) && canElevate)
                     {
                         elevate(player, stack);
                     }
@@ -260,20 +196,17 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             //Elevation serverside
             if (!player.onGround && player.motionY > 0)
             {
-                fuelConsumption += 2;
+                fuelConsumption *= 2;
             }
             int ticks = inv.tickCounter - 1;
-            if (inv.fuelTank.getFluid() != null)
+            if (inv.getFuelTank().getFluid() != null && GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
             {
-                if (GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
-                {
-                    fuelConsumption = (int) Math.floor(fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName()));
-                }
+                fuelConsumption = fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName());
             }
             if (ticks <= 0)
             {
                 inv.tickCounter = 3;
-                inv.consumeFuel(fuelConsumption);
+                inv.consumeFuel(getFuelSpent(fuelConsumption));
                 inv.dirtyTanks();
             } else
             {
@@ -284,6 +217,79 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         inv.closeInventory();
     }
 
+    private int getFuelSpent(float f)
+    {
+        f += fuelSpent;
+        fuelSpent = f % 1;
+        return (int) (f - fuelSpent);
+    }
+
+    private static void elevate(EntityPlayer player, ItemStack copter)
+    {
+        if (player.posY < 100)
+            player.motionY = Math.max(player.motionY, 0.18);
+        else if (player.posY < 250)
+            player.motionY = 0.18 - (player.posY - 100) / 1000;
+        else if (player.posY >= 250)
+            player.motionY += 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void pushEntities(World world, EntityPlayer player, float speed)
+    {
+        double posX = player.posX;
+        double posY = player.posY;
+        double posZ = player.posZ;
+        List<EntityItem> groundItems = world.getEntitiesWithinAABB(
+                EntityItem.class, AxisAlignedBB.getBoundingBox(
+                        posX, posY, posZ, posX + 1.0D, posY + 1.0D, posZ + 1.0D).expand(4.0D, 4.0D, 4.0D));
+
+        for (EntityItem groundItem : groundItems)
+        {
+            if (!groundItem.isInWater())
+            {
+                if (groundItem.posX > posX)
+                {
+                    groundItem.motionX = speed;
+                }
+                if (groundItem.posX < posX)
+                {
+                    groundItem.motionX = -speed;
+                }
+
+                if (groundItem.posZ > posZ)
+                {
+                    groundItem.motionZ = speed;
+                }
+                if (groundItem.posZ < posZ)
+                {
+                    groundItem.motionZ = -speed;
+                }
+
+                if (groundItem.posY < posY)
+                {
+                    groundItem.motionY -= speed;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
+    {
+        stack.stackTagCompound.setByte("status", OFF_MODE);
+    }
+
+    @Override
+    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
+    {
+        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerCopter)
+        {
+            player.closeScreen();
+        }
+        return super.onDroppedByPlayer(stack, player);
+    }
+
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
@@ -291,16 +297,20 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    public void onEquipped(World world, EntityPlayer player, ItemStack stack)
+    @SideOnly(Side.CLIENT)
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        stack.stackTagCompound.setByte("status", OFF_MODE);
+        return ModelCopterPack.instance.setWearable(stack);
     }
 
     @Override
-    public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
+    @SideOnly(Side.CLIENT)
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
-        stack.stackTagCompound.setByte("status", OFF_MODE);
+        String modelTexture;
+        modelTexture = Resources.modelTextures("copterPack").toString();
+
+        return modelTexture;
     }
 
     @Override
@@ -315,6 +325,18 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     public ResourceLocation getWearableTexture(ItemStack wearable)
     {
         return Resources.modelTextures("copterPack");
+    }
+
+    @Override
+    public int getItemEnchantability()
+    {
+        return 0;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+    {
+        return EnchUtils.isSoulBook(book);
     }
 
 }

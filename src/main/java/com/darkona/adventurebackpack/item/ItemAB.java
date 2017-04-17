@@ -1,13 +1,13 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.CreativeTabAB;
-import com.darkona.adventurebackpack.reference.ModInfo;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.CreativeTabAB;
+import com.darkona.adventurebackpack.reference.ModInfo;
 
 /**
  * Created by Darkona on 10/10/2014.

@@ -22,21 +22,21 @@ public class ModelFullArmor extends ModelBiped
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
 
-        setRotationAngles(f,f1,f2,f3,f4,f5,entity);
-        if(entity instanceof EntityLivingBase)
+        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        if (entity instanceof EntityLivingBase)
         {
-            EntityLivingBase owner = (EntityLivingBase)entity;
+            EntityLivingBase owner = (EntityLivingBase) entity;
             this.isSneak = owner.isSneaking();
             this.onGround = entity.onGround ? 1 : 0;
             this.heldItemRight = (owner.getHeldItem() != null) ? 1 : 0;
             this.isRiding = entity.isRiding();
-            if(owner instanceof EntityPlayer)
+            if (owner instanceof EntityPlayer)
             {
                 EntityPlayer player = (EntityPlayer) owner;
                 this.aimedBow = player.isUsingItem() && player.getItemInUse() != null && player.getItemInUse().getItemUseAction() == EnumAction.bow;
                 this.heldItemRight = (player.getCurrentEquippedItem() != null) ? 1 : 0;
             }
         }
-       super.render(entity, f, f1, f2, f3, f4, f5);
+        super.render(entity, f, f1, f2, f3, f4, f5);
     }
 }

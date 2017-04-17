@@ -2,18 +2,6 @@ package com.darkona.adventurebackpack.block;
 
 import java.util.Random;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
-import com.darkona.adventurebackpack.client.Icons;
-import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.handlers.GuiHandler;
-import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.Utils;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -37,13 +25,23 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import com.darkona.adventurebackpack.AdventureBackpack;
+import com.darkona.adventurebackpack.client.Icons;
+import com.darkona.adventurebackpack.handlers.GuiHandler;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 12/10/2014.
  *
  * @author Javier Darkona
  */
-@SuppressWarnings("unused")
 public class BlockAdventureBackpack extends BlockContainer
 {
 
@@ -57,12 +55,6 @@ public class BlockAdventureBackpack extends BlockContainer
 
     /**
      * Pretty effects for the bookshelf ;)
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     * @param random
      */
     @Override
     @SideOnly(Side.CLIENT)
@@ -183,12 +175,6 @@ public class BlockAdventureBackpack extends BlockContainer
 
     /**
      * Called when a player hits the block. Args: world, x, y, z, player
-     *
-     * @param p_149699_1_
-     * @param p_149699_2_
-     * @param p_149699_3_
-     * @param p_149699_4_
-     * @param p_149699_5_
      */
     @Override
     public void onBlockClicked(World p_149699_1_, int p_149699_2_, int p_149699_3_, int p_149699_4_, EntityPlayer p_149699_5_)
@@ -197,17 +183,7 @@ public class BlockAdventureBackpack extends BlockContainer
     }
 
     /**
-     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     * @param side
-     * @param hitX
-     * @param hitY
-     * @param hitZ
-     * @param meta
+     * Called when a block is placed using its ItemBlock.
      */
     @Override
     public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
@@ -225,12 +201,6 @@ public class BlockAdventureBackpack extends BlockContainer
     public String getUnlocalizedName()
     {
         return "blockAdventureBackpack";
-    }
-
-    private void setUnlocalizedName(String string)
-    {
-        setUnlocalizedName("blockAdventureBackpack");
-
     }
 
     @Override
@@ -274,15 +244,8 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
-        if (!world.isRemote)
+        if (!world.isRemote && Utils.isDimensionAllowed(player.worldObj.provider.dimensionId))
         {
-            Integer currentDimID = player.worldObj.provider.dimensionId;
-            for (String id : ConfigHandler.forbiddenDimensions)
-            {
-                if (id.equals(currentDimID.toString()))
-                    return false;
-            }
-
             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
             return true;
         }

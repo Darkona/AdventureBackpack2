@@ -1,7 +1,9 @@
 package com.darkona.adventurebackpack.config;
 
-import com.darkona.adventurebackpack.reference.Names;
 import net.minecraft.client.settings.KeyBinding;
+
+import com.darkona.adventurebackpack.reference.Names;
+
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -12,8 +14,8 @@ import org.lwjgl.input.Keyboard;
 public class Keybindings
 {
     public static KeyBinding openBackpack = new KeyBinding(Names.keys.OPEN_BACKPACK_INVENTORY, Keyboard.KEY_B, Names.keys.CATEGORY);
-    public static KeyBinding toggleHose = new KeyBinding(Names.keys.TOGGLE_HOSE_TANK, Keyboard.KEY_N, Names.keys.CATEGORY);
-//    public static KeyBinding jumpKey =
+    public static KeyBinding toggleActions = new KeyBinding(Names.keys.TOGGLE_BACKPACK_ACTIONS, Keyboard.KEY_N, Names.keys.CATEGORY);
+    //public static KeyBinding jumpKey =
 }
 
 

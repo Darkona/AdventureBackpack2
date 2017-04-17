@@ -2,9 +2,9 @@ package com.darkona.adventurebackpack.reference;
 
 import java.util.HashMap;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
-
 import net.minecraftforge.fluids.Fluid;
+
+import com.darkona.adventurebackpack.config.ConfigHandler;
 
 /**
  * Created on 16/01/2015
@@ -17,14 +17,19 @@ public class GeneralReference
 
     public static void init()
     {
-        liquidFuels.put("biofuel", ConfigHandler.fuelRateBioFuel);
-        liquidFuels.put("bioethanol", ConfigHandler.fuelRateBioEthanol);
-        liquidFuels.put("coal", ConfigHandler.fuelRateCoal);  //TODO liquid coal? o_O
+        liquidFuels.put("biofuel", ConfigHandler.fuelRateBioFuel); // ?
+        liquidFuels.put("bioethanol", ConfigHandler.fuelRateBioEthanol); // ic2 ethanol
         liquidFuels.put("creosote", ConfigHandler.fuelRateCreosote);
         liquidFuels.put("fuel", ConfigHandler.fuelRateFuel);
         liquidFuels.put("lava", ConfigHandler.fuelRateLava);
-        liquidFuels.put("nitrofuel", ConfigHandler.fuelRateNitroFuel);
+        liquidFuels.put("liquid_light_oil", ConfigHandler.fuelRateOil);
+        liquidFuels.put("liquid_medium_oil", ConfigHandler.fuelRateOil);
+        liquidFuels.put("liquid_heavy_oil", ConfigHandler.fuelRateOil);
+        liquidFuels.put("liquid_light_fuel", ConfigHandler.fuelRateFuelLight);
+        liquidFuels.put("liquid_heavy_fuel", ConfigHandler.fuelRateFuelHeavy);
+        liquidFuels.put("nitrofuel", ConfigHandler.fuelRateFuelNitro);
         liquidFuels.put("oil", ConfigHandler.fuelRateOil);
+        liquidFuels.put("rocket_fuel", ConfigHandler.fuelRateFuel);
     }
 
     public static boolean isValidFuel(Fluid fluid)

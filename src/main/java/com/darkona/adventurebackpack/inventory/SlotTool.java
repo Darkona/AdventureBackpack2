@@ -1,8 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemHose;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
@@ -12,6 +9,9 @@ import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.item.ItemHose;
+
 /**
  * Created on 12/10/2014
  *
@@ -19,9 +19,9 @@ import net.minecraft.item.ItemTool;
  */
 public class SlotTool extends SlotAdventureBackpack
 {
-    public SlotTool(IInventory inventory, int id, int x, int y)
+    SlotTool(IInventory inventory, int slotIndex, int posX, int posY)
     {
-        super(inventory, id, x, y);
+        super(inventory, slotIndex, posX, posY);
     }
 
     @Override
@@ -30,9 +30,9 @@ public class SlotTool extends SlotAdventureBackpack
         return isValidTool(stack);
     }
 
-    private static final String[] VALID_TOOL_NAMES = { "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", };
+    private static final String[] VALID_TOOL_NAMES = {"wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill",};
 
-    private static final String[] INVALID_TOOL_NAMES = { "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit" };
+    private static final String[] INVALID_TOOL_NAMES = {"bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"};
 
     public static boolean isValidTool(ItemStack stack)
     {
@@ -59,8 +59,7 @@ public class SlotTool extends SlotAdventureBackpack
             if (name.equals("gt.metatool.01"))
             {
                 //0 = sword, 170 = turbines
-                if (stack.getItemDamage() == 0 || stack.getItemDamage() > 169) return false;
-                return true;
+                return !(stack.getItemDamage() == 0 || stack.getItemDamage() > 169);
             }
             //Charged baterries and such
             if (name.startsWith("gt.metaitem")) return false;
@@ -122,7 +121,8 @@ public class SlotTool extends SlotAdventureBackpack
             try
             {
                 //Thaumcraft
-                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item)) return true;
+                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item))
+                    return true;
             } catch (Exception oops)
             {
                 //  oops.printStackTrace();

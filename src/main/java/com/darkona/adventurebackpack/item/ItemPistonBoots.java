@@ -1,13 +1,13 @@
 package com.darkona.adventurebackpack.item;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+
+import com.darkona.adventurebackpack.config.ConfigHandler;
 
 /**
  * Created by Darkona on 11/10/2014.
@@ -27,7 +27,7 @@ public class ItemPistonBoots extends ArmorAB
     {
         if (ConfigHandler.pistonBootsAutoStep)
             player.stepHeight = 1.001F;
-        if (ConfigHandler.pistonBootsSprintBoost !=0 && player.isSprinting())
+        if (ConfigHandler.pistonBootsSprintBoost != 0 && player.isSprinting())
             player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, ConfigHandler.pistonBootsSprintBoost - 1));
     }
 
