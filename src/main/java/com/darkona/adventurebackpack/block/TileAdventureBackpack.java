@@ -333,8 +333,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public FluidTank[] getTanksArray()
     {
-        FluidTank[] tanks = {leftTank, rightTank};
-        return tanks;
+        return new FluidTank[]{leftTank, rightTank};
     }
 
     //====================================================INVENTORY===================================================//
@@ -389,12 +388,12 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack)
+    public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        inventory[i] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+        inventory[slot] = stack;
+        if (stack != null && stack.stackSize > getInventoryStackLimit())
         {
-            itemstack.stackSize = getInventoryStackLimit();
+            stack.stackSize = getInventoryStackLimit();
         }
         markDirty();
     }
@@ -513,6 +512,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     public void updateTankSlots(FluidTank tank, int slotIn)
     {
+        //while (InventoryActions.transferContainerTank(this, tank, slotIn));
         updateTankSlots(); //TODO remove method
     }
 

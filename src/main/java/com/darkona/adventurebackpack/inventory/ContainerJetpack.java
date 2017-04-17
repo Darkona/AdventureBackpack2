@@ -15,10 +15,9 @@ import com.darkona.adventurebackpack.common.Constants;
  */
 public class ContainerJetpack extends ContainerAdventureBackpack implements IWearableContainer
 {
-    private final int PLAYER_HOT_START = 0; //TODO constants to constants
+    private final int PLAYER_HOT_START = 0;
     private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
-    @SuppressWarnings("FieldCanBeLocal")
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
     private final int JETPACK_INV_START = PLAYER_INV_END + 1;
     private final int JETPACK_FUEL_START = PLAYER_INV_END + 3;
@@ -124,14 +123,11 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
                         }
                     } else if (SlotFluid.isEmpty(stack))
                     {
-                        if (outStack == null && SlotFluidWater.isValidItem(stack))
+                        if (outStack == null && tankAmount >= containerCapacity && SlotFluidWater.isValidItem(stack))
                         {
-                            if (tankAmount != 0 && tankAmount + containerCapacity <= maxAmount)
+                            if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
                             {
-                                if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
-                                {
-                                    return null;
-                                }
+                                return null;
                             }
                         }
                     }
@@ -165,9 +161,16 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && !wearing)
+        if (!wearing && slot >= 0)
         {
-            return null;
+            if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
+            {
+                return null;
+            }
+            if (flag == 2 && getSlot(button).getStack() == player.getHeldItem())
+            {
+                return null;
+            }
         }
         return super.slotClick(slot, button, flag, player);
     }

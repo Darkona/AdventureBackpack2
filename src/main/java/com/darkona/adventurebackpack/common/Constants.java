@@ -59,6 +59,5 @@ public class Constants
 
 
     //
-    public static final String[] NIGHTVISION_BACKPACKS = {"Bat", "Squid", "Dragon"};
-
+    public static final String[] NIGHTVISION_BACKPACKS = {"Bat", "Dragon", "Squid",};
 }

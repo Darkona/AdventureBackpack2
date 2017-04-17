@@ -1,7 +1,5 @@
 package com.darkona.adventurebackpack;
 
-import java.util.Calendar;
-
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -41,7 +39,6 @@ import com.darkona.adventurebackpack.util.Utils;
         dependencies = "required-after:CodeChickenCore@[1.0.7.47,)")
 public class AdventureBackpack
 {
-
     @SidedProxy(clientSide = ModInfo.MOD_CLIENT_PROXY, serverSide = ModInfo.MOD_SERVER_PROXY)
     public static IProxy proxy;
     @Mod.Instance(ModInfo.MOD_ID)
@@ -63,7 +60,7 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        int year = Calendar.getInstance().get(Calendar.YEAR), month = Calendar.getInstance().get(Calendar.MONTH) + 1, day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        //int year = Calendar.getInstance().get(Calendar.YEAR), month = Calendar.getInstance().get(Calendar.MONTH) + 1, day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
         //Configuration
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
@@ -93,7 +90,6 @@ public class AdventureBackpack
         MinecraftForge.EVENT_BUS.register(tooltipEventHandler);
 
         FMLCommonHandler.instance().bus().register(playerEventHandler);
-
     }
 
     @Mod.EventHandler
@@ -101,8 +97,8 @@ public class AdventureBackpack
     {
         proxy.init();
         ModRecipes.init();
-
         ModWorldGen.init();
+
         //GUIs
         guiHandler = new GuiHandler();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);

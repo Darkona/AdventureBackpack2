@@ -10,8 +10,8 @@ import net.minecraft.inventory.Slot;
  */
 abstract class SlotAdventureBackpack extends Slot
 {
-    SlotAdventureBackpack(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) //TODO whats the point?
+    SlotAdventureBackpack(IInventory inventory, int slotIndex, int posX, int posY)
     {
-        super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
+        super(inventory, slotIndex, posX, posY);
     }
 }

@@ -13,9 +13,9 @@ import com.darkona.adventurebackpack.reference.GeneralReference;
  */
 public class SlotFluidFuel extends SlotFluid
 {
-    SlotFluidFuel(IInventory inventory, int id, int x, int y)
+    SlotFluidFuel(IInventory inventory, int slotIndex, int posX, int posY)
     {
-        super(inventory, id, x, y);
+        super(inventory, slotIndex, posX, posY);
     }
 
     private static boolean isValidContainer(ItemStack stack)

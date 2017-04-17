@@ -17,6 +17,7 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
+import org.lwjgl.input.Keyboard;
 
 /**
  * Created on 12/10/2014
@@ -29,8 +30,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
     public static final byte SOURCE_TILE = 0;
     public static final byte SOURCE_WEARING = 1;
     public static final byte SOURCE_HOLDING = 2;
-    @SuppressWarnings("FieldCanBeLocal")
-    private final int //TODO constants to constants
+    private final int
             PLAYER_HOT_START = 0,
             PLAYER_HOT_END = PLAYER_HOT_START + 8,
             PLAYER_INV_START = PLAYER_HOT_END + 1,
@@ -189,7 +189,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
                         }
                     }
 
-                } else if (SlotFluid.isContainer(stack))
+                } else if (SlotFluid.isContainer(stack) && !Keyboard.isKeyDown(Keyboard.KEY_SPACE))
                 {
                     ItemStack rightOutStack = getSlot(BUCKET_RIGHT + 1).getStack();
                     ItemStack leftOutStack = getSlot(BUCKET_LEFT + 1).getStack();
@@ -295,9 +295,16 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
+        if (source == SOURCE_HOLDING && slot >= 0)
         {
-            return null;
+            if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
+            {
+                return null;
+            }
+            if (flag == 2 && getSlot(button).getStack() == player.getHeldItem())
+            {
+                return null;
+            }
         }
         return super.slotClick(slot, button, flag, player);
     }

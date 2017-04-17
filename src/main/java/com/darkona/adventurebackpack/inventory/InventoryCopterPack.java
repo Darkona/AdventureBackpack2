@@ -119,9 +119,7 @@ public class InventoryCopterPack implements IInventoryTanks
     @Override
     public void markDirty()
     {
-        containerStack.stackTagCompound.setTag(COPTER_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.setByte("status", status);
-        containerStack.stackTagCompound.setInteger("tickCounter", this.tickCounter);
+        saveToNBT(containerStack.stackTagCompound);
     }
 
     @Override

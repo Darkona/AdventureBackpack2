@@ -27,10 +27,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class ClientEventHandler
 {
-
-    /**
-     * @param event
-     */
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void mouseWheelDetect(MouseEvent event)

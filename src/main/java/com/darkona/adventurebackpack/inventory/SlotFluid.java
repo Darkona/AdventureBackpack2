@@ -16,9 +16,9 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class SlotFluid extends SlotAdventureBackpack
 {
-    SlotFluid(IInventory inventory, int id, int x, int y)
+    SlotFluid(IInventory inventory, int slotIndex, int posX, int posY)
     {
-        super(inventory, id, x, y);
+        super(inventory, slotIndex, posX, posY);
     }
 
     static boolean isContainer(ItemStack stack)
