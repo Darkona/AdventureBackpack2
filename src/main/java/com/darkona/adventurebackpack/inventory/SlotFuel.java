@@ -11,9 +11,9 @@ import net.minecraft.tileentity.TileEntityFurnace;
  */
 public class SlotFuel extends SlotAdventureBackpack
 {
-    SlotFuel(IInventory inventory, int id, int x, int y)
+    SlotFuel(IInventory inventory, int slotIndex, int posX, int posY)
     {
-        super(inventory, id, x, y);
+        super(inventory, slotIndex, posX, posY);
     }
 
     static boolean isValidItem(ItemStack stack)

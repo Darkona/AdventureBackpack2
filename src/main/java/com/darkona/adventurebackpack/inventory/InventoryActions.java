@@ -38,7 +38,7 @@ public class InventoryActions
         //Set slot out for whatever number the output slot should be.
         int slotOut = slotIn + 1;
 
-        //CONTAINER ===========> TANK //TODO сheck if container fluid amount exceeds tank free space
+        //CONTAINER ===========> TANK
         if (FluidContainerRegistry.isFilledContainer(stackIn))
         {
             //See if the tank can accept moar fluid.
@@ -46,25 +46,29 @@ public class InventoryActions
 
             if (fill > 0) //If can accept the fluid
             {
-                //Get the empty container for the input, if there's any.
-                ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
+                //TODO add ability to empty the tank. using hose in bucketOut slot?
+                //if (FluidContainerRegistry.getContainerCapacity(stackIn) + tank.getFluidAmount() <= tank.getCapacity())
+                {
+                    //Get the empty container for the input, if there's any.
+                    ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
 
-                if (inventory.getStackInSlot(slotOut) == null || stackOut == null)
-                {
-                    tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
-                    inventory.decrStackSizeNoSave(slotIn, 1);
-                    inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
-                    return true;
-                } else if (inventory.getStackInSlot(slotOut).getItem().equals(stackOut.getItem())
-                        && stackOut.getItemDamage() == inventory.getStackInSlot(slotOut).getItemDamage())
-                {
-                    int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
-                    if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
+                    if (inventory.getStackInSlot(slotOut) == null || stackOut == null)
                     {
                         tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
                         inventory.decrStackSizeNoSave(slotIn, 1);
-                        inventory.getStackInSlot(slotOut).stackSize++;
+                        inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
                         return true;
+                    } else if (inventory.getStackInSlot(slotOut).getItem().equals(stackOut.getItem())
+                            && stackOut.getItemDamage() == inventory.getStackInSlot(slotOut).getItemDamage())
+                    {
+                        int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
+                        if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
+                        {
+                            tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
+                            inventory.decrStackSizeNoSave(slotIn, 1);
+                            inventory.getStackInSlot(slotOut).stackSize++;
+                            return true;
+                        }
                     }
                 }
             }

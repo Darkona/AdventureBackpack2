@@ -41,17 +41,28 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class BackpackAbilities
 {
+    /**
+     * These are the colorNames of the backpacks that have abilities when being worn.
+     */
+    private static final String[] SPECIAL_BACKPACKS = {"Bat", "Cactus", "Chicken", "Cow", "Creeper", "Dragon", "Melon",
+            "Mooshroom", "Ocelot", "Pig", "Pigman", "Rainbow", "Slime", "Squid", "Sunflower", "Wolf",};
+
+    private static final String[] REMOVAL_BACKPACKS = {"Bat", "Dragon", "Pigman", "Rainbow", "Squid",};
+
+    /**
+     * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
+     * backpacks that have particularities while in block form necessarily have abilities.
+     *
+     * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
+     */
+    private static final String[] TILE_BACKPACKS = {"Cactus", "Melon",};
 
     public static BackpackAbilities backpackAbilities = new BackpackAbilities();
     public static BackpackRemovals backpackRemovals = new BackpackRemovals();
 
-    /**
-     * @param colorName
-     * @return
-     */
     public static boolean hasAbility(String colorName)
     {
-        for (String valid : validWearingBackpacks)
+        for (String valid : SPECIAL_BACKPACKS)
         {
             if (valid.equals(colorName))
             {
@@ -63,7 +74,7 @@ public class BackpackAbilities
 
     public static boolean hasRemoval(String colorName)
     {
-        for (String valid : validRemovalBackpacks)
+        for (String valid : REMOVAL_BACKPACKS)
         {
             if (valid.equals(colorName))
             {
@@ -139,27 +150,6 @@ public class BackpackAbilities
     }
 
     /**
-     * These are the colorNames of the backpacks that have abilities when being worn.
-     */
-    private static String[] validWearingBackpacks =
-            {
-                    "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower", "Mooshroom"
-            };
-
-    private static String[] validRemovalBackpacks =
-            {
-                    "Bat", "Squid", "Pigman", "Dragon", "Rainbow"
-            };
-
-    /**
-     * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
-     * backpacks that have particularities while in block form necessarily have abilities.
-     *
-     * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
-     */
-    private static String[] validTileBackpacks = {"Cactus", "Melon"};
-
-    /**
      * Detects if a player is under the rain. For detecting when it is Under The Sea (maybe to sing a nice Disney tune)
      * it won't work, there's a different method for that, isInWater
      *
@@ -174,10 +164,6 @@ public class BackpackAbilities
 
     /**
      * This backpack will feed you while you stay in the sun, slowly. At the very least you shouldn't starve.
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     public void itemSunflower(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -202,10 +188,6 @@ public class BackpackAbilities
 
     /**
      * Nana nana nana nana Bat - Batpack! See in the dark!
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     public void itemBat(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -255,10 +237,6 @@ public class BackpackAbilities
 
     /**
      * The Dragon Backpack does something awesome.
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -416,10 +394,6 @@ public class BackpackAbilities
     /**
      * Squishy! The Slime Backpack has an incredibly useless "ability". Makes the player leave a slimy trail of
      * particles whenever he or she is running, and make that splishy splashy squishy sound on each step as well!.
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     public void itemSlime(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -458,10 +432,6 @@ public class BackpackAbilities
 
     /**
      * The Chicken Backpack will go and *plop* an egg for you randomly each so many seconds. It's very rare though.
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     public void itemChicken(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -480,10 +450,6 @@ public class BackpackAbilities
     /**
      * The Melon Backpack, like his cousin the Cactus Backpack, will fill itself, but with delicious
      * and refreshing Melon Juice, if the backpack is wet in any way.
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     public void itemMelon(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -519,9 +485,6 @@ public class BackpackAbilities
      * Sneak on another player to make them jump in confusion as they think one of those green bastards is behind him/her.
      * You can only do it once every so often. A couple of minutes. Remember, you must be sneaking.
      *
-     * @param player
-     * @param world
-     * @param backpack
      * @see com.darkona.adventurebackpack.handlers.PlayerEventHandler
      */
     @SuppressWarnings("unchecked")
@@ -569,10 +532,6 @@ public class BackpackAbilities
      * The Cow Backpack fills itself with milk when there is wheat in the backpack's inventory, but it will do so slowly
      * and will eat the wheat. It's like having a cow in your backpack. Each 16 wheat makes a bucket. It only happens
      * when it is being worn. For not-player related milk generation go get a cow. Moo!
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -700,10 +659,6 @@ public class BackpackAbilities
      * The Wolf Backpack is a handy one if you're out in the wild. It checks around for any wolves that may lurk around.
      * If any of them gets mad at you, it will smell the scent of it's kin on you and promptly forget about the whole
      * deal. Smelling like dog is awesome.
-     *
-     * @param player   the player
-     * @param world    the world
-     * @param backpack the backpack
      */
     @SuppressWarnings("unchecked")
     public void itemWolf(EntityPlayer player, World world, ItemStack backpack)
@@ -743,10 +698,6 @@ public class BackpackAbilities
      * The Blaze Backpack will make you inmune to fire and lava and burning and heat and... not really. You're supposed
      * to die a fiery death if you are not careful, but this backpack will protect you against those burning fire
      * elemental inhabitants of the Nether. Any blast of fire directed your way will be stopped, deflected or whatever.
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     public void itemBlaze(EntityPlayer player, World world, ItemStack backpack)
     {
@@ -756,10 +707,6 @@ public class BackpackAbilities
     /**
      * Like actual Ocelots and Cats, the Ocelot Backpack will scare the hell out of Creepers, so they won't creep on you
      * while you're busy doing something else, paying no attention whatsoever at your surroundings like a mindless chicken.
-     *
-     * @param player
-     * @param world
-     * @param backpack
      */
     @SuppressWarnings("unchecked")
     public void itemOcelot(EntityPlayer player, World world, ItemStack backpack)
@@ -819,9 +766,6 @@ public class BackpackAbilities
 
     /**
      * Like real life cactii, this backpack will fill slowly while it's raining with refreshing water.
-     *
-     * @param world
-     * @param backpack
      */
     public void tileCactus(World world, TileAdventureBackpack backpack)
     {

@@ -15,9 +15,9 @@ import com.darkona.adventurebackpack.util.FluidUtils;
  */
 public class SlotFluidWater extends SlotFluid
 {
-    SlotFluidWater(IInventory inventory, int id, int x, int y)
+    SlotFluidWater(IInventory inventory, int slotIndex, int posX, int posY)
     {
-        super(inventory, id, x, y);
+        super(inventory, slotIndex, posX, posY);
     }
 
     private static boolean isContainerForWater(ItemStack stack)
