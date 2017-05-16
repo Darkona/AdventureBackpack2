@@ -17,7 +17,6 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
-import org.lwjgl.input.Keyboard;
 
 /**
  * Created on 12/10/2014
@@ -189,7 +188,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
                         }
                     }
 
-                } else if (SlotFluid.isContainer(stack) && !Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+                } else if (SlotFluid.isContainer(stack))
                 {
                     ItemStack rightOutStack = getSlot(BUCKET_RIGHT + 1).getStack();
                     ItemStack leftOutStack = getSlot(BUCKET_LEFT + 1).getStack();
