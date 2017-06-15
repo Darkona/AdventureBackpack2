@@ -10,7 +10,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class RendererStack extends ModelRenderer
 {
-
     public ItemStack stack;
     private boolean which;
 
@@ -59,5 +58,4 @@ public class RendererStack extends ModelRenderer
 
         }
     }
-
 }

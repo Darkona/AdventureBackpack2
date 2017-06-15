@@ -18,7 +18,6 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
  */
 public class RendererHose implements IItemRenderer
 {
-
     private static RenderItem renderHose = new RenderItem();
     @SuppressWarnings("FieldCanBeLocal")
     private FontRenderer fontRenderer;
@@ -40,7 +39,6 @@ public class RendererHose implements IItemRenderer
     @SuppressWarnings("incomplete-switch")
     public void renderItem(ItemRenderType type, ItemStack hose, Object... data)
     {
-
         if (type == ItemRenderType.INVENTORY)
         {
             // ====================Render the item===================== //

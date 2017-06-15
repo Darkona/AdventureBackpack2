@@ -68,7 +68,6 @@ public class ModelBackpackBlock extends ModelBase
         this.textureHeight = 64;
 
         //Main Backpack
-
         this.mainBody = new ModelRenderer(this, 0, 9);
         this.mainBody.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.mainBody.addBox(-5.0F, 0.0F, -3.0F, 10, 9, 5);
@@ -99,7 +98,6 @@ public class ModelBackpackBlock extends ModelBase
         this.mainBody.addChild(this.pocketFace);
 
         //Left Tank
-
         this.tankLeftTop = new ModelRenderer(this, 0, 40);
         this.tankLeftTop.setRotationPoint(5.0F, 0.0F, -2.5F);
         this.tankLeftTop.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4);
@@ -130,7 +128,6 @@ public class ModelBackpackBlock extends ModelBase
         this.tankLeftBottom.addChild(this.tankLeftWall4);
 
         //Right Tank
-
         this.tankRightTop = new ModelRenderer(this, 17, 40);
         this.tankRightTop.setRotationPoint(-9.0F, 0.0F, -2.5F);
         this.tankRightTop.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4);
@@ -161,7 +158,6 @@ public class ModelBackpackBlock extends ModelBase
         this.tankRightBottom.addChild(this.tankRightWall4);
 
         //Bed
-
         this.bed = new ModelRenderer(this, 31, 0);
         this.bed.setRotationPoint(-7.0F, 7.0F, 2.0F);
         this.bed.addBox(0.0F, 0.0F, 0.0F, 14, 2, 2);
@@ -197,7 +193,6 @@ public class ModelBackpackBlock extends ModelBase
         this.bed.addChild(this.bedStrapLeftBottom);
 
         //Lamp
-
         this.lampPole1 = new ModelRenderer(this, 32, 24);
         this.lampPole1.setRotationPoint(5.0F, -10.0F, -1.0F);
         this.lampPole1.addBox(0.0F, 0.0F, 0.0F, 1, 10, 1);
@@ -247,7 +242,6 @@ public class ModelBackpackBlock extends ModelBase
         this.lampLight.addBox(0.0F, 0.0F, 0.0F, 3, 4, 3);
 
         //Kitchen
-
         this.kitchenBase = new ModelRenderer(this, 49, 46);
         this.kitchenBase.setRotationPoint(-9.0F, -1.0F, -1.5F);
         this.kitchenBase.addBox(0.0F, 0.0F, 0.0F, 3, 1, 2);
@@ -258,7 +252,6 @@ public class ModelBackpackBlock extends ModelBase
         this.kitchenBase.addChild(this.kitchen);
 
         //Noses
-
         this.villagerNose = new ModelRenderer(this, 64, 0);
         this.villagerNose.setRotationPoint(-1.0F, 4.0F, 4.0F);
         this.villagerNose.addBox(0.0F, 0.0F, 0.0F, 2, 4, 2);
@@ -270,12 +263,10 @@ public class ModelBackpackBlock extends ModelBase
         this.pigNose = new ModelRenderer(this, 74, 0);
         this.pigNose.setRotationPoint(-2.0F, 4.0F, 4.0F);
         this.pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1);
-
     }
 
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, IInventoryAdventureBackpack backpack)
     {
-
         //scale*=0.9;
         boolean sleepingbag = backpack.isSBDeployed();
         FluidTank tankLeft = backpack.getLeftTank();

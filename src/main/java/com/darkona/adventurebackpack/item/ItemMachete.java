@@ -77,7 +77,6 @@ public class ItemMachete extends ToolAB
             if (stacky.getItem() == Item.getItemFromBlock(block)) return 15F;
         }
         return material == Material.plants || material == Material.vine || material == Material.coral || material == Material.gourd || material == Material.leaves || material == Material.cloth ? 12.0F : 0.5F;
-
     }
 
     /**
@@ -143,5 +142,4 @@ public class ItemMachete extends ToolAB
 
         return new ItemStack(new ItemShears()).getItem().onBlockStartBreak(itemstack, x, y, z, player);
     }
-
 }

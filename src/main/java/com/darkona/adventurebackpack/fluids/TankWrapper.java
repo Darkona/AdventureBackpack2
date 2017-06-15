@@ -35,5 +35,4 @@ public class TankWrapper extends FluidTank
     {
         return this.fluid == null || (this.getFluidAmount() == this.capacity);
     }
-
 }

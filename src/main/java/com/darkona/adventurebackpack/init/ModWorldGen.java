@@ -23,9 +23,7 @@ public class ModWorldGen
 {
     public static void init()
     {
-
         //Dungeon Generation
-
         for (int i = 0; i < BackpackNames.backpackNames.length; i++)
         {
             if (BackpackNames.backpackNames[i].equals("IronGolem") && ConfigHandler.allowGolemGen)
@@ -61,7 +59,6 @@ public class ModWorldGen
 
     public static class TradeHandler implements VillagerRegistry.IVillageTradeHandler
     {
-
         ItemStack backpack;
 
         TradeHandler(ItemStack backpack)
@@ -72,10 +69,6 @@ public class ModWorldGen
         /**
          * Called to allow changing the content of the {@link net.minecraft.village.MerchantRecipeList} for the villager
          * supplied during creation
-         *
-         * @param villager
-         * @param recipeList
-         * @param random
          */
         @Override
         @SuppressWarnings("unchecked")
@@ -95,5 +88,4 @@ public class ModWorldGen
             }
         }
     }
-
 }

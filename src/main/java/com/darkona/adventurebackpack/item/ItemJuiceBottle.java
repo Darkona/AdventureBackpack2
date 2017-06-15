@@ -19,7 +19,6 @@ import com.darkona.adventurebackpack.util.Resources;
  */
 public class ItemJuiceBottle extends ItemAB
 {
-
     public ItemJuiceBottle()
     {
         super();

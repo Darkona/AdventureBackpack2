@@ -34,7 +34,6 @@ public class BlockCampFire extends BlockContainer
         super(Material.rock);
         this.setTickRandomly(true);
         this.setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
-
     }
 
     private void func_149978_e()
@@ -127,7 +126,6 @@ public class BlockCampFire extends BlockContainer
             //world.spawnParticle("flame", posX+Math.sin(i/4), posY, posZ+Math.cos(i/4), 0.0D, 0.0D, 0.0D);
             world.spawnParticle("flame", rndX, rndY + 0.16, rndZ, 0.0D, 0.0D, 0.0D);
         }
-
     }
 
     @Override
@@ -157,11 +155,6 @@ public class BlockCampFire extends BlockContainer
     /**
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
      * cleared to be reused)
-     *
-     * @param p_149668_1_
-     * @param p_149668_2_
-     * @param p_149668_3_
-     * @param p_149668_4_
      */
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_)
@@ -171,11 +164,6 @@ public class BlockCampFire extends BlockContainer
 
     /**
      * Returns the bounding box of the wired rectangular prism to render.
-     *
-     * @param p_149633_1_
-     * @param p_149633_2_
-     * @param p_149633_3_
-     * @param p_149633_4_
      */
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World p_149633_1_, int p_149633_2_, int p_149633_3_, int p_149633_4_)
@@ -191,9 +179,6 @@ public class BlockCampFire extends BlockContainer
 
     /**
      * Gets the block's texture. Args: side, meta
-     *
-     * @param p_149691_1_
-     * @param p_149691_2_
      */
     @Override
     public IIcon getIcon(int p_149691_1_, int p_149691_2_)

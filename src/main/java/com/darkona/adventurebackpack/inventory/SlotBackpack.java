@@ -10,7 +10,6 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
  */
 public class SlotBackpack extends SlotAdventureBackpack
 {
-
     private static final String[] FORBIDDEN_CLASSES = {
             // Adventure Backpack 2
             "com.darkona.adventurebackpack.item.ItemAdventureBackpack",
@@ -30,9 +29,9 @@ public class SlotBackpack extends SlotAdventureBackpack
             // Project Red Exploration Backpacks
             "mrtjp.projectred.exploration.ItemBackpack",};
 
-    SlotBackpack(IInventoryAdventureBackpack inventory, int id, int x, int y)
+    SlotBackpack(IInventoryAdventureBackpack inventory, int slotIndex, int posX, int posY)
     {
-        super(inventory, id, x, y);
+        super(inventory, slotIndex, posX, posY);
     }
 
     public static boolean isValidItem(ItemStack stack)
@@ -72,5 +71,4 @@ public class SlotBackpack extends SlotAdventureBackpack
     {
         return isValidItem(stack);
     }
-
 }

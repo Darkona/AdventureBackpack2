@@ -45,7 +45,6 @@ public class ModNetwork
         registerMessage(CowAbilityPacket.class, CowAbilityPacket.CowAbilityMessage.class);
         registerMessage(PlayerActionPacket.class, PlayerActionPacket.ActionMessage.class);
         registerMessage(EquipUnequipBackWearablePacket.class, EquipUnequipBackWearablePacket.Message.class);
-
     }
 
     @SuppressWarnings("unchecked")

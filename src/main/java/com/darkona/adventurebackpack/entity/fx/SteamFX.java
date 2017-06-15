@@ -13,8 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 
 @SideOnly(Side.CLIENT)
-public class SteamFX
-        extends EntityFX
+public class SteamFX extends EntityFX
 {
     private float smokeParticleScale;
 
@@ -43,6 +42,7 @@ public class SteamFX
         this.noClip = true;
     }
 
+    @Override
     public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
     {
         float age = (this.particleAge + par2) / this.particleMaxAge * 32.0F;
@@ -58,6 +58,7 @@ public class SteamFX
         super.renderParticle(par1Tessellator, par2, par3, par4, par5, par6, par7);
     }
 
+    @Override
     public void onUpdate()
     {
         this.prevPosX = this.posX;

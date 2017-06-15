@@ -13,7 +13,6 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class CreativeTabAB
 {
-
     public static final CreativeTabs ADVENTURE_BACKPACK_CREATIVE_TAB = new CreativeTabs(ModInfo.MOD_ID.toLowerCase())
     {
         @Override
@@ -33,7 +32,5 @@ public class CreativeTabAB
         {
             return ModInfo.MOD_ID.toLowerCase();
         }
-
     };
-
 }

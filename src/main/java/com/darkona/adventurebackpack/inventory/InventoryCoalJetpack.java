@@ -60,15 +60,6 @@ public class InventoryCoalJetpack implements IInventoryTanks
     }
 
     @Override
-    public boolean updateTankSlots()
-    {
-        boolean result = false;
-        while (InventoryActions.transferContainerTank(this, getWaterTank(), JETPACK_BUCKET_IN))
-            result = true;
-        return result;
-    }
-
-    @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
         NBTTagCompound jetpackTag = compound.getCompoundTag(JETPACK_COMPOUND_TAG);
@@ -130,6 +121,15 @@ public class InventoryCoalJetpack implements IInventoryTanks
     public FluidTank[] getTanksArray()
     {
         return new FluidTank[]{waterTank, steamTank};
+    }
+
+    @Override
+    public boolean updateTankSlots()
+    {
+        boolean result = false;
+        while (InventoryActions.transferContainerTank(this, getWaterTank(), JETPACK_BUCKET_IN))
+            result = true;
+        return result;
     }
 
     @Override
@@ -456,5 +456,4 @@ public class InventoryCoalJetpack implements IInventoryTanks
     {
         long elapsedTimesince = System.currentTimeMillis() - systemTime;
     }
-
 }

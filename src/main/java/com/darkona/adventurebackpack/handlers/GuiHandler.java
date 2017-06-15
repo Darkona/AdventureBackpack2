@@ -33,6 +33,7 @@ public class GuiHandler implements IGuiHandler
 
     public GuiHandler()
     {
+
     }
 
     @Override
@@ -88,7 +89,6 @@ public class GuiHandler implements IGuiHandler
         }
 
         return null;
-
     }
 
     @Override

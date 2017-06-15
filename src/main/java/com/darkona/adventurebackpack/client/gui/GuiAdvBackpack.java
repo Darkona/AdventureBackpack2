@@ -27,7 +27,6 @@ import com.darkona.adventurebackpack.util.Resources;
 @SideOnly(Side.CLIENT)
 public class GuiAdvBackpack extends GuiWithTanks
 {
-
     protected IInventoryAdventureBackpack inventory;
     protected boolean isTile;
     protected boolean wearing;
@@ -189,7 +188,6 @@ public class GuiAdvBackpack extends GuiWithTanks
     public void initGui()
     {
         super.initGui();
-
     }
 
     @Override

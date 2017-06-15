@@ -15,7 +15,6 @@ import adventurebackpack.api.FluidEffect;
  */
 public class MelonJuiceEffect extends FluidEffect
 {
-
     public MelonJuiceEffect()
     {
         super(ModFluids.melonJuice, 30);

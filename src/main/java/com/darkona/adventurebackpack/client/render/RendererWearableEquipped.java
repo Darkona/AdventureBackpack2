@@ -24,7 +24,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class RendererWearableEquipped extends RendererLivingEntity
 {
-
     public ResourceLocation texture;
     public ModelBiped modelBipedMain;
 

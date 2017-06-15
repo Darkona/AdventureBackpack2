@@ -21,12 +21,11 @@ import com.darkona.adventurebackpack.util.LogHelper;
  */
 class AbstractBackpackRecipe implements IRecipe
 {
-
     private final BackpackRecipes br = new BackpackRecipes();
     private ItemStack result;
     private ItemStack[] recipe;
 
-    public boolean compareStacksForColor(ItemStack stack1, ItemStack stack2)
+    private boolean compareStacksForColor(ItemStack stack1, ItemStack stack2)
     {
 
         if (stack1 == null && stack2 == null)
@@ -68,7 +67,6 @@ class AbstractBackpackRecipe implements IRecipe
     }
 
     public HashMap<String, ItemStack[]> recipes;
-
 
     public ItemStack makeBackpack(ItemStack backpackIn, String colorName)
     {
@@ -166,6 +164,4 @@ class AbstractBackpackRecipe implements IRecipe
         backpack.stackTagCompound.setString("colorName", "Standard");
         return backpack;
     }
-
-
 }

@@ -319,15 +319,15 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         return ConfigHandler.enableFullnessBar && getItemCount(stack) > 0;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
+    @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
         return new ModelBackpackArmor();
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
+    @SideOnly(Side.CLIENT)
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String modelTexture;

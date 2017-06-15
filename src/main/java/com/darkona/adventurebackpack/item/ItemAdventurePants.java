@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
  */
 public class ItemAdventurePants extends ArmorAB
 {
-
     public ItemAdventurePants()
     {
         super(2, 2);

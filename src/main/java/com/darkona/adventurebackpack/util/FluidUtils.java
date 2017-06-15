@@ -11,7 +11,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
  */
 public class FluidUtils
 {
-
     public static boolean isContainerForFluid(ItemStack container, Fluid fluid)
     {
         if (container != null && fluid != null)

@@ -67,7 +67,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isCurrent)
     {
-        //TODO
+
     }
 
     @Override
@@ -338,5 +338,4 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     {
         return EnchUtils.isSoulBook(book);
     }
-
 }

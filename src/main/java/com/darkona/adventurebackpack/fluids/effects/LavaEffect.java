@@ -31,5 +31,4 @@ public class LavaEffect extends FluidEffect
             player.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, timeInSeconds * 20 * 6, 3, false));
         }
     }
-
 }

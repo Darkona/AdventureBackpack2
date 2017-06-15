@@ -14,6 +14,7 @@ public class BackpackRecipe
 
     BackpackRecipe()
     {
+
     }
 
     BackpackRecipe(String name, ItemStack[] array)

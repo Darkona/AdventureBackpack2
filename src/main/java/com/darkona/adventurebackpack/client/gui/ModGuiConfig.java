@@ -18,7 +18,6 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class ModGuiConfig extends GuiConfig
 {
-
     public ModGuiConfig(GuiScreen guiScreen)
     {
         super(guiScreen, getConfigElements(), ModInfo.MOD_ID, false, false, ModInfo.MOD_NAME);
@@ -36,6 +35,5 @@ public class ModGuiConfig extends GuiConfig
         }
         return configElements;
     }
-
 }
 

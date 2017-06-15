@@ -14,7 +14,6 @@ import com.darkona.adventurebackpack.block.TileCampfire;
  */
 public class ModBlocks
 {
-
     public static BlockAdventureBackpack blockBackpack = new BlockAdventureBackpack();
     public static BlockSleepingBag blockSleepingBag = new BlockSleepingBag();
     public static BlockCampFire blockCampFire = new BlockCampFire();
@@ -28,5 +27,4 @@ public class ModBlocks
         GameRegistry.registerTileEntity(TileCampfire.class, "tileCampFire");
         GameRegistry.registerTileEntity(TileAdventureBackpack.class, "adventureBackpackTileEntity");
     }
-
 }

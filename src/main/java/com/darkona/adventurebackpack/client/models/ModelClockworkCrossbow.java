@@ -101,7 +101,6 @@ public class ModelClockworkCrossbow extends ModelBase
         this.sniperLeg1_1.addBox(-0.5F, 0.0F, -0.5F, 1, 7, 1, 0.0F);
         this.setRotateAngle(sniperLeg1_1, 0.0F, 0.0F, -0.4363323129985824F);
 
-
         this.hookTooth2 = new ModelRenderer(this, 0, 0);
         this.hookTooth2.setRotationPoint(0.0F, -1.0F, -1.0F);
         this.hookTooth2.addBox(0.0F, 0.0F, 0.0F, 3, 1, 1, 0.0F);
@@ -156,7 +155,6 @@ public class ModelClockworkCrossbow extends ModelBase
         this.leftArc3.addBox(0.0F, 0.0F, 0.0F, 8, 2, 2, 0.0F);
         this.setRotateAngle(leftArc3, 0.0F, -0.7853981633974483F, 0.0F);
 
-
         this.reloader2 = new ModelRenderer(this, 0, 44);
         this.reloader2.setRotationPoint(6.0F, 1.0F, 0.0F);
         this.reloader2.addBox(0.0F, -0.5F, -0.5F, 1, 4, 1, 0.0F);
@@ -173,7 +171,6 @@ public class ModelClockworkCrossbow extends ModelBase
         this.hookTooth3 = new ModelRenderer(this, 0, 0);
         this.hookTooth3.setRotationPoint(0.0F, 3.0F, 3.0F);
         this.hookTooth3.addBox(0.0F, 0.0F, 0.0F, 3, 1, 1, 0.0F);
-
 
         this.hookHead.addChild(this.hookTooth1);
         this.reloader2.addChild(this.reloader3);
@@ -207,7 +204,6 @@ public class ModelClockworkCrossbow extends ModelBase
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-
         this.wheel.render(f5);
         this.reloader1.render(f5);
         this.sniperLeg1.render(f5);
@@ -222,9 +218,7 @@ public class ModelClockworkCrossbow extends ModelBase
         this.handle.render(1 / 18f);
         this.magazine.render(f5);
 
-
         ModelRenderer[] arrows = {arrow1, arrow2, arrow3};
-
 
         setRotateAngle(arrow, Utils.degreesToRadians(-90), Utils.degreesToRadians(0), Utils.degreesToRadians(0));
         for (ModelRenderer model : arrows)

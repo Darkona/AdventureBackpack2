@@ -16,11 +16,8 @@ import com.darkona.adventurebackpack.util.Resources;
 /**
  * Created by Darkona on 11/10/2014.
  */
-
-
 public class RendererItemClockworkCrossbow implements IItemRenderer
 {
-
     private final ModelClockworkCrossbow model;
     private ResourceLocation modelTexture = Resources.modelTextures("clockworkCrossbow");
 
@@ -41,7 +38,6 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
 
     public void renderItem(ItemRenderType type, ItemStack item, Object... data)
     {
-
         Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
         EntityPlayer player;
         switch (type)
@@ -141,5 +137,4 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                 break;
         }
     }
-
 }

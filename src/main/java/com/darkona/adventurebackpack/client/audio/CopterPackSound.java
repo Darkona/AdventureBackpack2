@@ -17,7 +17,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class CopterPackSound extends MovingSound
 {
-
     public EntityPlayer thePlayer;
     protected boolean repeat = true;
     protected int repeatDelay = 0;
@@ -132,5 +131,4 @@ public class CopterPackSound extends MovingSound
     {
         return AttenuationType.LINEAR;
     }
-
 }

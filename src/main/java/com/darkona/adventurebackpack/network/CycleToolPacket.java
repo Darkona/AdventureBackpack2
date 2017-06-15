@@ -16,7 +16,6 @@ import com.darkona.adventurebackpack.common.ServerActions;
  */
 public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToolMessage, IMessage>
 {
-
     public static final byte TOGGLE_HOSE_TANK = 0;
     public static final byte SWITCH_HOSE_ACTION = 1;
     public static final byte CYCLE_TOOL_ACTION = 2;
@@ -79,5 +78,4 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
             buf.writeInt(slot);
         }
     }
-
 }

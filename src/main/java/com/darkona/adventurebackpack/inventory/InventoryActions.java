@@ -9,6 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.util.FluidUtils;
 
 /**
@@ -32,11 +33,22 @@ public class InventoryActions
      */
     public static boolean transferContainerTank(IInventoryTanks inventory, FluidTank tank, int slotIn)
     {
-        ItemStack stackIn = inventory.getStackInSlot(slotIn);
-        if (tank == null || stackIn == null) return false;
-
-        //Set slot out for whatever number the output slot should be.
+        if (tank == null) return false;
         int slotOut = slotIn + 1;
+        ItemStack stackHose = inventory.getStackInSlot(slotOut);
+
+        if (stackHose != null && stackHose.getItem() instanceof ItemHose)
+        {
+            if (tank.getFluidAmount() > 0)
+            {
+                tank.drain(tank.getFluidAmount(), true); // hose in the bucketOut slot will empty the tank
+                return true;
+            }
+            //return false;
+        }
+
+        ItemStack stackIn = inventory.getStackInSlot(slotIn);
+        if (stackIn == null) return false;
 
         //CONTAINER ===========> TANK
         if (FluidContainerRegistry.isFilledContainer(stackIn))
@@ -46,8 +58,7 @@ public class InventoryActions
 
             if (fill > 0) //If can accept the fluid
             {
-                //TODO add ability to empty the tank. using hose in bucketOut slot?
-                //if (FluidContainerRegistry.getContainerCapacity(stackIn) + tank.getFluidAmount() <= tank.getCapacity())
+                if (FluidContainerRegistry.getContainerCapacity(stackIn) + tank.getFluidAmount() <= tank.getCapacity())
                 {
                     //Get the empty container for the input, if there's any.
                     ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
@@ -152,5 +163,4 @@ public class InventoryActions
         }
         return false;
     }
-
 }

@@ -51,6 +51,7 @@ public class EntityParticlePacket implements IMessageHandler<EntityParticlePacke
 
         public Message()
         {
+
         }
 
         @Override

@@ -12,6 +12,7 @@ public class TileCampfire extends TileEntity
 {
     public TileCampfire()
     {
+
     }
 
     private int burnTicks;

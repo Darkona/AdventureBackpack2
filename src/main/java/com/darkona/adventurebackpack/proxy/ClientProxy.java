@@ -46,7 +46,6 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class ClientProxy implements IProxy
 {
-
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;

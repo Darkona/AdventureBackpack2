@@ -15,7 +15,6 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class ConfigHandler
 {
-
     //public static final String configVersion = "1.0.0";
     public static Configuration config;
 
@@ -214,5 +213,4 @@ public class ConfigHandler
     {
         return !configuration.getLoadedConfigVersion().equals(configuration.getDefinedConfigVersion());
     }*/
-
 }

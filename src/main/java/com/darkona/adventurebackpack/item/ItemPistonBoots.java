@@ -14,7 +14,6 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
  */
 public class ItemPistonBoots extends ArmorAB
 {
-
     public ItemPistonBoots()
     {
         super(2, 3);

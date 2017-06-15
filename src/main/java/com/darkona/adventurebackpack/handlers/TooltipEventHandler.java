@@ -309,5 +309,4 @@ public class TooltipEventHandler
     {
         return String.format("%s%sEmpty", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC);
     }
-
 }

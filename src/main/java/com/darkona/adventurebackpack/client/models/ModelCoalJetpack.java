@@ -177,7 +177,6 @@ public class ModelCoalJetpack extends ModelWearable
             GL11.glTranslatef(-bipedBody.offsetX, -bipedBody.offsetY, -(bipedBody.offsetZ));
             GL11.glPopMatrix();
         }
-
     }
 
     public void renderCoalJetpack(float f5)
@@ -197,7 +196,5 @@ public class ModelCoalJetpack extends ModelWearable
         GL11.glPushMatrix();
         renderFluidInTank(inv.getWaterTank(), new Vector3(0, .5f, 0), new Vector3(.155f, 0, .135f), new Vector3(0.18f, 0.0625f, -0.045f), tankTop);
         GL11.glPopMatrix();
-
     }
-
 }

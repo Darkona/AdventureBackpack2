@@ -66,13 +66,8 @@ public class GuiTank
         return tankTips;
     }
 
-    /**
-     * @param gui
-     * @param theFluid
-     */
     public void draw(GuiWithTanks gui, FluidTank theFluid)
     {
-
         tank = theFluid;
         liquidPerPixel = tank.getCapacity() / this.height;
         this.zLevel = gui.getZLevel() + 1;
@@ -91,7 +86,6 @@ public class GuiTank
                 drawMethodThree();
                 break;
         }
-
     }
 
     public void draw(GuiWithTanks gui, FluidTank theFluid, int X, int Y)
@@ -101,10 +95,6 @@ public class GuiTank
         draw(gui, theFluid);
     }
 
-    /**
-     * @param gui
-     * @param
-     */
     private void drawMethodOne(GuiWithTanks gui)
     {
         if (tank.getFluid() != null)
@@ -128,9 +118,6 @@ public class GuiTank
         }
     }
 
-    /**
-     * @param
-     */
     private void drawMethodTwo()
     {
         if (tank.getFluid() != null)
@@ -157,9 +144,6 @@ public class GuiTank
         }
     }
 
-    /**
-     * @param
-     */
     private void drawMethodThree()
     {
         if (tank.getFluid() != null)
@@ -195,12 +179,6 @@ public class GuiTank
         }
     }
 
-    /**
-     * @param gui
-     * @param mouseX
-     * @param mouseY
-     * @return
-     */
     public boolean inTank(GuiWithTanks gui, int mouseX, int mouseY)
     {
         mouseX -= gui.getLeft();
@@ -216,14 +194,10 @@ public class GuiTank
      * @param icon The icon to draw from.
      * @param w    The Width of the drawed box.
      * @param h    The height of the drawed box.
-     * @param srcX The startX coordinate from the icon to start drawing from. Starts
-     *             at 0.
-     * @param srcY The startY coordinate from the icon to start drawing from. Starts
-     *             at 0.
-     * @param srcW The width of the selection in the icon to draw from. Starts at
-     *             0.
-     * @param srcH The height of the selection in the icon to draw from. Starts
-     *             at 0.
+     * @param srcX The startX coordinate from the icon to start drawing from. Starts at 0.
+     * @param srcY The startY coordinate from the icon to start drawing from. Starts at 0.
+     * @param srcW The width of the selection in the icon to draw from. Starts at 0.
+     * @param srcH The height of the selection in the icon to draw from. Starts at 0.
      */
     public static void drawFluidPixelFromIcon(int x, int y, IIcon icon, int w, int h, int srcX, int srcY, int srcW, int srcH, float zLevel)
     {
@@ -248,7 +222,5 @@ public class GuiTank
         tessellator.addVertexWithUV(x + w, y, zLevel, newMaxU, newMinV);
         tessellator.addVertexWithUV(x, y, zLevel, newMinU, newMinV);
         tessellator.draw();
-
-
     }
 }

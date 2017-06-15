@@ -9,7 +9,6 @@ import net.minecraft.util.IIcon;
  */
 public interface IBackpackGui
 {
-
     void drawTexturedModelRectFromIcon(int i, int j, IIcon icon, int h, int w);
 
     int getLeft();

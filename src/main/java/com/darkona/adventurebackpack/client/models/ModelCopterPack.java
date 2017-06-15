@@ -21,7 +21,6 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class ModelCopterPack extends ModelWearable
 {
-
     public static ModelCopterPack instance = new ModelCopterPack();
     public ModelRenderer Base;
     public ModelRenderer EngineBody;
@@ -58,7 +57,6 @@ public class ModelCopterPack extends ModelWearable
         this.Base.addBox(-4.0F, 0.0F, 2.0F, 8, 12, 1);
 
         //TANK
-
         this.TankTop = new ModelRenderer(this, 0, 33);
         this.TankTop.setRotationPoint(1.0F, 0.0F, 3.0F);
         this.TankTop.addBox(0.0F, 0.0F, 0.0F, 5, 1, 5, 0.0F);
@@ -145,7 +143,6 @@ public class ModelCopterPack extends ModelWearable
         this.Axis.addChild(this.Blade4);
 
         //ESCAPE
-
         this.Escape1 = new ModelRenderer(this, 9, 35);
         this.Escape1.setRotationPoint(-4.0F, 9.0F, 4.0F);
         this.Escape1.addBox(0.0F, 0.0F, 0.0F, 2, 1, 1);

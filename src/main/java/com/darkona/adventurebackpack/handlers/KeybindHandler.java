@@ -53,31 +53,28 @@ public class KeybindHandler
 
         if (player != null)
         {
-            if (keypressed == Key.INVENTORY_KEY)
+            if (keypressed == Key.INVENTORY_KEY && mc.inGameHasFocus)
             {
-                if (mc.inGameHasFocus)
+                if (player.isSneaking() && (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
                 {
-                    if (player.isSneaking() && (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
+                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
+                } else
+                {
+                    ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
+                    if (Wearing.isWearingBackpack(player))
+                    {
+                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
+                    } else if ((player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
                     {
                         ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
-                    } else
+                    }
+                    if (Wearing.isWearingCopter(player))
                     {
-                        ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
-                        if (Wearing.isWearingBackpack(player))
-                        {
-                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
-                        } else if ((player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
-                        {
-                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
-                        }
-                        if (Wearing.isWearingCopter(player))
-                        {
-                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
-                        }
-                        if (Wearing.isWearingJetpack(player))
-                        {
-                            ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
-                        }
+                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
+                    }
+                    if (Wearing.isWearingJetpack(player))
+                    {
+                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
                     }
                 }
             }

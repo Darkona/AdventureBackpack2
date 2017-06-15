@@ -39,7 +39,6 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
         this.maxDist = maxDist;
     }
 
-
     public double getDistanceSquaredToOwner()
     {
         double relX = theHorse.posX - theOwner.posX;
@@ -47,7 +46,6 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
         double relZ = theHorse.posZ - theOwner.posZ;
         return relX * relX + relY * relY + relZ * relZ;
     }
-
 
     @Override
     public boolean shouldExecute()
@@ -91,7 +89,6 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
         theHorse.getNavigator().setAvoidsWater(this.avoidWater);
     }
 
-
     @Override
     public void updateTask()
     {
@@ -108,6 +105,4 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
             }
         }
     }
-
-
 }
