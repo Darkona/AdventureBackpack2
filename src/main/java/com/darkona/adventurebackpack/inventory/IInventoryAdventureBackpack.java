@@ -12,7 +12,6 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
  */
 public interface IInventoryAdventureBackpack extends IInventoryTanks
 {
-
     FluidTank getLeftTank();
 
     FluidTank getRightTank();
@@ -48,5 +47,4 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
     void dirtyTime();
 
     void dirtyExtended();
-
 }

@@ -18,7 +18,6 @@ import adventurebackpack.api.FluidEffect;
 
 public class FuelEffect extends FluidEffect
 {
-
     public FuelEffect()
     {
         super(FluidRegistry.getFluid("fuel"), 20);

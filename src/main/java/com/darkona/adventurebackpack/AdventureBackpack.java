@@ -120,7 +120,7 @@ public class AdventureBackpack
         if (ConfigHandler.IS_ENDERIO)
             LogHelper.info("EnderIO is present. Acting accordingly");
 
-        //ConditionalFluidEffect.init(); //TODO
+        //ConditionalFluidEffect.init();
         //ModItems.conditionalInit();
         ModRecipes.conditionalInit();
 

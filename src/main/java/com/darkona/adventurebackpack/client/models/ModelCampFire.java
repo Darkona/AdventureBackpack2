@@ -146,5 +146,4 @@ public class ModelCampFire extends ModelBase
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
-
 }

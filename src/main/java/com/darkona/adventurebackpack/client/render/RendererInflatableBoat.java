@@ -18,7 +18,6 @@ import com.darkona.adventurebackpack.util.Resources;
  */
 public class RendererInflatableBoat extends Render
 {
-
     private ResourceLocation boatTexture = Resources.modelTextures("inflatableBoat");
     private ModelInflatableBoat boatModel = new ModelInflatableBoat();
 
@@ -57,8 +56,6 @@ public class RendererInflatableBoat extends Render
 
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     *
-     * @param p_110775_1_
      */
     @Override
     protected ResourceLocation getEntityTexture(Entity p_110775_1_)

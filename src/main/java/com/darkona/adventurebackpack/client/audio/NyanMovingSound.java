@@ -14,7 +14,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class NyanMovingSound extends MovingSound
 {
-
     public static NyanMovingSound instance = new NyanMovingSound();
 
     public EntityPlayer getPlayer()

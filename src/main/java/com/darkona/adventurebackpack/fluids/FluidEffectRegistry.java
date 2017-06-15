@@ -43,10 +43,6 @@ public class FluidEffectRegistry
         SOUP_EFFECT = new MushroomStewEffect();
     }
 
-    /**
-     * @param effect
-     * @return
-     */
     public static int registerFluidEffect(FluidEffect effect)
     {
         String className = effect.getClass().getName();

@@ -42,16 +42,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class CopygirlRenderUtils
 {
-
     private static final ResourceLocation glint = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     private CopygirlRenderUtils()
     {
+
     }
 
     public static void renderItemIn3d(ItemStack stack)
     {
-
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         // Not sure why but this can be null when the world loads.
         if (textureManager == null)
@@ -114,7 +113,6 @@ public final class CopygirlRenderUtils
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
         GL11.glPopMatrix();
-
     }
 
     public static void setColorFromInt(int color)

@@ -68,7 +68,6 @@ public class GuiCopterPack extends GuiWithTanks
                 equipButton.draw(this, 1, 167);
             }
         }
-
     }
 
     @Override

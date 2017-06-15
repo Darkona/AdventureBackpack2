@@ -106,8 +106,6 @@ public class PlayerEventHandler
 
     /**
      * Used for the Piston Boots to give them their amazing powers.
-     *
-     * @param event
      */
     @SubscribeEvent
     public void onPlayerJump(LivingEvent.LivingJumpEvent event)
@@ -147,8 +145,6 @@ public class PlayerEventHandler
 
     /**
      * Used by the Piston boots to lessen the fall damage. It's hacky, but I don't care.
-     *
-     * @param event
      */
     @SubscribeEvent
     public void onFall(LivingFallEvent event)

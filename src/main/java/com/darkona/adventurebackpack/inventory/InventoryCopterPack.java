@@ -210,15 +210,6 @@ public class InventoryCopterPack implements IInventoryTanks
     }
 
     @Override
-    public boolean updateTankSlots()
-    {
-        boolean result = false;
-        while (InventoryActions.transferContainerTank(this, getFuelTank(), COPTER_BUCKET_IN))
-            result = true;
-        return result;
-    }
-
-    @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
         fuelTank.readFromNBT(compound.getCompoundTag(COPTER_FUEL_TANK));
@@ -238,6 +229,15 @@ public class InventoryCopterPack implements IInventoryTanks
     public FluidTank[] getTanksArray()
     {
         return new FluidTank[]{fuelTank};
+    }
+
+    @Override
+    public boolean updateTankSlots()
+    {
+        boolean result = false;
+        while (InventoryActions.transferContainerTank(this, getFuelTank(), COPTER_BUCKET_IN))
+            result = true;
+        return result;
     }
 
     @Override

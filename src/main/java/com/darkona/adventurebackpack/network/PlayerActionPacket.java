@@ -48,11 +48,11 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
 
     public static class ActionMessage implements IMessage
     {
-
         private byte type;
 
         public ActionMessage()
         {
+
         }
 
         public ActionMessage(byte type)

@@ -35,20 +35,16 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class GeneralEventHandler
 {
-    /**
-     * @param event
-     */
     @SubscribeEvent
     public void eatGoldenApple(PlayerUseItemEvent.Finish event)
     {
         EntityPlayer player = event.entityPlayer;
         if (ConfigHandler.backpackAbilities)
         {
-            if (event.item.getItem() instanceof ItemAppleGold &&
-                    //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
-                    Wearing.isWearingTheRightBackpack(player, "Rainbow"))
+            if (event.item.getItem() instanceof ItemAppleGold
+                    //&& ((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic
+                    && Wearing.isWearingTheRightBackpack(player, "Rainbow"))
             {
-
                 InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
                 if (inv.getLastTime() > 0) return;
                 inv.setLastTime(Utils.secondsToTicks(150));
@@ -101,9 +97,6 @@ public class GeneralEventHandler
         }
     }
 
-    /**
-     * @param event
-     */
     @SubscribeEvent
     public void detectLightning(EntityStruckByLightningEvent event)
     {

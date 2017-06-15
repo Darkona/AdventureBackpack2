@@ -410,8 +410,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
 
     /**
      * Save the entity to NBT (calls an abstract helper method to write extra data)
-     *
-     * @param compound
      */
     @Override
     public void writeToNBT(NBTTagCompound compound)
@@ -422,8 +420,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
 
     /**
      * Reads the entity from NBT (calls an abstract helper method to read specialized data)
-     *
-     * @param compound
      */
     @Override
     public void readFromNBT(NBTTagCompound compound)
@@ -521,8 +517,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
 
     /**
      * Returns the stack in slot i
-     *
-     * @param p_70301_1_
      */
     @Override
     public ItemStack getStackInSlot(int p_70301_1_)
@@ -533,9 +527,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
     /**
      * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
      * new stack.
-     *
-     * @param p_70298_1_
-     * @param p_70298_2_
      */
     @Override
     public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_)
@@ -546,8 +537,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
     /**
      * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
      * like when you close a workbench GUI.
-     *
-     * @param p_70304_1_
      */
     @Override
     public ItemStack getStackInSlotOnClosing(int p_70304_1_)
@@ -557,9 +546,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
 
     /**
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-     *
-     * @param p_70299_1_
-     * @param p_70299_2_
      */
     @Override
     public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_)
@@ -606,8 +592,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
 
     /**
      * Do not make give this method the name canInteractWith because it clashes with Container
-     *
-     * @param p_70300_1_
      */
     @Override
     public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
@@ -629,9 +613,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
 
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
-     *
-     * @param p_94041_1_
-     * @param p_94041_2_
      */
     @Override
     public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)

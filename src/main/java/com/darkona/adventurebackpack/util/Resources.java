@@ -14,7 +14,6 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class Resources
 {
-
     public static final String TEXTURE_LOCATION = ModInfo.MOD_ID.toLowerCase();
 
     public static String modelTextureResourceString(String name)

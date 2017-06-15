@@ -5,9 +5,11 @@ import java.lang.reflect.Field;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -40,7 +42,10 @@ public class ModRecipes
         //Copter Pack
         if (ConfigHandler.recipeCopterPack)
         {
-            GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
+            ItemStack copterStack = new ItemStack(ModItems.copterPack);
+            copterStack.setTagCompound(new NBTTagCompound());
+
+            GameRegistry.addRecipe(copterStack,
                     "WBW",
                     "TEI",
                     "CDI",
@@ -56,7 +61,12 @@ public class ModRecipes
         //CoalJetpack
         if (ConfigHandler.recipeCoalJetpack)
         {
-            GameRegistry.addRecipe(new ItemStack(ModItems.coalJetpack),
+            ItemStack jetpackStack = new ItemStack(ModItems.coalJetpack);
+            NBTTagCompound jetpackCompound = new NBTTagCompound();
+            jetpackCompound.setTag(Constants.JETPACK_COMPOUND_TAG, new NBTTagCompound());
+            jetpackStack.setTagCompound(jetpackCompound);
+
+            GameRegistry.addRecipe(jetpackStack,
                     "SWT",
                     "GIG",
                     "FWS",

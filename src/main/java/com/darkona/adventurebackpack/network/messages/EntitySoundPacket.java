@@ -19,7 +19,6 @@ import com.darkona.adventurebackpack.init.ModNetwork;
  */
 public class EntitySoundPacket implements IMessageHandler<EntitySoundPacket.Message, EntitySoundPacket.Message>
 {
-
     public static final boolean play = true;
 
     public static final byte NYAN_SOUND = 0;
@@ -56,6 +55,7 @@ public class EntitySoundPacket implements IMessageHandler<EntitySoundPacket.Mess
 
         public Message()
         {
+
         }
 
         @Override

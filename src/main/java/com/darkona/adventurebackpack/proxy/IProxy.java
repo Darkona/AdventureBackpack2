@@ -10,7 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public interface IProxy
 {
-
     void init();
 
     void registerKeybindings();
@@ -20,5 +19,4 @@ public interface IProxy
     void joinPlayer(EntityPlayer player);
 
     void synchronizePlayer(int id, NBTTagCompound compound);
-
 }

@@ -1,10 +1,10 @@
 package com.darkona.adventurebackpack.config;
 
+import org.lwjgl.input.Keyboard;
+
 import net.minecraft.client.settings.KeyBinding;
 
 import com.darkona.adventurebackpack.reference.Names;
-
-import org.lwjgl.input.Keyboard;
 
 /**
  * Created on 14/10/2014
@@ -17,5 +17,3 @@ public class Keybindings
     public static KeyBinding toggleActions = new KeyBinding(Names.keys.TOGGLE_BACKPACK_ACTIONS, Keyboard.KEY_N, Names.keys.CATEGORY);
     //public static KeyBinding jumpKey =
 }
-
-

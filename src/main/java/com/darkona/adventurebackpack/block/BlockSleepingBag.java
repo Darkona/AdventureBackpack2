@@ -37,7 +37,6 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class BlockSleepingBag extends BlockDirectional
 {
-
     public static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
 
     @SideOnly(Side.CLIENT)
@@ -439,7 +438,7 @@ public class BlockSleepingBag extends BlockDirectional
     }
 
     /**
-     * Returns if this block is collidable (only used by Fire). Args: x, y, z
+     * Returns if this block is collidable (only used by Fire).
      */
     @Override
     public boolean isCollidable()

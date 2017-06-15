@@ -73,14 +73,11 @@ public class ServerActions
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(UPPER_TOOL);
                     backpack.setInventorySlotContentsNoSave(UPPER_TOOL, backpack.getStackInSlot(LOWER_TOOL));
                     backpack.setInventorySlotContentsNoSave(LOWER_TOOL, current);
-                } else
+                } else if (direction > 0)
                 {
-                    if (direction > 0)
-                    {
-                        player.inventory.mainInventory[slot] = backpack.getStackInSlot(LOWER_TOOL);
-                        backpack.setInventorySlotContentsNoSave(LOWER_TOOL, backpack.getStackInSlot(UPPER_TOOL));
-                        backpack.setInventorySlotContentsNoSave(UPPER_TOOL, current);
-                    }
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(LOWER_TOOL);
+                    backpack.setInventorySlotContentsNoSave(LOWER_TOOL, backpack.getStackInSlot(UPPER_TOOL));
+                    backpack.setInventorySlotContentsNoSave(UPPER_TOOL, current);
                 }
             }
             backpack.markDirty();
@@ -169,11 +166,6 @@ public class ServerActions
         }
     }
 
-    /**
-     * @param player
-     * @param bow
-     * @param charge
-     */
     public static void leakArrow(EntityPlayer player, ItemStack bow, int charge)
     {
         World world = player.worldObj;
@@ -247,12 +239,6 @@ public class ServerActions
         }
     }
 
-    /**
-     * @param player
-     * @param coordX
-     * @param coordY
-     * @param coordZ
-     */
     public static void toggleSleepingBag(EntityPlayer player, int coordX, int coordY, int coordZ)
     {
         World world = player.worldObj;
@@ -490,5 +476,4 @@ public class ServerActions
             }
         }
     }
-
 }

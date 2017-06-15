@@ -22,7 +22,6 @@ import com.darkona.adventurebackpack.inventory.ContainerBackpack;
  */
 public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbilityMessage, IMessage>
 {
-
     public static final byte CONSUME_WHEAT = 0;
 
     @Override
@@ -78,5 +77,4 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
             buf.writeByte(action);
         }
     }
-
 }

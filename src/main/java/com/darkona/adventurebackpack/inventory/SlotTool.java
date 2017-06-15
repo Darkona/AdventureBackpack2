@@ -30,9 +30,11 @@ public class SlotTool extends SlotAdventureBackpack
         return isValidTool(stack);
     }
 
-    private static final String[] VALID_TOOL_NAMES = {"wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill",};
+    private static final String[] VALID_TOOL_NAMES = {"axe", "crowbar", "drill", "grafter", "hammer", "mattock",
+            "scoop", "shovel", "wrench",};
 
-    private static final String[] INVALID_TOOL_NAMES = {"bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip", "disassembler", "robit"};
+    private static final String[] INVALID_TOOL_NAMES = {"bow", "bucket", "cutlass", "dagger", "disassembler", "rapier",
+            "robit", "sabre", "shield", "sword", "whip",};
 
     public static boolean isValidTool(ItemStack stack)
     {
@@ -44,7 +46,8 @@ public class SlotTool extends SlotAdventureBackpack
             String clazz = item.getClass().getName();
 
             // Vanilla
-            if (item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemShears || item instanceof ItemFishingRod || item instanceof ItemFlintAndSteel)
+            if (item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemShears
+                    || item instanceof ItemFishingRod || item instanceof ItemFlintAndSteel)
             {
                 return true;
             }
@@ -121,8 +124,7 @@ public class SlotTool extends SlotAdventureBackpack
             try
             {
                 //Thaumcraft
-                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item))
-                    return true;
+                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item)) return true;
             } catch (Exception oops)
             {
                 //  oops.printStackTrace();

@@ -18,7 +18,6 @@ import codechicken.lib.vec.Vector3;
  */
 public abstract class ModelWearable extends ModelBiped
 {
-
     protected void startBlending()
     {
         GL11.glEnable(GL11.GL_BLEND);
@@ -67,5 +66,4 @@ public abstract class ModelWearable extends ModelBiped
             RenderUtils.renderFluidCuboid(tank.getFluid(), cat.add(victor), ((1.0F * tank.getFluidAmount()) / (1.0F * tank.getCapacity())), 0.8);
         }
     }
-
 }

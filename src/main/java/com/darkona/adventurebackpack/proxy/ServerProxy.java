@@ -23,16 +23,19 @@ public class ServerProxy implements IProxy
     @Override
     public void init()
     {
+
     }
 
     @Override
     public void registerKeybindings()
     {
+
     }
 
     @Override
     public void initNetwork()
     {
+
     }
 
     @Override

@@ -41,7 +41,6 @@ public class ItemComponent extends ItemAB
             "hydroBlades",
     };
 
-
     public ItemComponent()
     {
         setNoRepair();
@@ -237,13 +236,6 @@ public class ItemComponent extends ItemAB
         }
     }
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     *
-     * @param stack
-     * @param world
-     * @param player
-     */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {

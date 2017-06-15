@@ -340,6 +340,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void openInventory()
     {
+
     }
 
     @Override
@@ -403,17 +404,23 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     {
         for (int i = 0; i < inventory.length; i++)
         {
-            if (i == BUCKET_IN_LEFT && inventory[i] != null)
+            if ((i == BUCKET_IN_LEFT || i == BUCKET_IN_RIGHT) && inventory[i] != null)
             {
-                updateTankSlots(getLeftTank(), i);
-            }
-
-            if (i == BUCKET_IN_RIGHT && inventory[i] != null)
-            {
-                updateTankSlots(getRightTank(), i);
+                updateTankSlots();
             }
         }
         super.markDirty();
+    }
+
+    @Override
+    public boolean updateTankSlots()
+    {
+        boolean result = false;
+        while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
+            result = true;
+        while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
+            result = true;
+        return result;
     }
 
     @Override
@@ -510,12 +517,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         }
     }
 
-    public void updateTankSlots(FluidTank tank, int slotIn)
-    {
-        //while (InventoryActions.transferContainerTank(this, tank, slotIn));
-        updateTankSlots(); //TODO remove method
-    }
-
     @Override
     public void saveTanks(NBTTagCompound compound)
     {
@@ -604,17 +605,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
-    public boolean updateTankSlots()
-    {
-        boolean result = false;
-        while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
-            result = true;
-        while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
-            result = true;
-        return result;
-    }
-
-    @Override
     public void dirtyTanks()
     {
 
@@ -623,6 +613,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void dirtyTime()
     {
+
     }
 
     @Override

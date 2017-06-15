@@ -68,5 +68,4 @@ public abstract class FluidEffect
      * @param entity The entity that will be affected.
      */
     public abstract void affectDrinker(World world, Entity entity);
-
 }

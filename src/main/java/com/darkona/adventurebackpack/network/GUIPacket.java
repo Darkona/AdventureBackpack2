@@ -21,8 +21,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage>
 {
-
-
     public static final byte FROM_KEYBIND = 0;
     public static final byte FROM_HOLDING = 1;
     public static final byte FROM_TILE = 2;
@@ -124,12 +122,12 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
 
     public static class GUImessage implements IMessage
     {
-
         private byte type;
         private byte from;
 
         public GUImessage()
         {
+
         }
 
         public GUImessage(byte type, byte from)

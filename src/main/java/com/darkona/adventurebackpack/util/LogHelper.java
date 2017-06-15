@@ -12,7 +12,6 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class LogHelper
 {
-
     public static void log(Level logLevel, Object object)
     {
         FMLLog.log(ModInfo.MOD_NAME, logLevel, String.valueOf(object));

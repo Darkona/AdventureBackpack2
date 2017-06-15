@@ -21,7 +21,6 @@ import com.darkona.adventurebackpack.util.Utils;
 
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
-
     //private ModelAdventureBackpackBlock model;
     private ModelBackpackBlock model;
 
@@ -79,7 +78,5 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         GL11.glPopMatrix();
         GL11.glPopMatrix();
         GL11.glPopMatrix();
-
     }
-
 }

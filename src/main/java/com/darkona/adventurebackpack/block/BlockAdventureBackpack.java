@@ -44,7 +44,6 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class BlockAdventureBackpack extends BlockContainer
 {
-
     public BlockAdventureBackpack()
     {
         super(new BackpackMaterial());

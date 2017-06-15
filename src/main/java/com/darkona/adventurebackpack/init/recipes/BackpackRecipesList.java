@@ -16,7 +16,6 @@ import com.darkona.adventurebackpack.reference.BackpackNames;
  */
 public class BackpackRecipesList
 {
-
     public List<BackpackRecipe> recipes;
 
     public BackpackRecipesList()
@@ -40,7 +39,6 @@ public class BackpackRecipesList
         ItemStack woolGreen = new ItemStack(Blocks.wool, 1, 13);
         ItemStack woolRed = new ItemStack(Blocks.wool, 1, 14);
         ItemStack woolBlack = new ItemStack(Blocks.wool, 1, 15);
-
 
         Standard = reviewRecipe(
                 "LGL",
@@ -690,10 +688,8 @@ public class BackpackRecipesList
     public final Object[] Zombie;
     public final Object[] ModdedNetwork;
 
-
     public static Object[] reviewRecipe(Object... objects)
     {
         return objects;
     }
-
 }

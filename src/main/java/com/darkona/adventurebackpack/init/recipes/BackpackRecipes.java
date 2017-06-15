@@ -18,10 +18,9 @@ import com.darkona.adventurebackpack.init.ModItems;
  */
 public class BackpackRecipes
 {
-
     public List<BackpackRecipe> recipes;
 
-    public BackpackRecipes()
+    BackpackRecipes()
     {
         String[] covered = {"XXX", "XaX", "XXX"};
         Black = reviewRecipe(covered,
@@ -676,5 +675,4 @@ public class BackpackRecipes
         //recipe.array = aitemstack;
         return aitemstack;
     }
-
 }

@@ -28,5 +28,4 @@ public interface IBackWearableItem
 
     @SideOnly(Side.CLIENT)
     ResourceLocation getWearableTexture(ItemStack wearable);
-
 }

@@ -14,8 +14,7 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class ItemAB extends Item
 {
-
-    public ItemAB()
+    ItemAB()
     {
         super();
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
@@ -45,7 +44,7 @@ public class ItemAB extends Item
         itemIcon = iconRegister.registerIcon(this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
 
-    protected String getUnwrappedUnlocalizedName(String unlocalizedName)
+    private String getUnwrappedUnlocalizedName(String unlocalizedName)
     {
         return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
     }

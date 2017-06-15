@@ -191,17 +191,6 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     }
 
     @Override
-    public boolean updateTankSlots()
-    {
-        boolean result = false;
-        while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
-            result = true;
-        while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
-            result = true;
-        return result;
-    }
-
-    @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
         if (compound == null) return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
@@ -261,6 +250,17 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     public FluidTank[] getTanksArray()
     {
         return new FluidTank[]{leftTank, rightTank};
+    }
+
+    @Override
+    public boolean updateTankSlots()
+    {
+        boolean result = false;
+        while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
+            result = true;
+        while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
+            result = true;
+        return result;
     }
 
     @Override
@@ -416,5 +416,4 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     {
         this.disableNVision = b;
     }
-
 }

@@ -18,7 +18,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUnequipBackWearablePacket.Message, EquipUnequipBackWearablePacket.Message>
 {
-
     public static final byte EQUIP_WEARABLE = 0;
     public static final byte UNEQUIP_WEARABLE = 1;
 
@@ -88,11 +87,6 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
             force = buf.readBoolean();
         }
 
-        /**
-         * Deconstruct your message into the supplied byte buffer
-         *
-         * @param buf
-         */
         @Override
         public void toBytes(ByteBuf buf)
         {

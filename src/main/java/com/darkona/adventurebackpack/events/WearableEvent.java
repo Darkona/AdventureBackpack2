@@ -11,7 +11,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
  */
 public class WearableEvent extends PlayerEvent
 {
-
     public final ItemStack wearable;
 
     public WearableEvent(EntityPlayer player, ItemStack wearable)
@@ -35,5 +34,4 @@ public class WearableEvent extends PlayerEvent
             super(player, wearable);
         }
     }
-
 }

@@ -25,7 +25,6 @@ import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
  */
 public class ContainerBackpack extends ContainerAdventureBackpack implements IWearableContainer
 {
-
     public static final byte SOURCE_TILE = 0;
     public static final byte SOURCE_WEARING = 1;
     public static final byte SOURCE_HOLDING = 2;
@@ -86,7 +85,6 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
-
         bindPlayerInventory(invPlayer);
 
         // Backpack Inventory
@@ -123,7 +121,6 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
         addSlotToContainer(new SlotTool(inventory, LOWER_TOOL, 44, 97));// Lower Tool 17
 
         //Bucket Slots
-
         // bucket in left 18
         addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_LEFT, 6, 7));
         // bucket out left 19
@@ -161,7 +158,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
     {
-        if (source == SOURCE_WEARING) refresh(); //TODO
+        if (source == SOURCE_WEARING) refresh();
         Slot slot = getSlot(fromSlot);
         ItemStack result = null;
 
@@ -327,7 +324,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
                     player.dropPlayerItemWithRandomChoice(itemstack, false);
                 }
             }
-            for (int i = 0; i < 9; i++) //TODO crafters
+            for (int i = 0; i < 9; i++)
             {
                 ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
 

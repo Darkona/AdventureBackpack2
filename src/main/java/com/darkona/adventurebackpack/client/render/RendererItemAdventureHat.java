@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.client.render;
 
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -12,15 +11,11 @@ import net.minecraftforge.client.IItemRenderer;
 import com.darkona.adventurebackpack.client.models.ModelAdventureHat;
 import com.darkona.adventurebackpack.util.Resources;
 
-
 /**
  * Created by Darkona on 11/10/2014.
  */
-
-
 public class RendererItemAdventureHat implements IItemRenderer
 {
-
     private final ModelAdventureHat model;
 
     public RendererItemAdventureHat()
@@ -177,5 +172,4 @@ public class RendererItemAdventureHat implements IItemRenderer
                 break;
         }
     }
-
 }

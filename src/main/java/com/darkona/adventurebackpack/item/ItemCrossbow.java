@@ -18,7 +18,6 @@ import net.minecraft.world.World;
  */
 public class ItemCrossbow extends ItemAB
 {
-
     public ItemCrossbow()
     {
         super();
@@ -69,10 +68,6 @@ public class ItemCrossbow extends ItemAB
 
     /**
      * Called when item is crafted/smelted. Used only by maps so far.
-     *
-     * @param stack
-     * @param world
-     * @param player
      */
     @Override
     public void onCreated(ItemStack stack, World world, EntityPlayer player)
@@ -108,10 +103,10 @@ public class ItemCrossbow extends ItemAB
             int reloading = stack.stackTagCompound.getInteger("Reloading");
             if (shot > 0) stack.stackTagCompound.setByte("Shot", (byte) (shot - 1));
             if (reloading > 0) stack.stackTagCompound.setInteger("Reloading", reloading - 1);
-            if (entity instanceof EntityPlayer)
+            /*if (entity instanceof EntityPlayer)
             {
                 //((EntityPlayer)entity).setItemInUse(stack,2);
-            }
+            }*/
         }
     }
 
@@ -127,7 +122,6 @@ public class ItemCrossbow extends ItemAB
             stack.stackTagCompound.setByte("Shot", (byte) 4);
             int reloadTime = 20;
             stack.stackTagCompound.setInteger("Reloading", reloadTime);
-
         }
         return stack;
     }

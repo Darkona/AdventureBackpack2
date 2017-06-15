@@ -26,7 +26,6 @@ import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
  */
 public class ClientActions
 {
-
     @SideOnly(Side.CLIENT)
     public static void showParticlesAtEntity(Entity entity, byte particleCode)
     {
@@ -84,5 +83,4 @@ public class ClientActions
             }
         }
     }
-
 }

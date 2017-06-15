@@ -14,7 +14,6 @@ import com.darkona.adventurebackpack.client.models.ModelAdventureHat;
  */
 public class ItemAdventureHat extends ArmorAB
 {
-
     public ItemAdventureHat()
     {
         super(2, 0);
@@ -34,5 +33,4 @@ public class ItemAdventureHat extends ArmorAB
     {
         return par2ItemStack.isItemEqual(new ItemStack(Items.leather));
     }
-
 }

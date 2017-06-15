@@ -21,15 +21,13 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class BackpackProperty implements IExtendedEntityProperties
 {
-
-    public static final String PROPERTY_NAME = "abp.property";
-    protected EntityPlayer player = null;
+    private static final String PROPERTY_NAME = "abp.property";
+    private EntityPlayer player = null;
     private ItemStack wearable = null;
     private ChunkCoordinates campFire = null;
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
-    //private RenderPlayerEvent.Specials.Pre event;
 
     public NBTTagCompound getWearableData()
     {

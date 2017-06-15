@@ -15,7 +15,6 @@ import com.darkona.adventurebackpack.common.ServerActions;
  */
 public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.SleepingBagMessage, IMessage>
 {
-
     @Override
     public IMessage onMessage(SleepingBagMessage message, MessageContext ctx)
     {
@@ -26,16 +25,15 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
         return null;
     }
 
-
     public static class SleepingBagMessage implements IMessage
     {
-
         public int x;
         public int y;
         public int z;
 
         public SleepingBagMessage()
         {
+
         }
 
         public SleepingBagMessage(int X, int Y, int Z)
@@ -60,6 +58,5 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
             buf.writeInt(y);
             buf.writeInt(z);
         }
-
     }
 }

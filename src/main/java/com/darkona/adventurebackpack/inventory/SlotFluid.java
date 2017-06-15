@@ -7,6 +7,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.util.Utils;
 
 /**
@@ -94,7 +95,7 @@ public class SlotFluid extends SlotAdventureBackpack
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return stack != null && isContainer(stack);
+        return stack != null && (isContainer(stack) || stack.getItem() instanceof ItemHose);
     }
 
     @Override
@@ -115,5 +116,4 @@ public class SlotFluid extends SlotAdventureBackpack
     {
         return Constants.BASIC_TANK_CAPACITY / Constants.BUCKET;
     }
-
 }

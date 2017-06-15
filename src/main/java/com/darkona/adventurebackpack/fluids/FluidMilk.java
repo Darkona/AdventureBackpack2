@@ -15,7 +15,6 @@ import com.darkona.adventurebackpack.client.Icons;
  */
 public class FluidMilk extends Fluid
 {
-
     public FluidMilk()
     {
         super("milk");
@@ -23,7 +22,6 @@ public class FluidMilk extends Fluid
         setViscosity(1200);
         setLuminosity(0);
     }
-
 
     @Override
     public IIcon getStillIcon()
@@ -54,6 +52,4 @@ public class FluidMilk extends Fluid
     {
         return false;
     }
-
-
 }

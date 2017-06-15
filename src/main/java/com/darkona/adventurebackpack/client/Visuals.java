@@ -16,7 +16,6 @@ import com.darkona.adventurebackpack.entity.fx.SteamFX;
  */
 public class Visuals
 {
-
     public static void NyanParticles(EntityPlayer player, World world)
     {
         // World world = player.worldObj;

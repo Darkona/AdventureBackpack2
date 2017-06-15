@@ -23,7 +23,6 @@ import com.darkona.adventurebackpack.item.ItemPistonBoots;
  */
 public class ModItems
 {
-
     public static final ItemMachete machete = new ItemMachete();
     public static final ItemCrossbow cwxbow = new ItemCrossbow();
     public static final ArmorAB adventureHat = new ItemAdventureHat();
@@ -65,5 +64,4 @@ public class ModItems
             GameRegistry.registerItem(steamJetpack, "steamJetpack");
         }
     }*/
-
 }

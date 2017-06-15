@@ -17,8 +17,7 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class ToolAB extends ItemTool
 {
-
-    public ToolAB(ToolMaterial material, Set breakableBlocks)
+    ToolAB(ToolMaterial material, Set breakableBlocks)
     {
         super(1f, material, breakableBlocks);
         //setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);

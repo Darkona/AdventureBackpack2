@@ -19,18 +19,17 @@ import com.darkona.adventurebackpack.util.Resources;
  */
 public class ArmorAB extends ItemArmor
 {
-
     /**
      * @param type        2 Chain
      * @param renderIndex 0 Helmet, 1 Plate, 2 Pants, 3 Boots
      */
-    public ArmorAB(int renderIndex, int type)
+    ArmorAB(int renderIndex, int type)
     {
         super(ModMaterials.ruggedLeather, renderIndex, type);
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
-    protected String getUnwrappedUnlocalizedName(String unlocalizedName)
+    private String getUnwrappedUnlocalizedName(String unlocalizedName)
     {
         return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
     }

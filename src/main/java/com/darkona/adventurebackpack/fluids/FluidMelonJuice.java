@@ -12,7 +12,6 @@ import com.darkona.adventurebackpack.client.Icons;
  */
 public class FluidMelonJuice extends Fluid
 {
-
     public FluidMelonJuice()
     {
         super("melonJuice");

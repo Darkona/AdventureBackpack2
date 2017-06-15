@@ -17,8 +17,7 @@ import com.darkona.adventurebackpack.util.Resources;
  */
 public class RendererCampFire extends TileEntitySpecialRenderer
 {
-
-    //    private ModelAdventureBackpackBlock model;
+    //private ModelAdventureBackpackBlock model;
     private ModelCampFire model;
 
     public RendererCampFire()
@@ -43,6 +42,4 @@ public class RendererCampFire extends TileEntitySpecialRenderer
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
-
-
 }

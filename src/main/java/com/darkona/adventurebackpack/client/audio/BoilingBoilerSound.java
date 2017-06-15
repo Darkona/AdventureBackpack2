@@ -15,7 +15,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class BoilingBoilerSound extends MovingSound
 {
-
     public EntityPlayer thePlayer;
     protected boolean repeat = true;
     protected int repeatDelay = 0;
@@ -104,5 +103,4 @@ public class BoilingBoilerSound extends MovingSound
     {
         return AttenuationType.LINEAR;
     }
-
 }

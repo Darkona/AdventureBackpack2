@@ -4,6 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 
 /**
@@ -31,7 +32,7 @@ public class SlotFluidFuel extends SlotFluid
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return stack != null && isValidItem(stack);
+        return stack != null && (isValidItem(stack) || stack.getItem() instanceof ItemHose);
     }
 
     @Override
@@ -39,5 +40,4 @@ public class SlotFluidFuel extends SlotFluid
     {
         return Constants.COPTER_FUEL_CAPACITY / Constants.BUCKET;
     }
-
 }
