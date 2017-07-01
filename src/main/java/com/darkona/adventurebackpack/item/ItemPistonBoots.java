@@ -31,8 +31,8 @@ public class ItemPistonBoots extends ArmorAB
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair)
     {
-        return par2ItemStack.isItemEqual(new ItemStack(Items.leather));
+        return repair.isItemEqual(new ItemStack(Items.leather));
     }
 }

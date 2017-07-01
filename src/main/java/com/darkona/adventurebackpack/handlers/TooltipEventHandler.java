@@ -21,6 +21,7 @@ import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemCoalJetpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 
 /**
@@ -57,7 +58,7 @@ public class TooltipEventHandler
             if (GuiScreen.isShiftKeyDown())
             {
                 NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
-                event.toolTip.add("Slots used: " + backpackTooltip(itemList));
+                event.toolTip.add("Slots used: " + inventoryTooltip(itemList));
 
                 tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
                 event.toolTip.add("Left Tank: " + tankTooltip(tank, true));
@@ -157,6 +158,22 @@ public class TooltipEventHandler
                 event.toolTip.add("Press '" + whiteFormat(actionKey) + "' during flight to");
                 event.toolTip.add("switch hover mode");
             }
+        } else if (event.itemStack.getItem() instanceof ItemHose)
+        {
+            if (GuiScreen.isCtrlKeyDown())
+            {
+                String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
+                event.toolTip.add("While holding Hose:");
+                event.toolTip.add("- press '" + whiteFormat(actionKey) + "' to change active tank");
+                event.toolTip.add("- press Shift+'" + whiteFormat("Wheel") + "' to change mode");
+                event.toolTip.add("");
+                event.toolTip.add("Put Hose into bucketOut slot of wearable pack");
+                event.toolTip.add("to empty corresponded tank");
+                event.toolTip.add(EnumChatFormatting.RED + "WARNING! Fluid will be dumped and lost. Forever.");
+            } else
+            {
+                event.toolTip.add(holdThe(false));
+            }
         }
     }
 
@@ -165,7 +182,7 @@ public class TooltipEventHandler
         return EnumChatFormatting.WHITE + "" + EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Ctrl>");
     }
 
-    private String backpackTooltip(NBTTagList itemList)
+    private String inventoryTooltip(NBTTagList itemList)
     {
         int itemCount = itemList.tagCount();
         boolean toolSlotU = false;

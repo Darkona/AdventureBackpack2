@@ -144,7 +144,6 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-
         inventory.openInventory();
         lft = inventory.getLeftTank();
         rgt = inventory.getRightTank();
@@ -175,7 +174,6 @@ public class GuiAdvBackpack extends GuiWithTanks
 
             GL11.glPopMatrix();
         }*/
-
     }
 
     @Override
