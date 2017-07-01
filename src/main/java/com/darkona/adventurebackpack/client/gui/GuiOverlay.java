@@ -41,13 +41,11 @@ import com.darkona.adventurebackpack.util.Wearing;
 public class GuiOverlay extends Gui
 {
     private Minecraft mc;
-    @SuppressWarnings("FieldCanBeLocal")
     private int screenWidth;
-    @SuppressWarnings("FieldCanBeLocal")
     private int screenHeight;
-    protected static RenderItem itemRender = new RenderItem();
-    protected FontRenderer fontRendererObj;
-    ScaledResolution resolution;
+    private static RenderItem itemRender = new RenderItem();
+    private FontRenderer fontRendererObj;
+    private ScaledResolution resolution;
 
     public GuiOverlay(Minecraft mc)
     {
@@ -77,30 +75,27 @@ public class GuiOverlay extends Gui
         screenHeight = resolution.getScaledHeight();
         if (ConfigHandler.statusOverlay)
         {
-            int xPos = ConfigHandler.statusOverlayIndentH;
-            int xStep = BUFF_ICON_SIZE + BUFF_ICON_SPACING;
-            if (!ConfigHandler.statusOverlayLeft)
-            {
-                xPos = screenWidth - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentH;
-                xStep = -BUFF_ICON_SIZE - BUFF_ICON_SPACING;
-            }
-            int yPos = ConfigHandler.statusOverlayIndentV;
-            if (!ConfigHandler.statusOverlayTop)
-            {
-                yPos = screenHeight - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentV;
-            }
+            int xStep = ConfigHandler.statusOverlayLeft
+                    ? BUFF_ICON_SIZE + BUFF_ICON_SPACING
+                    : - BUFF_ICON_SIZE - BUFF_ICON_SPACING;
+            int xPos = ConfigHandler.statusOverlayLeft
+                    ? ConfigHandler.statusOverlayIndentH
+                    : screenWidth - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentH;
+            int yPos = ConfigHandler.statusOverlayTop
+                    ? ConfigHandler.statusOverlayIndentV
+                    : screenHeight - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentV;
 
-            Collection collection = this.mc.thePlayer.getActivePotionEffects();
-            if (!collection.isEmpty())
+            Collection activePotionEffects = this.mc.thePlayer.getActivePotionEffects();
+            if (!activePotionEffects.isEmpty())
             {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glDisable(GL11.GL_LIGHTING);
                 this.mc.renderEngine.bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
 
-                for (Iterator iterator = this.mc.thePlayer.getActivePotionEffects().iterator(); iterator.hasNext(); xPos += xStep)
+                for (Iterator activeEffect = activePotionEffects.iterator(); activeEffect.hasNext(); xPos += xStep)
                 {
-                    PotionEffect potioneffect = (PotionEffect) iterator.next();
-                    Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
+                    PotionEffect potionEffect = (PotionEffect) activeEffect.next();
+                    Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
 
                     if (potion.hasStatusIcon())
                     {
@@ -127,26 +122,20 @@ public class GuiOverlay extends Gui
                 int textureHeight = 23;
                 int textureWidth = 10;
 
-                int xPos = screenWidth - (textureWidth * 3) - ConfigHandler.tanksOverlayIndentH;
-                if (!ConfigHandler.tanksOverlayRight)
-                {
-                    xPos = ConfigHandler.tanksOverlayIndentH;
-                }
-                int yPos = screenHeight - textureHeight - ConfigHandler.tanksOverlayIndentV;
-                if (!ConfigHandler.tanksOverlayBottom)
-                {
-                    yPos = ConfigHandler.tanksOverlayIndentV;
-                }
-
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                GL11.glDisable(GL11.GL_LIGHTING);
+                int xPos = ConfigHandler.tanksOverlayRight
+                        ? screenWidth - (textureWidth * 3) - ConfigHandler.tanksOverlayIndentH
+                        : ConfigHandler.tanksOverlayIndentH;
+                int yPos = ConfigHandler.tanksOverlayBottom
+                        ? screenHeight - textureHeight - ConfigHandler.tanksOverlayIndentV
+                        : ConfigHandler.tanksOverlayIndentV;
 
                 int tankX = xPos;
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 for (FluidTank tank : inv.getTanksArray())
                 {
-
                     mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
                     drawTexturedModalRect(tankX, yPos, 10, 0, textureWidth, textureHeight);
                     drawTank(tank, tankX + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
@@ -170,11 +159,8 @@ public class GuiOverlay extends Gui
                         u[1] = (tank == 1) ? 0 : 10;
                     }
                     mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
-
-                    //Left Tank
-                    drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight);
-                    //Right Tank
-                    drawTexturedModalRect(xStart[1], yStart[0], u[1], v[1], textureWidth, textureHeight);
+                    drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight); //Left Tank
+                    drawTexturedModalRect(xStart[1], yStart[0], u[1], v[1], textureWidth, textureHeight); //Right Tank
                     RenderHelper.enableStandardItemLighting();
                     RenderHelper.enableGUIStandardItemLighting();
                     GL11.glPushMatrix();
@@ -187,7 +173,6 @@ public class GuiOverlay extends Gui
                     }
                     GL11.glPopMatrix();
                     RenderHelper.disableStandardItemLighting();
-
                 }
                 GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                 GL11.glDisable(GL11.GL_BLEND);
