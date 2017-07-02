@@ -7,5 +7,5 @@ package com.darkona.adventurebackpack.reference;
  */
 public enum Key
 {
-    UNKNOWN, INVENTORY_KEY, TOGGLE_KEY, JUMP
+    UNKNOWN, INVENTORY_KEY, ACTION_KEY, JUMP
 }

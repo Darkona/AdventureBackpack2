@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.config;
 
 import org.lwjgl.input.Keyboard;
 
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 
 import com.darkona.adventurebackpack.reference.Names;
@@ -13,7 +14,16 @@ import com.darkona.adventurebackpack.reference.Names;
  */
 public class Keybindings
 {
-    public static KeyBinding openBackpack = new KeyBinding(Names.keys.OPEN_BACKPACK_INVENTORY, Keyboard.KEY_B, Names.keys.CATEGORY);
-    public static KeyBinding toggleActions = new KeyBinding(Names.keys.TOGGLE_BACKPACK_ACTIONS, Keyboard.KEY_N, Names.keys.CATEGORY);
-    //public static KeyBinding jumpKey =
+    public static KeyBinding openInventory = new KeyBinding(Names.keys.OPEN_INVENTORY, Keyboard.KEY_B, Names.keys.CATEGORY);
+    public static KeyBinding toggleActions = new KeyBinding(Names.keys.TOGGLE_ACTIONS, Keyboard.KEY_N, Names.keys.CATEGORY);
+
+    public static String getInventoryKeyName()
+    {
+        return GameSettings.getKeyDisplayString(openInventory.getKeyCode());
+    }
+
+    public static String getActionKeyName()
+    {
+        return GameSettings.getKeyDisplayString(toggleActions.getKeyCode());
+    }
 }

@@ -28,15 +28,14 @@ public class KeybindHandler
 {
     private static Key getPressedKeyBinding()
     {
-        if (Keybindings.openBackpack.isPressed())
+        if (Keybindings.openInventory.isPressed())
         {
             return Key.INVENTORY_KEY;
         }
         if (Keybindings.toggleActions.isPressed())
         {
-            return Key.TOGGLE_KEY;
+            return Key.ACTION_KEY;
         }
-
         if (Minecraft.getMinecraft().gameSettings.keyBindJump.isPressed())
         {
             return Key.JUMP;
@@ -79,7 +78,7 @@ public class KeybindHandler
                 }
             }
 
-            if (keypressed == Key.TOGGLE_KEY)
+            if (keypressed == Key.ACTION_KEY)
             {
                 if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemHose)
                 {
