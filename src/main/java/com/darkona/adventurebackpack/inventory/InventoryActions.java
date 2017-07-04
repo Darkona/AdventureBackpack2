@@ -41,7 +41,7 @@ public class InventoryActions
         {
             if (tank.getFluidAmount() > 0)
             {
-                tank.drain(tank.getFluidAmount(), true); // hose in the bucketOut slot will empty the tank
+                tank.drain(tank.getFluidAmount(), true); //Hose in the bucketOut slot will empty the tank
                 return true;
             }
             //return false;
@@ -53,15 +53,13 @@ public class InventoryActions
         //CONTAINER ===========> TANK
         if (FluidContainerRegistry.isFilledContainer(stackIn))
         {
-            //See if the tank can accept moar fluid.
-            int fill = tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), false);
+            int fill = tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), false); //See if the tank can accept moar fluid
 
             if (fill > 0) //If can accept the fluid
             {
                 if (FluidContainerRegistry.getContainerCapacity(stackIn) + tank.getFluidAmount() <= tank.getCapacity())
                 {
-                    //Get the empty container for the input, if there's any.
-                    ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
+                    ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn); //Get the empty container for the input, if there's any
 
                     if (inventory.getStackInSlot(slotOut) == null || stackOut == null)
                     {
@@ -86,18 +84,15 @@ public class InventoryActions
         }
 
         //TANK =====> CONTAINER
-
         else if (tank.getFluid() != null && tank.getFluidAmount() > 0 && FluidUtils.isEmptyContainerForFluid(stackIn, tank.getFluid().getFluid()))
         {
-            //How much fluid can this container hold.
-            int amount = FluidContainerRegistry.getContainerCapacity(tank.getFluid(), stackIn);
-            //Let's see how much can we drain this tank
-            FluidStack drain = tank.drain(amount, false);
+            int amount = FluidContainerRegistry.getContainerCapacity(tank.getFluid(), stackIn); //How much fluid can this container hold
+            FluidStack drain = tank.drain(amount, false); //Let's see how much can we drain this tank
 
-            ItemStack stackOut = FluidContainerRegistry.fillFluidContainer(drain, stackIn);
-
-            if (drain.amount == amount)
+            if (amount > 0 && drain.amount == amount)
             {
+                ItemStack stackOut = FluidContainerRegistry.fillFluidContainer(drain, stackIn);
+
                 if (inventory.getStackInSlot(slotOut) == null || stackOut == null)
                 {
                     tank.drain(amount, true);

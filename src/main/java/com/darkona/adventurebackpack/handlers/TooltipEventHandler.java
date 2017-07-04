@@ -188,7 +188,7 @@ public class TooltipEventHandler
 
     private String holdThe(boolean button)
     {
-        return whiteFormat( EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Ctrl>"));
+        return whiteFormat(EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Ctrl>"));
     }
 
     private String whiteFormat(String theString)
@@ -262,7 +262,6 @@ public class TooltipEventHandler
     private String fluidNameFormat(FluidStack fluid)
     {
         String nameUnlocalized = fluid.getUnlocalizedName().toLowerCase();
-        String nameLocalized = fluid.getLocalizedName();
         String nameFormatted = " ";
         if (nameUnlocalized.contains("lava") || nameUnlocalized.contains("fire"))
             nameFormatted += EnumChatFormatting.RED;
@@ -278,7 +277,7 @@ public class TooltipEventHandler
             nameFormatted += EnumChatFormatting.GREEN;
         else
             nameFormatted += EnumChatFormatting.GRAY;
-        return nameFormatted + nameLocalized;
+        return nameFormatted + fluid.getLocalizedName();
     }
 
     private String switchTooltip(boolean status, boolean doFormat)

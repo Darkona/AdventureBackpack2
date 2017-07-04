@@ -17,7 +17,8 @@ public class FluidUtils
         {
             for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
             {
-                if ((data.fluid.getFluid().getID() == fluid.getID())
+                if (data.fluid != null && data.fluid.getFluid() != null
+                        && data.fluid.getFluid().getID() == fluid.getID()
                         && (data.emptyContainer.getItem().equals(container.getItem())
                         || data.filledContainer.getItem().equals(container.getItem())))
                 {
@@ -34,8 +35,9 @@ public class FluidUtils
         {
             for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
             {
-                if ((data.fluid.getFluid().getID() == fluid.getID())
-                        && (data.emptyContainer.getItem().equals(container.getItem())))
+                if (data.fluid != null && data.fluid.getFluid() != null
+                        && data.fluid.getFluid().getID() == fluid.getID()
+                        && data.emptyContainer.getItem().equals(container.getItem()))
                 {
                     return true;
                 }

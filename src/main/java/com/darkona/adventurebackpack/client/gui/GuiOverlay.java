@@ -149,7 +149,7 @@ public class GuiOverlay extends Gui
                     int[] xStart = {xPos, xPos + textureWidth + 1};
                     int[] yStart = {yPos, yPos};
                     short tank = -1;
-                    if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemHose)
+                    if (Wearing.isHoldingHose(player))
                     {
                         tank = (short) (ItemHose.getHoseTank(player.getHeldItem()));
                     }

@@ -4,7 +4,6 @@ import java.util.Calendar;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
@@ -38,7 +37,6 @@ public class Utils
 
     public static int[] calculateEaster(int year)
     {
-
         int a = year % 19,
                 b = year / 100,
                 c = year % 100,
@@ -145,32 +143,6 @@ public class Utils
             }
         }
         return fluidID;
-    }
-
-    public static boolean shouldGiveEmpty(ItemStack cont)
-    {
-        boolean valid = true;
-        // System.out.println("Item class name is: "+cont.getItem().getClass().getName());
-
-        try
-        {
-            // Industrialcraft cells
-            // if (apis.ic2.api.item.Items.getItem("cell").getClass().isInstance(cont.getItem()))
-            // {
-            //     valid = false;
-            // }
-            // Forestry capsules
-            if (java.lang.Class.forName("forestry.core.items.ItemLiquidContainer").isInstance(cont.getItem()))
-            {
-                valid = false;
-            }
-        } catch (Exception oops)
-        {
-
-        }
-        // Others
-
-        return valid;
     }
 
     public static ChunkCoordinates findBlock2D(World world, int x, int y, int z, Block block, int range)

@@ -28,7 +28,6 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
-
         if (ctx.side.isClient() && message.properties != null)
         {
             if (Minecraft.getMinecraft().theWorld == null)
@@ -68,7 +67,6 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
         {
             ID = buf.readInt();
             properties = ByteBufUtils.readTag(buf);
-
         }
 
         @Override
