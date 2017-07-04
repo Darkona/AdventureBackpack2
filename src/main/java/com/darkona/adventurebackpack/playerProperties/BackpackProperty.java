@@ -96,7 +96,6 @@ public class BackpackProperty implements IExtendedEntityProperties
             compound.setInteger("campFireY", campFire.posY);
             compound.setInteger("campFireZ", campFire.posZ);
             compound.setInteger("campFireDim", dimension); //TODO use it for check dim
-
         }
         compound.setBoolean("forceCampFire", forceCampFire);
     }

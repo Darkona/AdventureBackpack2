@@ -518,23 +518,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
-    public void saveTanks(NBTTagCompound compound)
-    {
-        NBTTagCompound backpackTag = compound.getCompoundTag(COMPOUND_TAG);
-        backpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
-        backpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        compound.setTag(COMPOUND_TAG, backpackTag);
-    }
-
-    @Override
-    public void loadTanks(NBTTagCompound compound)
-    {
-        NBTTagCompound backpackTag = compound.getCompoundTag(COMPOUND_TAG);
-        leftTank.readFromNBT(backpackTag.getCompoundTag(LEFT_TANK));
-        rightTank.readFromNBT(backpackTag.getCompoundTag(RIGHT_TANK));
-    }
-
-    @Override
     public TileAdventureBackpack getTile()
     {
         return this;

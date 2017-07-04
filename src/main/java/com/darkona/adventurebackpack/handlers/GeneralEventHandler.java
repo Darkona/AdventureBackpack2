@@ -39,6 +39,7 @@ public class GeneralEventHandler
     public void eatGoldenApple(PlayerUseItemEvent.Finish event)
     {
         EntityPlayer player = event.entityPlayer;
+
         if (ConfigHandler.backpackAbilities)
         {
             if (event.item.getItem() instanceof ItemAppleGold
@@ -70,7 +71,9 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectBow(ArrowNockEvent event)
     {
-        if (!ConfigHandler.backpackAbilities) return;
+        if (!ConfigHandler.backpackAbilities)
+            return;
+
         if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -85,7 +88,9 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectArrow(ArrowLooseEvent event)
     {
-        if (!ConfigHandler.backpackAbilities) return;
+        if (!ConfigHandler.backpackAbilities)
+            return;
+
         if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -112,7 +117,6 @@ public class GeneralEventHandler
         if (!ConfigHandler.backpackAbilities) return;
         if (event.entity instanceof EntityHorse)
         {
-
             EntityHorse horse = ((EntityHorse) event.entity);
             if (!horse.isDead && horse.isTame() && horse.hasCustomNameTag())
             {
@@ -150,7 +154,7 @@ public class GeneralEventHandler
 
     }*/
 
-    /*  @SubscribeEvent
+    /*@SubscribeEvent
     public void listFluids(FluidRegistry.FluidRegisterEvent event)
     {
         LogHelper.info("Registered fluid " + event.fluidName + " with id " +  event.fluidID);

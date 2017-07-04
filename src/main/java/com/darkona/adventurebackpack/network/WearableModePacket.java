@@ -37,15 +37,14 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
                     ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), message.type);
 
                 if (message.type == JETPACK_ON_OFF)
-                    ServerActions.toggleCoalJetpack(player, Wearing.getWearingJetpack(player), message.type);
+                    ServerActions.toggleCoalJetpack(player, Wearing.getWearingJetpack(player));
 
                 if (message.type == CYCLING_ON_OFF)
-                    ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player), message.type);
+                    ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player));
 
                 if (message.type == NIGHTVISION_ON_OFF)
-                    ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player), message.type);
+                    ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player));
             }
-
         }
         if (ctx.side.isClient())
         {
@@ -62,6 +61,7 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
 
         public Message()
         {
+
         }
 
         public Message(byte type, String playerID)

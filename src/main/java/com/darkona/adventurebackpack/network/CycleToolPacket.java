@@ -33,10 +33,10 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
                     ServerActions.cycleTool(player, message.directionOfCycle, message.slot);
                     break;
                 case TOGGLE_HOSE_TANK:
-                    ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, message.directionOfCycle, message.slot);
+                    ServerActions.switchHose(player, message.directionOfCycle, ServerActions.HOSE_TOGGLE);
                     break;
                 case SWITCH_HOSE_ACTION:
-                    ServerActions.switchHose(player, ServerActions.HOSE_SWITCH, message.directionOfCycle, message.slot);
+                    ServerActions.switchHose(player, message.directionOfCycle, ServerActions.HOSE_SWITCH);
                     break;
             }
         }
@@ -45,13 +45,13 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
 
     public static class CycleToolMessage implements IMessage
     {
-
         private int directionOfCycle;
         private int slot;
         private byte typeOfAction;
 
         public CycleToolMessage()
         {
+
         }
 
         public CycleToolMessage(int directionOfCycle, int slot, byte typeOfAction)
@@ -59,7 +59,6 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
             this.typeOfAction = typeOfAction;
             this.directionOfCycle = directionOfCycle;
             this.slot = slot;
-
         }
 
         @Override

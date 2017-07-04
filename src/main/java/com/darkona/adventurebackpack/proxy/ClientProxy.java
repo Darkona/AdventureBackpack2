@@ -125,7 +125,7 @@ public class ClientProxy implements IProxy
     @Override
     public void registerKeybindings()
     {
-        ClientRegistry.registerKeyBinding(Keybindings.openBackpack);
+        ClientRegistry.registerKeyBinding(Keybindings.openInventory);
         ClientRegistry.registerKeyBinding(Keybindings.toggleActions);
         FMLCommonHandler.instance().bus().register(new KeybindHandler());
     }

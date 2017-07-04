@@ -111,20 +111,6 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     }
 
     @Override
-    public void saveTanks(NBTTagCompound compound)
-    {
-        compound.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
-        compound.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-    }
-
-    @Override
-    public void loadTanks(NBTTagCompound compound)
-    {
-        leftTank.readFromNBT(compound.getCompoundTag(LEFT_TANK));
-        rightTank.readFromNBT(compound.getCompoundTag(RIGHT_TANK));
-    }
-
-    @Override
     public boolean hasItem(Item item)
     {
         return InventoryActions.hasItem(this, item);

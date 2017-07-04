@@ -237,7 +237,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void keyTyped(char key, int keycode)
     {
-        if (keycode == Keybindings.openBackpack.getKeyCode())
+        if (keycode == Keybindings.openInventory.getKeyCode())
         {
             player.closeScreen();
         }

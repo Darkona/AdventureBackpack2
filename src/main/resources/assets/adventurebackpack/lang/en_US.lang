@@ -55,8 +55,8 @@ itemGroup.adventurebackpack=Adventure Backpack Mod
 
 ## Keybindings
 keys.adventureBackpack.category=Adventure Backpack
-keys.adventureBackpack.openBackpackInventory=Open AdventureBackpack
-keys.adventureBackpack.switchHoseTank=Toggle Actions
+keys.adventureBackpack.openInventory=Open Inventory
+keys.adventureBackpack.toggleActions=Toggle Actions
 
 ## Fluids
 fluid.melonJuice=Melon Juice

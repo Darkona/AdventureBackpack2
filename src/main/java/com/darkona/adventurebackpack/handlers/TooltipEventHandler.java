@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.handlers;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.settings.GameSettings;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -34,12 +34,14 @@ public class TooltipEventHandler
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unused")
-    public void wearableTooltips(ItemTooltipEvent event)
+    public void itemsTooltips(ItemTooltipEvent event)
     {
         if (!ConfigHandler.enableTooltips)
             return;
 
-        if (event.itemStack.getItem() instanceof ItemAdventureBackpack)
+        Item theItem = event.itemStack.getItem();
+
+        if (theItem instanceof ItemAdventureBackpack)
         {
             FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
@@ -61,25 +63,24 @@ public class TooltipEventHandler
                 event.toolTip.add("Slots used: " + inventoryTooltip(itemList));
 
                 tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
-                event.toolTip.add("Left Tank: " + tankTooltip(tank, true));
+                event.toolTip.add("Left Tank: " + tankTooltip(tank));
 
                 tank.readFromNBT(backpackTag.getCompoundTag(Constants.RIGHT_TANK));
-                event.toolTip.add("Right Tank: " + tankTooltip(tank, true));
+                event.toolTip.add("Right Tank: " + tankTooltip(tank));
 
                 if (!GuiScreen.isCtrlKeyDown())
-                    event.toolTip.add(holdThe(false));
+                    event.toolTip.add(holdCtrl());
 
             } else if (!GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add(holdThe(true));
+                event.toolTip.add(holdShift());
             }
 
             if (GuiScreen.isCtrlKeyDown())
             {
-                String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
                 boolean cycling = !backpackTag.getBoolean("disableCycling");
                 event.toolTip.add("Tool Cycling: " + switchTooltip(cycling, true));
-                event.toolTip.add("Press '" + whiteFormat(actionKey) + "' while wearing");
+                event.toolTip.add("Press '" + actionKeyFormat() + "' while wearing");
                 event.toolTip.add("backpack, for turn cycling " + switchTooltip(!cycling, false));
 
                 String color = backpackTag.getString("colorName");
@@ -89,13 +90,13 @@ public class TooltipEventHandler
                     {
                         boolean vision = !backpackTag.getBoolean("disableNVision");
                         event.toolTip.add("Night Vision: " + switchTooltip(vision, true));
-                        event.toolTip.add("Press Shift+'" + whiteFormat(actionKey) + "' while wearing");
+                        event.toolTip.add("Press Shift+'" + actionKeyFormat() + "' while wearing");
                         event.toolTip.add("backpack, for turn nightvision " + switchTooltip(!vision, false));
                     }
                 }
             }
 
-        } else if (event.itemStack.getItem() instanceof ItemCoalJetpack)
+        } else if (theItem instanceof ItemCoalJetpack)
         {
             FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
             FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
@@ -108,63 +109,61 @@ public class TooltipEventHandler
                 event.toolTip.add("Fuel: " + slotStackTooltip(itemList, Constants.JETPACK_FUEL_SLOT));
 
                 waterTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_WATER_TANK));
-                event.toolTip.add("Left Tank: " + tankTooltip(waterTank, true));
+                event.toolTip.add("Left Tank: " + tankTooltip(waterTank));
 
                 steamTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_STEAM_TANK));
-                // special case for steam, have to set displayed fluid name manually
+                // special case for steam, have to set displayed fluid name manually, cuz technically it's water
                 String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + "Steam" : "";
                 event.toolTip.add("Right Tank: " + tankTooltip(steamTank, false) + theSteam);
 
                 if (!GuiScreen.isCtrlKeyDown())
-                    event.toolTip.add(holdThe(false));
+                    event.toolTip.add(holdCtrl());
 
             } else if (!GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add(holdThe(true));
+                event.toolTip.add(holdShift());
             }
 
             if (GuiScreen.isCtrlKeyDown())
             {
-                String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
                 event.toolTip.add("Maximum altitude: " + whiteFormat("185") + " meters");
-                event.toolTip.add("Press Shift+'" + whiteFormat(actionKey) + "' while wearing");
+                event.toolTip.add("Press Shift+'" + actionKeyFormat() + "' while wearing");
                 event.toolTip.add("jetpack, for turn it ON");
             }
 
-        } else if (event.itemStack.getItem() instanceof ItemCopterPack)
+        } else if (theItem instanceof ItemCopterPack)
         {
             FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
             if (GuiScreen.isShiftKeyDown())
             {
                 fuelTank.readFromNBT(compound.getCompoundTag(Constants.COPTER_FUEL_TANK));
-                event.toolTip.add("Fuel Tank: " + tankTooltip(fuelTank, true));
+                event.toolTip.add("Fuel Tank: " + tankTooltip(fuelTank));
                 event.toolTip.add("Fuel consumption rate: " + fuelConsumptionTooltip(fuelTank));
 
                 if (!GuiScreen.isCtrlKeyDown())
-                    event.toolTip.add(holdThe(false));
+                    event.toolTip.add(holdCtrl());
 
             } else if (!GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add(holdThe(true));
+                event.toolTip.add(holdShift());
             }
 
             if (GuiScreen.isCtrlKeyDown())
             {
-                String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
                 event.toolTip.add("Maximum altitude: " + whiteFormat("250") + " meters");
-                event.toolTip.add("Press Shift+'" + whiteFormat(actionKey) + "' while wearing");
+                event.toolTip.add("Press Shift+'" + actionKeyFormat() + "' while wearing");
                 event.toolTip.add("copterpack, for turn it ON");
-                event.toolTip.add("Press '" + whiteFormat(actionKey) + "' during flight to");
+                event.toolTip.add("Press '" + actionKeyFormat() + "' during flight to");
                 event.toolTip.add("switch hover mode");
             }
-        } else if (event.itemStack.getItem() instanceof ItemHose)
+
+        } else if (theItem instanceof ItemHose)
         {
             if (GuiScreen.isCtrlKeyDown())
             {
-                String actionKey = GameSettings.getKeyDisplayString(Keybindings.toggleActions.getKeyCode());
                 event.toolTip.add("While holding Hose:");
-                event.toolTip.add("- press '" + whiteFormat(actionKey) + "' to change active tank");
+                event.toolTip.add("- press '" + actionKeyFormat() + "' to change active tank");
                 event.toolTip.add("- press Shift+'" + whiteFormat("Wheel") + "' to change mode");
                 event.toolTip.add("");
                 event.toolTip.add("Put Hose into bucketOut slot of wearable pack");
@@ -172,14 +171,34 @@ public class TooltipEventHandler
                 event.toolTip.add(EnumChatFormatting.RED + "WARNING! Fluid will be dumped and lost. Forever.");
             } else
             {
-                event.toolTip.add(holdThe(false));
+                event.toolTip.add(holdCtrl());
             }
         }
     }
 
+    private String holdShift()
+    {
+        return holdThe(true);
+    }
+
+    private String holdCtrl()
+    {
+        return holdThe(false);
+    }
+
     private String holdThe(boolean button)
     {
-        return EnumChatFormatting.WHITE + "" + EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Ctrl>");
+        return whiteFormat(EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Ctrl>"));
+    }
+
+    private String whiteFormat(String theString)
+    {
+        return EnumChatFormatting.WHITE + theString + EnumChatFormatting.GRAY;
+    }
+
+    private String actionKeyFormat()
+    {
+        return whiteFormat(Keybindings.getActionKeyName());
     }
 
     private String inventoryTooltip(NBTTagList itemList)
@@ -203,19 +222,24 @@ public class TooltipEventHandler
 
     private String toolSlotFormat(boolean isTool)
     {
-        return (isTool ? EnumChatFormatting.WHITE/*GREEN*/ : EnumChatFormatting.DARK_GRAY) + "[]";
+        return (isTool ? EnumChatFormatting.WHITE : EnumChatFormatting.DARK_GRAY) + "[]";
     }
 
     private String mainSlotsFormat(int slotsUsed)
     {
-        String sFormatted = String.valueOf(slotsUsed);
+        String slotsFormatted = Integer.toString(slotsUsed);
         if (slotsUsed == 0)
-            sFormatted = EnumChatFormatting.DARK_GRAY + sFormatted;
+            slotsFormatted = EnumChatFormatting.DARK_GRAY + slotsFormatted;
         else if (slotsUsed == Constants.INVENTORY_MAIN_SIZE)
-            sFormatted = EnumChatFormatting.WHITE + sFormatted;
+            slotsFormatted = EnumChatFormatting.WHITE + slotsFormatted;
         else
-            sFormatted = EnumChatFormatting.GRAY + sFormatted;
-        return sFormatted + "/" + Constants.INVENTORY_MAIN_SIZE;
+            slotsFormatted = EnumChatFormatting.GRAY + slotsFormatted;
+        return slotsFormatted + "/" + Constants.INVENTORY_MAIN_SIZE;
+    }
+
+    private String tankTooltip(FluidTank tank)
+    {
+        return tankTooltip(tank, true);
     }
 
     private String tankTooltip(FluidTank tank, boolean attachName)
@@ -227,34 +251,33 @@ public class TooltipEventHandler
 
     private String fluidAmountFormat(int fluidAmount, int tankCapacity)
     {
-        String aFormatted = String.valueOf(fluidAmount);
+        String amountFormatted = Integer.toString(fluidAmount);
         if (fluidAmount == tankCapacity)
-            aFormatted = EnumChatFormatting.WHITE + aFormatted;
+            amountFormatted = EnumChatFormatting.WHITE + amountFormatted;
         else if (fluidAmount == 0)
-            aFormatted = emptyFormat();
-        return aFormatted;
+            amountFormatted = emptyFormat();
+        return amountFormatted;
     }
 
     private String fluidNameFormat(FluidStack fluid)
     {
-        String fUnlocalized = fluid.getUnlocalizedName().toLowerCase();
-        String fLocalized = fluid.getLocalizedName();
-        String nFormatted = " ";
-        if (fUnlocalized.contains("lava") || fUnlocalized.contains("fire"))
-            nFormatted += EnumChatFormatting.RED;
-        else if (fUnlocalized.contains("water"))
-            nFormatted += EnumChatFormatting.BLUE;
-        else if (fUnlocalized.contains("oil"))
-            nFormatted += EnumChatFormatting.DARK_GRAY;
-        else if (fUnlocalized.contains("fuel") || fUnlocalized.contains("creosote"))
-            nFormatted += EnumChatFormatting.YELLOW;
-        else if (fUnlocalized.contains("milk"))
-            nFormatted += EnumChatFormatting.WHITE;
-        else if (fUnlocalized.contains("xpjuice"))
-            nFormatted += EnumChatFormatting.GREEN;
+        String nameUnlocalized = fluid.getUnlocalizedName().toLowerCase();
+        String nameFormatted = " ";
+        if (nameUnlocalized.contains("lava") || nameUnlocalized.contains("fire"))
+            nameFormatted += EnumChatFormatting.RED;
+        else if (nameUnlocalized.contains("water"))
+            nameFormatted += EnumChatFormatting.BLUE;
+        else if (nameUnlocalized.contains("oil"))
+            nameFormatted += EnumChatFormatting.DARK_GRAY;
+        else if (nameUnlocalized.contains("fuel") || nameUnlocalized.contains("creosote"))
+            nameFormatted += EnumChatFormatting.YELLOW;
+        else if (nameUnlocalized.contains("milk"))
+            nameFormatted += EnumChatFormatting.WHITE;
+        else if (nameUnlocalized.contains("xpjuice"))
+            nameFormatted += EnumChatFormatting.GREEN;
         else
-            nFormatted += EnumChatFormatting.GRAY;
-        return nFormatted + fLocalized;
+            nameFormatted += EnumChatFormatting.GRAY;
+        return nameFormatted + fluid.getLocalizedName();
     }
 
     private String switchTooltip(boolean status, boolean doFormat)
@@ -264,8 +287,8 @@ public class TooltipEventHandler
 
     private String switchFormat(boolean status)
     {
-        String sFormatted = status ? EnumChatFormatting.WHITE + "ON" : EnumChatFormatting.DARK_GRAY + "OFF";
-        return "[" + sFormatted + EnumChatFormatting.GRAY + "]";
+        String switchFormatted = status ? EnumChatFormatting.WHITE + "ON" : EnumChatFormatting.DARK_GRAY + "OFF";
+        return "[" + switchFormatted + EnumChatFormatting.GRAY + "]";
     }
 
     private String slotStackTooltip(NBTTagList itemList, int slot)
@@ -290,40 +313,35 @@ public class TooltipEventHandler
         if (count == 0)
             return emptyFormat();
 
-        String dFormatted;
+        String dataFormatted;
         try
         {
             ItemStack iStack = new ItemStack(GameData.getItemRegistry().getObjectById(id), 0, meta);
-            dFormatted = iStack.getDisplayName() + " (" + stackSizeFormat(iStack, count) + ")";
+            dataFormatted = iStack.getDisplayName() + " (" + stackSizeFormat(iStack, count) + ")";
         } catch (Exception e)
         {
-            dFormatted = EnumChatFormatting.RED + "Error";
+            dataFormatted = EnumChatFormatting.RED + "Error";
             //e.printStackTrace();
         }
-        return dFormatted;
+        return dataFormatted;
     }
 
     private String stackSizeFormat(ItemStack stack, int count)
     {
-        return stack.getMaxStackSize() == count ? EnumChatFormatting.WHITE + "" + count + EnumChatFormatting.GRAY : "" + count;
+        return stack.getMaxStackSize() == count ? whiteFormat(Integer.toString(count)) : Integer.toString(count);
     }
 
-    private String fuelConsumptionTooltip(FluidTank fTank)
+    private String fuelConsumptionTooltip(FluidTank tank)
     {
-        if (fTank.getFluidAmount() > 0 && GeneralReference.isValidFuel(fTank.getFluid().getFluid()))
+        if (tank.getFluidAmount() > 0 && GeneralReference.isValidFuel(tank.getFluid().getFluid()))
         {
-            return String.format("x%.2f", GeneralReference.liquidFuels.get(fTank.getFluid().getFluid().getName()));
+            return String.format("x%.2f", GeneralReference.liquidFuels.get(tank.getFluid().getFluid().getName()));
         }
         return EnumChatFormatting.DARK_GRAY + "-";
     }
 
-    private String whiteFormat(String theString)
-    {
-        return EnumChatFormatting.WHITE + theString + EnumChatFormatting.GRAY;
-    }
-
     private String emptyFormat()
     {
-        return String.format("%s%sEmpty", EnumChatFormatting.DARK_GRAY, EnumChatFormatting.ITALIC);
+        return EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.ITALIC + "Empty";
     }
 }

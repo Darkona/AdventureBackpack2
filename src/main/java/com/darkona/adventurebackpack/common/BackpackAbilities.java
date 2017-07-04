@@ -200,10 +200,10 @@ public class BackpackAbilities
         {
             nightVision = player.getActivePotionEffect(Potion.nightVision);
         }
-        if ((nightVision == null || nightVision.getDuration() < 222) && !Wearing.getBackpackInv(player, true).getDisableNVision())
+        if ((nightVision == null || nightVision.getDuration() < 222) && !Wearing.getWearingBackpackInv(player).getDisableNVision())
         {
             player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 239, -1, true));
-        } else if (nightVision != null && Wearing.getBackpackInv(player, true).getDisableNVision())
+        } else if (nightVision != null && Wearing.getWearingBackpackInv(player).getDisableNVision())
         {
             backpackRemovals.itemBat(player, world, backpack);
         }

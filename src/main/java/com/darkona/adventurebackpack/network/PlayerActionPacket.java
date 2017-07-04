@@ -15,7 +15,7 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.ActionMessage, IMessage>
 {
-    public static final byte spiderJump = 0;
+    public static final byte SPIDER_JUMP = 0;
     public static final byte JETPACK_IN_USE = 1;
     public static final byte JETPACK_NOT_IN_USE = 2;
 
@@ -24,7 +24,7 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
     {
         if (ctx.side.isServer())
         {
-            if (message.type == spiderJump)
+            if (message.type == SPIDER_JUMP)
             {
                 if (ctx.getServerHandler().playerEntity.ridingEntity != null && ctx.getServerHandler().playerEntity.ridingEntity instanceof EntityFriendlySpider)
                 {

@@ -63,7 +63,7 @@ public class ServerActions
 
         try
         {
-            InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
+            InventoryBackpack backpack = Wearing.getWearingBackpackInv(player);
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
             if (SlotTool.isValidTool(current))
@@ -113,15 +113,14 @@ public class ServerActions
      * @param direction The direction in which the hose modes will switch.
      * @param action    The type of the action to be performed on the hose.
      *                  Can be HOSE_SWITCH for mode or HOSE_TOGGLE for tank
-     * @param slot      The slot in which the hose gleefully frolicks in the inventory.
      */
-    public static void switchHose(EntityPlayer player, boolean action, int direction, int slot)
+    public static void switchHose(EntityPlayer player, int direction, boolean action)
     {
-
-        ItemStack hose = player.inventory.mainInventory[slot];
-        if (hose != null && hose.getItem() instanceof ItemHose)
+        if (Wearing.isHoldingHose(player))
         {
+            ItemStack hose = player.inventory.getCurrentItem();
             NBTTagCompound tag = hose.hasTagCompound() ? hose.stackTagCompound : new NBTTagCompound();
+
             if (!action)
             {
                 int mode = ItemHose.getHoseMode(hose);
@@ -144,6 +143,7 @@ public class ServerActions
                 tank = (tank + 1) % 2;
                 tag.setInteger("tank", tank);
             }
+
             hose.setTagCompound(tag);
         }
     }
@@ -406,7 +406,7 @@ public class ServerActions
         }
     }
 
-    public static void toggleToolCycling(EntityPlayer player, ItemStack backpack, byte on_off)
+    public static void toggleToolCycling(EntityPlayer player, ItemStack backpack)
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
         if (ConfigHandler.enableToolsCycling)
@@ -431,7 +431,7 @@ public class ServerActions
         }
     }
 
-    public static void toggleNightVision(EntityPlayer player, ItemStack backpack, byte on_off)
+    public static void toggleNightVision(EntityPlayer player, ItemStack backpack)
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
         if (inv.getDisableNVision())
@@ -455,7 +455,7 @@ public class ServerActions
         }
     }
 
-    public static void toggleCoalJetpack(EntityPlayer player, ItemStack jetpack, byte on_off)
+    public static void toggleCoalJetpack(EntityPlayer player, ItemStack jetpack)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
         if (inv.getStatus())

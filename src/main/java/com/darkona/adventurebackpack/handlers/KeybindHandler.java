@@ -10,8 +10,6 @@ import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
@@ -28,15 +26,14 @@ public class KeybindHandler
 {
     private static Key getPressedKeyBinding()
     {
-        if (Keybindings.openBackpack.isPressed())
+        if (Keybindings.openInventory.isPressed())
         {
             return Key.INVENTORY_KEY;
         }
         if (Keybindings.toggleActions.isPressed())
         {
-            return Key.TOGGLE_KEY;
+            return Key.ACTION_KEY;
         }
-
         if (Minecraft.getMinecraft().gameSettings.keyBindJump.isPressed())
         {
             return Key.JUMP;
@@ -47,71 +44,72 @@ public class KeybindHandler
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event)
     {
-        Key keypressed = getPressedKeyBinding();
+        Key pressedKey = getPressedKeyBinding();
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
 
         if (player != null)
         {
-            if (keypressed == Key.INVENTORY_KEY && mc.inGameHasFocus)
+            if (pressedKey == Key.INVENTORY_KEY && mc.inGameHasFocus)
             {
-                if (player.isSneaking() && (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
+                sendSyncPropertiesPacket();
+
+                if (player.isSneaking() && Wearing.isHoldingBackpack(player))
                 {
-                    ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
+                    sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING);
                 } else
                 {
-                    ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
                     if (Wearing.isWearingBackpack(player))
                     {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
-                    } else if ((player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemAdventureBackpack))
+                        sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND);
+                    } else if (Wearing.isHoldingBackpack(player))
                     {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING));
+                        sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING);
                     }
                     if (Wearing.isWearingCopter(player))
                     {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
+                        sendGUIPacket(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND);
                     }
                     if (Wearing.isWearingJetpack(player))
                     {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
+                        sendGUIPacket(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND);
                     }
                 }
             }
 
-            if (keypressed == Key.TOGGLE_KEY)
+            if (pressedKey == Key.ACTION_KEY)
             {
-                if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemHose)
+                if (Wearing.isHoldingHose(player))
                 {
-                    ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
-                    ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, (player).inventory.currentItem);
+                    sendCycleToolPacket(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
+                    ServerActions.switchHose(player, 0, ServerActions.HOSE_TOGGLE);
                 } else if (Wearing.isWearingBackpack(player))
                 {
                     if (player.isSneaking())
                     {
                         for (String valid : Constants.NIGHTVISION_BACKPACKS)
                         {
-                            if (Wearing.getBackpackInv(player, true).getColorName().equals(valid))
+                            if (Wearing.getWearingBackpackInv(player).getColorName().equals(valid))
                             {
-                                ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.NIGHTVISION_ON_OFF, ""));
-                                ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player), WearableModePacket.NIGHTVISION_ON_OFF);
+                                sendWearableModePacket(WearableModePacket.NIGHTVISION_ON_OFF);
+                                ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player));
                             }
                         }
                     } else
                     {
-                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.CYCLING_ON_OFF, ""));
-                        ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player), WearableModePacket.CYCLING_ON_OFF);
+                        sendWearableModePacket(WearableModePacket.CYCLING_ON_OFF);
+                        ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player));
                     }
                 }
                 if (Wearing.isWearingCopter(player))
                 {
                     if (!player.isSneaking())
                     {
-                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.COPTER_TOGGLE, ""));
+                        sendWearableModePacket(WearableModePacket.COPTER_TOGGLE);
                         ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_TOGGLE);
                     } else
                     {
-                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.COPTER_ON_OFF, ""));
+                        sendWearableModePacket(WearableModePacket.COPTER_ON_OFF);
                         ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_ON_OFF);
                     }
                 }
@@ -119,20 +117,45 @@ public class KeybindHandler
                 {
                     if (player.isSneaking())
                     {
-                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.JETPACK_ON_OFF, ""));
-                        ServerActions.toggleCoalJetpack(player, Wearing.getWearingJetpack(player), WearableModePacket.JETPACK_ON_OFF);
+                        sendWearableModePacket(WearableModePacket.JETPACK_ON_OFF);
+                        ServerActions.toggleCoalJetpack(player, Wearing.getWearingJetpack(player));
                     }
                 }
             }
 
-            if (keypressed == Key.JUMP)
+            if (pressedKey == Key.JUMP)
             {
                 if (player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
                 {
-                    ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.spiderJump));
+                    sendPlayerActionPacket(PlayerActionPacket.SPIDER_JUMP);
                     ((EntityFriendlySpider) player.ridingEntity).setJumping(true);
                 }
             }
         }
+    }
+
+    private void sendSyncPropertiesPacket()
+    {
+        ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
+    }
+
+    private void sendGUIPacket(byte type, byte from)
+    {
+        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(type, from));
+    }
+
+    private void sendWearableModePacket(byte type)
+    {
+        ModNetwork.net.sendToServer(new WearableModePacket.Message(type, "")); //TODO playerID?
+    }
+
+    private void sendCycleToolPacket(int direction, int slot, byte type)
+    {
+        ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(direction, slot, type));
+    }
+
+    private void sendPlayerActionPacket(byte type)
+    {
+        ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(type));
     }
 }
