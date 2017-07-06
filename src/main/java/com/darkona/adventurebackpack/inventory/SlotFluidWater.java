@@ -25,6 +25,7 @@ public class SlotFluidWater extends SlotFluid
     {
         return FluidUtils.isContainerForFluid(stack, FluidRegistry.WATER);
     }
+
     private static boolean isContainerWithWater(ItemStack stack)
     {
         return isFilled(stack) && FluidContainerRegistry.getFluidForFilledItem(stack).getFluid().getName().contains("water");

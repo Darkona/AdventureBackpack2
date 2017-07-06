@@ -15,7 +15,6 @@ import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import com.darkona.adventurebackpack.network.WearableModePacket;
-import com.darkona.adventurebackpack.reference.Key;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -24,6 +23,11 @@ import com.darkona.adventurebackpack.util.Wearing;
 
 public class KeybindHandler
 {
+    public enum Key
+    {
+        UNKNOWN, INVENTORY_KEY, ACTION_KEY, JUMP
+    }
+
     private static Key getPressedKeyBinding()
     {
         if (Keybindings.openInventory.isPressed())
@@ -54,9 +58,12 @@ public class KeybindHandler
             {
                 sendSyncPropertiesPacket();
 
-                if (player.isSneaking() && Wearing.isHoldingBackpack(player))
+                if (player.isSneaking())
                 {
-                    sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING);
+                    if(Wearing.isHoldingBackpack(player))
+                    {
+                        sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING);
+                    }
                 } else
                 {
                     if (Wearing.isWearingBackpack(player))
@@ -66,10 +73,12 @@ public class KeybindHandler
                     {
                         sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING);
                     }
+
                     if (Wearing.isWearingCopter(player))
                     {
                         sendGUIPacket(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND);
                     }
+
                     if (Wearing.isWearingJetpack(player))
                     {
                         sendGUIPacket(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND);
@@ -81,7 +90,7 @@ public class KeybindHandler
             {
                 if (Wearing.isHoldingHose(player))
                 {
-                    sendCycleToolPacket(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
+                    sendCycleToolPacket(0, player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
                     ServerActions.switchHose(player, 0, ServerActions.HOSE_TOGGLE);
                 } else if (Wearing.isWearingBackpack(player))
                 {
@@ -103,14 +112,14 @@ public class KeybindHandler
                 }
                 if (Wearing.isWearingCopter(player))
                 {
-                    if (!player.isSneaking())
-                    {
-                        sendWearableModePacket(WearableModePacket.COPTER_TOGGLE);
-                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_TOGGLE);
-                    } else
+                    if (player.isSneaking())
                     {
                         sendWearableModePacket(WearableModePacket.COPTER_ON_OFF);
                         ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_ON_OFF);
+                    } else
+                    {
+                        sendWearableModePacket(WearableModePacket.COPTER_TOGGLE);
+                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_TOGGLE);
                     }
                 }
                 if (Wearing.isWearingJetpack(player))

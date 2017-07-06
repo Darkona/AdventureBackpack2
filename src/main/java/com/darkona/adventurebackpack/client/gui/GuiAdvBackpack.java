@@ -40,12 +40,10 @@ public class GuiAdvBackpack extends GuiWithTanks
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.typeTankRender);
     private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.typeTankRender);
-    @SuppressWarnings("FieldCanBeLocal")
     private FluidTank lft;
-    @SuppressWarnings("FieldCanBeLocal")
     private FluidTank rgt;
-    public int lefties;
-    public int topsies;
+    private int lefties;
+    private int topsies;
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {

@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
+import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
@@ -73,7 +73,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
         ResourceLocation modelTexture;
         if (BackpackNames.getBackpackColorName(backpack).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
+            modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
         } else
         {
             modelTexture = Resources.backpackTextureFromColor(inv);

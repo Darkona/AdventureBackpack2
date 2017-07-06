@@ -1,7 +1,5 @@
 package com.darkona.adventurebackpack.util;
 
-import java.util.Calendar;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
@@ -35,104 +33,8 @@ public class Utils
         return radians * 57.2957795f;
     }
 
-    public static int[] calculateEaster(int year)
-    {
-        int a = year % 19,
-                b = year / 100,
-                c = year % 100,
-                d = b / 4,
-                e = b % 4,
-                g = (8 * b + 13) / 25,
-                h = (19 * a + b - d - g + 15) % 30,
-                j = c / 4,
-                k = c % 4,
-                m = (a + 11 * h) / 319,
-                r = (2 * e + 2 * j - k - h + m + 32) % 7,
-                n = (h - m + r + 90) / 25,
-                p = (h - m + r + n + 19) % 32;
-
-        return new int[]{n, p};
-    }
-
-    public static String getHoliday()
-    {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR),
-                month = calendar.get(Calendar.MONTH) + 1,
-                day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        //if (AdventureBackpack.instance.chineseNewYear) return "ChinaNewYear"; // here and below commented lines: textures are missing
-        //if (AdventureBackpack.instance.hannukah) return "Hannukah";
-        //if (month == Utils.calculateEaster(year)[0] && day == Utils.calculateEaster(year)[1]) return "Easter";
-        String dia = "Standard";
-        if (month == 1)
-        {
-            if (day == 1) dia = "NewYear";
-            if (day == 28) dia = "Shuttle"; //Challenger
-        }
-        if (month == 2)
-        {
-            if (day == 1) dia = "Shuttle"; //Columbia
-            if (day == 14) dia = "Valentines";
-            //if (day == 23) dia = "Fatherland";
-        }
-        if (month == 3)
-        {
-            if (day == 17) dia = "Patrick";
-        }
-        if (month == 4)
-        {
-            if (day == 1) dia = "Fools";
-            if (day == 25) dia = "Italy";
-        }
-        if (month == 5)
-        {
-            if (day == 8 || day == 9 || day == 10) dia = "Liberation";
-        }
-        if (month == 6)
-        {
-        }
-        if (month == 7)
-        {
-            if (day == 4) dia = "USA";
-            if (day == 24) dia = "Bolivar";
-            //if (day == 14) dia = "Bastille";
-        }
-        if (month == 8)
-        {
-        }
-        if (month == 9)
-        {
-            //if (day == 19) dia = "Pirate";
-        }
-        if (month == 10)
-        {
-            if (day == 3) dia = "Germany";
-            if (day == 12) dia = "Columbus";
-            if (day == 31) dia = "Halloween";
-        }
-        if (month == 11)
-        {
-            //if (day == 2) dia = "Muertos";
-        }
-        if (month == 12)
-        {
-            if (day >= 22 && day <= 26) dia = "Christmas";
-            if (day == 31) dia = "NewYear";
-        }
-
-        //LogHelper.info("Today is: " + day + "/" + month + "/" + year + ". Which means today is: " + dia);
-        return dia;
-    }
-
     public static int isBlockRegisteredAsFluid(Block block)
     {
-        /*
-         * for (Map.Entry<String,Fluid> fluid :
-         * getRegisteredFluids().entrySet()) { int ID =
-         * (fluid.getValue().getBlockID() == BlockID) ? fluid.getValue().getID()
-         * : -1; if (ID > 0) return ID; }
-         */
         int fluidID = -1;
         for (Fluid fluid : FluidRegistry.getRegisteredFluids().values())
         {
@@ -231,11 +133,11 @@ public class Utils
         return side == Side.SERVER;
     }
 
-    private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
+    private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int x, int y, int z, boolean except)
     {
-        if (world.isAirBlock(X, Y, Z) || isReplaceable(world, X, Y, Z))
+        if (world.isAirBlock(x, y, z) || isReplaceable(world, x, y, z))
         {
-            return new ChunkCoordinates(X, Y, Z);
+            return new ChunkCoordinates(x, y, z);
         }
         return null;
     }
@@ -246,18 +148,18 @@ public class Utils
         return block.isReplaceable(world, x, y, z);
     }
 
-    private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
+    private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int x, int y, int z, boolean except)
     {
-        LogHelper.info("Checking coordinates in X=" + X + ", Y=" + Y + ", Z=" + Z);
-        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP, true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X, Y + 1, Z) && !areCoordinatesTheSame2D(origX, origZ, X, Z))
+        LogHelper.info("Checking coordinates in X=" + x + ", Y=" + y + ", Z=" + z);
+        if (except && world.isSideSolid(x, y - 1, z, ForgeDirection.UP, true) && world.isAirBlock(x, y, z) && world.isAirBlock(x, y + 1, z) && !areCoordinatesTheSame2D(origX, origZ, x, z))
         {
             LogHelper.info("Found spot with the exception of the origin point");
-            return new ChunkCoordinates(X, Y, Z);
+            return new ChunkCoordinates(x, y, z);
         }
-        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP, true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X, Y + 1, Z))
+        if (!except && world.isSideSolid(x, y - 1, z, ForgeDirection.UP, true) && world.isAirBlock(x, y, z) && world.isAirBlock(x, y + 1, z))
         {
             LogHelper.info("Found spot without exceptions");
-            return new ChunkCoordinates(X, Y, Z);
+            return new ChunkCoordinates(x, y, z);
         }
         return null;
     }
@@ -288,7 +190,6 @@ public class Utils
         //Steps mod 2 == 0 => X++, Z--
         //Steps mod 2 == 1 => X--, Z++
 
-        //
         if (steps >= radius) return null;
         int i = X, j = Z;
         if (steps % 2 == 0)
@@ -297,7 +198,6 @@ public class Utils
             {
                 for (; i <= X + steps; i++)
                 {
-
                     ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
                     if (coords != null)
                     {
@@ -354,24 +254,6 @@ public class Utils
             }
         }
 
-        /* Old code. Still works, though.
-        for (int i = x - radius; i <= x + radius; i++)
-        {
-            for (int j = y - (radius / 2); j <= y + (radius / 2); j++)
-            {
-                for (int k = z + radius; k <= z + (radius); k++)
-                {
-                    if (except && world.isSideSolid(i, j - 1, k, ForgeDirection.UP) && world.isAirBlock(i, j, k) && !areCoordinatesTheSame(x, y, z, i, j, k))
-                    {
-                        return new ChunkCoordinates(i, j, k);
-                    }
-                    if (!except && world.isSideSolid(i, j - 1, k, ForgeDirection.UP) && world.isAirBlock(i, j, k))
-                    {
-                        return new ChunkCoordinates(i, j, k);
-                    }
-                }
-            }
-        }*/
         return null;
     }
 
@@ -412,7 +294,7 @@ public class Utils
         { // Check if there is more than one word.
             String firstWord = text.substring(0, text.indexOf(' '));
             String secondWord = text.substring(text.indexOf(' ') + 1);
-            return firstWord.equals("Molten") ? secondWord : firstWord;// Extract first word.
+            return firstWord.equals("Molten") ? secondWord : firstWord; // Extract first word.
         } else
         {
             return text; // Text is the first word itself.
@@ -421,36 +303,15 @@ public class Utils
 
     public static String makeItRainbow(String theString)
     {
-        StringBuilder everyHunterWannaKnowWherePheasantSits = new StringBuilder();
+        EnumChatFormatting[] rainbowSequence = {EnumChatFormatting.RED, EnumChatFormatting.GOLD, EnumChatFormatting.YELLOW,
+                EnumChatFormatting.GREEN, EnumChatFormatting.AQUA, EnumChatFormatting.BLUE, EnumChatFormatting.DARK_PURPLE};
+
+        StringBuilder rainbowed = new StringBuilder();
         for (int i = 0; i < theString.length(); i++)
         {
-            char charAtI = theString.charAt(i);
-            switch (i % 7)
-            {
-                case 0:
-                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.RED).append(charAtI);
-                    break;
-                case 1:
-                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.GOLD).append(charAtI);
-                    break;
-                case 2:
-                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.YELLOW).append(charAtI);
-                    break;
-                case 3:
-                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.GREEN).append(charAtI);
-                    break;
-                case 4:
-                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.AQUA).append(charAtI);
-                    break;
-                case 5:
-                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.BLUE).append(charAtI);
-                    break;
-                case 6:
-                    everyHunterWannaKnowWherePheasantSits.append(EnumChatFormatting.DARK_PURPLE).append(charAtI);
-                    break;
-            }
+            rainbowed.append(rainbowSequence[i % 7]).append(theString.charAt(i));
         }
-        return everyHunterWannaKnowWherePheasantSits.toString();
+        return rainbowed.toString();
     }
 
     public static boolean isDimensionAllowed (int dimensionID)

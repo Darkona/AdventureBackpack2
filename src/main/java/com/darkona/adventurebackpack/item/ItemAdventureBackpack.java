@@ -24,7 +24,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
@@ -33,6 +32,7 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
@@ -333,7 +333,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         String modelTexture;
         if (BackpackNames.getBackpackColorName(stack).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday).toString();
+            modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday()).toString();
         } else
         {
             modelTexture = Resources.backpackTexturesStringFromColor(stack);
@@ -357,7 +357,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
         if (BackpackNames.getBackpackColorName(wearable).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
+            modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
         } else
         {
             modelTexture = Resources.backpackTextureFromString(BackpackNames.getBackpackColorName(wearable));

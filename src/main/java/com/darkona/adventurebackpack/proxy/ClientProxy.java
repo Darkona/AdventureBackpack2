@@ -1,7 +1,5 @@
 package com.darkona.adventurebackpack.proxy;
 
-import java.lang.reflect.Field;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,8 +56,6 @@ public class ClientProxy implements IProxy
     public static ModelBackpackArmor modelAdventureBackpack = new ModelBackpackArmor();
     public static ModelCopterPack modelCopterPack = new ModelCopterPack();
 
-    public static Field camRollField;
-
     @Override
     public void init()
     {
@@ -77,6 +73,7 @@ public class ClientProxy implements IProxy
     @Override
     public void joinPlayer(EntityPlayer player)
     {
+
     }
 
     @Override
@@ -91,7 +88,7 @@ public class ClientProxy implements IProxy
         }
     }
 
-    public void initRenderers()
+    private void initRenderers()
     {
         renderHandler = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(renderHandler);

@@ -15,11 +15,10 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class LeakingBoilerSound extends MovingSound
 {
-    public EntityPlayer thePlayer;
-    protected boolean repeat = true;
-    protected int repeatDelay = 0;
-
-    protected float pitch;
+    private EntityPlayer thePlayer;
+    private boolean repeat = true;
+    private int repeatDelay = 0;
+    private float pitch;
 
     public LeakingBoilerSound(EntityPlayer player)
     {

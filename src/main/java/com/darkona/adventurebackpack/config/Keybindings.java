@@ -5,8 +5,6 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 
-import com.darkona.adventurebackpack.reference.Names;
-
 /**
  * Created on 14/10/2014
  *
@@ -14,8 +12,12 @@ import com.darkona.adventurebackpack.reference.Names;
  */
 public class Keybindings
 {
-    public static KeyBinding openInventory = new KeyBinding(Names.keys.OPEN_INVENTORY, Keyboard.KEY_B, Names.keys.CATEGORY);
-    public static KeyBinding toggleActions = new KeyBinding(Names.keys.TOGGLE_ACTIONS, Keyboard.KEY_N, Names.keys.CATEGORY);
+    private static final String CATEGORY = "keys.adventureBackpack.category";
+    private static final String OPEN_INVENTORY = "keys.adventureBackpack.openInventory";
+    private static final String TOGGLE_ACTIONS = "keys.adventureBackpack.toggleActions";
+
+    public static KeyBinding openInventory = new KeyBinding(OPEN_INVENTORY, Keyboard.KEY_B, CATEGORY);
+    public static KeyBinding toggleActions = new KeyBinding(TOGGLE_ACTIONS, Keyboard.KEY_N, CATEGORY);
 
     public static String getInventoryKeyName()
     {

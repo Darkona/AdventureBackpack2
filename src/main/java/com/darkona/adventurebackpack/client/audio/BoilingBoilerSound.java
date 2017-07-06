@@ -15,11 +15,10 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class BoilingBoilerSound extends MovingSound
 {
-    public EntityPlayer thePlayer;
-    protected boolean repeat = true;
-    protected int repeatDelay = 0;
-
-    protected float pitch;
+    private EntityPlayer thePlayer;
+    private boolean repeat = true;
+    private int repeatDelay = 0;
+    private float pitch;
 
     public BoilingBoilerSound(EntityPlayer player)
     {
@@ -55,7 +54,6 @@ public class BoilingBoilerSound extends MovingSound
     @Override
     public void update()
     {
-
         if (thePlayer == null || thePlayer.isDead || thePlayer.worldObj == null || !Wearing.isWearingJetpack(thePlayer))
         {
             setDonePlaying();

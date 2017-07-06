@@ -21,6 +21,7 @@ import com.darkona.adventurebackpack.handlers.TooltipEventHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModEntities;
 import com.darkona.adventurebackpack.init.ModFluids;
+import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.init.ModRecipes;
@@ -28,7 +29,6 @@ import com.darkona.adventurebackpack.init.ModWorldGen;
 import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 10/10/2014
@@ -44,32 +44,15 @@ public class AdventureBackpack
     @Mod.Instance(ModInfo.MOD_ID)
     public static AdventureBackpack instance;
 
-    //Static things
-    public static CreativeTabAB creativeTab = new CreativeTabAB();
-
-    //public boolean chineseNewYear;
-    //public boolean hannukah;
-    public String Holiday;
-    PlayerEventHandler playerEventHandler;
-    ClientEventHandler clientEventHandler;
-    GeneralEventHandler generalEventHandler;
-    TooltipEventHandler tooltipEventHandler;
-
-    GuiHandler guiHandler;
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        //int year = Calendar.getInstance().get(Calendar.YEAR), month = Calendar.getInstance().get(Calendar.MONTH) + 1, day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-
         //Configuration
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-        //chineseNewYear = ChineseCalendar.isChineseNewYear(year, month, day);
-        //hannukah = JewishCalendar.isHannukah(year, month, day);
-        Holiday = Utils.getHoliday();
 
         //ModStuff
+        ModDates.init();
         ModItems.init();
         ModBlocks.init();
         ModFluids.init();
@@ -78,18 +61,13 @@ public class AdventureBackpack
         ModNetwork.init();
         proxy.initNetwork();
 
-        //EVENTS
-        playerEventHandler = new PlayerEventHandler();
-        generalEventHandler = new GeneralEventHandler();
-        clientEventHandler = new ClientEventHandler();
-        tooltipEventHandler = new TooltipEventHandler();
+        //Events
+        MinecraftForge.EVENT_BUS.register(new GeneralEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
+        MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
 
-        MinecraftForge.EVENT_BUS.register(generalEventHandler);
-        MinecraftForge.EVENT_BUS.register(clientEventHandler);
-        MinecraftForge.EVENT_BUS.register(playerEventHandler);
-        MinecraftForge.EVENT_BUS.register(tooltipEventHandler);
-
-        FMLCommonHandler.instance().bus().register(playerEventHandler);
+        FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
     }
 
     @Mod.EventHandler
@@ -100,8 +78,7 @@ public class AdventureBackpack
         ModWorldGen.init();
 
         //GUIs
-        guiHandler = new GuiHandler();
-        NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);
+        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
     }
 
     @Mod.EventHandler
@@ -122,10 +99,9 @@ public class AdventureBackpack
 
         //ConditionalFluidEffect.init();
         //ModItems.conditionalInit();
-        ModRecipes.conditionalInit();
+        //ModRecipes.conditionalInit();
 
-        /*
-        LogHelper.info("DUMPING FLUID INFORMATION");
+        /*LogHelper.info("DUMPING FLUID INFORMATION");
         LogHelper.info("-------------------------------------------------------------------------");
         for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
         {
@@ -134,16 +110,14 @@ public class AdventureBackpack
             LogHelper.info("Name: " + fluid.getName());
             LogHelper.info("");
         }
-        LogHelper.info("-------------------------------------------------------------------------");
-        */
-        /*
-        LogHelper.info("DUMPING TILE INFORMATION");
+        LogHelper.info("-------------------------------------------------------------------------");*/
+
+        /*LogHelper.info("DUMPING TILE INFORMATION");
         LogHelper.info("-------------------------------------------------------------------------");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
             LogHelper.info("Block= " + block.getUnlocalizedName());
         }
-        LogHelper.info("-------------------------------------------------------------------------");
-        */
+        LogHelper.info("-------------------------------------------------------------------------");*/
     }
 }

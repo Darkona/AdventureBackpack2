@@ -9,9 +9,9 @@ import net.minecraft.util.ResourceLocation;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
+import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 12/10/2014
@@ -65,7 +65,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         ResourceLocation modelTexture;
         if (BackpackNames.getBackpackColorName((TileAdventureBackpack) te).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString(Utils.getHoliday());
+            modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
         } else
         {
             modelTexture = Resources.backpackTextureFromColor((TileAdventureBackpack) te);

@@ -115,7 +115,7 @@ public class GuiOverlay extends Gui
             EntityPlayer player = mc.thePlayer;
             if (Wearing.isWearingWearable(player))
             {
-                IInventoryTanks inv = Wearing.getWearableInv(player);
+                IInventoryTanks inv = Wearing.getWearingWearableInv(player);
                 assert inv != null;
                 inv.openInventory();
 
