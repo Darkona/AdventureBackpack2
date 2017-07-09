@@ -21,7 +21,7 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage>
 {
-    public static final byte FROM_KEYBIND = 0;
+    public static final byte FROM_WEARING = 0;
     public static final byte FROM_HOLDING = 1;
     public static final byte FROM_TILE = 2;
 
@@ -45,7 +45,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
 
                 if (message.type == COPTER_GUI)
                 {
-                    if (message.from == FROM_KEYBIND)
+                    if (message.from == FROM_WEARING)
                     {
                         if (Wearing.isWearingCopter(player))
                         {
@@ -64,7 +64,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                 }
                 if (message.type == JETPACK_GUI)
                 {
-                    if (message.from == FROM_KEYBIND)
+                    if (message.from == FROM_WEARING)
                     {
                         if (Wearing.isWearingJetpack(player))
                         {
@@ -88,7 +88,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                         return null;
                     }
 
-                    if (message.from == FROM_KEYBIND)
+                    if (message.from == FROM_WEARING)
                     {
                         if (Wearing.isWearingBackpack(player))
                         {
@@ -115,7 +115,6 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                     }
                 }
             }
-
         }
         return null;
     }

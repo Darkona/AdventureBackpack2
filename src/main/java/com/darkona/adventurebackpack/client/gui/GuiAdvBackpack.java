@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
+import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
 
@@ -33,6 +35,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     protected int X;
     protected int Y;
     protected int Z;
+    private boolean isHoldingSpace;
     private EntityPlayer player;
     private static final ResourceLocation texture = Resources.guiTextures("guiBackpackNew");
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
@@ -240,5 +243,30 @@ public class GuiAdvBackpack extends GuiWithTanks
             player.closeScreen();
         }
         super.keyTyped(key, keycode);
+    }
+
+    @Override
+    public void updateScreen()
+    {
+        if (!isHoldingSpace)
+        {
+            if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+            {
+                isHoldingSpace = true;
+                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_HOLDING_SPACE));
+                inventory.getExtendedProperties().setBoolean("holdingSpace", true);
+                //inventory.dirtyExtended();
+            }
+        } else
+        {
+            if (!Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+            {
+                isHoldingSpace = false;
+                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_NOT_HOLDING_SPACE));
+                inventory.getExtendedProperties().removeTag("holdingSpace");
+                //inventory.dirtyExtended();
+            }
+        }
+        super.updateScreen();
     }
 }

@@ -151,14 +151,19 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
     @Override
     public void detectAndSendChanges()
     {
-        refresh();
         super.detectAndSendChanges();
+        refresh(); //TODO
+    }
+
+    private boolean isHoldingSpace()
+    {
+        return inventory.getExtendedProperties().hasKey("holdingSpace");
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
     {
-        if (source == SOURCE_WEARING) refresh();
+        if (source == SOURCE_WEARING) refresh(); //TODO
         Slot slot = getSlot(fromSlot);
         ItemStack result = null;
 
@@ -185,7 +190,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
                         }
                     }
 
-                } else if (SlotFluid.isContainer(stack))
+                } else if (!isHoldingSpace() && SlotFluid.isContainer(stack))
                 {
                     ItemStack rightOutStack = getSlot(BUCKET_RIGHT + 1).getStack();
                     ItemStack leftOutStack = getSlot(BUCKET_LEFT + 1).getStack();

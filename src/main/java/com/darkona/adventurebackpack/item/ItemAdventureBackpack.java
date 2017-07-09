@@ -2,7 +2,6 @@ package com.darkona.adventurebackpack.item;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -33,7 +32,6 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModDates;
-import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -58,11 +56,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         setUnlocalizedName("adventureBackpack");
         setFull3D();
         setMaxStackSize(1);
-    }
-
-    public static Item getItemFromBlock(Block block)
-    {
-        return block instanceof BlockAdventureBackpack ? ModItems.adventureBackpack : null;
     }
 
     @Override
@@ -249,7 +242,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
                     if (from)
                     {
                         stack.stackSize--;
-
                     } else
                     {
                         BackpackProperty.get(player).setWearable(null);
@@ -272,9 +264,8 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
-
-        if (!ConfigHandler.backpackAbilities) return;
-        if (world == null || player == null || stack == null) return;
+        if (!ConfigHandler.backpackAbilities || world == null || player == null || stack == null)
+            return;
 
         if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
         {
@@ -294,7 +285,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
-        return (float) getItemCount(stack) / Constants.INVENTORY_MAIN_SIZE;
+        return (double) getItemCount(stack) / Constants.INVENTORY_MAIN_SIZE;
     }
 
     private int getItemCount(ItemStack backpack)
@@ -352,7 +343,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @SideOnly(Side.CLIENT)
     public ResourceLocation getWearableTexture(ItemStack wearable)
     {
-
         ResourceLocation modelTexture;
 
         if (BackpackNames.getBackpackColorName(wearable).equals("Standard"))

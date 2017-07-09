@@ -16,7 +16,6 @@ public class ModDates
     public static void init()
     {
         Holiday = setHoliday();
-        //TODO problem with textures: Columbus.png, Germany.png, Halloween.png, Italy.png and Liberation.png
     }
 
     public static String getHoliday()
@@ -59,11 +58,11 @@ public class ModDates
         if (month == 4)
         {
             if (day == 1) result = "Fools";
-            if (day == 25) result = "Italy";
+            //if (day == 25) result = "Italy";
         }
         if (month == 5)
         {
-            if (day == 8 || day == 9 || day == 10) result = "Liberation";
+            //if (day == 8 || day == 9 || day == 10) result = "Liberation";
         }
         if (month == 6)
         {
@@ -85,9 +84,9 @@ public class ModDates
         }
         if (month == 10)
         {
-            if (day == 3) result = "Germany";
-            if (day == 12) result = "Columbus";
-            if (day == 31) result = "Halloween";
+            //if (day == 3) result = "Germany";
+            //if (day == 12) result = "Columbus";
+            //if (day == 31) result = "Halloween";
         }
         if (month == 11)
         {

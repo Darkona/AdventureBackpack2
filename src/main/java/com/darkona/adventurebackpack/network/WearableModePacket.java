@@ -18,11 +18,11 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class WearableModePacket implements IMessageHandler<WearableModePacket.Message, WearableModePacket.Message>
 {
-    public static byte COPTER_ON_OFF = 0;
-    public static byte COPTER_TOGGLE = 1;
-    public static byte JETPACK_ON_OFF = 2;
-    public static byte CYCLING_ON_OFF = 3;
-    public static byte NIGHTVISION_ON_OFF = 4;
+    public static final byte COPTER_ON_OFF = 0;
+    public static final byte COPTER_TOGGLE = 1;
+    public static final byte JETPACK_ON_OFF = 2;
+    public static final byte CYCLING_ON_OFF = 3;
+    public static final byte NIGHTVISION_ON_OFF = 4;
 
     @Override
     public Message onMessage(Message message, MessageContext ctx)

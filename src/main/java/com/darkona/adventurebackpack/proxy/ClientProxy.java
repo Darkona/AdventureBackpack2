@@ -30,7 +30,7 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
-import com.darkona.adventurebackpack.handlers.KeybindHandler;
+import com.darkona.adventurebackpack.handlers.KeyInputEventHandler;
 import com.darkona.adventurebackpack.handlers.RenderHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
@@ -124,6 +124,6 @@ public class ClientProxy implements IProxy
     {
         ClientRegistry.registerKeyBinding(Keybindings.openInventory);
         ClientRegistry.registerKeyBinding(Keybindings.toggleActions);
-        FMLCommonHandler.instance().bus().register(new KeybindHandler());
+        FMLCommonHandler.instance().bus().register(new KeyInputEventHandler());
     }
 }

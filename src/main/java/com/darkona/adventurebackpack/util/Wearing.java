@@ -93,6 +93,11 @@ public class Wearing
         return isHoldingBackpack(player) ? player.inventory.getCurrentItem() : null;
     }
 
+    public static InventoryBackpack getHoldingBackpackInv(EntityPlayer player)
+    {
+        return new InventoryBackpack (player.getCurrentEquippedItem());
+    }
+
     // Copter
     public static boolean isWearingCopter(EntityPlayer player)
     {

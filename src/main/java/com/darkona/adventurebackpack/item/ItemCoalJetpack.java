@@ -125,7 +125,6 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 
         if (inv.isInUse() && canUse)
         {
-
             elevate(player);
             inv.getSteamTank().drain(CoalConsumed, true);
             if (inv.getSteamTank().getFluidAmount() == 0)
