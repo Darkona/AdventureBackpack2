@@ -1,12 +1,15 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
+
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
 
 /**
  * Created on 15/01/2015
@@ -15,15 +18,20 @@ import com.darkona.adventurebackpack.common.Constants;
  */
 public class ContainerJetpack extends ContainerAdventureBackpack implements IWearableContainer
 {
-    private final int PLAYER_HOT_START = 0;
-    private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
-    private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
-    private final int PLAYER_INV_END = PLAYER_INV_START + 26;
-    private final int JETPACK_INV_START = PLAYER_INV_END + 1;
-    private final int JETPACK_FUEL_START = PLAYER_INV_END + 3;
-    InventoryCoalJetpack inventory;
+    private static final int PLAYER_HOT_START = 0;
+    private static final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
+    private static final int PLAYER_INV_START = PLAYER_HOT_END + 1;
+    private static final int PLAYER_INV_END = PLAYER_INV_START + 26;
+    private static final int JETPACK_INV_START = PLAYER_INV_END + 1;
+    private static final int JETPACK_FUEL_START = PLAYER_INV_END + 3;
+
+    private InventoryCoalJetpack inventory;
     private EntityPlayer player;
     private boolean wearing;
+
+    private int waterAmount;
+    private int steamAmount;
+    private ItemStack fuelStack;
 
     public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack jetpack, boolean wearing)
     {
@@ -65,14 +73,44 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
         // bucket out
         addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_OUT, 30, 52));
         // fuel
-        addSlotToContainer(new SlotFuel(inventory, Constants.JETPACK_FUEL_SLOT, 77, 64));
+        addSlotToContainer(new SlotFuel(inventory, JETPACK_FUEL_SLOT, 77, 64));
     }
 
     @Override
     public void detectAndSendChanges()
     {
-        refresh();
         super.detectAndSendChanges();
+
+        if (!wearing)
+        {
+            boolean changesDetected = false;
+
+            ItemStack[] inv = inventory.getInventory();
+            if (inv[JETPACK_FUEL_SLOT] != fuelStack)
+            {
+                fuelStack = inv[JETPACK_FUEL_SLOT];
+                changesDetected = true;
+            }
+
+            if (waterAmount != inventory.getWaterTank().getFluidAmount())
+            {
+                waterAmount = inventory.getWaterTank().getFluidAmount();
+                changesDetected = true;
+            }
+            if (steamAmount != inventory.getSteamTank().getFluidAmount())
+            {
+                steamAmount = inventory.getSteamTank().getFluidAmount();
+                changesDetected = true;
+            }
+
+            if (changesDetected)
+            {
+                if (player instanceof EntityPlayerMP)
+                {
+                    ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
+                }
+            }
+        }
     }
 
     @Override

@@ -43,7 +43,6 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     private String colorName = "Standard";
     private ItemStack containerStack;
 
-    //TODO is inventory saved while GUI is open? can we sync it in realtime like tanks *sometimes* does? related to jetpack boiling while GIU open?
     public InventoryBackpack(ItemStack backpack)
     {
         containerStack = backpack;

@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -16,14 +17,17 @@ import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
  */
 public class ContainerCopter extends ContainerAdventureBackpack implements IWearableContainer
 {
-    private final int PLAYER_HOT_START = 0;
-    private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
-    private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
-    private final int PLAYER_INV_END = PLAYER_INV_START + 26;
-    private final int COPTER_INV_START = PLAYER_INV_END + 1;
-    InventoryCopterPack inventory;
+    private static final int PLAYER_HOT_START = 0;
+    private static final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
+    private static final int PLAYER_INV_START = PLAYER_HOT_END + 1;
+    private static final int PLAYER_INV_END = PLAYER_INV_START + 26;
+    private static final int COPTER_INV_START = PLAYER_INV_END + 1;
+
+    private InventoryCopterPack inventory;
     private EntityPlayer player;
     private boolean wearing;
+
+    private int fuelAmount;
 
     public ContainerCopter(EntityPlayer player, InventoryCopterPack copter, boolean wearing)
     {
@@ -69,8 +73,26 @@ public class ContainerCopter extends ContainerAdventureBackpack implements IWear
     @Override
     public void detectAndSendChanges()
     {
-        refresh();
         super.detectAndSendChanges();
+
+        if (!wearing)
+        {
+            boolean changesDetected = false;
+
+            if (fuelAmount != inventory.getFuelTank().getFluidAmount())
+            {
+                fuelAmount = inventory.getFuelTank().getFluidAmount();
+                changesDetected = true;
+            }
+
+            if (changesDetected)
+            {
+                if (player instanceof EntityPlayerMP)
+                {
+                    ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
+                }
+            }
+        }
     }
 
     @Override
