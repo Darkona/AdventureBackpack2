@@ -215,6 +215,8 @@ public class TooltipEventHandler
                 toolSlotU = true;
             else if (slotAtI == Constants.LOWER_TOOL)
                 toolSlotL = true;
+            else
+                itemCount--; // this need for correct count while GUI is open and bucket slots may be occupied
         }
         itemCount -= (toolSlotU ? 1 : 0) + (toolSlotL ? 1 : 0);
         return toolSlotFormat(toolSlotU) + toolSlotFormat(toolSlotL) + " " + mainSlotsFormat(itemCount);

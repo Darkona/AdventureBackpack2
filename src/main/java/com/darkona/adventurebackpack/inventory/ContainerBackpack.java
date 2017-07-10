@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
@@ -28,22 +29,27 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
     public static final byte SOURCE_TILE = 0;
     public static final byte SOURCE_WEARING = 1;
     public static final byte SOURCE_HOLDING = 2;
-    private final int
-            PLAYER_HOT_START = 0,
-            PLAYER_HOT_END = PLAYER_HOT_START + 8,
-            PLAYER_INV_START = PLAYER_HOT_END + 1,
-            PLAYER_INV_END = PLAYER_INV_START + 26,
-            BACK_INV_START = PLAYER_INV_END + 1,
-            BACK_INV_END = BACK_INV_START + 38,
-            TOOL_START = BACK_INV_END + 1,
-            TOOL_END = TOOL_START + 1,
-            BUCKET_LEFT = TOOL_END + 1,
-            BUCKET_RIGHT = BUCKET_LEFT + 2;
-    private IInventoryAdventureBackpack inventory;
-    private byte source;
+
+    private static final int PLAYER_HOT_START = 0;
+    private static final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
+    private static final int PLAYER_INV_START = PLAYER_HOT_END + 1;
+    private static final int PLAYER_INV_END = PLAYER_INV_START + 26;
+    private static final int BACK_INV_START = PLAYER_INV_END + 1;
+    private static final int BACK_INV_END = BACK_INV_START + 38;
+    private static final int TOOL_START = BACK_INV_END + 1;
+    private static final int TOOL_END = TOOL_START + 1;
+    private static final int BUCKET_LEFT = TOOL_END + 1;
+    private static final int BUCKET_RIGHT = BUCKET_LEFT + 2;
+
     private InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
     private IInventory craftResult = new InventoryCraftResult();
+    private IInventoryAdventureBackpack inventory;
     private EntityPlayer player;
+    private byte source;
+
+    private int leftAmount;
+    private int rightAmount;
+    private int invCount;
 
     //IDEA redesign container layout/craft slots behavior, so it will be rectangular and compatible with invTweaks. this also makes more slots available cuz craft ones will not drop content on close
 
@@ -145,20 +151,71 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
         this.onCraftMatrixChanged(craftMatrix);
     }
 
-    /**
-     * Looks for changes made in the container, sends them to every listener.
-     */
     @Override
     public void detectAndSendChanges()
     {
-        refresh();
+        //refresh(); //TODO for?
         super.detectAndSendChanges();
+
+        if (source == SOURCE_HOLDING)
+        {
+            boolean changesDetected = false;
+
+            ItemStack[] inv = inventory.getInventory();
+            int tempCount = 0;
+            for (int i = 0; i <= LOWER_TOOL; i++)
+            {
+                if (inv[i] != null)
+                    tempCount++;
+            }
+            if (invCount != tempCount)
+            {
+                invCount = tempCount;
+                changesDetected = true;
+            }
+
+            if (leftAmount != inventory.getLeftTank().getFluidAmount())
+            {
+                leftAmount = inventory.getLeftTank().getFluidAmount();
+                changesDetected = true;
+            }
+            if (rightAmount != inventory.getRightTank().getFluidAmount())
+            {
+                rightAmount = inventory.getRightTank().getFluidAmount();
+                changesDetected = true;
+            }
+
+            if (changesDetected)
+            {
+                if (player instanceof EntityPlayerMP)
+                {
+                    ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
+                }
+            }
+        }
+    }
+
+    /*@Override
+    @SideOnly(Side.CLIENT)
+    public void updateProgressBar(int par1, int par2)
+    {
+        super.updateProgressBar(par1, par2);
+
+        *//*if (par1 == 77)
+        {
+            System.out.println("par2 = "+par2);
+        }*//*
+    }*/
+
+    private boolean isHoldingSpace()
+    {
+        return inventory.getExtendedProperties().hasKey("holdingSpace");
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
     {
-        if (source == SOURCE_WEARING) refresh();
+        if (source == SOURCE_WEARING) refresh(); //TODO why...
         Slot slot = getSlot(fromSlot);
         ItemStack result = null;
 
@@ -185,7 +242,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
                         }
                     }
 
-                } else if (SlotFluid.isContainer(stack))
+                } else if (!isHoldingSpace() && SlotFluid.isContainer(stack))
                 {
                     ItemStack rightOutStack = getSlot(BUCKET_RIGHT + 1).getStack();
                     ItemStack leftOutStack = getSlot(BUCKET_LEFT + 1).getStack();
@@ -309,7 +366,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack implements IWe
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
-        if (source == SOURCE_WEARING)
+        if (source == SOURCE_WEARING) //TODO
         {
             this.crafters.remove(player);
         }

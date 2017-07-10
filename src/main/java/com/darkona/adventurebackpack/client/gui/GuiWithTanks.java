@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import org.lwjgl.input.Mouse;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 
@@ -29,4 +31,16 @@ public abstract class GuiWithTanks extends GuiContainer
     {
         return zLevel;
     }
+
+    @Override
+    public void handleMouseInput()
+    {
+        if (Mouse.getEventDWheel() != 0)
+        {
+            return; // forbid mouseWheel, preventing glitches with Shift+Wheel on fluid containers and so on
+        }
+
+        super.handleMouseInput();
+    }
+
 }

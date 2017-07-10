@@ -402,7 +402,6 @@ public class ServerActions
             {
                 player.addChatComponentMessage(new ChatComponentTranslation(message));
             }
-
         }
     }
 

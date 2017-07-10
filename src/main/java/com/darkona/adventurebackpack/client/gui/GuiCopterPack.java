@@ -24,32 +24,32 @@ import com.darkona.adventurebackpack.util.Utils;
 public class GuiCopterPack extends GuiWithTanks
 {
     private InventoryCopterPack inventory;
-    private static final ResourceLocation texture = Resources.guiTextures("guiCopterPack");
-    private static GuiTank fuelTank = new GuiTank(8, 8, 72, 32, ConfigHandler.typeTankRender);
+    private boolean isWearing;
+    private EntityPlayer player;
+
+    private static final ResourceLocation TEXTURE = Resources.guiTextures("guiCopterPack");
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
-
-    private boolean wearing;
-    EntityPlayer player;
+    private static GuiTank fuelTank = new GuiTank(8, 8, 72, 32, ConfigHandler.typeTankRender);
 
     public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
     {
         super(new ContainerCopter(player, inv, wearing));
-        this.inventory = inv;
+        this.player = player;
+        inventory = inv;
+        isWearing = wearing;
         xSize = 176;
         ySize = 166;
-        this.wearing = wearing;
-        this.player = player;
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseY)
     {
         GL11.glColor4f(1, 1, 1, 1);
-        this.mc.renderEngine.bindTexture(texture);
+        this.mc.renderEngine.bindTexture(TEXTURE);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        if (wearing)
+        if (isWearing)
         {
             if (unequipButton.inButton(this, mouseX, mouseY))
             {
@@ -123,7 +123,7 @@ public class GuiCopterPack extends GuiWithTanks
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-        if (wearing)
+        if (isWearing)
         {
             if (unequipButton.inButton(this, mouseX, mouseY))
             {
@@ -157,7 +157,7 @@ public class GuiCopterPack extends GuiWithTanks
     {
         if (inventory != null)
         {
-            inventory.closeInventory();
+            inventory.closeInventory(); //TODO
         }
         super.onGuiClosed();
     }

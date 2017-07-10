@@ -31,6 +31,7 @@ public class ModRecipes
     {
         if (ConfigHandler.recipeSaddle)
         {
+            //Saddle
             GameRegistry.addRecipe(new ItemStack(Items.saddle),
                     "LLL",
                     "L L",
@@ -38,6 +39,15 @@ public class ModRecipes
                     'L', Items.leather,
                     'I', Items.iron_ingot);
         }
+
+        //CampFire
+        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.blockCampFire,
+                " S ",
+                "SxS",
+                "ccc",
+                'S', "stickWood",
+                'x', Items.coal,
+                'c', "cobblestone"));
 
         //Copter Pack
         if (ConfigHandler.recipeCopterPack)
@@ -78,63 +88,6 @@ public class ModRecipes
                     'T', new ItemStack(ModItems.component, 1, 2));
         }
 
-        //change to make it not support BuildCraft there are people out there who dont like that mod
-        //CampFire
-        GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.blockCampFire,
-                " S ",
-                "SxS",
-                "ccc",
-                'S', "stickWood",
-                'x', Items.coal,
-                'c', "cobblestone"));
-
-        //Sleeping Bag
-        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 1),
-                "  X",
-                "CCC",
-                'X', Blocks.wool,
-                'C', Blocks.carpet);
-
-        //Backpack Tank
-        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 2),
-                "GIG",
-                "GGG",
-                "GIG",
-                'G', Blocks.glass,
-                'I', Items.iron_ingot);
-
-        //Inflatable Boat
-        if (ConfigHandler.recipeInflatableBoat)
-        {
-            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 7),
-                    "   ",
-                    "w w",
-                    "sws",
-                    'w', Blocks.wool,
-                    's', Blocks.sand);
-        }
-
-        //Inflatable Boat (Motorized)
-        if (ConfigHandler.recipeInflatableBoatM && ConfigHandler.recipeInflatableBoat)
-        {
-            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 8),
-                    " B ",
-                    " E ",
-                    " H ",
-                    'B', new ItemStack(ModItems.component, 1, 7),
-                    'H', new ItemStack(ModItems.component, 1, 9),
-                    'E', new ItemStack(ModItems.component, 1, 5));
-        }
-
-        //Hose Nozzle
-        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 3),
-                " G ",
-                "ILI",
-                "   ",
-                'G', Items.gold_ingot,
-                'I', Items.iron_ingot,
-                'L', Blocks.lever);
-
         if (ConfigHandler.recipeMachete)
         {
             //Machete Handle
@@ -158,9 +111,9 @@ public class ModRecipes
                     'H', new ItemStack(ModItems.component, 1, 4));
         }
 
-        //Clockwork Crossbow
         if (ConfigHandler.recipeClockCrossbow)
         {
+            //Clockwork Crossbow
             GameRegistry.addRecipe(new ItemStack(ModItems.cwxbow),
                     "   ",
                     "BA ",
@@ -201,9 +154,9 @@ public class ModRecipes
                     'L', Items.leather);
         }
 
-        //Piston Boots
         if (ConfigHandler.recipePitonBoots)
         {
+            //Piston Boots
             GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
                     " B ",
                     "PSP",
@@ -215,12 +168,94 @@ public class ModRecipes
         //Melon Juice Bottle
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.melonJuiceBottle), Items.melon, Items.potionitem);
 
+        //Hose Nozzle
+        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 3),
+                " G ",
+                "ILI",
+                "   ",
+                'G', Items.gold_ingot,
+                'I', Items.iron_ingot,
+                'L', Blocks.lever);
+
         //Hose
         GameRegistry.addRecipe(new ItemStack(ModItems.hose),
                 "NGG",
                 "  G",
                 'N', new ItemStack(ModItems.component, 1, 3),
                 'G', new ItemStack(Items.dye, 1, 2));
+
+        //Sleeping Bag
+        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 1),
+                "  X",
+                "CCC",
+                'X', Blocks.wool,
+                'C', Blocks.carpet);
+
+        //Backpack Tank
+        GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 2),
+                "GIG",
+                "GGG",
+                "GIG",
+                'G', Blocks.glass,
+                'I', Items.iron_ingot);
+
+        if (ConfigHandler.recipeCopterPack)
+        {
+            //Copter Engine
+            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
+                    "IGI",
+                    "PCP",
+                    "FOF",
+                    'I', Items.iron_ingot,
+                    'G', Items.gold_ingot,
+                    'P', Blocks.piston,
+                    'F', Blocks.furnace,
+                    'C', Items.cauldron,
+                    'O', Blocks.obsidian);
+        }
+
+        if (ConfigHandler.recipeCopterPack || ConfigHandler.recipeInflatableBoatM)
+        {
+            //Copter Blades
+            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 6),
+                    "III",
+                    " F ",
+                    " F ",
+                    'I', Items.iron_ingot,
+                    'F', Blocks.fence);
+        }
+
+
+        if (ConfigHandler.recipeInflatableBoat)
+        {
+            //Inflatable Boat
+            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 7),
+                    "   ",
+                    "w w",
+                    "sws",
+                    'w', Blocks.wool,
+                    's', Blocks.sand);
+
+            if (ConfigHandler.recipeInflatableBoatM)
+            {
+                //Inflatable Boat (Motorized)
+                GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 8),
+                        " B ",
+                        " E ",
+                        " H ",
+                        'B', new ItemStack(ModItems.component, 1, 7),
+                        'H', new ItemStack(ModItems.component, 1, 9),
+                        'E', new ItemStack(ModItems.component, 1, 5));
+
+                //Hydro Blades
+                GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 9),
+                        " F ",
+                        " F ",
+                        "III",
+                        'I', Items.iron_ingot,
+                        'F', Blocks.fence);
+            }
+        }
 
         BackpackRecipesList br = new BackpackRecipesList();
         int counter = 0;
@@ -269,36 +304,11 @@ public class ModRecipes
         */
     }
 
-    public static void conditionalInit()
+    /*public static void conditionalInit()
     {
+        if(ConfigHandler.IS_BUILDCRAFT)
         {
-            //Copter Engine
-            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
-                    "IGI",
-                    "PCP",
-                    "FOF",
-                    'I', Items.iron_ingot,
-                    'G', Items.gold_ingot,
-                    'P', Blocks.piston,
-                    'F', Blocks.furnace,
-                    'C', Items.cauldron,
-                    'O', Blocks.obsidian);
 
-            //Copter Blades
-            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 6),
-                    "III",
-                    " F ",
-                    " F ",
-                    'I', Items.iron_ingot,
-                    'F', Blocks.fence);
-
-            //Hydro Blades
-            GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 9),
-                    " F ",
-                    " F ",
-                    "III",
-                    'I', Items.iron_ingot,
-                    'F', Blocks.fence);
         }
-    }
+    }*/
 }

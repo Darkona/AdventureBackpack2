@@ -38,6 +38,7 @@ public class ModItems
 
     public static void init()
     {
+        // Sequence affect location in NEI and CreativeTab, so keep it logically grouped
         GameRegistry.registerItem(machete, "machete");
         GameRegistry.registerItem(cwxbow, "clockworkCrossbow");
         GameRegistry.registerItem(adventureHat, "adventureHat");

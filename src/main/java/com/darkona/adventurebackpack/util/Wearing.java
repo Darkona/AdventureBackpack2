@@ -30,14 +30,26 @@ public class Wearing
         return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof IBackWearableItem;
     }
 
-    public static boolean isHoldingWearable(EntityPlayer player)
-    {
-        return player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof IBackWearableItem;
-    }
-
     public static ItemStack getWearingWearable(EntityPlayer player)
     {
         return isWearingWearable(player) ? BackpackProperty.get(player).getWearable() : null;
+    }
+
+    public static IInventoryTanks getWearingWearableInv(EntityPlayer player)
+    {
+        ItemStack wearable = Wearing.getWearingWearable(player);
+        if (wearable.getItem() instanceof ItemAdventureBackpack)
+            return new InventoryBackpack(wearable);
+        if (wearable.getItem() instanceof ItemCoalJetpack)
+            return new InventoryCoalJetpack(wearable);
+        if (wearable.getItem() instanceof ItemCopterPack)
+            return new InventoryCopterPack(wearable);
+        return null;
+    }
+
+    public static boolean isHoldingWearable(EntityPlayer player)
+    {
+        return player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof IBackWearableItem;
     }
 
     // Backpack
@@ -46,9 +58,29 @@ public class Wearing
         return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemAdventureBackpack;
     }
 
+    public static boolean isWearingTheRightBackpack(EntityPlayer player, String... backpacks)
+    {
+        if (Wearing.isWearingBackpack(player))
+        {
+            for (String name : backpacks)
+            {
+                if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals(name))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static ItemStack getWearingBackpack(EntityPlayer player)
     {
         return isWearingBackpack(player) ? BackpackProperty.get(player).getWearable() : null;
+    }
+
+    public static InventoryBackpack getWearingBackpackInv(EntityPlayer player)
+    {
+        return new InventoryBackpack(BackpackProperty.get(player).getWearable());
     }
 
     public static boolean isHoldingBackpack(EntityPlayer player)
@@ -59,6 +91,11 @@ public class Wearing
     public static ItemStack getHoldingBackpack(EntityPlayer player)
     {
         return isHoldingBackpack(player) ? player.inventory.getCurrentItem() : null;
+    }
+
+    public static InventoryBackpack getHoldingBackpackInv(EntityPlayer player)
+    {
+        return new InventoryBackpack (player.getCurrentEquippedItem());
     }
 
     // Copter
@@ -133,37 +170,5 @@ public class Wearing
     public static ItemStack getWearingBoots(EntityPlayer player)
     {
         return isWearingBoots(player) ? player.inventory.armorInventory[0] : null;
-    }
-
-    /**
-     * Will return a backpack inventory from a backpack in the slot
-     */
-    public static InventoryBackpack getWearingBackpackInv(EntityPlayer player)
-    {
-        return new InventoryBackpack(BackpackProperty.get(player).getWearable());
-    }
-
-    public static boolean isWearingTheRightBackpack(EntityPlayer player, String... backpacks)
-    {
-        if (Wearing.isWearingBackpack(player))
-        {
-            for (String name : backpacks)
-            {
-                if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals(name))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static IInventoryTanks getWearableInv(EntityPlayer player)
-    {
-        ItemStack wearable = Wearing.getWearingWearable(player);
-        if (wearable.getItem() instanceof ItemAdventureBackpack) return new InventoryBackpack(wearable);
-        if (wearable.getItem() instanceof ItemCoalJetpack) return new InventoryCoalJetpack(wearable);
-        if (wearable.getItem() instanceof ItemCopterPack) return new InventoryCopterPack(wearable);
-        return null;
     }
 }

@@ -25,22 +25,23 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class GuiCoalJetpack extends GuiWithTanks
 {
-    private static final ResourceLocation texture = Resources.guiTextures("guiCoalJetpack");
-    private static GuiTank waterTank = new GuiTank(8, 8, 72, 16, ConfigHandler.typeTankRender);
-    private static GuiTank steamTank = new GuiTank(116, 8, 72, 16, ConfigHandler.typeTankRender);
+    private InventoryCoalJetpack inventory;
+    private int boiling = 0;
+    private boolean isWearing;
+    private EntityPlayer player;
+
+    private static final ResourceLocation TEXTURE = Resources.guiTextures("guiCoalJetpack");
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
-    private boolean wearing;
-    EntityPlayer player;
-    InventoryCoalJetpack inventory;
-    int boiling = 0;
+    private static GuiTank waterTank = new GuiTank(8, 8, 72, 16, ConfigHandler.typeTankRender);
+    private static GuiTank steamTank = new GuiTank(116, 8, 72, 16, ConfigHandler.typeTankRender);
 
-    public GuiCoalJetpack(EntityPlayer player, InventoryCoalJetpack inventory, boolean wearing)
+    public GuiCoalJetpack(EntityPlayer player, InventoryCoalJetpack inv, boolean wearing)
     {
-        super(new ContainerJetpack(player, inventory, wearing));
-        this.wearing = wearing;
+        super(new ContainerJetpack(player, inv, wearing));
         this.player = player;
-        this.inventory = inventory;
+        inventory = inv;
+        isWearing = wearing;
         xSize = 176;
         ySize = 166;
     }
@@ -49,10 +50,10 @@ public class GuiCoalJetpack extends GuiWithTanks
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseY)
     {
         inventory.openInventory();
-        this.mc.renderEngine.bindTexture(texture);
+        this.mc.renderEngine.bindTexture(TEXTURE);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        if (wearing)
+        if (isWearing)
         {
             if (unequipButton.inButton(this, mouseX, mouseY))
             {
@@ -71,14 +72,14 @@ public class GuiCoalJetpack extends GuiWithTanks
                 equipButton.draw(this, 1, 167);
             }
         }
-        //if (wearing) inventory = new InventoryCoalJetpack(Wearing.getWearingJetpack(player));
+        //if (isWearing) inventory = new InventoryCoalJetpack(Wearing.getWearingJetpack(player));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.mc.renderEngine.bindTexture(texture);
-        if (wearing)
+        this.mc.renderEngine.bindTexture(TEXTURE);
+        if (isWearing)
             inventory = new InventoryCoalJetpack(Wearing.getWearingJetpack(player));
         FluidTank water = inventory.getWaterTank();
         FluidTank steam = inventory.getSteamTank();
@@ -87,11 +88,13 @@ public class GuiCoalJetpack extends GuiWithTanks
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         if (inventory.isBoiling() && steam.getFluidAmount() < steam.getCapacity() && water.getFluidAmount() > 0)
         {
-            if (boiling < 83)
+            if (boiling < 83) //TODO here
             {
                 drawTexturedModalRect(28, 40, 50, 172, boiling++, 37);
             } else
+            {
                 boiling = 0;
+            }
         }
         if (inventory.getBurnTicks() > 0)
         {
@@ -142,7 +145,7 @@ public class GuiCoalJetpack extends GuiWithTanks
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-        if (wearing)
+        if (isWearing)
         {
             if (unequipButton.inButton(this, mouseX, mouseY))
             {

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
+import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
 
@@ -27,52 +29,38 @@ import com.darkona.adventurebackpack.util.Resources;
 @SideOnly(Side.CLIENT)
 public class GuiAdvBackpack extends GuiWithTanks
 {
-    protected IInventoryAdventureBackpack inventory;
-    protected boolean isTile;
-    protected boolean wearing;
-    protected int X;
-    protected int Y;
-    protected int Z;
+    private IInventoryAdventureBackpack inventory;
+    private boolean isTile;
+    private boolean isWearing;
+    private boolean isHoldingSpace;
     private EntityPlayer player;
-    private static final ResourceLocation texture = Resources.guiTextures("guiBackpackNew");
+
+    private static final ResourceLocation TEXTURE = Resources.guiTextures("guiBackpackNew");
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.typeTankRender);
     private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.typeTankRender);
-    @SuppressWarnings("FieldCanBeLocal")
-    private FluidTank lft;
-    @SuppressWarnings("FieldCanBeLocal")
-    private FluidTank rgt;
-    public int lefties;
-    public int topsies;
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {
         super(new ContainerBackpack(player, tileBackpack, ContainerBackpack.SOURCE_TILE));
-        this.inventory = tileBackpack;
-        this.isTile = true;
+        this.player = player;
+        inventory = tileBackpack;
+        isTile = true;
         xSize = 248;
         ySize = 207;
-        this.X = tileBackpack.xCoord;
-        this.Y = tileBackpack.yCoord;
-        this.Z = tileBackpack.zCoord;
-        this.player = player;
-        this.lefties = guiLeft;
-        this.topsies = guiTop;
     }
 
     public GuiAdvBackpack(EntityPlayer player, InventoryBackpack inventoryBackpack, boolean wearing)
     {
         super(new ContainerBackpack(player, inventoryBackpack, wearing ? ContainerBackpack.SOURCE_WEARING : ContainerBackpack.SOURCE_HOLDING));
-        this.inventory = inventoryBackpack;
-        this.wearing = wearing;
-        this.isTile = false;
+        this.player = player;
+        inventory = inventoryBackpack;
+        isWearing = wearing;
+        isTile = false;
         xSize = 248;
         ySize = 207;
-        this.player = player;
-        this.lefties = guiLeft;
-        this.topsies = guiTop;
     }
 
     @Override
@@ -80,7 +68,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     {
         if (inventory != null)
         {
-            inventory.closeInventory();
+            inventory.closeInventory(); //TODO
         }
         super.onGuiClosed();
     }
@@ -90,7 +78,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     {
         GL11.glColor4f(1, 1, 1, 1);
 
-        this.mc.renderEngine.bindTexture(texture);
+        this.mc.renderEngine.bindTexture(TEXTURE);
 
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -106,7 +94,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             }
         } else
         {
-            if (wearing)
+            if (isWearing)
             {
                 if (unequipButton.inButton(this, mouseX, mouseY))
                 {
@@ -145,8 +133,8 @@ public class GuiAdvBackpack extends GuiWithTanks
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         inventory.openInventory();
-        lft = inventory.getLeftTank();
-        rgt = inventory.getRightTank();
+        FluidTank lft = inventory.getLeftTank();
+        FluidTank rgt = inventory.getRightTank();
         tankLeft.draw(this, lft);
         tankRight.draw(this, rgt);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -213,7 +201,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             }
         } else
         {
-            if (wearing)
+            if (isWearing)
             {
                 if (unequipButton.inButton(this, mouseX, mouseY))
                 {
@@ -228,7 +216,6 @@ public class GuiAdvBackpack extends GuiWithTanks
                     //ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
                     player.closeScreen();
                 }
-
             }
         }
         super.mouseClicked(mouseX, mouseY, button);
@@ -242,5 +229,30 @@ public class GuiAdvBackpack extends GuiWithTanks
             player.closeScreen();
         }
         super.keyTyped(key, keycode);
+    }
+
+    @Override
+    public void updateScreen()
+    {
+        if (!isHoldingSpace)
+        {
+            if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+            {
+                isHoldingSpace = true;
+                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_HOLDING_SPACE));
+                inventory.getExtendedProperties().setBoolean("holdingSpace", true);
+                //inventory.dirtyExtended();
+            }
+        } else
+        {
+            if (!Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+            {
+                isHoldingSpace = false;
+                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_NOT_HOLDING_SPACE));
+                inventory.getExtendedProperties().removeTag("holdingSpace");
+                //inventory.dirtyExtended();
+            }
+        }
+        super.updateScreen();
     }
 }
