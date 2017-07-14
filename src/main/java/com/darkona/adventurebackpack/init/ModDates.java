@@ -7,7 +7,7 @@ import java.util.Calendar;
  */
 public class ModDates
 {
-    private static String Holiday;
+    private static String holiday;
 
     private static int year = Calendar.getInstance().get(Calendar.YEAR);
     private static int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
@@ -15,12 +15,12 @@ public class ModDates
 
     public static void init()
     {
-        Holiday = setHoliday();
+        holiday = setHoliday();
     }
 
     public static String getHoliday()
     {
-        return Holiday;
+        return holiday;
     }
 
     private static String setHoliday()

@@ -64,16 +64,6 @@ public class GuiAdvBackpack extends GuiWithTanks
     }
 
     @Override
-    public void onGuiClosed()
-    {
-        if (inventory != null)
-        {
-            inventory.closeInventory(); //TODO
-        }
-        super.onGuiClosed();
-    }
-
-    @Override
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
     {
         GL11.glColor4f(1, 1, 1, 1);
@@ -234,6 +224,8 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     public void updateScreen()
     {
+        super.updateScreen();
+
         if (!isHoldingSpace)
         {
             if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
@@ -241,7 +233,6 @@ public class GuiAdvBackpack extends GuiWithTanks
                 isHoldingSpace = true;
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_HOLDING_SPACE));
                 inventory.getExtendedProperties().setBoolean("holdingSpace", true);
-                //inventory.dirtyExtended();
             }
         } else
         {
@@ -250,9 +241,7 @@ public class GuiAdvBackpack extends GuiWithTanks
                 isHoldingSpace = false;
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_NOT_HOLDING_SPACE));
                 inventory.getExtendedProperties().removeTag("holdingSpace");
-                //inventory.dirtyExtended();
             }
         }
-        super.updateScreen();
     }
 }

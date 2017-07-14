@@ -16,18 +16,14 @@ import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
  *
  * @author Darkona
  */
-public class ContainerJetpack extends ContainerAdventureBackpack implements IWearableContainer
+public class ContainerJetpack extends ContainerAdventureBackpack /*implements IWearableContainer*/
 {
-    private static final int PLAYER_HOT_START = 0;
-    private static final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
-    private static final int PLAYER_INV_START = PLAYER_HOT_END + 1;
-    private static final int PLAYER_INV_END = PLAYER_INV_START + 26;
     private static final int JETPACK_INV_START = PLAYER_INV_END + 1;
     private static final int JETPACK_FUEL_START = PLAYER_INV_END + 3;
 
     private InventoryCoalJetpack inventory;
     private EntityPlayer player;
-    private boolean wearing;
+    private boolean isWearing;
 
     private int waterAmount;
     private int steamAmount;
@@ -39,40 +35,15 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
         inventory = jetpack;
         makeSlots(player.inventory);
         inventory.openInventory();
-        this.wearing = wearing;
-    }
-
-    private void bindPlayerInventory(InventoryPlayer invPlayer)
-    {
-        int startX = 8;
-        int startY = 84;
-
-        // Player's Hotbar
-        for (int x = 0; x < 9; x++)
-        {
-            addSlotToContainer(new Slot(invPlayer, x, startX + 18 * x, 142));
-        }
-
-        // Player's Inventory
-        for (int y = 0; y < 3; y++)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (startX + 18 * x), (startY + y * 18)));
-            }
-        }
-        //Total 36 slots
+        isWearing = wearing;
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
-        bindPlayerInventory(invPlayer);
-        //Bucket Slots
-        // bucket in
+        bindPlayerInventory(invPlayer, 8, 84);
+
         addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_IN, 30, 22));
-        // bucket out
         addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_OUT, 30, 52));
-        // fuel
         addSlotToContainer(new SlotFuel(inventory, JETPACK_FUEL_SLOT, 77, 64));
     }
 
@@ -81,7 +52,7 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
     {
         super.detectAndSendChanges();
 
-        if (!wearing)
+        if (!isWearing)
         {
             boolean changesDetected = false;
 
@@ -116,7 +87,6 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
     {
-        refresh();
         Slot slot = getSlot(fromSlot);
         ItemStack result = null;
 
@@ -199,7 +169,7 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (!wearing && slot >= 0)
+        if (!isWearing && slot >= 0)
         {
             if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
             {
@@ -217,10 +187,12 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
-        if (wearing)
+
+        if (isWearing) //TODO
         {
             this.crafters.remove(player);
         }
+
         if (!player.worldObj.isRemote)
         {
             for (int i = 0; i < inventory.getSizeInventory(); i++)
@@ -241,9 +213,9 @@ public class ContainerJetpack extends ContainerAdventureBackpack implements IWea
         return true;
     }
 
-    @Override
+    /*@Override
     public void refresh()
     {
         inventory.openInventory();
-    }
+    }*/
 }

@@ -151,14 +151,4 @@ public class GuiCopterPack extends GuiWithTanks
         }
         super.keyTyped(key, keycode);
     }
-
-    @Override
-    public void onGuiClosed()
-    {
-        if (inventory != null)
-        {
-            inventory.closeInventory(); //TODO
-        }
-        super.onGuiClosed();
-    }
 }

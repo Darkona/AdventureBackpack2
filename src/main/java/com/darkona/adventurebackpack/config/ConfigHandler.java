@@ -15,7 +15,6 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class ConfigHandler
 {
-    //public static final String configVersion = "1.0.0";
     public static Configuration config;
 
     public static boolean IS_DEVENV = false;
@@ -208,9 +207,4 @@ public class ConfigHandler
             loadConfiguration();
         }
     }
-
-    /*private static boolean isConfigVersionWrong(Configuration configuration)
-    {
-        return !configuration.getLoadedConfigVersion().equals(configuration.getDefinedConfigVersion());
-    }*/
 }

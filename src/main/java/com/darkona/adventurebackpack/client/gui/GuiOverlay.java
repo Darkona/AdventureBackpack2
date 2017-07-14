@@ -136,7 +136,7 @@ public class GuiOverlay extends Gui
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 for (FluidTank tank : inv.getTanksArray())
                 {
-                    mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
+                    mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/overlay.png"));
                     drawTexturedModalRect(tankX, yPos, 10, 0, textureWidth, textureHeight);
                     drawTank(tank, tankX + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
                     ++tankX;
@@ -158,7 +158,7 @@ public class GuiOverlay extends Gui
                         u[0] = (tank == 0) ? 0 : 10;
                         u[1] = (tank == 1) ? 0 : 10;
                     }
-                    mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
+                    mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/overlay.png"));
                     drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight); //Left Tank
                     drawTexturedModalRect(xStart[1], yStart[0], u[1], v[1], textureWidth, textureHeight); //Right Tank
                     RenderHelper.enableStandardItemLighting();
