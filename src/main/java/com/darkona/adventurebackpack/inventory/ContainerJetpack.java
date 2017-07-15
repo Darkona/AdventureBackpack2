@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -85,85 +84,53 @@ public class ContainerJetpack extends ContainerAdventureBackpack /*implements IW
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
+    public boolean transferStackToPack(ItemStack stack)
     {
-        Slot slot = getSlot(fromSlot);
-        ItemStack result = null;
-
-        if (slot != null && slot.getHasStack())
+        if (SlotFluid.isContainer(stack))
         {
-            ItemStack stack = slot.getStack();
-            result = stack.copy();
-            if (fromSlot >= 36)
+            FluidTank waterTank = inventory.getWaterTank();
+
+            boolean isOutStackEmpty = !getSlot(JETPACK_INV_START + 1).getHasStack();
+            boolean isWaterTankEmpty = SlotFluid.isEmpty(waterTank);
+            boolean suitableToTank = SlotFluid.isEqualAndCanFit(stack, waterTank);
+            boolean isBucketsCase = SlotFluid.isEmptyBucket(getSlot(JETPACK_INV_START + 1).getStack())
+                    && SlotFluid.isFilledBucket(stack);
+
+            if (SlotFluid.isFilled(stack))
             {
-                if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
+                if ((isOutStackEmpty || isBucketsCase) && SlotFluidWater.isValidItem(stack))
                 {
-                    return null;
+                    if (isWaterTankEmpty || suitableToTank)
+                    {
+                        if (!mergeBucket(stack))
+                            return false;
+                    }
                 }
-            }
-            if (fromSlot < 36)
+            } else if (SlotFluid.isEmpty(stack))
             {
-                if (SlotFluid.isContainer(stack))
+                if (isOutStackEmpty && SlotFluidWater.isValidItem(stack))
                 {
-                    ItemStack outStack = getSlot(JETPACK_INV_START + 1).getStack();
-
-                    FluidTank waterTank = inventory.getWaterTank();
-                    int maxAmount = waterTank.getCapacity();
-                    int tankAmount = waterTank.getFluidAmount();
-                    int tankFluid = SlotFluid.getFluidID(waterTank);
-
-                    int containerCapacity = SlotFluid.getCapacity(stack);
-                    int containerFluid = SlotFluid.getFluidID(stack);
-
-                    if (SlotFluid.isFilled(stack))
-                    {
-                        if ((outStack == null || (SlotFluid.isEmptyBucket(outStack) && SlotFluid.isBucket(stack)))
-                                && SlotFluidWater.isValidItem(stack))
-                        {
-                            if ((tankAmount == 0 || (tankAmount > 0 && tankFluid == containerFluid))
-                                    && tankAmount + containerCapacity <= maxAmount)
-                            {
-                                if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
-                                {
-                                    return null;
-                                }
-                            }
-                        }
-                    } else if (SlotFluid.isEmpty(stack))
-                    {
-                        if (outStack == null && tankAmount >= containerCapacity && SlotFluidWater.isValidItem(stack))
-                        {
-                            if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
-                            {
-                                return null;
-                            }
-                        }
-                    }
-
-                } else if (SlotFuel.isValidItem(stack))
-                {
-                    if (!mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false))
-                    {
-                        return null;
-                    }
+                    if (!mergeBucket(stack))
+                        return false;
                 }
             }
 
-            if (stack.stackSize == 0)
-            {
-                slot.putStack(null);
-            } else
-            {
-                slot.onSlotChanged();
-            }
-
-            if (stack.stackSize == result.stackSize)
-            {
-                return null;
-            }
-            slot.onPickupFromSlot(player, stack);
+        } else if (SlotFuel.isValidItem(stack))
+        {
+            if (!mergeFuel(stack))
+                return false;
         }
-        return result;
+        return true;
+    }
+
+    private boolean mergeBucket(ItemStack stack)
+    {
+        return mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false);
+    }
+
+    private boolean mergeFuel(ItemStack stack)
+    {
+        return mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false);
     }
 
     @Override
@@ -205,12 +172,6 @@ public class ContainerJetpack extends ContainerAdventureBackpack /*implements IW
                 }
             }
         }
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer p_75145_1_)
-    {
-        return true;
     }
 
     /*@Override

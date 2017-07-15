@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidTank;
@@ -18,7 +17,7 @@ import static com.darkona.adventurebackpack.common.Constants.COPTER_INVENTORY_SI
  *
  * @author Darkona
  */
-public class InventoryCopterPack implements IInventoryTanks
+public class InventoryCopterPack extends InventoryAdventureBackpack
 {
     public int tickCounter = 0;
 
@@ -26,7 +25,6 @@ public class InventoryCopterPack implements IInventoryTanks
     private ItemStack[] inventory = new ItemStack[COPTER_INVENTORY_SIZE];
 
     private byte status = ItemCopterPack.OFF_MODE;
-    private ItemStack containerStack;
 
     //TODO copter sound doesn't init at login (status init, so you can keep flying)
     public InventoryCopterPack(ItemStack copterPack)
@@ -82,9 +80,9 @@ public class InventoryCopterPack implements IInventoryTanks
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i)
+    public ItemStack getStackInSlotOnClosing(int slot)
     {
-        return (i == COPTER_BUCKET_IN || i == COPTER_BUCKET_OUT) ? inventory[i] : null;
+        return (slot == COPTER_BUCKET_IN || slot == COPTER_BUCKET_OUT) ? inventory[slot] : null;
     }
 
     @Override
@@ -96,54 +94,6 @@ public class InventoryCopterPack implements IInventoryTanks
             stack.stackSize = getInventoryStackLimit();
         }
         dirtyInventory();
-    }
-
-    @Override
-    public String getInventoryName()
-    {
-        return "Copter Pack";
-    }
-
-    @Override
-    public boolean hasCustomInventoryName()
-    {
-        return true;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    public void markDirty()
-    {
-        saveToNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
-    {
-        return true;
-    }
-
-    @Override
-    public void openInventory()
-    {
-        loadFromNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public void closeInventory()
-    {
-        saveToNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, ItemStack stack)
-    {
-        return false;
     }
 
     public void dirtyCounter()

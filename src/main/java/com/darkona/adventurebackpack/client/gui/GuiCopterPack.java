@@ -23,14 +23,15 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class GuiCopterPack extends GuiWithTanks
 {
-    private InventoryCopterPack inventory;
-    private boolean isWearing;
-    private EntityPlayer player;
-
     private static final ResourceLocation TEXTURE = Resources.guiTextures("guiCopterPack");
+
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiTank fuelTank = new GuiTank(8, 8, 72, 32, ConfigHandler.typeTankRender);
+
+    private InventoryCopterPack inventory;
+    private EntityPlayer player;
+    private boolean isWearing;
 
     public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
     {
@@ -99,24 +100,6 @@ public class GuiCopterPack extends GuiWithTanks
             }
         }
         GL11.glPopMatrix();
-    }
-
-    @Override
-    public int getLeft()
-    {
-        return guiLeft;
-    }
-
-    @Override
-    public int getTop()
-    {
-        return guiTop;
-    }
-
-    @Override
-    public float getZLevel()
-    {
-        return zLevel;
     }
 
     @Override

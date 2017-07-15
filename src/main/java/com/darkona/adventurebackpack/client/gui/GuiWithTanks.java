@@ -12,7 +12,7 @@ import net.minecraft.inventory.Container;
  */
 public abstract class GuiWithTanks extends GuiContainer
 {
-    public GuiWithTanks(Container p_i1072_1_)
+    GuiWithTanks(Container p_i1072_1_)
     {
         super(p_i1072_1_);
     }

@@ -29,18 +29,20 @@ import com.darkona.adventurebackpack.util.Resources;
 @SideOnly(Side.CLIENT)
 public class GuiAdvBackpack extends GuiWithTanks
 {
-    private IInventoryAdventureBackpack inventory;
-    private boolean isTile;
-    private boolean isWearing;
-    private boolean isHoldingSpace;
-    private EntityPlayer player;
-
     private static final ResourceLocation TEXTURE = Resources.guiTextures("guiBackpackNew");
+
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.typeTankRender);
     private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.typeTankRender);
+
+    private IInventoryAdventureBackpack inventory;
+    private EntityPlayer player;
+    private boolean isWearing;
+    private boolean isTile;
+
+    private boolean isHoldingSpace;
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {
@@ -152,30 +154,6 @@ public class GuiAdvBackpack extends GuiWithTanks
 
             GL11.glPopMatrix();
         }*/
-    }
-
-    @Override
-    public float getZLevel()
-    {
-        return this.zLevel;
-    }
-
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-    }
-
-    @Override
-    public int getLeft()
-    {
-        return guiLeft;
-    }
-
-    @Override
-    public int getTop()
-    {
-        return guiTop;
     }
 
     @Override

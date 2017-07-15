@@ -71,7 +71,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
         int startY = 7;
         int slot = 0;
 
-        for (int i = 0; i < 3; i++) // upper 8*3, 24 Slots
+        for (int i = 0; i < 3; i++) // upper 8*3, 24 Slots (1-24)
         {
             for (int j = 0; j < 8; j++)
             {
@@ -82,7 +82,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
         }
 
         startY = 61;
-        for (int i = 0; i < 3; i++) // lower 5*3, 15 Slots
+        for (int i = 0; i < 3; i++) // lower 5*3, 15 Slots (25-39)
         {
             for (int j = 0; j < 5; j++)
             {
@@ -92,13 +92,13 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
             }
         }
 
-        addSlotToContainer(new SlotTool(inventory, UPPER_TOOL, 44, 79)); // #16
-        addSlotToContainer(new SlotTool(inventory, LOWER_TOOL, 44, 97)); // #17
+        addSlotToContainer(new SlotTool(inventory, UPPER_TOOL, 44, 79)); // #40
+        addSlotToContainer(new SlotTool(inventory, LOWER_TOOL, 44, 97)); // #41
 
-        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_LEFT, 6, 7)); // #18
-        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_LEFT, 6, 37)); // #19
-        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_RIGHT, 226, 7)); // #20
-        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_RIGHT, 226, 37)); // #21
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_LEFT, 6, 7)); // #42
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_LEFT, 6, 37)); // #43
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_RIGHT, 226, 7)); // #44
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_RIGHT, 226, 37)); // #45
 
         startX = 152;
         for (int y = 0; y < 3; y++) // Craft Matrix - 3*3, 9 slots
@@ -157,141 +157,105 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
         }
     }
 
+    @Override
+    protected boolean transferStackToPack(ItemStack stack)
+    {
+        if (SlotTool.isValidTool(stack))
+        {
+            if (!mergeToolSlot(stack))
+            {
+                if (SlotBackpack.isValidItem(stack))
+                {
+                    if (!mergeBackpackInv(stack))
+                        return false;
+                }
+            }
+
+        } else if (SlotFluid.isContainer(stack) && !isHoldingSpace())
+        {
+            if (!transferFluidContainer(stack))
+                return false;
+
+        } else if (SlotBackpack.isValidItem(stack))
+        {
+            if (!mergeBackpackInv(stack))
+                return false;
+        }
+        return true;
+    }
+
+    private boolean mergeToolSlot(ItemStack stack)
+    {
+        return mergeItemStack(stack, TOOL_START, TOOL_END + 1, false);
+    }
+
+    private boolean mergeBackpackInv(ItemStack stack)
+    {
+        return mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false);
+    }
+
+    private boolean mergeLeftBucket(ItemStack stack)
+    {
+        return mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false);
+    }
+
+    private boolean mergeRightBucket(ItemStack stack)
+    {
+        return mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false);
+    }
+
     private boolean isHoldingSpace()
     {
         return inventory.getExtendedProperties().hasKey("holdingSpace");
     }
 
-    @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
+    private boolean transferFluidContainer(ItemStack container)
     {
-        Slot slot = getSlot(fromSlot);
-        ItemStack result = null;
+        FluidTank leftTank = inventory.getLeftTank();
+        FluidTank rightTank = inventory.getRightTank();
 
-        if (slot != null && slot.getHasStack())
+        boolean isLeftOutEmpty = !getSlot(BUCKET_LEFT + 1).getHasStack();
+        boolean isRightOutEmpty = !getSlot(BUCKET_RIGHT + 1).getHasStack();
+        boolean isLeftTankEmpty = SlotFluid.isEmpty(leftTank);
+        boolean isRightTankEmpty = SlotFluid.isEmpty(rightTank);
+        boolean suitableToLeft = SlotFluid.isEqualAndCanFit(container, leftTank);
+        boolean suitableToRight = SlotFluid.isEqualAndCanFit(container, rightTank);
+
+        if (SlotFluid.isFilled(container))
         {
-            ItemStack stack = slot.getStack();
-            result = stack.copy();
-            if (fromSlot >= 36)
+            if (isLeftTankEmpty)
             {
-                if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
-                {
-                    return null;
-                }
-            }
-            if (fromSlot < 36)
-            {
-                if (SlotTool.isValidTool(stack))
-                {
-                    if (!mergeItemStack(stack, TOOL_START, TOOL_END + 1, false))
-                    {
-                        if (SlotBackpack.isValidItem(stack) && (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false)))
-                        {
-                            return null;
-                        }
-                    }
+                if (!isRightTankEmpty && isRightOutEmpty && suitableToRight)
+                    return mergeRightBucket(container);
+                else if (isLeftOutEmpty)
+                    return mergeLeftBucket(container);
 
-                } else if (SlotFluid.isContainer(stack) && !isHoldingSpace())
-                {
-                    ItemStack rightOutStack = getSlot(BUCKET_RIGHT + 1).getStack();
-                    ItemStack leftOutStack = getSlot(BUCKET_LEFT + 1).getStack();
-
-                    FluidTank leftTank = inventory.getLeftTank();
-                    FluidTank rightTank = inventory.getRightTank();
-                    int maxAmount = leftTank.getCapacity();
-                    int leftAmount = leftTank.getFluidAmount();
-                    int rightAmount = rightTank.getFluidAmount();
-                    int leftFluid = SlotFluid.getFluidID(leftTank);
-                    int rightFluid = SlotFluid.getFluidID(rightTank);
-
-                    int containerCapacity = SlotFluid.getCapacity(stack);
-                    int containerFluid = SlotFluid.getFluidID(stack);
-
-                    if (SlotFluid.isFilled(stack))
-                    {
-                        if (leftAmount == 0)
-                        {
-                            if (rightAmount > 0 && (rightAmount + containerCapacity <= maxAmount) && rightFluid == containerFluid)
-                            {
-                                if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
-                                {
-                                    return null;
-                                }
-                            } else if (leftOutStack == null)
-                            {
-                                if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
-                                {
-                                    return null;
-                                }
-                            }
-                        } else if ((leftAmount + containerCapacity <= maxAmount) && leftFluid == containerFluid)
-                        {
-                            if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
-                            {
-                                return null;
-                            }
-                        } else if (rightAmount == 0 || (rightAmount + containerCapacity <= maxAmount) && rightFluid == containerFluid)
-                        {
-                            if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
-                            {
-                                return null;
-                            }
-                        } else if (leftOutStack == null && rightOutStack == null && SlotBackpack.isValidItem(stack))
-                        {
-                            if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
-                            {
-                                return null;
-                            }
-                        }
-                    } else if (SlotFluid.isEmpty(stack))
-                    {
-                        if (leftAmount == 0)
-                        {
-                            if (rightAmount != 0 && rightOutStack == null)
-                            {
-                                if (!mergeItemStack(stack, BUCKET_RIGHT, BUCKET_RIGHT + 1, false))
-                                {
-                                    return null;
-                                }
-                            } else if (leftOutStack == null && rightOutStack == null && SlotBackpack.isValidItem(stack))
-                            {
-                                if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
-                                {
-                                    return null;
-                                }
-                            }
-                        } else if (leftOutStack == null)
-                        {
-                            if (!mergeItemStack(stack, BUCKET_LEFT, BUCKET_LEFT + 1, false))
-                            {
-                                return null;
-                            }
-                        }
-                    }
-
-                } else if (SlotBackpack.isValidItem(stack))
-                {
-                    if (!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
-                    {
-                        return null;
-                    }
-                }
-            }
-            if (stack.stackSize == 0)
-            {
-                slot.putStack(null);
             } else
             {
-                slot.onSlotChanged();
+                if (isLeftOutEmpty && suitableToLeft)
+                    return mergeLeftBucket(container);
+                else if (isRightOutEmpty && (isRightTankEmpty || suitableToRight))
+                    return mergeRightBucket(container);
+                else if (isLeftOutEmpty && isRightOutEmpty && SlotBackpack.isValidItem(container))
+                    return mergeBackpackInv(container);
             }
 
-            if (stack.stackSize == result.stackSize)
+        } else if (SlotFluid.isEmpty(container))
+        {
+            if (isLeftTankEmpty)
             {
-                return null;
+                if (!isRightTankEmpty && isRightOutEmpty)
+                    return mergeRightBucket(container);
+                else if (isLeftOutEmpty && isRightOutEmpty && SlotBackpack.isValidItem(container))
+                    return mergeBackpackInv(container);
+
+            } else
+            {
+                if (isLeftOutEmpty)
+                    return mergeLeftBucket(container);
             }
-            slot.onPickupFromSlot(player, stack);
         }
-        return result;
+        return false;
     }
 
     @Override
@@ -345,15 +309,9 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     }
 
     @Override
-    public void onCraftMatrixChanged(IInventory par1IInventory)
+    public void onCraftMatrixChanged(IInventory inventory)
     {
         craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer player)
-    {
-        return inventory.isUseableByPlayer(player);
     }
 
     /*@Override

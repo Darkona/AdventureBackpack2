@@ -1,8 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
-
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +26,7 @@ import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
  *
  * @author Darkona
  */
-public class InventoryBackpack implements IInventoryAdventureBackpack
+public class InventoryBackpack extends InventoryAdventureBackpack implements IInventoryAdventureBackpack
 {
     public NBTTagCompound extendedProperties = new NBTTagCompound();
 
@@ -41,7 +39,6 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     private boolean special = false;
     private int lastTime = 0;
     private String colorName = "Standard";
-    private ItemStack containerStack;
 
     public InventoryBackpack(ItemStack backpack)
     {
@@ -121,7 +118,6 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         InventoryActions.consumeItemInInventory(this, item);
     }
 
-
     @Override
     public boolean isSBDeployed()
     {
@@ -150,7 +146,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
     {
-        if (slot > inventory.length) return;
+        if (slot > inventory.length)
+            return;
+
         inventory[slot] = stack;
         if (stack != null && stack.stackSize > this.getInventoryStackLimit())
         {
@@ -178,7 +176,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
-        if (compound == null) return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
+        if (compound == null)
+            return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
 
         NBTTagCompound backpackTag = compound.getCompoundTag(COMPOUND_TAG);
         NBTTagList items = backpackTag.getTagList(INVENTORY, NBT.TAG_COMPOUND);
@@ -320,61 +319,15 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        if (slot > inventory.length) return;
+        if (slot > inventory.length)
+            return;
+
         inventory[slot] = stack;
         if (stack != null && stack.stackSize > getInventoryStackLimit())
         {
             stack.stackSize = getInventoryStackLimit();
         }
         dirtyInventory();
-    }
-
-    @Override
-    public String getInventoryName()
-    {
-        return "Adventure Backpack";
-    }
-
-    @Override
-    public boolean hasCustomInventoryName()
-    {
-        return true;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    public void markDirty()
-    {
-        saveToNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
-    {
-        return true;
-    }
-
-    @Override
-    public void openInventory()
-    {
-        loadFromNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public void closeInventory()
-    {
-        saveToNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
-    {
-        return false;
     }
 
     public boolean hasBlock(Block block)

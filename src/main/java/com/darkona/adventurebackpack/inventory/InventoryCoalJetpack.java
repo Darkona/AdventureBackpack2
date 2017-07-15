@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -23,7 +22,7 @@ import static com.darkona.adventurebackpack.common.Constants.JETPACK_WATER_TANK;
  *
  * @author Darkona
  */
-public class InventoryCoalJetpack implements IInventoryTanks
+public class InventoryCoalJetpack extends InventoryAdventureBackpack
 {
     public int currentItemBurnTime = 0;
 
@@ -39,7 +38,6 @@ public class InventoryCoalJetpack implements IInventoryTanks
     private int burnTicks = 0;
     private int coolTicks = 5000;
     private long systemTime = 0;
-    private ItemStack containerStack;
 
     //TODO if GUI is open while temp is going up, temp will drop to zero at 90C. just sync issue?
     //TODO boiling sound work sometimes, and then it override leaking sound. check it
@@ -257,9 +255,9 @@ public class InventoryCoalJetpack implements IInventoryTanks
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i)
+    public ItemStack getStackInSlotOnClosing(int slot)
     {
-        return (i == JETPACK_BUCKET_IN || i == JETPACK_BUCKET_OUT) ? inventory[i] : null;
+        return (slot == JETPACK_BUCKET_IN || slot == JETPACK_BUCKET_OUT) ? inventory[slot] : null;
     }
 
     @Override
@@ -271,54 +269,6 @@ public class InventoryCoalJetpack implements IInventoryTanks
             stack.stackSize = getInventoryStackLimit();
         }
         dirtyInventory();
-    }
-
-    @Override
-    public String getInventoryName()
-    {
-        return "Coal Jetpack";
-    }
-
-    @Override
-    public boolean hasCustomInventoryName()
-    {
-        return true;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    public void markDirty()
-    {
-        saveToNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
-    {
-        return true;
-    }
-
-    @Override
-    public void openInventory()
-    {
-        loadFromNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public void closeInventory()
-    {
-        saveToNBT(containerStack.stackTagCompound);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
-    {
-        return false;
     }
 
     public ItemStack getParentItemStack()

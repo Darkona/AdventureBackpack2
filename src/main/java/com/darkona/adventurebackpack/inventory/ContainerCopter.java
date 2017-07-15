@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -68,78 +67,43 @@ public class ContainerCopter extends ContainerAdventureBackpack /*implements IWe
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
+    public boolean transferStackToPack(ItemStack stack)
     {
-        Slot slot = getSlot(fromSlot);
-        ItemStack result = null;
-
-        if (slot != null && slot.getHasStack())
+        if (SlotFluid.isContainer(stack))
         {
-            ItemStack stack = slot.getStack();
-            result = stack.copy();
-            if (fromSlot >= 36)
+            FluidTank fuelTank = inventory.getFuelTank();
+
+            boolean isOutStackEmpty = !getSlot(COPTER_INV_START + 1).getHasStack();
+            boolean isFuelTankEmpty = SlotFluid.isEmpty(fuelTank);
+            boolean suitableToTank = SlotFluid.isEqualAndCanFit(stack, fuelTank);
+            boolean isBucketsCase = SlotFluid.isEmptyBucket(getSlot(COPTER_INV_START + 1).getStack())
+                    && SlotFluid.isFilledBucket(stack);
+
+            if (SlotFluid.isFilled(stack))
             {
-                if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
+                if ((isOutStackEmpty || isBucketsCase) && SlotFluidFuel.isValidItem(stack))
                 {
-                    return null;
-                }
-            }
-            if (fromSlot < 36)
-            {
-                if (SlotFluid.isContainer(stack))
-                {
-                    ItemStack outStack = getSlot(COPTER_INV_START + 1).getStack();
-
-                    FluidTank fuelTank = inventory.getFuelTank();
-                    int maxAmount = fuelTank.getCapacity();
-                    int tankAmount = fuelTank.getFluidAmount();
-                    int tankFluid = SlotFluid.getFluidID(fuelTank);
-
-                    int containerCapacity = SlotFluid.getCapacity(stack);
-                    int containerFluid = SlotFluid.getFluidID(stack);
-
-                    if (SlotFluid.isFilled(stack))
+                    if (isFuelTankEmpty || suitableToTank)
                     {
-                        if ((outStack == null || (SlotFluid.isEmptyBucket(outStack) && SlotFluid.isBucket(stack)))
-                                && SlotFluidFuel.isValidItem(stack))
-                        {
-                            if ((tankAmount == 0 || (tankAmount > 0 && tankFluid == containerFluid))
-                                    && tankAmount + containerCapacity <= maxAmount)
-                            {
-                                if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
-                                {
-                                    return null;
-                                }
-                            }
-                        }
-                    } else if (SlotFluid.isEmpty(stack))
-                    {
-                        if (outStack == null && tankAmount >= containerCapacity && SlotFluidFuel.isValidItem(stack))
-                        {
-                            if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
-                            {
-                                return null;
-                            }
-                        }
+                        if (!mergeBucket(stack))
+                            return false;
                     }
                 }
-            }
-
-            if (stack.stackSize == 0)
+            } else if (SlotFluid.isEmpty(stack))
             {
-                slot.putStack(null);
-            } else
-            {
-                slot.onSlotChanged();
+                if (isOutStackEmpty && SlotFluidFuel.isValidItem(stack))
+                {
+                    if (!mergeBucket(stack))
+                        return false;
+                }
             }
-
-            if (stack.stackSize == result.stackSize)
-            {
-                return null;
-            }
-            slot.onPickupFromSlot(player, stack);
         }
-        return result;
+        return true;
+    }
+
+    private boolean mergeBucket(ItemStack stack)
+    {
+        return mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false);
     }
 
     @Override
@@ -181,12 +145,6 @@ public class ContainerCopter extends ContainerAdventureBackpack /*implements IWe
                 }
             }
         }
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer p_75145_1_)
-    {
-        return true;
     }
 
     /*@Override
