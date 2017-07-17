@@ -213,30 +213,32 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     {
         FluidTank leftTank = inventory.getLeftTank();
         FluidTank rightTank = inventory.getRightTank();
+        ItemStack leftStackOut = getSlot(BUCKET_LEFT + 1).getStack();
+        ItemStack rightStackOut = getSlot(BUCKET_RIGHT + 1).getStack();
 
-        boolean isLeftOutEmpty = !getSlot(BUCKET_LEFT + 1).getHasStack();
-        boolean isRightOutEmpty = !getSlot(BUCKET_RIGHT + 1).getHasStack();
         boolean isLeftTankEmpty = SlotFluid.isEmpty(leftTank);
         boolean isRightTankEmpty = SlotFluid.isEmpty(rightTank);
         boolean suitableToLeft = SlotFluid.isEqualAndCanFit(container, leftTank);
         boolean suitableToRight = SlotFluid.isEqualAndCanFit(container, rightTank);
+        boolean areLeftSameType = InventoryActions.areContainersOfSameType(container, leftStackOut);
+        boolean areRightSameType = InventoryActions.areContainersOfSameType(container, rightStackOut);
 
         if (SlotFluid.isFilled(container))
         {
             if (isLeftTankEmpty)
             {
-                if (!isRightTankEmpty && isRightOutEmpty && suitableToRight)
+                if (!isRightTankEmpty && (rightStackOut == null || areRightSameType) && suitableToRight)
                     return mergeRightBucket(container);
-                else if (isLeftOutEmpty)
+                else if (leftStackOut == null || areLeftSameType)
                     return mergeLeftBucket(container);
 
             } else
             {
-                if (isLeftOutEmpty && suitableToLeft)
+                if ((leftStackOut == null || areLeftSameType) && suitableToLeft)
                     return mergeLeftBucket(container);
-                else if (isRightOutEmpty && (isRightTankEmpty || suitableToRight))
+                else if ((rightStackOut == null || areRightSameType) && (isRightTankEmpty || suitableToRight))
                     return mergeRightBucket(container);
-                else if (isLeftOutEmpty && isRightOutEmpty && SlotBackpack.isValidItem(container))
+                else if (leftStackOut == null && rightStackOut == null && SlotBackpack.isValidItem(container))
                     return mergeBackpackInv(container);
             }
 
@@ -244,14 +246,14 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
         {
             if (isLeftTankEmpty)
             {
-                if (!isRightTankEmpty && isRightOutEmpty)
+                if (!isRightTankEmpty && (rightStackOut == null || areRightSameType))
                     return mergeRightBucket(container);
-                else if (isLeftOutEmpty && isRightOutEmpty && SlotBackpack.isValidItem(container))
+                else if (leftStackOut == null && rightStackOut == null && SlotBackpack.isValidItem(container))
                     return mergeBackpackInv(container);
 
             } else
             {
-                if (isLeftOutEmpty)
+                if (leftStackOut == null || areLeftSameType)
                     return mergeLeftBucket(container);
             }
         }

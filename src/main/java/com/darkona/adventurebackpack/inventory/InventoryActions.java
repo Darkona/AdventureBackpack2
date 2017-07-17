@@ -116,6 +116,13 @@ public class InventoryActions
         return false;
     }
 
+    public static boolean areStacksCompatible(ItemStack stackA, ItemStack stackB)
+    {
+        return stackA.getItem() == stackB.getItem()
+                && (!stackA.getHasSubtypes() || stackA.getItemDamage() == stackB.getItemDamage())
+                && ItemStack.areItemStackTagsEqual(stackA, stackB);
+    }
+
     public static void consumeItemInInventory(IInventory backpack, Item item)
     {
         int i = -1;
@@ -155,6 +162,24 @@ public class InventoryActions
             {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static boolean areContainersOfSameType(ItemStack stackIn, ItemStack stackOut)
+    {
+        if (stackIn == null || stackOut == null || stackIn.getItem() == null || stackOut.getItem() == null)
+            return false;
+
+        if (SlotFluid.isFilled(stackIn) && SlotFluid.isEmpty(stackOut))
+        {
+            ItemStack emptyIn = SlotFluid.getEmptyContainer(stackIn);
+            return stackOut.isStackable() && areStacksCompatible(emptyIn, stackOut);
+
+        } else if (SlotFluid.isEmpty(stackIn) && SlotFluid.isFilled(stackOut))
+        {
+            ItemStack emptyOut = SlotFluid.getEmptyContainer(stackOut);
+            return stackOut.isStackable() && areStacksCompatible(stackIn, emptyOut);
         }
         return false;
     }

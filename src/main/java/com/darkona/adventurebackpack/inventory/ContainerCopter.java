@@ -72,16 +72,15 @@ public class ContainerCopter extends ContainerAdventureBackpack /*implements IWe
         if (SlotFluid.isContainer(stack))
         {
             FluidTank fuelTank = inventory.getFuelTank();
+            ItemStack stackOut = getSlot(COPTER_INV_START + 1).getStack();
 
-            boolean isOutStackEmpty = !getSlot(COPTER_INV_START + 1).getHasStack();
             boolean isFuelTankEmpty = SlotFluid.isEmpty(fuelTank);
             boolean suitableToTank = SlotFluid.isEqualAndCanFit(stack, fuelTank);
-            boolean isBucketsCase = SlotFluid.isEmptyBucket(getSlot(COPTER_INV_START + 1).getStack())
-                    && SlotFluid.isFilledBucket(stack);
+            boolean areSameType = InventoryActions.areContainersOfSameType(stack, stackOut);
 
             if (SlotFluid.isFilled(stack))
             {
-                if ((isOutStackEmpty || isBucketsCase) && SlotFluidFuel.isValidItem(stack))
+                if ((stackOut == null || areSameType) && SlotFluidFuel.isValidItem(stack))
                 {
                     if (isFuelTankEmpty || suitableToTank)
                     {
@@ -91,7 +90,7 @@ public class ContainerCopter extends ContainerAdventureBackpack /*implements IWe
                 }
             } else if (SlotFluid.isEmpty(stack))
             {
-                if (isOutStackEmpty && SlotFluidFuel.isValidItem(stack))
+                if ((stackOut == null || areSameType) && SlotFluidFuel.isValidItem(stack))
                 {
                     if (!mergeBucket(stack))
                         return false;

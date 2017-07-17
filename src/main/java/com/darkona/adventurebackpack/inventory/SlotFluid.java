@@ -112,6 +112,11 @@ public class SlotFluid extends SlotAdventureBackpack
         return isEqualFluid(container, tank) && canFitToTank(container, tank);
     }
 
+    static ItemStack getEmptyContainer(ItemStack container)
+    {
+        return FluidContainerRegistry.drainFluidContainer(container);
+    }
+
     @Override
     public boolean isItemValid(ItemStack stack)
     {
