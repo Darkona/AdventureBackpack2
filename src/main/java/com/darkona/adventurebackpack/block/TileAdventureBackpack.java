@@ -26,6 +26,7 @@ import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotBackpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
+import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -261,14 +262,14 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
+        super.writeToNBT(compound);
+        saveToNBT(compound);
         compound.setBoolean("sleepingbag", sleepingBagDeployed);
         compound.setInteger("sbx", sbx);
         compound.setInteger("sby", sby);
         compound.setInteger("sbz", sbz);
-        compound.setInteger("lumen", luminosity);
         compound.setInteger("sbdir", sbdir);
-        saveToNBT(compound);
-        super.writeToNBT(compound);
+        compound.setInteger("lumen", luminosity);
     }
 
     @Override
@@ -404,9 +405,13 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     {
         for (int i = 0; i < inventory.length; i++)
         {
-            if ((i == BUCKET_IN_LEFT || i == BUCKET_IN_RIGHT) && inventory[i] != null)
+            if (inventory[i] != null)
             {
-                updateTankSlots();
+                if ((i == BUCKET_IN_LEFT || i == BUCKET_IN_RIGHT)
+                        || (i == BUCKET_OUT_LEFT || i == BUCKET_OUT_RIGHT) && inventory[i].getItem() instanceof ItemHose)
+                {
+                    updateTankSlots();
+                }
             }
         }
         super.markDirty();

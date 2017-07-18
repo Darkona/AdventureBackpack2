@@ -64,7 +64,6 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
                         {
                             inv.getExtendedProperties().removeTag("holdingSpace");
                         }
-                        //inv.dirtyExtended();
                     }
                 }
             }

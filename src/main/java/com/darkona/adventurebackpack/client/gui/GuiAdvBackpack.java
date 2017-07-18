@@ -29,18 +29,20 @@ import com.darkona.adventurebackpack.util.Resources;
 @SideOnly(Side.CLIENT)
 public class GuiAdvBackpack extends GuiWithTanks
 {
-    private IInventoryAdventureBackpack inventory;
-    private boolean isTile;
-    private boolean isWearing;
-    private boolean isHoldingSpace;
-    private EntityPlayer player;
-
     private static final ResourceLocation TEXTURE = Resources.guiTextures("guiBackpackNew");
+
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.typeTankRender);
     private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.typeTankRender);
+
+    private IInventoryAdventureBackpack inventory;
+    private EntityPlayer player;
+    private boolean isWearing;
+    private boolean isTile;
+
+    private boolean isHoldingSpace;
 
     public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
     {
@@ -61,16 +63,6 @@ public class GuiAdvBackpack extends GuiWithTanks
         isTile = false;
         xSize = 248;
         ySize = 207;
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        if (inventory != null)
-        {
-            inventory.closeInventory(); //TODO
-        }
-        super.onGuiClosed();
     }
 
     @Override
@@ -165,30 +157,6 @@ public class GuiAdvBackpack extends GuiWithTanks
     }
 
     @Override
-    public float getZLevel()
-    {
-        return this.zLevel;
-    }
-
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-    }
-
-    @Override
-    public int getLeft()
-    {
-        return guiLeft;
-    }
-
-    @Override
-    public int getTop()
-    {
-        return guiTop;
-    }
-
-    @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
         //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
@@ -234,6 +202,8 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     public void updateScreen()
     {
+        super.updateScreen();
+
         if (!isHoldingSpace)
         {
             if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
@@ -241,7 +211,6 @@ public class GuiAdvBackpack extends GuiWithTanks
                 isHoldingSpace = true;
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_HOLDING_SPACE));
                 inventory.getExtendedProperties().setBoolean("holdingSpace", true);
-                //inventory.dirtyExtended();
             }
         } else
         {
@@ -250,9 +219,7 @@ public class GuiAdvBackpack extends GuiWithTanks
                 isHoldingSpace = false;
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_NOT_HOLDING_SPACE));
                 inventory.getExtendedProperties().removeTag("holdingSpace");
-                //inventory.dirtyExtended();
             }
         }
-        super.updateScreen();
     }
 }

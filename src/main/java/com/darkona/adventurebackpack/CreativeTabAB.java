@@ -13,7 +13,7 @@ import com.darkona.adventurebackpack.reference.ModInfo;
  */
 public class CreativeTabAB
 {
-    public static final CreativeTabs ADVENTURE_BACKPACK_CREATIVE_TAB = new CreativeTabs(ModInfo.MOD_ID.toLowerCase())
+    public static final CreativeTabs ADVENTURE_BACKPACK_CREATIVE_TAB = new CreativeTabs(ModInfo.MOD_ID)
     {
         @Override
         public Item getTabIconItem()
@@ -30,7 +30,7 @@ public class CreativeTabAB
         @Override
         public String getTabLabel()
         {
-            return ModInfo.MOD_ID.toLowerCase();
+            return ModInfo.MOD_ID;
         }
     };
 }

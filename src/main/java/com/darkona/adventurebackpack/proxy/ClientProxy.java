@@ -44,16 +44,9 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class ClientProxy implements IProxy
 {
-    public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
-    public static RendererItemAdventureHat rendererItemAdventureHat;
-    public static RendererHose rendererHose;
-    public static RendererWearableEquipped rendererWearableEquipped;
-    public static RenderHandler renderHandler;
-    public static RendererInflatableBoat renderInflatableBoat;
-    public static RenderRideableSpider renderRideableSpider;
-    public static RendererItemClockworkCrossbow renderCrossbow;
-    public static ModelCoalJetpack modelCoalJetpack = new ModelCoalJetpack();
+    public static RendererWearableEquipped rendererWearableEquipped = new RendererWearableEquipped();
     public static ModelBackpackArmor modelAdventureBackpack = new ModelBackpackArmor();
+    public static ModelCoalJetpack modelCoalJetpack = new ModelCoalJetpack();
     public static ModelCopterPack modelCopterPack = new ModelCopterPack();
 
     @Override
@@ -80,43 +73,39 @@ public class ClientProxy implements IProxy
     public void synchronizePlayer(int id, NBTTagCompound properties)
     {
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
+
         if (Utils.notNullAndInstanceOf(entity, EntityPlayer.class) && properties != null)
         {
             EntityPlayer player = (EntityPlayer) entity;
-            if (BackpackProperty.get(player) == null) BackpackProperty.register(player);
+
+            if (BackpackProperty.get(player) == null)
+                BackpackProperty.register(player);
+
             BackpackProperty.get(player).loadNBTData(properties);
         }
     }
 
     private void initRenderers()
     {
-        renderHandler = new RenderHandler();
-        MinecraftForge.EVENT_BUS.register(renderHandler);
-        rendererWearableEquipped = new RendererWearableEquipped();
+        MinecraftForge.EVENT_BUS.register(new RenderHandler());
 
-        rendererItemAdventureBackpack = new RendererItemAdventureBackpack();
-        MinecraftForgeClient.registerItemRenderer(ModItems.adventureBackpack, rendererItemAdventureBackpack);
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.blockBackpack), rendererItemAdventureBackpack);
+        MinecraftForgeClient.registerItemRenderer(ModItems.adventureBackpack, new RendererItemAdventureBackpack());
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.blockBackpack), new RendererItemAdventureBackpack());
         ClientRegistry.bindTileEntitySpecialRenderer(TileAdventureBackpack.class, new RendererAdventureBackpackBlock());
 
-        rendererItemAdventureHat = new RendererItemAdventureHat();
-        MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, rendererItemAdventureHat);
+        MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, new RendererItemAdventureHat());
 
         if (!ConfigHandler.tanksOverlay)
         {
-            rendererHose = new RendererHose();
-            MinecraftForgeClient.registerItemRenderer(ModItems.hose, rendererHose);
+            MinecraftForgeClient.registerItemRenderer(ModItems.hose, new RendererHose());
         }
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileCampfire.class, new RendererCampFire());
 
-        renderInflatableBoat = new RendererInflatableBoat();
-        RenderingRegistry.registerEntityRenderingHandler(EntityInflatableBoat.class, renderInflatableBoat);
-        renderRideableSpider = new RenderRideableSpider();
-        RenderingRegistry.registerEntityRenderingHandler(EntityFriendlySpider.class, renderRideableSpider);
+        RenderingRegistry.registerEntityRenderingHandler(EntityInflatableBoat.class, new RendererInflatableBoat());
+        RenderingRegistry.registerEntityRenderingHandler(EntityFriendlySpider.class, new RenderRideableSpider());
 
-        renderCrossbow = new RendererItemClockworkCrossbow();
-        MinecraftForgeClient.registerItemRenderer(ModItems.cwxbow, renderCrossbow);
+        MinecraftForgeClient.registerItemRenderer(ModItems.cwxbow, new RendererItemClockworkCrossbow());
     }
 
     @Override

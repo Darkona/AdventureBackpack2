@@ -25,16 +25,18 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class GuiCoalJetpack extends GuiWithTanks
 {
-    private InventoryCoalJetpack inventory;
-    private int boiling = 0;
-    private boolean isWearing;
-    private EntityPlayer player;
-
     private static final ResourceLocation TEXTURE = Resources.guiTextures("guiCoalJetpack");
+
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static GuiTank waterTank = new GuiTank(8, 8, 72, 16, ConfigHandler.typeTankRender);
     private static GuiTank steamTank = new GuiTank(116, 8, 72, 16, ConfigHandler.typeTankRender);
+
+    private InventoryCoalJetpack inventory;
+    private EntityPlayer player;
+    private boolean isWearing;
+
+    private int boiling = 0;
 
     public GuiCoalJetpack(EntityPlayer player, InventoryCoalJetpack inv, boolean wearing)
     {
@@ -162,24 +164,6 @@ public class GuiCoalJetpack extends GuiWithTanks
             }
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public int getLeft()
-    {
-        return guiLeft;
-    }
-
-    @Override
-    public int getTop()
-    {
-        return guiTop;
-    }
-
-    @Override
-    public float getZLevel()
-    {
-        return zLevel;
     }
 
     @Override

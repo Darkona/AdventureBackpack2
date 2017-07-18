@@ -3,7 +3,6 @@ package com.darkona.adventurebackpack.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -15,17 +14,13 @@ import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
  *
  * @author Darkona
  */
-public class ContainerCopter extends ContainerAdventureBackpack implements IWearableContainer
+public class ContainerCopter extends ContainerAdventureBackpack /*implements IWearableContainer*/
 {
-    private static final int PLAYER_HOT_START = 0;
-    private static final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
-    private static final int PLAYER_INV_START = PLAYER_HOT_END + 1;
-    private static final int PLAYER_INV_END = PLAYER_INV_START + 26;
     private static final int COPTER_INV_START = PLAYER_INV_END + 1;
 
     private InventoryCopterPack inventory;
     private EntityPlayer player;
-    private boolean wearing;
+    private boolean isWearing;
 
     private int fuelAmount;
 
@@ -35,38 +30,14 @@ public class ContainerCopter extends ContainerAdventureBackpack implements IWear
         inventory = copter;
         makeSlots(player.inventory);
         inventory.openInventory();
-        this.wearing = wearing;
-    }
-
-    private void bindPlayerInventory(InventoryPlayer invPlayer)
-    {
-        int startX = 8;
-        int startY = 84;
-
-        // Player's Hotbar
-        for (int x = 0; x < 9; x++)
-        {
-            addSlotToContainer(new Slot(invPlayer, x, startX + 18 * x, 142));
-        }
-
-        // Player's Inventory
-        for (int y = 0; y < 3; y++)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (startX + 18 * x), (startY + y * 18)));
-            }
-        }
-        //Total 36 slots
+        isWearing = wearing;
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
-        bindPlayerInventory(invPlayer);
-        //Bucket Slots
-        // bucket in
+        bindPlayerInventory(invPlayer, 8, 84);
+
         addSlotToContainer(new SlotFluidFuel(inventory, COPTER_BUCKET_IN, 44, 23));
-        // bucket out
         addSlotToContainer(new SlotFluidFuel(inventory, COPTER_BUCKET_OUT, 44, 53));
     }
 
@@ -75,7 +46,7 @@ public class ContainerCopter extends ContainerAdventureBackpack implements IWear
     {
         super.detectAndSendChanges();
 
-        if (!wearing)
+        if (!isWearing)
         {
             boolean changesDetected = false;
 
@@ -96,84 +67,48 @@ public class ContainerCopter extends ContainerAdventureBackpack implements IWear
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
+    public boolean transferStackToPack(ItemStack stack)
     {
-        Slot slot = getSlot(fromSlot);
-        ItemStack result = null;
-
-        if (slot != null && slot.getHasStack())
+        if (SlotFluid.isContainer(stack))
         {
-            ItemStack stack = slot.getStack();
-            result = stack.copy();
-            if (fromSlot >= 36)
+            FluidTank fuelTank = inventory.getFuelTank();
+            ItemStack stackOut = getSlot(COPTER_INV_START + 1).getStack();
+
+            boolean isFuelTankEmpty = SlotFluid.isEmpty(fuelTank);
+            boolean suitableToTank = SlotFluid.isEqualAndCanFit(stack, fuelTank);
+            boolean areSameType = InventoryActions.areContainersOfSameType(stack, stackOut);
+
+            if (SlotFluid.isFilled(stack))
             {
-                if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
+                if ((stackOut == null || areSameType) && SlotFluidFuel.isValidItem(stack))
                 {
-                    return null;
-                }
-            }
-            if (fromSlot < 36)
-            {
-                if (SlotFluid.isContainer(stack))
-                {
-                    ItemStack outStack = getSlot(COPTER_INV_START + 1).getStack();
-
-                    FluidTank fuelTank = inventory.getFuelTank();
-                    int maxAmount = fuelTank.getCapacity();
-                    int tankAmount = fuelTank.getFluidAmount();
-                    int tankFluid = SlotFluid.getFluidID(fuelTank);
-
-                    int containerCapacity = SlotFluid.getCapacity(stack);
-                    int containerFluid = SlotFluid.getFluidID(stack);
-
-                    if (SlotFluid.isFilled(stack))
+                    if (isFuelTankEmpty || suitableToTank)
                     {
-                        if ((outStack == null || (SlotFluid.isEmptyBucket(outStack) && SlotFluid.isBucket(stack)))
-                                && SlotFluidFuel.isValidItem(stack))
-                        {
-                            if ((tankAmount == 0 || (tankAmount > 0 && tankFluid == containerFluid))
-                                    && tankAmount + containerCapacity <= maxAmount)
-                            {
-                                if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
-                                {
-                                    return null;
-                                }
-                            }
-                        }
-                    } else if (SlotFluid.isEmpty(stack))
-                    {
-                        if (outStack == null && tankAmount >= containerCapacity && SlotFluidFuel.isValidItem(stack))
-                        {
-                            if (!mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false))
-                            {
-                                return null;
-                            }
-                        }
+                        if (!mergeBucket(stack))
+                            return false;
                     }
                 }
-            }
-
-            if (stack.stackSize == 0)
+            } else if (SlotFluid.isEmpty(stack))
             {
-                slot.putStack(null);
-            } else
-            {
-                slot.onSlotChanged();
+                if ((stackOut == null || areSameType) && SlotFluidFuel.isValidItem(stack))
+                {
+                    if (!mergeBucket(stack))
+                        return false;
+                }
             }
-
-            if (stack.stackSize == result.stackSize)
-            {
-                return null;
-            }
-            slot.onPickupFromSlot(player, stack);
         }
-        return result;
+        return true;
+    }
+
+    private boolean mergeBucket(ItemStack stack)
+    {
+        return mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false);
     }
 
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (!wearing && slot >= 0)
+        if (!isWearing && slot >= 0)
         {
             if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
             {
@@ -191,10 +126,12 @@ public class ContainerCopter extends ContainerAdventureBackpack implements IWear
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
-        if (wearing)
+
+        if (isWearing) //TODO
         {
             this.crafters.remove(player);
         }
+
         if (!player.worldObj.isRemote)
         {
             for (int i = 0; i < inventory.getSizeInventory(); i++)
@@ -209,15 +146,9 @@ public class ContainerCopter extends ContainerAdventureBackpack implements IWear
         }
     }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer p_75145_1_)
-    {
-        return true;
-    }
-
-    @Override
+    /*@Override
     public void refresh()
     {
         inventory.openInventory();
-    }
+    }*/
 }

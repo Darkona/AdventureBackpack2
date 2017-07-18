@@ -32,6 +32,11 @@ public class SlotFluid extends SlotAdventureBackpack
         return FluidContainerRegistry.isEmptyContainer(stack);
     }
 
+    static boolean isEmpty(FluidTank tank)
+    {
+        return tank.getFluidAmount() == 0;
+    }
+
     static boolean isFilled(ItemStack stack)
     {
         return FluidContainerRegistry.isFilledContainer(stack);
@@ -50,6 +55,11 @@ public class SlotFluid extends SlotAdventureBackpack
     static boolean isFilledBucket(ItemStack stack)
     {
         return FluidContainerRegistry.isBucket(stack) && isFilled(stack);
+    }
+
+    static boolean isEqualFluid(ItemStack container, FluidTank tank)
+    {
+        return SlotFluid.getFluidID(container) == SlotFluid.getFluidID(tank);
     }
 
     static String getFluidName(ItemStack stack)
@@ -90,6 +100,21 @@ public class SlotFluid extends SlotAdventureBackpack
     static int getCapacity(ItemStack stack)
     {
         return FluidContainerRegistry.getContainerCapacity(stack);
+    }
+
+    static boolean canFitToTank(ItemStack container, FluidTank tank)
+    {
+        return tank.getFluidAmount() + SlotFluid.getCapacity(container) <= tank.getCapacity();
+    }
+
+    static boolean isEqualAndCanFit(ItemStack container, FluidTank tank)
+    {
+        return isEqualFluid(container, tank) && canFitToTank(container, tank);
+    }
+
+    static ItemStack getEmptyContainer(ItemStack container)
+    {
+        return FluidContainerRegistry.drainFluidContainer(container);
     }
 
     @Override
