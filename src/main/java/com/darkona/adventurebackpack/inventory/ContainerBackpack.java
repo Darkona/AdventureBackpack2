@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
@@ -24,12 +23,8 @@ import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
  *
  * @author Darkona
  */
-public class ContainerBackpack extends ContainerAdventureBackpack /*implements IWearableContainer*/
+public class ContainerBackpack extends ContainerAdventureBackpack
 {
-    public static final byte SOURCE_TILE = 0;
-    public static final byte SOURCE_WEARING = 1;
-    public static final byte SOURCE_HOLDING = 2;
-
     private static final int BACK_INV_START = PLAYER_INV_END + 1;
     private static final int BACK_INV_END = BACK_INV_START + 38;
     private static final int TOOL_START = BACK_INV_END + 1;
@@ -40,8 +35,6 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     private InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
     private IInventory craftResult = new InventoryCraftResult();
     private IInventoryAdventureBackpack inventory;
-    private EntityPlayer player;
-    private byte source;
 
     private int leftAmount;
     private int rightAmount;
@@ -115,46 +108,35 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     }
 
     @Override
-    public void detectAndSendChanges()
+    protected boolean detectChanges()
     {
-        super.detectAndSendChanges();
+        boolean changesDetected = false;
 
-        if (source == SOURCE_HOLDING) // used for refresh tooltips and redraw tanks content while GUI is open
+        ItemStack[] inv = inventory.getInventory();
+        int tempCount = 0;
+        for (int i = 0; i <= LOWER_TOOL; i++)
         {
-            boolean changesDetected = false;
-
-            ItemStack[] inv = inventory.getInventory();
-            int tempCount = 0;
-            for (int i = 0; i <= LOWER_TOOL; i++)
-            {
-                if (inv[i] != null)
-                    tempCount++;
-            }
-            if (invCount != tempCount)
-            {
-                invCount = tempCount;
-                changesDetected = true;
-            }
-
-            if (leftAmount != inventory.getLeftTank().getFluidAmount())
-            {
-                leftAmount = inventory.getLeftTank().getFluidAmount();
-                changesDetected = true;
-            }
-            if (rightAmount != inventory.getRightTank().getFluidAmount())
-            {
-                rightAmount = inventory.getRightTank().getFluidAmount();
-                changesDetected = true;
-            }
-
-            if (changesDetected)
-            {
-                if (player instanceof EntityPlayerMP)
-                {
-                    ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
-                }
-            }
+            if (inv[i] != null)
+                tempCount++;
         }
+        if (invCount != tempCount)
+        {
+            invCount = tempCount;
+            changesDetected = true;
+        }
+
+        if (leftAmount != inventory.getLeftTank().getFluidAmount())
+        {
+            leftAmount = inventory.getLeftTank().getFluidAmount();
+            changesDetected = true;
+        }
+        if (rightAmount != inventory.getRightTank().getFluidAmount())
+        {
+            rightAmount = inventory.getRightTank().getFluidAmount();
+            changesDetected = true;
+        }
+
+        return changesDetected;
     }
 
     @Override
@@ -261,51 +243,25 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     }
 
     @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    protected void dropContentOnClose()
     {
-        if (source == SOURCE_HOLDING && slot >= 0)
+        for (int i = 0; i < inventory.getSizeInventory(); i++)
         {
-            if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
+            ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
+            if (itemstack != null)
             {
-                return null;
-            }
-            if (flag == 2 && getSlot(button).getStack() == player.getHeldItem())
-            {
-                return null;
+                inventory.setInventorySlotContents(i, null);
+                player.dropPlayerItemWithRandomChoice(itemstack, false);
             }
         }
-        return super.slotClick(slot, button, flag, player);
-    }
 
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-
-        if (source == SOURCE_WEARING) //TODO no idea why this is here (preventing dupe on closing?), and why only for wearing
+        for (int i = 0; i < 9; i++)
         {
-            this.crafters.remove(player);
-        }
+            ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
 
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
+            if (itemstack != null)
             {
-                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                if (itemstack != null)
-                {
-                    inventory.setInventorySlotContents(i, null);
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-            for (int i = 0; i < 9; i++)
-            {
-                ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
-
-                if (itemstack != null)
-                {
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
+                player.dropPlayerItemWithRandomChoice(itemstack, false);
             }
         }
     }
@@ -315,11 +271,4 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     {
         craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
     }
-
-    /*@Override
-    public void refresh()
-    {
-        inventory.openInventory();
-        this.onCraftMatrixChanged(craftMatrix);
-    }*/
 }

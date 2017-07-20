@@ -40,7 +40,7 @@ public class GuiCoalJetpack extends GuiWithTanks
 
     public GuiCoalJetpack(EntityPlayer player, InventoryCoalJetpack inv, boolean wearing)
     {
-        super(new ContainerJetpack(player, inv, wearing));
+        super(new ContainerJetpack(player, inv, wearing ? ContainerJetpack.SOURCE_WEARING : ContainerJetpack.SOURCE_HOLDING));
         this.player = player;
         inventory = inv;
         isWearing = wearing;

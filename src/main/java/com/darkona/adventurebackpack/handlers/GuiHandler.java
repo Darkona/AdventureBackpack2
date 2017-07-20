@@ -62,25 +62,25 @@ public class GuiHandler implements IGuiHandler
             case COPTER_HOLDING:
                 if (Wearing.isHoldingCopter(player))
                 {
-                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)), false);
+                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)), ContainerCopter.SOURCE_HOLDING);
                 }
                 break;
             case COPTER_WEARING:
                 if (Wearing.isWearingCopter(player))
                 {
-                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getWearingCopter(player)), true);
+                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getWearingCopter(player)), ContainerCopter.SOURCE_WEARING);
                 }
                 break;
             case JETPACK_HOLDING:
                 if (Wearing.isHoldingJetpack(player))
                 {
-                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)), false);
+                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)), ContainerJetpack.SOURCE_HOLDING);
                 }
                 break;
             case JETPACK_WEARING:
                 if (Wearing.isWearingJetpack(player))
                 {
-                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getWearingJetpack(player)), true);
+                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getWearingJetpack(player)), ContainerJetpack.SOURCE_WEARING);
                 }
                 break;
             default:

@@ -35,7 +35,7 @@ public class GuiCopterPack extends GuiWithTanks
 
     public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
     {
-        super(new ContainerCopter(player, inv, wearing));
+        super(new ContainerCopter(player, inv, wearing ? ContainerCopter.SOURCE_WEARING : ContainerCopter.SOURCE_HOLDING));
         this.player = player;
         inventory = inv;
         isWearing = wearing;
