@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -34,16 +33,6 @@ public class BlockCampFire extends BlockContainer
         super(Material.rock);
         this.setTickRandomly(true);
         this.setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
-    }
-
-    private void func_149978_e()
-    {
-        this.setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
-    }
-
-    private void blockBoundsForRender()
-    {
-        this.func_149978_e();
     }
 
     @Override
@@ -77,9 +66,6 @@ public class BlockCampFire extends BlockContainer
         return false;
     }
 
-    /**
-     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
-     */
     @Override
     public boolean renderAsNormalBlock()
     {
@@ -98,18 +84,12 @@ public class BlockCampFire extends BlockContainer
         return false;
     }
 
-    /**
-     * Indicate if a material is a normal solid opaque cube
-     */
     @Override
     public boolean isBlockNormalCube()
     {
         return false;
     }
 
-    /**
-     * A randomly called display update to be able to add particles or other items for display
-     */
     @SideOnly(Side.CLIENT)
     @Override
     public void randomDisplayTick(World world, int posX, int posY, int posZ, Random rnd)
@@ -152,52 +132,18 @@ public class BlockCampFire extends BlockContainer
         this.setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
     }
 
-    /**
-     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
-     * cleared to be reused)
-     */
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_)
-    {
-        return super.getCollisionBoundingBoxFromPool(p_149668_1_, p_149668_2_, p_149668_3_, p_149668_4_);
-    }
-
-    /**
-     * Returns the bounding box of the wired rectangular prism to render.
-     */
-    @Override
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World p_149633_1_, int p_149633_2_, int p_149633_3_, int p_149633_4_)
-    {
-        return super.getSelectedBoundingBoxFromPool(p_149633_1_, p_149633_2_, p_149633_3_, p_149633_4_);
-    }
-
     @Override
     public IIcon getIcon(IBlockAccess p_149673_1_, int p_149673_2_, int p_149673_3_, int p_149673_4_, int p_149673_5_)
     {
         return icon;
     }
 
-    /**
-     * Gets the block's texture. Args: side, meta
-     */
     @Override
     public IIcon getIcon(int p_149691_1_, int p_149691_2_)
     {
         return icon;
     }
 
-    /**
-     * Determines if this block is classified as a Bed, Allowing
-     * players to sleep in it, though the block has to specifically
-     * perform the sleeping functionality in it's activated event.
-     *
-     * @param world  The current world
-     * @param x      X Position
-     * @param y      Y Position
-     * @param z      Z Position
-     * @param player The player or camera entity, null in some cases.
-     * @return True to treat this as a bed
-     */
     @Override
     public boolean isBed(IBlockAccess world, int x, int y, int z, EntityLivingBase player)
     {

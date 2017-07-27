@@ -172,24 +172,6 @@ public class BlockAdventureBackpack extends BlockContainer
         }
     }
 
-    /**
-     * Called when a player hits the block. Args: world, x, y, z, player
-     */
-    @Override
-    public void onBlockClicked(World p_149699_1_, int p_149699_2_, int p_149699_3_, int p_149699_4_, EntityPlayer p_149699_5_)
-    {
-        super.onBlockClicked(p_149699_1_, p_149699_2_, p_149699_3_, p_149699_4_, p_149699_5_);
-    }
-
-    /**
-     * Called when a block is placed using its ItemBlock.
-     */
-    @Override
-    public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
-    {
-        return super.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, meta);
-    }
-
     @Override
     public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face)
     {
@@ -319,13 +301,12 @@ public class BlockAdventureBackpack extends BlockContainer
         }
         world.setBlockMetadataWithNotify(x, y, z, dir, 3);
         createNewTileEntity(world, world.getBlockMetadata(x, y, z));
-
     }
 
     @Override
     public boolean canPlaceBlockOnSide(World par1World, int par2, int par3, int par4, int side)
     {
-        return (ForgeDirection.getOrientation(side) == ForgeDirection.UP);
+        return ForgeDirection.getOrientation(side) == ForgeDirection.UP;
     }
 
     @Override

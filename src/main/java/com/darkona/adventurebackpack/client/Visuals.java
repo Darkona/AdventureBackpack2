@@ -102,20 +102,9 @@ public class Visuals
                 return null;
             } else
             {
-                if (particleName.equals("steam"))
+                if (particleName.equals("steam")) //TODO particle names to Enum
                 {
                     entityFX = new SteamFX(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
-                    /*
-                    try
-                    {
-                        entityFX = (EntityFX) Class.forName("mods.railcraft.client.particles.EntitySteamFX")
-                                .getConstructor(World.class,int.class,int.class,int.class,float.class,float.class,float.class)
-                                .newInstance(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
-                    }catch(Exception ex)
-                    {
-                        entityFX = new SteamFX(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
-                    }
-                    */
                 }
                 mc.effectRenderer.addEffect(entityFX);
                 return entityFX;

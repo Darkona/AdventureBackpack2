@@ -141,13 +141,13 @@ public class GuiCoalJetpack extends GuiWithTanks
     }
 
     @Override
-    GuiImageButtonNormal getEquipButton()
+    protected GuiImageButtonNormal getEquipButton()
     {
         return equipButton;
     }
 
     @Override
-    GuiImageButtonNormal getUnequipButton()
+    protected GuiImageButtonNormal getUnequipButton()
     {
         return unequipButton;
     }

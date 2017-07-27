@@ -41,9 +41,9 @@ public abstract class GuiWithTanks extends GuiContainer
         return zLevel;
     }
 
-    abstract GuiImageButtonNormal getEquipButton();
+    abstract protected GuiImageButtonNormal getEquipButton();
 
-    abstract GuiImageButtonNormal getUnequipButton();
+    abstract protected GuiImageButtonNormal getUnequipButton();
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
