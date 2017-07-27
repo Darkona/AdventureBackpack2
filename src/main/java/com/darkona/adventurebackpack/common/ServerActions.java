@@ -256,6 +256,7 @@ public class ServerActions
                     }
                 } else if (world.isRemote)
                 {
+                    //TODO -> ChatComponentTranslation
                     player.addChatComponentMessage(new ChatComponentText("Can't deploy the sleeping bag! Check the surrounding area."));
                 }
             } else

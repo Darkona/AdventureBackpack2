@@ -12,8 +12,8 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 
 /**
  * Created on 16/10/2014

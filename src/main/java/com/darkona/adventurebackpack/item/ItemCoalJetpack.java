@@ -78,7 +78,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
-        inv.calculateLostTime();
+        inv.calculateLostTime(); //TODO debug artifact?
         if (inv.getTemperature() == 0) inv.setTemperature(getBiomeMinTemp(player, world));
     }
 
@@ -142,7 +142,6 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             }
             if (!world.isRemote)
                 ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE, player), player);
-
         }
         inv.closeInventory();
     }

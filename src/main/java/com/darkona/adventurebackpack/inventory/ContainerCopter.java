@@ -5,6 +5,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.darkona.adventurebackpack.common.Constants.Source;
+
 import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_IN;
 import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
 
@@ -20,13 +22,19 @@ public class ContainerCopter extends ContainerAdventureBackpack
     private InventoryCopterPack inventory;
     private int fuelAmount;
 
-    public ContainerCopter(EntityPlayer player, InventoryCopterPack copter, byte source)
+    public ContainerCopter(EntityPlayer player, InventoryCopterPack copter, Source source)
     {
         this.player = player;
         inventory = copter;
         makeSlots(player.inventory);
         inventory.openInventory();
         this.source = source;
+    }
+
+    @Override
+    public IInventoryTanks getInventoryTanks()
+    {
+        return inventory;
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
@@ -91,19 +99,5 @@ public class ContainerCopter extends ContainerAdventureBackpack
     private boolean mergeBucket(ItemStack stack)
     {
         return mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false);
-    }
-
-    @Override
-    protected void dropContentOnClose()
-    {
-        for (int i = 0; i < inventory.getSizeInventory(); i++)
-        {
-            ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-            if (itemstack != null)
-            {
-                inventory.setInventorySlotContents(i, null);
-                player.dropPlayerItemWithRandomChoice(itemstack, false);
-            }
-        }
     }
 }

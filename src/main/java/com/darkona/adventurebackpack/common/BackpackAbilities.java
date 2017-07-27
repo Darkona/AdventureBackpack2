@@ -134,7 +134,6 @@ public class BackpackAbilities
 
     public void executeRemoval(EntityPlayer player, World world, ItemStack backpack)
     {
-
         String colorName = BackpackNames.getBackpackColorName(backpack);
         try
         {
@@ -776,5 +775,4 @@ public class BackpackAbilities
     {
         fillWithRain(world, backpack, new FluidStack(ModFluids.melonJuice, 2), 5);
     }
-
 }

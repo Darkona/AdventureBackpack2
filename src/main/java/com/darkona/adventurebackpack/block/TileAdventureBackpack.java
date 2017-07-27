@@ -548,7 +548,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
         transferToItemStack(stacky);
         removeSleepingBag(world);
-        if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.reasons.SUCCESSFUL)
+        if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.Reasons.SUCCESSFUL)
         {
             if (Wearing.isWearingWearable(player))
             {
@@ -616,10 +616,10 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     }
 
-    /**
-     * Returns an array containing the indices of the slots that can be accessed by automation on the given side of this
-     * block.
-     */
+    //=================================================ISidedInventory================================================//
+
+    private static final int[] SLOTS = Utils.createSlotArray(0, Constants.INVENTORY_MAIN_SIZE);
+
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
@@ -630,30 +630,12 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return null;
     }
 
-    private static final int[] SLOTS = createSlotArray(0, Constants.INVENTORY_MAIN_SIZE);
-
-    private static int[] createSlotArray(int first, int count)
-    {
-        int[] slots = new int[count];
-        for (int i = first; i < first + count; i++)
-        {
-            slots[i - first] = i;
-        }
-        return slots;
-    }
-
-    /**
-     * Returns true if automation can insert the given item in the given slot from the given side.
-     */
     @Override
     public boolean canInsertItem(int slot, ItemStack item, int side)
     {
         return this.isItemValidForSlot(slot, item);
     }
 
-    /**
-     * Returns true if automation can extract the given item in the given slot from the given side.
-     */
     @Override
     public boolean canExtractItem(int slot, ItemStack item, int side)
     {

@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.darkona.adventurebackpack.common.Constants.Source;
+
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
@@ -42,7 +44,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
     //IDEA redesign container layout/craft slots behavior, so it will be rectangular and compatible with invTweaks. this also makes more slots available cuz craft ones will not drop content on close
 
-    public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, byte source)
+    public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, Source source)
     {
         this.player = player;
         inventory = backpack;
@@ -52,6 +54,12 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     }
 
     public IInventoryAdventureBackpack getInventoryBackpack()
+    {
+        return inventory;
+    }
+
+    @Override
+    public IInventoryTanks getInventoryTanks()
     {
         return inventory;
     }
@@ -209,16 +217,16 @@ public class ContainerBackpack extends ContainerAdventureBackpack
         {
             if (isLeftTankEmpty)
             {
-                if (!isRightTankEmpty && (rightStackOut == null || areRightSameType) && suitableToRight)
+                if (!isRightTankEmpty && suitableToRight && (rightStackOut == null || areRightSameType))
                     return mergeRightBucket(container);
                 else if (leftStackOut == null || areLeftSameType)
                     return mergeLeftBucket(container);
 
             } else
             {
-                if ((leftStackOut == null || areLeftSameType) && suitableToLeft)
+                if (suitableToLeft && (leftStackOut == null || areLeftSameType))
                     return mergeLeftBucket(container);
-                else if ((rightStackOut == null || areRightSameType) && (isRightTankEmpty || suitableToRight))
+                else if ((isRightTankEmpty || suitableToRight) && (rightStackOut == null || areRightSameType))
                     return mergeRightBucket(container);
                 else if (leftStackOut == null && rightStackOut == null && SlotBackpack.isValidItem(container))
                     return mergeBackpackInv(container);
@@ -245,15 +253,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     @Override
     protected void dropContentOnClose()
     {
-        for (int i = 0; i < inventory.getSizeInventory(); i++)
-        {
-            ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-            if (itemstack != null)
-            {
-                inventory.setInventorySlotContents(i, null);
-                player.dropPlayerItemWithRandomChoice(itemstack, false);
-            }
-        }
+        super.dropContentOnClose();
 
         for (int i = 0; i < 9; i++)
         {

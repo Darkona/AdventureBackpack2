@@ -95,7 +95,7 @@ public class Wearing
 
     public static InventoryBackpack getHoldingBackpackInv(EntityPlayer player)
     {
-        return new InventoryBackpack (player.getCurrentEquippedItem());
+        return new InventoryBackpack(player.getCurrentEquippedItem());
     }
 
     // Copter

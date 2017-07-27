@@ -376,9 +376,9 @@ public class BlockAdventureBackpack extends BlockContainer
 
         if (tile instanceof TileAdventureBackpack && !world.isRemote && player != null)
         {
-            if ((player.isSneaking()) ?
-                    ((TileAdventureBackpack) tile).equip(world, player, x, y, z) :
-                    ((TileAdventureBackpack) tile).drop(world, player, x, y, z))
+            if ((player.isSneaking())
+                ? ((TileAdventureBackpack) tile).equip(world, player, x, y, z)
+                : ((TileAdventureBackpack) tile).drop(world, player, x, y, z))
             {
                 return world.func_147480_a(x, y, z, false);
             }

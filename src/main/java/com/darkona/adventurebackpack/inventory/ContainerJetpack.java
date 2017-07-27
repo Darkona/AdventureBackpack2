@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.Constants.Source;
 
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
 
@@ -25,13 +26,19 @@ public class ContainerJetpack extends ContainerAdventureBackpack
     private int steamAmount;
     private ItemStack fuelStack;
 
-    public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack jetpack, byte source)
+    public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack jetpack, Source source)
     {
         this.player = player;
         inventory = jetpack;
         makeSlots(player.inventory);
         inventory.openInventory();
         this.source = source;
+    }
+
+    @Override
+    public IInventoryTanks getInventoryTanks()
+    {
+        return inventory;
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
@@ -119,19 +126,5 @@ public class ContainerJetpack extends ContainerAdventureBackpack
     private boolean mergeFuel(ItemStack stack)
     {
         return mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false);
-    }
-
-    @Override
-    protected void dropContentOnClose()
-    {
-        for (int i = 0; i < inventory.getSizeInventory(); i++)
-        {
-            ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-            if (itemstack != null)
-            {
-                inventory.setInventorySlotContents(i, null);
-                player.dropPlayerItemWithRandomChoice(itemstack, false);
-            }
-        }
     }
 }

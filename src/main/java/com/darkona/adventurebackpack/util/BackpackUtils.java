@@ -22,12 +22,12 @@ public class BackpackUtils
 {
     private static Timer timer = new Timer();
 
-    public enum reasons
+    public enum Reasons
     {
         SUCCESSFUL, ALREADY_EQUIPPED
     }
 
-    public static reasons equipWearable(ItemStack backpack, EntityPlayer player)
+    public static Reasons equipWearable(ItemStack backpack, EntityPlayer player)
     {
         BackpackProperty prop = BackpackProperty.get(player);
         if (prop.getWearable() == null)
@@ -39,10 +39,10 @@ public class BackpackUtils
             WearableEvent event = new WearableEvent.EquipWearableEvent(player, prop.getWearable());
             MinecraftForge.EVENT_BUS.post(event);
             BackpackProperty.sync(player);
-            return reasons.SUCCESSFUL;
+            return Reasons.SUCCESSFUL;
         } else
         {
-            return reasons.ALREADY_EQUIPPED;
+            return Reasons.ALREADY_EQUIPPED;
         }
     }
 

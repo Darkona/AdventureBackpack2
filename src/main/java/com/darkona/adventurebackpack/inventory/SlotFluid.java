@@ -59,7 +59,7 @@ public class SlotFluid extends SlotAdventureBackpack
 
     static boolean isEqualFluid(ItemStack container, FluidTank tank)
     {
-        return SlotFluid.getFluidID(container) == SlotFluid.getFluidID(tank);
+        return getFluidID(container) == getFluidID(tank);
     }
 
     static String getFluidName(ItemStack stack)
@@ -104,7 +104,7 @@ public class SlotFluid extends SlotAdventureBackpack
 
     static boolean canFitToTank(ItemStack container, FluidTank tank)
     {
-        return tank.getFluidAmount() + SlotFluid.getCapacity(container) <= tank.getCapacity();
+        return tank.getFluidAmount() + getCapacity(container) <= tank.getCapacity();
     }
 
     static boolean isEqualAndCanFit(ItemStack container, FluidTank tank)

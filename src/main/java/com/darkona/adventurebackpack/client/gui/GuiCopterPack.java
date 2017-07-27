@@ -6,12 +6,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.darkona.adventurebackpack.common.Constants.Source;
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.config.Keybindings;
-import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
-import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
@@ -30,15 +28,13 @@ public class GuiCopterPack extends GuiWithTanks
     private static GuiTank fuelTank = new GuiTank(8, 8, 72, 32, ConfigHandler.typeTankRender);
 
     private InventoryCopterPack inventory;
-    private EntityPlayer player;
-    private boolean isWearing;
 
-    public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, boolean wearing)
+    public GuiCopterPack(EntityPlayer player, InventoryCopterPack inv, Source source)
     {
-        super(new ContainerCopter(player, inv, wearing ? ContainerCopter.SOURCE_WEARING : ContainerCopter.SOURCE_HOLDING));
+        super(new ContainerCopter(player, inv, source));
         this.player = player;
         inventory = inv;
-        isWearing = wearing;
+        this.source = source;
         xSize = 176;
         ySize = 166;
     }
@@ -50,7 +46,7 @@ public class GuiCopterPack extends GuiWithTanks
         this.mc.renderEngine.bindTexture(TEXTURE);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        if (isWearing)
+        if (source == Source.WEARING)
         {
             if (unequipButton.inButton(this, mouseX, mouseY))
             {
@@ -59,7 +55,7 @@ public class GuiCopterPack extends GuiWithTanks
             {
                 unequipButton.draw(this, 1, 186);
             }
-        } else
+        } else if (source == Source.HOLDING)
         {
             if (equipButton.inButton(this, mouseX, mouseY))
             {
@@ -103,35 +99,14 @@ public class GuiCopterPack extends GuiWithTanks
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    GuiImageButtonNormal getEquipButton()
     {
-        //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-        if (isWearing)
-        {
-            if (unequipButton.inButton(this, mouseX, mouseY))
-            {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE, false));
-                player.closeScreen();
-            }
-        } else
-        {
-            if (equipButton.inButton(this, mouseX, mouseY))
-            {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, false));
-                //ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
-                player.closeScreen();
-            }
-        }
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        return equipButton;
     }
 
     @Override
-    protected void keyTyped(char key, int keycode)
+    GuiImageButtonNormal getUnequipButton()
     {
-        if (keycode == Keybindings.openInventory.getKeyCode())
-        {
-            player.closeScreen();
-        }
-        super.keyTyped(key, keycode);
+        return unequipButton;
     }
 }
