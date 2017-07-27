@@ -66,3 +66,10 @@ adventurebackpack:messages.copterpack.off=Вертолётный ранец: В�
 adventurebackpack:messages.jetpack.on=Паровой ранец: Включен.
 adventurebackpack:messages.jetpack.off=Паровой ранец: Выключен.
 adventurebackpack:messages.crossbow.outofammo=Арбалет с часовым механизмом: Нет боеприпасов.
+
+
+##
+adventurebackpack:tooltips.on=ВКЛ
+adventurebackpack:tooltips.off=ВЫКЛ
+adventurebackpack:tooltips.empty=Пусто
+adventurebackpack:tooltips.meters=метров (кубов)@над уровнем бедрока

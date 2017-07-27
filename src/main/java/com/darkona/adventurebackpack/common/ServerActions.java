@@ -9,7 +9,6 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -254,10 +253,9 @@ public class ServerActions
                     {
                         player.closeScreen();
                     }
-                } else if (world.isRemote)
+                } else if (!world.isRemote)
                 {
-                    //TODO -> ChatComponentTranslation
-                    player.addChatComponentMessage(new ChatComponentText("Can't deploy the sleeping bag! Check the surrounding area."));
+                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.backpack.cant.bag"));
                 }
             } else
             {
