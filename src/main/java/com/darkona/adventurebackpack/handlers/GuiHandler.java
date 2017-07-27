@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCoalJetpack;
 import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
+import com.darkona.adventurebackpack.common.Constants.Source;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.ContainerJetpack;
@@ -44,43 +45,43 @@ public class GuiHandler implements IGuiHandler
             case BACKPACK_TILE:
                 if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack)
                 {
-                    return new ContainerBackpack(player, (TileAdventureBackpack) world.getTileEntity(x, y, z), ContainerBackpack.SOURCE_TILE);
-                }
-                break;
-            case BACKPACK_WEARING:
-                if (Wearing.isWearingBackpack(player))
-                {
-                    return new ContainerBackpack(player, new InventoryBackpack(Wearing.getWearingBackpack(player)), ContainerBackpack.SOURCE_WEARING);
+                    return new ContainerBackpack(player, (TileAdventureBackpack) world.getTileEntity(x, y, z), Source.TILE);
                 }
                 break;
             case BACKPACK_HOLDING:
                 if (Wearing.isHoldingBackpack(player))
                 {
-                    return new ContainerBackpack(player, new InventoryBackpack(Wearing.getHoldingBackpack(player)), ContainerBackpack.SOURCE_HOLDING);
+                    return new ContainerBackpack(player, new InventoryBackpack(Wearing.getHoldingBackpack(player)), Source.HOLDING);
+                }
+                break;
+            case BACKPACK_WEARING:
+                if (Wearing.isWearingBackpack(player))
+                {
+                    return new ContainerBackpack(player, new InventoryBackpack(Wearing.getWearingBackpack(player)), Source.WEARING);
                 }
                 break;
             case COPTER_HOLDING:
                 if (Wearing.isHoldingCopter(player))
                 {
-                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)), false);
+                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)), Source.HOLDING);
                 }
                 break;
             case COPTER_WEARING:
                 if (Wearing.isWearingCopter(player))
                 {
-                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getWearingCopter(player)), true);
+                    return new ContainerCopter(player, new InventoryCopterPack(Wearing.getWearingCopter(player)), Source.WEARING);
                 }
                 break;
             case JETPACK_HOLDING:
                 if (Wearing.isHoldingJetpack(player))
                 {
-                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)), false);
+                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)), Source.HOLDING);
                 }
                 break;
             case JETPACK_WEARING:
                 if (Wearing.isWearingJetpack(player))
                 {
-                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getWearingJetpack(player)), true);
+                    return new ContainerJetpack(player, new InventoryCoalJetpack(Wearing.getWearingJetpack(player)), Source.WEARING);
                 }
                 break;
             default:
@@ -99,43 +100,43 @@ public class GuiHandler implements IGuiHandler
             case BACKPACK_TILE:
                 if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack)
                 {
-                    return new GuiAdvBackpack(player, (TileAdventureBackpack) world.getTileEntity(x, y, z));
-                }
-                break;
-            case BACKPACK_WEARING:
-                if (Wearing.isWearingBackpack(player))
-                {
-                    return new GuiAdvBackpack(player, new InventoryBackpack(Wearing.getWearingBackpack(player)), true);
+                    return new GuiAdvBackpack(player, (TileAdventureBackpack) world.getTileEntity(x, y, z), Source.TILE);
                 }
                 break;
             case BACKPACK_HOLDING:
                 if (Wearing.isHoldingBackpack(player))
                 {
-                    return new GuiAdvBackpack(player, new InventoryBackpack(Wearing.getHoldingBackpack(player)), false);
+                    return new GuiAdvBackpack(player, new InventoryBackpack(Wearing.getHoldingBackpack(player)), Source.HOLDING);
+                }
+                break;
+            case BACKPACK_WEARING:
+                if (Wearing.isWearingBackpack(player))
+                {
+                    return new GuiAdvBackpack(player, new InventoryBackpack(Wearing.getWearingBackpack(player)), Source.WEARING);
                 }
                 break;
             case COPTER_HOLDING:
                 if (Wearing.isHoldingCopter(player))
                 {
-                    return new GuiCopterPack(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)), false);
+                    return new GuiCopterPack(player, new InventoryCopterPack(Wearing.getHoldingCopter(player)), Source.HOLDING);
                 }
                 break;
             case COPTER_WEARING:
                 if (Wearing.isWearingCopter(player))
                 {
-                    return new GuiCopterPack(player, new InventoryCopterPack(Wearing.getWearingCopter(player)), true);
+                    return new GuiCopterPack(player, new InventoryCopterPack(Wearing.getWearingCopter(player)), Source.WEARING);
                 }
                 break;
             case JETPACK_HOLDING:
                 if (Wearing.isHoldingJetpack(player))
                 {
-                    return new GuiCoalJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)), false);
+                    return new GuiCoalJetpack(player, new InventoryCoalJetpack(Wearing.getHoldingJetpack(player)), Source.HOLDING);
                 }
                 break;
             case JETPACK_WEARING:
                 if (Wearing.isWearingJetpack(player))
                 {
-                    return new GuiCoalJetpack(player, new InventoryCoalJetpack(Wearing.getWearingJetpack(player)), true);
+                    return new GuiCoalJetpack(player, new InventoryCoalJetpack(Wearing.getWearingJetpack(player)), Source.WEARING);
                 }
                 break;
             default:

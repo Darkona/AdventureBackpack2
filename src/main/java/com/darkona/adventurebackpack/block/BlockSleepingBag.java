@@ -37,7 +37,7 @@ import com.darkona.adventurebackpack.util.Utils;
  */
 public class BlockSleepingBag extends BlockDirectional
 {
-    public static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
+    private static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
 
     @SideOnly(Side.CLIENT)
     private IIcon[] endIcons;
@@ -60,9 +60,6 @@ public class BlockSleepingBag extends BlockDirectional
         return this.textureName == null ? "MISSING_ICON_BLOCK_" + getIdFromBlock(this) + "_" + getUnlocalizedName() : this.textureName;
     }
 
-    /**
-     * Returns the unlocalized name of the block with "tile." appended to the front.
-     */
     @Override
     public String getUnlocalizedName()
     {
@@ -77,8 +74,7 @@ public class BlockSleepingBag extends BlockDirectional
     /**
      * Returns whether or not this bed block is the head of the bed.
      */
-
-    public static boolean isBlockHeadOfBed(int meta)
+    private static boolean isBlockHeadOfBed(int meta)
     {
         return (meta & 8) != 0;
     }
@@ -211,7 +207,7 @@ public class BlockSleepingBag extends BlockDirectional
         }
     }
 
-    public static void setBedOccupied(World world, int x, int y, int z, boolean flag)
+    private static void setBedOccupied(World world, int x, int y, int z, boolean flag)
     {
         int l = world.getBlockMetadata(x, y, z);
 
@@ -226,7 +222,7 @@ public class BlockSleepingBag extends BlockDirectional
         world.setBlockMetadataWithNotify(x, y, z, l, 4);
     }
 
-    public static boolean isBedOccupied(int meta)
+    private static boolean isBedOccupied(int meta)
     {
         return (meta & 4) != 0;
     }
@@ -268,38 +264,6 @@ public class BlockSleepingBag extends BlockDirectional
     @Override
     public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
     {
-        return null;
-    }
-
-    public static ChunkCoordinates func_149977_a(World world, int x, int y, int z, int whatever)
-    {
-        int meta = world.getBlockMetadata(x, y, z);
-        int dir = BlockDirectional.getDirection(meta);
-
-        for (int k1 = 0; k1 <= 1; ++k1)
-        {
-            int l1 = x - footBlockToHeadBlockMap[dir][0] * k1 - 1;
-            int i2 = z - footBlockToHeadBlockMap[dir][1] * k1 - 1;
-            int j2 = l1 + 2;
-            int k2 = i2 + 2;
-
-            for (int l2 = l1; l2 <= j2; ++l2)
-            {
-                for (int i3 = i2; i3 <= k2; ++i3)
-                {
-                    if (World.doesBlockHaveSolidTopSurface(world, l2, y - 1, i3) && !world.getBlock(l2, y, i3).getMaterial().isOpaque() && !world.getBlock(l2, y + 1, i3).getMaterial().isOpaque())
-                    {
-                        if (whatever <= 0)
-                        {
-                            return new ChunkCoordinates(l2, y, i3);
-                        }
-
-                        --whatever;
-                    }
-                }
-            }
-        }
-
         return null;
     }
 
@@ -409,40 +373,21 @@ public class BlockSleepingBag extends BlockDirectional
         return false;
     }
 
-    /**
-     * Indicate if a material is a normal solid opaque cube
-     */
     @Override
     public boolean isBlockNormalCube()
     {
         return false;
     }
 
-    /**
-     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
-     */
     @Override
     public boolean renderAsNormalBlock()
     {
         return false;
     }
 
-    /**
-     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
-     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-     */
     @Override
     public boolean isOpaqueCube()
     {
         return false;
-    }
-
-    /**
-     * Returns if this block is collidable (only used by Fire).
-     */
-    @Override
-    public boolean isCollidable()
-    {
-        return super.isCollidable();
     }
 }

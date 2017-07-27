@@ -10,13 +10,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.common.Constants.Source;
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
@@ -38,29 +37,25 @@ public class GuiAdvBackpack extends GuiWithTanks
     private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.typeTankRender);
 
     private IInventoryAdventureBackpack inventory;
-    private EntityPlayer player;
-    private boolean isWearing;
-    private boolean isTile;
 
     private boolean isHoldingSpace;
 
-    public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack)
+    public GuiAdvBackpack(EntityPlayer player, TileAdventureBackpack tileBackpack, Source source)
     {
-        super(new ContainerBackpack(player, tileBackpack, ContainerBackpack.SOURCE_TILE));
+        super(new ContainerBackpack(player, tileBackpack, source));
         this.player = player;
         inventory = tileBackpack;
-        isTile = true;
+        this.source = source;
         xSize = 248;
         ySize = 207;
     }
 
-    public GuiAdvBackpack(EntityPlayer player, InventoryBackpack inventoryBackpack, boolean wearing)
+    public GuiAdvBackpack(EntityPlayer player, InventoryBackpack inventoryBackpack, Source source)
     {
-        super(new ContainerBackpack(player, inventoryBackpack, wearing ? ContainerBackpack.SOURCE_WEARING : ContainerBackpack.SOURCE_HOLDING));
+        super(new ContainerBackpack(player, inventoryBackpack, source));
         this.player = player;
         inventory = inventoryBackpack;
-        isWearing = wearing;
-        isTile = false;
+        this.source = source;
         xSize = 248;
         ySize = 207;
     }
@@ -69,13 +64,11 @@ public class GuiAdvBackpack extends GuiWithTanks
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
     {
         GL11.glColor4f(1, 1, 1, 1);
-
         this.mc.renderEngine.bindTexture(TEXTURE);
-
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Buttons and button highlight
-        if (isTile)
+        if (source == Source.TILE)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {
@@ -86,7 +79,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             }
         } else
         {
-            if (isWearing)
+            if (source == Source.WEARING)
             {
                 if (unequipButton.inButton(this, mouseX, mouseY))
                 {
@@ -95,7 +88,7 @@ public class GuiAdvBackpack extends GuiWithTanks
                 {
                     unequipButton.draw(this, 77, 227);
                 }
-            } else
+            } else if (source == Source.HOLDING)
             {
                 if (equipButton.inButton(this, mouseX, mouseY))
                 {
@@ -157,46 +150,30 @@ public class GuiAdvBackpack extends GuiWithTanks
     }
 
     @Override
+    protected GuiImageButtonNormal getEquipButton()
+    {
+        return equipButton;
+    }
+
+    @Override
+    protected GuiImageButtonNormal getUnequipButton()
+    {
+        return unequipButton;
+    }
+
+    @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-        //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-        if (isTile)
+        if (source == Source.TILE)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {
                 TileAdventureBackpack te = (TileAdventureBackpack) inventory;
                 ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
             }
-        } else
-        {
-            if (isWearing)
-            {
-                if (unequipButton.inButton(this, mouseX, mouseY))
-                {
-                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE, false));
-                    player.closeScreen();
-                }
-            } else
-            {
-                if (equipButton.inButton(this, mouseX, mouseY))
-                {
-                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, false));
-                    //ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
-                    player.closeScreen();
-                }
-            }
         }
-        super.mouseClicked(mouseX, mouseY, button);
-    }
 
-    @Override
-    protected void keyTyped(char key, int keycode)
-    {
-        if (keycode == Keybindings.openInventory.getKeyCode())
-        {
-            player.closeScreen();
-        }
-        super.keyTyped(key, keycode);
+        super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import com.darkona.adventurebackpack.common.Constants.Source;
 
 /**
  * Created on 10.04.2017
@@ -19,6 +22,11 @@ abstract class ContainerAdventureBackpack extends Container
     protected static final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     protected static final int PLAYER_INV_END = PLAYER_INV_START + 26;
     protected static final int PLAYER_INV_LENGTH = PLAYER_INV_END + 1;
+
+    protected EntityPlayer player;
+    protected Source source;
+
+    abstract IInventoryTanks getInventoryTanks();
 
     protected void bindPlayerInventory(InventoryPlayer invPlayer, int startX, int startY)
     {
@@ -37,11 +45,27 @@ abstract class ContainerAdventureBackpack extends Container
     }
 
     @Override
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
+
+        if (source == Source.HOLDING) // used for refresh tooltips and redraw tanks content while GUI is open
+        {
+            if (detectChanges() && player instanceof EntityPlayerMP)
+            {
+                ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
+            }
+        }
+    }
+
+    abstract protected boolean detectChanges();
+
+    @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
     {
         Slot slot = getSlot(fromSlot);
 
-        if (slot == null || slot.getStack() == null )
+        if (slot == null || slot.getStack() == null)
             return null;
 
         ItemStack stack = slot.getStack();
@@ -80,6 +104,29 @@ abstract class ContainerAdventureBackpack extends Container
     }
 
     abstract protected boolean transferStackToPack(ItemStack stack);
+
+    @Override
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    {
+        if (source == Source.HOLDING && slot >= 0)
+        {
+            if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
+            {
+                return null;
+            }
+            if (flag == 2 && getSlot(button).getStack() == player.getHeldItem())
+            {
+                return null;
+            }
+        }
+        return super.slotClick(slot, button, flag, player);
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer player)
+    {
+        return getInventoryTanks().isUseableByPlayer(player);
+    }
 
     @Override
     protected boolean mergeItemStack(ItemStack initStack, int minIndex, int maxIndex, boolean backward)
@@ -154,8 +201,33 @@ abstract class ContainerAdventureBackpack extends Container
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer player)
+    public void onContainerClosed(EntityPlayer player)
     {
-        return true;
+        super.onContainerClosed(player);
+
+        if (source == Source.WEARING) //TODO no idea why this is here (preventing dupe on closing?), and why only for wearing
+        {
+            this.crafters.remove(player);
+        }
+
+        if (!player.worldObj.isRemote)
+        {
+            dropContentOnClose();
+        }
+    }
+
+    protected void dropContentOnClose()
+    {
+        IInventoryTanks inv = getInventoryTanks();
+
+        for (int i = 0; i < inv.getSizeInventory(); i++)
+        {
+            ItemStack itemstack = inv.getStackInSlotOnClosing(i);
+            if (itemstack != null)
+            {
+                inv.setInventorySlotContents(i, null);
+                player.dropPlayerItemWithRandomChoice(itemstack, false);
+            }
+        }
     }
 }

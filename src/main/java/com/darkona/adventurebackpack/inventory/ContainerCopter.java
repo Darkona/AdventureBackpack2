@@ -1,10 +1,11 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.darkona.adventurebackpack.common.Constants.Source;
 
 import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_IN;
 import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
@@ -14,23 +15,26 @@ import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
  *
  * @author Darkona
  */
-public class ContainerCopter extends ContainerAdventureBackpack /*implements IWearableContainer*/
+public class ContainerCopter extends ContainerAdventureBackpack
 {
     private static final int COPTER_INV_START = PLAYER_INV_END + 1;
 
     private InventoryCopterPack inventory;
-    private EntityPlayer player;
-    private boolean isWearing;
-
     private int fuelAmount;
 
-    public ContainerCopter(EntityPlayer player, InventoryCopterPack copter, boolean wearing)
+    public ContainerCopter(EntityPlayer player, InventoryCopterPack copter, Source source)
     {
         this.player = player;
         inventory = copter;
         makeSlots(player.inventory);
         inventory.openInventory();
-        isWearing = wearing;
+        this.source = source;
+    }
+
+    @Override
+    public IInventoryTanks getInventoryTanks()
+    {
+        return inventory;
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
@@ -42,28 +46,17 @@ public class ContainerCopter extends ContainerAdventureBackpack /*implements IWe
     }
 
     @Override
-    public void detectAndSendChanges()
+    protected boolean detectChanges()
     {
-        super.detectAndSendChanges();
+        boolean changesDetected = false;
 
-        if (!isWearing)
+        if (fuelAmount != inventory.getFuelTank().getFluidAmount())
         {
-            boolean changesDetected = false;
-
-            if (fuelAmount != inventory.getFuelTank().getFluidAmount())
-            {
-                fuelAmount = inventory.getFuelTank().getFluidAmount();
-                changesDetected = true;
-            }
-
-            if (changesDetected)
-            {
-                if (player instanceof EntityPlayerMP)
-                {
-                    ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
-                }
-            }
+            fuelAmount = inventory.getFuelTank().getFluidAmount();
+            changesDetected = true;
         }
+
+        return changesDetected;
     }
 
     @Override
@@ -92,8 +85,11 @@ public class ContainerCopter extends ContainerAdventureBackpack /*implements IWe
             {
                 if ((stackOut == null || areSameType) && SlotFluidFuel.isValidItem(stack))
                 {
-                    if (!mergeBucket(stack))
-                        return false;
+                    if (!isFuelTankEmpty)
+                    {
+                        if (!mergeBucket(stack))
+                            return false;
+                    }
                 }
             }
         }
@@ -104,51 +100,4 @@ public class ContainerCopter extends ContainerAdventureBackpack /*implements IWe
     {
         return mergeItemStack(stack, COPTER_INV_START, COPTER_INV_START + 1, false);
     }
-
-    @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
-    {
-        if (!isWearing && slot >= 0)
-        {
-            if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
-            {
-                return null;
-            }
-            if (flag == 2 && getSlot(button).getStack() == player.getHeldItem())
-            {
-                return null;
-            }
-        }
-        return super.slotClick(slot, button, flag, player);
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-
-        if (isWearing) //TODO
-        {
-            this.crafters.remove(player);
-        }
-
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
-            {
-                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                if (itemstack != null)
-                {
-                    inventory.setInventorySlotContents(i, null);
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-        }
-    }
-
-    /*@Override
-    public void refresh()
-    {
-        inventory.openInventory();
-    }*/
 }

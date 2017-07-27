@@ -314,7 +314,7 @@ public class Utils
         return rainbowed.toString();
     }
 
-    public static boolean isDimensionAllowed (int dimensionID)
+    public static boolean isDimensionAllowed(int dimensionID)
     {
         String currentDimID = String.valueOf(dimensionID);
         for (String forbiddenID : ConfigHandler.forbiddenDimensions)
@@ -325,5 +325,15 @@ public class Utils
             }
         }
         return true;
+    }
+
+    public static int[] createSlotArray(int first, int count)
+    {
+        int[] slots = new int[count];
+        for (int i = first; i < first + count; i++)
+        {
+            slots[i - first] = i;
+        }
+        return slots;
     }
 }

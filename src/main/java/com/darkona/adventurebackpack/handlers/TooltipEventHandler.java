@@ -1,11 +1,14 @@
 package com.darkona.adventurebackpack.handlers;
 
+import java.util.List;
+
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -31,6 +34,8 @@ import com.darkona.adventurebackpack.reference.GeneralReference;
  */
 public class TooltipEventHandler
 {
+    private List<String> eventTip;
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unused")
@@ -39,6 +44,7 @@ public class TooltipEventHandler
         if (!ConfigHandler.enableTooltips)
             return;
 
+        eventTip = event.toolTip;
         Item theItem = event.itemStack.getItem();
 
         if (theItem instanceof ItemAdventureBackpack)
@@ -47,29 +53,18 @@ public class TooltipEventHandler
             NBTTagCompound compound = event.itemStack.stackTagCompound;
             NBTTagCompound backpackTag = compound.getCompoundTag(Constants.COMPOUND_TAG);
 
-            /*if (ConfigHandler.IS_DEVENV && GuiScreen.isCtrlKeyDown())
-            {
-                tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
-                event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getUnlocalizedName());
-                event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getFluid().getName());
-                tank.readFromNBT(backpackTag.getCompoundTag(Constants.RIGHT_TANK));
-                event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getUnlocalizedName());
-                event.toolTip.add(tank.getFluidAmount() == 0 ? "" : tank.getFluid().getFluid().getName());
-            }*/
-
             if (GuiScreen.isShiftKeyDown())
             {
                 NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
-                event.toolTip.add("Slots used: " + inventoryTooltip(itemList));
+                makeTip(local("backpack.slots.used") + ": " + inventoryTooltip(itemList));
 
                 tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
-                event.toolTip.add("Left Tank: " + tankTooltip(tank));
+                makeTip(local("backpack.tank.left") + ": " + tankTooltip(tank));
 
                 tank.readFromNBT(backpackTag.getCompoundTag(Constants.RIGHT_TANK));
-                event.toolTip.add("Right Tank: " + tankTooltip(tank));
+                makeTip(local("backpack.tank.right") + ": " + tankTooltip(tank));
 
-                if (!GuiScreen.isCtrlKeyDown())
-                    event.toolTip.add(holdCtrl());
+                shiftFooter();
 
             } else if (!GuiScreen.isCtrlKeyDown())
             {
@@ -79,9 +74,9 @@ public class TooltipEventHandler
             if (GuiScreen.isCtrlKeyDown())
             {
                 boolean cycling = !backpackTag.getBoolean("disableCycling");
-                event.toolTip.add("Tool Cycling: " + switchTooltip(cycling, true));
-                event.toolTip.add("Press '" + actionKeyFormat() + "' while wearing");
-                event.toolTip.add("backpack, for turn cycling " + switchTooltip(!cycling, false));
+                makeTip(local("backpack.cycling") + ": " + switchTooltip(cycling, true));
+                makeTip(pressKeyFormat(actionKeyFormat()), locals("backpack.cycling.key"),
+                        " " + switchTooltip(!cycling, false));
 
                 String color = backpackTag.getString("colorName");
                 for (String valid : Constants.NIGHTVISION_BACKPACKS)
@@ -89,9 +84,9 @@ public class TooltipEventHandler
                     if (color.equals(valid))
                     {
                         boolean vision = !backpackTag.getBoolean("disableNVision");
-                        event.toolTip.add("Night Vision: " + switchTooltip(vision, true));
-                        event.toolTip.add("Press Shift+'" + actionKeyFormat() + "' while wearing");
-                        event.toolTip.add("backpack, for turn nightvision " + switchTooltip(!vision, false));
+                        makeTip(local("backpack.vision") + ": " + switchTooltip(vision, true));
+                        makeTip(pressShiftKeyFormat(actionKeyFormat()), locals("backpack.vision.key"),
+                                " " + switchTooltip(!vision, false));
                     }
                 }
             }
@@ -106,72 +101,67 @@ public class TooltipEventHandler
             if (GuiScreen.isShiftKeyDown())
             {
                 NBTTagList itemList = jetpackTag.getTagList(Constants.JETPACK_INVENTORY, NBT.TAG_COMPOUND);
-                event.toolTip.add("Fuel: " + slotStackTooltip(itemList, Constants.JETPACK_FUEL_SLOT));
+                makeTip(local("jetpack.fuel") + ": " + slotStackTooltip(itemList, Constants.JETPACK_FUEL_SLOT));
 
                 waterTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_WATER_TANK));
-                event.toolTip.add("Left Tank: " + tankTooltip(waterTank));
+                makeTip(local("jetpack.tank.water") + ": " + tankTooltip(waterTank));
 
                 steamTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_STEAM_TANK));
                 // special case for steam, have to set displayed fluid name manually, cuz technically it's water
-                String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + "Steam" : "";
-                event.toolTip.add("Right Tank: " + tankTooltip(steamTank, false) + theSteam);
+                String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + local("steam") : "";
+                makeTip(local("jetpack.tank.steam") + ": " + tankTooltip(steamTank, false) + theSteam);
 
-                if (!GuiScreen.isCtrlKeyDown())
-                    event.toolTip.add(holdCtrl());
+                shiftFooter();
 
             } else if (!GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add(holdShift());
+                makeTip(holdShift());
             }
 
             if (GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add("Maximum altitude: " + whiteFormat("185") + " meters");
-                event.toolTip.add("Press Shift+'" + actionKeyFormat() + "' while wearing");
-                event.toolTip.add("jetpack, for turn it ON");
+                makeTip(local("max.altitude") + ": " + whiteFormat("185 "), locals("meters"));
+                makeTip(pressShiftKeyFormat(actionKeyFormat()), locals("jetpack.key.onoff"), " " + local("on"));
             }
 
         } else if (theItem instanceof ItemCopterPack)
         {
             FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
             NBTTagCompound compound = event.itemStack.stackTagCompound;
+
             if (GuiScreen.isShiftKeyDown())
             {
                 fuelTank.readFromNBT(compound.getCompoundTag(Constants.COPTER_FUEL_TANK));
-                event.toolTip.add("Fuel Tank: " + tankTooltip(fuelTank));
-                event.toolTip.add("Fuel consumption rate: " + fuelConsumptionTooltip(fuelTank));
 
-                if (!GuiScreen.isCtrlKeyDown())
-                    event.toolTip.add(holdCtrl());
+                makeTip(local("copter.tank.fuel") + ": " + tankTooltip(fuelTank));
+                makeTip(local("copter.rate.fuel") + ": " + fuelConsumptionTooltip(fuelTank));
+
+                shiftFooter();
 
             } else if (!GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add(holdShift());
+                makeTip(holdShift());
             }
 
             if (GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add("Maximum altitude: " + whiteFormat("250") + " meters");
-                event.toolTip.add("Press Shift+'" + actionKeyFormat() + "' while wearing");
-                event.toolTip.add("copterpack, for turn it ON");
-                event.toolTip.add("Press '" + actionKeyFormat() + "' during flight to");
-                event.toolTip.add("switch hover mode");
+                makeTip(local("max.altitude") + ": " + whiteFormat("250 "), locals("meters"));
+                makeTip(pressShiftKeyFormat(actionKeyFormat()), locals("copter.key.onoff"), " " + local("on"));
+                makeTip(pressKeyFormat(actionKeyFormat()), locals("copter.key.hover"));
             }
 
         } else if (theItem instanceof ItemHose)
         {
             if (GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add("While holding Hose:");
-                event.toolTip.add("- press '" + actionKeyFormat() + "' to change active tank");
-                event.toolTip.add("- press Shift+'" + whiteFormat("Wheel") + "' to change mode");
-                event.toolTip.add("");
-                event.toolTip.add("Put Hose into bucketOut slot of wearable pack");
-                event.toolTip.add("to empty corresponded tank");
-                event.toolTip.add(EnumChatFormatting.RED + "WARNING! Fluid will be dumped and lost. Forever.");
+                makeTip(local("hose.key.header") + ":");
+                makeTip("- " + pressKeyFormat(actionKeyFormat()), locals("hose.key.tank"));
+                makeTip("- " + pressShiftKeyFormat(whiteFormat(local("mouse.wheel"))), locals("hose.key.mode"));
+                makeTip(locals("hose.dump"));
+                makeTip(EnumChatFormatting.RED.toString(), locals("hose.dump.warn"));
             } else
             {
-                event.toolTip.add(holdCtrl());
+                makeTip(holdShift());
             }
         }
     }
@@ -181,14 +171,18 @@ public class TooltipEventHandler
         return holdThe(true);
     }
 
-    private String holdCtrl()
+    private void shiftFooter()
     {
-        return holdThe(false);
+        if (GuiScreen.isCtrlKeyDown())
+            makeEmptyTip();
+        else
+            makeTip(holdThe(false));
     }
 
     private String holdThe(boolean button)
     {
-        return whiteFormat(EnumChatFormatting.ITALIC + (button ? "<Hold Shift>" : "<Hold Ctrl>"));
+        return whiteFormat(EnumChatFormatting.ITALIC  + "<" + (button ? local("hold.shift")
+                                                                      : local("hold.ctrl")) + ">");
     }
 
     private String whiteFormat(String theString)
@@ -199,6 +193,16 @@ public class TooltipEventHandler
     private String actionKeyFormat()
     {
         return whiteFormat(Keybindings.getActionKeyName());
+    }
+
+    private String pressKeyFormat(String button)
+    {
+        return local("press") + " '" + button + "' ";
+    }
+
+    private String pressShiftKeyFormat(String button)
+    {
+        return local("press") + " Shift+'" + button + "' ";
     }
 
     private String inventoryTooltip(NBTTagList itemList)
@@ -284,12 +288,13 @@ public class TooltipEventHandler
 
     private String switchTooltip(boolean status, boolean doFormat)
     {
-        return doFormat ? switchFormat(status) : status ? "ON" : "OFF";
+        return doFormat ? switchFormat(status) : status ? local("on") : local("off");
     }
 
     private String switchFormat(boolean status)
     {
-        String switchFormatted = status ? EnumChatFormatting.WHITE + "ON" : EnumChatFormatting.DARK_GRAY + "OFF";
+        String switchFormatted = status ? EnumChatFormatting.WHITE + local("on")
+                                        : EnumChatFormatting.DARK_GRAY + local("off");
         return "[" + switchFormatted + EnumChatFormatting.GRAY + "]";
     }
 
@@ -322,7 +327,7 @@ public class TooltipEventHandler
             dataFormatted = iStack.getDisplayName() + " (" + stackSizeFormat(iStack, count) + ")";
         } catch (Exception e)
         {
-            dataFormatted = EnumChatFormatting.RED + "Error";
+            dataFormatted = EnumChatFormatting.RED + local("error");
             //e.printStackTrace();
         }
         return dataFormatted;
@@ -344,6 +349,54 @@ public class TooltipEventHandler
 
     private String emptyFormat()
     {
-        return EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.ITALIC + "Empty";
+        return EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.ITALIC + local("empty");
+    }
+
+    private String local(String tip)
+    {
+        return StatCollector.translateToLocal("adventurebackpack:tooltips." + tip);
+    }
+
+    private String[] locals(String tips)
+    {
+        return local(tips).split("@", 5);
+    }
+
+    private void makeTip(String tooltip)
+    {
+        eventTip.add(tooltip);
+    }
+
+    private void makeTip(String[] tooltips)
+    {
+        makeTip(null, tooltips, null);
+    }
+
+    private void makeTip(String before, String[] tooltips)
+    {
+        makeTip(before, tooltips, null);
+    }
+
+    private void makeTip(String before, String[] tooltips, String after)
+    {
+        for (int i = 0; i < tooltips.length; i++)
+        {
+            String tip = "";
+
+            if (i == 0 && before != null)
+                tip += before;
+
+            tip += tooltips[i];
+
+            if (i == tooltips.length - 1 && after != null)
+                tip += after;
+
+            eventTip.add(tip);
+        }
+    }
+
+    private void makeEmptyTip()
+    {
+        makeTip("");
     }
 }

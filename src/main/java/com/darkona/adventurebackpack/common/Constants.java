@@ -9,6 +9,11 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
  */
 public class Constants
 {
+    public enum Source
+    {
+        TILE, HOLDING, WEARING
+    }
+
     public static final int BUCKET = FluidContainerRegistry.BUCKET_VOLUME;
 
     public static final int INVENTORY_SIZE = 45;

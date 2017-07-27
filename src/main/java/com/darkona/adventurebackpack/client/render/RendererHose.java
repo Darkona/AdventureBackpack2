@@ -36,7 +36,6 @@ public class RendererHose implements IItemRenderer
     }
 
     @Override
-    @SuppressWarnings("incomplete-switch")
     public void renderItem(ItemRenderType type, ItemStack hose, Object... data)
     {
         if (type == ItemRenderType.INVENTORY)

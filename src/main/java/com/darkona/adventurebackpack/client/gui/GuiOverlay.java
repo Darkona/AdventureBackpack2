@@ -76,14 +76,14 @@ public class GuiOverlay extends Gui
         if (ConfigHandler.statusOverlay)
         {
             int xStep = ConfigHandler.statusOverlayLeft
-                    ? BUFF_ICON_SIZE + BUFF_ICON_SPACING
-                    : - BUFF_ICON_SIZE - BUFF_ICON_SPACING;
+                        ? BUFF_ICON_SIZE + BUFF_ICON_SPACING
+                        : -BUFF_ICON_SIZE - BUFF_ICON_SPACING;
             int xPos = ConfigHandler.statusOverlayLeft
-                    ? ConfigHandler.statusOverlayIndentH
-                    : screenWidth - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentH;
+                       ? ConfigHandler.statusOverlayIndentH
+                       : screenWidth - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentH;
             int yPos = ConfigHandler.statusOverlayTop
-                    ? ConfigHandler.statusOverlayIndentV
-                    : screenHeight - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentV;
+                       ? ConfigHandler.statusOverlayIndentV
+                       : screenHeight - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentV;
 
             Collection activePotionEffects = this.mc.thePlayer.getActivePotionEffects();
             if (!activePotionEffects.isEmpty())
@@ -123,11 +123,11 @@ public class GuiOverlay extends Gui
                 int textureWidth = 10;
 
                 int xPos = ConfigHandler.tanksOverlayRight
-                        ? screenWidth - (textureWidth * 3) - ConfigHandler.tanksOverlayIndentH
-                        : ConfigHandler.tanksOverlayIndentH;
+                           ? screenWidth - (textureWidth * 3) - ConfigHandler.tanksOverlayIndentH
+                           : ConfigHandler.tanksOverlayIndentH;
                 int yPos = ConfigHandler.tanksOverlayBottom
-                        ? screenHeight - textureHeight - ConfigHandler.tanksOverlayIndentV
-                        : ConfigHandler.tanksOverlayIndentV;
+                           ? screenHeight - textureHeight - ConfigHandler.tanksOverlayIndentV
+                           : ConfigHandler.tanksOverlayIndentV;
 
                 int tankX = xPos;
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

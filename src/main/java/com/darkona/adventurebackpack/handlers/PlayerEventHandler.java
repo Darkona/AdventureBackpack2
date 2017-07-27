@@ -135,10 +135,13 @@ public class PlayerEventHandler
                 {
                     pistonBootsStepHeight = true;
                 }
-            } else if (pistonBootsStepHeight)
+            } else
             {
-                player.stepHeight = 0.5001F;
-                pistonBootsStepHeight = false;
+                if (pistonBootsStepHeight)
+                {
+                    player.stepHeight = 0.5001F;
+                    pistonBootsStepHeight = false;
+                }
             }
         }
     }

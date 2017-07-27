@@ -1,12 +1,12 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.Constants.Source;
 
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
 
@@ -15,26 +15,30 @@ import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
  *
  * @author Darkona
  */
-public class ContainerJetpack extends ContainerAdventureBackpack /*implements IWearableContainer*/
+public class ContainerJetpack extends ContainerAdventureBackpack
 {
     private static final int JETPACK_INV_START = PLAYER_INV_END + 1;
     private static final int JETPACK_FUEL_START = PLAYER_INV_END + 3;
 
     private InventoryCoalJetpack inventory;
-    private EntityPlayer player;
-    private boolean isWearing;
 
     private int waterAmount;
     private int steamAmount;
     private ItemStack fuelStack;
 
-    public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack jetpack, boolean wearing)
+    public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack jetpack, Source source)
     {
         this.player = player;
         inventory = jetpack;
         makeSlots(player.inventory);
         inventory.openInventory();
-        isWearing = wearing;
+        this.source = source;
+    }
+
+    @Override
+    public IInventoryTanks getInventoryTanks()
+    {
+        return inventory;
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
@@ -47,40 +51,29 @@ public class ContainerJetpack extends ContainerAdventureBackpack /*implements IW
     }
 
     @Override
-    public void detectAndSendChanges()
+    protected boolean detectChanges()
     {
-        super.detectAndSendChanges();
+        boolean changesDetected = false;
 
-        if (!isWearing)
+        ItemStack[] inv = inventory.getInventory();
+        if (inv[JETPACK_FUEL_SLOT] != fuelStack)
         {
-            boolean changesDetected = false;
-
-            ItemStack[] inv = inventory.getInventory();
-            if (inv[JETPACK_FUEL_SLOT] != fuelStack)
-            {
-                fuelStack = inv[JETPACK_FUEL_SLOT];
-                changesDetected = true;
-            }
-
-            if (waterAmount != inventory.getWaterTank().getFluidAmount())
-            {
-                waterAmount = inventory.getWaterTank().getFluidAmount();
-                changesDetected = true;
-            }
-            if (steamAmount != inventory.getSteamTank().getFluidAmount())
-            {
-                steamAmount = inventory.getSteamTank().getFluidAmount();
-                changesDetected = true;
-            }
-
-            if (changesDetected)
-            {
-                if (player instanceof EntityPlayerMP)
-                {
-                    ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
-                }
-            }
+            fuelStack = inv[JETPACK_FUEL_SLOT];
+            changesDetected = true;
         }
+
+        if (waterAmount != inventory.getWaterTank().getFluidAmount())
+        {
+            waterAmount = inventory.getWaterTank().getFluidAmount();
+            changesDetected = true;
+        }
+        if (steamAmount != inventory.getSteamTank().getFluidAmount())
+        {
+            steamAmount = inventory.getSteamTank().getFluidAmount();
+            changesDetected = true;
+        }
+
+        return changesDetected;
     }
 
     @Override
@@ -109,8 +102,11 @@ public class ContainerJetpack extends ContainerAdventureBackpack /*implements IW
             {
                 if ((stackOut == null || areSameType) && SlotFluidWater.isValidItem(stack))
                 {
-                    if (!mergeBucket(stack))
-                        return false;
+                    if (!isWaterTankEmpty)
+                    {
+                        if (!mergeBucket(stack))
+                            return false;
+                    }
                 }
             }
 
@@ -131,51 +127,4 @@ public class ContainerJetpack extends ContainerAdventureBackpack /*implements IW
     {
         return mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false);
     }
-
-    @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
-    {
-        if (!isWearing && slot >= 0)
-        {
-            if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
-            {
-                return null;
-            }
-            if (flag == 2 && getSlot(button).getStack() == player.getHeldItem())
-            {
-                return null;
-            }
-        }
-        return super.slotClick(slot, button, flag, player);
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-
-        if (isWearing) //TODO
-        {
-            this.crafters.remove(player);
-        }
-
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
-            {
-                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                if (itemstack != null)
-                {
-                    inventory.setInventorySlotContents(i, null);
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-        }
-    }
-
-    /*@Override
-    public void refresh()
-    {
-        inventory.openInventory();
-    }*/
 }

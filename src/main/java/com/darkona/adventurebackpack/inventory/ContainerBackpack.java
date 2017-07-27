@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
@@ -11,6 +10,8 @@ import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.darkona.adventurebackpack.common.Constants.Source;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
@@ -24,12 +25,8 @@ import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
  *
  * @author Darkona
  */
-public class ContainerBackpack extends ContainerAdventureBackpack /*implements IWearableContainer*/
+public class ContainerBackpack extends ContainerAdventureBackpack
 {
-    public static final byte SOURCE_TILE = 0;
-    public static final byte SOURCE_WEARING = 1;
-    public static final byte SOURCE_HOLDING = 2;
-
     private static final int BACK_INV_START = PLAYER_INV_END + 1;
     private static final int BACK_INV_END = BACK_INV_START + 38;
     private static final int TOOL_START = BACK_INV_END + 1;
@@ -40,8 +37,6 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     private InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
     private IInventory craftResult = new InventoryCraftResult();
     private IInventoryAdventureBackpack inventory;
-    private EntityPlayer player;
-    private byte source;
 
     private int leftAmount;
     private int rightAmount;
@@ -49,7 +44,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
 
     //IDEA redesign container layout/craft slots behavior, so it will be rectangular and compatible with invTweaks. this also makes more slots available cuz craft ones will not drop content on close
 
-    public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, byte source)
+    public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, Source source)
     {
         this.player = player;
         inventory = backpack;
@@ -59,6 +54,12 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     }
 
     public IInventoryAdventureBackpack getInventoryBackpack()
+    {
+        return inventory;
+    }
+
+    @Override
+    public IInventoryTanks getInventoryTanks()
     {
         return inventory;
     }
@@ -115,46 +116,35 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     }
 
     @Override
-    public void detectAndSendChanges()
+    protected boolean detectChanges()
     {
-        super.detectAndSendChanges();
+        boolean changesDetected = false;
 
-        if (source == SOURCE_HOLDING) // used for refresh tooltips and redraw tanks content while GUI is open
+        ItemStack[] inv = inventory.getInventory();
+        int tempCount = 0;
+        for (int i = 0; i <= LOWER_TOOL; i++)
         {
-            boolean changesDetected = false;
-
-            ItemStack[] inv = inventory.getInventory();
-            int tempCount = 0;
-            for (int i = 0; i <= LOWER_TOOL; i++)
-            {
-                if (inv[i] != null)
-                    tempCount++;
-            }
-            if (invCount != tempCount)
-            {
-                invCount = tempCount;
-                changesDetected = true;
-            }
-
-            if (leftAmount != inventory.getLeftTank().getFluidAmount())
-            {
-                leftAmount = inventory.getLeftTank().getFluidAmount();
-                changesDetected = true;
-            }
-            if (rightAmount != inventory.getRightTank().getFluidAmount())
-            {
-                rightAmount = inventory.getRightTank().getFluidAmount();
-                changesDetected = true;
-            }
-
-            if (changesDetected)
-            {
-                if (player instanceof EntityPlayerMP)
-                {
-                    ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
-                }
-            }
+            if (inv[i] != null)
+                tempCount++;
         }
+        if (invCount != tempCount)
+        {
+            invCount = tempCount;
+            changesDetected = true;
+        }
+
+        if (leftAmount != inventory.getLeftTank().getFluidAmount())
+        {
+            leftAmount = inventory.getLeftTank().getFluidAmount();
+            changesDetected = true;
+        }
+        if (rightAmount != inventory.getRightTank().getFluidAmount())
+        {
+            rightAmount = inventory.getRightTank().getFluidAmount();
+            changesDetected = true;
+        }
+
+        return changesDetected;
     }
 
     @Override
@@ -227,16 +217,16 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
         {
             if (isLeftTankEmpty)
             {
-                if (!isRightTankEmpty && (rightStackOut == null || areRightSameType) && suitableToRight)
+                if (!isRightTankEmpty && suitableToRight && (rightStackOut == null || areRightSameType))
                     return mergeRightBucket(container);
                 else if (leftStackOut == null || areLeftSameType)
                     return mergeLeftBucket(container);
 
             } else
             {
-                if ((leftStackOut == null || areLeftSameType) && suitableToLeft)
+                if (suitableToLeft && (leftStackOut == null || areLeftSameType))
                     return mergeLeftBucket(container);
-                else if ((rightStackOut == null || areRightSameType) && (isRightTankEmpty || suitableToRight))
+                else if ((isRightTankEmpty || suitableToRight) && (rightStackOut == null || areRightSameType))
                     return mergeRightBucket(container);
                 else if (leftStackOut == null && rightStackOut == null && SlotBackpack.isValidItem(container))
                     return mergeBackpackInv(container);
@@ -261,51 +251,17 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     }
 
     @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    protected void dropContentOnClose()
     {
-        if (source == SOURCE_HOLDING && slot >= 0)
+        super.dropContentOnClose();
+
+        for (int i = 0; i < 9; i++)
         {
-            if (getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
-            {
-                return null;
-            }
-            if (flag == 2 && getSlot(button).getStack() == player.getHeldItem())
-            {
-                return null;
-            }
-        }
-        return super.slotClick(slot, button, flag, player);
-    }
+            ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
 
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-
-        if (source == SOURCE_WEARING) //TODO no idea why this is here (preventing dupe on closing?), and why only for wearing
-        {
-            this.crafters.remove(player);
-        }
-
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
+            if (itemstack != null)
             {
-                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                if (itemstack != null)
-                {
-                    inventory.setInventorySlotContents(i, null);
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-            for (int i = 0; i < 9; i++)
-            {
-                ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
-
-                if (itemstack != null)
-                {
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
+                player.dropPlayerItemWithRandomChoice(itemstack, false);
             }
         }
     }
@@ -315,11 +271,4 @@ public class ContainerBackpack extends ContainerAdventureBackpack /*implements I
     {
         craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
     }
-
-    /*@Override
-    public void refresh()
-    {
-        inventory.openInventory();
-        this.onCraftMatrixChanged(craftMatrix);
-    }*/
 }

@@ -43,10 +43,6 @@ item.adventurebackpack:pistonBoots.name=Piston Boots
 
 ## Blocks
 blockAdventureBackpack.name=Adventure Backpacks
-block.adventurebackpack:block.AdventureBackpack.name=Adventure Backpack
-block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Block
-block.adventurebackpack:CampFire.name=Campfire
-block.adventurebackpack:SleepingBag.name=Sleeping Bag
 blockCampFire.name=CampFire
 blockSleepingBag.name=Sleeping Bag
 
@@ -68,6 +64,7 @@ adventurebackpack:messages.already.equipped.backpack=You are already equipping a
 adventurebackpack:messages.already.equipped.copterpack=You are already equipping a Copter Pack.
 adventurebackpack:messages.already.equipped.jetpack=You are already equipping a Coal Jetpack.
 adventurebackpack:messages.already.impossibru=You aren't wearing any backpacks.
+adventurebackpack:messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.
 adventurebackpack:messages.copterpack.hover=CopterPack: Hover Mode.
 adventurebackpack:messages.copterpack.normal=CopterPack: Normal Mode.
 adventurebackpack:messages.copterpack.outoffuel=CopterPack: Out of fuel.
@@ -80,3 +77,40 @@ adventurebackpack:messages.nightvision.off=Night Vision: Off.
 adventurebackpack:messages.cycling.on=Tool Cycling: On.
 adventurebackpack:messages.cycling.off=Tool Cycling: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.
+
+## Tooltips ("@" - line separator)
+adventurebackpack:tooltips.on=ON
+adventurebackpack:tooltips.off=OFF
+adventurebackpack:tooltips.empty=Empty
+adventurebackpack:tooltips.meters=meters
+adventurebackpack:tooltips.error=Error
+adventurebackpack:tooltips.steam=Steam
+adventurebackpack:tooltips.press=Press
+adventurebackpack:tooltips.hold.shift=Hold Shift
+adventurebackpack:tooltips.hold.ctrl=Hold Ctrl
+adventurebackpack:tooltips.mouse.wheel=Wheel
+adventurebackpack:tooltips.max.altitude=Maximum altitude
+
+adventurebackpack:tooltips.backpack.slots.used=Slots used
+adventurebackpack:tooltips.backpack.tank.left=Left Tank
+adventurebackpack:tooltips.backpack.tank.right=Right Tank
+adventurebackpack:tooltips.backpack.cycling=Tool Cycling
+adventurebackpack:tooltips.backpack.cycling.key=while wearing@backpack, for turn cycling
+adventurebackpack:tooltips.backpack.vision=Night Vision
+adventurebackpack:tooltips.backpack.vision.key=while wearing@backpack, for turn nightvision
+
+adventurebackpack:tooltips.jetpack.fuel=Fuel
+adventurebackpack:tooltips.jetpack.tank.water=Left Tank
+adventurebackpack:tooltips.jetpack.tank.steam=Right Tank
+adventurebackpack:tooltips.jetpack.key.onoff=while wearing@jetpack, for turn it
+
+adventurebackpack:tooltips.copter.tank.fuel=Fuel Tank
+adventurebackpack:tooltips.copter.rate.fuel=Fuel consumption rate
+adventurebackpack:tooltips.copter.key.onoff=while wearing@copterpack, for turn it
+adventurebackpack:tooltips.copter.key.hover=during flight to@switch hover mode
+
+adventurebackpack:tooltips.hose.key.header=While holding Hose:
+adventurebackpack:tooltips.hose.key.tank=to change active tank
+adventurebackpack:tooltips.hose.key.mode=to change mode
+adventurebackpack:tooltips.hose.dump=@Put Hose into bucketOut slot of wearable pack@to empty corresponded tank
+adventurebackpack:tooltips.hose.dump.warn=WARNING! Fluid will be dumped and lost. Forever.
