@@ -47,7 +47,7 @@ public class ServerProxy implements IProxy
         {
             LogHelper.info("Stored properties retrieved");
             BackpackProperty.get(player).loadNBTData(playerData);
-            BackpackProperty.syncToNear(player);
+            BackpackProperty.sync(player);
         } else
         {
             LogHelper.info("Data is null! WTF!");

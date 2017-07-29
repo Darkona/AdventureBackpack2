@@ -25,6 +25,7 @@ import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
@@ -341,20 +342,20 @@ public class ServerActions
         player.jumpMovementFactor += 0.3;
     }
 
+    public static void copterSoundAtLogin(EntityPlayer player)
+    {
+        byte status = BackpackProperty.get(player).getWearable().getTagCompound().getByte("status");
+
+        if (!player.worldObj.isRemote && status != ItemCopterPack.OFF_MODE)
+        {
+            ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.COPTER_SOUND, player), player);
+        }
+    }
+
     public static void toggleCopterPack(EntityPlayer player, ItemStack copter, byte type)
     {
         String message = "";
         boolean actionPerformed = false;
-
-        if (!copter.hasTagCompound())
-        {
-            copter.stackTagCompound = new NBTTagCompound();
-        }
-        if (!copter.stackTagCompound.hasKey("status"))
-        {
-            copter.stackTagCompound.setByte("status", ItemCopterPack.OFF_MODE);
-        }
-
         byte mode = copter.stackTagCompound.getByte("status");
         byte newMode = ItemCopterPack.OFF_MODE;
 
@@ -368,7 +369,6 @@ public class ServerActions
                 if (!player.worldObj.isRemote)
                 {
                     ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.COPTER_SOUND, player), player);
-
                 }
             } else
             {

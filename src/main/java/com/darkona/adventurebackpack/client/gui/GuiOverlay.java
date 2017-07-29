@@ -134,6 +134,11 @@ public class GuiOverlay extends Gui
                 GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+                if (inv.getTanksArray().length == 1 && ConfigHandler.tanksOverlayRight)
+                {
+                    tankX += textureWidth + 1; // case for copter, stick lonely tank to window border
+                }
                 for (FluidTank tank : inv.getTanksArray())
                 {
                     mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/overlay.png"));

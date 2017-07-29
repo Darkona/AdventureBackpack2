@@ -356,12 +356,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack)
-    {
-        return "Adventure Backpack";
-    }
-
-    @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair)
     {
         return false;

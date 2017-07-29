@@ -38,22 +38,19 @@ public class BackpackProperty implements IExtendedEntityProperties
     {
         if (player instanceof EntityPlayerMP)
         {
-            syncToNear(player);
+            syncToNear((EntityPlayerMP) player);
         }
     }
 
-    public static void syncToNear(EntityPlayer player)
+    private static void syncToNear(EntityPlayerMP player)
     {
         //Thanks diesieben07!!!
-        if (player != null && player instanceof EntityPlayerMP)
+        try
         {
-            try
-            {
-                ((EntityPlayerMP) player).getServerForPlayer().getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData())));
-            } catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
+            player.getServerForPlayer().getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData())));
+        } catch (Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
 
@@ -142,7 +139,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public ItemStack getWearable()
     {
-        return wearable != null ? wearable : null;
+        return wearable;
     }
 
     public void setCampFire(ChunkCoordinates cf)

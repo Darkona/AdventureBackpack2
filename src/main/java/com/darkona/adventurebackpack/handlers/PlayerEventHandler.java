@@ -92,6 +92,11 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
+
+            if (Wearing.isWearingCopter(event.player))
+            {
+                ServerActions.copterSoundAtLogin(event.player);
+            }
         }
     }
 

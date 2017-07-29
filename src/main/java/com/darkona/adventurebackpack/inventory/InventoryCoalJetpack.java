@@ -39,8 +39,6 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
     private int coolTicks = 5000;
     private long systemTime = 0;
 
-    //TODO if GUI is open while temp is going up, temp will drop to zero at 90C. just sync issue?
-    //TODO boiling sound work sometimes, and then it override leaking sound. check it
     public InventoryCoalJetpack(final ItemStack jetpack)
     {
         containerStack = jetpack;
@@ -186,7 +184,7 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
         return result;
     }
 
-    boolean isFuel(ItemStack stack)
+    private boolean isFuel(ItemStack stack)
     {
         return TileEntityFurnace.isItemFuel(stack);
     }
