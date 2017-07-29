@@ -171,7 +171,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         {
             if (!boiling) boiling = true;
 
-            if (!world.isRemote && mustBlublub)
+            if (!world.isRemote && mustBlublub) //TODO BoilingBoilerSound stop playing after steam tank is full (so boiling is false), and never starts again
             {
                 ModNetwork.net.sendTo(new EntitySoundPacket.Message(EntitySoundPacket.BOILING_BUBBLES, player), (EntityPlayerMP) player);
             }

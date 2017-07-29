@@ -75,10 +75,16 @@ public class ClientActions
                     }
                     break;
                 case EntitySoundPacket.BOILING_BUBBLES:
-                    snd.playSound(new BoilingBoilerSound(player));
+                    if (ConfigHandler.allowSoundJetpack)
+                    {
+                        snd.playSound(new BoilingBoilerSound(player));
+                    }
                     break;
                 case EntitySoundPacket.LEAKING_STEAM:
-                    snd.playSound(new LeakingBoilerSound(player));
+                    if (ConfigHandler.allowSoundJetpack)
+                    {
+                        snd.playSound(new LeakingBoilerSound(player));
+                    }
                     break;
             }
         }

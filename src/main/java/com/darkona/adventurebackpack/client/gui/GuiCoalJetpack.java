@@ -14,7 +14,6 @@ import com.darkona.adventurebackpack.inventory.ContainerJetpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 15/01/2015
@@ -33,6 +32,7 @@ public class GuiCoalJetpack extends GuiWithTanks
     private InventoryCoalJetpack inventory;
 
     private int boiling = 0;
+    int tick = 0;
 
     public GuiCoalJetpack(EntityPlayer player, InventoryCoalJetpack inv, Source source)
     {
@@ -70,17 +70,13 @@ public class GuiCoalJetpack extends GuiWithTanks
                 equipButton.draw(this, 1, 167);
             }
         }
-        //if (isWearing) inventory = new InventoryCoalJetpack(Wearing.getWearingJetpack(player));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         this.mc.renderEngine.bindTexture(TEXTURE);
-        if (source == Source.WEARING) //TODO why?
-        {
-            inventory = new InventoryCoalJetpack(Wearing.getWearingJetpack(player));
-        }
+        inventory.openInventory();
         FluidTank water = inventory.getWaterTank();
         FluidTank steam = inventory.getSteamTank();
         GL11.glPushMatrix();
@@ -88,7 +84,7 @@ public class GuiCoalJetpack extends GuiWithTanks
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         if (inventory.isBoiling() && steam.getFluidAmount() < steam.getCapacity() && water.getFluidAmount() > 0)
         {
-            if (boiling < 83) //TODO here
+            if (boiling < 83)
             {
                 drawTexturedModalRect(28, 40, 50, 172, boiling++, 37);
             } else

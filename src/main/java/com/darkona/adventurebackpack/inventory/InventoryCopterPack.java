@@ -26,7 +26,6 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
 
     private byte status = ItemCopterPack.OFF_MODE;
 
-    //TODO copter sound doesn't init at login (status init, so you can keep flying)
     public InventoryCopterPack(ItemStack copterPack)
     {
         containerStack = copterPack;
