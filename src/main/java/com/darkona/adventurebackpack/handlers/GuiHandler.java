@@ -28,8 +28,8 @@ public class GuiHandler implements IGuiHandler
     public static final byte JETPACK_HOLDING = 5;
     public static final byte COPTER_WEARING = 4;
     public static final byte COPTER_HOLDING = 3;
-    public static final byte BACKPACK_HOLDING = 2;
-    public static final byte BACKPACK_WEARING = 1;
+    public static final byte BACKPACK_WEARING = 2;
+    public static final byte BACKPACK_HOLDING = 1;
     public static final byte BACKPACK_TILE = 0;
 
     public GuiHandler()

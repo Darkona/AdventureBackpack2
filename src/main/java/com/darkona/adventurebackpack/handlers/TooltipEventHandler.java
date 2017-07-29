@@ -50,8 +50,7 @@ public class TooltipEventHandler
         if (theItem instanceof ItemAdventureBackpack)
         {
             FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
-            NBTTagCompound compound = event.itemStack.stackTagCompound;
-            NBTTagCompound backpackTag = compound.getCompoundTag(Constants.COMPOUND_TAG);
+            NBTTagCompound backpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
 
             if (GuiScreen.isShiftKeyDown())
             {
@@ -68,7 +67,7 @@ public class TooltipEventHandler
 
             } else if (!GuiScreen.isCtrlKeyDown())
             {
-                event.toolTip.add(holdShift());
+                makeTip(holdShift());
             }
 
             if (GuiScreen.isCtrlKeyDown())
@@ -95,8 +94,7 @@ public class TooltipEventHandler
         {
             FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
             FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
-            NBTTagCompound compound = event.itemStack.stackTagCompound;
-            NBTTagCompound jetpackTag = compound.getCompoundTag(Constants.JETPACK_COMPOUND_TAG);
+            NBTTagCompound jetpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.JETPACK_COMPOUND_TAG);
 
             if (GuiScreen.isShiftKeyDown())
             {
@@ -127,12 +125,10 @@ public class TooltipEventHandler
         } else if (theItem instanceof ItemCopterPack)
         {
             FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
-            NBTTagCompound compound = event.itemStack.stackTagCompound;
 
             if (GuiScreen.isShiftKeyDown())
             {
-                fuelTank.readFromNBT(compound.getCompoundTag(Constants.COPTER_FUEL_TANK));
-
+                fuelTank.readFromNBT(event.itemStack.stackTagCompound.getCompoundTag(Constants.COPTER_FUEL_TANK));
                 makeTip(local("copter.tank.fuel") + ": " + tankTooltip(fuelTank));
                 makeTip(local("copter.rate.fuel") + ": " + fuelConsumptionTooltip(fuelTank));
 
@@ -158,10 +154,10 @@ public class TooltipEventHandler
                 makeTip("- " + pressKeyFormat(actionKeyFormat()), locals("hose.key.tank"));
                 makeTip("- " + pressShiftKeyFormat(whiteFormat(local("mouse.wheel"))), locals("hose.key.mode"));
                 makeTip(locals("hose.dump"));
-                makeTip(EnumChatFormatting.RED.toString(), locals("hose.dump.warn"));
+                makeTip(EnumChatFormatting.RED.toString() + local("hose.dump.warn"));
             } else
             {
-                makeTip(holdShift());
+                makeTip(holdCtrl());
             }
         }
     }
@@ -176,7 +172,12 @@ public class TooltipEventHandler
         if (GuiScreen.isCtrlKeyDown())
             makeEmptyTip();
         else
-            makeTip(holdThe(false));
+            makeTip(holdCtrl());
+    }
+
+    private String holdCtrl()
+    {
+        return holdThe(false);
     }
 
     private String holdThe(boolean button)

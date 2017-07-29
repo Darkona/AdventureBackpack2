@@ -43,18 +43,6 @@ public class ItemCrossbow extends ItemAB
     }
 
     @Override
-    public boolean isRepairable()
-    {
-        return super.isRepairable();
-    }
-
-    @Override
-    public String getItemStackDisplayName(ItemStack stack)
-    {
-        return super.getItemStackDisplayName(stack);
-    }
-
-    @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
         return false;
@@ -135,17 +123,17 @@ public class ItemCrossbow extends ItemAB
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int counter)
     {
+
     }
 
-    public void shootArrow(ItemStack stack, World world, EntityPlayer player, int count)
+    private void shootArrow(ItemStack stack, World world, EntityPlayer player, int count)
     {
-        int j = count;
-
-        boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
+        boolean flag = EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0
+                || player.capabilities.isCreativeMode;
 
         if (flag || player.inventory.hasItem(Items.arrow))
         {
-            float f = j / 20.0F;
+            float f = count / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
 
             if (f < 0.1D)
