@@ -32,7 +32,6 @@ public class GuiCoalJetpack extends GuiWithTanks
     private InventoryCoalJetpack inventory;
 
     private int boiling = 0;
-    int tick = 0;
 
     public GuiCoalJetpack(EntityPlayer player, InventoryCoalJetpack inv, Source source)
     {

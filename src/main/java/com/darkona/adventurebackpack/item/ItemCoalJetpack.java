@@ -78,7 +78,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
-        inv.calculateLostTime(); //TODO debug artifact?
+        inv.calculateLostTime(); // debug artifact
         if (inv.getTemperature() == 0) inv.setTemperature(getBiomeMinTemp(player, world));
     }
 
@@ -171,7 +171,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         {
             if (!boiling) boiling = true;
 
-            if (!world.isRemote && mustBlublub) //TODO BoilingBoilerSound stop playing after steam tank is full (so boiling is false), and never starts again
+            if (!world.isRemote && mustBlublub)
             {
                 ModNetwork.net.sendTo(new EntitySoundPacket.Message(EntitySoundPacket.BOILING_BUBBLES, player), (EntityPlayerMP) player);
             }

@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -32,6 +33,7 @@ import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_COMPOUND_TAG;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 
@@ -349,6 +351,18 @@ public class ServerActions
         if (!player.worldObj.isRemote && status != ItemCopterPack.OFF_MODE)
         {
             ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.COPTER_SOUND, player), player);
+        }
+    }
+
+    public static void jetpackSoundAtLogin(EntityPlayer player)
+    {
+        boolean isBoiling = BackpackProperty.get(player).getWearable().getTagCompound()
+                .getCompoundTag(JETPACK_COMPOUND_TAG).getBoolean("boiling");
+
+        if (!player.worldObj.isRemote && isBoiling)
+        {
+            //ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.BOILING_BUBBLES, player), player); //TODO difference?
+            ModNetwork.net.sendTo(new EntitySoundPacket.Message(EntitySoundPacket.BOILING_BUBBLES, player), (EntityPlayerMP) player);
         }
     }
 
