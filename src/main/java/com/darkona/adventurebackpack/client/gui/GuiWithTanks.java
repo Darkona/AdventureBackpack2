@@ -56,7 +56,8 @@ public abstract class GuiWithTanks extends GuiContainer
                 ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE, false));
                 player.closeScreen();
             }
-        } else if (source == Source.HOLDING)
+        }
+        else if (source == Source.HOLDING)
         {
             if (getEquipButton().inButton(this, mouseX, mouseY))
             {

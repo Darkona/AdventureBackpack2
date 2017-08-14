@@ -204,7 +204,8 @@ public class ModelCopterPack extends ModelWearable
                 if (entity.onGround || (entity.isSneaking()))
                 {
                     degrees = 16;
-                } else
+                }
+                else
                 {
                     degrees = entity.motionY > 0 ? 36 : 28;
                 }
@@ -244,13 +245,15 @@ public class ModelCopterPack extends ModelWearable
                 {
                     renderCopterPack(entity, f5);
 
-                } else
+                }
+                else
                 {
                     GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);
                     renderCopterPack(entity, f5);
                     GL11.glTranslatef(-bipedBody.rotationPointX * f5, -bipedBody.rotationPointY * f5, -bipedBody.rotationPointZ * f5);
                 }
-            } else
+            }
+            else
             {
                 GL11.glPushMatrix();
                 GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);

@@ -154,7 +154,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 if (player.isSneaking())
                 {
                     player.motionY = -0.3;
-                } else
+                }
+                else
                 {
                     fuelConsumption *= 2;
                     player.motionY = 0.0f;
@@ -176,7 +177,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 pushEntities(world, player, 0.2f);
                 //movement boost
                 player.moveFlying(player.moveStrafing, player.moveForward, factor);
-            } else
+            }
+            else
             {
                 pushEntities(world, player, factor + 0.4f);
             }
@@ -208,7 +210,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 inv.tickCounter = 3;
                 inv.consumeFuel(getFuelSpent(fuelConsumption));
                 inv.dirtyTanks();
-            } else
+            }
+            else
             {
                 inv.tickCounter = ticks;
             }

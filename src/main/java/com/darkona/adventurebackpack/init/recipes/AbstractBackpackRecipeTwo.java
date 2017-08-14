@@ -32,7 +32,8 @@ public class AbstractBackpackRecipeTwo implements IRecipe
         if (stack1 == null && stack2 == null)
         {
             return true;
-        } else if (stack1 != null && stack2 != null)
+        }
+        else if (stack1 != null && stack2 != null)
         {
             if (stack1.getItem().equals(stack2.getItem()))
             {

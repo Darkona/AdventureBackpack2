@@ -133,7 +133,8 @@ public class ModelInflatableBoat extends ModelBase
             if (theBoat.isMotorized() && theBoat.isInflated())
             {
                 Axis.isHidden = EngineBody.isHidden = false;
-            } else
+            }
+            else
             {
                 Axis.isHidden = EngineBody.isHidden = true;
             }
@@ -150,7 +151,8 @@ public class ModelInflatableBoat extends ModelBase
             this.EngineBody.render(f5);
 
             GL11.glPopMatrix();
-        } else
+        }
+        else
         {
             this.boatSides5.render(f5);
             this.boatSides3.render(f5);

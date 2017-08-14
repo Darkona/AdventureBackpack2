@@ -69,7 +69,8 @@ public class ModNetwork
             try
             {
                 ((WorldServer) player.worldObj).getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(message));
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 ex.printStackTrace();
             }

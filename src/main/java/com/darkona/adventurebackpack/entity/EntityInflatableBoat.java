@@ -91,7 +91,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
                 inflation = 1;
                 inflated = true;
             }
-        } else
+        }
+        else
         {
             inflation = 1;
         }
@@ -146,7 +147,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
                     d8 = this.posX - d2 * d5 * 0.8D + d4 * d6;
                     d9 = this.posZ - d4 * d5 * 0.8D - d2 * d6;
                     this.worldObj.spawnParticle("splash", d8, this.posY - 0.125D, d9, this.motionX, this.motionY, this.motionZ);
-                } else
+                }
+                else
                 {
                     d8 = this.posX + d2 + d4 * d5 * 0.7D;
                     d9 = this.posZ + d4 - d2 * d5 * 0.7D;
@@ -171,7 +173,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
                 --this.boatPosRotationIncrements;
                 this.setPosition(d2, d4, d11);
                 this.setRotation(this.rotationYaw, this.rotationPitch);
-            } else
+            }
+            else
             {
                 d2 = this.posX + this.motionX;
                 d4 = this.posY + this.motionY;
@@ -189,13 +192,15 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
                 this.motionY *= 0.949999988079071D;
                 this.motionZ *= 0.9900000095367432D;
             }
-        } else
+        }
+        else
         {
             if (d0 < 1.0D)
             {
                 d2 = d0 * 2.0D - 1.0D;
                 this.motionY += 0.03999999910593033D * d2;
-            } else
+            }
+            else
             {
                 if (this.motionY < 0.0D)
                 {
@@ -231,7 +236,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
                 {
                     this.speedMultiplier = 0.35D;
                 }
-            } else
+            }
+            else
             {
                 this.speedMultiplier -= (this.speedMultiplier - 0.07D) / 35.0D;
 
@@ -257,7 +263,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
                     {
                         this.worldObj.setBlockToAir(i1, k, j);
                         this.isCollidedHorizontally = false;
-                    } else if (block == Blocks.waterlily)
+                    }
+                    else if (block == Blocks.waterlily)
                     {
                         this.worldObj.func_147480_a(i1, k, j, true);
                         this.isCollidedHorizontally = false;
@@ -354,7 +361,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
         if (this.isEntityInvulnerable())
         {
             return false;
-        } else if (!this.worldObj.isRemote && !this.isDead)
+        }
+        else if (!this.worldObj.isRemote && !this.isDead)
         {
             this.setForwardDirection(-this.getForwardDirection());
             this.setTimeSinceHit(10);
@@ -378,7 +386,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
             }
 
             return true;
-        } else
+        }
+        else
         {
             return true;
         }
@@ -397,7 +406,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
         if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != p_130002_1_)
         {
             return true;
-        } else
+        }
+        else
         {
             if (!this.worldObj.isRemote)
             {

@@ -116,7 +116,8 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
                 {
                     ModNetwork.net.sendToServer(new EntitySoundPacket.Message(EntitySoundPacket.JETPACK_FIZZ, player));
                 }
-            } else
+            }
+            else
             {
                 inv.setInUse(false);
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_NOT_IN_USE));
@@ -175,7 +176,8 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             {
                 ModNetwork.net.sendTo(new EntitySoundPacket.Message(EntitySoundPacket.BOILING_BUBBLES, player), (EntityPlayerMP) player);
             }
-        } else
+        }
+        else
         {
             if (boiling)
             {
@@ -202,7 +204,8 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
             {
                 leaking = false;
             }
-        } else
+        }
+        else
         {
             if (!leaking)
             {
@@ -244,7 +247,8 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
                     coolTicks = coolTicks < 5000 ? coolTicks + 100 : coolTicks;
                 }
             }
-        } else if (burnTicks <= 0)
+        }
+        else if (burnTicks <= 0)
         {
             inv.currentItemBurnTime = 0;
             if (coolTicks % inv.getDecreasingFactor() == 0)

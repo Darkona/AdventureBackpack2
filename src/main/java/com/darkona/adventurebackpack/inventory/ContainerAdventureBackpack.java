@@ -86,7 +86,8 @@ abstract class ContainerAdventureBackpack extends Container
         if (stack.stackSize == 0)
         {
             slot.putStack(null);
-        } else
+        }
+        else
         {
             slot.onSlotChanged();
         }
@@ -156,7 +157,8 @@ abstract class ContainerAdventureBackpack extends Container
                         activeStack.stackSize = mergedSize;
                         activeSlot.onSlotChanged();
                         changesMade = true;
-                    } else if (activeStack.stackSize < maxStackSize && !(activeSlot instanceof SlotFluid))
+                    }
+                    else if (activeStack.stackSize < maxStackSize && !(activeSlot instanceof SlotFluid))
                     {
                         initStack.stackSize -= maxStackSize - activeStack.stackSize;
                         activeStack.stackSize = maxStackSize;
@@ -186,7 +188,8 @@ abstract class ContainerAdventureBackpack extends Container
                     if (mergedSize >= initStack.stackSize)
                     {
                         initStack.stackSize = 0;
-                    } else
+                    }
+                    else
                     {
                         initStack.stackSize -= mergedSize;
                     }

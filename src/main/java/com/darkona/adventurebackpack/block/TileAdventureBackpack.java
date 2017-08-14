@@ -155,7 +155,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 markDirty();
                 return true;
             }
-        } else
+        }
+        else
         {
             this.sleepingBagDeployed = false;
             markDirty();
@@ -370,7 +371,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             if (itemstack.stackSize <= count)
             {
                 setInventorySlotContents(i, null);
-            } else
+            }
+            else
             {
                 itemstack = itemstack.splitStack(count);
             }
@@ -449,7 +451,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             if (stack.stackSize <= amount)
             {
                 setInventorySlotContentsNoSave(slot, null);
-            } else
+            }
+            else
             {
                 stack = stack.splitStack(amount);
             }
@@ -516,7 +519,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 sleepingBagDeployed = false;
             }
             checkTime = 20;
-        } else
+        }
+        else
         {
             checkTime--;
         }
@@ -555,10 +559,12 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 if (Wearing.isWearingBackpack(player))
                 {
                     player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.backpack"));
-                } else if (Wearing.isWearingCopter(player))
+                }
+                else if (Wearing.isWearingCopter(player))
                 {
                     player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.copterpack"));
-                } else if (Wearing.isWearingJetpack(player))
+                }
+                else if (Wearing.isWearingJetpack(player))
                 {
                     player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.jetpack"));
                 }

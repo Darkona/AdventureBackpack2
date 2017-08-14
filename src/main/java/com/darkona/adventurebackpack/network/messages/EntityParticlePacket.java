@@ -30,7 +30,8 @@ public class EntityParticlePacket implements IMessageHandler<EntityParticlePacke
         {
             Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID);
             ClientActions.showParticlesAtEntity(entity, message.particleCode);
-        } else
+        }
+        else
         {
             ModNetwork.sendToNearby(message, ctx.getServerHandler().playerEntity);
         }

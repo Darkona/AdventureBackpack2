@@ -240,11 +240,13 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
                 if (slot == JETPACK_FUEL_SLOT)
                 {
                     setInventorySlotContents(slot, itemstack.getItem().getContainerItem(itemstack));
-                } else
+                }
+                else
                 {
                     setInventorySlotContents(slot, null);
                 }
-            } else
+            }
+            else
             {
                 itemstack = itemstack.splitStack(quantity);
             }

@@ -64,8 +64,8 @@ public class TooltipEventHandler
                 makeTip(local("backpack.tank.right") + ": " + tankTooltip(tank));
 
                 shiftFooter();
-
-            } else if (!GuiScreen.isCtrlKeyDown())
+            }
+            else if (!GuiScreen.isCtrlKeyDown())
             {
                 makeTip(holdShift());
             }
@@ -89,8 +89,8 @@ public class TooltipEventHandler
                     }
                 }
             }
-
-        } else if (theItem instanceof ItemCoalJetpack)
+        }
+        else if (theItem instanceof ItemCoalJetpack)
         {
             FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
             FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
@@ -110,8 +110,8 @@ public class TooltipEventHandler
                 makeTip(local("jetpack.tank.steam") + ": " + tankTooltip(steamTank, false) + theSteam);
 
                 shiftFooter();
-
-            } else if (!GuiScreen.isCtrlKeyDown())
+            }
+            else if (!GuiScreen.isCtrlKeyDown())
             {
                 makeTip(holdShift());
             }
@@ -121,8 +121,8 @@ public class TooltipEventHandler
                 makeTip(local("max.altitude") + ": " + whiteFormat("185 "), locals("meters"));
                 makeTip(pressShiftKeyFormat(actionKeyFormat()), locals("jetpack.key.onoff"), " " + local("on"));
             }
-
-        } else if (theItem instanceof ItemCopterPack)
+        }
+        else if (theItem instanceof ItemCopterPack)
         {
             FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
 
@@ -133,8 +133,8 @@ public class TooltipEventHandler
                 makeTip(local("copter.rate.fuel") + ": " + fuelConsumptionTooltip(fuelTank));
 
                 shiftFooter();
-
-            } else if (!GuiScreen.isCtrlKeyDown())
+            }
+            else if (!GuiScreen.isCtrlKeyDown())
             {
                 makeTip(holdShift());
             }
@@ -145,8 +145,8 @@ public class TooltipEventHandler
                 makeTip(pressShiftKeyFormat(actionKeyFormat()), locals("copter.key.onoff"), " " + local("on"));
                 makeTip(pressKeyFormat(actionKeyFormat()), locals("copter.key.hover"));
             }
-
-        } else if (theItem instanceof ItemHose)
+        }
+        else if (theItem instanceof ItemHose)
         {
             if (GuiScreen.isCtrlKeyDown())
             {
@@ -155,7 +155,8 @@ public class TooltipEventHandler
                 makeTip("- " + pressShiftKeyFormat(whiteFormat(local("mouse.wheel"))), locals("hose.key.mode"));
                 makeTip(locals("hose.dump"));
                 makeTip(EnumChatFormatting.RED.toString() + local("hose.dump.warn"));
-            } else
+            }
+            else
             {
                 makeTip(holdCtrl());
             }
@@ -182,8 +183,8 @@ public class TooltipEventHandler
 
     private String holdThe(boolean button)
     {
-        return whiteFormat(EnumChatFormatting.ITALIC  + "<" + (button ? local("hold.shift")
-                                                                      : local("hold.ctrl")) + ">");
+        return whiteFormat(EnumChatFormatting.ITALIC + "<" + (button ? local("hold.shift")
+                                                                     : local("hold.ctrl")) + ">");
     }
 
     private String whiteFormat(String theString)
@@ -326,7 +327,8 @@ public class TooltipEventHandler
         {
             ItemStack iStack = new ItemStack(GameData.getItemRegistry().getObjectById(id), 0, meta);
             dataFormatted = iStack.getDisplayName() + " (" + stackSizeFormat(iStack, count) + ")";
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             dataFormatted = EnumChatFormatting.RED + local("error");
             //e.printStackTrace();

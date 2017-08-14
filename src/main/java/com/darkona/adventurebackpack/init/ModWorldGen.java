@@ -30,23 +30,27 @@ public class ModWorldGen
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, new WeightedRandomChestContent(backpack, 1, 1, 2));
-            } else if (BackpackNames.backpackNames[i].equals("Bat") && ConfigHandler.allowBatGen)
+            }
+            else if (BackpackNames.backpackNames[i].equals("Bat") && ConfigHandler.allowBatGen)
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 2));
                 ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, new WeightedRandomChestContent(backpack, 1, 1, 12));
-            } else if (BackpackNames.backpackNames[i].equals("Pigman") && ConfigHandler.allowPigmanGen)
+            }
+            else if (BackpackNames.backpackNames[i].equals("Pigman") && ConfigHandler.allowPigmanGen)
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 12));
                 VillagerRegistry.instance().registerVillageTradeHandler(i, new ModWorldGen.TradeHandler(backpack));
-            } else if (BackpackNames.backpackNames[i].equals("Villager"))
+            }
+            else if (BackpackNames.backpackNames[i].equals("Villager"))
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 VillagerRegistry.instance().registerVillageTradeHandler(1, new ModWorldGen.TradeHandler(backpack));
                 VillagerRegistry.instance().registerVillageTradeHandler(2, new ModWorldGen.TradeHandler(backpack));
                 VillagerRegistry.instance().registerVillageTradeHandler(3, new ModWorldGen.TradeHandler(backpack));
-            } else if (BackpackNames.backpackNames[i].equals("Standard") && ConfigHandler.allowBonusGen)
+            }
+            else if (BackpackNames.backpackNames[i].equals("Standard") && ConfigHandler.allowBonusGen)
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(backpack, 0, 1, 5));

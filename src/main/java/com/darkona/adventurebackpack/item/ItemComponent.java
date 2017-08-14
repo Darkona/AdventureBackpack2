@@ -173,7 +173,8 @@ public class ItemComponent extends ItemAB
         if (movingobjectposition == null)
         {
             return stack;
-        } else
+        }
+        else
         {
             Vec3 vec32 = player.getLook(f);
             boolean flag = false;
@@ -200,7 +201,8 @@ public class ItemComponent extends ItemAB
             if (flag)
             {
                 return stack;
-            } else
+            }
+            else
             {
                 if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                 {

@@ -40,7 +40,8 @@ public class BackpackUtils
             MinecraftForge.EVENT_BUS.post(event);
             BackpackProperty.sync(player);
             return Reasons.SUCCESSFUL;
-        } else
+        }
+        else
         {
             return Reasons.ALREADY_EQUIPPED;
         }
@@ -96,7 +97,8 @@ public class BackpackUtils
                 WearableEvent event = new WearableEvent.UnequipWearableEvent(player, gimme);
                 MinecraftForge.EVENT_BUS.post(event);
                 BackpackProperty.sync(player);
-            } else
+            }
+            else
             {
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.impossibru"));
             }

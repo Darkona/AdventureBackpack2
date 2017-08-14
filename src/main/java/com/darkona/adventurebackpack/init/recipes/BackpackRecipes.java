@@ -626,7 +626,8 @@ public class BackpackRecipes
                 j = s1.length();
                 s = s + s1;
             }
-        } else
+        }
+        else
         {
             while (objects[i] instanceof String)
             {
@@ -647,10 +648,12 @@ public class BackpackRecipes
             if (objects[i + 1] instanceof Item)
             {
                 itemstack1 = new ItemStack((Item) objects[i + 1]);
-            } else if (objects[i + 1] instanceof Block)
+            }
+            else if (objects[i + 1] instanceof Block)
             {
                 itemstack1 = new ItemStack((Block) objects[i + 1], 1);
-            } else if (objects[i + 1] instanceof ItemStack)
+            }
+            else if (objects[i + 1] instanceof ItemStack)
             {
                 itemstack1 = (ItemStack) objects[i + 1];
             }
@@ -667,7 +670,8 @@ public class BackpackRecipes
             if (hashmap.containsKey(Character.valueOf(c0)))
             {
                 aitemstack[i1] = ((ItemStack) hashmap.get(Character.valueOf(c0))).copy();
-            } else
+            }
+            else
             {
                 aitemstack[i1] = null;
             }

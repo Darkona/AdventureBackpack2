@@ -93,7 +93,8 @@ public class SlotTool extends SlotAdventureBackpack
             {
                 // Tinker's Construct
                 if (clazz.contains("tconstruct.items.tools")) return true;
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 //  oops.printStackTrace();
             }
@@ -101,7 +102,8 @@ public class SlotTool extends SlotAdventureBackpack
             {
                 // Mekanism
                 if (clazz.contains("mekanism.common.item")) return true;
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 //  oops.printStackTrace();
             }
@@ -109,7 +111,8 @@ public class SlotTool extends SlotAdventureBackpack
             {
                 //Buildcraft
                 if (java.lang.Class.forName("buildcraft.api.tools.IToolWrench").isInstance(item)) return true;
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 //  oops.printStackTrace();
             }
@@ -117,15 +120,18 @@ public class SlotTool extends SlotAdventureBackpack
             {
                 //IndustrialCraft
                 if (java.lang.Class.forName("ic2.api.item.IElectricItem").isInstance(item)) return true;
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 //  oops.printStackTrace();
             }
             try
             {
                 //Thaumcraft
-                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item)) return true;
-            } catch (Exception oops)
+                if (java.lang.Class.forName("thaumcraft.common.items.wands.ItemWandCasting").isInstance(item))
+                    return true;
+            }
+            catch (Exception oops)
             {
                 //  oops.printStackTrace();
             }
@@ -134,7 +140,8 @@ public class SlotTool extends SlotAdventureBackpack
                 //Thermal Expansion
                 if (java.lang.Class.forName("cofh.core.item.tool").isInstance(item)) return true;
                 if (java.lang.Class.forName("thermalexpansion.item.tool").isInstance(item)) return true;
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 // oops.printStackTrace();
             }

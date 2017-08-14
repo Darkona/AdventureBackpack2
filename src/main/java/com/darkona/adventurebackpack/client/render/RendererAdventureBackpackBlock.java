@@ -66,7 +66,8 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         if (BackpackNames.getBackpackColorName((TileAdventureBackpack) te).equals("Standard"))
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
-        } else
+        }
+        else
         {
             modelTexture = Resources.backpackTextureFromColor((TileAdventureBackpack) te);
         }

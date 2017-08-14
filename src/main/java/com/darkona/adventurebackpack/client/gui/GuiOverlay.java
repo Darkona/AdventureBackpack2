@@ -204,7 +204,8 @@ public class GuiOverlay extends Gui
                         if (j >= top + 5)
                         {
                             GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
-                        } else
+                        }
+                        else
                         {
                             GL11.glColor4f(1, 1, 1, 1);
                         }
@@ -212,7 +213,8 @@ public class GuiOverlay extends Gui
                         GL11.glPopMatrix();
                     }
                 }
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 LogHelper.error("Exception while trying to render the fluid in the GUI");
             }

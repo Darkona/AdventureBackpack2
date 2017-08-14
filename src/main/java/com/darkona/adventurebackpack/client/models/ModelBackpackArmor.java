@@ -265,7 +265,8 @@ public class ModelBackpackArmor extends ModelWearable
             startBlending();
             this.mainBody.render(scale);
             stopBlending();
-        } else
+        }
+        else
         {
             this.mainBody.render(scale);
         }
@@ -319,13 +320,15 @@ public class ModelBackpackArmor extends ModelWearable
             if (bipedBody.rotationPointX == 0.0F && bipedBody.rotationPointY == 0.0F && bipedBody.rotationPointZ == 0.0F)
             {
                 renderBackpack(scale);
-            } else
+            }
+            else
             {
                 GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);
                 renderBackpack(scale);
                 GL11.glTranslatef(-bipedBody.rotationPointX * f5, -bipedBody.rotationPointY * f5, -bipedBody.rotationPointZ * f5);
             }
-        } else
+        }
+        else
         {
             GL11.glPushMatrix();
             GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);

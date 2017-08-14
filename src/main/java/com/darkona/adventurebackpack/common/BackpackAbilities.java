@@ -102,7 +102,8 @@ public class BackpackAbilities
                 this.getClass()
                         .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
                         .invoke(backpackAbilities, player, world, backpack);
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 //NOBODY CARES
             }
@@ -124,7 +125,8 @@ public class BackpackAbilities
                 this.getClass()
                         .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
                         .invoke(backpackAbilities, world, backpack);
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 //Seriously, nobody cares if this can't work, this is just so the game won't explode.
             }
@@ -141,7 +143,8 @@ public class BackpackAbilities
             backpackRemovals.getClass()
                     .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
                     .invoke(backpackRemovals, player, world, backpack);
-        } catch (Exception oops)
+        }
+        catch (Exception oops)
         {
             LogHelper.error("---Something bad happened when removing a backpack---");
             oops.printStackTrace();
@@ -178,7 +181,8 @@ public class BackpackAbilities
                 //LogHelper.info("OMNOMNOMNOM");
             }
             inv.setLastTime(Utils.secondsToTicks(120));
-        } else
+        }
+        else
         {
             inv.setLastTime(inv.getLastTime() - 1);
         }
@@ -202,7 +206,8 @@ public class BackpackAbilities
         if ((nightVision == null || nightVision.getDuration() < 222) && !Wearing.getWearingBackpackInv(player).getDisableNVision())
         {
             player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 239, -1, true));
-        } else if (nightVision != null && Wearing.getWearingBackpackInv(player).getDisableNVision())
+        }
+        else if (nightVision != null && Wearing.getWearingBackpackInv(player).getDisableNVision())
         {
             backpackRemovals.itemBat(player, world, backpack);
         }
@@ -214,7 +219,8 @@ public class BackpackAbilities
         {
             player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 19, -1, true));
             itemBat(player, world, backpack);
-        } else if (player.isPotionActive(Potion.waterBreathing.id) && player.getActivePotionEffect(Potion.waterBreathing).getAmplifier() == -1)
+        }
+        else if (player.isPotionActive(Potion.waterBreathing.id) && player.getActivePotionEffect(Potion.waterBreathing).getAmplifier() == -1)
         {
             backpackRemovals.itemSquid(player, world, backpack);
         }
@@ -256,12 +262,14 @@ public class BackpackAbilities
                 {
                     player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 900, ConfigHandler.dragonBackpackRegen - 1, true));
                 }
-            } else if (potion != null && potion.getAmplifier() == ConfigHandler.dragonBackpackRegen - 1)
+            }
+            else if (potion != null && potion.getAmplifier() == ConfigHandler.dragonBackpackRegen - 1)
             {
                 if (player.worldObj.isRemote)
                 {
                     player.removePotionEffectClient(Potion.regeneration.id);
-                } else
+                }
+                else
                 {
                     player.removePotionEffect(Potion.regeneration.id);
                 }
@@ -358,7 +366,8 @@ public class BackpackAbilities
             FluidStack raindrop = new FluidStack(FluidRegistry.WATER, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
-        } else
+        }
+        else
         {
             inv.setLastTime(inv.getLastTime() - 1);
         }
@@ -471,7 +480,8 @@ public class BackpackAbilities
             FluidStack raindrop = new FluidStack(ModFluids.melonJuice, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
-        } else
+        }
+        else
         {
             inv.setLastTime(inv.getLastTime() - 1);
         }

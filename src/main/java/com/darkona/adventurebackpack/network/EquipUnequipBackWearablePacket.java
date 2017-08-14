@@ -42,15 +42,18 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                         player.inventoryContainer.detectAndSendChanges();
                     }
-                } else if (Wearing.isWearingWearable(player))
+                }
+                else if (Wearing.isWearingWearable(player))
                 {
                     if (Wearing.isWearingBackpack(player))
                     {
                         player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.backpack"));
-                    } else if (Wearing.isWearingCopter(player))
+                    }
+                    else if (Wearing.isWearingCopter(player))
                     {
                         player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.copterpack"));
-                    } else if (Wearing.isWearingJetpack(player))
+                    }
+                    else if (Wearing.isWearingJetpack(player))
                     {
                         player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.jetpack"));
                     }

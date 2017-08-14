@@ -55,16 +55,19 @@ public class GuiCoalJetpack extends GuiWithTanks
             if (unequipButton.inButton(this, mouseX, mouseY))
             {
                 unequipButton.draw(this, 20, 186);
-            } else
+            }
+            else
             {
                 unequipButton.draw(this, 1, 186);
             }
-        } else if (source == Source.HOLDING)
+        }
+        else if (source == Source.HOLDING)
         {
             if (equipButton.inButton(this, mouseX, mouseY))
             {
                 equipButton.draw(this, 20, 167);
-            } else
+            }
+            else
             {
                 equipButton.draw(this, 1, 167);
             }
@@ -86,7 +89,8 @@ public class GuiCoalJetpack extends GuiWithTanks
             if (boiling < 83)
             {
                 drawTexturedModalRect(28, 40, 50, 172, boiling++, 37);
-            } else
+            }
+            else
             {
                 boiling = 0;
             }

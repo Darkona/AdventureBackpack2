@@ -73,27 +73,32 @@ public class GuiAdvBackpack extends GuiWithTanks
             if (bedButton.inButton(this, mouseX, mouseY))
             {
                 bedButton.draw(this, 20, 227);
-            } else
+            }
+            else
             {
                 bedButton.draw(this, 1, 227);
             }
-        } else
+        }
+        else
         {
             if (source == Source.WEARING)
             {
                 if (unequipButton.inButton(this, mouseX, mouseY))
                 {
                     unequipButton.draw(this, 96, 227);
-                } else
+                }
+                else
                 {
                     unequipButton.draw(this, 77, 227);
                 }
-            } else if (source == Source.HOLDING)
+            }
+            else if (source == Source.HOLDING)
             {
                 if (equipButton.inButton(this, mouseX, mouseY))
                 {
                     equipButton.draw(this, 96, 208);
-                } else
+                }
+                else
                 {
                     equipButton.draw(this, 77, 208);
                 }
@@ -189,7 +194,8 @@ public class GuiAdvBackpack extends GuiWithTanks
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_HOLDING_SPACE));
                 inventory.getExtendedProperties().setBoolean("holdingSpace", true);
             }
-        } else
+        }
+        else
         {
             if (!Keyboard.isKeyDown(Keyboard.KEY_SPACE))
             {

@@ -96,10 +96,12 @@ public class Visuals
             if (renderX * renderX + renderY * renderY + renderZ * renderZ > var22 * var22)
             {
                 return null;
-            } else if (particleSetting > 1)
+            }
+            else if (particleSetting > 1)
             {
                 return null;
-            } else
+            }
+            else
             {
                 if (particleName.equals("steam"))
                 {

@@ -96,7 +96,8 @@ public class ItemMachete extends ToolAB
         if (block != Blocks.vine && !(block instanceof IShearable))
         {
             return super.onBlockDestroyed(stack, world, block, x, y, z, entityLivingBase);
-        } else
+        }
+        else
         {
             return true;
         }

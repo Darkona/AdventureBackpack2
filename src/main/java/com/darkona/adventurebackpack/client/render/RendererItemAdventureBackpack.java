@@ -74,7 +74,8 @@ public class RendererItemAdventureBackpack implements IItemRenderer
         if (BackpackNames.getBackpackColorName(backpack).equals("Standard"))
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
-        } else
+        }
+        else
         {
             modelTexture = Resources.backpackTextureFromColor(inv);
         }

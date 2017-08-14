@@ -59,7 +59,8 @@ public class CalendarDate
                 (year == date.getYear()))
         {
             return true;
-        } else
+        }
+        else
         {
             return false;
         }

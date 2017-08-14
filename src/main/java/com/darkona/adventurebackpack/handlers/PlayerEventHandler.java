@@ -146,7 +146,8 @@ public class PlayerEventHandler
                 {
                     pistonBootsStepHeight = true;
                 }
-            } else
+            }
+            else
             {
                 if (pistonBootsStepHeight)
                 {
@@ -256,7 +257,8 @@ public class PlayerEventHandler
             {
                 ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
                 ServerProxy.storePlayerProps(player);
-            } else
+            }
+            else
             {
                 event.drops.add(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, pack));
                 props.setWearable(null);
@@ -337,7 +339,8 @@ public class PlayerEventHandler
             //If the player wakes up in one of those super confortable SleepingBags (tm) (Patent Pending)
             BackpackProperty.get(event.entityPlayer).setForceCampFire(true);
             LogHelper.info("Player just woke up in a sleeping bag, forcing respawn in the last lighted campfire, if there's any");
-        } else
+        }
+        else
         {
             //If it's a regular bed or whatever
             BackpackProperty.get(event.entityPlayer).setForceCampFire(false);
