@@ -38,6 +38,7 @@ import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.Resources;
@@ -83,21 +84,22 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         if (backpackTag.hasKey("colorName"))
         {
             String color = backpackTag.getString("colorName");
-            switch (color)
+            BackpackTypes type = BackpackTypes.getType(color); //TODO it seems to be good
+            switch (type)
             {
-                case "Bat":
+                case BAT:
                     list.add(EnumChatFormatting.DARK_PURPLE + color);
                     break;
-                case "Dragon":
+                case DRAGON:
                     list.add(EnumChatFormatting.LIGHT_PURPLE + color);
                     break;
-                case "Pigman":
+                case PIGMAN:
                     list.add(EnumChatFormatting.RED + color);
                     break;
-                case "Rainbow":
+                case RAINBOW:
                     list.add(Utils.makeItRainbow(color));
                     break;
-                case "Squid":
+                case SQUID:
                     list.add(EnumChatFormatting.DARK_AQUA + color);
                     break;
                 default:

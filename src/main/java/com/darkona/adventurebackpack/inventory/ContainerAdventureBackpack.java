@@ -26,7 +26,7 @@ abstract class ContainerAdventureBackpack extends Container
     protected EntityPlayer player;
     protected Source source;
 
-    abstract IInventoryTanks getInventoryTanks();
+    public abstract IInventoryTanks getInventoryTanks();
 
     protected void bindPlayerInventory(InventoryPlayer invPlayer, int startX, int startY)
     {
@@ -58,7 +58,7 @@ abstract class ContainerAdventureBackpack extends Container
         }
     }
 
-    abstract protected boolean detectChanges();
+    protected abstract boolean detectChanges();
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
@@ -104,7 +104,7 @@ abstract class ContainerAdventureBackpack extends Container
         return mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false);
     }
 
-    abstract protected boolean transferStackToPack(ItemStack stack);
+    protected abstract boolean transferStackToPack(ItemStack stack);
 
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
@@ -202,6 +202,18 @@ abstract class ContainerAdventureBackpack extends Container
 
         return changesMade;
     }
+
+    /*
+    @Override
+    protected void retrySlotClick(int slotIndex, int p_75133_2_, boolean flag, EntityPlayer player)
+    {
+        super.retrySlotClick(slotIndex, p_75133_2_, flag, player);
+        //this.slotClick(index, p_75133_2_, 1, p_75133_4_);
+        // TODO if (slot instanceof slotFluid), see also mergeItemStack
+    }
+
+    //TODO protected List crafters = new ArrayList();
+    */
 
     @Override
     public void onContainerClosed(EntityPlayer player)
