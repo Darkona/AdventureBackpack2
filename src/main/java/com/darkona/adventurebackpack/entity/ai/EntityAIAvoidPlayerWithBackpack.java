@@ -99,10 +99,12 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
             if (vec3 == null)
             {
                 return false;
-            } else if (this.closestLivingEntity.getDistanceSq(vec3.xCoord, vec3.yCoord, vec3.zCoord) < this.closestLivingEntity.getDistanceSqToEntity(this.theEntity))
+            }
+            else if (this.closestLivingEntity.getDistanceSq(vec3.xCoord, vec3.yCoord, vec3.zCoord) < this.closestLivingEntity.getDistanceSqToEntity(this.theEntity))
             {
                 return false;
-            } else
+            }
+            else
             {
                 this.entityPathEntity = this.entityPathNavigate.getPathToXYZ(vec3.xCoord, vec3.yCoord, vec3.zCoord);
                 return this.entityPathEntity != null && this.entityPathEntity.isDestinationSame(vec3);
@@ -147,7 +149,8 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
         if (this.theEntity.getDistanceSqToEntity(this.closestLivingEntity) < 49.0D)
         {
             this.theEntity.getNavigator().setSpeed(this.nearSpeed);
-        } else
+        }
+        else
         {
             this.theEntity.getNavigator().setSpeed(this.farSpeed);
         }

@@ -81,7 +81,8 @@ public class ContainerCopter extends ContainerAdventureBackpack
                             return false;
                     }
                 }
-            } else if (SlotFluid.isEmpty(stack))
+            }
+            else if (SlotFluid.isEmpty(stack))
             {
                 if ((stackOut == null || areSameType) && SlotFluidFuel.isValidItem(stack))
                 {

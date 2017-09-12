@@ -31,12 +31,14 @@ class AbstractBackpackRecipe implements IRecipe
         if (stack1 == null && stack2 == null)
         {
             return true;
-        } else if (stack1 != null && stack2 != null)
+        }
+        else if (stack1 != null && stack2 != null)
         {
             if (stack1.getItem() != stack2.getItem())
             {
                 return false;
-            } else
+            }
+            else
             {
                 return (stack1.getItemDamage() == stack2.getItemDamage());
             }
@@ -58,7 +60,8 @@ class AbstractBackpackRecipe implements IRecipe
                     recipes.put(field.getName(), (ItemStack[]) field.get(br));
                     i++;
                 }
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
                 LogHelper.error("Huge mistake during reflection. Some bad things might happen.");
             }

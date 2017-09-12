@@ -48,12 +48,14 @@ public class KeyInputEventHandler
                 {
                     sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING);
                 }
-            } else
+            }
+            else
             {
                 if (Wearing.isWearingBackpack(player))
                 {
                     sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_WEARING);
-                } else if (Wearing.isHoldingBackpack(player))
+                }
+                else if (Wearing.isHoldingBackpack(player))
                 {
                     sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING);
                 }
@@ -76,7 +78,8 @@ public class KeyInputEventHandler
             {
                 sendCycleToolPacket(0, player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
                 ServerActions.switchHose(player, 0, ServerActions.HOSE_TOGGLE);
-            } else if (Wearing.isWearingBackpack(player))
+            }
+            else if (Wearing.isWearingBackpack(player))
             {
                 if (player.isSneaking())
                 {
@@ -88,7 +91,8 @@ public class KeyInputEventHandler
                             ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player));
                         }
                     }
-                } else
+                }
+                else
                 {
                     sendWearableModePacket(WearableModePacket.CYCLING_ON_OFF);
                     ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player));
@@ -100,7 +104,8 @@ public class KeyInputEventHandler
                 {
                     sendWearableModePacket(WearableModePacket.COPTER_ON_OFF);
                     ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_ON_OFF);
-                } else
+                }
+                else
                 {
                     sendWearableModePacket(WearableModePacket.COPTER_TOGGLE);
                     ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_TOGGLE);

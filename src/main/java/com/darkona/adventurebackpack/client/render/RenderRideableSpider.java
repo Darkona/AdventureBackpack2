@@ -38,7 +38,8 @@ public class RenderRideableSpider extends RenderLiving
         if (p_77032_2_ != 0)
         {
             return -1;
-        } else
+        }
+        else
         {
             this.bindTexture(spiderEyesTextures);
             GL11.glEnable(GL11.GL_BLEND);
@@ -48,7 +49,8 @@ public class RenderRideableSpider extends RenderLiving
             if (p_77032_1_.isInvisible())
             {
                 GL11.glDepthMask(false);
-            } else
+            }
+            else
             {
                 GL11.glDepthMask(true);
             }

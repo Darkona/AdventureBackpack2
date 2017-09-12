@@ -33,7 +33,8 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
             if (Minecraft.getMinecraft().theWorld == null)
             {
                 ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
-            } else
+            }
+            else
             {
                 AdventureBackpack.proxy.synchronizePlayer(message.ID, message.properties);
             }

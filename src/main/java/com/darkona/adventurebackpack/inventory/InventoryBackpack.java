@@ -165,7 +165,8 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
             if (stack.stackSize <= quantity)
             {
                 setInventorySlotContentsNoSave(slot, null);
-            } else
+            }
+            else
             {
                 stack = stack.splitStack(quantity);
             }
@@ -298,7 +299,8 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
             if (itemstack.stackSize <= quantity)
             {
                 setInventorySlotContents(slot, null);
-            } else
+            }
+            else
             {
                 itemstack = itemstack.splitStack(quantity);
             }

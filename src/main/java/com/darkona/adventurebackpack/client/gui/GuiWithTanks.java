@@ -41,9 +41,9 @@ public abstract class GuiWithTanks extends GuiContainer
         return zLevel;
     }
 
-    abstract protected GuiImageButtonNormal getEquipButton();
+    protected abstract GuiImageButtonNormal getEquipButton();
 
-    abstract protected GuiImageButtonNormal getUnequipButton();
+    protected abstract GuiImageButtonNormal getUnequipButton();
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -56,7 +56,8 @@ public abstract class GuiWithTanks extends GuiContainer
                 ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE, false));
                 player.closeScreen();
             }
-        } else if (source == Source.HOLDING)
+        }
+        else if (source == Source.HOLDING)
         {
             if (getEquipButton().inButton(this, mouseX, mouseY))
             {

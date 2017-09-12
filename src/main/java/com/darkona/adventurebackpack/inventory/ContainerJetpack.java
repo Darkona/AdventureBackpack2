@@ -98,7 +98,8 @@ public class ContainerJetpack extends ContainerAdventureBackpack
                             return false;
                     }
                 }
-            } else if (SlotFluid.isEmpty(stack))
+            }
+            else if (SlotFluid.isEmpty(stack))
             {
                 if ((stackOut == null || areSameType) && SlotFluidWater.isValidItem(stack))
                 {
@@ -109,8 +110,8 @@ public class ContainerJetpack extends ContainerAdventureBackpack
                     }
                 }
             }
-
-        } else if (SlotFuel.isValidItem(stack))
+        }
+        else if (SlotFuel.isValidItem(stack))
         {
             if (!mergeFuel(stack))
                 return false;

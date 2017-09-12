@@ -173,12 +173,14 @@ public class ItemHose extends ItemAB
             {
                 nbt.setString("fluid", Utils.capitalize(tank.getFluid().getFluid().getName()));
                 nbt.setInteger("amount", tank.getFluidAmount());
-            } else
+            }
+            else
             {
                 nbt.setInteger("amount", 0);
                 nbt.setString("fluid", "Empty");
             }
-        } else
+        }
+        else
         {
             nbt.setInteger("amount", 0);
             nbt.setString("fluid", "None");
@@ -342,7 +344,8 @@ public class ItemHose extends ItemAB
                                         {
                                             world.spawnParticle("largesmoke", x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
                                         }
-                                    } else
+                                    }
+                                    else
                                     {
                                         /* NOT IN HELL DIMENSION. */
                                         FluidStack drainedFluid = tank.drain(BUCKET, false);
@@ -359,13 +362,15 @@ public class ItemHose extends ItemAB
                                                 {
                                                     tank.drain(BUCKET, true);
                                                 }
-                                            } else if (fluid.getFluid().getBlock() == Blocks.lava)
+                                            }
+                                            else if (fluid.getFluid().getBlock() == Blocks.lava)
                                             {
                                                 if (world.setBlock(x, y, z, Blocks.flowing_lava, 0, 3))
                                                 {
                                                     tank.drain(BUCKET, true);
                                                 }
-                                            } else if (world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3))
+                                            }
+                                            else if (world.setBlock(x, y, z, fluid.getFluid().getBlock(), 0, 3))
                                             {
                                                 tank.drain(BUCKET, true);
                                             }

@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -32,6 +33,7 @@ import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
+import static com.darkona.adventurebackpack.common.Constants.JETPACK_COMPOUND_TAG;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 
@@ -73,7 +75,8 @@ public class ServerActions
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(UPPER_TOOL);
                     backpack.setInventorySlotContentsNoSave(UPPER_TOOL, backpack.getStackInSlot(LOWER_TOOL));
                     backpack.setInventorySlotContentsNoSave(LOWER_TOOL, current);
-                } else if (direction > 0)
+                }
+                else if (direction > 0)
                 {
                     player.inventory.mainInventory[slot] = backpack.getStackInSlot(LOWER_TOOL);
                     backpack.setInventorySlotContentsNoSave(LOWER_TOOL, backpack.getStackInSlot(UPPER_TOOL));
@@ -82,7 +85,8 @@ public class ServerActions
             }
             backpack.markDirty();
             player.inventory.closeInventory();
-        } catch (Exception oops)
+        }
+        catch (Exception oops)
         {
             LogHelper.debug("Exception trying to cycle tools.");
             oops.printStackTrace();
@@ -127,10 +131,12 @@ public class ServerActions
                 if (!ConfigHandler.enableHoseDrink)
                 {
                     mode = (mode + 1) % 2;
-                } else if (direction > 0)
+                }
+                else if (direction > 0)
                 {
                     mode = (mode + 1) % 3;
-                } else if (direction < 0)
+                }
+                else if (direction < 0)
                 {
                     mode = (mode - 1 < 0) ? 2 : mode - 1;
                 }
@@ -214,7 +220,8 @@ public class ServerActions
             if (flag)
             {
                 entityarrow.canBePickedUp = 2;
-            } else
+            }
+            else
             {
                 /*
                 * From here, instead of leaking an arrow to the player inventory, which may be full and then it would be
@@ -254,11 +261,13 @@ public class ServerActions
                     {
                         player.closeScreen();
                     }
-                } else if (!world.isRemote)
+                }
+                else if (!world.isRemote)
                 {
                     player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.backpack.cant.bag"));
                 }
-            } else
+            }
+            else
             {
                 te.removeSleepingBag(world);
             }
@@ -352,6 +361,18 @@ public class ServerActions
         }
     }
 
+    public static void jetpackSoundAtLogin(EntityPlayer player)
+    {
+        boolean isBoiling = BackpackProperty.get(player).getWearable().getTagCompound()
+                .getCompoundTag(JETPACK_COMPOUND_TAG).getBoolean("boiling");
+
+        if (!player.worldObj.isRemote && isBoiling)
+        {
+            //ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.BOILING_BUBBLES, player), player); //TODO difference?
+            ModNetwork.net.sendTo(new EntitySoundPacket.Message(EntitySoundPacket.BOILING_BUBBLES, player), (EntityPlayerMP) player);
+        }
+    }
+
     public static void toggleCopterPack(EntityPlayer player, ItemStack copter, byte type)
     {
         String message = "";
@@ -370,7 +391,8 @@ public class ServerActions
                 {
                     ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.COPTER_SOUND, player), player);
                 }
-            } else
+            }
+            else
             {
                 newMode = ItemCopterPack.OFF_MODE;
                 message = "adventurebackpack:messages.copterpack.off";
@@ -417,7 +439,8 @@ public class ServerActions
                 {
                     player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cycling.on"));
                 }
-            } else
+            }
+            else
             {
                 inv.setDisableCycling(true);
                 inv.markDirty();
@@ -441,7 +464,8 @@ public class ServerActions
                 player.playSound("mob.bat.idle", 0.2F, 1.0F);
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.nightvision.on"));
             }
-        } else
+        }
+        else
         {
             inv.setDisableNVision(true);
             inv.markDirty();
@@ -464,7 +488,8 @@ public class ServerActions
             {
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.jetpack.off"));
             }
-        } else
+        }
+        else
         {
             inv.setStatus(true);
             inv.markDirty();

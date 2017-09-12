@@ -270,7 +270,8 @@ public class ModRecipes
                         GameRegistry.addRecipe(new ShapedOreRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
                         counter++;
                     }
-                } catch (Exception oops)
+                }
+                catch (Exception oops)
                 {
                     LogHelper.error("Huge mistake during reflection. Some bad things might happen: " + oops.getClass().getName());
                     oops.printStackTrace();

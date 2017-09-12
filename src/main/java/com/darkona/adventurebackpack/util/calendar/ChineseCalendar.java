@@ -48,11 +48,13 @@ public class ChineseCalendar
         {
             String[] t = c.getYearTable();
             for (int i = 0; i < t.length; i++) System.out.println(t[i]);
-        } else if (cmd.equalsIgnoreCase("month"))
+        }
+        else if (cmd.equalsIgnoreCase("month"))
         {
             String[] t = c.getMonthTable();
             for (int i = 0; i < t.length; i++) System.out.println(t[i]);
-        } else
+        }
+        else
         {
             System.out.println(c.toString());
         }
@@ -248,19 +250,22 @@ public class ChineseCalendar
             v = chineseMonths[2 * index];
             l = m - 1;
             if (((v >> l) & 0x01) == 1) d = 29;
-        } else if (9 <= m && m <= 12)
+        }
+        else if (9 <= m && m <= 12)
         {
             v = chineseMonths[2 * index + 1];
             l = m - 9;
             if (((v >> l) & 0x01) == 1) d = 29;
-        } else
+        }
+        else
         { // leap month
             v = chineseMonths[2 * index + 1];
             v = (v >> 4) & 0x0F;
             if (v != Math.abs(m))
             {
                 d = 0; // wrong m specified
-            } else
+            }
+            else
             {
                 d = 29;
                 for (int i = 0; i < bigLeapMonthYears.length; i++)
@@ -511,16 +516,20 @@ public class ChineseCalendar
         if (gregorianDate == sectionalTerm)
         {
             str = " ST" + gm;
-        } else if (gregorianDate == principleTerm)
+        }
+        else if (gregorianDate == principleTerm)
         {
             str = " PT" + gm;
-        } else if (chineseDate == 1 && chineseMonth > 0)
+        }
+        else if (chineseDate == 1 && chineseMonth > 0)
         {
             str = " CM" + cm;
-        } else if (chineseDate == 1 && chineseMonth < 0)
+        }
+        else if (chineseDate == 1 && chineseMonth < 0)
         {
             str = "*CM" + cm;
-        } else
+        }
+        else
         {
             str = gd + '/' + cd;
         }

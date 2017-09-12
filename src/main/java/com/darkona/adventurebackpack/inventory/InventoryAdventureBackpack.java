@@ -15,7 +15,7 @@ abstract class InventoryAdventureBackpack implements IInventoryTanks
     @Override
     public String getInventoryName()
     {
-        return null;
+        return "";
     }
 
     @Override

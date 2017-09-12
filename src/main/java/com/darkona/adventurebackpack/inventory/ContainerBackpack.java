@@ -160,13 +160,13 @@ public class ContainerBackpack extends ContainerAdventureBackpack
                         return false;
                 }
             }
-
-        } else if (SlotFluid.isContainer(stack) && !isHoldingSpace())
+        }
+        else if (SlotFluid.isContainer(stack) && !isHoldingSpace())
         {
             if (!transferFluidContainer(stack))
                 return false;
-
-        } else if (SlotBackpack.isValidItem(stack))
+        }
+        else if (SlotBackpack.isValidItem(stack))
         {
             if (!mergeBackpackInv(stack))
                 return false;
@@ -221,8 +221,8 @@ public class ContainerBackpack extends ContainerAdventureBackpack
                     return mergeRightBucket(container);
                 else if (leftStackOut == null || areLeftSameType)
                     return mergeLeftBucket(container);
-
-            } else
+            }
+            else
             {
                 if (suitableToLeft && (leftStackOut == null || areLeftSameType))
                     return mergeLeftBucket(container);
@@ -231,8 +231,8 @@ public class ContainerBackpack extends ContainerAdventureBackpack
                 else if (leftStackOut == null && rightStackOut == null && SlotBackpack.isValidItem(container))
                     return mergeBackpackInv(container);
             }
-
-        } else if (SlotFluid.isEmpty(container))
+        }
+        else if (SlotFluid.isEmpty(container))
         {
             if (isLeftTankEmpty)
             {
@@ -240,8 +240,8 @@ public class ContainerBackpack extends ContainerAdventureBackpack
                     return mergeRightBucket(container);
                 else if (leftStackOut == null && rightStackOut == null && SlotBackpack.isValidItem(container))
                     return mergeBackpackInv(container);
-
-            } else
+            }
+            else
             {
                 if (leftStackOut == null || areLeftSameType)
                     return mergeLeftBucket(container);

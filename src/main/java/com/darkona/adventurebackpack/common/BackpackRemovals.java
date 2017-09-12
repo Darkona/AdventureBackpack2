@@ -29,7 +29,8 @@ public class BackpackRemovals
                 if (player.worldObj.isRemote)
                 {
                     player.removePotionEffectClient(Potion.nightVision.id);
-                } else
+                }
+                else
                 {
                     player.removePotionEffect(Potion.nightVision.id);
                 }
@@ -50,7 +51,8 @@ public class BackpackRemovals
                 if (player.worldObj.isRemote)
                 {
                     player.removePotionEffectClient(Potion.waterBreathing.id);
-                } else
+                }
+                else
                 {
                     player.removePotionEffect(Potion.waterBreathing.id);
                 }
@@ -70,7 +72,8 @@ public class BackpackRemovals
                 if (player.worldObj.isRemote)
                 {
                     player.removePotionEffectClient(Potion.fireResistance.id);
-                } else
+                }
+                else
                 {
                     player.removePotionEffect(Potion.fireResistance.id);
                 }
@@ -91,7 +94,8 @@ public class BackpackRemovals
                 if (player.worldObj.isRemote)
                 {
                     player.removePotionEffectClient(Potion.damageBoost.id);
-                } else
+                }
+                else
                 {
                     player.removePotionEffect(Potion.damageBoost.id);
                 }
@@ -107,7 +111,8 @@ public class BackpackRemovals
                 if (player.worldObj.isRemote)
                 {
                     player.removePotionEffectClient(Potion.regeneration.id);
-                } else
+                }
+                else
                 {
                     player.removePotionEffect(Potion.regeneration.id);
                 }
@@ -130,7 +135,8 @@ public class BackpackRemovals
                 if (player.worldObj.isRemote)
                 {
                     player.removePotionEffectClient(Potion.moveSpeed.id);
-                } else
+                }
+                else
                 {
                     player.removePotionEffect(Potion.moveSpeed.id);
                 }

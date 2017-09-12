@@ -75,7 +75,8 @@ public class CopterPackSound extends MovingSound
             if (status == ItemCopterPack.OFF_MODE)
             {
                 setDonePlaying();
-            } else
+            }
+            else
             {
                 if (status == ItemCopterPack.HOVER_MODE)
                 {
@@ -86,13 +87,15 @@ public class CopterPackSound extends MovingSound
                     if (thePlayer.onGround)
                     {
                         pitch = 0.8f;
-                    } else
+                    }
+                    else
                     {
                         pitch = (thePlayer.motionY > 0) ? 1.2f : (thePlayer.isSneaking()) ? 0.8f : 1.0f;
                     }
                 }
             }
-        } else
+        }
+        else
         {
             setDonePlaying();
         }

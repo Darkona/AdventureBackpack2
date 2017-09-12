@@ -235,11 +235,13 @@ public class ModelClockworkCrossbow extends ModelBase
             {
                 setRotateAngle(stringLeft, 1.5707963267948966F, -0.5235987755982988F, 0.0F);
                 setRotateAngle(stringRight, -1.5707963267948966F, 0.5235987755982988F, 0.0F);
-            } else
+            }
+            else
             {
                 renderNormal();
             }
-        } else
+        }
+        else
         {
             renderNormal();
         }

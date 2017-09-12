@@ -44,7 +44,8 @@ public class RendererStack extends ModelRenderer
                 GL11.glRotatef(-90F, 0, 1, 0);
                 GL11.glRotatef(-225F, 0, 0, 1);
 
-            } else
+            }
+            else
             {
                 GL11.glScalef(0.7F, 0.7F, 0.7F);
                 GL11.glPushMatrix();

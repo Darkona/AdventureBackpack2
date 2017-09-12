@@ -295,7 +295,8 @@ public class Utils
             String firstWord = text.substring(0, text.indexOf(' '));
             String secondWord = text.substring(text.indexOf(' ') + 1);
             return firstWord.equals("Molten") ? secondWord : firstWord; // Extract first word.
-        } else
+        }
+        else
         {
             return text; // Text is the first word itself.
         }

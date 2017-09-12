@@ -57,7 +57,8 @@ public class RendererWearableEquipped extends RendererLivingEntity
             {
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                 renderMainModel((EntityPlayer) entity, 0, 0, 0, 0, 0, 0.0625f);
-            } catch (Exception oops)
+            }
+            catch (Exception oops)
             {
 
             }
@@ -65,7 +66,8 @@ public class RendererWearableEquipped extends RendererLivingEntity
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
             GL11.glPopMatrix();
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             //discard silently because NO ONE CARES
         }
@@ -77,7 +79,8 @@ public class RendererWearableEquipped extends RendererLivingEntity
         if (!entity.isInvisible())
         {
             modelBipedMain.render(entity, limbSwing1, limbswing2, z, yaw, whatever, scale);
-        } else if (!entity.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer))
+        }
+        else if (!entity.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer))
         {
             GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.15F);
@@ -90,7 +93,8 @@ public class RendererWearableEquipped extends RendererLivingEntity
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
             GL11.glPopMatrix();
             GL11.glDepthMask(true);
-        } else
+        }
+        else
         {
             modelBipedMain.setRotationAngles(limbSwing1, limbswing2, z, yaw, whatever, scale, entity);
         }

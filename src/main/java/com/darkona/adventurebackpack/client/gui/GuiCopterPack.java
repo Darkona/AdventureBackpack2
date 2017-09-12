@@ -51,16 +51,19 @@ public class GuiCopterPack extends GuiWithTanks
             if (unequipButton.inButton(this, mouseX, mouseY))
             {
                 unequipButton.draw(this, 20, 186);
-            } else
+            }
+            else
             {
                 unequipButton.draw(this, 1, 186);
             }
-        } else if (source == Source.HOLDING)
+        }
+        else if (source == Source.HOLDING)
         {
             if (equipButton.inButton(this, mouseX, mouseY))
             {
                 equipButton.draw(this, 20, 167);
-            } else
+            }
+            else
             {
                 equipButton.draw(this, 1, 167);
             }

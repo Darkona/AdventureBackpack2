@@ -201,10 +201,12 @@ public class BlockAdventureBackpack extends BlockContainer
         if (getAssociatedTileColorName(world, x, y, z).equals("Glowstone"))
         {
             return 15;
-        } else if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack)
+        }
+        else if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack)
         {
             return ((TileAdventureBackpack) world.getTileEntity(x, y, z)).getLuminosity();
-        } else
+        }
+        else
         {
             return 0;
         }
@@ -363,7 +365,8 @@ public class BlockAdventureBackpack extends BlockContainer
             {
                 return world.func_147480_a(x, y, z, false);
             }
-        } else
+        }
+        else
         {
             return world.func_147480_a(x, y, z, false);
         }

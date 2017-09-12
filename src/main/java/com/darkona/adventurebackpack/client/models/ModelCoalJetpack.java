@@ -146,13 +146,15 @@ public class ModelCoalJetpack extends ModelWearable
                 if (bipedBody.rotationPointX == 0.0F && bipedBody.rotationPointY == 0.0F && bipedBody.rotationPointZ == 0.0F)
                 {
                     renderCoalJetpack(f5);
-                } else
+                }
+                else
                 {
                     GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);
                     renderCoalJetpack(f5);
                     GL11.glTranslatef(-bipedBody.rotationPointX * f5, -bipedBody.rotationPointY * f5, -bipedBody.rotationPointZ * f5);
                 }
-            } else
+            }
+            else
             {
                 GL11.glPushMatrix();
                 GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);

@@ -18,7 +18,6 @@ public class Visuals
 {
     public static void NyanParticles(EntityPlayer player, World world)
     {
-        // World world = player.worldObj;
         int i = 2;
         for (int j = 0; j < i * 3; ++j)
         {
@@ -97,12 +96,14 @@ public class Visuals
             if (renderX * renderX + renderY * renderY + renderZ * renderZ > var22 * var22)
             {
                 return null;
-            } else if (particleSetting > 1)
+            }
+            else if (particleSetting > 1)
             {
                 return null;
-            } else
+            }
+            else
             {
-                if (particleName.equals("steam")) //TODO particle names to Enum
+                if (particleName.equals("steam"))
                 {
                     entityFX = new SteamFX(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
                 }

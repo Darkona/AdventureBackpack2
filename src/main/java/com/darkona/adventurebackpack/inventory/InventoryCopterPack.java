@@ -70,7 +70,8 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
             if (itemstack.stackSize <= quantity)
             {
                 setInventorySlotContents(slot, null);
-            } else
+            }
+            else
             {
                 itemstack = itemstack.splitStack(quantity);
             }

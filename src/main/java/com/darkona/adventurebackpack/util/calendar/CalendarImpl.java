@@ -37,7 +37,8 @@ public class CalendarImpl
                 ((year % 400) != 300))
         {
             return 29;
-        } else
+        }
+        else
         {
             return month_list[month - 1];
         }
@@ -108,7 +109,8 @@ public class CalendarImpl
         if ((((year * 7) + 1) % 19) < 7)
         {
             return true;
-        } else
+        }
+        else
         {
             return false;
         }
@@ -119,7 +121,8 @@ public class CalendarImpl
         if (hebrewLeapYear(year))
         {
             return 13;
-        } else
+        }
+        else
         {
             return 12;
         }
@@ -199,7 +202,8 @@ public class CalendarImpl
     /* Then postpone Rosh HaShanah one day */
         {
             alternativeDay = day + 1;
-        } else
+        }
+        else
         {
             alternativeDay = day;
         }
@@ -228,7 +232,8 @@ public class CalendarImpl
         if ((daysInHebrewYear(year) % 10) == 5)
         {
             return true;
-        } else
+        }
+        else
         {
             return false;
         }
@@ -239,7 +244,8 @@ public class CalendarImpl
         if ((daysInHebrewYear(year) % 10) == 3)
         {
             return true;
-        } else
+        }
+        else
         {
             return false;
         }
@@ -268,7 +274,8 @@ public class CalendarImpl
                 value = getLastDayOfJewishMonth(m, date.getYear());
                 returnValue += value;
             }
-        } else
+        }
+        else
         {
             for (m = 7; m < date.getMonth(); m++)
             {
@@ -310,7 +317,8 @@ public class CalendarImpl
         if (absDate < temp)
         {
             start = 7;
-        } else
+        }
+        else
         {
             start = 1;
         }

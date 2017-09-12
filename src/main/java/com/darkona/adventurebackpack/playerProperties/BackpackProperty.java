@@ -48,7 +48,8 @@ public class BackpackProperty implements IExtendedEntityProperties
         try
         {
             player.getServerForPlayer().getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData())));
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             ex.printStackTrace();
         }

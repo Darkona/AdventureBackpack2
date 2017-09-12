@@ -173,7 +173,8 @@ public class ItemCrossbow extends ItemAB
             if (flag)
             {
                 entityarrow.canBePickedUp = 2;
-            } else
+            }
+            else
             {
                 player.inventory.consumeInventoryItem(Items.arrow);
             }

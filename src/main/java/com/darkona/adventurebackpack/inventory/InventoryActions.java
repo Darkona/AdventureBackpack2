@@ -67,7 +67,8 @@ public class InventoryActions
                         inventory.decrStackSizeNoSave(slotIn, 1);
                         inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
                         return true;
-                    } else if (inventory.getStackInSlot(slotOut).getItem().equals(stackOut.getItem())
+                    }
+                    else if (inventory.getStackInSlot(slotOut).getItem().equals(stackOut.getItem())
                             && stackOut.getItemDamage() == inventory.getStackInSlot(slotOut).getItemDamage())
                     {
                         int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
@@ -99,7 +100,8 @@ public class InventoryActions
                     inventory.decrStackSizeNoSave(slotIn, 1);
                     inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
                     return true;
-                } else if (stackOut.getItem().equals(inventory.getStackInSlot(slotOut).getItem())
+                }
+                else if (stackOut.getItem().equals(inventory.getStackInSlot(slotOut).getItem())
                         && stackOut.getItemDamage() == inventory.getStackInSlot(slotOut).getItemDamage())
                 {
                     int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
@@ -175,8 +177,8 @@ public class InventoryActions
         {
             ItemStack emptyIn = SlotFluid.getEmptyContainer(stackIn);
             return stackOut.isStackable() && areStacksCompatible(emptyIn, stackOut);
-
-        } else if (SlotFluid.isEmpty(stackIn) && SlotFluid.isFilled(stackOut))
+        }
+        else if (SlotFluid.isEmpty(stackIn) && SlotFluid.isFilled(stackOut))
         {
             ItemStack emptyOut = SlotFluid.getEmptyContainer(stackOut);
             return stackOut.isStackable() && areStacksCompatible(stackIn, emptyOut);

@@ -48,7 +48,8 @@ public class ServerProxy implements IProxy
             LogHelper.info("Stored properties retrieved");
             BackpackProperty.get(player).loadNBTData(playerData);
             BackpackProperty.sync(player);
-        } else
+        }
+        else
         {
             LogHelper.info("Data is null! WTF!");
         }
@@ -71,7 +72,8 @@ public class ServerProxy implements IProxy
             }
             extendedEntityData.put(player.getUniqueID(), data);
             LogHelper.info("Stored player properties for dead player");
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             LogHelper.error("Something went wrong while saving player properties: " + ex.getMessage());
             ex.printStackTrace();

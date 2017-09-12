@@ -378,7 +378,8 @@ public class ModelBackpackBlock extends ModelBase
             //GL11.glDisable(GL11.GL_CULL_FACE);
             GL11.glDisable(GL11.GL_BLEND);
 
-        } else
+        }
+        else
         {
             this.mainBody.render(scale);
         }

@@ -131,7 +131,8 @@ public class EntityFriendlySpider extends EntityCreature
         if (this.isEntityInvulnerable())
         {
             return false;
-        } else if (super.attackEntityFrom(damageSource, amount))
+        }
+        else if (super.attackEntityFrom(damageSource, amount))
         {
             Entity entity = damageSource.getEntity();
 
@@ -143,11 +144,13 @@ public class EntityFriendlySpider extends EntityCreature
                 }
 
                 return true;
-            } else
+            }
+            else
             {
                 return true;
             }
-        } else
+        }
+        else
         {
             return false;
         }
@@ -231,7 +234,8 @@ public class EntityFriendlySpider extends EntityCreature
                 player.mountEntity(this);
                 return true;
             }
-        } catch (Exception oops)
+        }
+        catch (Exception oops)
         {
             return false;
         }
@@ -255,7 +259,8 @@ public class EntityFriendlySpider extends EntityCreature
         {
             double d0 = 16.0D;
             return this.worldObj.getClosestVulnerablePlayerToEntity(this, d0);
-        } else
+        }
+        else
         {
             return null;
         }
@@ -289,7 +294,8 @@ public class EntityFriendlySpider extends EntityCreature
         if (p_70839_1_)
         {
             b0 = (byte) (b0 | 1);
-        } else
+        }
+        else
         {
             b0 &= -2;
         }
@@ -337,7 +343,8 @@ public class EntityFriendlySpider extends EntityCreature
             --this.newPosRotationIncrements;
             this.setPosition(d0, d1, d2);
             this.setRotation(this.rotationYaw, this.rotationPitch);
-        } else if (!this.isClientWorld())
+        }
+        else if (!this.isClientWorld())
         {
             this.motionX *= 0.98D;
             this.motionY *= 0.98D;
@@ -367,7 +374,8 @@ public class EntityFriendlySpider extends EntityCreature
             this.moveStrafing = 0.0F;
             this.moveForward = 0.0F;
             this.randomYawVelocity = 0.0F;
-        } else if (this.isClientWorld())
+        }
+        else if (this.isClientWorld())
         {
 
         }
@@ -384,11 +392,13 @@ public class EntityFriendlySpider extends EntityCreature
                     this.jump();
                     this.jumpTicks = 10;
                 }
-            } else
+            }
+            else
             {
                 this.motionY += 0.03999999910593033D;
             }
-        } else
+        }
+        else
         {
             this.jumpTicks = 0;
         }
@@ -416,7 +426,8 @@ public class EntityFriendlySpider extends EntityCreature
         if (this.riddenByEntity != null)
         {
             normalLivingUpdateWithNoAI();
-        } else
+        }
+        else
         {
             super.onLivingUpdate();
         }
@@ -466,7 +477,8 @@ public class EntityFriendlySpider extends EntityCreature
 
             this.limbSwingAmount += (f4 - this.limbSwingAmount) * 0.4F;
             this.limbSwing += this.limbSwingAmount;
-        } else
+        }
+        else
         {
             this.stepHeight = 0.5F;
             this.jumpMovementFactor = 0.02F;
@@ -514,13 +526,16 @@ public class EntityFriendlySpider extends EntityCreature
             if (i <= 1)
             {
                 this.field_111105_a = Potion.moveSpeed.id;
-            } else if (i <= 2)
+            }
+            else if (i <= 2)
             {
                 this.field_111105_a = Potion.damageBoost.id;
-            } else if (i <= 3)
+            }
+            else if (i <= 3)
             {
                 this.field_111105_a = Potion.regeneration.id;
-            } else if (i <= 4)
+            }
+            else if (i <= 4)
             {
                 this.field_111105_a = Potion.invisibility.id;
             }
@@ -538,7 +553,8 @@ public class EntityFriendlySpider extends EntityCreature
         if (f1 > 0.5F && this.rand.nextInt(100) == 0)
         {
             this.entityToAttack = null;
-        } else
+        }
+        else
         {
             if (p_70785_2_ > 2.0F && p_70785_2_ < 6.0F && this.rand.nextInt(10) == 0)
             {
@@ -551,7 +567,8 @@ public class EntityFriendlySpider extends EntityCreature
                     this.motionZ = d1 / (double) f2 * 0.5D * 0.800000011920929D + this.motionZ * 0.20000000298023224D;
                     this.motionY = 0.4000000059604645D;
                 }
-            } else
+            }
+            else
             {
                 super.attackEntity(p_70785_1_, p_70785_2_);
             }

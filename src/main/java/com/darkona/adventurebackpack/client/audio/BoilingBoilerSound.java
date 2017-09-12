@@ -66,7 +66,8 @@ public class BoilingBoilerSound extends MovingSound
             xPosF = (float) thePlayer.posX;
             yPosF = (float) thePlayer.posY;
             zPosF = (float) thePlayer.posZ;
-        } else
+        }
+        else
         {
             setDonePlaying();
         }

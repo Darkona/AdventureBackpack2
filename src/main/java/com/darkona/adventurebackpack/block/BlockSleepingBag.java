@@ -106,7 +106,8 @@ public class BlockSleepingBag extends BlockDirectional
         if (world.isRemote)
         {
             return true;
-        } else
+        }
+        else
         {
             int meta = world.getBlockMetadata(x, y, z);
 
@@ -171,19 +172,22 @@ public class BlockSleepingBag extends BlockDirectional
                         BackpackProperty.get(player).setCampFire(campfire);
                     }
                     return true;
-                } else
+                }
+                else
                 {
                     if (enumstatus == EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW)
                     {
                         player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.noSleep", new Object[0]));
-                    } else if (enumstatus == EntityPlayer.EnumStatus.NOT_SAFE)
+                    }
+                    else if (enumstatus == EntityPlayer.EnumStatus.NOT_SAFE)
                     {
                         player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.notSafe", new Object[0]));
                     }
 
                     return true;
                 }
-            } else
+            }
+            else
             {
                 double d2 = (double) x + 0.5D;
                 double d0 = (double) y + 0.5D;
@@ -214,7 +218,8 @@ public class BlockSleepingBag extends BlockDirectional
         if (flag)
         {
             l |= 4;
-        } else
+        }
+        else
         {
             l &= -5;
         }
@@ -239,7 +244,8 @@ public class BlockSleepingBag extends BlockDirectional
             {
                 world.setBlockToAir(x, y, z);
             }
-        } else if (world.getBlock(x + footBlockToHeadBlockMap[dir][0], y, z + footBlockToHeadBlockMap[dir][1]) != this)
+        }
+        else if (world.getBlock(x + footBlockToHeadBlockMap[dir][0], y, z + footBlockToHeadBlockMap[dir][1]) != this)
         {
             world.setBlockToAir(x, y, z);
 
@@ -332,7 +338,8 @@ public class BlockSleepingBag extends BlockDirectional
         if (side == 0)
         {
             return Blocks.planks.getBlockTextureFromSide(side);
-        } else
+        }
+        else
         {
             int k = getDirection(meta);
             int l = Direction.bedDirection[k][side];

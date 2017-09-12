@@ -52,12 +52,14 @@ public class NyanMovingSound extends MovingSound
         if (player == null || player.isDead)
         {
             this.donePlaying = true;
-        } else
+        }
+        else
         {
             if (Wearing.isWearingTheRightBackpack(player, "Rainbow"))
             {
                 this.volume = 0.8f;
-            } else
+            }
+            else
             {
                 this.donePlaying = true;
                 // this.volume = 0.0f;
