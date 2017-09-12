@@ -193,7 +193,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public String getInventoryName()
     {
-        return null;
+        return "";
     }
 
     @Override

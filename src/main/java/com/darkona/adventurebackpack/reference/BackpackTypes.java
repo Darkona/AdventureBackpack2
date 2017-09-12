@@ -6,6 +6,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumHashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -169,9 +170,9 @@ public enum BackpackTypes
         }
 
         BY_META = ImmutableBiMap.copyOf(byMeta.inverse());
-        SPECIAL_TYPES = ImmutableSet.copyOf(specials);
-        REMOVAL_TYPES = ImmutableSet.copyOf(removals);
-        NIGHT_VISION_TYPES = ImmutableSet.copyOf(nightVisions);
+        SPECIAL_TYPES = Sets.immutableEnumSet(specials);
+        REMOVAL_TYPES = Sets.immutableEnumSet(removals);
+        NIGHT_VISION_TYPES = Sets.immutableEnumSet(nightVisions);
 
         //ImmutableSet.<BackpackTypes>builder().addAll(SPECIAL).addAll(TILE).addAll(OTHER).build();
     }
@@ -248,5 +249,6 @@ public enum BackpackTypes
         NIGHT_VISION,
         //HOLIDAY,
         //OTHER_ABILITY, // creeper or skeleton etc
+        ;
     }
 }
