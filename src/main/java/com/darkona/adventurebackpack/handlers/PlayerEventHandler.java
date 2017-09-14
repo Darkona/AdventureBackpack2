@@ -36,7 +36,7 @@ import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
@@ -281,7 +281,7 @@ public class PlayerEventHandler
         if (event.crafting.getItem() == ModItems.adventureBackpack)
         {
             LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + event.crafting.getTagCompound().getString("colorName"));
-            if (BackpackNames.getBackpackColorName(event.crafting).equals("Dragon") && !ConfigHandler.consumeDragonEgg)
+            if (BackpackTypes.getBackpackColorName(event.crafting).equals("Dragon") && !ConfigHandler.consumeDragonEgg)
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);
                 event.player.playSound("mob.enderdragon.growl", 1.0f, 5.0f);

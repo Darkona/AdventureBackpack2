@@ -59,7 +59,7 @@ public class BackpackUtils
         {
             return backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
         }
-        return null;
+        return new NBTTagCompound();
     }
 
     public static void setBackpackTag(ItemStack stack, NBTTagCompound compound)

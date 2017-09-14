@@ -27,7 +27,7 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -162,13 +162,13 @@ public class ServerActions
     public static void electrify(EntityPlayer player)
     {
         ItemStack backpack = Wearing.getWearingBackpack(player);
-        if (BackpackNames.getBackpackColorName(backpack).equals("Pig"))
+        if (BackpackTypes.getBackpackColorName(backpack).equals("Pig")) //TODO rework to type
         {
-            BackpackNames.setBackpackColorName(backpack, "Pigman");
+            BackpackTypes.setBackpackColorName(backpack, "Pigman");
         }
-        if (BackpackNames.getBackpackColorName(backpack).equals("Diamond"))
+        if (BackpackTypes.getBackpackColorName(backpack).equals("Diamond"))
         {
-            BackpackNames.setBackpackColorName(backpack, "Electric");
+            BackpackTypes.setBackpackColorName(backpack, "Electric");
         }
     }
 

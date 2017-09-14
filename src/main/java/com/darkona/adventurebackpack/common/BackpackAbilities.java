@@ -24,9 +24,10 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
+import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -39,15 +40,16 @@ import com.darkona.adventurebackpack.util.Wearing;
  * @see com.darkona.adventurebackpack.item.ItemAdventureBackpack
  * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
  */
+@SuppressWarnings("unused")
 public class BackpackAbilities
 {
     /**
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static final String[] SPECIAL_BACKPACKS = {"Bat", "Cactus", "Chicken", "Cow", "Creeper", "Dragon", "Melon",
-            "Mooshroom", "Ocelot", "Pig", "Pigman", "Rainbow", "Slime", "Squid", "Sunflower", "Wolf",};
+            "Mooshroom", "Ocelot", "Pig", "Pigman", "Rainbow", "Slime", "Squid", "Sunflower", "Wolf",}; // TODO del
 
-    private static final String[] REMOVAL_BACKPACKS = {"Bat", "Dragon", "Pigman", "Rainbow", "Squid",};
+    private static final String[] REMOVAL_BACKPACKS = {"Bat", "Dragon", "Pigman", "Rainbow", "Squid",}; //TODO del
 
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -55,7 +57,7 @@ public class BackpackAbilities
      *
      * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
      */
-    private static final String[] TILE_BACKPACKS = {"Cactus", "Melon",};
+    private static final String[] TILE_BACKPACKS = {"Cactus", "Melon",}; //TODO del
 
     public static BackpackAbilities backpackAbilities = new BackpackAbilities();
     public static BackpackRemovals backpackRemovals = new BackpackRemovals();
@@ -63,6 +65,18 @@ public class BackpackAbilities
     public static boolean hasAbility(String colorName)
     {
         for (String valid : SPECIAL_BACKPACKS)
+        {
+            if (valid.equals(colorName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasTileAbility(String colorName)
+    {
+        for (String valid : TILE_BACKPACKS)
         {
             if (valid.equals(colorName))
             {
@@ -95,12 +109,13 @@ public class BackpackAbilities
     {
         if (backpack instanceof ItemStack)
         {
-            String colorName = BackpackNames.getBackpackColorName((ItemStack) backpack);
+            String skinName = BackpackTypes.getBackpackColorName((ItemStack) backpack); //TODO rework
             try
             {
                 //This is black magic and shouldn't be attempted by the faint of heart.
+                System.out.println("item" + skinName); //TODO del
                 this.getClass()
-                        .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
+                        .getMethod("item" + skinName, EntityPlayer.class, World.class, ItemStack.class)
                         .invoke(backpackAbilities, player, world, backpack);
             }
             catch (Exception oops)
@@ -108,10 +123,13 @@ public class BackpackAbilities
                 //NOBODY CARES
             }
         }
+    }
 
+    public void executeTileAbility(World world, Object backpack)
+    {
         if (backpack instanceof TileAdventureBackpack)
         {
-            String colorName = ((TileAdventureBackpack) backpack).getColorName();
+            String skinName = BackpackTypes.getSkinName(((TileAdventureBackpack) backpack).getType());
             try
             {
                 /*
@@ -122,8 +140,9 @@ public class BackpackAbilities
                     You have to indicate exactly the classes that the method should use as parameters so
                     be very careful with "getMethod".
                  */
+                System.out.println("tile" + skinName); //TODO del
                 this.getClass()
-                        .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
+                        .getMethod("tile" + skinName, World.class, TileAdventureBackpack.class)
                         .invoke(backpackAbilities, world, backpack);
             }
             catch (Exception oops)
@@ -131,17 +150,16 @@ public class BackpackAbilities
                 //Seriously, nobody cares if this can't work, this is just so the game won't explode.
             }
         }
-
     }
 
     public void executeRemoval(EntityPlayer player, World world, ItemStack backpack)
     {
-        String colorName = BackpackNames.getBackpackColorName(backpack);
+        String skinName = BackpackTypes.getBackpackColorName(backpack); //TODO
         try
         {
             //This is black magic and shouldn't be attempted by the faint of heart.
             backpackRemovals.getClass()
-                    .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
+                    .getMethod("item" + skinName, EntityPlayer.class, World.class, ItemStack.class)
                     .invoke(backpackRemovals, player, world, backpack);
         }
         catch (Exception oops)
@@ -545,6 +563,7 @@ public class BackpackAbilities
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
         if (world.isRemote) return;
+        System.out.println("COWWWW"); //TODO del
         InventoryBackpack inv = new InventoryBackpack(backpack);
         inv.openInventory();
 
@@ -783,6 +802,12 @@ public class BackpackAbilities
 
     public void tileMelon(World world, TileAdventureBackpack backpack)
     {
+        //System.out.println("MELON!"); //TODO del
         fillWithRain(world, backpack, new FluidStack(ModFluids.melonJuice, 2), 5);
+    }
+
+    public void tileCow(World world, TileAdventureBackpack backpack)
+    {
+        IInventoryAdventureBackpack inv = backpack; //TODO make CowBackpack (and others) working in tile form
     }
 }

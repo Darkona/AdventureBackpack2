@@ -13,6 +13,9 @@ import com.darkona.adventurebackpack.client.render.RendererStack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
+
+import static com.darkona.adventurebackpack.reference.BackpackTypes.*;
 
 /**
  * Created on 17/12/2014
@@ -244,7 +247,7 @@ public class ModelBackpackArmor extends ModelWearable
     {
         InventoryBackpack backpack = new InventoryBackpack(this.backpack);
         backpack.openInventory();
-        String color = backpack.getColorName();
+        BackpackTypes type = backpack.getType();
         for (ModelRenderer model : (List<ModelRenderer>) bipedBody.childModels)
         {
             model.mirror = false;
@@ -260,7 +263,7 @@ public class ModelBackpackArmor extends ModelWearable
             upperTool.stack = backpack.getStackInSlot(Constants.UPPER_TOOL);
         }
 
-        if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
+        if (type == QUARTZ || type == SLIME || type == SNOW)
         {
             startBlending();
             this.mainBody.render(scale);
@@ -277,15 +280,15 @@ public class ModelBackpackArmor extends ModelWearable
         tankRightTop.render(scale);
 
         bed.render(scale);
-        if (color.equals("Pig") || color.equals("Horse"))
+        if (type == PIG || type == HORSE)
         {
             pigNose.render(scale);
         }
-        if (color.equals("Villager") || color.equals("IronGolem"))
+        if (type == VILLAGER || type == IRON_GOLEM)
         {
             villagerNose.render(scale);
         }
-        if (color.equals("Ocelot"))
+        if (type == OCELOT)
         {
             ocelotNose.render(scale);
         }

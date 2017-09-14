@@ -17,7 +17,7 @@ import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -50,7 +50,7 @@ public class ClientEventHandler
                         Item theItem = heldItem.getItem();
 
                         if ((ConfigHandler.enableToolsCycling && !Wearing.getWearingBackpackInv(player).getDisableCycling() && SlotTool.isValidTool(heldItem))
-                                || (BackpackNames.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
+                                || (BackpackTypes.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
                             ServerActions.cycleTool(player, dWheel, slot);

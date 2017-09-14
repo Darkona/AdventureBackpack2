@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.ModInfo;
 
 /**
@@ -23,7 +23,7 @@ public class Resources
 
     public static String backpackTexturesStringFromColor(ItemStack backpack)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackNames.getBackpackColorName(backpack) + ".png").toString();
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackTypes.getBackpackColorName(backpack) + ".png").toString();
     }
 
     public static ResourceLocation backpackTextureFromString(String color)
@@ -33,7 +33,7 @@ public class Resources
 
     public static ResourceLocation backpackTextureFromColor(IInventoryAdventureBackpack adventureBackpack)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + adventureBackpack.getColorName() + ".png");
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackTypes.getSkinName(adventureBackpack.getType()) + ".png");
     }
 
     public static ResourceLocation guiTextures(String name)

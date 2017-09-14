@@ -12,7 +12,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.LogHelper;
 
 /**
@@ -22,9 +22,9 @@ import com.darkona.adventurebackpack.util.LogHelper;
  */
 public class ModRecipes
 {
-    private static ItemStack bc(int damage)
+    private static ItemStack bc(int meta)
     {
-        return BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), damage);
+        return BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), meta);
     }
 
     public static void init()
@@ -259,15 +259,15 @@ public class ModRecipes
 
         BackpackRecipesList br = new BackpackRecipesList();
         int counter = 0;
-        for (int i = 0; i < BackpackNames.backpackNames.length; i++)
+        for (BackpackTypes type : BackpackTypes.values())
         {
             for (Field field : BackpackRecipesList.class.getFields())
             {
                 try
                 {
-                    if (field.getName().equals((BackpackNames.backpackNames[i])))
+                    if (field.getName().equals(BackpackTypes.getSkinName(type)))
                     {
-                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
+                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(type)), (Object[]) field.get(br)));
                         counter++;
                     }
                 }
@@ -280,29 +280,6 @@ public class ModRecipes
 
         }
         LogHelper.info("Loaded " + counter + " backpack recipes.");
-
-        //GameRegistry.addRecipe(new AbstractBackpackRecipe());
-        /*BackpackRecipes br = new BackpackRecipes();
-        int i = 0;
-        for (Field field : BackpackRecipes.class.getFields())
-        {
-            try
-            {
-                if (field.getType() == ItemStack[].class)
-                {
-                    AbstractBackpackRecipeTwo recipe = new AbstractBackpackRecipeTwo(field.getName(), (ItemStack[]) field.get(br));
-                    GameRegistry.addRecipe(recipe);
-                    //LogHelper.info("Loaded recipe for " + field.getName() + " backpack.");
-                    i++;
-                }
-            } catch (Exception oops)
-            {
-                LogHelper.error("Huge mistake during reflection. Some bad things might happen.");
-            }
-        }
-        LogHelper.info("Loaded " + i + " backpack recipes.");
-        RecipeSorter.register(ModInfo.MOD_ID + ":adventureBackpack", AbstractBackpackRecipeTwo.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless");
-        */
     }
 
     /*public static void conditionalInit()

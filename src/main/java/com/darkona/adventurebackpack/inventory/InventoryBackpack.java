@@ -9,8 +9,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
@@ -34,11 +34,11 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
+    private BackpackTypes type = BackpackTypes.STANDARD;
     private boolean disableNVision = false;
     private boolean disableCycling = false;
     private boolean special = false;
     private int lastTime = 0;
-    private String colorName = "Standard";
 
     public InventoryBackpack(ItemStack backpack)
     {
@@ -77,9 +77,9 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     }
 
     @Override
-    public String getColorName()
+    public BackpackTypes getType()
     {
-        return colorName;
+        return type;
     }
 
     @Override
@@ -193,7 +193,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         }
         leftTank.readFromNBT(backpackTag.getCompoundTag(LEFT_TANK));
         rightTank.readFromNBT(backpackTag.getCompoundTag(RIGHT_TANK));
-        colorName = backpackTag.getString("colorName");
+        type = BackpackTypes.getType(backpackTag.getString("colorName"));
         lastTime = backpackTag.getInteger("lastTime");
         special = backpackTag.getBoolean("special");
         extendedProperties = backpackTag.getCompoundTag("extendedProperties");
@@ -221,9 +221,9 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         backpackTag.setTag(INVENTORY, items);
         backpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        backpackTag.setString("colorName", colorName);
+        backpackTag.setString("colorName", BackpackTypes.getSkinName(type));
         backpackTag.setInteger("lastTime", lastTime);
-        backpackTag.setBoolean("special", BackpackAbilities.hasAbility(colorName));
+        backpackTag.setBoolean("special", BackpackTypes.isSpecial(type));
         backpackTag.setTag("extendedProperties", extendedProperties);
         backpackTag.setBoolean("disableCycling", disableCycling);
         backpackTag.setBoolean("disableNVision", disableNVision);

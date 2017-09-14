@@ -20,6 +20,7 @@ import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
@@ -27,6 +28,7 @@ import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotBackpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -51,25 +53,26 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
+    private BackpackTypes type;
+
+    private NBTTagCompound extendedProperties;
+    private NBTTagList ench;
+    private boolean special; //TODO rework, del cuz we need only type and type.isSpecail
+    private boolean disableCycling;
+    private boolean disableNVision;
     private boolean sleepingBagDeployed;
-    private boolean special;
     private int sbdir;
     private int sbx;
     private int sby;
     private int sbz;
-    private String colorName;
     private int checkTime = 0;
     private int lastTime;
     private int luminosity;
-    private NBTTagCompound extendedProperties;
-    private NBTTagList ench;
-    private boolean disableCycling;
-    private boolean disableNVision;
 
     public TileAdventureBackpack()
     {
         sleepingBagDeployed = false;
-        setColorName("Standard");
+        setType(BackpackTypes.STANDARD);
         luminosity = 0;
         lastTime = 0;
         checkTime = 0;
@@ -167,9 +170,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     //=====================================================GETTERS====================================================//
 
     @Override
-    public String getColorName()
+    public BackpackTypes getType()
     {
-        return colorName;
+        return type;
     }
 
     @Override
@@ -216,9 +219,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     //=====================================================SETTERS====================================================//
 
-    public void setColorName(String string)
+    public void setType(BackpackTypes type)
     {
-        this.colorName = string;
+        this.type = type;
     }
 
     //=====================================================BOOLEANS===================================================//
@@ -292,7 +295,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         }
         leftTank.readFromNBT(backpackTag.getCompoundTag(LEFT_TANK));
         rightTank.readFromNBT(backpackTag.getCompoundTag(RIGHT_TANK));
-        colorName = backpackTag.getString("colorName");
+        type = BackpackTypes.getType(backpackTag.getString("colorName"));
         lastTime = backpackTag.getInteger("lastTime");
         special = backpackTag.getBoolean("special");
         extendedProperties = backpackTag.getCompoundTag("extended");
@@ -320,9 +323,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             }
         }
         backpackTag.setTag(INVENTORY, items);
-        backpackTag.setString("colorName", colorName);
+        backpackTag.setString("colorName", BackpackTypes.getSkinName(type));
         backpackTag.setInteger("lastTime", lastTime);
-        backpackTag.setBoolean("special", BackpackAbilities.hasAbility(colorName));
+        backpackTag.setBoolean("special", BackpackTypes.isSpecial(type)); //TODO isSpecial 2 methods in 2 classes, del
         backpackTag.setTag("extended", extendedProperties);
         backpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
@@ -496,9 +499,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void updateEntity()
     {
         //Execute this backpack's ability. No, seriously. You might not infer that from the code. Just sayin'
-        if (isSpecial() && !colorName.isEmpty())
+        if (ConfigHandler.backpackAbilities && BackpackAbilities.hasTileAbility(BackpackTypes.getSkinName(type))) //TODO
         {
-            BackpackAbilities.backpackAbilities.executeAbility(null, this.worldObj, this);
+            BackpackAbilities.backpackAbilities.executeTileAbility(this.worldObj, this);
         }
 
         //Check for backpack luminosity and a deployed sleeping bag, just in case because i'm super paranoid.

@@ -13,7 +13,7 @@ import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.Vec3;
 
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -83,7 +83,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
 
             for (Object player : list)
             {
-                if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack((EntityPlayer) player)).equals(backpackName))
+                if (BackpackTypes.getBackpackColorName(Wearing.getWearingBackpack((EntityPlayer) player)).equals(backpackName))
                 {
                     this.closestLivingEntity = (Entity) player;
                 }

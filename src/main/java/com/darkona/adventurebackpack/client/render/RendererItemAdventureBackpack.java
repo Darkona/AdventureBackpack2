@@ -10,7 +10,7 @@ import net.minecraftforge.client.IItemRenderer;
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
 import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Resources;
 
 /**
@@ -71,7 +71,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
         ResourceLocation modelTexture;
-        if (BackpackNames.getBackpackColorName(backpack).equals("Standard"))
+        if (BackpackTypes.getBackpackColorName(backpack).equals("Standard"))
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
         }

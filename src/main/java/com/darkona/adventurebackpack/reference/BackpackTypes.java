@@ -10,6 +10,12 @@ import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.WordUtils;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.util.BackpackUtils;
+
 import static com.darkona.adventurebackpack.reference.BackpackTypes.Props.NIGHT_VISION;
 import static com.darkona.adventurebackpack.reference.BackpackTypes.Props.REMOVAL;
 import static com.darkona.adventurebackpack.reference.BackpackTypes.Props.SPECIAL;
@@ -39,8 +45,8 @@ public enum BackpackTypes
     CHEST           ( 19),
     CHICKEN         ( 28, SPECIAL),
     COAL            (  6),
-    COOKIE          ( 20, SPECIAL),
-    COW             (  1),
+    COOKIE          ( 20),
+    COW             (  1, SPECIAL),
     CREEPER         ( 64, SPECIAL),
     CYAN            ( 21),
     DELUXE          ( 25),
@@ -59,7 +65,7 @@ public enum BackpackTypes
     HAYBALE         ( 33),
     HORSE           ( 34),
     IRON            ( 10),
-    IRON_GOLEM      ( 11),
+    IRON_GOLEM      ( 11), //TODO has other ability, need some prop
     LAPIS           ( 12),
     LEATHER         ( 35),
     LIGHT_BLUE      ( 36),
@@ -116,8 +122,7 @@ public enum BackpackTypes
     private final String skinName; // equivalent to current colorName
     private final Props[] props;
 
-    //TODO step1: replace BackpackNames by this , make it work
-    //TODO step2: add support for recipes (see BackpackRecipes[List]). new field 'Object[]'?
+    //TODO step2: add support for recipes (see BackpackRecipesList). new field 'Object[]'?
     //TODO step3: rework NBT for wearable packs. unificate and simplify structure.
     //TODO step4: remove all internal interactions by colorName (skinName), replace by enum. maybe remove NBT field too cuz we need only meta
 
@@ -180,6 +185,11 @@ public enum BackpackTypes
     public static String getSkinName(BackpackTypes type)
     {
         return type.skinName;
+    }
+
+    public static String getSkinName(int meta)
+    {
+        return getType(meta).skinName; //TODO can be optimized?
     }
 
     public static byte getMeta(BackpackTypes type)
@@ -250,5 +260,45 @@ public enum BackpackTypes
         //HOLIDAY,
         //OTHER_ABILITY, // creeper or skeleton etc
         ;
+    }
+
+
+    // ---
+
+    public static ItemStack setBackpackSkinNameFromMeta(ItemStack backpack, int meta)
+    {
+        if (backpack == null || !(backpack.getItem() instanceof ItemAdventureBackpack))
+            return null;
+
+        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
+        backpack.setItemDamage(meta);
+        backpackTag.setString("colorName", getSkinName(meta));
+        BackpackUtils.setBackpackTag(backpack, backpackTag);
+
+        return backpack;
+    }
+
+    public static String getBackpackColorName(ItemStack backpack) //TODO rework
+    {
+        if (backpack == null)
+            return "";
+
+        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
+        if (backpackTag.getString("colorName").isEmpty())
+        {
+            backpackTag.setString("colorName", "Standard");
+        }
+
+        return backpackTag.getString("colorName");
+    }
+
+    public static void setBackpackColorName(ItemStack backpack, String newName) //TODO rework, del
+    {
+        if (backpack == null)
+            return;
+
+        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
+        backpackTag.setString("colorName", newName);
+        BackpackUtils.setBackpackTag(backpack, backpackTag);
     }
 }
