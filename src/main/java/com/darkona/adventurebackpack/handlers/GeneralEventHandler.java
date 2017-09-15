@@ -25,6 +25,7 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
@@ -44,7 +45,7 @@ public class GeneralEventHandler
         {
             if (event.item.getItem() instanceof ItemAppleGold
                     //&& ((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic
-                    && Wearing.isWearingTheRightBackpack(player, "Rainbow"))
+                    && Wearing.isWearingTheRightBackpack(player, BackpackTypes.RAINBOW))
             {
                 InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
                 if (inv.getLastTime() > 0) return;
@@ -74,7 +75,7 @@ public class GeneralEventHandler
         if (!ConfigHandler.backpackAbilities)
             return;
 
-        if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
+        if (Wearing.isWearingTheRightBackpack(event.entityPlayer, BackpackTypes.SKELETON))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
             if (backpack.hasItem(Items.arrow))
@@ -91,7 +92,7 @@ public class GeneralEventHandler
         if (!ConfigHandler.backpackAbilities)
             return;
 
-        if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
+        if (Wearing.isWearingTheRightBackpack(event.entityPlayer, BackpackTypes.SKELETON))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
             if (backpack.hasItem(Items.arrow))

@@ -124,7 +124,6 @@ public enum BackpackTypes
 
     //TODO step2: add support for recipes (see BackpackRecipesList). new field 'Object[]'?
     //TODO step3: rework NBT for wearable packs. unificate and simplify structure.
-    //TODO step4: remove all internal interactions by colorName (skinName), replace by enum. maybe remove NBT field too cuz we need only meta
 
     BackpackTypes(int meta, String skin, Props... props)
     {
@@ -189,22 +188,17 @@ public enum BackpackTypes
 
     public static String getSkinName(int meta)
     {
-        return getType(meta).skinName; //TODO can be optimized?
+        return getType(meta).skinName;
+    }
+
+    public static String getSkinName(ItemStack backpack)
+    {
+        return getSkinName(getType(backpack));
     }
 
     public static byte getMeta(BackpackTypes type)
     {
         return type.meta;
-    }
-
-    public static BackpackTypes getType(String skinName)
-    {
-        for (BackpackTypes type : BackpackTypes.values())
-        {
-            if (type.skinName.equals(skinName))
-                return type;
-        }
-        return UNKNOWN;
     }
 
     public static BackpackTypes getType(int meta)
@@ -219,6 +213,29 @@ public enum BackpackTypes
         Validate.inclusiveBetween((byte) 0, (byte) 127, meta, "wrong meta value: %s", meta);
         BackpackTypes type = BY_META.get(meta);
         return type != null ? type : UNKNOWN;
+    }
+
+    public static BackpackTypes getType(String skinName)
+    {
+        for (BackpackTypes type : BackpackTypes.values())
+        {
+            if (type.skinName.equals(skinName))
+                return type;
+        }
+        return UNKNOWN;
+    }
+
+    public static BackpackTypes getType(ItemStack backpack)
+    {
+        if (backpack == null) // well... Wearing.getWearingBackpack() may return null...
+            return null;
+
+        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
+        if (backpackTag.getByte("type") == UNKNOWN.meta) //TODO remove? stay?
+        {
+            backpackTag.setByte("type", STANDARD.meta);
+        }
+        return getType(backpackTag.getByte("type"));
     }
 
     public static int getLowestUnusedMeta()
@@ -265,40 +282,23 @@ public enum BackpackTypes
 
     // ---
 
-    public static ItemStack setBackpackSkinNameFromMeta(ItemStack backpack, int meta)
+    public static ItemStack setBackpackTypeFromMeta(ItemStack backpack, int meta)
     {
         if (backpack == null || !(backpack.getItem() instanceof ItemAdventureBackpack))
             return null;
 
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        backpack.setItemDamage(meta);
-        backpackTag.setString("colorName", getSkinName(meta));
+        backpack.setItemDamage(meta); //TODO 0??
+        backpackTag.setByte("type", (byte) meta);
         BackpackUtils.setBackpackTag(backpack, backpackTag);
 
         return backpack;
     }
 
-    public static String getBackpackColorName(ItemStack backpack) //TODO rework
+    public static void setBackpackType(ItemStack backpack, BackpackTypes type)
     {
-        if (backpack == null)
-            return "";
-
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        if (backpackTag.getString("colorName").isEmpty())
-        {
-            backpackTag.setString("colorName", "Standard");
-        }
-
-        return backpackTag.getString("colorName");
-    }
-
-    public static void setBackpackColorName(ItemStack backpack, String newName) //TODO rework, del
-    {
-        if (backpack == null)
-            return;
-
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        backpackTag.setString("colorName", newName);
+        backpackTag.setByte("type", getMeta(type));
         BackpackUtils.setBackpackTag(backpack, backpackTag);
     }
 }

@@ -21,7 +21,7 @@ public class BackpackRecipesList
     public BackpackRecipesList()
     {
         String[] covered = {"XXX", "XaX", "XXX"};
-        ItemStack backpack = BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), 0);
+        ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), 0);
 
         ItemStack woolWhite = new ItemStack(Blocks.wool, 1, 0);
         ItemStack woolOrange = new ItemStack(Blocks.wool, 1, 1);

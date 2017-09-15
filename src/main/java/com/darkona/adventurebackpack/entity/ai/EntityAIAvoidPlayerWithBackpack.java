@@ -21,7 +21,7 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
 {
-    private String backpackName;
+    private BackpackTypes type;
 
     public final IEntitySelector field_98218_a = new AvoidEntitySelector(this);
 
@@ -49,7 +49,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
      */
     private Class targetEntityClass;
 
-    public EntityAIAvoidPlayerWithBackpack(EntityCreature par1EntityCreature, Class par2Class, float par3, double par4, double par6, String colorName)
+    public EntityAIAvoidPlayerWithBackpack(EntityCreature par1EntityCreature, Class par2Class, float par3, double par4, double par6, BackpackTypes type)
     {
         this.theEntity = par1EntityCreature;
         this.targetEntityClass = par2Class;
@@ -58,7 +58,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
         this.nearSpeed = par6;
         this.entityPathNavigate = par1EntityCreature.getNavigator();
         this.setMutexBits(1);
-        this.backpackName = colorName;
+        this.type = type;
     }
 
     /**
@@ -83,7 +83,7 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
 
             for (Object player : list)
             {
-                if (BackpackTypes.getBackpackColorName(Wearing.getWearingBackpack((EntityPlayer) player)).equals(backpackName))
+                if (BackpackTypes.getType(Wearing.getWearingBackpack((EntityPlayer) player)) == type)
                 {
                     this.closestLivingEntity = (Entity) player;
                 }

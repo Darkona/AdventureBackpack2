@@ -50,7 +50,7 @@ public class ClientEventHandler
                         Item theItem = heldItem.getItem();
 
                         if ((ConfigHandler.enableToolsCycling && !Wearing.getWearingBackpackInv(player).getDisableCycling() && SlotTool.isValidTool(heldItem))
-                                || (BackpackTypes.getBackpackColorName(backpack).equals("Skeleton") && theItem.equals(Items.bow)))
+                                || (BackpackTypes.getType(backpack) == BackpackTypes.SKELETON && theItem.equals(Items.bow)))
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
                             ServerActions.cycleTool(player, dWheel, slot);

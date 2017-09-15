@@ -27,34 +27,34 @@ import static com.darkona.adventurebackpack.reference.BackpackTypes.VILLAGER;
  */
 public class ModWorldGen
 {
-    public static void init() //TODO tested IronGolem and BonusChest - ok
+    public static void init()
     {
         {
-            ItemStack backpack = BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(VILLAGER));
+            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(VILLAGER));
             VillagerRegistry.instance().registerVillageTradeHandler(1, new ModWorldGen.TradeHandler(backpack));
             VillagerRegistry.instance().registerVillageTradeHandler(2, new ModWorldGen.TradeHandler(backpack));
             VillagerRegistry.instance().registerVillageTradeHandler(3, new ModWorldGen.TradeHandler(backpack));
         }
         if (ConfigHandler.allowGolemGen)
         {
-            ItemStack backpack = BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(IRON_GOLEM));
+            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(IRON_GOLEM));
             ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, new WeightedRandomChestContent(backpack, 1, 1, 2));
         }
         if (ConfigHandler.allowBatGen)
         {
-            ItemStack backpack = BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(BAT));
+            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(BAT));
             ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 2));
             ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, new WeightedRandomChestContent(backpack, 1, 1, 12));
         }
         if (ConfigHandler.allowPigmanGen)
         {
-            ItemStack backpack = BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(PIGMAN));
+            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(PIGMAN));
             ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 12));
             VillagerRegistry.instance().registerVillageTradeHandler(BackpackTypes.getMeta(PIGMAN), new ModWorldGen.TradeHandler(backpack));
         }
         if (ConfigHandler.allowBonusGen)
         {
-            ItemStack backpack = BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(STANDARD));
+            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(STANDARD));
             ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(backpack, 0, 1, 5));
         }
     }
@@ -79,13 +79,13 @@ public class ModWorldGen
             //0 Farmer, 1 Librarian, 2Priest, 3 Blacksmith, 4 Butcher
             if (villager.getProfession() == 1 || villager.getProfession() == 2)
             {
-                ItemStack payment = BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), 0);
+                ItemStack payment = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), 0);
                 recipeList.add(new MerchantRecipe(new ItemStack(Items.emerald, 10), payment, this.backpack));
             }
             if (villager.getProfession() == 3)
             {
                 ItemStack payment = new ItemStack(ModItems.adventureBackpack);
-                BackpackTypes.setBackpackColorName(payment, "IronGolem");
+                BackpackTypes.setBackpackType(payment, IRON_GOLEM);
                 recipeList.add(new MerchantRecipe(new ItemStack(Items.emerald, 10), payment, this.backpack));
             }
         }

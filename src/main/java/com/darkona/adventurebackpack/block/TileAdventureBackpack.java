@@ -49,25 +49,26 @@ import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
  */
 public class TileAdventureBackpack extends TileEntity implements IInventoryAdventureBackpack, ISidedInventory
 {
-    public ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
+    private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
+    private NBTTagList ench;
     private BackpackTypes type;
 
     private NBTTagCompound extendedProperties;
-    private NBTTagList ench;
-    private boolean special; //TODO rework, del cuz we need only type and type.isSpecail
     private boolean disableCycling;
     private boolean disableNVision;
+    private int lastTime;
+
     private boolean sleepingBagDeployed;
     private int sbdir;
     private int sbx;
     private int sby;
     private int sbz;
-    private int checkTime = 0;
-    private int lastTime;
     private int luminosity;
+
+    private int checkTime = 0;
 
     public TileAdventureBackpack()
     {
@@ -243,12 +244,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return this.sleepingBagDeployed;
     }
 
-    @Override
-    public boolean isSpecial()
-    {
-        return special;
-    }
-
     //=======================================================NBT======================================================//
     @Override
     public void readFromNBT(NBTTagCompound compound)
@@ -276,13 +271,35 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         compound.setInteger("lumen", luminosity);
     }
 
+    private void convertFromOldNBTFormat(NBTTagCompound compound)
+    {
+        NBTTagCompound oldBackpackTag = compound.getCompoundTag("backpackData");
+        NBTTagList oldItems = oldBackpackTag.getTagList("ABPItems", NBT.TAG_COMPOUND);
+        leftTank.readFromNBT(oldBackpackTag.getCompoundTag(LEFT_TANK));
+        rightTank.readFromNBT(oldBackpackTag.getCompoundTag(RIGHT_TANK));
+        type = BackpackTypes.getType(oldBackpackTag.getString("colorName"));
+
+        NBTTagCompound newBackpackTag = new NBTTagCompound();
+        newBackpackTag.setTag(INVENTORY, oldItems);
+        newBackpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
+        newBackpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        newBackpackTag.setByte("type", BackpackTypes.getMeta(type));
+
+        compound.setTag(COMPOUND_TAG, newBackpackTag);
+        compound.removeTag("backpackData");
+    }
+
     @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
+        if (compound.hasKey("backpackData"))
+            convertFromOldNBTFormat(compound);
+
         if (compound.hasKey("ench"))
             ench = compound.getTagList("ench", NBT.TAG_COMPOUND);
 
         NBTTagCompound backpackTag = compound.getCompoundTag(COMPOUND_TAG);
+        type = BackpackTypes.getType(backpackTag.getByte("type"));
         NBTTagList items = backpackTag.getTagList(INVENTORY, NBT.TAG_COMPOUND);
         for (int i = 0; i < items.tagCount(); i++)
         {
@@ -295,12 +312,10 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         }
         leftTank.readFromNBT(backpackTag.getCompoundTag(LEFT_TANK));
         rightTank.readFromNBT(backpackTag.getCompoundTag(RIGHT_TANK));
-        type = BackpackTypes.getType(backpackTag.getString("colorName"));
-        lastTime = backpackTag.getInteger("lastTime");
-        special = backpackTag.getBoolean("special");
         extendedProperties = backpackTag.getCompoundTag("extended");
         disableCycling = backpackTag.getBoolean("disableCycling");
         disableNVision = backpackTag.getBoolean("disableNVision");
+        lastTime = backpackTag.getInteger("lastTime");
     }
 
     @Override
@@ -310,6 +325,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             compound.setTag("ench", ench);
 
         NBTTagCompound backpackTag = new NBTTagCompound();
+        backpackTag.setByte("type", BackpackTypes.getMeta(type));
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {
@@ -323,14 +339,12 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             }
         }
         backpackTag.setTag(INVENTORY, items);
-        backpackTag.setString("colorName", BackpackTypes.getSkinName(type));
-        backpackTag.setInteger("lastTime", lastTime);
-        backpackTag.setBoolean("special", BackpackTypes.isSpecial(type)); //TODO isSpecial 2 methods in 2 classes, del
-        backpackTag.setTag("extended", extendedProperties);
         backpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setTag("extended", extendedProperties);
         backpackTag.setBoolean("disableCycling", disableCycling);
         backpackTag.setBoolean("disableNVision", disableNVision);
+        backpackTag.setInteger("lastTime", lastTime);
 
         compound.setTag(COMPOUND_TAG, backpackTag);
     }
@@ -499,7 +513,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void updateEntity()
     {
         //Execute this backpack's ability. No, seriously. You might not infer that from the code. Just sayin'
-        if (ConfigHandler.backpackAbilities && BackpackAbilities.hasTileAbility(BackpackTypes.getSkinName(type))) //TODO
+        if (ConfigHandler.backpackAbilities && BackpackTypes.hasProperty(type, BackpackTypes.Props.TILE))
         {
             BackpackAbilities.backpackAbilities.executeTileAbility(this.worldObj, this);
         }

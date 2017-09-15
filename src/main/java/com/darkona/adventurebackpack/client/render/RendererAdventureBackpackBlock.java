@@ -70,7 +70,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         }
         else
         {
-            modelTexture = Resources.backpackTextureFromColor(tileBackpack);
+            modelTexture = Resources.backpackTextureFromSkin(tileBackpack);
         }
 
         bindTexture(modelTexture);

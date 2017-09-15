@@ -25,6 +25,7 @@ import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemCoalJetpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 
 /**
@@ -77,16 +78,12 @@ public class TooltipEventHandler
                 makeTip(pressKeyFormat(actionKeyFormat()), locals("backpack.cycling.key"),
                         " " + switchTooltip(!cycling, false));
 
-                String color = backpackTag.getString("colorName");
-                for (String valid : Constants.NIGHTVISION_BACKPACKS)
+                if (BackpackTypes.isNightVision(BackpackTypes.getType(backpackTag.getByte("type"))))
                 {
-                    if (color.equals(valid))
-                    {
-                        boolean vision = !backpackTag.getBoolean("disableNVision");
-                        makeTip(local("backpack.vision") + ": " + switchTooltip(vision, true));
-                        makeTip(pressShiftKeyFormat(actionKeyFormat()), locals("backpack.vision.key"),
-                                " " + switchTooltip(!vision, false));
-                    }
+                    boolean vision = !backpackTag.getBoolean("disableNVision");
+                    makeTip(local("backpack.vision") + ": " + switchTooltip(vision, true));
+                    makeTip(pressShiftKeyFormat(actionKeyFormat()), locals("backpack.vision.key"),
+                            " " + switchTooltip(!vision, false));
                 }
             }
         }
@@ -94,11 +91,11 @@ public class TooltipEventHandler
         {
             FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
             FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
-            NBTTagCompound jetpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.JETPACK_COMPOUND_TAG);
+            NBTTagCompound jetpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
 
             if (GuiScreen.isShiftKeyDown())
             {
-                NBTTagList itemList = jetpackTag.getTagList(Constants.JETPACK_INVENTORY, NBT.TAG_COMPOUND);
+                NBTTagList itemList = jetpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
                 makeTip(local("jetpack.fuel") + ": " + slotStackTooltip(itemList, Constants.JETPACK_FUEL_SLOT));
 
                 waterTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_WATER_TANK));

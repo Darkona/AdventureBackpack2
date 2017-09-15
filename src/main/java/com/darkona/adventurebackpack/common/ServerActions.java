@@ -33,7 +33,7 @@ import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
-import static com.darkona.adventurebackpack.common.Constants.JETPACK_COMPOUND_TAG;
+import static com.darkona.adventurebackpack.common.Constants.COMPOUND_TAG;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 
@@ -162,13 +162,14 @@ public class ServerActions
     public static void electrify(EntityPlayer player)
     {
         ItemStack backpack = Wearing.getWearingBackpack(player);
-        if (BackpackTypes.getBackpackColorName(backpack).equals("Pig")) //TODO rework to type
+
+        if (BackpackTypes.getType(backpack) == BackpackTypes.PIG)
         {
-            BackpackTypes.setBackpackColorName(backpack, "Pigman");
+            BackpackTypes.setBackpackType(backpack, BackpackTypes.PIGMAN);
         }
-        if (BackpackTypes.getBackpackColorName(backpack).equals("Diamond"))
+        if (BackpackTypes.getType(backpack) == BackpackTypes.DIAMOND)
         {
-            BackpackTypes.setBackpackColorName(backpack, "Electric");
+            BackpackTypes.setBackpackType(backpack, BackpackTypes.ELECTRIC);
         }
     }
 
@@ -364,7 +365,7 @@ public class ServerActions
     public static void jetpackSoundAtLogin(EntityPlayer player)
     {
         boolean isBoiling = BackpackProperty.get(player).getWearable().getTagCompound()
-                .getCompoundTag(JETPACK_COMPOUND_TAG).getBoolean("boiling");
+                .getCompoundTag(COMPOUND_TAG).getBoolean("boiling");
 
         if (!player.worldObj.isRemote && isBoiling)
         {

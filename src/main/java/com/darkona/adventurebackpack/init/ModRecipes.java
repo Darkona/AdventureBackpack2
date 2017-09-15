@@ -24,7 +24,7 @@ public class ModRecipes
 {
     private static ItemStack bc(int meta)
     {
-        return BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), meta);
+        return BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), meta);
     }
 
     public static void init()
@@ -53,7 +53,7 @@ public class ModRecipes
         if (ConfigHandler.recipeCopterPack)
         {
             ItemStack copterStack = new ItemStack(ModItems.copterPack);
-            copterStack.setTagCompound(new NBTTagCompound());
+            copterStack.setTagCompound(new NBTTagCompound()); //TODO rework
 
             GameRegistry.addRecipe(copterStack,
                     "WBW",
@@ -73,8 +73,8 @@ public class ModRecipes
         {
             ItemStack jetpackStack = new ItemStack(ModItems.coalJetpack);
             NBTTagCompound jetpackCompound = new NBTTagCompound();
-            jetpackCompound.setTag(Constants.JETPACK_COMPOUND_TAG, new NBTTagCompound());
-            jetpackStack.setTagCompound(jetpackCompound);
+            jetpackCompound.setTag(Constants.COMPOUND_TAG, new NBTTagCompound());
+            jetpackStack.setTagCompound(jetpackCompound); //TODO check
 
             GameRegistry.addRecipe(jetpackStack,
                     "SWT",
@@ -267,7 +267,7 @@ public class ModRecipes
                 {
                     if (field.getName().equals(BackpackTypes.getSkinName(type)))
                     {
-                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackTypes.setBackpackSkinNameFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(type)), (Object[]) field.get(br)));
+                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(type)), (Object[]) field.get(br)));
                         counter++;
                     }
                 }

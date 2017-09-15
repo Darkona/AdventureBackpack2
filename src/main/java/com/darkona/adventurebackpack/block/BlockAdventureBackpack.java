@@ -245,10 +245,15 @@ public class BlockAdventureBackpack extends BlockContainer
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
         ItemStack backpack = new ItemStack(ModItems.adventureBackpack, 1);
-        //TODO look if can be simplified
-        BackpackTypes.setBackpackSkinNameFromMeta(backpack, BackpackTypes.getMeta(getAssociatedTileBackpackType(world, x, y, z)));
+        BackpackTypes.setBackpackTypeFromMeta(backpack, BackpackTypes.getMeta(getAssociatedTileBackpackType(world, x, y, z)));
         return backpack;
     }
+
+    /*@Override
+    public int damageDropped(int meta)
+    {
+        return meta; //TODO how to save meta from "tile->item"
+    }*/
 
     @Override
     public boolean hasTileEntity(int meta)

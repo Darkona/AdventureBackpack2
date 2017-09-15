@@ -68,12 +68,12 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             if (type == BackpackTypes.UNKNOWN)
                 continue;
 
-            ItemStack bp = new ItemStack(this, 1, 0);
-            bp.setItemDamage(BackpackTypes.getMeta(type));
-            NBTTagCompound c = new NBTTagCompound();
-            c.setString("colorName", BackpackTypes.getSkinName(type));
-            BackpackUtils.setBackpackTag(bp, c);
-            subItems.add(bp);
+            ItemStack backpackStack = new ItemStack(this, 1, 0);
+            backpackStack.setItemDamage(BackpackTypes.getMeta(type));
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setByte("type", BackpackTypes.getMeta(type));
+            BackpackUtils.setBackpackTag(backpackStack, compound);
+            subItems.add(backpackStack);
         }
     }
 
@@ -83,29 +83,29 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(stack);
-        if (backpackTag.hasKey("colorName"))
+        if (backpackTag.hasKey("type"))
         {
-            String color = backpackTag.getString("colorName");
-            BackpackTypes type = BackpackTypes.getType(color); //TODO it seems to be good
+            BackpackTypes type = BackpackTypes.getType(backpackTag.getByte("type"));
+            String skinName = BackpackTypes.getSkinName(type);
             switch (type)
             {
                 case BAT:
-                    list.add(EnumChatFormatting.DARK_PURPLE + color);
+                    list.add(EnumChatFormatting.DARK_PURPLE + skinName);
                     break;
                 case DRAGON:
-                    list.add(EnumChatFormatting.LIGHT_PURPLE + color);
+                    list.add(EnumChatFormatting.LIGHT_PURPLE + skinName);
                     break;
                 case PIGMAN:
-                    list.add(EnumChatFormatting.RED + color);
+                    list.add(EnumChatFormatting.RED + skinName);
                     break;
                 case RAINBOW:
-                    list.add(Utils.makeItRainbow(color));
+                    list.add(Utils.makeItRainbow(skinName));
                     break;
                 case SQUID:
-                    list.add(EnumChatFormatting.DARK_AQUA + color);
+                    list.add(EnumChatFormatting.DARK_AQUA + skinName);
                     break;
                 default:
-                    list.add(color);
+                    list.add(skinName);
                     break;
             }
         }
@@ -115,7 +115,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public void onCreated(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer)
     {
         super.onCreated(stack, par2World, par3EntityPlayer);
-        BackpackTypes.setBackpackSkinNameFromMeta(stack, stack.getItemDamage());
+        BackpackTypes.setBackpackTypeFromMeta(stack, stack.getItemDamage());
     }
 
     @Override
@@ -194,9 +194,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     {
         if (stack.stackSize == 0 || !player.canPlayerEdit(x, y, z, side, stack)) return false;
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        if (!stack.stackTagCompound.hasKey("colorName") || stack.stackTagCompound.getString("colorName").isEmpty())
+        if (!stack.stackTagCompound.hasKey("type"))
         {
-            stack.stackTagCompound.setString("colorName", "Standard");
+            stack.stackTagCompound.setByte("type", BackpackTypes.getMeta(BackpackTypes.STANDARD));
         }
 
         // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
@@ -272,7 +272,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         if (!ConfigHandler.backpackAbilities || world == null || player == null || stack == null)
             return;
 
-        if (BackpackAbilities.hasAbility(BackpackTypes.getBackpackColorName(stack)))
+        if (BackpackTypes.isSpecial(BackpackTypes.getType(stack)))
         {
             BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
         }
@@ -281,7 +281,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        if (BackpackAbilities.hasRemoval(BackpackTypes.getBackpackColorName(stack)))
+        if (BackpackTypes.hasProperty(BackpackTypes.getType(stack), BackpackTypes.Props.REMOVAL))
         {
             BackpackAbilities.backpackAbilities.executeRemoval(player, world, stack);
         }
@@ -327,13 +327,13 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String modelTexture;
-        if (BackpackTypes.getBackpackColorName(stack).equals("Standard")) //TODO rework to type
+        if (BackpackTypes.getType(stack) == BackpackTypes.STANDARD)
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday()).toString();
         }
         else
         {
-            modelTexture = Resources.backpackTexturesStringFromColor(stack);
+            modelTexture = Resources.backpackTexturesStringFromSkin(stack);
         }
         return modelTexture;
     }
@@ -351,13 +351,13 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     {
         ResourceLocation modelTexture;
 
-        if (BackpackTypes.getBackpackColorName(wearable).equals("Standard"))
+        if (BackpackTypes.getType(wearable) == BackpackTypes.STANDARD)
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
         }
         else
         {
-            modelTexture = Resources.backpackTextureFromString(BackpackTypes.getBackpackColorName(wearable));
+            modelTexture = Resources.backpackTextureFromString(BackpackTypes.getSkinName(wearable));
         }
         return modelTexture;
     }

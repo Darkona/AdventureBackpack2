@@ -21,9 +21,9 @@ public class Resources
         return new ResourceLocation(TEXTURE_LOCATION, "textures/models/" + name).toString();
     }
 
-    public static String backpackTexturesStringFromColor(ItemStack backpack)
+    public static String backpackTexturesStringFromSkin(ItemStack backpack)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackTypes.getBackpackColorName(backpack) + ".png").toString();
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackTypes.getSkinName(backpack) + ".png").toString();
     }
 
     public static ResourceLocation backpackTextureFromString(String color)
@@ -31,7 +31,7 @@ public class Resources
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + color + ".png");
     }
 
-    public static ResourceLocation backpackTextureFromColor(IInventoryAdventureBackpack adventureBackpack)
+    public static ResourceLocation backpackTextureFromSkin(IInventoryAdventureBackpack adventureBackpack)
     {
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackTypes.getSkinName(adventureBackpack.getType()) + ".png");
     }

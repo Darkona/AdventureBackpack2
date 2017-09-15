@@ -58,16 +58,14 @@ public class Wearing
         return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemAdventureBackpack;
     }
 
-    public static boolean isWearingTheRightBackpack(EntityPlayer player, String... backpacks)
+    public static boolean isWearingTheRightBackpack(EntityPlayer player, BackpackTypes... backpacks)
     {
         if (Wearing.isWearingBackpack(player))
         {
-            for (String name : backpacks)
+            for (BackpackTypes type : backpacks)
             {
-                if (BackpackTypes.getBackpackColorName(Wearing.getWearingBackpack(player)).equals(name))
-                {
+                if (BackpackTypes.getType(Wearing.getWearingBackpack(player)) == type)
                     return true;
-                }
             }
         }
         return false;

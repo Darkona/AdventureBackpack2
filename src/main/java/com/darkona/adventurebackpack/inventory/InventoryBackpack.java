@@ -35,15 +35,37 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
     private BackpackTypes type = BackpackTypes.STANDARD;
+
     private boolean disableNVision = false;
     private boolean disableCycling = false;
-    private boolean special = false;
     private int lastTime = 0;
 
     public InventoryBackpack(ItemStack backpack)
     {
         containerStack = backpack;
+        detectAndConvertFromOldNBTFormat(containerStack.stackTagCompound);
         openInventory();
+    }
+
+    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // need only for compatibility with old saves
+    {
+        if (compound == null || !compound.hasKey("backpackData"))
+            return;
+
+        NBTTagCompound oldBackpackTag = compound.getCompoundTag("backpackData");
+        NBTTagList oldItems = oldBackpackTag.getTagList("ABPItems", NBT.TAG_COMPOUND);
+        leftTank.readFromNBT(oldBackpackTag.getCompoundTag(LEFT_TANK));
+        rightTank.readFromNBT(oldBackpackTag.getCompoundTag(RIGHT_TANK));
+        type = BackpackTypes.getType(oldBackpackTag.getString("colorName"));
+        //
+        NBTTagCompound newBackpackTag = new NBTTagCompound();
+        newBackpackTag.setTag(INVENTORY, oldItems);
+        newBackpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
+        newBackpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        newBackpackTag.setByte("type", BackpackTypes.getMeta(type));
+
+        compound.setTag(COMPOUND_TAG, newBackpackTag);
+        compound.removeTag("backpackData");
     }
 
     @Override
@@ -98,12 +120,6 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     public void setExtendedProperties(NBTTagCompound properties)
     {
         this.extendedProperties = properties;
-    }
-
-    @Override
-    public boolean isSpecial()
-    {
-        return special;
     }
 
     @Override
@@ -181,6 +197,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
             return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
 
         NBTTagCompound backpackTag = compound.getCompoundTag(COMPOUND_TAG);
+        type = BackpackTypes.getType(backpackTag.getByte("type"));
         NBTTagList items = backpackTag.getTagList(INVENTORY, NBT.TAG_COMPOUND);
         for (int i = 0; i < items.tagCount(); i++)
         {
@@ -193,18 +210,17 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         }
         leftTank.readFromNBT(backpackTag.getCompoundTag(LEFT_TANK));
         rightTank.readFromNBT(backpackTag.getCompoundTag(RIGHT_TANK));
-        type = BackpackTypes.getType(backpackTag.getString("colorName"));
-        lastTime = backpackTag.getInteger("lastTime");
-        special = backpackTag.getBoolean("special");
         extendedProperties = backpackTag.getCompoundTag("extendedProperties");
         disableCycling = backpackTag.getBoolean("disableCycling");
         disableNVision = backpackTag.getBoolean("disableNVision");
+        lastTime = backpackTag.getInteger("lastTime");
     }
 
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
         NBTTagCompound backpackTag = new NBTTagCompound();
+        backpackTag.setByte("type", BackpackTypes.getMeta(type));
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {
@@ -221,12 +237,10 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         backpackTag.setTag(INVENTORY, items);
         backpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        backpackTag.setString("colorName", BackpackTypes.getSkinName(type));
-        backpackTag.setInteger("lastTime", lastTime);
-        backpackTag.setBoolean("special", BackpackTypes.isSpecial(type));
         backpackTag.setTag("extendedProperties", extendedProperties);
         backpackTag.setBoolean("disableCycling", disableCycling);
         backpackTag.setBoolean("disableNVision", disableNVision);
+        backpackTag.setInteger("lastTime", lastTime);
 
         compound.setTag(COMPOUND_TAG, backpackTag);
     }

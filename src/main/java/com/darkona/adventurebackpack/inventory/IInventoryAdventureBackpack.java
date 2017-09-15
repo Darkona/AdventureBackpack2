@@ -23,8 +23,6 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
 
     ItemStack getParentItemStack();
 
-    //String getColorName();
-
     BackpackTypes getType();
 
     int getLastTime();
@@ -32,8 +30,6 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
     NBTTagCompound getExtendedProperties();
 
     void setExtendedProperties(NBTTagCompound properties);
-
-    boolean isSpecial();
 
     boolean hasItem(Item item);
 

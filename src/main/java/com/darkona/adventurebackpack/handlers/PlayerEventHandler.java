@@ -195,7 +195,7 @@ public class PlayerEventHandler
                 {
                     event.setCanceled(true);
                 }
-                if (Wearing.isWearingTheRightBackpack((EntityPlayer) event.entityLiving, "IronGolem") && ConfigHandler.backpackAbilities)
+                if (Wearing.isWearingTheRightBackpack((EntityPlayer) event.entityLiving, BackpackTypes.IRON_GOLEM) && ConfigHandler.backpackAbilities)
                 {
                     event.setCanceled(true);
                 }
@@ -226,7 +226,7 @@ public class PlayerEventHandler
 
                 if (Wearing.isWearingWearable(player))
                 {
-                    if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
+                    if (Wearing.isWearingTheRightBackpack(player, BackpackTypes.CREEPER))
                     {
                         player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
                     }
@@ -280,8 +280,8 @@ public class PlayerEventHandler
     {
         if (event.crafting.getItem() == ModItems.adventureBackpack)
         {
-            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + event.crafting.getTagCompound().getString("colorName"));
-            if (BackpackTypes.getBackpackColorName(event.crafting).equals("Dragon") && !ConfigHandler.consumeDragonEgg)
+            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + BackpackTypes.getSkinName(event.crafting.getTagCompound().getByte("type")));
+            if (!ConfigHandler.consumeDragonEgg && BackpackTypes.getType(event.crafting) == BackpackTypes.DRAGON)
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);
                 event.player.playSound("mob.enderdragon.growl", 1.0f, 5.0f);
@@ -297,7 +297,7 @@ public class PlayerEventHandler
         {
             if (Utils.notNullAndInstanceOf(event.target, EntitySpider.class))
             {
-                if (Wearing.isWearingTheRightBackpack(player, "Spider"))
+                if (Wearing.isWearingTheRightBackpack(player, BackpackTypes.SPIDER))
                 {
                     EntityFriendlySpider pet = new EntityFriendlySpider(event.target.worldObj);
                     pet.setLocationAndAngles(event.target.posX, event.target.posY, event.target.posZ, event.target.rotationYaw, event.target.rotationPitch);

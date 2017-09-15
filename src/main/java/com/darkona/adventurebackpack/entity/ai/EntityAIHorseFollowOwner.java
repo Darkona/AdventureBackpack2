@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.world.World;
 
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -59,7 +60,7 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
                 return false;
             }
         }
-        if (!Wearing.isWearingTheRightBackpack(theOwner, "Horse")) return false;
+        if (!Wearing.isWearingTheRightBackpack(theOwner, BackpackTypes.HORSE)) return false;
         if (theHorse.getDistanceSqToEntity(theOwner) < minDist * minDist * 20)
         {
             return false;
@@ -70,7 +71,7 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
     @Override
     public boolean continueExecuting()
     {
-        return (Wearing.isWearingTheRightBackpack(theOwner, "Horse") && !this.petPathfinder.noPath() && theHorse.getDistanceSqToEntity(theOwner) > this.maxDist * this.maxDist * 2);
+        return (Wearing.isWearingTheRightBackpack(theOwner, BackpackTypes.HORSE) && !this.petPathfinder.noPath() && theHorse.getDistanceSqToEntity(theOwner) > this.maxDist * this.maxDist * 2);
     }
 
     @Override

@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 
 /**
  * Created on 24/12/2014
@@ -17,18 +18,17 @@ public class AbstractBackpackRecipeTwo implements IRecipe
 {
     private ItemStack result;
     private ItemStack[] recipe;
-    private String name;
+    private BackpackTypes type;
 
-    public AbstractBackpackRecipeTwo(String name, ItemStack[] recipe)
+    public AbstractBackpackRecipeTwo(BackpackTypes type, ItemStack[] recipe)
     {
         this.recipe = recipe;
-        this.name = name;
-        this.result = makeBackpack(new ItemStack(ModItems.adventureBackpack), this.name);
+        this.type = type;
+        this.result = makeBackpack(new ItemStack(ModItems.adventureBackpack), this.type);
     }
 
-    public boolean compareStacks(ItemStack stack1, ItemStack stack2)
+    private boolean compareStacks(ItemStack stack1, ItemStack stack2)
     {
-
         if (stack1 == null && stack2 == null)
         {
             return true;
@@ -37,35 +37,30 @@ public class AbstractBackpackRecipeTwo implements IRecipe
         {
             if (stack1.getItem().equals(stack2.getItem()))
             {
-                /*if(stack1.getItem() instanceof ItemAdventureBackpack)
-                {
-                    return stack1.stackTagCompound.getString("colorName").equals("Standard");
-                }*/
                 return ((stack1.getItemDamage() == stack2.getItemDamage()));
             }
         }
         return false;
     }
 
-    public static ItemStack makeBackpack(ItemStack backpackIn, String colorName)
+    private static ItemStack makeBackpack(ItemStack backpackIn, BackpackTypes type)
     {
         if (backpackIn == null) return null;
         if (backpackIn.stackTagCompound == null)
         {
             backpackIn.setTagCompound(new NBTTagCompound());
-            backpackIn.stackTagCompound.setString("colorName", colorName);
+            backpackIn.stackTagCompound.setByte("type", BackpackTypes.getMeta(type));
         }
         ItemStack newBackpack = backpackIn.copy();
         NBTTagCompound compound = (NBTTagCompound) backpackIn.getTagCompound().copy();
         newBackpack.setTagCompound(compound);
-        newBackpack.stackTagCompound.setString("colorName", colorName);
+        newBackpack.stackTagCompound.setByte("type", BackpackTypes.getMeta(type));
         return newBackpack;
     }
 
     @Override
     public boolean matches(InventoryCrafting invC, World world)
     {
-        //LogHelper.info("Matching recipe");
         if (this.recipe == null || invC == null) return false;
         for (int i = 0; i < invC.getSizeInventory(); i++)
         {
@@ -73,7 +68,6 @@ public class AbstractBackpackRecipeTwo implements IRecipe
             {
                 return false;
             }
-
         }
         return true;
     }
@@ -83,7 +77,7 @@ public class AbstractBackpackRecipeTwo implements IRecipe
     {
         if (matches(invC, null))
         {
-            return makeBackpack(invC.getStackInSlot(4), this.name);
+            return makeBackpack(invC.getStackInSlot(4), this.type);
         }
         return null;
     }
