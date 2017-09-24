@@ -22,7 +22,7 @@ item.adventurebackpack:hose_rightTank_spill.name=Mangueira: Tanque Direito / Mod
 item.adventurebackpack:hose_rightTank_drink.name=Mangueira: Tanque Direito / Modo Beber
 
 item.adventurebackpack:hoseUseless.name=Mangueira: Inútil / Sem Mochila
-item.adventurebackpack:copterPack.name=
+item.adventurebackpack:copterPack.name=Mochilacóptero
 #Blocks
 block.adventurebackpack:blockAdventureBackpack.name=Base Para Mochila do Aventureiro
 
@@ -37,4 +37,4 @@ keys.adventureBackpack.switchHoseTank=Trocar a Mangueira do Tanque
 #Fluids
 fluid.melonJuice=Suco de Melancia
 fluid.milk=Leite
-fluid.mushroomstew=
+fluid.mushroomstew=Sopa de Cogumelos
