@@ -54,22 +54,16 @@ public class ConfigHandler
 
     public static boolean enableItemFilters = false;
     public static String[] forbiddenDimensions;
+    public static String[] copterFuels;
+    public static String[] fuelsDefault = {"biodiesel, 1.0", "biofuel, 1.0", "bioethanol, 1.5", "creosote, 7.0",
+            "fuel, 0.8", "lava, 7.0", "liquid_light_oil, 3.0", "liquid_medium_oil, 3.0", "liquid_heavy_oil, 3.0",
+            "liquid_light_fuel, 1.0", "liquid_heavy_fuel, 1.3", "nitrofuel, 0.4", "oil, 3.0", "rocket_fuel, 0.8"};
 
     public static String[] nameLocalized;
     public static String[] nameInternalID;
     public static String[] nameInternalIDs;
     public static String[] nameUnlocalized;
     public static String[] nameDefault = {};
-
-    public static float fuelRateBioFuel = 1.0f;
-    public static float fuelRateBioEthanol = 1.5f;
-    public static float fuelRateCreosote = 7.0f;
-    public static float fuelRateFuel = 0.8f;
-    public static float fuelRateFuelLight = 1.0f;
-    public static float fuelRateFuelHeavy = 1.3f;
-    public static float fuelRateFuelNitro = 0.4f;
-    public static float fuelRateLava = 5.0f;
-    public static float fuelRateOil = 3.0f;
 
     public static boolean consumeDragonEgg = false;
     public static boolean recipeAdventuresSet = true;
@@ -147,6 +141,7 @@ public class ConfigHandler
         // Items
         enableItemFilters = config.getBoolean("Enable Item Filters", "items", true, "Enable filters from Disallow category");
         forbiddenDimensions = config.getStringList("Forbidden Dimensions", "items", nameDefault, "Disallow opening backpack inventory for specific dimension ID");
+        copterFuels = config.getStringList("Valid Copter Fuels", "items", fuelsDefault, "List of valid fuels for Copter. Consumption rate range: 0.05 ~ 20.0. Format: 'fluid, rate', ex.: 'water, 0.0'");
 
         // Items.Disallowed
         nameLocalized = config.getStringList("By Displayed Name", "items.disallowed", nameDefault, "Disallow items by displayed (localized) name. Not case sensitive. Worst option, use only when there is no choice. Example: Dirt");
@@ -154,16 +149,6 @@ public class ConfigHandler
         nameInternalIDs = config.getStringList("By Internal IDs", "items.disallowed", nameDefault, "Disallow items by internal ID. Case sensitive. Will be disallowed all items containing that word in their IDs. Use with caution. Example: minecraft:di");
         nameUnlocalized = config.getStringList("By Internal Name", "items.disallowed", nameDefault, "Disallow items by internal (unlocalized) name. Not case sensitive. Example: tile.dirt");
 
-        // Items.Fuel
-        fuelRateBioFuel = config.getFloat("BioFuel", "items.fuel", 1.0f, 0.05f, 20.0f, "BioFuel consumption rate");
-        fuelRateBioEthanol = config.getFloat("BioEthanol", "items.fuel", 1.5f, 0.05f, 20.0f, "BioEthanol consumption rate");
-        fuelRateCreosote = config.getFloat("Creosote", "items.fuel", 7.0f, 0.05f, 20.0f, "Creosote consumption rate");
-        fuelRateFuel = config.getFloat("Fuel", "items.fuel", 0.8f, 0.05f, 20.0f, "Fuel / rocket fuel consumption rate");
-        fuelRateFuelLight = config.getFloat("FuelLight", "items.fuel", 1.0f, 0.05f, 20.0f, "Light Fuel consumption rate");
-        fuelRateFuelHeavy = config.getFloat("FuelHeavy", "items.fuel", 1.3f, 0.05f, 20.0f, "Heavy Fuel consumption rate");
-        fuelRateFuelNitro = config.getFloat("FuelNitro", "items.fuel", 0.4f, 0.05f, 20.0f, "Nitro Fuel consumption rate");
-        fuelRateLava = config.getFloat("Lava", "items.fuel", 5.0f, 0.05f, 20.0f, "Lava consumption rate");
-        fuelRateOil = config.getFloat("Oil", "items.fuel", 3.0f, 0.05f, 20.0f, "Oil consumption rate");
 
         // Items.Recipes
         consumeDragonEgg = config.getBoolean("Consume Dragon Egg", "items.recipes", false, "Consume Dragon Egg when Dragon backpack crafted?");

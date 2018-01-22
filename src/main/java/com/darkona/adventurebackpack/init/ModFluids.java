@@ -8,7 +8,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import com.darkona.adventurebackpack.fluids.FluidMelonJuice;
 import com.darkona.adventurebackpack.fluids.FluidMilk;
 import com.darkona.adventurebackpack.fluids.FluidMushroomStew;
-import com.darkona.adventurebackpack.reference.GeneralReference;
 
 /**
  * Created on 12/10/2014.
@@ -35,7 +34,5 @@ public class ModFluids
 
         FluidRegistry.registerFluid(mushroomStew);
         FluidContainerRegistry.registerFluidContainer(mushroomStew, new ItemStack(Items.mushroom_stew), new ItemStack(Items.bowl));
-
-        GeneralReference.init();
     }
 }

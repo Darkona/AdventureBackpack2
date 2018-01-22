@@ -27,6 +27,7 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.init.ModRecipes;
 import com.darkona.adventurebackpack.init.ModWorldGen;
 import com.darkona.adventurebackpack.proxy.IProxy;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 
@@ -84,6 +85,8 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
+        GeneralReference.init();
+
         ConfigHandler.IS_DEVENV = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
         if (ConfigHandler.IS_DEVENV)
