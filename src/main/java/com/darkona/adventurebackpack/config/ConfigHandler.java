@@ -56,7 +56,7 @@ public class ConfigHandler
     public static String[] forbiddenDimensions;
     public static String[] copterFuels;
     public static String[] fuelsDefault = {"biodiesel, 1.0", "biofuel, 1.0", "bioethanol, 1.5", "creosote, 7.0",
-            "fuel, 0.8", "lava, 7.0", "liquid_light_oil, 3.0", "liquid_medium_oil, 3.0", "liquid_heavy_oil, 3.0",
+            "fuel, 0.8", "lava, 5.0", "liquid_light_oil, 3.0", "liquid_medium_oil, 3.0", "liquid_heavy_oil, 3.0",
             "liquid_light_fuel, 1.0", "liquid_heavy_fuel, 1.3", "nitrofuel, 0.4", "oil, 3.0", "rocket_fuel, 0.8"};
 
     public static String[] nameLocalized;
