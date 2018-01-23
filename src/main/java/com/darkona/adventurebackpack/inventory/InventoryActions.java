@@ -170,7 +170,7 @@ public class InventoryActions
 
     public static boolean areContainersOfSameType(ItemStack stackIn, ItemStack stackOut)
     {
-        if (stackIn == null || stackOut == null || stackIn.getItem() == null || stackOut.getItem() == null)
+        if (stackIn == null || stackOut == null)
             return false;
 
         if (SlotFluid.isFilled(stackIn) && SlotFluid.isEmpty(stackOut))

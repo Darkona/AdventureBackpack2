@@ -49,9 +49,9 @@ public class ModRecipes
                 'x', Items.coal,
                 'c', "cobblestone"));
 
-        //Copter Pack
         if (ConfigHandler.recipeCopterPack)
         {
+            //Copter Pack
             ItemStack copterStack = new ItemStack(ModItems.copterPack);
             copterStack.setTagCompound(new NBTTagCompound()); //TODO rework
 
@@ -68,9 +68,9 @@ public class ModRecipes
                     'I', Items.iron_ingot);
         }
 
-        //CoalJetpack
         if (ConfigHandler.recipeCoalJetpack)
         {
+            //CoalJetpack
             ItemStack jetpackStack = new ItemStack(ModItems.coalJetpack);
             NBTTagCompound jetpackCompound = new NBTTagCompound();
             jetpackCompound.setTag(Constants.COMPOUND_TAG, new NBTTagCompound());
