@@ -24,7 +24,7 @@ public class CopterPackSound extends MovingSound
 
     public CopterPackSound(EntityPlayer player)
     {
-        super(new ResourceLocation(ModInfo.MOD_ID, "helicopter"));
+        super(new ResourceLocation(ModInfo.MOD_ID, "helicopter3"));
         volume = 0.6f;
         pitch = 1.0F;
         thePlayer = player;

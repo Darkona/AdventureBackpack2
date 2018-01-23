@@ -85,8 +85,6 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        GeneralReference.init();
-
         ConfigHandler.IS_DEVENV = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
         if (ConfigHandler.IS_DEVENV)
@@ -99,6 +97,8 @@ public class AdventureBackpack
             LogHelper.info("Buildcraft is present. Acting accordingly");
         if (ConfigHandler.IS_ENDERIO)
             LogHelper.info("EnderIO is present. Acting accordingly");
+
+        GeneralReference.init();
 
         //ConditionalFluidEffect.init();
         //ModItems.conditionalInit();
