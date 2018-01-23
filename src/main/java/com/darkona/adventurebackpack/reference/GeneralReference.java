@@ -3,8 +3,10 @@ package com.darkona.adventurebackpack.reference;
 import java.util.HashMap;
 
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.util.LogHelper;
 
 /**
  * Created on 16/01/2015
@@ -17,19 +19,38 @@ public class GeneralReference
 
     public static void init()
     {
-        liquidFuels.put("biofuel", ConfigHandler.fuelRateBioFuel); // ?
-        liquidFuels.put("bioethanol", ConfigHandler.fuelRateBioEthanol); // ic2 ethanol
-        liquidFuels.put("creosote", ConfigHandler.fuelRateCreosote);
-        liquidFuels.put("fuel", ConfigHandler.fuelRateFuel);
-        liquidFuels.put("lava", ConfigHandler.fuelRateLava);
-        liquidFuels.put("liquid_light_oil", ConfigHandler.fuelRateOil);
-        liquidFuels.put("liquid_medium_oil", ConfigHandler.fuelRateOil);
-        liquidFuels.put("liquid_heavy_oil", ConfigHandler.fuelRateOil);
-        liquidFuels.put("liquid_light_fuel", ConfigHandler.fuelRateFuelLight);
-        liquidFuels.put("liquid_heavy_fuel", ConfigHandler.fuelRateFuelHeavy);
-        liquidFuels.put("nitrofuel", ConfigHandler.fuelRateFuelNitro);
-        liquidFuels.put("oil", ConfigHandler.fuelRateOil);
-        liquidFuels.put("rocket_fuel", ConfigHandler.fuelRateFuel);
+        parseFuels();
+    }
+
+    private static void parseFuels()
+    {
+        for (String fuel : ConfigHandler.copterFuels)
+        {
+            String[] arrFuel = fuel
+                    .replaceAll(" ", "")
+                    .split(",");
+
+            if (arrFuel.length == 2)
+            {
+                float rate;
+
+                try
+                {
+                    rate = Float.parseFloat(arrFuel[1]);
+                }
+                catch (NumberFormatException e)
+                {
+                    rate = 100.0f;
+                    LogHelper.error("Cannot parse consumption rate for " + arrFuel[0] +  ". Ignored.");
+                }
+
+                if ((rate >= 0.049f && rate <= 20.001f) && FluidRegistry.isFluidRegistered(arrFuel[0]))
+                {
+                    liquidFuels.put(arrFuel[0], rate);
+                    LogHelper.info("Registered " + arrFuel[0] + " as Copter fuel with consumption rate " + rate);
+                }
+            }
+        }
     }
 
     public static boolean isValidFuel(Fluid fluid)
