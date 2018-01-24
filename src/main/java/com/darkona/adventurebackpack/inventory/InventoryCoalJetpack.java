@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
 
-import static com.darkona.adventurebackpack.common.Constants.COMPOUND_TAG;
+import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_BUCKET_IN;
 import static com.darkona.adventurebackpack.common.Constants.JETPACK_BUCKET_OUT;
@@ -58,7 +58,7 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
     @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
-        NBTTagCompound jetpackTag = compound.getCompoundTag(COMPOUND_TAG);
+        NBTTagCompound jetpackTag = compound.getCompoundTag(WEARABLE_TAG);
         waterTank.readFromNBT(jetpackTag.getCompoundTag(JETPACK_WATER_TANK));
         steamTank.readFromNBT(jetpackTag.getCompoundTag(JETPACK_STEAM_TANK));
         temperature = jetpackTag.getInteger("temperature");
@@ -85,7 +85,7 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
-        NBTTagCompound jetpackTag = compound.getCompoundTag(COMPOUND_TAG);
+        NBTTagCompound jetpackTag = compound.getCompoundTag(WEARABLE_TAG);
         jetpackTag.setTag(JETPACK_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
         jetpackTag.setTag(JETPACK_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
         jetpackTag.setInteger("temperature", temperature);
@@ -110,7 +110,7 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
             }
         }
         jetpackTag.setTag(INVENTORY, items);
-        compound.setTag(COMPOUND_TAG, jetpackTag);
+        compound.setTag(WEARABLE_TAG, jetpackTag);
     }
 
     @Override
@@ -147,19 +147,19 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
                 items.appendTag(item);
             }
         }
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).setTag(INVENTORY, items);
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(INVENTORY, items);
     }
 
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).setTag(JETPACK_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).setTag(JETPACK_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(JETPACK_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(JETPACK_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
     }
 
     public void dirtyBoiler()
     {
-        NBTTagCompound jetpackTag = containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG);
+        NBTTagCompound jetpackTag = containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG);
         jetpackTag.setBoolean("boiling", boiling);
         jetpackTag.setBoolean("leaking", leaking);
         jetpackTag.setInteger("temperature", temperature);

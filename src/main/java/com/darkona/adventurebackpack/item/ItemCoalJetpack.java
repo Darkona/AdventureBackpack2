@@ -59,7 +59,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         //jetpackTag.setTag(Constants.JETPACK_WATER_TANK, new FluidTank(Constants.JETPACK_WATER_CAPACITY).writeToNBT(new NBTTagCompound()));
         //jetpackTag.setTag(Constants.JETPACK_STEAM_TANK, new FluidTank(Constants.JETPACK_STEAM_CAPACITY).writeToNBT(new NBTTagCompound()));
         //jetpackTag.setTag(Constants.INVENTORY, new NBTTagList());
-        compound.setTag(Constants.COMPOUND_TAG, jetpackTag);
+        compound.setTag(Constants.WEARABLE_TAG, jetpackTag);
 
         list.add(iStack);
     }
@@ -297,7 +297,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 
     private int getTemperature(ItemStack jetpack)
     {
-        return jetpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG).getInteger("temperature");
+        return jetpack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG).getInteger("temperature");
     }
 
     @Override

@@ -37,7 +37,7 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
-import static com.darkona.adventurebackpack.common.Constants.COMPOUND_TAG;
+import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.LEFT_TANK;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
@@ -285,7 +285,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         newBackpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
         newBackpackTag.setByte("type", BackpackTypes.getMeta(type));
 
-        compound.setTag(COMPOUND_TAG, newBackpackTag);
+        compound.setTag(WEARABLE_TAG, newBackpackTag);
         compound.removeTag("backpackData");
     }
 
@@ -298,7 +298,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         if (compound.hasKey("ench"))
             ench = compound.getTagList("ench", NBT.TAG_COMPOUND);
 
-        NBTTagCompound backpackTag = compound.getCompoundTag(COMPOUND_TAG);
+        NBTTagCompound backpackTag = compound.getCompoundTag(WEARABLE_TAG);
         type = BackpackTypes.getType(backpackTag.getByte("type"));
         NBTTagList items = backpackTag.getTagList(INVENTORY, NBT.TAG_COMPOUND);
         for (int i = 0; i < items.tagCount(); i++)
@@ -346,7 +346,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         backpackTag.setBoolean("disableNVision", disableNVision);
         backpackTag.setInteger("lastTime", lastTime);
 
-        compound.setTag(COMPOUND_TAG, backpackTag);
+        compound.setTag(WEARABLE_TAG, backpackTag);
     }
 
     @Override

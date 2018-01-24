@@ -73,7 +73,7 @@ public class ModRecipes
             //CoalJetpack
             ItemStack jetpackStack = new ItemStack(ModItems.coalJetpack);
             NBTTagCompound jetpackCompound = new NBTTagCompound();
-            jetpackCompound.setTag(Constants.COMPOUND_TAG, new NBTTagCompound());
+            jetpackCompound.setTag(Constants.WEARABLE_TAG, new NBTTagCompound());
             jetpackStack.setTagCompound(jetpackCompound); //TODO check
 
             GameRegistry.addRecipe(jetpackStack,

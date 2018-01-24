@@ -16,7 +16,7 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
-import static com.darkona.adventurebackpack.common.Constants.COMPOUND_TAG;
+import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.LEFT_TANK;
 import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
@@ -64,7 +64,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         newBackpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
         newBackpackTag.setByte("type", BackpackTypes.getMeta(type));
 
-        compound.setTag(COMPOUND_TAG, newBackpackTag);
+        compound.setTag(WEARABLE_TAG, newBackpackTag);
         compound.removeTag("backpackData");
     }
 
@@ -149,14 +149,14 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     @Override
     public void dirtyTime()
     {
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).setInteger("lastTime", lastTime);
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setInteger("lastTime", lastTime);
     }
 
     @Override
     public void dirtyExtended()
     {
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).removeTag("extendedProperties");
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).setTag("extendedProperties", extendedProperties);
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).removeTag("extendedProperties");
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag("extendedProperties", extendedProperties);
     }
 
     @Override
@@ -196,7 +196,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         if (compound == null)
             return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
 
-        NBTTagCompound backpackTag = compound.getCompoundTag(COMPOUND_TAG);
+        NBTTagCompound backpackTag = compound.getCompoundTag(WEARABLE_TAG);
         type = BackpackTypes.getType(backpackTag.getByte("type"));
         NBTTagList items = backpackTag.getTagList(INVENTORY, NBT.TAG_COMPOUND);
         for (int i = 0; i < items.tagCount(); i++)
@@ -242,7 +242,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         backpackTag.setBoolean("disableNVision", disableNVision);
         backpackTag.setInteger("lastTime", lastTime);
 
-        compound.setTag(COMPOUND_TAG, backpackTag);
+        compound.setTag(WEARABLE_TAG, backpackTag);
     }
 
     @Override
@@ -281,15 +281,15 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
                 items.appendTag(item);
             }
         }
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).removeTag(INVENTORY);
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).setTag(INVENTORY, items);
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).removeTag(INVENTORY);
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(INVENTORY, items);
     }
 
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.getCompoundTag(COMPOUND_TAG).setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
     }
 
     @Override

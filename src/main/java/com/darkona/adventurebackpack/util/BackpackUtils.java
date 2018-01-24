@@ -55,9 +55,9 @@ public class BackpackUtils
 
     public static NBTTagCompound getBackpackTag(ItemStack backpack)
     {
-        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey(Constants.COMPOUND_TAG))
+        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey(Constants.WEARABLE_TAG))
         {
-            return backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
+            return backpack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG);
         }
         return new NBTTagCompound();
     }
@@ -68,7 +68,7 @@ public class BackpackUtils
         {
             stack.stackTagCompound = new NBTTagCompound();
         }
-        stack.stackTagCompound.setTag(Constants.COMPOUND_TAG, compound);
+        stack.stackTagCompound.setTag(Constants.WEARABLE_TAG, compound);
     }
 
     private static class DelayUnequipTask extends TimerTask

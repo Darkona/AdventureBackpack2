@@ -114,7 +114,7 @@ public enum BackpackTypes
     // @formatter:on
 
     public static final ImmutableBiMap<Byte, BackpackTypes> BY_META;
-    public static final ImmutableSet<BackpackTypes> SPECIAL_TYPES;
+    public static final ImmutableSet<BackpackTypes> SPECIAL_TYPES; //TODO okay... how can we use all these sets?
     public static final ImmutableSet<BackpackTypes> REMOVAL_TYPES;
     public static final ImmutableSet<BackpackTypes> NIGHT_VISION_TYPES;
 
@@ -278,7 +278,6 @@ public enum BackpackTypes
         //OTHER_ABILITY, // creeper or skeleton etc
         ;
     }
-
 
     // ---
 

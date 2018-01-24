@@ -30,6 +30,9 @@ public class GeneralReference
 
     private static void parseFuelConfig()
     {
+        int wrong = 0;
+        int unregistered = 0;
+
         for (String fuel : ConfigHandler.copterFuels)
         {
             String[] arrFuel = fuel
@@ -37,7 +40,10 @@ public class GeneralReference
                     .split(",");
 
             if (arrFuel.length != 2)
+            {
+                wrong++;
                 continue;
+            }
 
             String fluid = arrFuel[0];
             float rate;
@@ -57,6 +63,18 @@ public class GeneralReference
                 liquidFuels.put(fluid, rate);
                 LogHelper.info("Registered " + fluid + " as Copter fuel with consumption rate " + rate);
             }
+            else
+            {
+                unregistered++;
+            }
+        }
+
+        if (wrong > 0 || unregistered > 0)
+        {
+            LogHelper.info("Skipped "
+                    + (wrong > 0 ? (wrong + " incorrect entr" + (wrong > 1 ? "ies" : "y")) : "")
+                    + (wrong > 0 && unregistered > 0 ? " and " : "")
+                    + (unregistered > 0 ? (unregistered + " unregistered fluid" + (unregistered > 1 ? "s" : "")) : ""));
         }
     }
 

@@ -51,7 +51,7 @@ public class TooltipEventHandler
         if (theItem instanceof ItemAdventureBackpack)
         {
             FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
-            NBTTagCompound backpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
+            NBTTagCompound backpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG);
 
             if (GuiScreen.isShiftKeyDown())
             {
@@ -91,7 +91,7 @@ public class TooltipEventHandler
         {
             FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
             FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
-            NBTTagCompound jetpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
+            NBTTagCompound jetpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG);
 
             if (GuiScreen.isShiftKeyDown())
             {

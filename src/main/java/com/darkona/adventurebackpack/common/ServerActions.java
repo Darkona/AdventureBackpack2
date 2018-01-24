@@ -33,7 +33,7 @@ import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
-import static com.darkona.adventurebackpack.common.Constants.COMPOUND_TAG;
+import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
 
@@ -365,7 +365,7 @@ public class ServerActions
     public static void jetpackSoundAtLogin(EntityPlayer player)
     {
         boolean isBoiling = BackpackProperty.get(player).getWearable().getTagCompound()
-                .getCompoundTag(COMPOUND_TAG).getBoolean("boiling");
+                .getCompoundTag(WEARABLE_TAG).getBoolean("boiling");
 
         if (!player.worldObj.isRemote && isBoiling)
         {

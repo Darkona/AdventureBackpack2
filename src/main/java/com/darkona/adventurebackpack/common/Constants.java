@@ -16,7 +16,7 @@ public class Constants
 
     public static final int BUCKET = FluidContainerRegistry.BUCKET_VOLUME;
 
-    public static final String COMPOUND_TAG = "wearableData";
+    public static final String WEARABLE_TAG = "wearableData"; //TODO "wearable"
     public static final String INVENTORY = "inventory";
 
     // Inventory Slots
@@ -45,7 +45,7 @@ public class Constants
     public static final int JETPACK_BUCKET_OUT = 1;
     public static final int JETPACK_FUEL_SLOT = 2;
 
-    //public static final String COMPOUND_TAG = "jetpackData";
+    //public static final String WEARABLE_TAG = "jetpackData";
     //public static final String INVENTORY = "inventory";
     public static final String JETPACK_STEAM_TANK = "steamTank";
     public static final String JETPACK_WATER_TANK = "waterTank";

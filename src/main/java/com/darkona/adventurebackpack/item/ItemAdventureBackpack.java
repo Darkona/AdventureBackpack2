@@ -295,7 +295,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     private int getItemCount(ItemStack backpack)
     {
-        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
+        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG);
         NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
         int itemCount = itemList.tagCount();
         for (int i = itemCount - 1; i >= 0; i--)
