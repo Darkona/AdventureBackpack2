@@ -122,8 +122,7 @@ public enum BackpackTypes
     private final String skinName;
     private final Props[] props;
 
-    //TODO step2: add support for recipes (see BackpackRecipesList). new field 'Object[]'?
-    //TODO step3: rework NBT for wearable packs. unificate and simplify structure.
+    //TODO rework NBT for wearable packs. unificate and simplify structure.
 
     BackpackTypes(int meta, String skin, Props... props)
     {
