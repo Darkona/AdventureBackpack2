@@ -30,8 +30,8 @@ public class GeneralReference
 
     private static void parseFuelConfig()
     {
-        int wrong = 0;
-        int unregistered = 0;
+        int wrongCount = 0;
+        int unregCount = 0;
 
         for (String fuel : ConfigHandler.copterFuels)
         {
@@ -41,7 +41,7 @@ public class GeneralReference
 
             if (arrFuel.length != 2)
             {
-                wrong++;
+                wrongCount++;
                 continue;
             }
 
@@ -54,7 +54,7 @@ public class GeneralReference
                 {
                     rate = Float.parseFloat(arrFuel[1]);
                 }
-                catch (NumberFormatException e)
+                catch (NumberFormatException nfe)
                 {
                     rate = MAX_RATE;
                     LogHelper.error("Cannot parse consumption rate for " + fluid + ". Setting MAX rate");
@@ -65,16 +65,16 @@ public class GeneralReference
             }
             else
             {
-                unregistered++;
+                unregCount++;
             }
         }
 
-        if (wrong > 0 || unregistered > 0)
+        if (wrongCount > 0 || unregCount > 0)
         {
             LogHelper.info("Skipped "
-                    + (wrong > 0 ? (wrong + " incorrect entr" + (wrong > 1 ? "ies" : "y")) : "")
-                    + (wrong > 0 && unregistered > 0 ? " and " : "")
-                    + (unregistered > 0 ? (unregistered + " unregistered fluid" + (unregistered > 1 ? "s" : "")) : ""));
+                    + (wrongCount > 0 ? (wrongCount + " incorrect entr" + (wrongCount > 1 ? "ies" : "y")) : "")
+                    + (wrongCount > 0 && unregCount > 0 ? " and " : "")
+                    + (unregCount > 0 ? (unregCount + " unregistered fluid" + (unregCount > 1 ? "s" : "")) : ""));
         }
     }
 

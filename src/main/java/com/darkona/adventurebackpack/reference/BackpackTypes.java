@@ -119,7 +119,7 @@ public enum BackpackTypes
     public static final ImmutableSet<BackpackTypes> NIGHT_VISION_TYPES;
 
     private final byte meta;
-    private final String skinName; // equivalent to current colorName
+    private final String skinName;
     private final Props[] props;
 
     //TODO step2: add support for recipes (see BackpackRecipesList). new field 'Object[]'?

@@ -71,12 +71,15 @@ public final class CopygirlRenderUtils
         {
             textureManager.bindTexture(((stack.getItemSpriteNumber() == 0) ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture));
             IIcon icon = item.getIcon(stack, pass);
-            float minU = icon.getMinU();
-            float maxU = icon.getMaxU();
-            float minV = icon.getMinV();
-            float maxV = icon.getMaxV();
-            CopygirlRenderUtils.setColorFromInt(item.getColorFromItemStack(stack, pass));
-            ItemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
+            if (icon != null)
+            {
+                float minU = icon.getMinU();
+                float maxU = icon.getMaxU();
+                float minV = icon.getMinV();
+                float maxV = icon.getMaxV();
+                CopygirlRenderUtils.setColorFromInt(item.getColorFromItemStack(stack, pass));
+                ItemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
+            }
         }
 
         if (stack.hasEffect(0))

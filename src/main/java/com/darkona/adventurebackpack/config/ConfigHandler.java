@@ -20,6 +20,7 @@ public class ConfigHandler
     public static boolean IS_DEVENV = false;
     public static boolean IS_BUILDCRAFT = false;
     public static boolean IS_ENDERIO = false;
+    public static boolean IS_GREGTECH = false;
 
     public static boolean allowSoulBound = true;
     public static boolean backpackDeathPlace = true;
@@ -45,8 +46,8 @@ public class ConfigHandler
     public static boolean tanksOverlay = true;
     public static boolean tanksOverlayRight = true;
     public static boolean tanksOverlayBottom = true;
-    public static int tanksOverlayIndentH = 4;
-    public static int tanksOverlayIndentV = 2;
+    public static int tanksOverlayIndentH = 2;
+    public static int tanksOverlayIndentV = 1;
 
     public static boolean allowSoundCopter = true;
     public static boolean allowSoundJetpack = true;
@@ -115,7 +116,7 @@ public class ConfigHandler
         typeTankRender = config.getInt("Tank Render Type", "graphics", 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");
         enableFullnessBar = config.getBoolean("Enable Fullness Bar", "graphics", false, "Enable durability bar showing fullness of backpacks inventory");
         enableTemperatureBar = config.getBoolean("Enable Temperature Bar", "graphics", false, "Enable durability bar showing temperature of jetpack");
-        enableToolsRender = config.getBoolean("Enable Tools Render", "graphics", true, "Enable rendering for tools in the backpack tool slots. May cause visual glitches with Gregtech tools");
+        enableToolsRender = config.getBoolean("Enable Tools Render", "graphics", true, "Enable rendering for tools in the backpack tool slots");
         enableTooltips = config.getBoolean("Enable Tooltips", "graphics", true, "Enable tooltips? Client side");
         tanksHoveringText = config.getBoolean("Hovering Text", "graphics", false, "Show hovering text on fluid tanks?");
 
@@ -130,8 +131,8 @@ public class ConfigHandler
         tanksOverlay = config.getBoolean("Enable Overlay", "graphics.tanks", true, "Show the different wearable overlays on screen?");
         tanksOverlayRight = config.getBoolean("Stick To Right", "graphics.tanks", true, "Stick to right?");
         tanksOverlayBottom = config.getBoolean("Stick To Bottom", "graphics.tanks", true, "Stick to bottom?");
-        tanksOverlayIndentH = config.getInt("Indent Horizontal", "graphics.tanks", 4, -10, 1000, "Horizontal indent from the window border");
-        tanksOverlayIndentV = config.getInt("Indent Vertical", "graphics.tanks", 2, 0, 500, "Vertical indent from the window border");
+        tanksOverlayIndentH = config.getInt("Indent Horizontal", "graphics.tanks", 2, 0, 1000, "Horizontal indent from the window border");
+        tanksOverlayIndentV = config.getInt("Indent Vertical", "graphics.tanks", 1, 0, 500, "Vertical indent from the window border");
 
         // Sound
         allowSoundCopter = config.getBoolean("Copter Pack", "sound", true, "Allow playing the CopterPack sound (Client Only, other players may hear it)");

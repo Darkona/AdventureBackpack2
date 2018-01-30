@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -18,6 +19,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -123,7 +125,7 @@ public class GuiOverlay extends Gui
                 int textureWidth = 10;
 
                 int xPos = ConfigHandler.tanksOverlayRight
-                           ? screenWidth - (textureWidth * 3) - ConfigHandler.tanksOverlayIndentH
+                           ? screenWidth - (textureWidth * 2) - ConfigHandler.tanksOverlayIndentH
                            : ConfigHandler.tanksOverlayIndentH;
                 int yPos = ConfigHandler.tanksOverlayBottom
                            ? screenHeight - textureHeight - ConfigHandler.tanksOverlayIndentV
@@ -169,7 +171,7 @@ public class GuiOverlay extends Gui
                     RenderHelper.enableStandardItemLighting();
                     RenderHelper.enableGUIStandardItemLighting();
                     GL11.glPushMatrix();
-                    GL11.glTranslatef(xStart[1] + textureWidth + 2, yStart[0], 0);
+                    GL11.glTranslatef(xStart[0] - textureWidth, yStart[0], 0);
                     GL11.glScalef(0.5f, 0.5f, 0.5f);
                     if (ConfigHandler.enableToolsRender)
                     {
@@ -223,15 +225,48 @@ public class GuiOverlay extends Gui
 
     private void drawItemStack(ItemStack stack, int x, int y)
     {
-        if (stack == null) return;
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
+        if (stack == null)
+            return;
+
+        boolean isGregtechTool = stack.getItem().getUnlocalizedName().equals("gt.metatool.01");
+
+        GL11.glTranslatef(isGregtechTool ? x : 0.0F, isGregtechTool ? y :0.0F, 32.0F);
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
-        FontRenderer font = null;
-        font = stack.getItem().getFontRenderer(stack);
-        if (font == null) font = fontRendererObj;
-        itemRender.renderItemIntoGUI(font, mc.getTextureManager(), stack, x, y);
+        if (isGregtechTool)
+        {
+            renderGregtechToolIntoGUI(stack);
+        }
+        else
+        {
+            FontRenderer font = null;
+            font = stack.getItem().getFontRenderer(stack);
+            if (font == null) font = fontRendererObj;
+            itemRender.renderItemIntoGUI(font, mc.getTextureManager(), stack, x, y);
+        }
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
+    }
+
+    private static Object gregtechToolRenderer;
+    private static Object[] emptyObjectArray = {};
+
+    private void renderGregtechToolIntoGUI(ItemStack stack)
+    {
+        if (!ConfigHandler.IS_GREGTECH)
+            return;
+
+        try
+        {
+            Class<?> clazz = Class.forName("gregtech.common.render.GT_MetaGenerated_Tool_Renderer");
+            if (gregtechToolRenderer == null)
+                gregtechToolRenderer = clazz.newInstance();
+            Method doRender = clazz.getMethod("renderItem", IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class);
+            doRender.invoke(gregtechToolRenderer, IItemRenderer.ItemRenderType.INVENTORY, stack, emptyObjectArray);
+        }
+        catch (Exception e)
+        {
+            //e.printStackTrace();
+        }
     }
 }
