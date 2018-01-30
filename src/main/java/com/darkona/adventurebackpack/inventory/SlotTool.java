@@ -11,6 +11,7 @@ import net.minecraft.item.ItemTool;
 
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.util.GregtechUtils;
 
 /**
  * Created on 12/10/2014
@@ -59,7 +60,7 @@ public class SlotTool extends SlotAdventureBackpack
             }
 
             //GregTech
-            if (name.equals("gt.metatool.01"))
+            if (GregtechUtils.isTool(stack))
             {
                 //0 = sword, 170 = turbines
                 return !(stack.getItemDamage() == 0 || stack.getItemDamage() > 169);

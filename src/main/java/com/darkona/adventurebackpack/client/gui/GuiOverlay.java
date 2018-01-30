@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.client.gui;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -32,6 +31,7 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.GregtechUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 
@@ -228,14 +228,14 @@ public class GuiOverlay extends Gui
         if (stack == null)
             return;
 
-        boolean isGregtechTool = stack.getItem().getUnlocalizedName().equals("gt.metatool.01");
+        boolean isGregtechTool = GregtechUtils.isTool(stack);
 
         GL11.glTranslatef(isGregtechTool ? x : 0.0F, isGregtechTool ? y :0.0F, 32.0F);
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
         if (isGregtechTool)
         {
-            renderGregtechToolIntoGUI(stack);
+            GregtechUtils.renderTool(stack, IItemRenderer.ItemRenderType.INVENTORY);
         }
         else
         {
@@ -246,27 +246,5 @@ public class GuiOverlay extends Gui
         }
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
-    }
-
-    private static Object gregtechToolRenderer;
-    private static Object[] emptyObjectArray = {};
-
-    private void renderGregtechToolIntoGUI(ItemStack stack)
-    {
-        if (!ConfigHandler.IS_GREGTECH)
-            return;
-
-        try
-        {
-            Class<?> clazz = Class.forName("gregtech.common.render.GT_MetaGenerated_Tool_Renderer");
-            if (gregtechToolRenderer == null)
-                gregtechToolRenderer = clazz.newInstance();
-            Method doRender = clazz.getMethod("renderItem", IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class);
-            doRender.invoke(gregtechToolRenderer, IItemRenderer.ItemRenderType.INVENTORY, stack, emptyObjectArray);
-        }
-        catch (Exception e)
-        {
-            //e.printStackTrace();
-        }
     }
 }
