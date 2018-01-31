@@ -3,7 +3,9 @@ package com.darkona.adventurebackpack.client.gui;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
@@ -68,7 +70,8 @@ public class GuiAdvBackpack extends GuiWithTanks
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Buttons and button highlight
-        if (source == Source.TILE)
+        if (source == Source.TILE
+                || source == Source.WEARING && GuiScreen.isCtrlKeyDown())
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {
@@ -79,29 +82,26 @@ public class GuiAdvBackpack extends GuiWithTanks
                 bedButton.draw(this, 1, 227);
             }
         }
-        else
+        else if (source == Source.WEARING)
         {
-            if (source == Source.WEARING)
+            if (unequipButton.inButton(this, mouseX, mouseY))
             {
-                if (unequipButton.inButton(this, mouseX, mouseY))
-                {
-                    unequipButton.draw(this, 96, 227);
-                }
-                else
-                {
-                    unequipButton.draw(this, 77, 227);
-                }
+                unequipButton.draw(this, 96, 227);
             }
-            else if (source == Source.HOLDING)
+            else
             {
-                if (equipButton.inButton(this, mouseX, mouseY))
-                {
-                    equipButton.draw(this, 96, 208);
-                }
-                else
-                {
-                    equipButton.draw(this, 77, 208);
-                }
+                unequipButton.draw(this, 77, 227);
+            }
+        }
+        else if (source == Source.HOLDING)
+        {
+            if (equipButton.inButton(this, mouseX, mouseY))
+            {
+                equipButton.draw(this, 96, 208);
+            }
+            else
+            {
+                equipButton.draw(this, 77, 208);
             }
         }
         //zLevel +=1;
@@ -169,16 +169,29 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-        if (source == Source.TILE)
+        if (source == Source.TILE
+                || source == Source.WEARING && GuiScreen.isCtrlKeyDown())
         {
             if (bedButton.inButton(this, mouseX, mouseY))
             {
-                TileAdventureBackpack te = (TileAdventureBackpack) inventory;
-                ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
+                if (source == Source.TILE)
+                {
+                    TileAdventureBackpack te = (TileAdventureBackpack) inventory;
+                    ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(true, te.xCoord, te.yCoord, te.zCoord));
+                }
+                else
+                {
+                    final int posX = MathHelper.floor_double(player.posX);
+                    final int posY = MathHelper.floor_double(player.posY) - 1;
+                    final int posZ = MathHelper.floor_double(player.posZ);
+                    ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(false, posX, posY, posZ));
+                }
             }
         }
-
-        super.mouseClicked(mouseX, mouseY, button);
+        else
+        {
+            super.mouseClicked(mouseX, mouseY, button);
+        }
     }
 
     @Override

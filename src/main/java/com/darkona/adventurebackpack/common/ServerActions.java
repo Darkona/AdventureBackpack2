@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.common;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,13 +12,17 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProviderEnd;
+import net.minecraft.world.WorldProviderHell;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
+import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
@@ -33,9 +38,9 @@ import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
-import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
+import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 
 /**
  * Created on 23/12/2014
@@ -247,15 +252,22 @@ public class ServerActions
         }
     }
 
-    public static void toggleSleepingBag(EntityPlayer player, int coordX, int coordY, int coordZ)
+    public static void toggleSleepingBag(EntityPlayer player, boolean isTile, int cX, int cY, int cZ)
     {
         World world = player.worldObj;
-        if (world.getTileEntity(coordX, coordY, coordZ) instanceof TileAdventureBackpack)
+
+        if (world.provider instanceof WorldProviderHell || world.provider instanceof WorldProviderEnd)
         {
-            TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cant.sleep.here"));
+            return;
+        }
+
+        if (isTile && world.getTileEntity(cX, cY, cZ) instanceof TileAdventureBackpack)
+        {
+            TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(cX, cY, cZ);
             if (!te.isSBDeployed())
             {
-                int can[] = canDeploySleepingBag(world, coordX, coordY, coordZ);
+                int can[] = canDeploySleepingBag(world, player, cX, cY, cZ, isTile);
                 if (can[0] > -1)
                 {
                     if (te.deploySleepingBag(player, world, can[1], can[2], can[3], can[0]))
@@ -274,65 +286,72 @@ public class ServerActions
             }
             player.closeScreen();
         }
-
+        else if (!isTile && Wearing.isWearingBackpack(player))
+        {
+            int can[] = canDeploySleepingBag(world, player, cX, cY, cZ, isTile);
+            if (can[0] > -1)
+            {
+                if (deploySleepingBag(player, world, can[1], can[2], can[3], can[0]))
+                {
+                    player.closeScreen();
+                }
+            }
+            else if (!world.isRemote)
+            {
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.backpack.cant.bag"));
+            }
+        }
     }
 
-    public static int[] canDeploySleepingBag(World world, int coordX, int coordY, int coordZ)
+    private static int[] canDeploySleepingBag(World world, EntityPlayer player, int cX, int cY, int cZ, boolean isTile)
     {
-        TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
-        int newMeta = -1;
-
-        if (!te.isSBDeployed())
+        int switchBy = -1;
+        if (isTile)
         {
-            int meta = world.getBlockMetadata(coordX, coordY, coordZ);
+            TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(cX, cY, cZ);
+            if (!te.isSBDeployed())
+                switchBy = world.getBlockMetadata(cX, cY, cZ) & 3;
+        }
+        else
+        {
+            InventoryBackpack backpack = Wearing.getWearingBackpackInv(player);
+            if (!backpack.isSBDeployed()) //TODO add boolean and behavior
+                switchBy = MathHelper.floor_double((double)((player.rotationYaw * 4F) / 360F) + 0.5D) & 3;
+        }
+        return Utils.getDirectionAndCoordsForSleepingBag(switchBy, world, cX, cY, cZ, isTile);
+    }
+
+    //TODO it's copy from tile.backpack. move to item.backpack?
+    private static boolean deploySleepingBag(EntityPlayer player, World world, int cX, int cY, int cZ, int meta)
+    {
+        if (world.isRemote)
+            return false;
+
+        Block sleepingBag = ModBlocks.blockSleepingBag;
+        if (world.setBlock(cX, cY, cZ, sleepingBag, meta, 3))
+        {
+            world.playSoundAtEntity(player, Block.soundTypeCloth.func_150496_b(), 0.5f, 1.0f);
             switch (meta & 3)
             {
                 case 0:
-                    --coordZ;
-                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
-                    {
-                        if (world.isAirBlock(coordX, coordY, coordZ - 1) && world.getBlock(coordX, coordY - 1, coordZ - 1).getMaterial().isSolid())
-                        {
-                            newMeta = 2;
-                        }
-                    }
+                    ++cZ;
                     break;
                 case 1:
-                    ++coordX;
-                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
-                    {
-                        if (world.isAirBlock(coordX + 1, coordY, coordZ) && world.getBlock(coordX + 1, coordY - 1, coordZ).getMaterial().isSolid())
-                        {
-                            newMeta = 3;
-                        }
-                    }
+                    --cX;
                     break;
                 case 2:
-                    ++coordZ;
-                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
-                    {
-                        if (world.isAirBlock(coordX, coordY, coordZ + 1) && world.getBlock(coordX, coordY - 1, coordZ + 1).getMaterial().isSolid())
-                        {
-                            newMeta = 0;
-                        }
-                    }
+                    --cZ;
                     break;
                 case 3:
-                    --coordX;
-                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
-                    {
-                        if (world.isAirBlock(coordX - 1, coordY, coordZ) && world.getBlock(coordX - 1, coordY - 1, coordZ).getMaterial().isSolid())
-                        {
-                            newMeta = 1;
-                        }
-                    }
-                    break;
-                default:
+                    ++cX;
                     break;
             }
+            boolean sleepingBagDeployed = world.setBlock(cX, cY, cZ, sleepingBag, meta + 8, 3);
+            //LogHelper.info("deploySleepingBag() => SleepingBagDeployed is: " + sleepingBagDeployed);
+            world.markBlockForUpdate(cX, cY, cZ);
+            return sleepingBagDeployed;
         }
-        int result[] = {newMeta, coordX, coordY, coordZ};
-        return result;
+        return false;
     }
 
     /**

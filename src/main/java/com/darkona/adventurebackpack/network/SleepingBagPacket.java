@@ -20,13 +20,14 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
     {
         if (ctx.side.isServer())
         {
-            ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.x, message.y, message.z);
+            ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.isTile, message.x, message.y, message.z);
         }
         return null;
     }
 
     public static class SleepingBagMessage implements IMessage
     {
+        public boolean isTile;
         public int x;
         public int y;
         public int z;
@@ -36,8 +37,9 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
 
         }
 
-        public SleepingBagMessage(int X, int Y, int Z)
+        public SleepingBagMessage(boolean isTile, int X, int Y, int Z)
         {
+            this.isTile = isTile;
             this.x = X;
             this.y = Y;
             this.z = Z;
@@ -46,6 +48,7 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
         @Override
         public void fromBytes(ByteBuf buf)
         {
+            isTile = buf.readBoolean();
             x = buf.readInt();
             y = buf.readInt();
             z = buf.readInt();
@@ -54,6 +57,7 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
         @Override
         public void toBytes(ByteBuf buf)
         {
+            buf.writeBoolean(isTile);
             buf.writeInt(x);
             buf.writeInt(y);
             buf.writeInt(z);

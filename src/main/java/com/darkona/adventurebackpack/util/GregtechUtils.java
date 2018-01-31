@@ -1,7 +1,5 @@
 package com.darkona.adventurebackpack.util;
 
-import java.lang.reflect.Method;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
@@ -14,16 +12,34 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
  */
 public class GregtechUtils
 {
-    private static final int[] ROTATED_TOOLS = {10, 14, 18, 22, 34, 150, 160};
+    private static final String RENDERER_CLASS = "gregtech.common.render.GT_MetaGenerated_Tool_Renderer";
+    private static final String RENDERER_METHOD = "renderItem";
+    private static final String TOOLS_NAME = "gt.metatool.01";
     private static final Object[] EMPTY_OBJECT = {};
+    private static final int[] ROTATED_TOOLS = {10, 14, 18, 22, 34, 150, 160};
 
     private static Object toolRenderer;
 
     private GregtechUtils(){}
 
+    static
+    {
+        if (ConfigHandler.IS_GREGTECH)
+        {
+            try
+            {
+                toolRenderer = Class.forName(RENDERER_CLASS).newInstance();
+            }
+            catch (Exception e)
+            {
+                LogHelper.error("Error getting instance of GT_MetaGenerated_Tool_Renderer: " + e.getMessage());
+            }
+        }
+    }
+
     public static boolean isTool(ItemStack stack)
     {
-        return stack.getItem().getUnlocalizedName().equals("gt.metatool.01");
+        return ConfigHandler.IS_GREGTECH && stack.getItem().getUnlocalizedName().equals(TOOLS_NAME);
     }
 
     public static float getToolRotationAngle(ItemStack stack, boolean isLowerSlot)
@@ -39,16 +55,11 @@ public class GregtechUtils
 
     public static void renderTool(ItemStack stack, IItemRenderer.ItemRenderType renderType)
     {
-        if (!ConfigHandler.IS_GREGTECH)
-            return;
-
         try
         {
-            Class<?> clazz = Class.forName("gregtech.common.render.GT_MetaGenerated_Tool_Renderer");
-            if (toolRenderer == null)
-                toolRenderer = clazz.newInstance();
-            Method doRender = clazz.getMethod("renderItem", IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class);
-            doRender.invoke(toolRenderer, renderType, stack, EMPTY_OBJECT);
+            Class.forName(RENDERER_CLASS)
+                    .getMethod(RENDERER_METHOD, IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class)
+                    .invoke(toolRenderer, renderType, stack, EMPTY_OBJECT);
         }
         catch (Exception e)
         {

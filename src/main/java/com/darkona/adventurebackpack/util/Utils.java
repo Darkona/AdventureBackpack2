@@ -47,28 +47,28 @@ public class Utils
         return fluidID;
     }
 
-    public static ChunkCoordinates findBlock2D(World world, int x, int y, int z, Block block, int range)
+    public static ChunkCoordinates findBlock2D(World world, int cX, int cY, int cZ, Block block, int range)
     {
-        for (int i = x - range; i <= x + range; i++)
+        for (int i = cX - range; i <= cX + range; i++)
         {
-            for (int j = z - range; j <= z + range; j++)
+            for (int j = cZ - range; j <= cZ + range; j++)
             {
-                if (world.getBlock(i, y, j) == block)
+                if (world.getBlock(i, cY, j) == block)
                 {
-                    return new ChunkCoordinates(i, y, j);
+                    return new ChunkCoordinates(i, cY, j);
                 }
             }
         }
         return null;
     }
 
-    public static ChunkCoordinates findBlock3D(World world, int x, int y, int z, Block block, int hRange, int vRange)
+    public static ChunkCoordinates findBlock3D(World world, int cX, int cY, int cZ, Block block, int hRange, int vRange)
     {
-        for (int i = (y - vRange); i <= (y + vRange); i++)
+        for (int i = (cY - vRange); i <= (cY + vRange); i++)
         {
-            for (int j = (x - hRange); j <= (x + hRange); j++)
+            for (int j = (cX - hRange); j <= (cX + hRange); j++)
             {
-                for (int k = (z - hRange); k <= (z + hRange); k++)
+                for (int k = (cZ - hRange); k <= (cZ + hRange); k++)
                 {
                     if (world.getBlock(j, i, k) == block)
                     {
@@ -112,9 +112,9 @@ public class Utils
         return world.func_147447_a/*rayTraceBlocks_do_do*/(vecPlayer, vecPoint, flag, !flag, flag);
     }
 
-    public static String printCoordinates(int x, int y, int z)
+    public static String printCoordinates(int cX, int cY, int cZ)
     {
-        return "X= " + x + ", Y= " + y + ", Z= " + z;
+        return "X= " + cX + ", Y= " + cY + ", Z= " + cZ;
     }
 
     public static int secondsToTicks(int seconds)
@@ -133,33 +133,33 @@ public class Utils
         return side == Side.SERVER;
     }
 
-    private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int x, int y, int z, boolean except)
+    private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int cX, int cY, int cZ, boolean except)
     {
-        if (world.isAirBlock(x, y, z) || isReplaceable(world, x, y, z))
+        if (world.isAirBlock(cX, cY, cZ) || isReplaceable(world, cX, cY, cZ))
         {
-            return new ChunkCoordinates(x, y, z);
+            return new ChunkCoordinates(cX, cY, cZ);
         }
         return null;
     }
 
-    public static boolean isReplaceable(IBlockAccess world, int x, int y, int z)
+    public static boolean isReplaceable(IBlockAccess world, int cX, int cY, int cZ)
     {
-        Block block = world.getBlock(x, y, z);
-        return block.isReplaceable(world, x, y, z);
+        Block block = world.getBlock(cX, cY, cZ);
+        return block.isReplaceable(world, cX, cY, cZ);
     }
 
-    private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int x, int y, int z, boolean except)
+    private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int cX, int cY, int cZ, boolean except)
     {
-        LogHelper.info("Checking coordinates in X=" + x + ", Y=" + y + ", Z=" + z);
-        if (except && world.isSideSolid(x, y - 1, z, ForgeDirection.UP, true) && world.isAirBlock(x, y, z) && world.isAirBlock(x, y + 1, z) && !areCoordinatesTheSame2D(origX, origZ, x, z))
+        LogHelper.info("Checking coordinates in X=" + cX + ", Y=" + cY + ", Z=" + cZ);
+        if (except && world.isSideSolid(cX, cY - 1, cZ, ForgeDirection.UP, true) && world.isAirBlock(cX, cY, cZ) && world.isAirBlock(cX, cY + 1, cZ) && !areCoordinatesTheSame2D(origX, origZ, cX, cZ))
         {
             LogHelper.info("Found spot with the exception of the origin point");
-            return new ChunkCoordinates(x, y, z);
+            return new ChunkCoordinates(cX, cY, cZ);
         }
-        if (!except && world.isSideSolid(x, y - 1, z, ForgeDirection.UP, true) && world.isAirBlock(x, y, z) && world.isAirBlock(x, y + 1, z))
+        if (!except && world.isSideSolid(cX, cY - 1, cZ, ForgeDirection.UP, true) && world.isAirBlock(cX, cY, cZ) && world.isAirBlock(cX, cY + 1, cZ))
         {
             LogHelper.info("Found spot without exceptions");
-            return new ChunkCoordinates(x, y, z);
+            return new ChunkCoordinates(cX, cY, cZ);
         }
         return null;
     }
@@ -170,11 +170,11 @@ public class Utils
      * This is a spiral search, will begin at close range and move out.
      *
      * @param world  The world object.
-     * @param origX  Original X coordinate
-     * @param origZ  Original Z coordinate
-     * @param X      Moving X coordinate, should be the same as origX when called.
-     * @param Y      Y coordinate, does not move.
-     * @param Z      Moving Z coordinate, should be the same as origZ when called.
+     * @param origX  Original cX coordinate
+     * @param origZ  Original cZ coordinate
+     * @param cX     Moving cX coordinate, should be the same as origX when called.
+     * @param cY     cY coordinate, does not move.
+     * @param cZ     Moving cZ coordinate, should be the same as origZ when called.
      * @param radius The radius of the search. If set to high numbers, will create a ton of lag
      * @param except Wether to include the origin of the search as a valid block.
      * @param steps  Number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
@@ -182,36 +182,36 @@ public class Utils
      * @param type   True = for player, False = for backpack
      * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
      */
-    public static ChunkCoordinates getNearestEmptyChunkCoordinatesSpiral(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, int radius, boolean except, int steps, byte pass, boolean type)
+    public static ChunkCoordinates getNearestEmptyChunkCoordinatesSpiral(IBlockAccess world, int origX, int origZ, int cX, int cY, int cZ, int radius, boolean except, int steps, byte pass, boolean type)
     {
         //Spiral search, because I'm awesome :)
         //This is so the backpack tries to get placed near the death point first
         //And then goes looking farther away at each step
-        //Steps mod 2 == 0 => X++, Z--
-        //Steps mod 2 == 1 => X--, Z++
+        //Steps mod 2 == 0 => cX++, cZ--
+        //Steps mod 2 == 1 => cX--, cZ++
 
         if (steps >= radius) return null;
-        int i = X, j = Z;
+        int i = cX, j = cZ;
         if (steps % 2 == 0)
         {
             if (pass == 0)
             {
-                for (; i <= X + steps; i++)
+                for (; i <= cX + steps; i++)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, origX, origZ, cX, cY, cZ, except);
                     if (coords != null)
                     {
                         return coords;
                     }
                 }
                 pass++;
-                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, cY, j, radius, except, steps, pass, type);
             }
             if (pass == 1)
             {
-                for (; j >= Z - steps; j--)
+                for (; j >= cZ - steps; j--)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, origX, origZ, cX, cY, cZ, except);
                     if (coords != null)
                     {
                         return coords;
@@ -219,7 +219,7 @@ public class Utils
                 }
                 pass--;
                 steps++;
-                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, cY, j, radius, except, steps, pass, type);
             }
         }
 
@@ -227,22 +227,22 @@ public class Utils
         {
             if (pass == 0)
             {
-                for (; i >= X - steps; i--)
+                for (; i >= cX - steps; i--)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, origX, origZ, cX, cY, cZ, except);
                     if (coords != null)
                     {
                         return coords;
                     }
                 }
                 pass++;
-                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, cY, j, radius, except, steps, pass, type);
             }
             if (pass == 1)
             {
-                for (; j <= Z + steps; j++)
+                for (; j <= cZ + steps; j++)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, origX, origZ, cX, cY, cZ, except);
                     if (coords != null)
                     {
                         return coords;
@@ -250,11 +250,62 @@ public class Utils
                 }
                 pass--;
                 steps++;
-                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, cY, j, radius, except, steps, pass, type);
             }
         }
 
         return null;
+    }
+
+    public static int[] getDirectionAndCoordsForSleepingBag(int switchBy, World world, int cX, int cY, int cZ, boolean isTile)
+    {
+        int direction = -1;
+        switch (switchBy)
+        {
+            case 0:
+                cZ = isTile ? --cZ : ++cZ;
+                if (world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid())
+                {
+                    if (world.isAirBlock(cX, cY, cZ - 1) && world.getBlock(cX, cY - 1, cZ - 1).getMaterial().isSolid())
+                    {
+                        direction = isTile ? 2 : 0;
+                    }
+                }
+                break;
+            case 1:
+                cX = isTile ? ++cX : --cX;
+                if (world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid())
+                {
+                    if (world.isAirBlock(cX + 1, cY, cZ) && world.getBlock(cX + 1, cY - 1, cZ).getMaterial().isSolid())
+                    {
+                        direction = isTile ? 3 : 1;
+                    }
+                }
+                break;
+            case 2:
+                cZ = isTile ? ++cZ : --cZ;
+                if (world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid())
+                {
+                    if (world.isAirBlock(cX, cY, cZ + 1) && world.getBlock(cX, cY - 1, cZ + 1).getMaterial().isSolid())
+                    {
+                        direction = isTile ? 0 : 2;
+                    }
+                }
+                break;
+            case 3:
+                cX = isTile ? --cX : ++cX;
+                if (world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid())
+                {
+                    if (world.isAirBlock(cX - 1, cY, cZ) && world.getBlock(cX - 1, cY - 1, cZ).getMaterial().isSolid())
+                    {
+                        direction = isTile ? 1 : 3;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return new int[] {direction, cX, cY, cZ};
     }
 
     /**
