@@ -271,7 +271,7 @@ public class ModelBackpackBlock extends ModelBase
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, IInventoryAdventureBackpack backpack)
     {
         //scale*=0.9;
-        boolean sleepingbag = backpack.isSBDeployed();
+        boolean sleepingbag = backpack.isSleepingBagDeployed();
         FluidTank tankLeft = backpack.getLeftTank();
         FluidTank tankRight = backpack.getRightTank();
         setRotationAngles(f, f1, f2, f3, f4, scale, entity);
@@ -388,7 +388,7 @@ public class ModelBackpackBlock extends ModelBase
         tankLeftTop.render(scale);
         tankRightTop.render(scale);
 
-        if (!backpack.isSBDeployed()) bed.render(scale);
+        if (!backpack.isSleepingBagDeployed()) bed.render(scale);
 
         if (type == PIG || type == HORSE)
         {

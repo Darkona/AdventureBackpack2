@@ -20,47 +20,47 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
     {
         if (ctx.side.isServer())
         {
-            ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.isTile, message.x, message.y, message.z);
+            ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.isTile, message.cX, message.cY, message.cZ);
         }
         return null;
     }
 
     public static class SleepingBagMessage implements IMessage
     {
-        public boolean isTile;
-        public int x;
-        public int y;
-        public int z;
+        private boolean isTile;
+        private int cX;
+        private int cY;
+        private int cZ;
 
         public SleepingBagMessage()
         {
 
         }
 
-        public SleepingBagMessage(boolean isTile, int X, int Y, int Z)
+        public SleepingBagMessage(boolean isTile, int cX, int cY, int cZ)
         {
             this.isTile = isTile;
-            this.x = X;
-            this.y = Y;
-            this.z = Z;
+            this.cX = cX;
+            this.cY = cY;
+            this.cZ = cZ;
         }
 
         @Override
         public void fromBytes(ByteBuf buf)
         {
             isTile = buf.readBoolean();
-            x = buf.readInt();
-            y = buf.readInt();
-            z = buf.readInt();
+            cX = buf.readInt();
+            cY = buf.readInt();
+            cZ = buf.readInt();
         }
 
         @Override
         public void toBytes(ByteBuf buf)
         {
             buf.writeBoolean(isTile);
-            buf.writeInt(x);
-            buf.writeInt(y);
-            buf.writeInt(z);
+            buf.writeInt(cX);
+            buf.writeInt(cY);
+            buf.writeInt(cZ);
         }
     }
 }

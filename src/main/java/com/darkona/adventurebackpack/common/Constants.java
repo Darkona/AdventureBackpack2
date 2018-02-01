@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
  */
 public class Constants
 {
-    public enum Source
+    public enum Source //TODO move to separate class?
     {
         TILE, HOLDING, WEARING
     }
@@ -33,13 +33,17 @@ public class Constants
     public static final int BUCKET_OUT_RIGHT = BUCKET_IN_RIGHT + 1;
 
     // Tanks
-    public static final String RIGHT_TANK = "rightTank";
+    public static final String RIGHT_TANK = "rightTank"; //TODO RIGHT_TANK_TAG and so on
     public static final String LEFT_TANK = "leftTank";
     public static final int BASIC_TANK_CAPACITY = BUCKET * 4;
     //public static final int ADVANCED_TANK_CAPACITY = BUCKET * 8; // upgrade system?
     //public static final int HEROIC_TANK_CAPACITY = BUCKET * 12;
 
-    // Jetpack
+
+    // NBT: Extended Properties
+    public static final String HOLDING_SPACE_TAG = "holdingSpace";
+
+    // Jetpack //TODO subclass jetpack and simplify names? and copter?
     public static final int JETPACK_INVENTORY_SIZE = 3;
     public static final int JETPACK_BUCKET_IN = 0;
     public static final int JETPACK_BUCKET_OUT = 1;

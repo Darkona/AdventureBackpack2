@@ -1,25 +1,29 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
+import com.darkona.adventurebackpack.util.CoordsUtils;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
-import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.LEFT_TANK;
 import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
+import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 
 /**
  * Created on 12/10/2014
@@ -36,6 +40,12 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
 
     private BackpackTypes type = BackpackTypes.STANDARD;
 
+    private boolean sleepingBagDeployed = false;
+    private int sbx;
+    private int sby;
+    private int sbz;
+    //private int sbDimension; //TODO?
+
     private boolean disableNVision = false;
     private boolean disableCycling = false;
     private int lastTime = 0;
@@ -47,7 +57,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         openInventory();
     }
 
-    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // need only for compatibility with old saves
+    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
     {
         if (compound == null || !compound.hasKey("backpackData"))
             return;
@@ -57,7 +67,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         leftTank.readFromNBT(oldBackpackTag.getCompoundTag(LEFT_TANK));
         rightTank.readFromNBT(oldBackpackTag.getCompoundTag(RIGHT_TANK));
         type = BackpackTypes.getType(oldBackpackTag.getString("colorName"));
-        //
+
         NBTTagCompound newBackpackTag = new NBTTagCompound();
         newBackpackTag.setTag(INVENTORY, oldItems);
         newBackpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
@@ -117,12 +127,6 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     }
 
     @Override
-    public void setExtendedProperties(NBTTagCompound properties)
-    {
-        this.extendedProperties = properties;
-    }
-
-    @Override
     public boolean hasItem(Item item)
     {
         return InventoryActions.hasItem(this, item);
@@ -135,9 +139,39 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     }
 
     @Override
-    public boolean isSBDeployed()
+    public boolean isSleepingBagDeployed()
     {
-        return false;
+        return sleepingBagDeployed;
+    }
+
+    public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ)
+    {
+        if (world.isRemote)
+            return false;
+
+        if (sleepingBagDeployed)
+            removeSleepingBag(world);
+
+        sleepingBagDeployed = CoordsUtils.spawnSleepingBag(player, world, meta, cX, cY, cZ);
+        if (sleepingBagDeployed)
+        {
+            sbx = cX;
+            sby = cY;
+            sbz = cZ;
+            markDirty();
+        }
+        return sleepingBagDeployed;
+    }
+
+    public void removeSleepingBag(World world)
+    {
+        if (this.sleepingBagDeployed)
+        {
+            if (world.getBlock(sbx, sby, sbz) == ModBlocks.blockSleepingBag)
+                world.func_147480_a(sbx, sby, sbz, false);
+        }
+        this.sleepingBagDeployed = false;
+        markDirty();
     }
 
     @Override
@@ -211,6 +245,13 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         leftTank.readFromNBT(backpackTag.getCompoundTag(LEFT_TANK));
         rightTank.readFromNBT(backpackTag.getCompoundTag(RIGHT_TANK));
         extendedProperties = backpackTag.getCompoundTag("extendedProperties");
+        sleepingBagDeployed = extendedProperties.getBoolean("sleepingbag");
+        if (sleepingBagDeployed)
+        {
+            sbx = extendedProperties.getInteger("sbx");
+            sby = extendedProperties.getInteger("sby");
+            sbz = extendedProperties.getInteger("sbz");
+        }
         disableCycling = backpackTag.getBoolean("disableCycling");
         disableNVision = backpackTag.getBoolean("disableNVision");
         lastTime = backpackTag.getInteger("lastTime");
@@ -238,6 +279,13 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         backpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag("extendedProperties", extendedProperties);
+        extendedProperties.setBoolean("sleepingbag", sleepingBagDeployed);
+        if (sleepingBagDeployed)
+        {
+            extendedProperties.setInteger("sbx", sbx);
+            extendedProperties.setInteger("sby", sby);
+            extendedProperties.setInteger("sbz", sbz);
+        }
         backpackTag.setBoolean("disableCycling", disableCycling);
         backpackTag.setBoolean("disableNVision", disableNVision);
         backpackTag.setInteger("lastTime", lastTime);

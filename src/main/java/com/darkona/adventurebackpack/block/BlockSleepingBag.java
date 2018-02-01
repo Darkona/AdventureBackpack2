@@ -26,9 +26,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 14/10/2014
@@ -164,8 +164,8 @@ public class BlockSleepingBag extends BlockDirectional
                     //This is so the wake up event can detect it. It fires before the player wakes up.
                     //and the bed location isn't set until then, normally.
                     player.setSpawnChunk(new ChunkCoordinates(x, y, z), true, player.dimension);
-                    LogHelper.info("Looking for a campfire nearby...");
-                    ChunkCoordinates campfire = Utils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
+                    LogHelper.info("Looking for a campfire nearby..."); //TODO
+                    ChunkCoordinates campfire = CoordsUtils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
                     if (campfire != null)
                     {
                         LogHelper.info("Campfire Found, saving coordinates. " + LogHelper.print3DCoords(campfire));

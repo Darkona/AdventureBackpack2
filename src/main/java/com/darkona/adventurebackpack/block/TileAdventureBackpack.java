@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -30,6 +29,7 @@ import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.BackpackUtils;
+import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
@@ -37,12 +37,12 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
-import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.LEFT_TANK;
 import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
 import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
 import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
+import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -103,44 +103,20 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return extendedProperties;
     }
 
-    @Override
-    public void setExtendedProperties(NBTTagCompound extendedProperties)
+    public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ)
     {
-        this.extendedProperties = extendedProperties;
-    }
+        if (world.isRemote)
+            return false;
 
-    public boolean deploySleepingBag(EntityPlayer player, World world, int x, int y, int z, int meta)
-    {
-        if (world.isRemote) return false;
-        Block sleepingBag = ModBlocks.blockSleepingBag;
-        if (world.setBlock(x, y, z, sleepingBag, meta, 3))
+        sleepingBagDeployed = CoordsUtils.spawnSleepingBag(player, world, meta, cX, cY, cZ);
+        if (sleepingBagDeployed)
         {
-            world.playSoundAtEntity(player, Block.soundTypeCloth.func_150496_b(), 0.5f, 1.0f);
-            sbx = x;
-            sby = y;
-            sbz = z;
+            sbx = cX;
+            sby = cY;
+            sbz = cZ;
             sbdir = meta;
-            switch (meta & 3)
-            {
-                case 0:
-                    ++z;
-                    break;
-                case 1:
-                    --x;
-                    break;
-                case 2:
-                    --z;
-                    break;
-                case 3:
-                    ++x;
-                    break;
-            }
-            sleepingBagDeployed = world.setBlock(x, y, z, sleepingBag, meta + 8, 3);
-            //LogHelper.info("deploySleepingBag() => SleepingBagDeployed is: " + sleepingBagDeployed);
-            world.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-            return sleepingBagDeployed;
         }
-        return false;
+        return sleepingBagDeployed;
     }
 
     public void setSleepingBagDeployed(boolean state)
@@ -239,7 +215,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
-    public boolean isSBDeployed()
+    public boolean isSleepingBagDeployed()
     {
         return this.sleepingBagDeployed;
     }
@@ -271,7 +247,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         compound.setInteger("lumen", luminosity);
     }
 
-    private void convertFromOldNBTFormat(NBTTagCompound compound)
+    private void convertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
     {
         NBTTagCompound oldBackpackTag = compound.getCompoundTag("backpackData");
         NBTTagList oldItems = oldBackpackTag.getTagList("ABPItems", NBT.TAG_COMPOUND);

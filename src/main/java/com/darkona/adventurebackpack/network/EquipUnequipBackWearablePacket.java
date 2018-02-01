@@ -61,6 +61,10 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
             }
             if (message.action == UNEQUIP_WEARABLE)
             {
+                if (Wearing.isWearingBackpack(player))
+                {
+                    Wearing.getWearingBackpackInv(player).removeSleepingBag(player.worldObj); //TODO temporally solution
+                }
                 BackpackUtils.unequipWearable(player);
             }
         }
@@ -70,7 +74,7 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
     public static class Message implements IMessage
     {
         private byte action;
-        private boolean force;
+        private boolean force; //TODO remove completely
 
         public Message()
         {

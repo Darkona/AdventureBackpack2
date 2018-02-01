@@ -29,13 +29,11 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
 
     NBTTagCompound getExtendedProperties();
 
-    void setExtendedProperties(NBTTagCompound properties);
-
     boolean hasItem(Item item);
 
     void consumeInventoryItem(Item item);
 
-    boolean isSBDeployed();
+    boolean isSleepingBagDeployed();
 
     void setLastTime(int time);
 

@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.Constants.Source;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
@@ -196,7 +197,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
     private boolean isHoldingSpace()
     {
-        return inventory.getExtendedProperties().hasKey("holdingSpace");
+        return inventory.getExtendedProperties().hasKey(Constants.HOLDING_SPACE_TAG);
     }
 
     private boolean transferFluidContainer(ItemStack container)

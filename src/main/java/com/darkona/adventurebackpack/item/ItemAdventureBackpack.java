@@ -39,6 +39,7 @@ import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.BackpackUtils;
+import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
@@ -180,7 +181,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         {
             if (Y + shiftY >= 1)
             {
-                ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
+                ChunkCoordinates spawn = CoordsUtils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
                 if (spawn != null)
                 {
                     return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);

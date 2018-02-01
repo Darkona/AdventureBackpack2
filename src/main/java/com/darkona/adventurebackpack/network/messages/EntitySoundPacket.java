@@ -44,7 +44,6 @@ public class EntitySoundPacket implements IMessageHandler<EntitySoundPacket.Mess
 
     public static class Message implements IMessage
     {
-
         private byte soundCode;
         private int entityID;
 

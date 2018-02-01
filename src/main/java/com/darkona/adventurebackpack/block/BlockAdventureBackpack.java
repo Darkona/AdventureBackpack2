@@ -35,6 +35,7 @@ import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.Utils;
 
 import static com.darkona.adventurebackpack.reference.BackpackTypes.BOOKSHELF;
@@ -67,7 +68,7 @@ public class BlockAdventureBackpack extends BlockContainer
     {
         if (getAssociatedTileBackpackType(world, x, y, z) == BOOKSHELF)
         {
-            ChunkCoordinates enchTable = Utils.findBlock3D(world, x, y, z, Blocks.enchanting_table, 2, 2);
+            ChunkCoordinates enchTable = CoordsUtils.findBlock3D(world, x, y, z, Blocks.enchanting_table, 2, 2);
             if (enchTable != null)
             {
                 if (!world.isAirBlock((enchTable.posX - x) / 2 + x, enchTable.posY, (enchTable.posZ - z) / 2 + z))

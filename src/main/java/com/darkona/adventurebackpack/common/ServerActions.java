@@ -1,8 +1,8 @@
 package com.darkona.adventurebackpack.common;
 
+import java.lang.reflect.Field;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,8 +11,9 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.S0APacketUseBed;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldProviderHell;
@@ -22,7 +23,6 @@ import net.minecraftforge.fluids.FluidTank;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
-import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
@@ -33,6 +33,7 @@ import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
+import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -265,12 +266,12 @@ public class ServerActions
         if (isTile && world.getTileEntity(cX, cY, cZ) instanceof TileAdventureBackpack)
         {
             TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(cX, cY, cZ);
-            if (!te.isSBDeployed())
+            if (!te.isSleepingBagDeployed())
             {
-                int can[] = canDeploySleepingBag(world, player, cX, cY, cZ, isTile);
+                int can[] = CoordsUtils.canDeploySleepingBag(world, player, cX, cY, cZ, true);
                 if (can[0] > -1)
                 {
-                    if (te.deploySleepingBag(player, world, can[1], can[2], can[3], can[0]))
+                    if (te.deploySleepingBag(player, world, can[0], can[1], can[2], can[3]))
                     {
                         player.closeScreen();
                     }
@@ -288,70 +289,70 @@ public class ServerActions
         }
         else if (!isTile && Wearing.isWearingBackpack(player))
         {
-            int can[] = canDeploySleepingBag(world, player, cX, cY, cZ, isTile);
+            int can[] = CoordsUtils.canDeploySleepingBag(world, player, cX, cY, cZ, false);
             if (can[0] > -1)
             {
-                if (deploySleepingBag(player, world, can[1], can[2], can[3], can[0]))
-                {
-                    player.closeScreen();
-                }
+                Wearing.getWearingBackpackInv(player).deploySleepingBag(player, world, can[0], can[1], can[2], can[3]);
+                //canPlayerSleep
+                //storeOriginalSpawn
+                //storeOriginalPosition
+                //TAG_SLEEPING true
+
+                sleepSafe((EntityPlayerMP) player, world, can[1], can[2], can[3]);
+                //TODO remove sleeping bag after sleep
+
+                //restoreSpawn
+                //restorePosition
+                //TAG_SLEEPING false
             }
             else if (!world.isRemote)
             {
                 player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.backpack.cant.bag"));
             }
+            player.closeScreen();
         }
     }
 
-    private static int[] canDeploySleepingBag(World world, EntityPlayer player, int cX, int cY, int cZ, boolean isTile)
+    // shamelessly copied from OpenBlocks SleepingBag
+    private static void sleepSafe(EntityPlayerMP player, World world, int cX, int cY, int cZ)
     {
-        int switchBy = -1;
-        if (isTile)
+        if (player.isRiding())
+            player.mountEntity(null);
+
+        if (setSleeping(player))
         {
-            TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(cX, cY, cZ);
-            if (!te.isSBDeployed())
-                switchBy = world.getBlockMetadata(cX, cY, cZ) & 3;
+            player.playerLocation = new ChunkCoordinates(cX, cY, cZ);
+
+            player.motionX = player.motionZ = player.motionY = 0.0D;
+            world.updateAllPlayersSleepingFlag();
+
+            S0APacketUseBed sleepPacket = new S0APacketUseBed(player, cX, cY, cZ);
+            player.getServerForPlayer().getEntityTracker().func_151247_a(player, sleepPacket);
+            player.playerNetServerHandler.sendPacket(sleepPacket);
         }
-        else
-        {
-            InventoryBackpack backpack = Wearing.getWearingBackpackInv(player);
-            if (!backpack.isSBDeployed()) //TODO add boolean and behavior
-                switchBy = MathHelper.floor_double((double)((player.rotationYaw * 4F) / 360F) + 0.5D) & 3;
-        }
-        return Utils.getDirectionAndCoordsForSleepingBag(switchBy, world, cX, cY, cZ, isTile);
     }
 
-    //TODO it's copy from tile.backpack. move to item.backpack?
-    private static boolean deploySleepingBag(EntityPlayer player, World world, int cX, int cY, int cZ, int meta)
+    private static boolean setSleeping(EntityPlayer player)
     {
-        if (world.isRemote)
+        try
+        {
+            Class <?> clazz = Class.forName("net.minecraft.entity.player.EntityPlayer");
+
+            Field field = clazz.getDeclaredField(ConfigHandler.IS_DEVENV ? "sleeping" : "field_71083_bS");
+            field.setAccessible(true);
+            field.set(player, true);
+
+            field = clazz.getDeclaredField(ConfigHandler.IS_DEVENV ? "sleepTimer" : "field_71076_b");
+            field.setAccessible(true);
+            field.set(player, 0);
+
+            return true;
+        }
+        catch (Throwable e)
+        {
+            //e.printStackTrace();
             return false;
-
-        Block sleepingBag = ModBlocks.blockSleepingBag;
-        if (world.setBlock(cX, cY, cZ, sleepingBag, meta, 3))
-        {
-            world.playSoundAtEntity(player, Block.soundTypeCloth.func_150496_b(), 0.5f, 1.0f);
-            switch (meta & 3)
-            {
-                case 0:
-                    ++cZ;
-                    break;
-                case 1:
-                    --cX;
-                    break;
-                case 2:
-                    --cZ;
-                    break;
-                case 3:
-                    ++cX;
-                    break;
-            }
-            boolean sleepingBagDeployed = world.setBlock(cX, cY, cZ, sleepingBag, meta + 8, 3);
-            //LogHelper.info("deploySleepingBag() => SleepingBagDeployed is: " + sleepingBagDeployed);
-            world.markBlockForUpdate(cX, cY, cZ);
-            return sleepingBagDeployed;
         }
-        return false;
     }
 
     /**

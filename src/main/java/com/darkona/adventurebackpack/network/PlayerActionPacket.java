@@ -7,6 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
@@ -59,11 +60,11 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
 
                         if (message.type == GUI_HOLDING_SPACE)
                         {
-                            inv.getExtendedProperties().setBoolean("holdingSpace", true);
+                            inv.getExtendedProperties().setBoolean(Constants.HOLDING_SPACE_TAG, true);
                         }
-                        else
+                        else if (message.type == GUI_NOT_HOLDING_SPACE)
                         {
-                            inv.getExtendedProperties().removeTag("holdingSpace");
+                            inv.getExtendedProperties().removeTag(Constants.HOLDING_SPACE_TAG);
                         }
                     }
                 }
