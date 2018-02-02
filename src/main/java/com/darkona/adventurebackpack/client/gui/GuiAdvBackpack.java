@@ -65,7 +65,8 @@ public class GuiAdvBackpack extends GuiWithTanks
 
     private boolean isBedButtonCase()
     {
-        return source == Source.TILE || (source == Source.WEARING && GuiScreen.isCtrlKeyDown());
+        return source == Source.TILE
+                || (ConfigHandler.allowPortableSleepingBag && source == Source.WEARING && GuiScreen.isShiftKeyDown());
     }
 
     @Override
@@ -144,7 +145,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             else
             {
                 int posX = MathHelper.floor_double(player.posX);
-                int posY = MathHelper.floor_double(player.posY) - 1; //TODO
+                int posY = MathHelper.floor_double(player.posY) - 1;
                 int posZ = MathHelper.floor_double(player.posZ);
                 ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(false, posX, posY, posZ));
             }

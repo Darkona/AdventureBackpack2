@@ -48,12 +48,11 @@ public abstract class GuiWithTanks extends GuiContainer
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
         if (source == Source.WEARING)
         {
             if (getUnequipButton().inButton(this, mouseX, mouseY))
             {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE, false));
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE));
                 player.closeScreen();
             }
         }
@@ -61,8 +60,7 @@ public abstract class GuiWithTanks extends GuiContainer
         {
             if (getEquipButton().inButton(this, mouseX, mouseY))
             {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, false));
-                //ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE));
                 player.closeScreen();
             }
         }

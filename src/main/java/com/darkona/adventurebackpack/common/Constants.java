@@ -16,7 +16,7 @@ public class Constants
 
     public static final int BUCKET = FluidContainerRegistry.BUCKET_VOLUME;
 
-    public static final String WEARABLE_TAG = "wearableData"; //TODO "wearable"
+    public static final String WEARABLE_TAG = "wearableData"; //TODO "wearablePack"
     public static final String INVENTORY = "inventory";
 
     // Inventory Slots
@@ -42,6 +42,8 @@ public class Constants
 
     // NBT: Extended Properties
     public static final String HOLDING_SPACE_TAG = "holdingSpace";
+    public static final String TAG_SLEEPING_IN_BAG = "sleepingInBag";
+    public static final String TAG_STORED_SPAWN = "storedSpawn";
 
     // Jetpack //TODO subclass jetpack and simplify names? and copter?
     public static final int JETPACK_INVENTORY_SIZE = 3;

@@ -26,6 +26,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
+import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
@@ -51,8 +52,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class PlayerEventHandler
 {
-    private static int tickCounter = 0;
-
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {
@@ -332,29 +331,53 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void playerWokeUp(PlayerWakeUpEvent event)
     {
-        if (event.entity.worldObj.isRemote) return;
-        ChunkCoordinates bedLocation = event.entityPlayer.getBedLocation(event.entityPlayer.dimension);
-        if (bedLocation != null && event.entityPlayer.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ) == ModBlocks.blockSleepingBag)
+        if (event.entity.worldObj.isRemote)
+            return;
+
+        EntityPlayer player = event.entityPlayer;
+        ChunkCoordinates bedLocation = player.getBedLocation(player.dimension);
+        if (bedLocation != null && player.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ) == ModBlocks.blockSleepingBag)
         {
             //If the player wakes up in one of those super confortable SleepingBags (tm) (Patent Pending)
-            BackpackProperty.get(event.entityPlayer).setForceCampFire(true);
-            LogHelper.info("Player just woke up in a sleeping bag, forcing respawn in the last lighted campfire, if there's any");
+            if (BlockSleepingBag.isSleepingInPortableBag(player))
+            {
+                BlockSleepingBag.packPortableSleepingBag(player);
+                BackpackProperty.get(player).setWakingUpInPortableBag(true);
+                LogHelper.info("Player just woke up in a portable sleeping bag.");
+            }
+            else
+            {
+                BackpackProperty.get(player).setForceCampFire(true);
+                LogHelper.info("Player just woke up in a sleeping bag, forcing respawn in the last lighted campfire, if there's any");
+            }
         }
         else
         {
             //If it's a regular bed or whatever
-            BackpackProperty.get(event.entityPlayer).setForceCampFire(false);
+            BackpackProperty.get(player).setForceCampFire(false);
         }
     }
 
     @SubscribeEvent
     public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
-        if (event.player != null && !event.player.isDead && Wearing.isWearingWearable(event.player))
+        EntityPlayer player = event.player;
+        if (player != null && !player.isDead && Wearing.isWearingWearable(player))
         {
             if (event.phase == TickEvent.Phase.START)
             {
-                BackpackProperty.get(event.player).executeWearableUpdateProtocol();
+                BackpackProperty.get(player).executeWearableUpdateProtocol();
+            }
+            if (event.phase == TickEvent.Phase.END)
+            {
+                if (!player.worldObj.isRemote)
+                {
+                    if (BackpackProperty.get(player).isWakingUpInPortableBag() && Wearing.isWearingBackpack(player))
+                    {
+                        BlockSleepingBag.restoreOriginalSpawn(player, Wearing.getWearingBackpackInv(player).getExtendedProperties());
+                        BackpackProperty.get(player).setWakingUpInPortableBag(false);
+                    }
+                }
             }
         }
     }

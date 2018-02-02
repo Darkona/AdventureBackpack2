@@ -41,10 +41,9 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     private BackpackTypes type = BackpackTypes.STANDARD;
 
     private boolean sleepingBagDeployed = false;
-    private int sbx;
-    private int sby;
-    private int sbz;
-    //private int sbDimension; //TODO?
+    private int sleepingBagX;
+    private int sleepingBagY;
+    private int sleepingBagZ;
 
     private boolean disableNVision = false;
     private boolean disableCycling = false;
@@ -155,9 +154,9 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         sleepingBagDeployed = CoordsUtils.spawnSleepingBag(player, world, meta, cX, cY, cZ);
         if (sleepingBagDeployed)
         {
-            sbx = cX;
-            sby = cY;
-            sbz = cZ;
+            sleepingBagX = cX;
+            sleepingBagY = cY;
+            sleepingBagZ = cZ;
             markDirty();
         }
         return sleepingBagDeployed;
@@ -167,8 +166,8 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     {
         if (this.sleepingBagDeployed)
         {
-            if (world.getBlock(sbx, sby, sbz) == ModBlocks.blockSleepingBag)
-                world.func_147480_a(sbx, sby, sbz, false);
+            if (world.getBlock(sleepingBagX, sleepingBagY, sleepingBagZ) == ModBlocks.blockSleepingBag)
+                world.func_147480_a(sleepingBagX, sleepingBagY, sleepingBagZ, false);
         }
         this.sleepingBagDeployed = false;
         markDirty();
@@ -245,12 +244,12 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         leftTank.readFromNBT(backpackTag.getCompoundTag(LEFT_TANK));
         rightTank.readFromNBT(backpackTag.getCompoundTag(RIGHT_TANK));
         extendedProperties = backpackTag.getCompoundTag("extendedProperties");
-        sleepingBagDeployed = extendedProperties.getBoolean("sleepingbag");
+        sleepingBagDeployed = extendedProperties.getBoolean("sleepingBagDeployed");
         if (sleepingBagDeployed)
         {
-            sbx = extendedProperties.getInteger("sbx");
-            sby = extendedProperties.getInteger("sby");
-            sbz = extendedProperties.getInteger("sbz");
+            sleepingBagX = extendedProperties.getInteger("sleepingBagX");
+            sleepingBagY = extendedProperties.getInteger("sleepingBagY");
+            sleepingBagZ = extendedProperties.getInteger("sleepingBagZ");
         }
         disableCycling = backpackTag.getBoolean("disableCycling");
         disableNVision = backpackTag.getBoolean("disableNVision");
@@ -279,12 +278,18 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         backpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag("extendedProperties", extendedProperties);
-        extendedProperties.setBoolean("sleepingbag", sleepingBagDeployed);
+        extendedProperties.setBoolean("sleepingBagDeployed", sleepingBagDeployed);
         if (sleepingBagDeployed)
         {
-            extendedProperties.setInteger("sbx", sbx);
-            extendedProperties.setInteger("sby", sby);
-            extendedProperties.setInteger("sbz", sbz);
+            extendedProperties.setInteger("sleepingBagX", sleepingBagX);
+            extendedProperties.setInteger("sleepingBagY", sleepingBagY);
+            extendedProperties.setInteger("sleepingBagZ", sleepingBagZ);
+        }
+        else
+        {
+            extendedProperties.removeTag("sleepingBagX");
+            extendedProperties.removeTag("sleepingBagY");
+            extendedProperties.removeTag("sleepingBagZ");
         }
         backpackTag.setBoolean("disableCycling", disableCycling);
         backpackTag.setBoolean("disableNVision", disableNVision);

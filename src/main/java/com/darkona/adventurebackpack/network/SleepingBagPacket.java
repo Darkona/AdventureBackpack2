@@ -7,6 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 
 /**
  * Created on 19/10/2014
@@ -20,7 +21,10 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
     {
         if (ctx.side.isServer())
         {
-            ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.isTile, message.cX, message.cY, message.cZ);
+            if (message.isTile || ConfigHandler.allowPortableSleepingBag) // serverside check
+            {
+                ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.isTile, message.cX, message.cY, message.cZ);
+            }
         }
         return null;
     }

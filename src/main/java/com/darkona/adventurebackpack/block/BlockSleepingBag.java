@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Direction;
@@ -20,15 +21,17 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.Wearing;
 
 /**
  * Created on 14/10/2014
@@ -79,25 +82,70 @@ public class BlockSleepingBag extends BlockDirectional
         return (meta & 8) != 0;
     }
 
-    public static ChunkCoordinates verifyRespawnCoordinatesOnBlock(World world, ChunkCoordinates chunkCoordinates, boolean forced)
+    public static boolean isSleepingInPortableBag(EntityPlayer player)
     {
-        IChunkProvider ichunkprovider = world.getChunkProvider();
-        ichunkprovider.loadChunk(chunkCoordinates.posX - 3 >> 4, chunkCoordinates.posZ - 3 >> 4);
-        ichunkprovider.loadChunk(chunkCoordinates.posX + 3 >> 4, chunkCoordinates.posZ - 3 >> 4);
-        ichunkprovider.loadChunk(chunkCoordinates.posX - 3 >> 4, chunkCoordinates.posZ + 3 >> 4);
-        ichunkprovider.loadChunk(chunkCoordinates.posX + 3 >> 4, chunkCoordinates.posZ + 3 >> 4);
+        return Wearing.isWearingBackpack(player)
+                && Wearing.getWearingBackpackInv(player).getExtendedProperties().hasKey(Constants.TAG_SLEEPING_IN_BAG);
+    }
 
-        if (world.getBlock(chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ).isBed(world, chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ, null))
+    public static void packPortableSleepingBag(EntityPlayer player)
+    {
+        if (isSleepingInPortableBag(player))
         {
-            ChunkCoordinates newChunkCoords = world.getBlock(chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ).getBedSpawnPosition(world, chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ, null);
-            return newChunkCoords;
+            InventoryBackpack inv = Wearing.getWearingBackpackInv(player);
+            inv.removeSleepingBag(player.worldObj);
+            inv.getExtendedProperties().removeTag(Constants.TAG_SLEEPING_IN_BAG);
         }
+    }
 
-        Material material = world.getBlock(chunkCoordinates.posX, chunkCoordinates.posY, chunkCoordinates.posZ).getMaterial();
-        Material material1 = world.getBlock(chunkCoordinates.posX, chunkCoordinates.posY + 1, chunkCoordinates.posZ).getMaterial();
-        boolean flag1 = (!material.isSolid()) && (!material.isLiquid());
-        boolean flag2 = (!material1.isSolid()) && (!material1.isLiquid());
-        return (forced) && (flag1) && (flag2) ? chunkCoordinates : null;
+    public static void storeOriginalSpawn(EntityPlayer player, NBTTagCompound tag)
+    {
+        ChunkCoordinates spawn = player.getBedLocation(player.worldObj.provider.dimensionId);
+        if (spawn != null)
+        {
+            NBTTagCompound storedSpawn = new NBTTagCompound();
+            storedSpawn.setInteger("posX", spawn.posX);
+            storedSpawn.setInteger("posY", spawn.posY);
+            storedSpawn.setInteger("posZ", spawn.posZ);
+            tag.setTag(Constants.TAG_STORED_SPAWN, storedSpawn);
+            LogHelper.info("Stored spawn data for " + player.getDisplayName() + " : " + spawn.toString()
+                    + " dimID: " + player.worldObj.provider.dimensionId);
+        }
+        else
+        {
+            LogHelper.warn("Cannot store spawn data for " + player.getDisplayName());
+        }
+    }
+
+    public static void restoreOriginalSpawn(EntityPlayer player, NBTTagCompound tag)
+    {
+        if (tag.hasKey(Constants.TAG_STORED_SPAWN))
+        {
+            NBTTagCompound storedSpawn = tag.getCompoundTag(Constants.TAG_STORED_SPAWN);
+            ChunkCoordinates coords = new ChunkCoordinates(
+                    storedSpawn.getInteger("posX"),
+                    storedSpawn.getInteger("posY"),
+                    storedSpawn.getInteger("posZ"));
+            player.setSpawnChunk(coords, false, player.worldObj.provider.dimensionId);
+            tag.removeTag(Constants.TAG_STORED_SPAWN);
+            LogHelper.info("Restored spawn data for" + player.getDisplayName() + " : " + coords.toString()
+                    + " dimID: " + player.worldObj.provider.dimensionId);
+        }
+        else
+        {
+            LogHelper.warn("No spawn data to restore for " + player.getDisplayName());
+        }
+    }
+
+    public void onPortableBlockActivated(World world, EntityPlayer player, int cX, int cY, int cZ)
+    {
+        if (world.isRemote)
+            return;
+        if (!isSleepingInPortableBag(player))
+            return;
+
+        if (!onBlockActivated(world, cX, cY, cZ, player, 1, 0f, 0f, 0f))
+            packPortableSleepingBag(player);
     }
 
     @Override
@@ -117,9 +165,9 @@ public class BlockSleepingBag extends BlockDirectional
                 x += footBlockToHeadBlockMap[dir][0];
                 z += footBlockToHeadBlockMap[dir][1];
 
-                if (world.getBlock(x, y, z) != this)
+                if (world.getBlock(x, y, z) != ModBlocks.blockSleepingBag)
                 {
-                    return true;
+                    return false;
                 }
 
                 meta = world.getBlockMetadata(x, y, z);
@@ -150,7 +198,7 @@ public class BlockSleepingBag extends BlockDirectional
                     if (entityplayer1 != null)
                     {
                         player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.occupied", new Object[0]));
-                        return true;
+                        return false;
                     }
 
                     setBedOccupied(world, x, y, z, false);
@@ -163,13 +211,22 @@ public class BlockSleepingBag extends BlockDirectional
                     setBedOccupied(world, x, y, z, true);
                     //This is so the wake up event can detect it. It fires before the player wakes up.
                     //and the bed location isn't set until then, normally.
-                    player.setSpawnChunk(new ChunkCoordinates(x, y, z), true, player.dimension);
-                    LogHelper.info("Looking for a campfire nearby..."); //TODO
-                    ChunkCoordinates campfire = CoordsUtils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
-                    if (campfire != null)
+
+                    if (isSleepingInPortableBag(player))
                     {
-                        LogHelper.info("Campfire Found, saving coordinates. " + LogHelper.print3DCoords(campfire));
-                        BackpackProperty.get(player).setCampFire(campfire);
+                        storeOriginalSpawn(player, Wearing.getWearingBackpackInv(player).getExtendedProperties());
+                        player.setSpawnChunk(new ChunkCoordinates(x, y, z), true, player.dimension);
+                    }
+                    else
+                    {
+                        player.setSpawnChunk(new ChunkCoordinates(x, y, z), true, player.dimension);
+                        LogHelper.info("Looking for a campfire nearby...");
+                        ChunkCoordinates campfire = CoordsUtils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
+                        if (campfire != null)
+                        {
+                            LogHelper.info("Campfire Found, saving coordinates. " + LogHelper.print3DCoords(campfire));
+                            BackpackProperty.get(player).setCampFire(campfire);
+                        }
                     }
                     return true;
                 }
@@ -184,7 +241,7 @@ public class BlockSleepingBag extends BlockDirectional
                         player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.notSafe", new Object[0]));
                     }
 
-                    return true;
+                    return false;
                 }
             }
             else
@@ -206,7 +263,8 @@ public class BlockSleepingBag extends BlockDirectional
                 }
 
                 world.newExplosion((Entity) null, (double) ((float) x + 0.5F), (double) ((float) y + 0.5F), (double) ((float) z + 0.5F), 5.0F, true, true);
-                return true;
+
+                return false;
             }
         }
     }

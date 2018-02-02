@@ -1,8 +1,8 @@
 package com.darkona.adventurebackpack.common;
 
-import java.lang.reflect.Field;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,15 +11,14 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.S0APacketUseBed;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldProviderHell;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
@@ -260,6 +259,7 @@ public class ServerActions
         if (world.provider instanceof WorldProviderHell || world.provider instanceof WorldProviderEnd)
         {
             player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cant.sleep.here"));
+            player.closeScreen();
             return;
         }
 
@@ -292,18 +292,17 @@ public class ServerActions
             int can[] = CoordsUtils.canDeploySleepingBag(world, player, cX, cY, cZ, false);
             if (can[0] > -1)
             {
-                Wearing.getWearingBackpackInv(player).deploySleepingBag(player, world, can[0], can[1], can[2], can[3]);
-                //canPlayerSleep
-                //storeOriginalSpawn
-                //storeOriginalPosition
-                //TAG_SLEEPING true
-
-                sleepSafe((EntityPlayerMP) player, world, can[1], can[2], can[3]);
-                //TODO remove sleeping bag after sleep
-
-                //restoreSpawn
-                //restorePosition
-                //TAG_SLEEPING false
+                InventoryBackpack inv = Wearing.getWearingBackpackInv(player);
+                if (inv.deploySleepingBag(player, world, can[0], can[1], can[2], can[3]))
+                {
+                    Block portableBag = world.getBlock(can[1], can[2], can[3]);
+                    if (portableBag instanceof BlockSleepingBag)
+                    {
+                        inv.getExtendedProperties().setBoolean(Constants.TAG_SLEEPING_IN_BAG, true);
+                        ((BlockSleepingBag) portableBag).onPortableBlockActivated(world, player, can[1], can[2], can[3]);
+                    }
+                }
+                //sleepSafe((EntityPlayerMP) player, world, can[1], can[2], can[3]);
             }
             else if (!world.isRemote)
             {
@@ -314,12 +313,12 @@ public class ServerActions
     }
 
     // shamelessly copied from OpenBlocks SleepingBag
-    private static void sleepSafe(EntityPlayerMP player, World world, int cX, int cY, int cZ)
+    /*public static void sleepSafe(EntityPlayerMP player, World world, int cX, int cY, int cZ)
     {
         if (player.isRiding())
             player.mountEntity(null);
 
-        if (setSleeping(player))
+        if (setPlayerSleeping(player))
         {
             player.playerLocation = new ChunkCoordinates(cX, cY, cZ);
 
@@ -330,9 +329,9 @@ public class ServerActions
             player.getServerForPlayer().getEntityTracker().func_151247_a(player, sleepPacket);
             player.playerNetServerHandler.sendPacket(sleepPacket);
         }
-    }
+    }*/
 
-    private static boolean setSleeping(EntityPlayer player)
+    /*public static boolean setPlayerSleeping(EntityPlayer player)
     {
         try
         {
@@ -350,10 +349,11 @@ public class ServerActions
         }
         catch (Throwable e)
         {
+            LogHelper.error("Reflection error while setSleep: " + e.getMessage());
             //e.printStackTrace();
             return false;
         }
-    }
+    }*/
 
     /**
      * Adds vertical inertia to the movement in the Y axis of the player, and makes Newton's Laws cry.

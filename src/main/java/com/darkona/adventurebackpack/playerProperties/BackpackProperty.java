@@ -29,6 +29,18 @@ public class BackpackProperty implements IExtendedEntityProperties
     private boolean forceCampFire = false;
     private int dimension = 0;
 
+    private boolean isWakingUpInPortableBag = false;
+
+    public void setWakingUpInPortableBag(boolean b)
+    {
+        this.isWakingUpInPortableBag = b;
+    }
+
+    public boolean isWakingUpInPortableBag()
+    {
+        return this.isWakingUpInPortableBag;
+    }
+
     public NBTTagCompound getWearableData()
     {
         return wearableData;
@@ -47,7 +59,9 @@ public class BackpackProperty implements IExtendedEntityProperties
         //Thanks diesieben07!!!
         try
         {
-            player.getServerForPlayer().getEntityTracker().func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData())));
+            player.getServerForPlayer().getEntityTracker()
+                    .func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket
+                            .Message(player.getEntityId(), get(player).getData())));
         }
         catch (Exception ex)
         {
