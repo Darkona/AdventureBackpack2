@@ -21,9 +21,11 @@ public class ConfigHandler
     public static boolean IS_BUILDCRAFT = false;
     public static boolean IS_ENDERIO = false;
     public static boolean IS_GREGTECH = false;
+    public static boolean IS_TCONSTRUCT = false;
 
     public static boolean allowSoulBound = true;
     public static boolean allowPortableSleepingBag = true;
+    public static boolean allowRepairTinkerTools = true;
     public static boolean backpackDeathPlace = true;
     public static boolean backpackAbilities = true;
     public static boolean enableCampfireSpawn = false;
@@ -106,6 +108,7 @@ public class ConfigHandler
         // Gameplay
         allowSoulBound = config.getBoolean("Allow SoulBound", "gameplay", true, "Allow SoulBound enchant on wearable packs");
         allowPortableSleepingBag = config.getBoolean("Allow Portable Sleeping Bag", "gameplay", true, "Allows to use sleeping bag directly from wearing backpacks. Sleep by one touch.");
+        allowRepairTinkerTools = config.getBoolean("Allow Repair Tinker Tools", "gameplay", true, "Allows to repair Tinkers Construct tools in backpacks as if it's Crafting Station.");
         backpackAbilities = config.getBoolean("Backpack Abilities", "gameplay", true, "Allow the backpacks to execute their special abilities, or be only cosmetic (Doesn't affect lightning transformation) Must be " +
                 "disabled in both Client and Server to work properly");
         backpackDeathPlace = config.getBoolean("Backpack Death Place", "gameplay", true, "Place backpacks as a block when you die?");

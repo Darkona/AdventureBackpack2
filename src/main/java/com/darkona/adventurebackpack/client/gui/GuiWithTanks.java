@@ -82,7 +82,7 @@ public abstract class GuiWithTanks extends GuiContainer
     @Override
     public void handleMouseInput()
     {
-        if (Mouse.getEventDWheel() != 0)
+        if (Mouse.getEventDWheel() != 0) //TODO
         {
             return; // forbid mouseWheel, preventing glitches with Shift+Wheel on fluid containers and so on
         }

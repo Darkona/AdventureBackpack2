@@ -93,6 +93,7 @@ public class AdventureBackpack
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
         ConfigHandler.IS_ENDERIO = Loader.isModLoaded("EnderIO");
         ConfigHandler.IS_GREGTECH = Loader.isModLoaded("gregtech");
+        ConfigHandler.IS_TCONSTRUCT = Loader.isModLoaded("TConstruct");
 
         if (ConfigHandler.IS_BUILDCRAFT)
             LogHelper.info("Buildcraft is present. Acting accordingly");
@@ -100,6 +101,8 @@ public class AdventureBackpack
             LogHelper.info("EnderIO is present. Acting accordingly");
         if (ConfigHandler.IS_GREGTECH)
             LogHelper.info("GregTech is present. Acting accordingly");
+        if (ConfigHandler.IS_TCONSTRUCT)
+            LogHelper.info("Tinkers Construct is present. Acting accordingly");
 
         GeneralReference.init();
 

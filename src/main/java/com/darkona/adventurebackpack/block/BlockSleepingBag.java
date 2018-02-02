@@ -38,7 +38,7 @@ import com.darkona.adventurebackpack.util.Wearing;
  *
  * @author Darkona
  */
-public class BlockSleepingBag extends BlockDirectional
+public class BlockSleepingBag extends BlockDirectional  //TODO should we extend BlockBed instead?
 {
     private static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
 
@@ -108,7 +108,7 @@ public class BlockSleepingBag extends BlockDirectional
             storedSpawn.setInteger("posY", spawn.posY);
             storedSpawn.setInteger("posZ", spawn.posZ);
             tag.setTag(Constants.TAG_STORED_SPAWN, storedSpawn);
-            LogHelper.info("Stored spawn data for " + player.getDisplayName() + " : " + spawn.toString()
+            LogHelper.info("Stored spawn data for " + player.getDisplayName() + ": " + spawn.toString()
                     + " dimID: " + player.worldObj.provider.dimensionId);
         }
         else
@@ -128,7 +128,7 @@ public class BlockSleepingBag extends BlockDirectional
                     storedSpawn.getInteger("posZ"));
             player.setSpawnChunk(coords, false, player.worldObj.provider.dimensionId);
             tag.removeTag(Constants.TAG_STORED_SPAWN);
-            LogHelper.info("Restored spawn data for" + player.getDisplayName() + " : " + coords.toString()
+            LogHelper.info("Restored spawn data for" + player.getDisplayName() + ": " + coords.toString()
                     + " dimID: " + player.worldObj.provider.dimensionId);
         }
         else
@@ -165,7 +165,7 @@ public class BlockSleepingBag extends BlockDirectional
                 x += footBlockToHeadBlockMap[dir][0];
                 z += footBlockToHeadBlockMap[dir][1];
 
-                if (world.getBlock(x, y, z) != ModBlocks.blockSleepingBag)
+                if (world.getBlock(x, y, z) != this)
                 {
                     return false;
                 }

@@ -13,6 +13,8 @@ import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.Constants.Source;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.util.TinkersUtils;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
@@ -270,6 +272,19 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
-        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
+        if (ConfigHandler.allowRepairTinkerTools && TinkersUtils.isTool(craftMatrix.getStackInSlot(4)))
+        {
+            ItemStack tinkersResult = TinkersUtils.getTinkersRecipe(craftMatrix);
+
+            if (tinkersResult != null)
+            {
+                craftResult.setInventorySlotContents(0, tinkersResult);
+                return;
+            }
+        }
+
+        craftResult.setInventorySlotContents(0,
+                CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
     }
+
 }

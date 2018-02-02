@@ -12,8 +12,8 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
  */
 public class GregtechUtils
 {
-    private static final String RENDERER_CLASS = "gregtech.common.render.GT_MetaGenerated_Tool_Renderer";
-    private static final String RENDERER_METHOD = "renderItem";
+    private static final String CLASS_RENDERER = "gregtech.common.render.GT_MetaGenerated_Tool_Renderer";
+    private static final String METHOD_RENDERER = "renderItem";
     private static final String TOOLS_NAME = "gt.metatool.01";
     private static final Object[] EMPTY_OBJECT = {};
     private static final int[] ROTATED_TOOLS = {10, 14, 18, 22, 34, 150, 160};
@@ -28,11 +28,11 @@ public class GregtechUtils
         {
             try
             {
-                toolRenderer = Class.forName(RENDERER_CLASS).newInstance();
+                toolRenderer = Class.forName(CLASS_RENDERER).newInstance();
             }
             catch (Exception e)
             {
-                LogHelper.error("Error getting instance of GT_MetaGenerated_Tool_Renderer: " + e.getMessage());
+                LogHelper.error("Error getting instance of Gregtech: " + e.getMessage());
             }
         }
     }
@@ -57,8 +57,8 @@ public class GregtechUtils
     {
         try
         {
-            Class.forName(RENDERER_CLASS)
-                    .getMethod(RENDERER_METHOD, IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class)
+            Class.forName(CLASS_RENDERER)
+                    .getMethod(METHOD_RENDERER, IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class)
                     .invoke(toolRenderer, renderType, stack, EMPTY_OBJECT);
         }
         catch (Exception e)
