@@ -275,7 +275,6 @@ public class ContainerBackpack extends ContainerAdventureBackpack
         if (ConfigHandler.allowRepairTinkerTools && TinkersUtils.isTool(craftMatrix.getStackInSlot(4)))
         {
             ItemStack tinkersResult = TinkersUtils.getTinkersRecipe(craftMatrix);
-
             if (tinkersResult != null)
             {
                 craftResult.setInventorySlotContents(0, tinkersResult);

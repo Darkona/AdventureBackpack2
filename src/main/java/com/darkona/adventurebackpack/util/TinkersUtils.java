@@ -71,7 +71,7 @@ public class TinkersUtils
                     .get(craftingStationInstance))
                     .getStackInSlot(0);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             LogHelper.error("Error during reflection in TinkersUtils");
             //e.printStackTrace();

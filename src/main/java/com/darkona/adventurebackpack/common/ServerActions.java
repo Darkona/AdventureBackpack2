@@ -13,8 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProviderEnd;
-import net.minecraft.world.WorldProviderHell;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -256,7 +255,7 @@ public class ServerActions
     {
         World world = player.worldObj;
 
-        if (world.provider instanceof WorldProviderHell || world.provider instanceof WorldProviderEnd)
+        if (!world.provider.canRespawnHere() || world.getBiomeGenForCoords(cX, cZ) == BiomeGenBase.hell)
         {
             player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.cant.sleep.here"));
             player.closeScreen();
@@ -347,7 +346,7 @@ public class ServerActions
 
             return true;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             LogHelper.error("Reflection error while setSleep: " + e.getMessage());
             //e.printStackTrace();

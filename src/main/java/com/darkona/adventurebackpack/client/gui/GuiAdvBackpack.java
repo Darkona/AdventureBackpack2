@@ -112,7 +112,7 @@ public class GuiAdvBackpack extends GuiWithTanks
         if (ConfigHandler.IS_TCONSTRUCT && ConfigHandler.allowRepairTinkerTools)
         {
             this.mc.getTextureManager().bindTexture(TINKERS_ICONS);
-            this.drawTexturedModalRect(this.guiLeft + 168, this.guiTop + 77, 0, 233, 18, 18);
+            this.drawTexturedModalRect(this.guiLeft + 169, this.guiTop + 77, 0, 233, 18, 18);
         }
     }
 

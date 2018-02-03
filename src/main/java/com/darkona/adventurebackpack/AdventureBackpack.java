@@ -5,8 +5,10 @@ import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -80,53 +82,44 @@ public class AdventureBackpack
 
         //GUIs
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
+
+        //Waila
+        FMLInterModComms.sendMessage("Waila", "register", "com.darkona.adventurebackpack.reference.WailaAB.callbackRegister");
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        ConfigHandler.IS_DEVENV = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
-
-        if (ConfigHandler.IS_DEVENV)
+        if ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
+        {
+            ConfigHandler.IS_DEVENV = true;
             LogHelper.info("Dev environment detected. All hail the creator");
+        }
 
-        ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
-        ConfigHandler.IS_ENDERIO = Loader.isModLoaded("EnderIO");
-        ConfigHandler.IS_GREGTECH = Loader.isModLoaded("gregtech");
-        ConfigHandler.IS_TCONSTRUCT = Loader.isModLoaded("TConstruct");
-
-        if (ConfigHandler.IS_BUILDCRAFT)
-            LogHelper.info("Buildcraft is present. Acting accordingly");
-        if (ConfigHandler.IS_ENDERIO)
-            LogHelper.info("EnderIO is present. Acting accordingly");
-        if (ConfigHandler.IS_GREGTECH)
-            LogHelper.info("GregTech is present. Acting accordingly");
-        if (ConfigHandler.IS_TCONSTRUCT)
-            LogHelper.info("Tinkers Construct is present. Acting accordingly");
+        ConfigHandler.IS_BUILDCRAFT = registerMod("BuildCraft|Core");
+        ConfigHandler.IS_ENDERIO = registerMod("EnderIO");
+        ConfigHandler.IS_GREGTECH = registerMod("gregtech");
+        ConfigHandler.IS_TCONSTRUCT = registerMod("TConstruct");
 
         GeneralReference.init();
 
         //ConditionalFluidEffect.init();
         //ModItems.conditionalInit();
         //ModRecipes.conditionalInit();
+    }
 
-        /*LogHelper.info("DUMPING FLUID INFORMATION");
-        LogHelper.info("-------------------------------------------------------------------------");
-        for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
+    private static boolean registerMod(String modID)
+    {
+        if (!Loader.isModLoaded(modID))
+            return false;
+
+        String modName = modID;
+        for (ModContainer mod : Loader.instance().getModList())
         {
-
-            LogHelper.info("Unlocalized name: " + fluid.getUnlocalizedName());
-            LogHelper.info("Name: " + fluid.getName());
-            LogHelper.info("");
+            if (mod.getModId().equals(modID))
+                modName = mod.getName();
         }
-        LogHelper.info("-------------------------------------------------------------------------");*/
-
-        /*LogHelper.info("DUMPING TILE INFORMATION");
-        LogHelper.info("-------------------------------------------------------------------------");
-        for (Block block : GameData.getBlockRegistry().typeSafeIterable())
-        {
-            LogHelper.info("Block= " + block.getUnlocalizedName());
-        }
-        LogHelper.info("-------------------------------------------------------------------------");*/
+        LogHelper.info(modName + " is present. Acting accordingly");
+        return true;
     }
 }

@@ -12,6 +12,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 
 /**
  * Created on 12/10/2014
@@ -155,5 +156,33 @@ public class Utils
             slots[i - first] = i;
         }
         return slots;
+    }
+
+    public static String getColoredSkinName(BackpackTypes type)
+    {
+        String result = "";
+        String skinName = BackpackTypes.getSkinName(type);
+        switch (type)
+        {
+            case BAT:
+                result += EnumChatFormatting.DARK_PURPLE + skinName;
+                break;
+            case DRAGON:
+                result += EnumChatFormatting.LIGHT_PURPLE + skinName;
+                break;
+            case PIGMAN:
+                result += EnumChatFormatting.RED + skinName;
+                break;
+            case RAINBOW:
+                result += Utils.makeItRainbow(skinName);
+                break;
+            case SQUID:
+                result += EnumChatFormatting.DARK_AQUA + skinName;
+                break;
+            default:
+                result += skinName;
+                break;
+        }
+        return result;
     }
 }

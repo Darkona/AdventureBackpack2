@@ -7,6 +7,17 @@ buildscript {
     dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT' }
 }
 
+repositories {
+    maven { // WAILA
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven" 
+    }
+    maven { // NEI
+        name 'CB Repo'
+        url "http://chickenbones.net/maven/"
+    }
+}
+
 apply plugin: 'forge'
 
 group = "com.darkona.adventurebackpack" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -27,6 +38,8 @@ minecraft {
 dependencies
 {
     compile "codechicken:CodeChickenLib:${minecraft_version}-${ccl_version}:dev"
+    compile "mcp.mobius.waila:Waila:${waila_version}_${minecraft_version}"
+    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
     //compile "codechicken:CodeChickenCore:${minecraft_version}-${ccc_version}:dev"
 
     //compile "com.azanor.baubles:Baubles:${baubles_version}:deobf"

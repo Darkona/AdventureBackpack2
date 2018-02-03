@@ -160,7 +160,7 @@ public class TooltipEventHandler
         }
     }
 
-    private String holdShift()
+    private static String holdShift()
     {
         return holdThe(true);
     }
@@ -173,38 +173,38 @@ public class TooltipEventHandler
             makeTip(holdCtrl());
     }
 
-    private String holdCtrl()
+    private static String holdCtrl()
     {
         return holdThe(false);
     }
 
-    private String holdThe(boolean button)
+    private static String holdThe(boolean button)
     {
         return whiteFormat(EnumChatFormatting.ITALIC + "<" + (button ? local("hold.shift")
                                                                      : local("hold.ctrl")) + ">");
     }
 
-    private String whiteFormat(String theString)
+    private static String whiteFormat(String theString)
     {
         return EnumChatFormatting.WHITE + theString + EnumChatFormatting.GRAY;
     }
 
-    private String actionKeyFormat()
+    private static String actionKeyFormat()
     {
         return whiteFormat(Keybindings.getActionKeyName());
     }
 
-    private String pressKeyFormat(String button)
+    private static String pressKeyFormat(String button)
     {
         return local("press") + " '" + button + "' ";
     }
 
-    private String pressShiftKeyFormat(String button)
+    private static String pressShiftKeyFormat(String button)
     {
         return local("press") + " Shift+'" + button + "' ";
     }
 
-    private String inventoryTooltip(NBTTagList itemList)
+    public static String inventoryTooltip(NBTTagList itemList)
     {
         int itemCount = itemList.tagCount();
         boolean toolSlotU = false;
@@ -225,12 +225,12 @@ public class TooltipEventHandler
         return toolSlotFormat(toolSlotU) + toolSlotFormat(toolSlotL) + " " + mainSlotsFormat(itemCount);
     }
 
-    private String toolSlotFormat(boolean isTool)
+    private static String toolSlotFormat(boolean isTool)
     {
         return (isTool ? EnumChatFormatting.WHITE : EnumChatFormatting.DARK_GRAY) + "[]";
     }
 
-    private String mainSlotsFormat(int slotsUsed)
+    private static String mainSlotsFormat(int slotsUsed)
     {
         String slotsFormatted = Integer.toString(slotsUsed);
         if (slotsUsed == 0)
@@ -242,19 +242,19 @@ public class TooltipEventHandler
         return slotsFormatted + "/" + Constants.INVENTORY_MAIN_SIZE;
     }
 
-    private String tankTooltip(FluidTank tank)
+    public static String tankTooltip(FluidTank tank)
     {
         return tankTooltip(tank, true);
     }
 
-    private String tankTooltip(FluidTank tank, boolean attachName)
+    private static String tankTooltip(FluidTank tank, boolean attachName)
     {
         String fluidAmount = fluidAmountFormat(tank.getFluidAmount(), tank.getCapacity());
         String fluidName = tank.getFluid() == null ? "" : attachName ? fluidNameFormat(tank.getFluid()) : " ";
         return fluidAmount + (tank.getFluidAmount() > 0 ? "/" + tank.getCapacity() : "") + fluidName;
     }
 
-    private String fluidAmountFormat(int fluidAmount, int tankCapacity)
+    private static String fluidAmountFormat(int fluidAmount, int tankCapacity)
     {
         String amountFormatted = Integer.toString(fluidAmount);
         if (fluidAmount == tankCapacity)
@@ -264,7 +264,7 @@ public class TooltipEventHandler
         return amountFormatted;
     }
 
-    private String fluidNameFormat(FluidStack fluid)
+    private static String fluidNameFormat(FluidStack fluid)
     {
         String nameUnlocalized = fluid.getUnlocalizedName().toLowerCase();
         String nameFormatted = " ";
@@ -285,19 +285,19 @@ public class TooltipEventHandler
         return nameFormatted + fluid.getLocalizedName();
     }
 
-    private String switchTooltip(boolean status, boolean doFormat)
+    private static String switchTooltip(boolean status, boolean doFormat)
     {
         return doFormat ? switchFormat(status) : status ? local("on") : local("off");
     }
 
-    private String switchFormat(boolean status)
+    private static String switchFormat(boolean status)
     {
         String switchFormatted = status ? EnumChatFormatting.WHITE + local("on")
                                         : EnumChatFormatting.DARK_GRAY + local("off");
         return "[" + switchFormatted + EnumChatFormatting.GRAY + "]";
     }
 
-    private String slotStackTooltip(NBTTagList itemList, int slot)
+    private static String slotStackTooltip(NBTTagList itemList, int slot)
     {
         int slotID, slotMeta, slotCount = slotID = slotMeta = 0;
         for (int i = 0; i <= slot; i++)
@@ -314,7 +314,7 @@ public class TooltipEventHandler
         return stackDataFormat(slotID, slotMeta, slotCount);
     }
 
-    private String stackDataFormat(int id, int meta, int count)
+    private static String stackDataFormat(int id, int meta, int count)
     {
         if (count == 0)
             return emptyFormat();
@@ -333,12 +333,12 @@ public class TooltipEventHandler
         return dataFormatted;
     }
 
-    private String stackSizeFormat(ItemStack stack, int count)
+    private static String stackSizeFormat(ItemStack stack, int count)
     {
         return stack.getMaxStackSize() == count ? whiteFormat(Integer.toString(count)) : Integer.toString(count);
     }
 
-    private String fuelConsumptionTooltip(FluidTank tank)
+    private static String fuelConsumptionTooltip(FluidTank tank)
     {
         if (tank.getFluidAmount() > 0 && GeneralReference.isValidFuel(tank.getFluid().getFluid()))
         {
@@ -347,17 +347,17 @@ public class TooltipEventHandler
         return EnumChatFormatting.DARK_GRAY + "-";
     }
 
-    private String emptyFormat()
+    private static String emptyFormat()
     {
         return EnumChatFormatting.DARK_GRAY.toString() + EnumChatFormatting.ITALIC + local("empty");
     }
 
-    private String local(String tip)
+    public static String local(String tip)
     {
         return StatCollector.translateToLocal("adventurebackpack:tooltips." + tip);
     }
 
-    private String[] locals(String tips)
+    private static String[] locals(String tips)
     {
         return local(tips).split("@", 5);
     }
