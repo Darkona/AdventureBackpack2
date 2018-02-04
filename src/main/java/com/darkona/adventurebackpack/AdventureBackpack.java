@@ -8,7 +8,6 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -31,6 +30,7 @@ import com.darkona.adventurebackpack.init.ModWorldGen;
 import com.darkona.adventurebackpack.proxy.IProxy;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.reference.WailaTileAdventureBackpack;
 import com.darkona.adventurebackpack.util.LogHelper;
 
 /**
@@ -79,12 +79,10 @@ public class AdventureBackpack
         proxy.init();
         ModRecipes.init();
         ModWorldGen.init();
+        WailaTileAdventureBackpack.init();
 
         //GUIs
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
-
-        //Waila
-        FMLInterModComms.sendMessage("Waila", "register", "com.darkona.adventurebackpack.reference.WailaAB.callbackRegister");
     }
 
     @Mod.EventHandler

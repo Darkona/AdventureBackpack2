@@ -160,17 +160,53 @@ public class TooltipEventHandler
         }
     }
 
-    private static String holdShift()
-    {
-        return holdThe(true);
-    }
-
     private void shiftFooter()
     {
         if (GuiScreen.isCtrlKeyDown())
             makeEmptyTip();
         else
             makeTip(holdCtrl());
+    }
+
+    private void makeTip(String tooltip)
+    {
+        eventTip.add(tooltip);
+    }
+
+    private void makeTip(String[] tooltips)
+    {
+        makeTip(null, tooltips, null);
+    }
+
+    private void makeTip(String before, String[] tooltips)
+    {
+        makeTip(before, tooltips, null);
+    }
+
+    private void makeTip(String before, String[] tooltips, String after)
+    {
+        for (int i = 0; i < tooltips.length; i++)
+        {
+            String tip = "";
+            if (i == 0 && before != null)
+                tip += before;
+            tip += tooltips[i];
+            if (i == tooltips.length - 1 && after != null)
+                tip += after;
+            eventTip.add(tip);
+        }
+    }
+
+    private void makeEmptyTip()
+    {
+        makeTip("");
+    }
+
+    // Static things ---
+
+    private static String holdShift()
+    {
+        return holdThe(true);
     }
 
     private static String holdCtrl()
@@ -360,43 +396,5 @@ public class TooltipEventHandler
     private static String[] locals(String tips)
     {
         return local(tips).split("@", 5);
-    }
-
-    private void makeTip(String tooltip)
-    {
-        eventTip.add(tooltip);
-    }
-
-    private void makeTip(String[] tooltips)
-    {
-        makeTip(null, tooltips, null);
-    }
-
-    private void makeTip(String before, String[] tooltips)
-    {
-        makeTip(before, tooltips, null);
-    }
-
-    private void makeTip(String before, String[] tooltips, String after)
-    {
-        for (int i = 0; i < tooltips.length; i++)
-        {
-            String tip = "";
-
-            if (i == 0 && before != null)
-                tip += before;
-
-            tip += tooltips[i];
-
-            if (i == tooltips.length - 1 && after != null)
-                tip += after;
-
-            eventTip.add(tip);
-        }
-    }
-
-    private void makeEmptyTip()
-    {
-        makeTip("");
     }
 }

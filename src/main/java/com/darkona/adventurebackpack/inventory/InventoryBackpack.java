@@ -195,14 +195,19 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     @Override
     public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
     {
-        if (slot > inventory.length)
+        if (slot >= this.getSizeInventory())
             return;
 
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        if (stack != null)
         {
-            stack.stackSize = this.getInventoryStackLimit();
+            if (stack.stackSize > this.getInventoryStackLimit())
+                stack.stackSize = this.getInventoryStackLimit();
+
+            if(stack.stackSize == 0)
+                stack = null;
         }
+
+        this.inventory[slot] = stack;
     }
 
     @Override
@@ -388,15 +393,20 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        if (slot > inventory.length)
+        if (slot >= this.getSizeInventory())
             return;
 
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit())
+        if (stack != null)
         {
-            stack.stackSize = getInventoryStackLimit();
+            if (stack.stackSize > this.getInventoryStackLimit())
+                stack.stackSize = this.getInventoryStackLimit();
+
+            if(stack.stackSize == 0)
+                stack = null;
         }
-        dirtyInventory();
+
+        this.inventory[slot] = stack;
+        this.dirtyInventory();
     }
 
     public boolean hasBlock(Block block)

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -33,6 +34,7 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.GregtechUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.TinkersUtils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -228,17 +230,27 @@ public class GuiOverlay extends Gui
         if (stack == null)
             return;
 
-        boolean isGregtechTool = GregtechUtils.isTool(stack);
-
-        GL11.glTranslatef(isGregtechTool ? x : 0.0F, isGregtechTool ? y :0.0F, 32.0F);
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
+
+        boolean isGregtechTool = GregtechUtils.isTool(stack);
+        boolean isTinkersTool = TinkersUtils.isTool(stack);
+
         if (isGregtechTool)
         {
+            GL11.glTranslatef(x, y, 32.0F);
             GregtechUtils.renderTool(stack, IItemRenderer.ItemRenderType.INVENTORY);
+        }
+        else if (isTinkersTool)
+        {
+            TextureManager tm = mc.getTextureManager();
+            tm.bindTexture(tm.getResourceLocation(stack.getItemSpriteNumber()));
+            GL11.glTranslatef(x, y, 32.0F);
+            TinkersUtils.renderTool(stack, IItemRenderer.ItemRenderType.INVENTORY);
         }
         else
         {
+            GL11.glTranslatef(0F, 0F, 32.0F);
             FontRenderer font = null;
             font = stack.getItem().getFontRenderer(stack);
             if (font == null) font = fontRendererObj;

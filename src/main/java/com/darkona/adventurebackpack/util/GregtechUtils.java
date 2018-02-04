@@ -14,8 +14,9 @@ public class GregtechUtils
 {
     private static final String CLASS_RENDERER = "gregtech.common.render.GT_MetaGenerated_Tool_Renderer";
     private static final String METHOD_RENDERER = "renderItem";
-    private static final String TOOLS_NAME = "gt.metatool.01";
     private static final Object[] EMPTY_OBJECT = {};
+
+    private static final String TOOLS_NAME = "gt.metatool.01";
     private static final int[] ROTATED_TOOLS = {10, 14, 18, 22, 34, 150, 160};
 
     private static Object toolRenderer;

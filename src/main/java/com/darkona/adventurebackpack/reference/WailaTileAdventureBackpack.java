@@ -11,6 +11,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidTank;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
@@ -27,17 +28,19 @@ import mcp.mobius.waila.api.IWailaRegistrar;
  *
  * @author Ugachaga
  */
-public class WailaAB implements IWailaDataProvider
+public class WailaTileAdventureBackpack implements IWailaDataProvider
 {
-    /*public void init()
+    public static void init()
     {
-        FMLInterModComms.sendMessage("Waila", "register", "com.darkona.adventurebackpack.reference.WailaAB.callbackRegister");
-    }*/
+        FMLInterModComms.sendMessage("Waila", "register", "com.darkona.adventurebackpack.reference.WailaTileAdventureBackpack.callbackRegister");
+    }
+
+    //TODO change icon
 
     public static void callbackRegister(IWailaRegistrar registrar)
     {
-        registrar.registerHeadProvider(new WailaAB(), TileAdventureBackpack.class);
-        registrar.registerBodyProvider(new WailaAB(), TileAdventureBackpack.class);
+        registrar.registerHeadProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
+        registrar.registerBodyProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
     }
 
     @Override
@@ -49,14 +52,27 @@ public class WailaAB implements IWailaDataProvider
     @Override
     public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
     {
+        addHeadToBackpack(currenttip, accessor);
+        return currenttip;
+    }
+
+    private static void addHeadToBackpack(List<String> currenttip, IWailaDataAccessor accessor)
+    {
+        if (accessor.getNBTData().hasKey(Constants.WEARABLE_TAG))
+        {
+            NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(Constants.WEARABLE_TAG);
+            addHeadToBackpack(currenttip, backpackTag);
+        }
+    }
+
+    private static void addHeadToBackpack(List<String> currenttip, NBTTagCompound backpackTag)
+    {
         currenttip.remove(0);
-        NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(Constants.WEARABLE_TAG);
         BackpackTypes type = BackpackTypes.getType(backpackTag.getByte("type"));
         String skin = "";
         if (type != BackpackTypes.STANDARD)
             skin = " [" + Utils.getColoredSkinName(type) + EnumChatFormatting.WHITE + "]";
         currenttip.add(EnumChatFormatting.WHITE + "Adventure Backpack" + skin);
-        return currenttip;
     }
 
     @Override

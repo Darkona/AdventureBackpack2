@@ -20,7 +20,7 @@ public class Constants
     public static final String INVENTORY = "inventory";
 
     // Inventory Slots
-    public static final int INVENTORY_SIZE = 45;
+    public static final int INVENTORY_SIZE = 54;
     public static final int END_OF_INVENTORY = INVENTORY_SIZE - 7; // 0 included
     public static final int INVENTORY_MAIN_SIZE = END_OF_INVENTORY + 1; // 0 excluded
 
