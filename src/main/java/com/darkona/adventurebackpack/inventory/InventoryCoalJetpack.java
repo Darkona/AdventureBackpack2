@@ -363,7 +363,7 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
 
     public void setInventory(ItemStack[] inventory)
     {
-        this.inventory = inventory;
+        this.inventory = inventory; //TODO wtf
     }
 
     public int getIncreasingFactor()

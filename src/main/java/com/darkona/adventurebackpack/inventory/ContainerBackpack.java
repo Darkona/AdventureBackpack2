@@ -108,7 +108,6 @@ public class ContainerBackpack extends ContainerAdventureBackpack
         }
         addSlotToContainer(new SlotCraftResult(this, invPlayer.player, craftMatrix, craftResult, 0, 226, 97)); // craftResult [99]
         syncCraftMatrixToInventory();
-        this.onCraftMatrixChanged(craftMatrix);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +13,6 @@ import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 03/01/2015
@@ -80,7 +80,7 @@ public class GuiCopterPack extends GuiWithTanks
         fuelTank.draw(this, fuel);
 
         GL11.glPushMatrix();
-        String name = (fuel.getFluid() != null) ? Utils.capitalize(fuel.getFluid().getFluid().getName()) : "None";
+        String name = (fuel.getFluid() != null) ? WordUtils.capitalize(fuel.getFluid().getFluid().getName()) : "None";
         String amount = (fuel.getFluid() != null) ? "" + fuel.getFluid().amount : "0";
         String capacity = Integer.toString(fuel.getCapacity());
         int offsetY = 8;

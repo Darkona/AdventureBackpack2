@@ -11,7 +11,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 
 /**
@@ -31,6 +30,11 @@ public class Utils
         return radians * 57.2957795f;
     }
 
+    public static int secondsToTicks(int seconds)
+    {
+        return seconds * 20;
+    }
+
     public static int isBlockRegisteredAsFluid(Block block)
     {
         int fluidID = -1;
@@ -43,17 +47,6 @@ public class Utils
             }
         }
         return fluidID;
-    }
-
-    public static String capitalize(String s)
-    {
-        // Character.toUpperCase(itemName.charAt(0)) + itemName.substring(1);
-        return s.substring(0, 1).toUpperCase().concat(s.substring(1));
-    }
-
-    public static int getOppositeCardinalFromMeta(int meta)
-    {
-        return (meta % 2 == 0) ? (meta == 0) ? 2 : 0 : ((meta + 1) % 4) + 1;
     }
 
     //This is some black magic that returns a block or entity as far as the argument reach goes.
@@ -77,75 +70,23 @@ public class Utils
         return world.func_147447_a/*rayTraceBlocks_do_do*/(vecPlayer, vecPoint, flag, !flag, flag);
     }
 
-    public static String printCoordinates(int cX, int cY, int cZ)
-    {
-        return "X= " + cX + ", Y= " + cY + ", Z= " + cZ;
-    }
-
-    public static int secondsToTicks(int seconds)
-    {
-        return seconds * 20;
-    }
-
-    public static int secondsToTicks(float seconds)
-    {
-        return (int) seconds * 20;
-    }
-
     public static boolean inServer()
     {
-        Side side = FMLCommonHandler.instance().getEffectiveSide();
-        return side == Side.SERVER;
+        return FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER;
     }
 
-    /**
-     * Seriously why doesn't Java's instanceof check for null?
-     *
-     * @return true if the object is not null and is an instance of the supplied class.
-     */
-    public static boolean notNullAndInstanceOf(Object object, Class clazz) //TODO double check this
-    {
-        return object != null && clazz.isInstance(object);
-    }
-
-    public static String getFirstWord(String text)
-    {
-        if (text.indexOf(' ') > -1)
-        { // Check if there is more than one word.
-            String firstWord = text.substring(0, text.indexOf(' '));
-            String secondWord = text.substring(text.indexOf(' ') + 1);
-            return firstWord.equals("Molten") ? secondWord : firstWord; // Extract first word.
-        }
-        else
-        {
-            return text; // Text is the first word itself.
-        }
-    }
+    private static final EnumChatFormatting[] RAINBOW_SEQUENCE = {EnumChatFormatting.RED, EnumChatFormatting.GOLD,
+            EnumChatFormatting.YELLOW, EnumChatFormatting.GREEN, EnumChatFormatting.AQUA, EnumChatFormatting.BLUE,
+            EnumChatFormatting.DARK_PURPLE};
 
     public static String makeItRainbow(String theString)
     {
-        EnumChatFormatting[] rainbowSequence = {EnumChatFormatting.RED, EnumChatFormatting.GOLD, EnumChatFormatting.YELLOW,
-                EnumChatFormatting.GREEN, EnumChatFormatting.AQUA, EnumChatFormatting.BLUE, EnumChatFormatting.DARK_PURPLE};
-
         StringBuilder rainbowed = new StringBuilder();
         for (int i = 0; i < theString.length(); i++)
         {
-            rainbowed.append(rainbowSequence[i % 7]).append(theString.charAt(i));
+            rainbowed.append(RAINBOW_SEQUENCE[i % RAINBOW_SEQUENCE.length]).append(theString.charAt(i));
         }
         return rainbowed.toString();
-    }
-
-    public static boolean isDimensionAllowed(int dimensionID)
-    {
-        String currentDimID = String.valueOf(dimensionID);
-        for (String forbiddenID : ConfigHandler.forbiddenDimensions)
-        {
-            if (currentDimID.equals(forbiddenID))
-            {
-                return false;
-            }
-        }
-        return true;
     }
 
     public static int[] createSlotArray(int first, int count)

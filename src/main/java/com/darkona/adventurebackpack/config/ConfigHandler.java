@@ -197,4 +197,17 @@ public class ConfigHandler
             loadConfiguration();
         }
     }
+
+    public static boolean isDimensionAllowed(int dimensionID)
+    {
+        String currentDimID = String.valueOf(dimensionID);
+        for (String forbiddenID : forbiddenDimensions)
+        {
+            if (currentDimID.equals(forbiddenID))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }

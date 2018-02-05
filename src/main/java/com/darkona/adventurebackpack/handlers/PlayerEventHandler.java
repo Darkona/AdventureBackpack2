@@ -40,7 +40,6 @@ import com.darkona.adventurebackpack.proxy.ServerProxy;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -68,19 +67,16 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void joinPlayer(EntityJoinWorldEvent event)
     {
-        if (!event.world.isRemote)
+        if (!event.world.isRemote && event.entity instanceof EntityPlayer)
         {
-            if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
+            EntityPlayer player = (EntityPlayer) event.entity;
+            LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
+            NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
+            if (playerData != null)
             {
-                EntityPlayer player = (EntityPlayer) event.entity;
-                LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
-                NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
-                if (playerData != null)
-                {
-                    BackpackProperty.get(player).loadNBTData(playerData);
-                    BackpackProperty.sync(player);
-                    LogHelper.info("Stored properties retrieved");
-                }
+                BackpackProperty.get(player).loadNBTData(playerData);
+                BackpackProperty.sync(player);
+                LogHelper.info("Stored properties retrieved");
             }
         }
     }
@@ -205,7 +201,7 @@ public class PlayerEventHandler
     @SubscribeEvent(priority = EventPriority.LOW)
     public void playerDies(LivingDeathEvent event)
     {
-        if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
+        if (event.entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) event.entity;
 
@@ -292,9 +288,10 @@ public class PlayerEventHandler
     public void interactWithCreatures(EntityInteractEvent event)
     {
         EntityPlayer player = event.entityPlayer;
-        if (!event.entityPlayer.worldObj.isRemote)
+
+        if (!player.worldObj.isRemote)
         {
-            if (Utils.notNullAndInstanceOf(event.target, EntitySpider.class))
+            if (event.target instanceof EntitySpider)
             {
                 if (Wearing.isWearingTheRightBackpack(player, BackpackTypes.SPIDER))
                 {
@@ -305,10 +302,11 @@ public class PlayerEventHandler
                     event.entityPlayer.mountEntity(pet);
                 }
             }
-            if (Utils.notNullAndInstanceOf(event.target, EntityHorse.class))
+            if (event.target instanceof EntityHorse)
             {
-                ItemStack stack = player.getCurrentEquippedItem();
                 EntityHorse horse = (EntityHorse) event.target;
+                ItemStack stack = player.getCurrentEquippedItem();
+
                 if (stack != null && stack.getItem() != null && stack.getItem() instanceof ItemNameTag && stack.hasDisplayName())
                 {
                     if (horse.getCustomNameTag() == null || horse.getCustomNameTag().equals("") && horse.isTame())

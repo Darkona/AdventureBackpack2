@@ -622,7 +622,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
-        if (Utils.isDimensionAllowed(this.worldObj.provider.dimensionId))
+        if (ConfigHandler.isDimensionAllowed(this.worldObj.provider.dimensionId))
         {
             return SLOTS;
         }

@@ -224,7 +224,7 @@ public class BlockSleepingBag extends BlockDirectional  //TODO should we extend 
                         ChunkCoordinates campfire = CoordsUtils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
                         if (campfire != null)
                         {
-                            LogHelper.info("Campfire Found, saving coordinates. " + LogHelper.print3DCoords(campfire));
+                            LogHelper.info("Campfire Found, saving coordinates. " + campfire.toString());
                             BackpackProperty.get(player).setCampFire(campfire);
                         }
                     }

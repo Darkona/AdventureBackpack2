@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -31,7 +33,6 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
@@ -41,13 +42,12 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET;
  */
 public class ItemHose extends ItemAB
 {
-
-    IIcon drinkIcon;
-    IIcon spillIcon;
-    IIcon suckIcon;
-    final byte HOSE_SUCK_MODE = 0;
-    final byte HOSE_SPILL_MODE = 1;
-    final byte HOSE_DRINK_MODE = 2;
+    private IIcon drinkIcon;
+    private IIcon spillIcon;
+    private IIcon suckIcon;
+    private static final byte HOSE_SUCK_MODE = 0;
+    private static final byte HOSE_SPILL_MODE = 1;
+    private static final byte HOSE_DRINK_MODE = 2;
 
     public ItemHose()
     {
@@ -171,7 +171,7 @@ public class ItemHose extends ItemAB
             FluidTank tank = nbt.getInteger("tank") == 0 ? inv.getLeftTank() : inv.getRightTank();
             if (tank != null && tank.getFluid() != null)
             {
-                nbt.setString("fluid", Utils.capitalize(tank.getFluid().getFluid().getName()));
+                nbt.setString("fluid", WordUtils.capitalize(tank.getFluid().getFluid().getName()));
                 nbt.setInteger("amount", tank.getFluidAmount());
             }
             else

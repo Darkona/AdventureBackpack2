@@ -33,7 +33,6 @@ import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
@@ -62,7 +61,7 @@ public class ServerActions
     //Using @Sir-Will dupe fixed
     public static void cycleTool(EntityPlayer player, int direction, int slot)
     {
-        if (!Utils.isDimensionAllowed(player.worldObj.provider.dimensionId))
+        if (!ConfigHandler.isDimensionAllowed(player.worldObj.provider.dimensionId))
         {
             return;
         }

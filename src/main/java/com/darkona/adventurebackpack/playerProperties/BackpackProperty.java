@@ -12,7 +12,6 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
-import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 24/10/2014
@@ -200,7 +199,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     //Scary names for methods because why not
     public void executeWearableUpdateProtocol()
     {
-        if (Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
+        if (wearable.getItem() instanceof IBackWearableItem)
         {
             ((IBackWearableItem) wearable.getItem()).onEquippedUpdate(player.getEntityWorld(), player, wearable);
         }
@@ -208,7 +207,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public void executeWearableDeathProtocol()
     {
-        if (Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
+        if (wearable.getItem() instanceof IBackWearableItem)
         {
             ((IBackWearableItem) wearable.getItem()).onPlayerDeath(player.getEntityWorld(), player, wearable);
         }
@@ -216,7 +215,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public void executeWearableEquipProtocol()
     {
-        if (Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
+        if (wearable.getItem() instanceof IBackWearableItem)
         {
             ((IBackWearableItem) wearable.getItem()).onEquipped(player.getEntityWorld(), player, wearable);
         }
@@ -224,7 +223,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     public void executeWearableUnequipProtocol()
     {
-        if (Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
+        if (wearable.getItem() instanceof IBackWearableItem)
         {
             ((IBackWearableItem) wearable.getItem()).onUnequipped(player.getEntityWorld(), player, wearable);
         }

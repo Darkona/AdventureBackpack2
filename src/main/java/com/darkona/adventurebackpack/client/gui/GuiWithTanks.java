@@ -82,16 +82,16 @@ public abstract class GuiWithTanks extends GuiContainer
     @Override
     public void handleMouseInput()
     {
-        int i = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-        int marginX = (width - xSize) / 2;
-        int marginY = (height - ySize) / 2;
-
-        if (i > marginX && i < marginX + xSize)
+        if (Mouse.getEventDWheel() != 0)
         {
-            if (j > marginY && j < marginY + ySize)
+            int i = Mouse.getEventX() * this.width / this.mc.displayWidth;
+            int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+            int marginX = (width - xSize) / 2;
+            int marginY = (height - ySize) / 2;
+
+            if (i > marginX && i < marginX + xSize)
             {
-                if (Mouse.getEventDWheel() != 0)
+                if (j > marginY && j < marginY + ySize)
                 {
                     return; // forbid mouseWheel when mouse over our GUI,
                     // Shift+Wheel on stacks of fluid containers places them to clients bucket slots, causes desync
