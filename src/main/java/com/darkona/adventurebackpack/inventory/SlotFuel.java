@@ -18,7 +18,7 @@ public class SlotFuel extends SlotAdventureBackpack
 
     static boolean isValidItem(ItemStack stack)
     {
-        return TileEntityFurnace.isItemFuel(stack) && !SlotFluid.isContainer(stack); //fuel slot accept only solid fuel
+        return TileEntityFurnace.isItemFuel(stack) && !SlotFluid.isContainer(stack); // fuel slot accepts only solid fuel
     }
 
     @Override

@@ -22,6 +22,7 @@ public class ConfigHandler
     public static boolean IS_ENDERIO = false;
     public static boolean IS_GREGTECH = false;
     public static boolean IS_TCONSTRUCT = false;
+    public static boolean IS_THAUMCRAFT = false;
 
     public static boolean allowSoulBound = true;
     public static boolean allowPortableSleepingBag = true;
@@ -198,16 +199,4 @@ public class ConfigHandler
         }
     }
 
-    public static boolean isDimensionAllowed(int dimensionID)
-    {
-        String currentDimID = String.valueOf(dimensionID);
-        for (String forbiddenID : forbiddenDimensions)
-        {
-            if (currentDimID.equals(forbiddenID))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
 }

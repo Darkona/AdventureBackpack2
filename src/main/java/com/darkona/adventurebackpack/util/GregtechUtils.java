@@ -19,7 +19,7 @@ public class GregtechUtils
     private static final String TOOLS_NAME = "gt.metatool.01";
     private static final int[] ROTATED_TOOLS = {10, 14, 18, 22, 34, 150, 160};
 
-    private static Object toolRenderer;
+    private static Object toolRendererInstance;
 
     private GregtechUtils(){}
 
@@ -29,7 +29,7 @@ public class GregtechUtils
         {
             try
             {
-                toolRenderer = Class.forName(CLASS_RENDERER).newInstance();
+                toolRendererInstance = Class.forName(CLASS_RENDERER).newInstance();
             }
             catch (Exception e)
             {
@@ -41,6 +41,11 @@ public class GregtechUtils
     public static boolean isTool(ItemStack stack)
     {
         return ConfigHandler.IS_GREGTECH && stack.getItem().getUnlocalizedName().equals(TOOLS_NAME);
+    }
+
+    public static boolean isTool(String itemName)
+    {
+        return ConfigHandler.IS_GREGTECH && itemName.equals(TOOLS_NAME);
     }
 
     public static float getToolRotationAngle(ItemStack stack, boolean isLowerSlot)
@@ -60,7 +65,7 @@ public class GregtechUtils
         {
             Class.forName(CLASS_RENDERER)
                     .getMethod(METHOD_RENDERER, IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class)
-                    .invoke(toolRenderer, renderType, stack, EMPTY_OBJECT);
+                    .invoke(toolRendererInstance, renderType, stack, EMPTY_OBJECT);
         }
         catch (Exception e)
         {

@@ -376,11 +376,9 @@ public class TooltipEventHandler
 
     private static String fuelConsumptionTooltip(FluidTank tank)
     {
-        if (tank.getFluidAmount() > 0 && GeneralReference.isValidFuel(tank.getFluid().getFluid()))
-        {
-            return String.format("x%.2f", GeneralReference.liquidFuels.get(tank.getFluid().getFluid().getName()));
-        }
-        return EnumChatFormatting.DARK_GRAY + "-";
+        return (tank.getFluid() != null)
+               ? String.format("x%.2f", GeneralReference.getFuelRate(tank.getFluid().getFluid().getName()))
+               : EnumChatFormatting.DARK_GRAY + "-" ;
     }
 
     private static String emptyFormat()

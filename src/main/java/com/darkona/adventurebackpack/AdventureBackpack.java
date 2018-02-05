@@ -98,6 +98,7 @@ public class AdventureBackpack
         ConfigHandler.IS_ENDERIO = registerMod("EnderIO");
         ConfigHandler.IS_GREGTECH = registerMod("gregtech");
         ConfigHandler.IS_TCONSTRUCT = registerMod("TConstruct");
+        ConfigHandler.IS_THAUMCRAFT = registerMod("Thaumcraft");
 
         GeneralReference.init();
 

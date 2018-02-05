@@ -76,27 +76,25 @@ public class GuiCopterPack extends GuiWithTanks
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
         inventory.openInventory();
-        FluidTank fuel = inventory.getFuelTank();
-        fuelTank.draw(this, fuel);
+        FluidTank tank = inventory.getFuelTank();
+        fuelTank.draw(this, tank);
 
         GL11.glPushMatrix();
-        String name = (fuel.getFluid() != null) ? WordUtils.capitalize(fuel.getFluid().getFluid().getName()) : "None";
-        String amount = (fuel.getFluid() != null) ? "" + fuel.getFluid().amount : "0";
-        String capacity = Integer.toString(fuel.getCapacity());
+        boolean isFilled = tank.getFluid() != null;
+        String name = isFilled ? WordUtils.capitalize(tank.getFluid().getFluid().getName()) : "None";
+        String amount = isFilled ? "" + tank.getFluid().amount : "0";
+        String capacity = Integer.toString(tank.getCapacity());
         int offsetY = 8;
         int offsetX = 83;
         fontRendererObj.drawString(name, 1 + offsetX, offsetY, 0x373737, false);
         fontRendererObj.drawString(amount, 1 + offsetX, 10 + offsetY, 0x373737, false);
         fontRendererObj.drawString(capacity, 1 + offsetX, 20 + offsetY, 0x373737, false);
 
-        if (fuel.getFluid() != null)
+        if (isFilled)
         {
-            Float f = GeneralReference.liquidFuels.get(name.toLowerCase());
-            String conLev = (f != null) ? f.toString() : "0";
-            if (conLev != null && !conLev.isEmpty())
-            {
-                fontRendererObj.drawString("Consumption: " + conLev, 1 + offsetX, 40 + offsetY, 0x373737, false);
-            }
+            Float rate = GeneralReference.getFuelRate(name.toLowerCase());
+            String conLev = (rate != null) ? rate.toString() : "0";
+            fontRendererObj.drawString("Consumption: " + conLev, 1 + offsetX, 40 + offsetY, 0x373737, false);
         }
         GL11.glPopMatrix();
     }

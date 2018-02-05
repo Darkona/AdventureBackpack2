@@ -34,6 +34,7 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.GregtechUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.ThaumcraftUtils;
 import com.darkona.adventurebackpack.util.TinkersUtils;
 import com.darkona.adventurebackpack.util.Wearing;
 
@@ -235,6 +236,7 @@ public class GuiOverlay extends Gui
 
         boolean isGregtechTool = GregtechUtils.isTool(stack);
         boolean isTinkersTool = TinkersUtils.isTool(stack);
+        boolean isThaumcraftTool = ThaumcraftUtils.isTool(stack);
 
         if (isGregtechTool)
         {
@@ -247,6 +249,22 @@ public class GuiOverlay extends Gui
             tm.bindTexture(tm.getResourceLocation(stack.getItemSpriteNumber()));
             GL11.glTranslatef(x, y, 32.0F);
             TinkersUtils.renderTool(stack, IItemRenderer.ItemRenderType.INVENTORY);
+        }
+        else if (isThaumcraftTool)
+        {
+            // Forge PreRender: net.minecraftforge.client.ForgeHooksClient.renderInventoryItem
+            GL11.glPushMatrix();
+            GL11.glTranslatef(x - 2, y + 3, -3.0F + zLevel);
+            GL11.glScalef(10F, 10F, 10F);
+            GL11.glTranslatef(1.0F, 0.5F, 1.0F);
+            GL11.glScalef(1.0F, 1.0F, -1F);
+            GL11.glRotatef(210F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
+
+            // Thaumcraft Render
+            ThaumcraftUtils.renderTool(stack, IItemRenderer.ItemRenderType.INVENTORY);
+
+            GL11.glPopMatrix();
         }
         else
         {

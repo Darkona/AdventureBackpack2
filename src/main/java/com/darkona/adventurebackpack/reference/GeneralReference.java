@@ -1,8 +1,11 @@
 package com.darkona.adventurebackpack.reference;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -15,20 +18,49 @@ import com.darkona.adventurebackpack.util.LogHelper;
  */
 public class GeneralReference
 {
-    public static HashMap<String, Float> liquidFuels = new HashMap<>();
+    private static HashMap<String, Float> liquidFuels = new HashMap<>();
+    private static Set<Integer> dimensionBlacklist = new HashSet<>();
 
     private static final float MAX_RATE = 20.0f;
     private static final float MIN_RATE = 0.05f;
 
     public static void init()
     {
-        parseFuelConfig();
+        parseLiquidFuelsConfig();
+        parseDimensionBlacklistConfig();
 
         if (ConfigHandler.IS_DEVENV)
             liquidFuels.put("holywater", 0.0f); // shhh.. you did not see anything. hallelujah!
     }
 
-    private static void parseFuelConfig()
+    private static void parseDimensionBlacklistConfig()
+    {
+        for (String dim : ConfigHandler.forbiddenDimensions)
+        {
+            int dimID;
+            try
+            {
+                dimID = Integer.parseInt(dim);
+            }
+            catch (NumberFormatException nfe)
+            {
+                LogHelper.error("Cannot parse Forbidden Dimension ID for " + dim + ". Ignored");
+                continue;
+            }
+
+            if (DimensionManager.isDimensionRegistered(dimID))
+            {
+                dimensionBlacklist.add(dimID);
+                LogHelper.info("Dimension " + dimID + " is registered as Forbidden for Adventure Backpack");
+            }
+            else
+            {
+                LogHelper.info("Not found dimension " + dimID + ". Skipped");
+            }
+        }
+    }
+
+    private static void parseLiquidFuelsConfig()
     {
         int wrongCount = 0;
         int unregCount = 0;
@@ -78,16 +110,20 @@ public class GeneralReference
         }
     }
 
-    public static boolean isValidFuel(Fluid fluid)
+    public static boolean isDimensionAllowed(int dimID)
     {
-        if (fluid != null)
-        {
-            for (String fuel : liquidFuels.keySet())
-            {
-                if (fuel.equals(fluid.getName()))
-                    return true;
-            }
-        }
-        return false;
+        return !dimensionBlacklist.contains(dimID);
     }
+
+    public static boolean isValidFuel(String fluidName)
+    {
+        return liquidFuels.containsKey(fluidName);
+    }
+
+    @Nullable
+    public static Float getFuelRate(String fluidName)
+    {
+        return liquidFuels.get(fluidName);
+    }
+
 }

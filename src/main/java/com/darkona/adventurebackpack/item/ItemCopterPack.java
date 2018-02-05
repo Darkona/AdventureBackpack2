@@ -17,6 +17,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -201,9 +202,10 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 fuelConsumption *= 2;
             }
             int ticks = inv.tickCounter - 1;
-            if (inv.getFuelTank().getFluid() != null && GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
+            FluidTank tank = inv.getFuelTank();
+            if (tank.getFluid() != null && GeneralReference.isValidFuel(tank.getFluid().getFluid().getName()))
             {
-                fuelConsumption = fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName());
+                fuelConsumption = fuelConsumption * GeneralReference.getFuelRate(tank.getFluid().getFluid().getName());
             }
             if (ticks <= 0)
             {
@@ -216,7 +218,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 inv.tickCounter = ticks;
             }
         }
-        //if(!world.isRemote)inv.closeInventory();
         inv.closeInventory();
     }
 

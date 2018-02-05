@@ -30,11 +30,10 @@ public class TinkersUtils
     private static final String FIELD_CRAFT_RESULT = "craftResult";
 
     private static final String CLASS_RENDERER = "tconstruct.client.FlexibleToolRenderer";
-    //private static final String CLASS_RENDERER = "tconstruct.client.ToolCoreRenderer";
     private static final String METHOD_RENDERER = "renderItem";
     private static final Object[] EMPTY_OBJECT = {};
 
-    private static final String TAG_INFI_TOOL = "InfiTool";
+    private static final String PACKAGE_INFI_TOOLS = "tconstruct.items.tools";
 
     private static Class<?> craftingStation;
     private static Object craftingStationInstance;
@@ -79,7 +78,12 @@ public class TinkersUtils
     public static boolean isTool(ItemStack stack)
     {
         return ConfigHandler.IS_TCONSTRUCT
-                && stack != null && stack.hasTagCompound() && stack.stackTagCompound.hasKey(TAG_INFI_TOOL);
+                && stack != null && stack.getItem().getClass().getName().startsWith(PACKAGE_INFI_TOOLS);
+    }
+
+    public static boolean isTool(String clazzName)
+    {
+        return ConfigHandler.IS_TCONSTRUCT && clazzName.startsWith(PACKAGE_INFI_TOOLS);
     }
 
     public static ItemStack getTinkersRecipe(InventoryCrafting craftMatrix)

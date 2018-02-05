@@ -28,6 +28,7 @@ import com.darkona.adventurebackpack.inventory.SlotBackpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.Utils;
@@ -622,7 +623,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
-        if (ConfigHandler.isDimensionAllowed(this.worldObj.provider.dimensionId))
+        if (GeneralReference.isDimensionAllowed(this.worldObj.provider.dimensionId))
         {
             return SLOTS;
         }

@@ -35,7 +35,7 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
         FMLInterModComms.sendMessage("Waila", "register", "com.darkona.adventurebackpack.reference.WailaTileAdventureBackpack.callbackRegister");
     }
 
-    //TODO change icon
+    //TODO fix the icon. for some reason WAILA shows "standard" icon for all of backpacks. in the same time NEI tooltips shows right icon
 
     public static void callbackRegister(IWailaRegistrar registrar)
     {
