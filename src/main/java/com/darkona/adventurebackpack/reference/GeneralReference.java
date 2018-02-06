@@ -1,10 +1,12 @@
 package com.darkona.adventurebackpack.reference;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -108,6 +110,11 @@ public class GeneralReference
                     + (wrongCount > 0 && unregCount > 0 ? " and " : "")
                     + (unregCount > 0 ? (unregCount + " unregistered fluid" + (unregCount > 1 ? "s" : "")) : ""));
         }
+    }
+
+    public static boolean isDimensionAllowed(@Nonnull EntityPlayer player)
+    {
+        return isDimensionAllowed(player.worldObj.provider.dimensionId);
     }
 
     public static boolean isDimensionAllowed(int dimID)

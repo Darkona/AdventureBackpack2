@@ -62,10 +62,8 @@ public class ServerActions
     //Using @Sir-Will dupe fixed
     public static void cycleTool(EntityPlayer player, int direction, int slot)
     {
-        if (!GeneralReference.isDimensionAllowed(player.worldObj.provider.dimensionId))
-        {
+        if (!GeneralReference.isDimensionAllowed(player))
             return;
-        }
 
         try
         {
@@ -73,6 +71,20 @@ public class ServerActions
             ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
             if (SlotTool.isValidTool(current))
+            {
+                if (direction < 0)
+                {
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(LOWER_TOOL);
+                    backpack.setInventorySlotContentsNoSave(LOWER_TOOL, current);
+                }
+                else if (direction > 0)
+                {
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(UPPER_TOOL);
+                    backpack.setInventorySlotContentsNoSave(UPPER_TOOL, current);
+                }
+            }
+            //old behavior, cycling all 3 slots:
+            /*if (SlotTool.isValidTool(current))
             {
                 if (direction < 0)
                 {
@@ -86,7 +98,7 @@ public class ServerActions
                     backpack.setInventorySlotContentsNoSave(LOWER_TOOL, backpack.getStackInSlot(UPPER_TOOL));
                     backpack.setInventorySlotContentsNoSave(UPPER_TOOL, current);
                 }
-            }
+            }*/
             backpack.markDirty();
             player.inventory.closeInventory();
         }
@@ -301,7 +313,6 @@ public class ServerActions
                         ((BlockSleepingBag) portableBag).onPortableBlockActivated(world, player, can[1], can[2], can[3]);
                     }
                 }
-                //sleepSafe((EntityPlayerMP) player, world, can[1], can[2], can[3]);
             }
             else if (!world.isRemote)
             {
@@ -310,49 +321,6 @@ public class ServerActions
             player.closeScreen();
         }
     }
-
-    // shamelessly copied from OpenBlocks SleepingBag
-    /*public static void sleepSafe(EntityPlayerMP player, World world, int cX, int cY, int cZ)
-    {
-        if (player.isRiding())
-            player.mountEntity(null);
-
-        if (setPlayerSleeping(player))
-        {
-            player.playerLocation = new ChunkCoordinates(cX, cY, cZ);
-
-            player.motionX = player.motionZ = player.motionY = 0.0D;
-            world.updateAllPlayersSleepingFlag();
-
-            S0APacketUseBed sleepPacket = new S0APacketUseBed(player, cX, cY, cZ);
-            player.getServerForPlayer().getEntityTracker().func_151247_a(player, sleepPacket);
-            player.playerNetServerHandler.sendPacket(sleepPacket);
-        }
-    }*/
-
-    /*public static boolean setPlayerSleeping(EntityPlayer player)
-    {
-        try
-        {
-            Class <?> clazz = Class.forName("net.minecraft.entity.player.EntityPlayer");
-
-            Field field = clazz.getDeclaredField(ConfigHandler.IS_DEVENV ? "sleeping" : "field_71083_bS");
-            field.setAccessible(true);
-            field.set(player, true);
-
-            field = clazz.getDeclaredField(ConfigHandler.IS_DEVENV ? "sleepTimer" : "field_71076_b");
-            field.setAccessible(true);
-            field.set(player, 0);
-
-            return true;
-        }
-        catch (Exception e)
-        {
-            LogHelper.error("Reflection error while setSleep: " + e.getMessage());
-            //e.printStackTrace();
-            return false;
-        }
-    }*/
 
     /**
      * Adds vertical inertia to the movement in the Y axis of the player, and makes Newton's Laws cry.

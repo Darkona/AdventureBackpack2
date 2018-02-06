@@ -83,10 +83,8 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                 }
                 if (message.type == BACKPACK_GUI)
                 {
-                    if (!GeneralReference.isDimensionAllowed(player.worldObj.provider.dimensionId))
-                    {
+                    if (!GeneralReference.isDimensionAllowed(player))
                         return null;
-                    }
 
                     if (message.from == FROM_WEARING)
                     {
