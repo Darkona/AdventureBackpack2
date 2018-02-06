@@ -20,7 +20,7 @@ public class ThaumcraftUtils
 
     private static Object toolRendererInstance;
 
-    private ThaumcraftUtils(){}
+    private ThaumcraftUtils() {}
 
     static
     {
@@ -64,7 +64,7 @@ public class ThaumcraftUtils
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 }

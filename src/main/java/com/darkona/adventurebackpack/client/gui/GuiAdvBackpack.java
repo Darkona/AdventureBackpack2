@@ -68,7 +68,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     private boolean isBedButtonCase()
     {
         return source == Source.TILE
-                || (ConfigHandler.allowPortableSleepingBag && source == Source.WEARING && GuiScreen.isShiftKeyDown());
+                || (ConfigHandler.portableSleepingBag && source == Source.WEARING && GuiScreen.isShiftKeyDown());
     }
 
     @Override
@@ -109,7 +109,7 @@ public class GuiAdvBackpack extends GuiWithTanks
                 drawHoveringText(tankRight.getTankTooltip(), mouseX, mouseY, fontRendererObj);
         }
 
-        if (ConfigHandler.IS_TCONSTRUCT && ConfigHandler.allowRepairTinkerTools)
+        if (ConfigHandler.IS_TCONSTRUCT && ConfigHandler.tinkerToolsMaintenance)
         {
             this.mc.getTextureManager().bindTexture(TINKERS_ICONS);
             this.drawTexturedModalRect(this.guiLeft + 169, this.guiTop + 77, 0, 233, 18, 18);

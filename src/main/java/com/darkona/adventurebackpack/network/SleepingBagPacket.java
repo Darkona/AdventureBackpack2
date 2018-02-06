@@ -21,7 +21,7 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
     {
         if (ctx.side.isServer())
         {
-            if (message.isTile || ConfigHandler.allowPortableSleepingBag) // serverside check
+            if (message.isTile || ConfigHandler.portableSleepingBag) // serverside check
             {
                 ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.isTile, message.cX, message.cY, message.cZ);
             }

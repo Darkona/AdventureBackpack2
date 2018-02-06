@@ -268,7 +268,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
-        if (ConfigHandler.allowRepairTinkerTools && TinkersUtils.isTool(craftMatrix.getStackInSlot(4)))
+        if (ConfigHandler.tinkerToolsMaintenance && TinkersUtils.isTool(craftMatrix.getStackInSlot(4)))
         {
             craftResult.setInventorySlotContents(0, TinkersUtils.getTinkersRecipe(craftMatrix));
             return;

@@ -25,14 +25,14 @@ public class ConfigHandler
     public static boolean IS_THAUMCRAFT = false;
 
     public static boolean allowSoulBound = true;
-    public static boolean allowPortableSleepingBag = true;
-    public static boolean allowRepairTinkerTools = true;
     public static boolean backpackDeathPlace = true;
     public static boolean backpackAbilities = true;
     public static boolean enableCampfireSpawn = false;
     public static boolean enableHoseDrink = true;
     public static boolean enableToolsCycling = true;
     public static boolean fixLead = true;
+    public static boolean portableSleepingBag = true;
+    public static boolean tinkerToolsMaintenance = true;
 
     public static boolean enableFullnessBar = false;
     public static boolean enableTemperatureBar = false;
@@ -60,7 +60,7 @@ public class ConfigHandler
     public static boolean enableItemFilters = false;
     public static String[] forbiddenDimensions;
     public static String[] copterFuels;
-    public static String[] defaultFuels = {"biodiesel, 1.0", "biofuel, 1.0", "bioethanol, 1.5", "creosote, 7.0",
+    private static String[] defaultFuels = {"biodiesel, 1.0", "biofuel, 1.0", "bioethanol, 1.5", "creosote, 7.0",
             "fuel, 0.8", "lava, 5.0", "liquid_light_oil, 3.0", "liquid_medium_oil, 3.0", "liquid_heavy_oil, 3.0",
             "liquid_light_fuel, 1.0", "liquid_heavy_fuel, 1.3", "nitrofuel, 0.4", "oil, 3.0", "rocket_fuel, 0.8"};
 
@@ -68,7 +68,7 @@ public class ConfigHandler
     public static String[] nameInternalID;
     public static String[] nameInternalIDs;
     public static String[] nameUnlocalized;
-    public static String[] nameDefault = {};
+    private static String[] nameDefault = {};
 
     public static boolean consumeDragonEgg = false;
     public static boolean recipeAdventuresSet = true;
@@ -108,8 +108,6 @@ public class ConfigHandler
     {
         // Gameplay
         allowSoulBound = config.getBoolean("Allow SoulBound", "gameplay", true, "Allow SoulBound enchant on wearable packs");
-        allowPortableSleepingBag = config.getBoolean("Allow Portable Sleeping Bag", "gameplay", true, "Allows to use sleeping bag directly from wearing backpacks. Sleep by one touch.");
-        allowRepairTinkerTools = config.getBoolean("Allow Repair Tinker Tools", "gameplay", true, "Allows to repair Tinkers Construct tools in backpacks as if it's Crafting Station.");
         backpackAbilities = config.getBoolean("Backpack Abilities", "gameplay", true, "Allow the backpacks to execute their special abilities, or be only cosmetic (Doesn't affect lightning transformation) Must be " +
                 "disabled in both Client and Server to work properly");
         backpackDeathPlace = config.getBoolean("Backpack Death Place", "gameplay", true, "Place backpacks as a block when you die?");
@@ -117,6 +115,8 @@ public class ConfigHandler
         enableCampfireSpawn = config.getBoolean("Enable Campfire Spawn", "gameplay", false, "Enable/Disable ability to spawn at campfire");
         enableHoseDrink = config.getBoolean("Enable Hose Drink", "gameplay", true, "Enable/Disable hose drink mode");
         enableToolsCycling = config.getBoolean("Enable Tools Cycling", "gameplay", true, "Enable/Disable tool cycling");
+        portableSleepingBag = config.getBoolean("Portable Sleeping Bag", "gameplay", true, "Allows to use sleeping bag directly from wearing backpacks. Sleep by one touch");
+        tinkerToolsMaintenance = config.getBoolean("Maintenance Tinker Tools", "gameplay", true, "Allows to maintenance (repair/upgarde) Tinkers Construct tools in backpacks as if it's Crafting Station");
 
         // Graphics
         typeTankRender = config.getInt("Tank Render Type", "graphics", 3, 1, 3, "1,2 or 3 for different rendering of fluids in the Backpack GUI");

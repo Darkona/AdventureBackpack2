@@ -21,7 +21,7 @@ public class GregtechUtils
 
     private static Object toolRendererInstance;
 
-    private GregtechUtils(){}
+    private GregtechUtils() {}
 
     static
     {

@@ -9,6 +9,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import com.darkona.adventurebackpack.client.render.RendererStack;
+import com.darkona.adventurebackpack.reference.ToolHandler;
 import com.darkona.adventurebackpack.util.Utils;
 
 /**
@@ -192,7 +193,7 @@ public class ModelClockworkCrossbow extends ModelBase
         this.hookHead.addChild(this.hookTooth3);
 
         arrow = new RendererStack(this, true);
-        arrow.stack = new ItemStack(Items.arrow, 1);
+        arrow.setStack(new ItemStack(Items.arrow, 1), ToolHandler.VANILLA);
     }
 
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack xbow)

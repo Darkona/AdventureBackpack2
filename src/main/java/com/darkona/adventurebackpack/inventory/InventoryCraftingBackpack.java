@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -16,7 +18,7 @@ public class InventoryCraftingBackpack extends InventoryCrafting
         super(eventHandler, columns, rows);
     }
 
-    public void setInventorySlotContentsNoUpdate(int slotID, ItemStack stack)
+    public void setInventorySlotContentsNoUpdate(int slotID, @Nullable ItemStack stack)
     {
         this.stackList[slotID] = stack;
     }

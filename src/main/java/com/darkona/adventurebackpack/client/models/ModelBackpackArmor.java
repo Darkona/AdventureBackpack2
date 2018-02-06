@@ -14,6 +14,7 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
+import com.darkona.adventurebackpack.reference.ToolHandler;
 
 import static com.darkona.adventurebackpack.reference.BackpackTypes.*;
 
@@ -259,8 +260,10 @@ public class ModelBackpackArmor extends ModelWearable
 
         if (ConfigHandler.enableToolsRender)
         {
-            lowerTool.stack = backpack.getStackInSlot(Constants.LOWER_TOOL);
-            upperTool.stack = backpack.getStackInSlot(Constants.UPPER_TOOL);
+            ItemStack upperStack = backpack.getStackInSlot(Constants.UPPER_TOOL);
+            ItemStack lowerStack = backpack.getStackInSlot(Constants.LOWER_TOOL);
+            upperTool.setStack(upperStack, ToolHandler.getToolHandler(upperStack));
+            lowerTool.setStack(lowerStack, ToolHandler.getToolHandler(lowerStack));
         }
 
         if (type == QUARTZ || type == SLIME || type == SNOW)

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.util;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 import net.minecraft.entity.player.InventoryPlayer;
@@ -86,6 +87,7 @@ public class TinkersUtils
         return ConfigHandler.IS_TCONSTRUCT && clazzName.startsWith(PACKAGE_INFI_TOOLS);
     }
 
+    @Nullable
     public static ItemStack getTinkersRecipe(InventoryCrafting craftMatrix)
     {
         try

@@ -9,8 +9,6 @@ import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.util.GregtechUtils;
 import com.darkona.adventurebackpack.util.ThaumcraftUtils;
 import com.darkona.adventurebackpack.util.TinkersUtils;
@@ -24,9 +22,7 @@ public class SlotTool extends SlotAdventureBackpack
 {
     private static final String[] VALID_TOOL_NAMES = {"axe", "crowbar", "drill", "grafter", "hammer", "scoop", "shovel",
             "wrench",};
-
     private static final String[] INVALID_TOOL_NAMES = {"bow", "bucket", "shield", "sword",};
-
     private static final String[] INVALID_TINKER_NAMES = {"battleaxe", "bow", "cleaver", "cutlass", "dagger", "rapier",
             "sabre", "shield", "sign", "sword",};
 
@@ -47,9 +43,9 @@ public class SlotTool extends SlotAdventureBackpack
             return false;
 
         Item item = stack.getItem();
-        String itemName = item.getUnlocalizedName().toLowerCase();
-        String objectName = Item.itemRegistry.getNameForObject(item);
         String clazzName = item.getClass().getName();
+        String objectName = Item.itemRegistry.getNameForObject(item);
+        String itemName = item.getUnlocalizedName().toLowerCase();
 
         // Vanilla
         if (item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemShears
@@ -57,10 +53,6 @@ public class SlotTool extends SlotAdventureBackpack
         {
             return true;
         }
-
-        // Adventure Backpack duh!
-        if (item instanceof ItemHose || item instanceof ItemAdventureBackpack)
-            return false;
 
         // GregTech
         if (GregtechUtils.isTool(itemName))
