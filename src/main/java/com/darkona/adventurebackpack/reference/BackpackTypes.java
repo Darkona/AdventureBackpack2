@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 
+import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
 import static com.darkona.adventurebackpack.reference.BackpackTypes.Props.NIGHT_VISION;
 import static com.darkona.adventurebackpack.reference.BackpackTypes.Props.REMOVAL;
 import static com.darkona.adventurebackpack.reference.BackpackTypes.Props.SPECIAL;
@@ -224,17 +225,17 @@ public enum BackpackTypes
         return UNKNOWN;
     }
 
-    public static BackpackTypes getType(ItemStack backpack)
+    public static BackpackTypes getType(ItemStack backpack) //TODO solve this damn null
     {
         if (backpack == null) // well... Wearing.getWearingBackpack() may return null...
             return null;
 
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        if (backpackTag.getByte("type") == UNKNOWN.meta) //TODO remove? stay?
+        if (backpackTag.getByte(TAG_TYPE) == UNKNOWN.meta) //TODO remove? stay?
         {
-            backpackTag.setByte("type", STANDARD.meta);
+            backpackTag.setByte(TAG_TYPE, STANDARD.meta);
         }
-        return getType(backpackTag.getByte("type"));
+        return getType(backpackTag.getByte(TAG_TYPE));
     }
 
     public static int getLowestUnusedMeta()
@@ -286,8 +287,8 @@ public enum BackpackTypes
             return null;
 
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        backpack.setItemDamage(meta); //TODO 0??
-        backpackTag.setByte("type", (byte) meta);
+        backpack.setItemDamage(meta);
+        backpackTag.setByte(TAG_TYPE, (byte) meta);
         BackpackUtils.setBackpackTag(backpack, backpackTag);
 
         return backpack;
@@ -296,7 +297,7 @@ public enum BackpackTypes
     public static void setBackpackType(ItemStack backpack, BackpackTypes type)
     {
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        backpackTag.setByte("type", getMeta(type));
+        backpackTag.setByte(TAG_TYPE, getMeta(type));
         BackpackUtils.setBackpackTag(backpack, backpackTag);
     }
 }

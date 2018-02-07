@@ -17,8 +17,8 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
-import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
-import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
+import static com.darkona.adventurebackpack.common.Constants.TOOL_LOWER;
+import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
 
 /**
  * Created on 12/10/2014
@@ -86,8 +86,8 @@ public class ContainerBackpack extends ContainerAdventureBackpack
             }
         }
 
-        addSlotToContainer(new SlotTool(inventory, UPPER_TOOL, 44, 79)); // #49 [84]
-        addSlotToContainer(new SlotTool(inventory, LOWER_TOOL, 44, 97)); // #50 [85]
+        addSlotToContainer(new SlotTool(inventory, TOOL_UPPER, 44, 79)); // #49 [84]
+        addSlotToContainer(new SlotTool(inventory, TOOL_LOWER, 44, 97)); // #50 [85]
 
         addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_LEFT, 6, 7)); // #51 [86]
         addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_LEFT, 6, 37)); // #52 [87]
@@ -117,7 +117,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
         ItemStack[] inv = inventory.getInventory();
         int tempCount = 0;
-        for (int i = 0; i <= LOWER_TOOL; i++)
+        for (int i = 0; i <= TOOL_LOWER; i++)
         {
             if (inv[i] != null)
                 tempCount++;
@@ -191,7 +191,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
     private boolean isHoldingSpace()
     {
-        return inventory.getExtendedProperties().hasKey(Constants.HOLDING_SPACE_TAG);
+        return inventory.getExtendedProperties().hasKey(Constants.TAG_HOLDING_SPACE);
     }
 
     private boolean transferFluidContainer(ItemStack container)

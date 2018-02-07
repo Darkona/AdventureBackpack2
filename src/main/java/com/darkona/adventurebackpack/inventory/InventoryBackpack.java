@@ -20,10 +20,11 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
-import static com.darkona.adventurebackpack.common.Constants.INVENTORY;
-import static com.darkona.adventurebackpack.common.Constants.LEFT_TANK;
-import static com.darkona.adventurebackpack.common.Constants.RIGHT_TANK;
-import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
+import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
+import static com.darkona.adventurebackpack.common.Constants.TAG_LEFT_TANK;
+import static com.darkona.adventurebackpack.common.Constants.TAG_RIGHT_TANK;
+import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 12/10/2014
@@ -63,17 +64,17 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
 
         NBTTagCompound oldBackpackTag = compound.getCompoundTag("backpackData");
         NBTTagList oldItems = oldBackpackTag.getTagList("ABPItems", NBT.TAG_COMPOUND);
-        leftTank.readFromNBT(oldBackpackTag.getCompoundTag(LEFT_TANK));
-        rightTank.readFromNBT(oldBackpackTag.getCompoundTag(RIGHT_TANK));
+        leftTank.readFromNBT(oldBackpackTag.getCompoundTag(TAG_LEFT_TANK));
+        rightTank.readFromNBT(oldBackpackTag.getCompoundTag(TAG_RIGHT_TANK));
         type = BackpackTypes.getType(oldBackpackTag.getString("colorName"));
 
         NBTTagCompound newBackpackTag = new NBTTagCompound();
-        newBackpackTag.setTag(INVENTORY, oldItems);
-        newBackpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
-        newBackpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        newBackpackTag.setByte("type", BackpackTypes.getMeta(type));
+        newBackpackTag.setTag(TAG_INVENTORY, oldItems);
+        newBackpackTag.setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
+        newBackpackTag.setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        newBackpackTag.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
 
-        compound.setTag(WEARABLE_TAG, newBackpackTag);
+        compound.setTag(TAG_WEARABLE_COMPOUND, newBackpackTag);
         compound.removeTag("backpackData");
     }
 
@@ -182,14 +183,14 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     @Override
     public void dirtyTime()
     {
-        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setInteger("lastTime", lastTime);
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setInteger("lastTime", lastTime);
     }
 
     @Override
     public void dirtyExtended()
     {
-        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).removeTag("extendedProperties");
-        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag("extendedProperties", extendedProperties);
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).removeTag("extendedProperties");
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag("extendedProperties", extendedProperties);
     }
 
     @Override
@@ -234,9 +235,9 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         if (compound == null)
             return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
 
-        NBTTagCompound backpackTag = compound.getCompoundTag(WEARABLE_TAG);
-        type = BackpackTypes.getType(backpackTag.getByte("type"));
-        NBTTagList items = backpackTag.getTagList(INVENTORY, NBT.TAG_COMPOUND);
+        NBTTagCompound backpackTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
+        type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
+        NBTTagList items = backpackTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND);
         for (int i = 0; i < items.tagCount(); i++)
         {
             NBTTagCompound item = items.getCompoundTagAt(i);
@@ -246,8 +247,8 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
                 inventory[slot] = ItemStack.loadItemStackFromNBT(item);
             }
         }
-        leftTank.readFromNBT(backpackTag.getCompoundTag(LEFT_TANK));
-        rightTank.readFromNBT(backpackTag.getCompoundTag(RIGHT_TANK));
+        leftTank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
+        rightTank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
         extendedProperties = backpackTag.getCompoundTag("extendedProperties");
         sleepingBagDeployed = extendedProperties.getBoolean("sleepingBagDeployed");
         if (sleepingBagDeployed)
@@ -265,7 +266,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     public void saveToNBT(NBTTagCompound compound)
     {
         NBTTagCompound backpackTag = new NBTTagCompound();
-        backpackTag.setByte("type", BackpackTypes.getMeta(type));
+        backpackTag.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {
@@ -278,10 +279,10 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
                 items.appendTag(item);
             }
         }
-        backpackTag.removeTag(INVENTORY);
-        backpackTag.setTag(INVENTORY, items);
-        backpackTag.setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
-        backpackTag.setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.removeTag(TAG_INVENTORY);
+        backpackTag.setTag(TAG_INVENTORY, items);
+        backpackTag.setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag("extendedProperties", extendedProperties);
         extendedProperties.setBoolean("sleepingBagDeployed", sleepingBagDeployed);
         if (sleepingBagDeployed)
@@ -300,7 +301,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         backpackTag.setBoolean("disableNVision", disableNVision);
         backpackTag.setInteger("lastTime", lastTime);
 
-        compound.setTag(WEARABLE_TAG, backpackTag);
+        compound.setTag(TAG_WEARABLE_COMPOUND, backpackTag);
     }
 
     @Override
@@ -339,15 +340,15 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
                 items.appendTag(item);
             }
         }
-        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).removeTag(INVENTORY);
-        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(INVENTORY, items);
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).removeTag(TAG_INVENTORY);
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_INVENTORY, items);
     }
 
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.getCompoundTag(WEARABLE_TAG).setTag(RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
     }
 
     @Override

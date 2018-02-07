@@ -33,6 +33,9 @@ import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Wearing;
 
+import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
+
 /**
  * Created on 31/12/2014
  *
@@ -60,7 +63,10 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         ItemStack iStack = new ItemStack(item, 1, 0);
         NBTTagCompound compound = new NBTTagCompound();
         iStack.setTagCompound(compound);
-        //compound.setTag(Constants.COPTER_FUEL_TANK, new FluidTank(Constants.COPTER_FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
+
+        NBTTagCompound copterTag = new NBTTagCompound();
+        //copterTag.setTag(Constants.Copter.TAG_FUEL_TANK, new FluidTank(Constants.Copter.FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
+        compound.setTag(TAG_WEARABLE_COMPOUND, copterTag);
 
         list.add(iStack);
     }
@@ -84,7 +90,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.setByte("status", OFF_MODE);
+        stack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, OFF_MODE);
     }
 
     @Override
@@ -281,7 +287,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.setByte("status", OFF_MODE);
+        stack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, OFF_MODE);
     }
 
     @Override

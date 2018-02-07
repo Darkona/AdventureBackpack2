@@ -9,12 +9,14 @@ import net.minecraft.world.World;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 
+import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
+
 /**
  * Created on 24/12/2014
  *
  * @author Darkona
  */
-public class AbstractBackpackRecipeTwo implements IRecipe
+public class AbstractBackpackRecipeTwo implements IRecipe //TODO unused class
 {
     private ItemStack result;
     private ItemStack[] recipe;
@@ -45,16 +47,18 @@ public class AbstractBackpackRecipeTwo implements IRecipe
 
     private static ItemStack makeBackpack(ItemStack backpackIn, BackpackTypes type)
     {
-        if (backpackIn == null) return null;
+        if (backpackIn == null)
+            return null;
+
         if (backpackIn.stackTagCompound == null)
         {
             backpackIn.setTagCompound(new NBTTagCompound());
-            backpackIn.stackTagCompound.setByte("type", BackpackTypes.getMeta(type));
+            backpackIn.stackTagCompound.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
         }
         ItemStack newBackpack = backpackIn.copy();
         NBTTagCompound compound = (NBTTagCompound) backpackIn.getTagCompound().copy();
         newBackpack.setTagCompound(compound);
-        newBackpack.stackTagCompound.setByte("type", BackpackTypes.getMeta(type));
+        newBackpack.stackTagCompound.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
         return newBackpack;
     }
 

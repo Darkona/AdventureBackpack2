@@ -51,17 +51,17 @@ public class TooltipEventHandler
         if (theItem instanceof ItemAdventureBackpack)
         {
             FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
-            NBTTagCompound backpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG);
+            NBTTagCompound backpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
 
             if (GuiScreen.isShiftKeyDown())
             {
-                NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
+                NBTTagList itemList = backpackTag.getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
                 makeTip(local("backpack.slots.used") + ": " + inventoryTooltip(itemList));
 
-                tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.TAG_LEFT_TANK));
                 makeTip(local("backpack.tank.left") + ": " + tankTooltip(tank));
 
-                tank.readFromNBT(backpackTag.getCompoundTag(Constants.RIGHT_TANK));
+                tank.readFromNBT(backpackTag.getCompoundTag(Constants.TAG_RIGHT_TANK));
                 makeTip(local("backpack.tank.right") + ": " + tankTooltip(tank));
 
                 shiftFooter();
@@ -78,7 +78,7 @@ public class TooltipEventHandler
                 makeTip(pressKeyFormat(actionKeyFormat()), locals("backpack.cycling.key"),
                         " " + switchTooltip(!cycling, false));
 
-                if (BackpackTypes.isNightVision(BackpackTypes.getType(backpackTag.getByte("type"))))
+                if (BackpackTypes.isNightVision(BackpackTypes.getType(backpackTag.getByte(Constants.TAG_TYPE))))
                 {
                     boolean vision = !backpackTag.getBoolean("disableNVision");
                     makeTip(local("backpack.vision") + ": " + switchTooltip(vision, true));
@@ -89,19 +89,19 @@ public class TooltipEventHandler
         }
         else if (theItem instanceof ItemCoalJetpack)
         {
-            FluidTank waterTank = new FluidTank(Constants.JETPACK_WATER_CAPACITY);
-            FluidTank steamTank = new FluidTank(Constants.JETPACK_STEAM_CAPACITY);
-            NBTTagCompound jetpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG);
+            FluidTank waterTank = new FluidTank(Constants.Jetpack.WATER_CAPACITY);
+            FluidTank steamTank = new FluidTank(Constants.Jetpack.STEAM_CAPACITY);
+            NBTTagCompound jetpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
 
             if (GuiScreen.isShiftKeyDown())
             {
-                NBTTagList itemList = jetpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
-                makeTip(local("jetpack.fuel") + ": " + slotStackTooltip(itemList, Constants.JETPACK_FUEL_SLOT));
+                NBTTagList itemList = jetpackTag.getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
+                makeTip(local("jetpack.fuel") + ": " + slotStackTooltip(itemList, Constants.Jetpack.FUEL_SLOT));
 
-                waterTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_WATER_TANK));
+                waterTank.readFromNBT(jetpackTag.getCompoundTag(Constants.Jetpack.TAG_WATER_TANK));
                 makeTip(local("jetpack.tank.water") + ": " + tankTooltip(waterTank));
 
-                steamTank.readFromNBT(jetpackTag.getCompoundTag(Constants.JETPACK_STEAM_TANK));
+                steamTank.readFromNBT(jetpackTag.getCompoundTag(Constants.Jetpack.TAG_STEAM_TANK));
                 // special case for steam, have to set displayed fluid name manually, cuz technically it's water
                 String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + local("steam") : "";
                 makeTip(local("jetpack.tank.steam") + ": " + tankTooltip(steamTank, false) + theSteam);
@@ -121,11 +121,12 @@ public class TooltipEventHandler
         }
         else if (theItem instanceof ItemCopterPack)
         {
-            FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
+            FluidTank fuelTank = new FluidTank(Constants.Copter.FUEL_CAPACITY);
+            NBTTagCompound copterTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
 
             if (GuiScreen.isShiftKeyDown())
             {
-                fuelTank.readFromNBT(event.itemStack.stackTagCompound.getCompoundTag(Constants.COPTER_FUEL_TANK));
+                fuelTank.readFromNBT(copterTag.getCompoundTag(Constants.Copter.TAG_FUEL_TANK));
                 makeTip(local("copter.tank.fuel") + ": " + tankTooltip(fuelTank));
                 makeTip(local("copter.rate.fuel") + ": " + fuelConsumptionTooltip(fuelTank));
 
@@ -248,11 +249,11 @@ public class TooltipEventHandler
         for (int i = itemCount - 1; i >= 0; i--)
         {
             int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
-            if (slotAtI < Constants.UPPER_TOOL)
+            if (slotAtI < Constants.TOOL_UPPER)
                 break;
-            else if (slotAtI == Constants.UPPER_TOOL)
+            else if (slotAtI == Constants.TOOL_UPPER)
                 toolSlotU = true;
-            else if (slotAtI == Constants.LOWER_TOOL)
+            else if (slotAtI == Constants.TOOL_LOWER)
                 toolSlotL = true;
             else
                 itemCount--; // this need for correct count while GUI is open and bucket slots may be occupied

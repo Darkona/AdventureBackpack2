@@ -33,10 +33,9 @@ public class ClientEventHandler
     {
         /*Special thanks go to MachineMuse, both for inspiration and the event. God bless you girl.*/
         Minecraft mc = Minecraft.getMinecraft();
-        int dWheel = event.dwheel;
-        if (dWheel != 0)
+        if (event.dwheel != 0)
         {
-            //LogHelper.debug("Mouse Wheel moving");
+            boolean isWheelUp = event.dwheel > 0;
             EntityClientPlayerMP player = mc.thePlayer;
             if (player != null && !player.isDead && player.isSneaking())
             {
@@ -52,15 +51,15 @@ public class ClientEventHandler
                         if ((ConfigHandler.enableToolsCycling && !Wearing.getWearingBackpackInv(player).getDisableCycling() && SlotTool.isValidTool(heldItem))
                                 || (BackpackTypes.getType(backpack) == BackpackTypes.SKELETON && theItem.equals(Items.bow)))
                         {
-                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
-                            ServerActions.cycleTool(player, dWheel, slot);
+                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(isWheelUp, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
+                            ServerActions.cycleTool(player, isWheelUp, slot);
                             event.setCanceled(true);
                         }
 
                         if (theItem instanceof ItemHose)
                         {
-                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
-                            ServerActions.switchHose(player, dWheel, ServerActions.HOSE_SWITCH);
+                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(isWheelUp, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
+                            ServerActions.switchHose(player, isWheelUp, ServerActions.HOSE_SWITCH);
                             event.setCanceled(true);
                         }
                     }

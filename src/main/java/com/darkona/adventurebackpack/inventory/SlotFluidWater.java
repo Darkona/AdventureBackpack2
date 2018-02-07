@@ -50,6 +50,6 @@ public class SlotFluidWater extends SlotFluid
     @Override
     public int getSlotStackLimit()
     {
-        return Constants.JETPACK_WATER_CAPACITY / Constants.BUCKET;
+        return Constants.Jetpack.WATER_CAPACITY / Constants.BUCKET;
     }
 }

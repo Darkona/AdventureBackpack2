@@ -57,9 +57,9 @@ public class BackpackUtils
     //TODO as we unificate NTB structure for all wearables, have to remake this to getWearableTag
     public static NBTTagCompound getBackpackTag(ItemStack backpack)
     {
-        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey(Constants.WEARABLE_TAG))
+        if (backpack.hasTagCompound() && backpack.stackTagCompound.hasKey(Constants.TAG_WEARABLE_COMPOUND))
         {
-            return backpack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG);
+            return backpack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
         }
         return new NBTTagCompound();
     }
@@ -70,7 +70,7 @@ public class BackpackUtils
         {
             stack.stackTagCompound = new NBTTagCompound();
         }
-        stack.stackTagCompound.setTag(Constants.WEARABLE_TAG, compound);
+        stack.stackTagCompound.setTag(Constants.TAG_WEARABLE_COMPOUND, compound);
     }
 
     private static class DelayUnequipTask extends TimerTask

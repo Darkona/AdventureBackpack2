@@ -260,8 +260,8 @@ public class ModelBackpackArmor extends ModelWearable
 
         if (ConfigHandler.enableToolsRender)
         {
-            ItemStack upperStack = backpack.getStackInSlot(Constants.UPPER_TOOL);
-            ItemStack lowerStack = backpack.getStackInSlot(Constants.LOWER_TOOL);
+            ItemStack upperStack = backpack.getStackInSlot(Constants.TOOL_UPPER);
+            ItemStack lowerStack = backpack.getStackInSlot(Constants.TOOL_LOWER);
             upperTool.setStack(upperStack, ToolHandler.getToolHandler(upperStack));
             lowerTool.setStack(lowerStack, ToolHandler.getToolHandler(lowerStack));
         }

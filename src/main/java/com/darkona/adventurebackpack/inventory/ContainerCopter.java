@@ -7,8 +7,8 @@ import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants.Source;
 
-import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_IN;
-import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
+import static com.darkona.adventurebackpack.common.Constants.Copter.BUCKET_IN;
+import static com.darkona.adventurebackpack.common.Constants.Copter.BUCKET_OUT;
 
 /**
  * Created on 03/01/2015
@@ -41,8 +41,8 @@ public class ContainerCopter extends ContainerAdventureBackpack
     {
         bindPlayerInventory(invPlayer, 8, 84);
 
-        addSlotToContainer(new SlotFluidFuel(inventory, COPTER_BUCKET_IN, 44, 23));
-        addSlotToContainer(new SlotFluidFuel(inventory, COPTER_BUCKET_OUT, 44, 53));
+        addSlotToContainer(new SlotFluidFuel(inventory, BUCKET_IN, 44, 23));
+        addSlotToContainer(new SlotFluidFuel(inventory, BUCKET_OUT, 44, 53));
     }
 
     @Override

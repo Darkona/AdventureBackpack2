@@ -23,6 +23,12 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 
+import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
+import static com.darkona.adventurebackpack.common.Constants.TAG_LEFT_TANK;
+import static com.darkona.adventurebackpack.common.Constants.TAG_RIGHT_TANK;
+import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
+
 /**
  * Created on 03.02.2018
  *
@@ -58,9 +64,9 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
 
     private static void addHeadToBackpack(List<String> currenttip, IWailaDataAccessor accessor)
     {
-        if (accessor.getNBTData().hasKey(Constants.WEARABLE_TAG))
+        if (accessor.getNBTData().hasKey(TAG_WEARABLE_COMPOUND))
         {
-            NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(Constants.WEARABLE_TAG);
+            NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(TAG_WEARABLE_COMPOUND);
             addHeadToBackpack(currenttip, backpackTag);
         }
     }
@@ -68,7 +74,7 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
     private static void addHeadToBackpack(List<String> currenttip, NBTTagCompound backpackTag)
     {
         currenttip.remove(0);
-        BackpackTypes type = BackpackTypes.getType(backpackTag.getByte("type"));
+        BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
         String skin = "";
         if (type != BackpackTypes.STANDARD)
             skin = " [" + Utils.getColoredSkinName(type) + EnumChatFormatting.WHITE + "]";
@@ -87,9 +93,9 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (te instanceof TileAdventureBackpack)
         {
-            if (accessor.getNBTData().hasKey(Constants.WEARABLE_TAG))
+            if (accessor.getNBTData().hasKey(TAG_WEARABLE_COMPOUND))
             {
-                NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(Constants.WEARABLE_TAG);
+                NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(TAG_WEARABLE_COMPOUND);
                 addTipToBackpack(currenttip, backpackTag);
             }
         }
@@ -97,16 +103,16 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
 
     private static void addTipToBackpack(List<String> currenttip, NBTTagCompound backpackTag)
     {
-        NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
+        NBTTagList itemList = backpackTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND);
         currenttip.add(TooltipEventHandler.local("backpack.slots.used") + ": " + TooltipEventHandler.inventoryTooltip(itemList));
 
         FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
-        tank.readFromNBT(backpackTag.getCompoundTag(Constants.LEFT_TANK));
+        tank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
         currenttip.add(EnumChatFormatting.RESET + TooltipEventHandler.local("backpack.tank.left")
                 + ": " + TooltipEventHandler.tankTooltip(tank));
 
-        tank.readFromNBT(backpackTag.getCompoundTag(Constants.RIGHT_TANK));
+        tank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
         currenttip.add(EnumChatFormatting.RESET + TooltipEventHandler.local("backpack.tank.right")
                 + ": " + TooltipEventHandler.tankTooltip(tank));
     }

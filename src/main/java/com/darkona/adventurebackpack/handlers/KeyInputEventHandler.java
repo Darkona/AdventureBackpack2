@@ -76,8 +76,8 @@ public class KeyInputEventHandler
         {
             if (Wearing.isHoldingHose(player))
             {
-                sendCycleToolPacket(0, player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
-                ServerActions.switchHose(player, 0, ServerActions.HOSE_TOGGLE);
+                sendCycleToolPacket( player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
+                ServerActions.switchHose(player, false, ServerActions.HOSE_TOGGLE);
             }
             else if (Wearing.isWearingBackpack(player))
             {
@@ -160,9 +160,9 @@ public class KeyInputEventHandler
         ModNetwork.net.sendToServer(new WearableModePacket.Message(type, "")); //TODO playerID?
     }
 
-    private void sendCycleToolPacket(int direction, int slot, byte type)
+    private void sendCycleToolPacket(int slot, byte type)
     {
-        ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(direction, slot, type));
+        ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(false, slot, type));
     }
 
     private void sendPlayerActionPacket(byte type)

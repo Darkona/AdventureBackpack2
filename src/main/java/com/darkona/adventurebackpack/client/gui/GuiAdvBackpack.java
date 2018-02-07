@@ -175,7 +175,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             {
                 isHoldingSpace = true;
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_HOLDING_SPACE));
-                inventory.getExtendedProperties().setBoolean(Constants.HOLDING_SPACE_TAG, true);
+                inventory.getExtendedProperties().setBoolean(Constants.TAG_HOLDING_SPACE, true);
             }
         }
         else
@@ -184,7 +184,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             {
                 isHoldingSpace = false;
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_NOT_HOLDING_SPACE));
-                inventory.getExtendedProperties().removeTag(Constants.HOLDING_SPACE_TAG);
+                inventory.getExtendedProperties().removeTag(Constants.TAG_HOLDING_SPACE);
             }
         }
     }

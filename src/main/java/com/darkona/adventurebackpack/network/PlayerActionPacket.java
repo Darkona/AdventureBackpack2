@@ -60,11 +60,11 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
 
                         if (message.type == GUI_HOLDING_SPACE)
                         {
-                            inv.getExtendedProperties().setBoolean(Constants.HOLDING_SPACE_TAG, true);
+                            inv.getExtendedProperties().setBoolean(Constants.TAG_HOLDING_SPACE, true);
                         }
                         else if (message.type == GUI_NOT_HOLDING_SPACE)
                         {
-                            inv.getExtendedProperties().removeTag(Constants.HOLDING_SPACE_TAG);
+                            inv.getExtendedProperties().removeTag(Constants.TAG_HOLDING_SPACE);
                         }
                     }
                 }

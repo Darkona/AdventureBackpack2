@@ -43,6 +43,8 @@ import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 
+import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
+
 /**
  * Created on 12/10/2014
  *
@@ -71,21 +73,21 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             ItemStack backpackStack = new ItemStack(this, 1, 0);
             backpackStack.setItemDamage(BackpackTypes.getMeta(type));
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setByte("type", BackpackTypes.getMeta(type));
+            compound.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
             BackpackUtils.setBackpackTag(backpackStack, compound);
             subItems.add(backpackStack);
         }
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"unchecked"})
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(stack);
-        if (backpackTag.hasKey("type"))
+        if (backpackTag.hasKey(TAG_TYPE))
         {
-            BackpackTypes type = BackpackTypes.getType(backpackTag.getByte("type"));
+            BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
             list.add(Utils.getColoredSkinName(type));
         }
     }
@@ -173,9 +175,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     {
         if (stack.stackSize == 0 || !player.canPlayerEdit(x, y, z, side, stack)) return false;
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        if (!stack.stackTagCompound.hasKey("type"))
+        if (!stack.stackTagCompound.hasKey(TAG_TYPE))
         {
-            stack.stackTagCompound.setByte("type", BackpackTypes.getMeta(BackpackTypes.STANDARD));
+            stack.stackTagCompound.setByte(TAG_TYPE, BackpackTypes.getMeta(BackpackTypes.STANDARD));
         }
 
         // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
@@ -274,15 +276,15 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     private int getItemCount(ItemStack backpack)
     {
-        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.WEARABLE_TAG);
-        NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
+        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
+        NBTTagList itemList = backpackTag.getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
         int itemCount = itemList.tagCount();
         for (int i = itemCount - 1; i >= 0; i--)
         {
             int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
-            if (slotAtI < Constants.UPPER_TOOL)
+            if (slotAtI < Constants.TOOL_UPPER)
                 break;
-            else if (slotAtI == Constants.UPPER_TOOL || slotAtI == Constants.LOWER_TOOL)
+            else if (slotAtI == Constants.TOOL_UPPER || slotAtI == Constants.TOOL_LOWER)
                 itemCount--;
         }
         return itemCount;

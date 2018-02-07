@@ -14,6 +14,9 @@ import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.util.Utils;
 
+import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
+
 /**
  * Created on 31/12/2014
  *
@@ -195,9 +198,11 @@ public class ModelCopterPack extends ModelWearable
         InventoryCopterPack copterInv = new InventoryCopterPack(this.copterPack);
         copterInv.openInventory();
         Axis.isHidden = true;
-        if (copterPack != null && copterPack.stackTagCompound != null && copterPack.stackTagCompound.hasKey("status"))
+        if (copterPack != null && copterPack.hasTagCompound()  //TODO these checks are terrible. can we get rid of em?
+                && copterPack.stackTagCompound.hasKey(TAG_WEARABLE_COMPOUND)
+                && copterPack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).hasKey(TAG_STATUS))
         {
-            if (copterPack.stackTagCompound.getByte("status") != ItemCopterPack.OFF_MODE)
+            if (copterPack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).getByte(TAG_STATUS) != ItemCopterPack.OFF_MODE)
             {
                 Axis.isHidden = false;
                 int degrees;

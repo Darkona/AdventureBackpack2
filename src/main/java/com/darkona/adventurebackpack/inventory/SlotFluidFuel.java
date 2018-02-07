@@ -38,6 +38,6 @@ public class SlotFluidFuel extends SlotFluid
     @Override
     public int getSlotStackLimit()
     {
-        return Constants.COPTER_FUEL_CAPACITY / Constants.BUCKET;
+        return Constants.Copter.FUEL_CAPACITY / Constants.BUCKET;
     }
 }

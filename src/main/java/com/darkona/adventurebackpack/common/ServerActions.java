@@ -37,9 +37,10 @@ import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
-import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
-import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
-import static com.darkona.adventurebackpack.common.Constants.WEARABLE_TAG;
+import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
+import static com.darkona.adventurebackpack.common.Constants.TOOL_LOWER;
+import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 23/12/2014
@@ -52,15 +53,14 @@ public class ServerActions
     public static final boolean HOSE_TOGGLE = true;
 
     /**
-     * Cycles tools. In a cycle. The tool in your hand with the tools in the special tool slots of the backpack, to be precise.
+     * Cycles tools. In a cycle. The tool in your hand with the tools in the special tool slot of the backpack, to be precise.
      *
-     * @param player    - Duh
-     * @param direction - An integer indicating the direction of the switch. Nobody likes to swith always inthe same
+     * @param player    Duh
+     * @param isWheelUp An boolean indicating the direction of the switch. Nobody likes to swith always in the same
      *                  direction all the timeInSeconds. That's stupid.
      * @param slot      The slot that will be switched with the backpack.
      */
-    //Using @Sir-Will dupe fixed
-    public static void cycleTool(EntityPlayer player, int direction, int slot)
+    public static void cycleTool(EntityPlayer player, boolean isWheelUp, int slot)
     {
         if (!GeneralReference.isDimensionAllowed(player))
             return;
@@ -72,15 +72,15 @@ public class ServerActions
             backpack.openInventory();
             if (SlotTool.isValidTool(current))
             {
-                if (direction < 0)
+                if (isWheelUp)
                 {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(LOWER_TOOL);
-                    backpack.setInventorySlotContentsNoSave(LOWER_TOOL, current);
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(TOOL_UPPER);
+                    backpack.setInventorySlotContentsNoSave(TOOL_UPPER, current);
                 }
-                else if (direction > 0)
+                else
                 {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(UPPER_TOOL);
-                    backpack.setInventorySlotContentsNoSave(UPPER_TOOL, current);
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(TOOL_LOWER);
+                    backpack.setInventorySlotContentsNoSave(TOOL_LOWER, current);
                 }
             }
             //old behavior, cycling all 3 slots:
@@ -88,15 +88,15 @@ public class ServerActions
             {
                 if (direction < 0)
                 {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(UPPER_TOOL);
-                    backpack.setInventorySlotContentsNoSave(UPPER_TOOL, backpack.getStackInSlot(LOWER_TOOL));
-                    backpack.setInventorySlotContentsNoSave(LOWER_TOOL, current);
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(TOOL_UPPER);
+                    backpack.setInventorySlotContentsNoSave(TOOL_UPPER, backpack.getStackInSlot(TOOL_LOWER));
+                    backpack.setInventorySlotContentsNoSave(TOOL_LOWER, current);
                 }
                 else if (direction > 0)
                 {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(LOWER_TOOL);
-                    backpack.setInventorySlotContentsNoSave(LOWER_TOOL, backpack.getStackInSlot(UPPER_TOOL));
-                    backpack.setInventorySlotContentsNoSave(UPPER_TOOL, current);
+                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(TOOL_LOWER);
+                    backpack.setInventorySlotContentsNoSave(TOOL_LOWER, backpack.getStackInSlot(TOOL_UPPER));
+                    backpack.setInventorySlotContentsNoSave(TOOL_UPPER, current);
                 }
             }*/
             backpack.markDirty();
@@ -130,11 +130,11 @@ public class ServerActions
 
     /**
      * @param player    Duh!
-     * @param direction The direction in which the hose modes will switch.
+     * @param isWheelUp The direction in which the hose modes will switch.
      * @param action    The type of the action to be performed on the hose.
      *                  Can be HOSE_SWITCH for mode or HOSE_TOGGLE for tank
      */
-    public static void switchHose(EntityPlayer player, int direction, boolean action)
+    public static void switchHose(EntityPlayer player, boolean isWheelUp, boolean action)
     {
         if (Wearing.isHoldingHose(player))
         {
@@ -148,11 +148,11 @@ public class ServerActions
                 {
                     mode = (mode + 1) % 2;
                 }
-                else if (direction > 0)
+                else if (isWheelUp)
                 {
                     mode = (mode + 1) % 3;
                 }
-                else if (direction < 0)
+                else
                 {
                     mode = (mode - 1 < 0) ? 2 : mode - 1;
                 }
@@ -341,7 +341,8 @@ public class ServerActions
 
     public static void copterSoundAtLogin(EntityPlayer player)
     {
-        byte status = BackpackProperty.get(player).getWearable().getTagCompound().getByte("status");
+        byte status = BackpackProperty.get(player).getWearable().getTagCompound()
+                .getCompoundTag(TAG_WEARABLE_COMPOUND).getByte(TAG_STATUS);
 
         if (!player.worldObj.isRemote && status != ItemCopterPack.OFF_MODE)
         {
@@ -352,7 +353,7 @@ public class ServerActions
     public static void jetpackSoundAtLogin(EntityPlayer player)
     {
         boolean isBoiling = BackpackProperty.get(player).getWearable().getTagCompound()
-                .getCompoundTag(WEARABLE_TAG).getBoolean("boiling");
+                .getCompoundTag(TAG_WEARABLE_COMPOUND).getBoolean("boiling");
 
         if (!player.worldObj.isRemote && isBoiling)
         {
@@ -365,7 +366,7 @@ public class ServerActions
     {
         String message = "";
         boolean actionPerformed = false;
-        byte mode = copter.stackTagCompound.getByte("status");
+        byte mode = copter.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).getByte(TAG_STATUS);
         byte newMode = ItemCopterPack.OFF_MODE;
 
         if (type == WearableModePacket.COPTER_ON_OFF)
@@ -406,7 +407,7 @@ public class ServerActions
 
         if (actionPerformed)
         {
-            copter.stackTagCompound.setByte("status", newMode);
+            copter.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, newMode);
             if (player.worldObj.isRemote)
             {
                 player.addChatComponentMessage(new ChatComponentTranslation(message));

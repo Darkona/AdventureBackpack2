@@ -53,7 +53,9 @@ public class ModRecipes
         {
             //Copter Pack
             ItemStack copterStack = new ItemStack(ModItems.copterPack);
-            copterStack.setTagCompound(new NBTTagCompound()); //TODO rework
+            NBTTagCompound copterCompound = new NBTTagCompound();
+            copterCompound.setTag(Constants.TAG_WEARABLE_COMPOUND, new NBTTagCompound());
+            copterStack.setTagCompound(copterCompound); //TODO check
 
             GameRegistry.addRecipe(copterStack,
                     "WBW",
@@ -73,7 +75,7 @@ public class ModRecipes
             //CoalJetpack
             ItemStack jetpackStack = new ItemStack(ModItems.coalJetpack);
             NBTTagCompound jetpackCompound = new NBTTagCompound();
-            jetpackCompound.setTag(Constants.WEARABLE_TAG, new NBTTagCompound());
+            jetpackCompound.setTag(Constants.TAG_WEARABLE_COMPOUND, new NBTTagCompound());
             jetpackStack.setTagCompound(jetpackCompound); //TODO check
 
             GameRegistry.addRecipe(jetpackStack,

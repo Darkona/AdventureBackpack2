@@ -179,8 +179,8 @@ public class GuiOverlay extends Gui
                     GL11.glScalef(0.5f, 0.5f, 0.5f);
                     if (ConfigHandler.enableToolsRender)
                     {
-                        ItemStack upperStack = inv.getStackInSlot(Constants.UPPER_TOOL);
-                        ItemStack lowerStack = inv.getStackInSlot(Constants.LOWER_TOOL);
+                        ItemStack upperStack = inv.getStackInSlot(Constants.TOOL_UPPER);
+                        ItemStack lowerStack = inv.getStackInSlot(Constants.TOOL_LOWER);
                         drawItemStack(upperStack, ToolHandler.getToolHandler(upperStack),0, 0);
                         drawItemStack(lowerStack, ToolHandler.getToolHandler(lowerStack), 0, 16);
                     }
