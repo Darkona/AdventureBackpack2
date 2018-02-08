@@ -30,11 +30,6 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
             EntityPlayer player = ctx.getServerHandler().playerEntity;
             if (message.action == EQUIP_WEARABLE)
             {
-                //before reenable make sure to takes into account the delay in unequipWearable()
-                /*if (message.force && Wearing.isWearingWearable(player))
-                {
-                    BackpackUtils.unequipWearable(player);
-                } else */
                 if (Wearing.isHoldingWearable(player) && !Wearing.isWearingWearable(player))
                 {
                     if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.Reasons.SUCCESSFUL)
@@ -70,31 +65,27 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
     public static class Message implements IMessage
     {
         private byte action;
-        private boolean force;
 
         public Message()
         {
 
         }
 
-        public Message(byte action, boolean force)
+        public Message(byte action)
         {
             this.action = action;
-            this.force = force;
         }
 
         @Override
         public void fromBytes(ByteBuf buf)
         {
             action = buf.readByte();
-            force = buf.readBoolean();
         }
 
         @Override
         public void toBytes(ByteBuf buf)
         {
             buf.writeByte(action);
-            buf.writeBoolean(force);
         }
     }
 }

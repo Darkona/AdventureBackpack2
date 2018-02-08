@@ -5,10 +5,11 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.Constants.Source;
 
-import static com.darkona.adventurebackpack.common.Constants.JETPACK_FUEL_SLOT;
+import static com.darkona.adventurebackpack.common.Constants.Jetpack.BUCKET_IN;
+import static com.darkona.adventurebackpack.common.Constants.Jetpack.BUCKET_OUT;
+import static com.darkona.adventurebackpack.common.Constants.Jetpack.FUEL_SLOT;
 
 /**
  * Created on 15/01/2015
@@ -45,9 +46,9 @@ public class ContainerJetpack extends ContainerAdventureBackpack
     {
         bindPlayerInventory(invPlayer, 8, 84);
 
-        addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_IN, 30, 22));
-        addSlotToContainer(new SlotFluidWater(inventory, Constants.JETPACK_BUCKET_OUT, 30, 52));
-        addSlotToContainer(new SlotFuel(inventory, JETPACK_FUEL_SLOT, 77, 64));
+        addSlotToContainer(new SlotFluidWater(inventory, BUCKET_IN, 30, 22));
+        addSlotToContainer(new SlotFluidWater(inventory, BUCKET_OUT, 30, 52));
+        addSlotToContainer(new SlotFuel(inventory, FUEL_SLOT, 77, 64));
     }
 
     @Override
@@ -56,9 +57,9 @@ public class ContainerJetpack extends ContainerAdventureBackpack
         boolean changesDetected = false;
 
         ItemStack[] inv = inventory.getInventory();
-        if (inv[JETPACK_FUEL_SLOT] != fuelStack)
+        if (inv[FUEL_SLOT] != fuelStack)
         {
-            fuelStack = inv[JETPACK_FUEL_SLOT];
+            fuelStack = inv[FUEL_SLOT];
             changesDetected = true;
         }
 

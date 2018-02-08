@@ -26,6 +26,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
+import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
@@ -36,10 +37,9 @@ import com.darkona.adventurebackpack.item.IBackWearableItem;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
-import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -51,8 +51,6 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class PlayerEventHandler
 {
-    private static int tickCounter = 0;
-
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {
@@ -69,19 +67,16 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void joinPlayer(EntityJoinWorldEvent event)
     {
-        if (!event.world.isRemote)
+        if (!event.world.isRemote && event.entity instanceof EntityPlayer)
         {
-            if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
+            EntityPlayer player = (EntityPlayer) event.entity;
+            LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
+            NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
+            if (playerData != null)
             {
-                EntityPlayer player = (EntityPlayer) event.entity;
-                LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
-                NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
-                if (playerData != null)
-                {
-                    BackpackProperty.get(player).loadNBTData(playerData);
-                    BackpackProperty.sync(player);
-                    LogHelper.info("Stored properties retrieved");
-                }
+                BackpackProperty.get(player).loadNBTData(playerData);
+                BackpackProperty.sync(player);
+                LogHelper.info("Stored properties retrieved");
             }
         }
     }
@@ -195,7 +190,7 @@ public class PlayerEventHandler
                 {
                     event.setCanceled(true);
                 }
-                if (Wearing.isWearingTheRightBackpack((EntityPlayer) event.entityLiving, "IronGolem") && ConfigHandler.backpackAbilities)
+                if (Wearing.isWearingTheRightBackpack((EntityPlayer) event.entityLiving, BackpackTypes.IRON_GOLEM) && ConfigHandler.backpackAbilities)
                 {
                     event.setCanceled(true);
                 }
@@ -206,7 +201,7 @@ public class PlayerEventHandler
     @SubscribeEvent(priority = EventPriority.LOW)
     public void playerDies(LivingDeathEvent event)
     {
-        if (Utils.notNullAndInstanceOf(event.entity, EntityPlayer.class))
+        if (event.entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) event.entity;
 
@@ -226,7 +221,7 @@ public class PlayerEventHandler
 
                 if (Wearing.isWearingWearable(player))
                 {
-                    if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
+                    if (Wearing.isWearingTheRightBackpack(player, BackpackTypes.CREEPER))
                     {
                         player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
                     }
@@ -280,8 +275,8 @@ public class PlayerEventHandler
     {
         if (event.crafting.getItem() == ModItems.adventureBackpack)
         {
-            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + event.crafting.getTagCompound().getString("colorName"));
-            if (BackpackNames.getBackpackColorName(event.crafting).equals("Dragon") && !ConfigHandler.consumeDragonEgg)
+            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + BackpackTypes.getSkinName(event.crafting));
+            if (!ConfigHandler.consumeDragonEgg && BackpackTypes.getType(event.crafting) == BackpackTypes.DRAGON)
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);
                 event.player.playSound("mob.enderdragon.growl", 1.0f, 5.0f);
@@ -293,11 +288,12 @@ public class PlayerEventHandler
     public void interactWithCreatures(EntityInteractEvent event)
     {
         EntityPlayer player = event.entityPlayer;
-        if (!event.entityPlayer.worldObj.isRemote)
+
+        if (!player.worldObj.isRemote)
         {
-            if (Utils.notNullAndInstanceOf(event.target, EntitySpider.class))
+            if (event.target instanceof EntitySpider)
             {
-                if (Wearing.isWearingTheRightBackpack(player, "Spider"))
+                if (Wearing.isWearingTheRightBackpack(player, BackpackTypes.SPIDER))
                 {
                     EntityFriendlySpider pet = new EntityFriendlySpider(event.target.worldObj);
                     pet.setLocationAndAngles(event.target.posX, event.target.posY, event.target.posZ, event.target.rotationYaw, event.target.rotationPitch);
@@ -306,10 +302,11 @@ public class PlayerEventHandler
                     event.entityPlayer.mountEntity(pet);
                 }
             }
-            if (Utils.notNullAndInstanceOf(event.target, EntityHorse.class))
+            if (event.target instanceof EntityHorse)
             {
-                ItemStack stack = player.getCurrentEquippedItem();
                 EntityHorse horse = (EntityHorse) event.target;
+                ItemStack stack = player.getCurrentEquippedItem();
+
                 if (stack != null && stack.getItem() != null && stack.getItem() instanceof ItemNameTag && stack.hasDisplayName())
                 {
                     if (horse.getCustomNameTag() == null || horse.getCustomNameTag().equals("") && horse.isTame())
@@ -332,29 +329,53 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void playerWokeUp(PlayerWakeUpEvent event)
     {
-        if (event.entity.worldObj.isRemote) return;
-        ChunkCoordinates bedLocation = event.entityPlayer.getBedLocation(event.entityPlayer.dimension);
-        if (bedLocation != null && event.entityPlayer.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ) == ModBlocks.blockSleepingBag)
+        if (event.entity.worldObj.isRemote)
+            return;
+
+        EntityPlayer player = event.entityPlayer;
+        ChunkCoordinates bedLocation = player.getBedLocation(player.dimension);
+        if (bedLocation != null && player.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ) == ModBlocks.blockSleepingBag)
         {
             //If the player wakes up in one of those super confortable SleepingBags (tm) (Patent Pending)
-            BackpackProperty.get(event.entityPlayer).setForceCampFire(true);
-            LogHelper.info("Player just woke up in a sleeping bag, forcing respawn in the last lighted campfire, if there's any");
+            if (BlockSleepingBag.isSleepingInPortableBag(player))
+            {
+                BlockSleepingBag.packPortableSleepingBag(player);
+                BackpackProperty.get(player).setWakingUpInPortableBag(true);
+                LogHelper.info("Player just woke up in a portable sleeping bag.");
+            }
+            else
+            {
+                BackpackProperty.get(player).setForceCampFire(true);
+                LogHelper.info("Player just woke up in a sleeping bag, forcing respawn in the last lighted campfire, if there's any");
+            }
         }
         else
         {
             //If it's a regular bed or whatever
-            BackpackProperty.get(event.entityPlayer).setForceCampFire(false);
+            BackpackProperty.get(player).setForceCampFire(false);
         }
     }
 
     @SubscribeEvent
     public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
-        if (event.player != null && !event.player.isDead && Wearing.isWearingWearable(event.player))
+        EntityPlayer player = event.player;
+        if (player != null && !player.isDead && Wearing.isWearingWearable(player))
         {
             if (event.phase == TickEvent.Phase.START)
             {
-                BackpackProperty.get(event.player).executeWearableUpdateProtocol();
+                BackpackProperty.get(player).executeWearableUpdateProtocol();
+            }
+            if (event.phase == TickEvent.Phase.END)
+            {
+                if (!player.worldObj.isRemote)
+                {
+                    if (BackpackProperty.get(player).isWakingUpInPortableBag() && Wearing.isWearingBackpack(player))
+                    {
+                        BlockSleepingBag.restoreOriginalSpawn(player, Wearing.getWearingBackpackInv(player).getExtendedProperties());
+                        BackpackProperty.get(player).setWakingUpInPortableBag(false);
+                    }
+                }
             }
         }
     }

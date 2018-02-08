@@ -13,6 +13,9 @@ import codechicken.lib.vec.Vector3;
 
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
+
+import static com.darkona.adventurebackpack.reference.BackpackTypes.*;
 
 /**
  * Created on 17/12/2014
@@ -268,7 +271,7 @@ public class ModelBackpackBlock extends ModelBase
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, IInventoryAdventureBackpack backpack)
     {
         //scale*=0.9;
-        boolean sleepingbag = backpack.isSBDeployed();
+        boolean sleepingbag = backpack.isSleepingBagDeployed();
         FluidTank tankLeft = backpack.getLeftTank();
         FluidTank tankRight = backpack.getRightTank();
         setRotationAngles(f, f1, f2, f3, f4, scale, entity);
@@ -363,9 +366,9 @@ public class ModelBackpackBlock extends ModelBase
 
     private void renderBackpack(IInventoryAdventureBackpack backpack, float scale)
     {
-        String color = backpack.getColorName();
+        BackpackTypes type = backpack.getType();
 
-        if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
+        if (type == QUARTZ || type == SLIME || type == SNOW)
         {
             GL11.glPushMatrix();
             GL11.glEnable(GL11.GL_BLEND);
@@ -377,7 +380,6 @@ public class ModelBackpackBlock extends ModelBase
             GL11.glPopMatrix();
             //GL11.glDisable(GL11.GL_CULL_FACE);
             GL11.glDisable(GL11.GL_BLEND);
-
         }
         else
         {
@@ -386,22 +388,22 @@ public class ModelBackpackBlock extends ModelBase
         tankLeftTop.render(scale);
         tankRightTop.render(scale);
 
-        if (!backpack.isSBDeployed()) bed.render(scale);
+        if (!backpack.isSleepingBagDeployed()) bed.render(scale);
 
-        if (color.equals("Pig") || color.equals("Horse"))
+        if (type == PIG || type == HORSE)
         {
             pigNose.render(scale);
         }
-        if (color.equals("Villager") || color.equals("IronGolem"))
+        if (type == VILLAGER || type == IRON_GOLEM)
         {
             villagerNose.render(scale);
         }
-        if (color.equals("Ocelot"))
+        if (type == OCELOT)
         {
             ocelotNose.render(scale);
         }
 
-        /*if(color.equals("Standard"))
+        /*if(type == STANDARD)
         {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

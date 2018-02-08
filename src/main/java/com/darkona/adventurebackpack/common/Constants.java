@@ -9,60 +9,85 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
  */
 public class Constants
 {
-    public enum Source
+    public enum Source //TODO move to separate class?
     {
         TILE, HOLDING, WEARING
     }
 
+    // General
     public static final int BUCKET = FluidContainerRegistry.BUCKET_VOLUME;
 
-    public static final int INVENTORY_SIZE = 45;
-    public static final String COMPOUND_TAG = "backpackData";
-    public static final String INVENTORY = "ABPItems";
+    // Wearable NBT
+    public static final String TAG_WEARABLE_COMPOUND = "wearableData";
+    public static final String TAG_EXTENDED_COMPOUND = "extendedProperties";
+    public static final String TAG_INVENTORY = "inventory";
 
-    // Inventory Special Slots
-    public static final int END_OF_INVENTORY = INVENTORY_SIZE - 7; // 0 included
-    public static final int INVENTORY_MAIN_SIZE = END_OF_INVENTORY + 1; // 0 excluded
+    /**
+     *  ### Adventure Backpack ###
+     */
+    public static final int BASIC_TANK_CAPACITY = BUCKET * 4;
+    //public static final int ADVANCED_TANK_CAPACITY = BUCKET * 8; // upgrade system?
+    //public static final int HEROIC_TANK_CAPACITY = BUCKET * 12;
 
-    public static final int UPPER_TOOL = END_OF_INVENTORY + 1;
-    public static final int LOWER_TOOL = UPPER_TOOL + 1;
+    // Inventory Slots
+    public static final int INVENTORY_SIZE = 54;
+    public static final int INVENTORY_SPECIAL_SIZE = 6; // tooSlot * 2, bucketIn * 2, bucketOut * 2
+    public static final int INVENTORY_MAIN_SIZE = INVENTORY_SIZE - INVENTORY_SPECIAL_SIZE; // 0 excluded
+    public static final int END_OF_INVENTORY = INVENTORY_MAIN_SIZE - 1;                    // 0 included
 
-    public static final int BUCKET_IN_LEFT = LOWER_TOOL + 1;
+    public static final int TOOL_UPPER = END_OF_INVENTORY + 1;
+    public static final int TOOL_LOWER = TOOL_UPPER + 1;
+
+    public static final int BUCKET_IN_LEFT = TOOL_LOWER + 1;
     public static final int BUCKET_OUT_LEFT = BUCKET_IN_LEFT + 1;
     public static final int BUCKET_IN_RIGHT = BUCKET_OUT_LEFT + 1;
     public static final int BUCKET_OUT_RIGHT = BUCKET_IN_RIGHT + 1;
 
-    // Tanks
-    public static final String RIGHT_TANK = "rightTank";
-    public static final String LEFT_TANK = "leftTank";
-    public static final int BASIC_TANK_CAPACITY = BUCKET * 4;
-    public static final int ADVANCED_TANK_CAPACITY = BUCKET * 8; // upgrade system?
-    public static final int HEROIC_TANK_CAPACITY = BUCKET * 12;
+    // NBT
+    public static final String TAG_TYPE = "type";
+    public static final String TAG_LEFT_TANK = "leftTank";
+    public static final String TAG_RIGHT_TANK = "rightTank";
+    public static final String TAG_DISABLE_CYCLING = "disableCycling";
+    public static final String TAG_DISABLE_NVISION = "disableNVision";
 
-    // Jetpack
-    public static final int JETPACK_INVENTORY_SIZE = 3;
-    public static final int JETPACK_BUCKET_IN = 0;
-    public static final int JETPACK_BUCKET_OUT = 1;
-    public static final int JETPACK_FUEL_SLOT = 2;
+    // NBT: Extended Properties
+    public static final String TAG_HOLDING_SPACE = "holdingSpace";
+    public static final String TAG_SLEEPING_IN_BAG = "sleepingInBag";
 
-    public static final String JETPACK_COMPOUND_TAG = "jetpackData";
-    public static final String JETPACK_INVENTORY = "inventory";
-    public static final String JETPACK_STEAM_TANK = "steamTank";
-    public static final String JETPACK_WATER_TANK = "waterTank";
-    public static final int JETPACK_STEAM_CAPACITY = BUCKET * 12;
-    public static final int JETPACK_WATER_CAPACITY = BUCKET * 6;
+    public class Jetpack
+    {
+        /**
+         *  ### Coal Jetpack ###
+         */
+        public static final int MAX_TEMPERATURE = 200;
+        public static final int WATER_CAPACITY = BUCKET * 6;
+        public static final int STEAM_CAPACITY = BUCKET * 12;
 
-    public static final int JETPACK_MAX_TEMPERATURE = 200;
+        // Inventory Slots
+        public static final int INVENTORY_SIZE = 3;
+        public static final int BUCKET_IN = 0;
+        public static final int BUCKET_OUT = 1;
+        public static final int FUEL_SLOT = 2;
 
-    // Copter
-    public static final int COPTER_INVENTORY_SIZE = 2;
-    public static final int COPTER_BUCKET_IN = 0;
-    public static final int COPTER_BUCKET_OUT = 1;
+        // NBT
+        public static final String TAG_WATER_TANK = "waterTank";
+        public static final String TAG_STEAM_TANK = "steamTank";
+    }
 
-    public static final String COPTER_FUEL_TANK = "fuelTank";
-    public static final int COPTER_FUEL_CAPACITY = BUCKET * 6;
+    public class Copter
+    {
+        /**
+         *  ### Copter Pack ###
+         */
+        public static final int FUEL_CAPACITY = BUCKET * 6;
 
+        // Inventory Slots
+        public static final int INVENTORY_SIZE = 2;
+        public static final int BUCKET_IN = 0;
+        public static final int BUCKET_OUT = 1;
 
-    //
-    public static final String[] NIGHTVISION_BACKPACKS = {"Bat", "Dragon", "Squid",};
+        // NBT
+        public static final String TAG_STATUS = "status";
+        public static final String TAG_FUEL_TANK = "fuelTank";
+    }
 }

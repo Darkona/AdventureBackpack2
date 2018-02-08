@@ -7,7 +7,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 
 /**
  * Created on 20/10/2014
@@ -21,7 +21,7 @@ public class BackpackRecipesList
     public BackpackRecipesList()
     {
         String[] covered = {"XXX", "XaX", "XXX"};
-        ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), 0);
+        ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), 0);
 
         ItemStack woolWhite = new ItemStack(Blocks.wool, 1, 0);
         ItemStack woolOrange = new ItemStack(Blocks.wool, 1, 1);

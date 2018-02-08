@@ -10,6 +10,9 @@ import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 
+import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
+
 /**
  * Created on 16/10/2014
  *
@@ -24,7 +27,7 @@ public class CopterPackSound extends MovingSound
 
     public CopterPackSound(EntityPlayer player)
     {
-        super(new ResourceLocation(ModInfo.MOD_ID, "helicopter"));
+        super(new ResourceLocation(ModInfo.MOD_ID, "helicopter3"));
         volume = 0.6f;
         pitch = 1.0F;
         thePlayer = player;
@@ -69,36 +72,24 @@ public class CopterPackSound extends MovingSound
             setDonePlaying();
             return;
         }
-        if (copter.hasTagCompound() && copter.getTagCompound().hasKey("status"))
-        {
-            status = copter.getTagCompound().getByte("status");
-            if (status == ItemCopterPack.OFF_MODE)
-            {
-                setDonePlaying();
-            }
-            else
-            {
-                if (status == ItemCopterPack.HOVER_MODE)
-                {
-                    pitch = (thePlayer.motionY > 0) ? 1.2f : (thePlayer.motionY < -0.1) ? 0.8f : 1.0f;
-                }
-                if (status == ItemCopterPack.NORMAL_MODE)
-                {
-                    if (thePlayer.onGround)
-                    {
-                        pitch = 0.8f;
-                    }
-                    else
-                    {
-                        pitch = (thePlayer.motionY > 0) ? 1.2f : (thePlayer.isSneaking()) ? 0.8f : 1.0f;
-                    }
-                }
-            }
-        }
-        else
+
+        status = copter.getTagCompound().getCompoundTag(TAG_WEARABLE_COMPOUND).getByte(TAG_STATUS);
+        if (status == ItemCopterPack.OFF_MODE)
         {
             setDonePlaying();
         }
+        else if (status == ItemCopterPack.HOVER_MODE)
+        {
+            pitch = (thePlayer.motionY > 0) ? 1.2f : (thePlayer.motionY < -0.1) ? 0.8f : 1.0f;
+        }
+        else if (status == ItemCopterPack.NORMAL_MODE)
+        {
+            if (thePlayer.onGround)
+                pitch = 0.8f;
+            else
+                pitch = (thePlayer.motionY > 0) ? 1.2f : (thePlayer.isSneaking()) ? 0.8f : 1.0f;
+        }
+
         xPosF = (float) thePlayer.posX;
         yPosF = (float) thePlayer.posY;
         zPosF = (float) thePlayer.posZ;

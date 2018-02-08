@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.ModInfo;
 
 /**
@@ -21,9 +21,9 @@ public class Resources
         return new ResourceLocation(TEXTURE_LOCATION, "textures/models/" + name).toString();
     }
 
-    public static String backpackTexturesStringFromColor(ItemStack backpack)
+    public static String backpackTexturesStringFromSkin(ItemStack backpack)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackNames.getBackpackColorName(backpack) + ".png").toString();
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackTypes.getSkinName(backpack) + ".png").toString();
     }
 
     public static ResourceLocation backpackTextureFromString(String color)
@@ -31,9 +31,9 @@ public class Resources
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + color + ".png");
     }
 
-    public static ResourceLocation backpackTextureFromColor(IInventoryAdventureBackpack adventureBackpack)
+    public static ResourceLocation backpackTextureFromSkin(IInventoryAdventureBackpack adventureBackpack)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + adventureBackpack.getColorName() + ".png");
+        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackTypes.getSkinName(adventureBackpack.getType()) + ".png");
     }
 
     public static ResourceLocation guiTextures(String name)

@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.CoordsUtils;
 
 /**
  * Created on 05/01/2015
@@ -155,7 +155,7 @@ public class BlockCampFire extends BlockContainer
     {
         for (int i = y - 5; i <= y + 5; i++)
         {
-            ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinatesSpiral(world, x, z, x, i, z, 8, true, 1, (byte) 0, true);
+            ChunkCoordinates spawn = CoordsUtils.getNearestEmptyChunkCoordinatesSpiral(world, x, z, x, i, z, 8, true, 1, (byte) 0, true);
 
             if (spawn != null)
             {

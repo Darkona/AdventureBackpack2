@@ -48,12 +48,11 @@ public abstract class GuiWithTanks extends GuiContainer
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        //int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
         if (source == Source.WEARING)
         {
             if (getUnequipButton().inButton(this, mouseX, mouseY))
             {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE, false));
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE));
                 player.closeScreen();
             }
         }
@@ -61,8 +60,7 @@ public abstract class GuiWithTanks extends GuiContainer
         {
             if (getEquipButton().inButton(this, mouseX, mouseY))
             {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, false));
-                //ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE));
                 player.closeScreen();
             }
         }
@@ -86,7 +84,19 @@ public abstract class GuiWithTanks extends GuiContainer
     {
         if (Mouse.getEventDWheel() != 0)
         {
-            return; // forbid mouseWheel, preventing glitches with Shift+Wheel on fluid containers and so on
+            int i = Mouse.getEventX() * this.width / this.mc.displayWidth;
+            int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+            int marginX = (width - xSize) / 2;
+            int marginY = (height - ySize) / 2;
+
+            if (i > marginX && i < marginX + xSize)
+            {
+                if (j > marginY && j < marginY + ySize)
+                {
+                    return; // forbid mouseWheel when mouse over our GUI,
+                    // Shift+Wheel on stacks of fluid containers places them to clients bucket slots, causes desync
+                }
+            }
         }
 
         super.handleMouseInput();

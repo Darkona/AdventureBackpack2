@@ -33,9 +33,16 @@ import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Icons;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.reference.ModInfo;
-import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.CoordsUtils;
+
+import static com.darkona.adventurebackpack.reference.BackpackTypes.BOOKSHELF;
+import static com.darkona.adventurebackpack.reference.BackpackTypes.CACTUS;
+import static com.darkona.adventurebackpack.reference.BackpackTypes.GLOWSTONE;
+import static com.darkona.adventurebackpack.reference.BackpackTypes.REDSTONE;
+import static com.darkona.adventurebackpack.reference.BackpackTypes.UNKNOWN;
 
 /**
  * Created on 12/10/2014.
@@ -59,9 +66,9 @@ public class BlockAdventureBackpack extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-        if (getAssociatedTileColorName(world, x, y, z).equals("Bookshelf"))
+        if (getAssociatedTileBackpackType(world, x, y, z) == BOOKSHELF)
         {
-            ChunkCoordinates enchTable = Utils.findBlock3D(world, x, y, z, Blocks.enchanting_table, 2, 2);
+            ChunkCoordinates enchTable = CoordsUtils.findBlock3D(world, x, y, z, Blocks.enchanting_table, 2, 2);
             if (enchTable != null)
             {
                 if (!world.isAirBlock((enchTable.posX - x) / 2 + x, enchTable.posY, (enchTable.posZ - z) / 2 + z))
@@ -103,10 +110,10 @@ public class BlockAdventureBackpack extends BlockContainer
         return true;
     }
 
-    private String getAssociatedTileColorName(IBlockAccess world, int x, int y, int z)
+    private BackpackTypes getAssociatedTileBackpackType(IBlockAccess world, int x, int y, int z)
     {
         final TileEntity tile = world.getTileEntity(x, y, z);
-        return (tile instanceof TileAdventureBackpack) ? ((TileAdventureBackpack) tile).getColorName() : "error";
+        return (tile instanceof TileAdventureBackpack) ? ((TileAdventureBackpack) tile).getType() : UNKNOWN;
     }
 
     @Override
@@ -124,7 +131,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public float getEnchantPowerBonus(World world, int x, int y, int z)
     {
-        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 10 : 0;
+        return getAssociatedTileBackpackType(world, x, y, z) == BOOKSHELF ? 10 : 0;
     }
 
     @Override
@@ -166,7 +173,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
     {
-        if (getAssociatedTileColorName(world, x, y, z).equals("Cactus"))
+        if (getAssociatedTileBackpackType(world, x, y, z) == CACTUS)
         {
             entity.attackEntityFrom(DamageSource.cactus, 1.0F);
         }
@@ -198,7 +205,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
-        if (getAssociatedTileColorName(world, x, y, z).equals("Glowstone"))
+        if (getAssociatedTileBackpackType(world, x, y, z) == GLOWSTONE)
         {
             return 15;
         }
@@ -215,19 +222,19 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int meta)
     {
-        return getAssociatedTileColorName(world, x, y, z).equals("Redstone") ? 15 : 0;
+        return getAssociatedTileBackpackType(world, x, y, z) == REDSTONE ? 15 : 0;
     }
 
     @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
     {
-        return getAssociatedTileColorName(world, x, y, z).equals("Redstone");
+        return getAssociatedTileBackpackType(world, x, y, z) == REDSTONE;
     }
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
-        if (!world.isRemote && Utils.isDimensionAllowed(player.worldObj.provider.dimensionId))
+        if (!world.isRemote && GeneralReference.isDimensionAllowed(player))
         {
             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
             return true;
@@ -239,9 +246,15 @@ public class BlockAdventureBackpack extends BlockContainer
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
         ItemStack backpack = new ItemStack(ModItems.adventureBackpack, 1);
-        BackpackNames.setBackpackColorNameFromDamage(backpack, BackpackNames.getBackpackDamageFromName(getAssociatedTileColorName(world, x, y, z)));
+        BackpackTypes.setBackpackTypeFromMeta(backpack, BackpackTypes.getMeta(getAssociatedTileBackpackType(world, x, y, z)));
         return backpack;
     }
+
+    /*@Override
+    public int damageDropped(int meta)
+    {
+        return meta; //TODO how to save meta from "tile->item"
+    }*/
 
     @Override
     public boolean hasTileEntity(int meta)

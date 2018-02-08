@@ -21,7 +21,7 @@ public class SlotFluidFuel extends SlotFluid
 
     private static boolean isValidContainer(ItemStack stack)
     {
-        return isEmpty(stack) || (isFilled(stack) && GeneralReference.isValidFuel(getFluid(stack)));
+        return isEmpty(stack) || (isFilled(stack) && GeneralReference.isValidFuel(getFluid(stack).getName()));
     }
 
     static boolean isValidItem(ItemStack stack)
@@ -38,6 +38,6 @@ public class SlotFluidFuel extends SlotFluid
     @Override
     public int getSlotStackLimit()
     {
-        return Constants.COPTER_FUEL_CAPACITY / Constants.BUCKET;
+        return Constants.Copter.FUEL_CAPACITY / Constants.BUCKET;
     }
 }

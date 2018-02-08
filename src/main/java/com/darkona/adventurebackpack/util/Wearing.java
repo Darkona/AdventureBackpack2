@@ -15,7 +15,7 @@ import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.item.ItemPistonBoots;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 
 /**
  * Created on 11/10/2014
@@ -58,16 +58,14 @@ public class Wearing
         return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemAdventureBackpack;
     }
 
-    public static boolean isWearingTheRightBackpack(EntityPlayer player, String... backpacks)
+    public static boolean isWearingTheRightBackpack(EntityPlayer player, BackpackTypes... backpacks)
     {
         if (Wearing.isWearingBackpack(player))
         {
-            for (String name : backpacks)
+            for (BackpackTypes type : backpacks)
             {
-                if (BackpackNames.getBackpackColorName(Wearing.getWearingBackpack(player)).equals(name))
-                {
+                if (BackpackTypes.getType(Wearing.getWearingBackpack(player)) == type)
                     return true;
-                }
             }
         }
         return false;

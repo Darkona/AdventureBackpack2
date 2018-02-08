@@ -48,9 +48,9 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
 
     public static class Message implements IMessage
     {
-        int ID;
-        byte type;
-        NBTTagCompound properties;
+        private int ID;
+        private byte type;
+        private NBTTagCompound properties;
 
         public Message()
         {

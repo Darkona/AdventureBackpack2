@@ -24,6 +24,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -226,10 +227,9 @@ public class EntityFriendlySpider extends EntityCreature
     @Override
     protected boolean interact(EntityPlayer player)
     {
-
         try
         {
-            if (!this.worldObj.isRemote && Wearing.isWearingTheRightBackpack(player, "Spider"))
+            if (!this.worldObj.isRemote && Wearing.isWearingTheRightBackpack(player, BackpackTypes.SPIDER))
             {
                 player.mountEntity(this);
                 return true;

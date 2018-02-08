@@ -17,6 +17,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,6 +32,9 @@ import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Wearing;
+
+import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 31/12/2014
@@ -59,7 +63,10 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         ItemStack iStack = new ItemStack(item, 1, 0);
         NBTTagCompound compound = new NBTTagCompound();
         iStack.setTagCompound(compound);
-        //compound.setTag(Constants.COPTER_FUEL_TANK, new FluidTank(Constants.COPTER_FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
+
+        NBTTagCompound copterTag = new NBTTagCompound();
+        //copterTag.setTag(Constants.Copter.TAG_FUEL_TANK, new FluidTank(Constants.Copter.FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
+        compound.setTag(TAG_WEARABLE_COMPOUND, copterTag);
 
         list.add(iStack);
     }
@@ -83,7 +90,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.setByte("status", OFF_MODE);
+        stack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, OFF_MODE);
     }
 
     @Override
@@ -200,23 +207,23 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 fuelConsumption *= 2;
             }
-            int ticks = inv.tickCounter - 1;
-            if (inv.getFuelTank().getFluid() != null && GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
+            int ticks = inv.getTickCounter() - 1;
+            FluidTank tank = inv.getFuelTank();
+            if (tank.getFluid() != null && GeneralReference.isValidFuel(tank.getFluid().getFluid().getName()))
             {
-                fuelConsumption = fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName());
+                fuelConsumption = fuelConsumption * GeneralReference.getFuelRate(tank.getFluid().getFluid().getName());
             }
             if (ticks <= 0)
             {
-                inv.tickCounter = 3;
+                inv.setTickCounter(3);
                 inv.consumeFuel(getFuelSpent(fuelConsumption));
                 inv.dirtyTanks();
             }
             else
             {
-                inv.tickCounter = ticks;
+                inv.setTickCounter(ticks);
             }
         }
-        //if(!world.isRemote)inv.closeInventory();
         inv.closeInventory();
     }
 
@@ -280,7 +287,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.setByte("status", OFF_MODE);
+        stack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, OFF_MODE);
     }
 
     @Override

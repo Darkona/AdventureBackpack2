@@ -26,7 +26,7 @@ import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
-import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -39,109 +39,62 @@ import com.darkona.adventurebackpack.util.Wearing;
  * @see com.darkona.adventurebackpack.item.ItemAdventureBackpack
  * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
  */
+@SuppressWarnings("unused")
 public class BackpackAbilities
 {
-    /**
-     * These are the colorNames of the backpacks that have abilities when being worn.
-     */
-    private static final String[] SPECIAL_BACKPACKS = {"Bat", "Cactus", "Chicken", "Cow", "Creeper", "Dragon", "Melon",
-            "Mooshroom", "Ocelot", "Pig", "Pigman", "Rainbow", "Slime", "Squid", "Sunflower", "Wolf",};
-
-    private static final String[] REMOVAL_BACKPACKS = {"Bat", "Dragon", "Pigman", "Rainbow", "Squid",};
-
-    /**
-     * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
-     * backpacks that have particularities while in block form necessarily have abilities.
-     *
-     * @see com.darkona.adventurebackpack.block.BlockAdventureBackpack
-     */
-    private static final String[] TILE_BACKPACKS = {"Cactus", "Melon",};
-
     public static BackpackAbilities backpackAbilities = new BackpackAbilities();
     public static BackpackRemovals backpackRemovals = new BackpackRemovals();
 
-    public static boolean hasAbility(String colorName)
-    {
-        for (String valid : SPECIAL_BACKPACKS)
-        {
-            if (valid.equals(colorName))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean hasRemoval(String colorName)
-    {
-        for (String valid : REMOVAL_BACKPACKS)
-        {
-            if (valid.equals(colorName))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * Executes the ability of any given backpack, be it on the ground or be it on a player.
-     *
-     * @param player   An entity player, can be null in the case of the tile entity.
-     * @param world    This is necessary, so get it from wherever you can inside the class you're calling this.
-     * @param backpack An object representing a backpack, either in its ItemStack form or its TileEntity form.
      */
-    public void executeAbility(EntityPlayer player, World world, Object backpack)
+    public void executeAbility(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (backpack instanceof ItemStack)
+        String skinName = BackpackTypes.getSkinName(backpack);
+        try
         {
-            String colorName = BackpackNames.getBackpackColorName((ItemStack) backpack);
-            try
-            {
-                //This is black magic and shouldn't be attempted by the faint of heart.
-                this.getClass()
-                        .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
-                        .invoke(backpackAbilities, player, world, backpack);
-            }
-            catch (Exception oops)
-            {
-                //NOBODY CARES
-            }
+            //This is black magic and shouldn't be attempted by the faint of heart.
+            this.getClass()
+                    .getMethod("item" + skinName, EntityPlayer.class, World.class, ItemStack.class)
+                    .invoke(backpackAbilities, player, world, backpack);
         }
-
-        if (backpack instanceof TileAdventureBackpack)
+        catch (Exception oops)
         {
-            String colorName = ((TileAdventureBackpack) backpack).getColorName();
-            try
-            {
-                /*
-                    This is witchery, witchery I say!
-                    But seriously, if you want to know how this works just pay very close attention:
-                    invoke will execute any method of a given class, okay? so this should be obvious.
-                    Look at the names of the methods in this class and you'll figure it out.
-                    You have to indicate exactly the classes that the method should use as parameters so
-                    be very careful with "getMethod".
-                 */
-                this.getClass()
-                        .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
-                        .invoke(backpackAbilities, world, backpack);
-            }
-            catch (Exception oops)
-            {
-                //Seriously, nobody cares if this can't work, this is just so the game won't explode.
-            }
+            //NOBODY CARES
         }
+    }
 
+    public void executeTileAbility(World world, TileAdventureBackpack backpack)
+    {
+        String skinName = BackpackTypes.getSkinName(backpack.getType());
+        try
+        {
+            /*
+            This is witchery, witchery I say!
+            But seriously, if you want to know how this works just pay very close attention:
+            invoke will execute any method of a given class, okay? so this should be obvious.
+            Look at the names of the methods in this class and you'll figure it out.
+            You have to indicate exactly the classes that the method should use as parameters so
+            be very careful with "getMethod".
+            */
+            this.getClass()
+                    .getMethod("tile" + skinName, World.class, TileAdventureBackpack.class)
+                    .invoke(backpackAbilities, world, backpack);
+        }
+        catch (Exception oops)
+        {
+            //Seriously, nobody cares if this can't work, this is just so the game won't explode.
+        }
     }
 
     public void executeRemoval(EntityPlayer player, World world, ItemStack backpack)
     {
-        String colorName = BackpackNames.getBackpackColorName(backpack);
+        String skinName = BackpackTypes.getSkinName(backpack);
         try
         {
             //This is black magic and shouldn't be attempted by the faint of heart.
             backpackRemovals.getClass()
-                    .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class)
+                    .getMethod("item" + skinName, EntityPlayer.class, World.class, ItemStack.class)
                     .invoke(backpackRemovals, player, world, backpack);
         }
         catch (Exception oops)
@@ -544,7 +497,7 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (world.isRemote) return;
+        if (world.isRemote) return; //TODO not syncing properly with client if GUI is open
         InventoryBackpack inv = new InventoryBackpack(backpack);
         inv.openInventory();
 
@@ -557,10 +510,10 @@ public class BackpackAbilities
         int milkTime = -1;
         if (inv.getExtendedProperties() != null)
         {
-            if (inv.extendedProperties.hasKey("wheatConsumed"))
+            if (inv.getExtendedProperties().hasKey("wheatConsumed"))
             {
-                wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
-                milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
+                wheatConsumed = inv.getExtendedProperties().getInteger("wheatConsumed");
+                milkTime = inv.getExtendedProperties().getInteger("milkTime") - 1;
             }
         }
 
@@ -591,8 +544,8 @@ public class BackpackAbilities
             inv.dirtyTanks();
         }
         if (milkTime < -1) milkTime = -1;
-        inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
-        inv.extendedProperties.setInteger("milkTime", milkTime);
+        inv.getExtendedProperties().setInteger("wheatConsumed", wheatConsumed);
+        inv.getExtendedProperties().setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
         //inv.setLastTime(eatTime);
         inv.dirtyExtended();
@@ -618,10 +571,10 @@ public class BackpackAbilities
         int milkTime = -1;
         if (inv.getExtendedProperties() != null)
         {
-            if (inv.extendedProperties.hasKey("wheatConsumed"))
+            if (inv.getExtendedProperties().hasKey("wheatConsumed"))
             {
-                wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
-                milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
+                wheatConsumed = inv.getExtendedProperties().getInteger("wheatConsumed");
+                milkTime = inv.getExtendedProperties().getInteger("milkTime") - 1;
             }
         }
 
@@ -652,8 +605,8 @@ public class BackpackAbilities
             inv.dirtyTanks();
         }
         if (milkTime < -1) milkTime = -1;
-        inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
-        inv.extendedProperties.setInteger("milkTime", milkTime);
+        inv.getExtendedProperties().setInteger("wheatConsumed", wheatConsumed);
+        inv.getExtendedProperties().setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
         //inv.setLastTime(eatTime);
         inv.dirtyExtended();
@@ -733,8 +686,7 @@ public class BackpackAbilities
             for (EntityCreeper creeper : creepers)
             {
                 boolean set = true;
-                EntityAIAvoidPlayerWithBackpack task = new EntityAIAvoidPlayerWithBackpack(creeper, EntityPlayer.class, 10.0F, 1.0, 1.3, "Ocelot");
-
+                EntityAIAvoidPlayerWithBackpack task = new EntityAIAvoidPlayerWithBackpack(creeper, EntityPlayer.class, 10.0F, 1.0, 1.3, BackpackTypes.OCELOT);
                 for (Object entry : creeper.tasks.taskEntries)
                 {
                     if (((EntityAITasks.EntityAITaskEntry) entry).action instanceof EntityAIAvoidPlayerWithBackpack)
@@ -785,4 +737,9 @@ public class BackpackAbilities
     {
         fillWithRain(world, backpack, new FluidStack(ModFluids.melonJuice, 2), 5);
     }
+
+    /*public void tileCow(World world, TileAdventureBackpack backpack)
+    {
+        IInventoryAdventureBackpack inv = backpack; //TODO make CowBackpack (and others) working in tile form
+    }*/
 }

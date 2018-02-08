@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
@@ -56,10 +57,10 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         iStack.setTagCompound(compound);
 
         NBTTagCompound jetpackTag = new NBTTagCompound();
-        //jetpackTag.setTag(Constants.JETPACK_WATER_TANK, new FluidTank(Constants.JETPACK_WATER_CAPACITY).writeToNBT(new NBTTagCompound()));
-        //jetpackTag.setTag(Constants.JETPACK_STEAM_TANK, new FluidTank(Constants.JETPACK_STEAM_CAPACITY).writeToNBT(new NBTTagCompound()));
-        //jetpackTag.setTag(Constants.JETPACK_INVENTORY, new NBTTagList());
-        compound.setTag(Constants.JETPACK_COMPOUND_TAG, jetpackTag);
+        //jetpackTag.setTag(Constants.Jetpack.TAG_WATER_TANK, new FluidTank(Constants.Jetpack.WATER_CAPACITY).writeToNBT(new NBTTagCompound()));
+        //jetpackTag.setTag(Constants.Jetpack.TAG_STEAM_TANK, new FluidTank(Constants.Jetpack.STEAM_CAPACITY).writeToNBT(new NBTTagCompound()));
+        jetpackTag.setTag(Constants.TAG_INVENTORY, new NBTTagList());
+        compound.setTag(Constants.TAG_WEARABLE_COMPOUND, jetpackTag);
 
         list.add(iStack);
     }
@@ -239,7 +240,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 
         if (burnTicks > 0)
         {
-            if (temperature < Constants.JETPACK_MAX_TEMPERATURE)
+            if (temperature < Constants.Jetpack.MAX_TEMPERATURE)
             {
                 if (burnTicks % inv.getIncreasingFactor() == 0)
                 {
@@ -292,12 +293,12 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
-        return (float) getTemperature(stack) / Constants.JETPACK_MAX_TEMPERATURE + 50;
+        return (float) getTemperature(stack) / Constants.Jetpack.MAX_TEMPERATURE + 50;
     }
 
     private int getTemperature(ItemStack jetpack)
     {
-        return jetpack.stackTagCompound.getCompoundTag(Constants.JETPACK_COMPOUND_TAG).getInteger("temperature");
+        return jetpack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND).getInteger("temperature");
     }
 
     @Override

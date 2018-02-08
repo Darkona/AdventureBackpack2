@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +14,6 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.ContainerJetpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 15/01/2015
@@ -101,7 +101,7 @@ public class GuiCoalJetpack extends GuiWithTanks
             this.drawTexturedModalRect(78, 48 + 12 - i1, 176, 12 - i1, 14, i1 + 1);
         }
 
-        int H = Math.round(((float) 72 / (float) Constants.JETPACK_MAX_TEMPERATURE) * (float) inventory.getTemperature());
+        int H = Math.round(((float) 72 / (float) Constants.Jetpack.MAX_TEMPERATURE) * (float) inventory.getTemperature());
         drawTexturedModalRect(139, 8 + (72 - H), 40, 167 + (72 - H), 5, H);
 
         GL11.glDisable(GL11.GL_BLEND);
@@ -113,7 +113,7 @@ public class GuiCoalJetpack extends GuiWithTanks
 
         float factor = 0.7f;
 
-        String show = ((water.getFluidAmount() > 0) ? Utils.capitalize(FluidRegistry.getFluidName(water.getFluid())) : "None") + "-" + water.getFluidAmount();
+        String show = ((water.getFluidAmount() > 0) ? WordUtils.capitalize(FluidRegistry.getFluidName(water.getFluid())) : "None") + "-" + water.getFluidAmount();
 
         GL11.glPushMatrix();
         GL11.glTranslatef(70, 10, 0);
@@ -122,7 +122,7 @@ public class GuiCoalJetpack extends GuiWithTanks
         GL11.glScalef(1, 1, 1);
         GL11.glPopMatrix();
 
-        show = ((steam.getFluidAmount() > 0) ? Utils.capitalize(FluidRegistry.getFluidName(steam.getFluid())) : "None") + "-" + steam.getFluidAmount();
+        show = ((steam.getFluidAmount() > 0) ? WordUtils.capitalize(FluidRegistry.getFluidName(steam.getFluid())) : "None") + "-" + steam.getFluidAmount();
 
         GL11.glPushMatrix();
         GL11.glTranslatef(70, 20, 0);

@@ -40,7 +40,6 @@ public class EntityParticlePacket implements IMessageHandler<EntityParticlePacke
 
     public static class Message implements IMessage
     {
-
         private byte particleCode;
         private int entityID;
 

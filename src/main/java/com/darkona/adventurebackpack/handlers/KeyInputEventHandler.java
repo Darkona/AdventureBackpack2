@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
@@ -15,6 +14,7 @@ import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import com.darkona.adventurebackpack.network.WearableModePacket;
+import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Wearing;
 
 /**
@@ -76,20 +76,17 @@ public class KeyInputEventHandler
         {
             if (Wearing.isHoldingHose(player))
             {
-                sendCycleToolPacket(0, player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
-                ServerActions.switchHose(player, 0, ServerActions.HOSE_TOGGLE);
+                sendCycleToolPacket(player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
+                ServerActions.switchHose(player, false, ServerActions.HOSE_TOGGLE);
             }
             else if (Wearing.isWearingBackpack(player))
             {
                 if (player.isSneaking())
                 {
-                    for (String valid : Constants.NIGHTVISION_BACKPACKS)
+                    if (BackpackTypes.isNightVision(Wearing.getWearingBackpackInv(player).getType()))
                     {
-                        if (Wearing.getWearingBackpackInv(player).getColorName().equals(valid))
-                        {
-                            sendWearableModePacket(WearableModePacket.NIGHTVISION_ON_OFF);
-                            ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player));
-                        }
+                        sendWearableModePacket(WearableModePacket.NIGHTVISION_ON_OFF);
+                        ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player));
                     }
                 }
                 else
@@ -163,9 +160,9 @@ public class KeyInputEventHandler
         ModNetwork.net.sendToServer(new WearableModePacket.Message(type, "")); //TODO playerID?
     }
 
-    private void sendCycleToolPacket(int direction, int slot, byte type)
+    private void sendCycleToolPacket(int slot, byte type)
     {
-        ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(direction, slot, type));
+        ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(false, slot, type));
     }
 
     private void sendPlayerActionPacket(byte type)

@@ -55,7 +55,6 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
 
     public static class Message implements IMessage
     {
-
         private byte type;
         private String playerID;
 

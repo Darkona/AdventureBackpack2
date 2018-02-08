@@ -4,45 +4,48 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.Constants.Source;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.util.TinkersUtils;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
-import static com.darkona.adventurebackpack.common.Constants.LOWER_TOOL;
-import static com.darkona.adventurebackpack.common.Constants.UPPER_TOOL;
+import static com.darkona.adventurebackpack.common.Constants.TOOL_LOWER;
+import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
 
 /**
  * Created on 12/10/2014
  *
  * @author Darkona
  */
+//@invtweaks.api.container.ChestContainer (showButtons=true, rowSize=8)
 public class ContainerBackpack extends ContainerAdventureBackpack
 {
+    private static final int BACK_INV_ROWS = 6;
+    private static final int BACK_INV_COLUMNS = 8;
     private static final int BACK_INV_START = PLAYER_INV_END + 1;
-    private static final int BACK_INV_END = BACK_INV_START + 38;
+    private static final int BACK_INV_END = PLAYER_INV_END + (BACK_INV_ROWS * BACK_INV_COLUMNS);
     private static final int TOOL_START = BACK_INV_END + 1;
     private static final int TOOL_END = TOOL_START + 1;
     private static final int BUCKET_LEFT = TOOL_END + 1;
     private static final int BUCKET_RIGHT = BUCKET_LEFT + 2;
+    private static final int MATRIX_DIMENSION = 3;
+    private static final int[] CRAFT_MATRIX_EMULATION = findCraftMatrixEmulationIDs();
 
-    private InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
+    private InventoryCraftingBackpack craftMatrix = new InventoryCraftingBackpack(this, MATRIX_DIMENSION, MATRIX_DIMENSION);
     private IInventory craftResult = new InventoryCraftResult();
     private IInventoryAdventureBackpack inventory;
 
     private int leftAmount;
     private int rightAmount;
     private int invCount;
-
-    //IDEA redesign container layout/craft slots behavior, so it will be rectangular and compatible with invTweaks. this also makes more slots available cuz craft ones will not drop content on close
 
     public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, Source source)
     {
@@ -66,53 +69,45 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
-        bindPlayerInventory(invPlayer, 44, 125);
+        bindPlayerInventory(invPlayer, 44, 125); // 4*9 playerInventory, 36 Slots [0-35]
 
         int startX = 62;
         int startY = 7;
         int slot = 0;
 
-        for (int i = 0; i < 3; i++) // upper 8*3, 24 Slots (1-24)
+        for (int row = 0; row < BACK_INV_ROWS; row++) // 6*8 inventory, 48 Slots (#1-#48) [36-83]
         {
-            for (int j = 0; j < 8; j++)
+            for (int col = 0; col < BACK_INV_COLUMNS; col++)
             {
-                int offsetX = startX + (18 * j);
-                int offsetY = startY + (18 * i);
+                int offsetX = startX + (18 * col);
+                int offsetY = startY + (18 * row);
+
                 addSlotToContainer(new SlotBackpack(inventory, slot++, offsetX, offsetY));
             }
         }
 
-        startY = 61;
-        for (int i = 0; i < 3; i++) // lower 5*3, 15 Slots (25-39)
+        addSlotToContainer(new SlotTool(inventory, TOOL_UPPER, 44, 79)); // #49 [84]
+        addSlotToContainer(new SlotTool(inventory, TOOL_LOWER, 44, 97)); // #50 [85]
+
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_LEFT, 6, 7)); // #51 [86]
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_LEFT, 6, 37)); // #52 [87]
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_RIGHT, 226, 7)); // #53 [88]
+        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_RIGHT, 226, 37)); // #54 [89]
+
+        startX = 215;
+        startY = -2500;
+        //startY = ConfigHandler.IS_DEVENV ? 125 : -2500;
+        for (int row = 0; row < MATRIX_DIMENSION; row++) // craftMatrix, usually 9 slots, [90-98]
         {
-            for (int j = 0; j < 5; j++)
+            for (int col = 0; col < MATRIX_DIMENSION; col++)
             {
-                int offsetX = startX + (18 * j);
-                int offsetY = startY + (18 * i);
-                addSlotToContainer(new SlotBackpack(inventory, slot++, offsetX, offsetY));
+                int offsetX = startX + (18 * col);
+                int offsetY = startY + (18 * row);
+                addSlotToContainer(new SlotCraftMatrix(craftMatrix, (row * MATRIX_DIMENSION + col), offsetX, offsetY));
             }
         }
-
-        addSlotToContainer(new SlotTool(inventory, UPPER_TOOL, 44, 79)); // #40
-        addSlotToContainer(new SlotTool(inventory, LOWER_TOOL, 44, 97)); // #41
-
-        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_LEFT, 6, 7)); // #42
-        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_LEFT, 6, 37)); // #43
-        addSlotToContainer(new SlotFluid(inventory, BUCKET_IN_RIGHT, 226, 7)); // #44
-        addSlotToContainer(new SlotFluid(inventory, BUCKET_OUT_RIGHT, 226, 37)); // #45
-
-        startX = 152;
-        for (int y = 0; y < 3; y++) // Craft Matrix - 3*3, 9 slots
-        {
-            for (int x = 0; x < 3; x++)
-            {
-                int offsetX = startX + (18 * x);
-                int offsetY = startY + (18 * y);
-                addSlotToContainer(new Slot(craftMatrix, (x + y * 3), offsetX, offsetY));
-            }
-        }
-        addSlotToContainer(new SlotCrafting(invPlayer.player, craftMatrix, craftResult, 0, 226, 97));
-        this.onCraftMatrixChanged(craftMatrix);
+        addSlotToContainer(new SlotCraftResult(this, invPlayer.player, craftMatrix, craftResult, 0, 226, 97)); // craftResult [99]
+        syncCraftMatrixToInventory();
     }
 
     @Override
@@ -122,7 +117,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
         ItemStack[] inv = inventory.getInventory();
         int tempCount = 0;
-        for (int i = 0; i <= LOWER_TOOL; i++)
+        for (int i = 0; i <= TOOL_LOWER; i++)
         {
             if (inv[i] != null)
                 tempCount++;
@@ -196,7 +191,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
     private boolean isHoldingSpace()
     {
-        return inventory.getExtendedProperties().hasKey("holdingSpace");
+        return inventory.getExtendedProperties().hasKey(Constants.TAG_HOLDING_SPACE);
     }
 
     private boolean transferFluidContainer(ItemStack container)
@@ -251,24 +246,83 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     }
 
     @Override
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    {
+        final ItemStack result = super.slotClick(slot, button, flag, player);
+        syncCraftMatrixToInventory();
+        return result;
+    }
+
+    @Override
     protected void dropContentOnClose()
     {
-        super.dropContentOnClose();
-
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < craftMatrix.getSizeInventory(); i++)
         {
-            ItemStack itemstack = this.craftMatrix.getStackInSlotOnClosing(i);
-
-            if (itemstack != null)
-            {
-                player.dropPlayerItemWithRandomChoice(itemstack, false);
-            }
+            this.craftMatrix.setInventorySlotContentsNoUpdate(i, null);
         }
+        onCraftMatrixChanged(craftMatrix);
+
+        super.dropContentOnClose();
     }
 
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
+        if (ConfigHandler.tinkerToolsMaintenance && TinkersUtils.isTool(craftMatrix.getStackInSlot(4)))
+        {
+            craftResult.setInventorySlotContents(0, TinkersUtils.getTinkersRecipe(craftMatrix));
+            return;
+        }
+
         craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
+    }
+
+    protected void syncCraftMatrixToInventory()
+    {
+        for (int craftSlotID = 0; craftSlotID < CRAFT_MATRIX_EMULATION.length; craftSlotID++)
+        {
+            int invSlotID = CRAFT_MATRIX_EMULATION[craftSlotID];
+            final ItemStack invStack = inventory.getStackInSlot(invSlotID);
+            craftMatrix.setInventorySlotContentsNoUpdate(craftSlotID, invStack);
+        }
+        onCraftMatrixChanged(craftMatrix);
+    }
+
+    protected void syncInventoryToCraftMatrix()
+    {
+        for (int craftSlotID = 0; craftSlotID < CRAFT_MATRIX_EMULATION.length; craftSlotID++)
+        {
+            int invSlotID = CRAFT_MATRIX_EMULATION[craftSlotID];
+            final ItemStack craftStack = craftMatrix.getStackInSlot(craftSlotID);
+            inventory.setInventorySlotContentsNoSave(invSlotID, craftStack);
+        }
+        inventory.markDirty();
+    }
+
+    /*@ContainerSectionCallback //TODO deal with invTweaks
+    public Map<ContainerSection, List<Slot>> getContainerSections()
+    {
+        Map<ContainerSection, List<Slot>> slotMap = new HashMap<>();
+        slotMap.put(ContainerSection.CHEST, inventorySlots.subList(BACK_INV_START, BACK_INV_END + 1));
+        return slotMap;
+    }*/
+
+    /**
+     *  Returns the array of inventory slotIDs, emulates the craftMatrix in the lower right corner of the inventory.
+     */
+    private static int[] findCraftMatrixEmulationIDs()
+    {
+        int[] slotsArray = new int[MATRIX_DIMENSION * MATRIX_DIMENSION];
+        for (int row = 0; row < MATRIX_DIMENSION; row++)
+        {
+            for (int col = 0; col < MATRIX_DIMENSION; col++)
+            {
+                int id = row * MATRIX_DIMENSION + col;
+                int fullRowSum = (BACK_INV_ROWS - (MATRIX_DIMENSION - 1) + row) * BACK_INV_COLUMNS;
+                int columnShift = (MATRIX_DIMENSION - 1) - col;
+                slotsArray[id] = fullRowSum - columnShift - 1;
+            }
+        }
+        return slotsArray;
     }
 }

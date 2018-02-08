@@ -14,7 +14,7 @@ import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 
 public class ModelCoalJetpack extends ModelWearable
 {
-    public ModelRenderer Base;
+    public ModelRenderer base;
     public ModelRenderer tubeStraightLeft;
     public ModelRenderer tubeStraightRight;
     public ModelRenderer tubeEndLeft;
@@ -60,9 +60,9 @@ public class ModelCoalJetpack extends ModelWearable
         this.tubeEndRight.setRotationPoint(-7.7F, 1.6F, 8.3F);
         this.tubeEndRight.addBox(-1.0F, 0.0F, 0.0F, 1, 4, 1, -0.1F);
         this.setRotateAngle(tubeEndRight, 0.0F, 0.0F, 0.2617993877991494F);
-        this.Base = new ModelRenderer(this, 0, 0);
-        this.Base.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.Base.addBox(-4.0F, 0.0F, 2.0F, 8, 12, 1, 0.0F);
+        this.base = new ModelRenderer(this, 0, 0);
+        this.base.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.base.addBox(-4.0F, 0.0F, 2.0F, 8, 12, 1, 0.0F);
         this.waterTube1 = new ModelRenderer(this, 10, 17);
         this.waterTube1.setRotationPoint(0.0F, 1.0F, 0.0F);
         this.waterTube1.addBox(-2.0F, 1.0F, 1.0F, 1, 1, 1, 0.0F);
@@ -89,16 +89,16 @@ public class ModelCoalJetpack extends ModelWearable
         this.tubeStraightLeft.setRotationPoint(2.7F, 1.0F, 8.3F);
         this.tubeStraightLeft.addBox(0.0F, 0.0F, 0.0F, 6, 1, 1, 0.0F);
 
-        this.Base.addChild(this.tankBottom);
+        this.base.addChild(this.tankBottom);
         this.pressureTank.addChild(this.tubeBendLeft);
         this.waterTube1.addChild(this.waterTube2);
         this.tankBottom.addChild(this.waterTube1);
         this.pressureTank.addChild(this.tubeBendRight);
-        this.Base.addChild(this.pressureTank);
-        this.Base.addChild(this.fireBox);
-        this.Base.addChild(this.tankTop);
+        this.base.addChild(this.pressureTank);
+        this.base.addChild(this.fireBox);
+        this.base.addChild(this.tankTop);
 
-        bipedBody.addChild(Base);
+        bipedBody.addChild(base);
         bipedBody.addChild(tubeStraightLeft);
         bipedBody.addChild(tubeStraightRight);
         bipedBody.addChild(tubeEndLeft);
@@ -190,7 +190,7 @@ public class ModelCoalJetpack extends ModelWearable
         tubeStraightRight.render(f5);
         tubeEndLeft.render(f5);
         tubeEndRight.render(f5);
-        Base.render(f5);
+        base.render(f5);
         tankWallLeft.render(f5);
         tankWallRight.render(f5);
         tubeStraightLeft.render(f5);

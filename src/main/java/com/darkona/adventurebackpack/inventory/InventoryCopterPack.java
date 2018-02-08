@@ -7,10 +7,12 @@ import net.minecraftforge.fluids.FluidTank;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 
-import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_IN;
-import static com.darkona.adventurebackpack.common.Constants.COPTER_BUCKET_OUT;
-import static com.darkona.adventurebackpack.common.Constants.COPTER_FUEL_TANK;
-import static com.darkona.adventurebackpack.common.Constants.COPTER_INVENTORY_SIZE;
+import static com.darkona.adventurebackpack.common.Constants.Copter.BUCKET_IN;
+import static com.darkona.adventurebackpack.common.Constants.Copter.BUCKET_OUT;
+import static com.darkona.adventurebackpack.common.Constants.Copter.INVENTORY_SIZE;
+import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_FUEL_TANK;
+import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 02/01/2015
@@ -19,17 +21,36 @@ import static com.darkona.adventurebackpack.common.Constants.COPTER_INVENTORY_SI
  */
 public class InventoryCopterPack extends InventoryAdventureBackpack
 {
-    public int tickCounter = 0;
-
-    private FluidTank fuelTank = new FluidTank(Constants.COPTER_FUEL_CAPACITY);
-    private ItemStack[] inventory = new ItemStack[COPTER_INVENTORY_SIZE];
+    private FluidTank fuelTank = new FluidTank(Constants.Copter.FUEL_CAPACITY);
+    private ItemStack[] inventory = new ItemStack[INVENTORY_SIZE];
 
     private byte status = ItemCopterPack.OFF_MODE;
+    private int tickCounter = 0;
 
     public InventoryCopterPack(ItemStack copterPack)
     {
         containerStack = copterPack;
+        detectAndConvertFromOldNBTFormat(containerStack.stackTagCompound);
         openInventory();
+    }
+
+    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
+    {
+        if (compound == null || compound.hasKey(TAG_WEARABLE_COMPOUND))
+            return;
+
+        if (compound.hasKey(TAG_STATUS))
+            compound.removeTag(TAG_STATUS);
+        if (compound.hasKey("tickCounter"))
+            compound.removeTag("tickCounter");
+
+        fuelTank.readFromNBT(compound.getCompoundTag(TAG_FUEL_TANK));
+
+        NBTTagCompound newCopterTag = new NBTTagCompound();
+        newCopterTag.setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
+
+        compound.setTag(TAG_WEARABLE_COMPOUND, newCopterTag);
+        compound.removeTag(TAG_FUEL_TANK);
     }
 
     public FluidTank getFuelTank()
@@ -82,7 +103,7 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-        return (slot == COPTER_BUCKET_IN || slot == COPTER_BUCKET_OUT) ? inventory[slot] : null;
+        return (slot == BUCKET_IN || slot == BUCKET_OUT) ? inventory[slot] : null;
     }
 
     @Override
@@ -94,17 +115,6 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
             stack.stackSize = getInventoryStackLimit();
         }
         dirtyInventory();
-    }
-
-    public void dirtyCounter()
-    {
-        containerStack.stackTagCompound.setInteger("tickCounter", this.tickCounter);
-    }
-
-    public void closeInventoryNoStatus()
-    {
-        containerStack.stackTagCompound.setTag(COPTER_FUEL_TANK, this.fuelTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.setInteger("tickCounter", this.tickCounter);
     }
 
     @Override
@@ -134,11 +144,6 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
         return null;
     }
 
-    public ItemStack getParentItemStack()
-    {
-        return this.containerStack;
-    }
-
     public int getTickCounter()
     {
         return tickCounter;
@@ -162,17 +167,20 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
     @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
-        fuelTank.readFromNBT(compound.getCompoundTag(COPTER_FUEL_TANK));
-        status = compound.getByte("status");
-        tickCounter = compound.getInteger("tickCounter");
+        NBTTagCompound copterTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
+        fuelTank.readFromNBT(copterTag.getCompoundTag(TAG_FUEL_TANK));
+        status = copterTag.getByte(TAG_STATUS);
+        tickCounter = copterTag.getInteger("tickCounter");
     }
 
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
-        compound.setTag(COPTER_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
-        compound.setByte("status", status);
-        compound.setInteger("tickCounter", this.tickCounter);
+        NBTTagCompound copterTag = new NBTTagCompound();
+        copterTag.setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
+        copterTag.setByte(TAG_STATUS, status);
+        copterTag.setInteger("tickCounter", this.tickCounter);
+        compound.setTag(TAG_WEARABLE_COMPOUND, copterTag);
     }
 
     @Override
@@ -185,7 +193,7 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
     public boolean updateTankSlots()
     {
         boolean result = false;
-        while (InventoryActions.transferContainerTank(this, getFuelTank(), COPTER_BUCKET_IN))
+        while (InventoryActions.transferContainerTank(this, getFuelTank(), BUCKET_IN))
             result = true;
         return result;
     }
@@ -202,16 +210,13 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.setTag(COPTER_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
     }
+
+    //TODO to interface: getWearableCompound() { return containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);}
 
     public void dirtyStatus()
     {
-        containerStack.stackTagCompound.setByte("status", status);
-    }
-
-    public void setContainerStack(ItemStack containerStack)
-    {
-        this.containerStack = containerStack;
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, status);
     }
 }

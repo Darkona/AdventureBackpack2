@@ -2,6 +2,8 @@ package com.darkona.adventurebackpack.init.recipes;
 
 import net.minecraft.item.ItemStack;
 
+import com.darkona.adventurebackpack.reference.BackpackTypes;
+
 /**
  * Created on 24/12/2014
  *
@@ -10,16 +12,16 @@ import net.minecraft.item.ItemStack;
 public class BackpackRecipe
 {
     public ItemStack[] array;
-    public String name;
+    public BackpackTypes type;
 
     BackpackRecipe()
     {
 
     }
 
-    BackpackRecipe(String name, ItemStack[] array)
+    BackpackRecipe(BackpackTypes type, ItemStack[] array)
     {
-        this.name = name;
+        this.type = type;
         this.array = array;
     }
 }

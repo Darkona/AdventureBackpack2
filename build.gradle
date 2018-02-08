@@ -7,12 +7,23 @@ buildscript {
     dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT' }
 }
 
+repositories {
+    maven { // WAILA
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven" 
+    }
+    maven { // NEI
+        name 'CB Repo'
+        url "http://chickenbones.net/maven/"
+    }
+}
+
 apply plugin: 'forge'
 
 group = "com.darkona.adventurebackpack" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "adventurebackpack"
 
-version = "${minecraft_version}-${mod_version}beta${buildnumber}"
+version = "${minecraft_version}-${mod_version}-${buildnumber}"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -26,8 +37,10 @@ minecraft {
 
 dependencies
 {
+    compile "codechicken:CodeChickenCore:${minecraft_version}-${ccc_version}:dev"
     compile "codechicken:CodeChickenLib:${minecraft_version}-${ccl_version}:dev"
-    //compile "codechicken:CodeChickenCore:${minecraft_version}-${ccc_version}:dev"
+    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
+    compile "mcp.mobius.waila:Waila:${waila_version}_${minecraft_version}"
 
     //compile "com.azanor.baubles:Baubles:${baubles_version}:deobf"
 
@@ -53,6 +66,12 @@ processResources {
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'adventurebackpack_at.cfg'
     }
 }
 

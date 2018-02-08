@@ -20,6 +20,7 @@ public class ModDates
 
     public static String getHoliday()
     {
+        //TODO add check for current day, change skin if new day is holiday
         return holiday;
     }
 

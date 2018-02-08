@@ -35,7 +35,6 @@ import com.darkona.adventurebackpack.handlers.RenderHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
-import com.darkona.adventurebackpack.util.Utils;
 
 /**
  * Created on 10/10/2014
@@ -74,7 +73,7 @@ public class ClientProxy implements IProxy
     {
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
 
-        if (Utils.notNullAndInstanceOf(entity, EntityPlayer.class) && properties != null)
+        if (entity instanceof EntityPlayer && properties != null)
         {
             EntityPlayer player = (EntityPlayer) entity;
 

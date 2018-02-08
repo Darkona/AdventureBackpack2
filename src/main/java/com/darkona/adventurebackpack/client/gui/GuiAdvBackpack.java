@@ -3,13 +3,16 @@ package com.darkona.adventurebackpack.client.gui;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.Constants.Source;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -19,6 +22,7 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.TinkersUtils;
 
 /**
  * Created on 12/10/2014
@@ -29,6 +33,8 @@ import com.darkona.adventurebackpack.util.Resources;
 public class GuiAdvBackpack extends GuiWithTanks
 {
     private static final ResourceLocation TEXTURE = Resources.guiTextures("guiBackpackNew");
+    private static final ResourceLocation TINKERS_ICONS = TinkersUtils.getTinkersIcons();
+    private static final int TINKERS_SLOT = 38; //ContainerBackpack.CRAFT_MATRIX_EMULATION[4]
 
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 91, 18, 18);
@@ -60,6 +66,12 @@ public class GuiAdvBackpack extends GuiWithTanks
         ySize = 207;
     }
 
+    private boolean isBedButtonCase()
+    {
+        return source == Source.TILE
+                || (ConfigHandler.portableSleepingBag && source == Source.WEARING && GuiScreen.isShiftKeyDown());
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
     {
@@ -68,53 +80,42 @@ public class GuiAdvBackpack extends GuiWithTanks
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Buttons and button highlight
-        if (source == Source.TILE)
+        if (isBedButtonCase())
         {
             if (bedButton.inButton(this, mouseX, mouseY))
-            {
                 bedButton.draw(this, 20, 227);
-            }
             else
-            {
                 bedButton.draw(this, 1, 227);
-            }
         }
-        else
+        else if (source == Source.WEARING)
         {
-            if (source == Source.WEARING)
-            {
-                if (unequipButton.inButton(this, mouseX, mouseY))
-                {
-                    unequipButton.draw(this, 96, 227);
-                }
-                else
-                {
-                    unequipButton.draw(this, 77, 227);
-                }
-            }
-            else if (source == Source.HOLDING)
-            {
-                if (equipButton.inButton(this, mouseX, mouseY))
-                {
-                    equipButton.draw(this, 96, 208);
-                }
-                else
-                {
-                    equipButton.draw(this, 77, 208);
-                }
-            }
+            if (unequipButton.inButton(this, mouseX, mouseY))
+                unequipButton.draw(this, 96, 227);
+            else
+                unequipButton.draw(this, 77, 227);
         }
-        //zLevel +=1;
+        else if (source == Source.HOLDING)
+        {
+            if (equipButton.inButton(this, mouseX, mouseY))
+                equipButton.draw(this, 96, 208);
+            else
+                equipButton.draw(this, 77, 208);
+        }
         if (ConfigHandler.tanksHoveringText)
         {
             if (tankLeft.inTank(this, mouseX, mouseY))
-            {
                 drawHoveringText(tankLeft.getTankTooltip(), mouseX, mouseY, fontRendererObj);
-            }
 
             if (tankRight.inTank(this, mouseX, mouseY))
-            {
                 drawHoveringText(tankRight.getTankTooltip(), mouseX, mouseY, fontRendererObj);
+        }
+
+        if (ConfigHandler.IS_TCONSTRUCT && ConfigHandler.tinkerToolsMaintenance)
+        {
+            if (inventory.getStackInSlot(TINKERS_SLOT) == null)
+            {
+                this.mc.getTextureManager().bindTexture(TINKERS_ICONS);
+                this.drawTexturedModalRect(this.guiLeft + 169, this.guiTop + 77, 0, 233, 18, 18);
             }
         }
     }
@@ -129,29 +130,6 @@ public class GuiAdvBackpack extends GuiWithTanks
         tankRight.draw(this, rgt);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
-
-        /*if (!ConfigHandler.tanksHoveringText);
-        {
-            GL11.glPushMatrix();
-            //GL11.glTranslatef(8f,64f,0f);
-            GL11.glScalef(0.6f, 0.6f, 0.6f);
-            String name = (lft.getFluid() != null) ? lft.getFluid().getLocalizedName() : "None";
-            String amount = (lft.getFluid() != null ? lft.getFluid().amount : "Empty").toString();
-            String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
-            int offsetY = 32;
-            int offsetX = 8;
-            fontRendererObj.drawString(Utils.getFirstWord(name), 1 + offsetX, 64 + offsetY, 0x373737, false);
-            fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737, false);
-            fontRendererObj.drawString(capacity, 1 + offsetX, 94 + offsetY, 0x373737, false);
-
-            name = (rgt.getFluid() != null) ? rgt.getFluid().getLocalizedName() : "None";
-            amount = (rgt.getFluid() != null ? rgt.getFluid().amount : "Empty").toString();
-            fontRendererObj.drawString(Utils.getFirstWord(name), 369 + offsetX, 64 + offsetY, 0x373737, false);
-            fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737, false);
-            fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737, false);
-
-            GL11.glPopMatrix();
-        }*/
     }
 
     @Override
@@ -169,16 +147,25 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-        if (source == Source.TILE)
+        if (isBedButtonCase() && bedButton.inButton(this, mouseX, mouseY))
         {
-            if (bedButton.inButton(this, mouseX, mouseY))
+            if (source == Source.TILE)
             {
                 TileAdventureBackpack te = (TileAdventureBackpack) inventory;
-                ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
+                ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(true, te.xCoord, te.yCoord, te.zCoord));
+            }
+            else
+            {
+                int posX = MathHelper.floor_double(player.posX);
+                int posY = MathHelper.floor_double(player.posY) - 1;
+                int posZ = MathHelper.floor_double(player.posZ);
+                ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(false, posX, posY, posZ));
             }
         }
-
-        super.mouseClicked(mouseX, mouseY, button);
+        else
+        {
+            super.mouseClicked(mouseX, mouseY, button);
+        }
     }
 
     @Override
@@ -192,7 +179,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             {
                 isHoldingSpace = true;
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_HOLDING_SPACE));
-                inventory.getExtendedProperties().setBoolean("holdingSpace", true);
+                inventory.getExtendedProperties().setBoolean(Constants.TAG_HOLDING_SPACE, true);
             }
         }
         else
@@ -201,7 +188,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             {
                 isHoldingSpace = false;
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.GUI_NOT_HOLDING_SPACE));
-                inventory.getExtendedProperties().removeTag("holdingSpace");
+                inventory.getExtendedProperties().removeTag(Constants.TAG_HOLDING_SPACE);
             }
         }
     }

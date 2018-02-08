@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -37,12 +36,14 @@ import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
-import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.BackpackUtils;
+import com.darkona.adventurebackpack.util.CoordsUtils;
 import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
+
+import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
 
 /**
  * Created on 12/10/2014
@@ -64,48 +65,30 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems)
     {
-        for (int i = 0; i < BackpackNames.backpackNames.length; i++)
+        for (BackpackTypes type : BackpackTypes.values())
         {
-            ItemStack bp = new ItemStack(this, 1, 0);
-            bp.setItemDamage(i);
-            NBTTagCompound c = new NBTTagCompound();
-            c.setString("colorName", BackpackNames.backpackNames[i]);
-            BackpackUtils.setBackpackTag(bp, c);
-            subItems.add(bp);
+            if (type == BackpackTypes.UNKNOWN)
+                continue;
+
+            ItemStack backpackStack = new ItemStack(this, 1, 0);
+            backpackStack.setItemDamage(BackpackTypes.getMeta(type));
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
+            BackpackUtils.setBackpackTag(backpackStack, compound);
+            subItems.add(backpackStack);
         }
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"unchecked"})
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(stack);
-        if (backpackTag.hasKey("colorName"))
+        if (backpackTag.hasKey(TAG_TYPE))
         {
-            String color = backpackTag.getString("colorName");
-            BackpackTypes type = BackpackTypes.getType(color); //TODO it seems to be good
-            switch (type)
-            {
-                case BAT:
-                    list.add(EnumChatFormatting.DARK_PURPLE + color);
-                    break;
-                case DRAGON:
-                    list.add(EnumChatFormatting.LIGHT_PURPLE + color);
-                    break;
-                case PIGMAN:
-                    list.add(EnumChatFormatting.RED + color);
-                    break;
-                case RAINBOW:
-                    list.add(Utils.makeItRainbow(color));
-                    break;
-                case SQUID:
-                    list.add(EnumChatFormatting.DARK_AQUA + color);
-                    break;
-                default:
-                    list.add(color);
-                    break;
-            }
+            BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
+            list.add(Utils.getColoredSkinName(type));
         }
     }
 
@@ -113,7 +96,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public void onCreated(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer)
     {
         super.onCreated(stack, par2World, par3EntityPlayer);
-        BackpackNames.setBackpackColorNameFromDamage(stack, stack.getItemDamage());
+        BackpackTypes.setBackpackTypeFromMeta(stack, stack.getItemDamage());
     }
 
     @Override
@@ -178,7 +161,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         {
             if (Y + shiftY >= 1)
             {
-                ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
+                ChunkCoordinates spawn = CoordsUtils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, Y + shiftY, Z, 6, true, 1, (byte) 0, false);
                 if (spawn != null)
                 {
                     return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
@@ -192,9 +175,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     {
         if (stack.stackSize == 0 || !player.canPlayerEdit(x, y, z, side, stack)) return false;
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        if (!stack.stackTagCompound.hasKey("colorName") || stack.stackTagCompound.getString("colorName").isEmpty())
+        if (!stack.stackTagCompound.hasKey(TAG_TYPE))
         {
-            stack.stackTagCompound.setString("colorName", "Standard");
+            stack.stackTagCompound.setByte(TAG_TYPE, BackpackTypes.getMeta(BackpackTypes.STANDARD));
         }
 
         // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
@@ -270,7 +253,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         if (!ConfigHandler.backpackAbilities || world == null || player == null || stack == null)
             return;
 
-        if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
+        if (BackpackTypes.isSpecial(BackpackTypes.getType(stack)))
         {
             BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
         }
@@ -279,7 +262,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        if (BackpackAbilities.hasRemoval(BackpackNames.getBackpackColorName(stack)))
+        if (BackpackTypes.hasProperty(BackpackTypes.getType(stack), BackpackTypes.Props.REMOVAL))
         {
             BackpackAbilities.backpackAbilities.executeRemoval(player, world, stack);
         }
@@ -293,15 +276,15 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     private int getItemCount(ItemStack backpack)
     {
-        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.COMPOUND_TAG);
-        NBTTagList itemList = backpackTag.getTagList(Constants.INVENTORY, NBT.TAG_COMPOUND);
+        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
+        NBTTagList itemList = backpackTag.getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
         int itemCount = itemList.tagCount();
         for (int i = itemCount - 1; i >= 0; i--)
         {
             int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
-            if (slotAtI < Constants.UPPER_TOOL)
+            if (slotAtI < Constants.TOOL_UPPER)
                 break;
-            else if (slotAtI == Constants.UPPER_TOOL || slotAtI == Constants.LOWER_TOOL)
+            else if (slotAtI == Constants.TOOL_UPPER || slotAtI == Constants.TOOL_LOWER)
                 itemCount--;
         }
         return itemCount;
@@ -325,13 +308,13 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String modelTexture;
-        if (BackpackNames.getBackpackColorName(stack).equals("Standard"))
+        if (BackpackTypes.getType(stack) == BackpackTypes.STANDARD)
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday()).toString();
         }
         else
         {
-            modelTexture = Resources.backpackTexturesStringFromColor(stack);
+            modelTexture = Resources.backpackTexturesStringFromSkin(stack);
         }
         return modelTexture;
     }
@@ -349,13 +332,13 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     {
         ResourceLocation modelTexture;
 
-        if (BackpackNames.getBackpackColorName(wearable).equals("Standard"))
+        if (BackpackTypes.getType(wearable) == BackpackTypes.STANDARD)
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
         }
         else
         {
-            modelTexture = Resources.backpackTextureFromString(BackpackNames.getBackpackColorName(wearable));
+            modelTexture = Resources.backpackTextureFromString(BackpackTypes.getSkinName(wearable));
         }
         return modelTexture;
     }
