@@ -20,6 +20,9 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
+import static com.darkona.adventurebackpack.common.Constants.TAG_DISABLE_CYCLING;
+import static com.darkona.adventurebackpack.common.Constants.TAG_DISABLE_NVISION;
+import static com.darkona.adventurebackpack.common.Constants.TAG_EXTENDED_COMPOUND;
 import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.TAG_LEFT_TANK;
 import static com.darkona.adventurebackpack.common.Constants.TAG_RIGHT_TANK;
@@ -33,13 +36,16 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOU
  */
 public class InventoryBackpack extends InventoryAdventureBackpack implements IInventoryAdventureBackpack
 {
-    public NBTTagCompound extendedProperties = new NBTTagCompound();
+    private static final String TAG_IS_SLEEPING_BAG = "sleepingBag";
+    private static final String TAG_SLEEPING_BAG_X = "sleepingBagX";
+    private static final String TAG_SLEEPING_BAG_Y = "sleepingBagY";
+    private static final String TAG_SLEEPING_BAG_Z = "sleepingBagZ";
 
+    private BackpackTypes type = BackpackTypes.STANDARD;
     private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
-
-    private BackpackTypes type = BackpackTypes.STANDARD;
+    private NBTTagCompound extendedProperties = new NBTTagCompound();
 
     private boolean sleepingBagDeployed = false;
     private int sleepingBagX;
@@ -187,10 +193,10 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     }
 
     @Override
-    public void dirtyExtended()
+    public void dirtyExtended() //TODO is it redundant?
     {
-        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).removeTag("extendedProperties");
-        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag("extendedProperties", extendedProperties);
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).removeTag(TAG_EXTENDED_COMPOUND);
+        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_EXTENDED_COMPOUND, extendedProperties);
     }
 
     @Override
@@ -249,16 +255,18 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         }
         leftTank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
         rightTank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
-        extendedProperties = backpackTag.getCompoundTag("extendedProperties");
-        sleepingBagDeployed = extendedProperties.getBoolean("sleepingBagDeployed");
-        if (sleepingBagDeployed)
+        extendedProperties = backpackTag.getCompoundTag(TAG_EXTENDED_COMPOUND);
         {
-            sleepingBagX = extendedProperties.getInteger("sleepingBagX");
-            sleepingBagY = extendedProperties.getInteger("sleepingBagY");
-            sleepingBagZ = extendedProperties.getInteger("sleepingBagZ");
+            sleepingBagDeployed = extendedProperties.getBoolean(TAG_IS_SLEEPING_BAG);
+            if (sleepingBagDeployed)
+            {
+                sleepingBagX = extendedProperties.getInteger(TAG_SLEEPING_BAG_X);
+                sleepingBagY = extendedProperties.getInteger(TAG_SLEEPING_BAG_Y);
+                sleepingBagZ = extendedProperties.getInteger(TAG_SLEEPING_BAG_Z);
+            }
         }
-        disableCycling = backpackTag.getBoolean("disableCycling");
-        disableNVision = backpackTag.getBoolean("disableNVision");
+        disableCycling = backpackTag.getBoolean(TAG_DISABLE_CYCLING);
+        disableNVision = backpackTag.getBoolean(TAG_DISABLE_NVISION);
         lastTime = backpackTag.getInteger("lastTime");
     }
 
@@ -283,22 +291,25 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         backpackTag.setTag(TAG_INVENTORY, items);
         backpackTag.setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        backpackTag.setTag("extendedProperties", extendedProperties);
-        extendedProperties.setBoolean("sleepingBagDeployed", sleepingBagDeployed);
-        if (sleepingBagDeployed)
+        backpackTag.setTag(TAG_EXTENDED_COMPOUND, extendedProperties);
         {
-            extendedProperties.setInteger("sleepingBagX", sleepingBagX);
-            extendedProperties.setInteger("sleepingBagY", sleepingBagY);
-            extendedProperties.setInteger("sleepingBagZ", sleepingBagZ);
+            if (sleepingBagDeployed)
+            {
+                extendedProperties.setBoolean(TAG_IS_SLEEPING_BAG, sleepingBagDeployed);
+                extendedProperties.setInteger(TAG_SLEEPING_BAG_X, sleepingBagX);
+                extendedProperties.setInteger(TAG_SLEEPING_BAG_Y, sleepingBagY);
+                extendedProperties.setInteger(TAG_SLEEPING_BAG_Z, sleepingBagZ);
+            }
+            else
+            {
+                extendedProperties.removeTag(TAG_IS_SLEEPING_BAG);
+                extendedProperties.removeTag(TAG_SLEEPING_BAG_X);
+                extendedProperties.removeTag(TAG_SLEEPING_BAG_Y);
+                extendedProperties.removeTag(TAG_SLEEPING_BAG_Z);
+            }
         }
-        else
-        {
-            extendedProperties.removeTag("sleepingBagX");
-            extendedProperties.removeTag("sleepingBagY");
-            extendedProperties.removeTag("sleepingBagZ");
-        }
-        backpackTag.setBoolean("disableCycling", disableCycling);
-        backpackTag.setBoolean("disableNVision", disableNVision);
+        backpackTag.setBoolean(TAG_DISABLE_CYCLING, disableCycling);
+        backpackTag.setBoolean(TAG_DISABLE_NVISION, disableNVision);
         backpackTag.setInteger("lastTime", lastTime);
 
         compound.setTag(TAG_WEARABLE_COMPOUND, backpackTag);

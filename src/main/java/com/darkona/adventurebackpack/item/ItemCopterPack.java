@@ -207,7 +207,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 fuelConsumption *= 2;
             }
-            int ticks = inv.tickCounter - 1;
+            int ticks = inv.getTickCounter() - 1;
             FluidTank tank = inv.getFuelTank();
             if (tank.getFluid() != null && GeneralReference.isValidFuel(tank.getFluid().getFluid().getName()))
             {
@@ -215,13 +215,13 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             }
             if (ticks <= 0)
             {
-                inv.tickCounter = 3;
+                inv.setTickCounter(3);
                 inv.consumeFuel(getFuelSpent(fuelConsumption));
                 inv.dirtyTanks();
             }
             else
             {
-                inv.tickCounter = ticks;
+                inv.setTickCounter(ticks);
             }
         }
         inv.closeInventory();

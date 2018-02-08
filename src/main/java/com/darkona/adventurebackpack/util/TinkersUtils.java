@@ -11,11 +11,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.util.FakePlayer;
+import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
-
-import com.mojang.authlib.GameProfile;
 
 /**
  * Created on 03.02.2018
@@ -52,13 +51,13 @@ public class TinkersUtils
                 Object craftingLogicInstance = craftingLogic.newInstance();
 
                 WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-                UUID FAKE_UUID = UUID.fromString("521e749d-2ac0-3459-af7a-160b4be5c62b");
-                GameProfile FAKE_PROFILE = new GameProfile(FAKE_UUID, "[Adventurer]");
+                UUID fakeUuid = UUID.fromString("521e749d-2ac0-3459-af7a-160b4be5c62b");
+                GameProfile fakeProfile = new GameProfile(fakeUuid, "[Adventurer]");
 
                 craftingStation = Class.forName(CLASS_CRAFTING_STATION);
                 craftingStationInstance = craftingStation
                         .getConstructor(InventoryPlayer.class, craftingLogic, int.class, int.class, int.class)
-                        .newInstance(new InventoryPlayer(new FakePlayer(world, FAKE_PROFILE)), craftingLogicInstance, 0, 0, 0);
+                        .newInstance(new InventoryPlayer(new FakePlayer(world, fakeProfile)), craftingLogicInstance, 0, 0, 0);
             }
             catch (Exception e)
             {

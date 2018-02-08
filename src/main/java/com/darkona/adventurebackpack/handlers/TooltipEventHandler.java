@@ -73,14 +73,14 @@ public class TooltipEventHandler
 
             if (GuiScreen.isCtrlKeyDown())
             {
-                boolean cycling = !backpackTag.getBoolean("disableCycling");
+                boolean cycling = !backpackTag.getBoolean(Constants.TAG_DISABLE_CYCLING);
                 makeTip(local("backpack.cycling") + ": " + switchTooltip(cycling, true));
                 makeTip(pressKeyFormat(actionKeyFormat()), locals("backpack.cycling.key"),
                         " " + switchTooltip(!cycling, false));
 
                 if (BackpackTypes.isNightVision(BackpackTypes.getType(backpackTag.getByte(Constants.TAG_TYPE))))
                 {
-                    boolean vision = !backpackTag.getBoolean("disableNVision");
+                    boolean vision = !backpackTag.getBoolean(Constants.TAG_DISABLE_NVISION);
                     makeTip(local("backpack.vision") + ": " + switchTooltip(vision, true));
                     makeTip(pressShiftKeyFormat(actionKeyFormat()), locals("backpack.vision.key"),
                             " " + switchTooltip(!vision, false));

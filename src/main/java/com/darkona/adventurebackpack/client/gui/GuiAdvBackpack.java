@@ -34,6 +34,7 @@ public class GuiAdvBackpack extends GuiWithTanks
 {
     private static final ResourceLocation TEXTURE = Resources.guiTextures("guiBackpackNew");
     private static final ResourceLocation TINKERS_ICONS = TinkersUtils.getTinkersIcons();
+    private static final int TINKERS_SLOT = 38; //ContainerBackpack.CRAFT_MATRIX_EMULATION[4]
 
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
     private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 91, 18, 18);
@@ -111,8 +112,11 @@ public class GuiAdvBackpack extends GuiWithTanks
 
         if (ConfigHandler.IS_TCONSTRUCT && ConfigHandler.tinkerToolsMaintenance)
         {
-            this.mc.getTextureManager().bindTexture(TINKERS_ICONS);
-            this.drawTexturedModalRect(this.guiLeft + 169, this.guiTop + 77, 0, 233, 18, 18);
+            if (inventory.getStackInSlot(TINKERS_SLOT) == null)
+            {
+                this.mc.getTextureManager().bindTexture(TINKERS_ICONS);
+                this.drawTexturedModalRect(this.guiLeft + 169, this.guiTop + 77, 0, 233, 18, 18);
+            }
         }
     }
 

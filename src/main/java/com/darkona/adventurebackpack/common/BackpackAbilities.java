@@ -510,10 +510,10 @@ public class BackpackAbilities
         int milkTime = -1;
         if (inv.getExtendedProperties() != null)
         {
-            if (inv.extendedProperties.hasKey("wheatConsumed"))
+            if (inv.getExtendedProperties().hasKey("wheatConsumed"))
             {
-                wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
-                milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
+                wheatConsumed = inv.getExtendedProperties().getInteger("wheatConsumed");
+                milkTime = inv.getExtendedProperties().getInteger("milkTime") - 1;
             }
         }
 
@@ -544,8 +544,8 @@ public class BackpackAbilities
             inv.dirtyTanks();
         }
         if (milkTime < -1) milkTime = -1;
-        inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
-        inv.extendedProperties.setInteger("milkTime", milkTime);
+        inv.getExtendedProperties().setInteger("wheatConsumed", wheatConsumed);
+        inv.getExtendedProperties().setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
         //inv.setLastTime(eatTime);
         inv.dirtyExtended();
@@ -571,10 +571,10 @@ public class BackpackAbilities
         int milkTime = -1;
         if (inv.getExtendedProperties() != null)
         {
-            if (inv.extendedProperties.hasKey("wheatConsumed"))
+            if (inv.getExtendedProperties().hasKey("wheatConsumed"))
             {
-                wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
-                milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
+                wheatConsumed = inv.getExtendedProperties().getInteger("wheatConsumed");
+                milkTime = inv.getExtendedProperties().getInteger("milkTime") - 1;
             }
         }
 
@@ -605,8 +605,8 @@ public class BackpackAbilities
             inv.dirtyTanks();
         }
         if (milkTime < -1) milkTime = -1;
-        inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
-        inv.extendedProperties.setInteger("milkTime", milkTime);
+        inv.getExtendedProperties().setInteger("wheatConsumed", wheatConsumed);
+        inv.getExtendedProperties().setInteger("milkTime", milkTime);
         inv.setLastTime(eatTime);
         //inv.setLastTime(eatTime);
         inv.dirtyExtended();

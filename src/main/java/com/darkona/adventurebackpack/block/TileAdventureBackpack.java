@@ -38,6 +38,9 @@ import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_IN_RIGHT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_LEFT;
 import static com.darkona.adventurebackpack.common.Constants.BUCKET_OUT_RIGHT;
+import static com.darkona.adventurebackpack.common.Constants.TAG_DISABLE_CYCLING;
+import static com.darkona.adventurebackpack.common.Constants.TAG_DISABLE_NVISION;
+import static com.darkona.adventurebackpack.common.Constants.TAG_EXTENDED_COMPOUND;
 import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.TAG_LEFT_TANK;
 import static com.darkona.adventurebackpack.common.Constants.TAG_RIGHT_TANK;
@@ -55,9 +58,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
-    private NBTTagList ench;
     private BackpackTypes type;
-
+    private NBTTagList ench;
     private NBTTagCompound extendedProperties;
     private boolean disableCycling;
     private boolean disableNVision;
@@ -290,9 +292,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         }
         leftTank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
         rightTank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
-        extendedProperties = backpackTag.getCompoundTag("extended");
-        disableCycling = backpackTag.getBoolean("disableCycling");
-        disableNVision = backpackTag.getBoolean("disableNVision");
+        extendedProperties = backpackTag.getCompoundTag(TAG_EXTENDED_COMPOUND);
+        disableCycling = backpackTag.getBoolean(TAG_DISABLE_CYCLING);
+        disableNVision = backpackTag.getBoolean(TAG_DISABLE_NVISION);
         lastTime = backpackTag.getInteger("lastTime");
     }
 
@@ -319,9 +321,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         backpackTag.setTag(TAG_INVENTORY, items);
         backpackTag.setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
         backpackTag.setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        backpackTag.setTag("extended", extendedProperties);
-        backpackTag.setBoolean("disableCycling", disableCycling);
-        backpackTag.setBoolean("disableNVision", disableNVision);
+        backpackTag.setTag(TAG_EXTENDED_COMPOUND, extendedProperties);
+        backpackTag.setBoolean(TAG_DISABLE_CYCLING, disableCycling);
+        backpackTag.setBoolean(TAG_DISABLE_NVISION, disableNVision);
         backpackTag.setInteger("lastTime", lastTime);
 
         compound.setTag(TAG_WEARABLE_COMPOUND, backpackTag);
@@ -333,7 +335,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return new FluidTank[]{leftTank, rightTank};
     }
 
-    //====================================================TAG_INVENTORY===================================================//
+    //====================================================INVENTORY===================================================//
     @Override
     public void openInventory()
     {

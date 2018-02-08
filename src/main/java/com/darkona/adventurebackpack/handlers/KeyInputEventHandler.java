@@ -76,7 +76,7 @@ public class KeyInputEventHandler
         {
             if (Wearing.isHoldingHose(player))
             {
-                sendCycleToolPacket( player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
+                sendCycleToolPacket(player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
                 ServerActions.switchHose(player, false, ServerActions.HOSE_TOGGLE);
             }
             else if (Wearing.isWearingBackpack(player))

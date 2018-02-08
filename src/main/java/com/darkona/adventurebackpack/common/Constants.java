@@ -18,7 +18,8 @@ public class Constants
     public static final int BUCKET = FluidContainerRegistry.BUCKET_VOLUME;
 
     // Wearable NBT
-    public static final String TAG_WEARABLE_COMPOUND = "wearableData"; //TODO "wearablePack"
+    public static final String TAG_WEARABLE_COMPOUND = "wearableData";
+    public static final String TAG_EXTENDED_COMPOUND = "extendedProperties";
     public static final String TAG_INVENTORY = "inventory";
 
     /**
@@ -30,7 +31,7 @@ public class Constants
 
     // Inventory Slots
     public static final int INVENTORY_SIZE = 54;
-    public static final int INVENTORY_SPECIAL_SIZE = 6; // tooSlot * 2, bucketIn * 2, bucketOut *2
+    public static final int INVENTORY_SPECIAL_SIZE = 6; // tooSlot * 2, bucketIn * 2, bucketOut * 2
     public static final int INVENTORY_MAIN_SIZE = INVENTORY_SIZE - INVENTORY_SPECIAL_SIZE; // 0 excluded
     public static final int END_OF_INVENTORY = INVENTORY_MAIN_SIZE - 1;                    // 0 included
 
@@ -46,11 +47,12 @@ public class Constants
     public static final String TAG_TYPE = "type";
     public static final String TAG_LEFT_TANK = "leftTank";
     public static final String TAG_RIGHT_TANK = "rightTank";
+    public static final String TAG_DISABLE_CYCLING = "disableCycling";
+    public static final String TAG_DISABLE_NVISION = "disableNVision";
 
     // NBT: Extended Properties
     public static final String TAG_HOLDING_SPACE = "holdingSpace";
     public static final String TAG_SLEEPING_IN_BAG = "sleepingInBag";
-    public static final String TAG_STORED_SPAWN = "storedSpawn";
 
     public class Jetpack
     {

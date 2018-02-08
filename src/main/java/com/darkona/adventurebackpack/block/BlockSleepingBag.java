@@ -42,6 +42,11 @@ public class BlockSleepingBag extends BlockDirectional  //TODO should we extend 
 {
     private static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
 
+    private static final String TAG_STORED_SPAWN = "storedSpawn";
+    private static final String TAG_SPAWN_POS_X = "posX";
+    private static final String TAG_SPAWN_POS_Y = "posY";
+    private static final String TAG_SPAWN_POS_Z = "posZ";
+
     @SideOnly(Side.CLIENT)
     private IIcon[] endIcons;
     @SideOnly(Side.CLIENT)
@@ -104,10 +109,10 @@ public class BlockSleepingBag extends BlockDirectional  //TODO should we extend 
         if (spawn != null)
         {
             NBTTagCompound storedSpawn = new NBTTagCompound();
-            storedSpawn.setInteger("posX", spawn.posX);
-            storedSpawn.setInteger("posY", spawn.posY);
-            storedSpawn.setInteger("posZ", spawn.posZ);
-            tag.setTag(Constants.TAG_STORED_SPAWN, storedSpawn);
+            storedSpawn.setInteger(TAG_SPAWN_POS_X, spawn.posX);
+            storedSpawn.setInteger(TAG_SPAWN_POS_Y, spawn.posY);
+            storedSpawn.setInteger(TAG_SPAWN_POS_Z, spawn.posZ);
+            tag.setTag(TAG_STORED_SPAWN, storedSpawn);
             LogHelper.info("Stored spawn data for " + player.getDisplayName() + ": " + spawn.toString()
                     + " dimID: " + player.worldObj.provider.dimensionId);
         }
@@ -119,15 +124,15 @@ public class BlockSleepingBag extends BlockDirectional  //TODO should we extend 
 
     public static void restoreOriginalSpawn(EntityPlayer player, NBTTagCompound tag)
     {
-        if (tag.hasKey(Constants.TAG_STORED_SPAWN))
+        if (tag.hasKey(TAG_STORED_SPAWN))
         {
-            NBTTagCompound storedSpawn = tag.getCompoundTag(Constants.TAG_STORED_SPAWN);
+            NBTTagCompound storedSpawn = tag.getCompoundTag(TAG_STORED_SPAWN);
             ChunkCoordinates coords = new ChunkCoordinates(
-                    storedSpawn.getInteger("posX"),
-                    storedSpawn.getInteger("posY"),
-                    storedSpawn.getInteger("posZ"));
+                    storedSpawn.getInteger(TAG_SPAWN_POS_X),
+                    storedSpawn.getInteger(TAG_SPAWN_POS_Y),
+                    storedSpawn.getInteger(TAG_SPAWN_POS_Z));
             player.setSpawnChunk(coords, false, player.worldObj.provider.dimensionId);
-            tag.removeTag(Constants.TAG_STORED_SPAWN);
+            tag.removeTag(TAG_STORED_SPAWN);
             LogHelper.info("Restored spawn data for" + player.getDisplayName() + ": " + coords.toString()
                     + " dimID: " + player.worldObj.provider.dimensionId);
         }
