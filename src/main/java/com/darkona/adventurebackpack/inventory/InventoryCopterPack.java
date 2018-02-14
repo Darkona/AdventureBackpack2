@@ -39,18 +39,18 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
         if (compound == null || compound.hasKey(TAG_WEARABLE_COMPOUND))
             return;
 
-        if (compound.hasKey(TAG_STATUS))
-            compound.removeTag(TAG_STATUS);
+        if (compound.hasKey("status"))
+            compound.removeTag("status");
         if (compound.hasKey("tickCounter"))
             compound.removeTag("tickCounter");
 
-        fuelTank.readFromNBT(compound.getCompoundTag(TAG_FUEL_TANK));
+        fuelTank.readFromNBT(compound.getCompoundTag("fuelTank"));
 
         NBTTagCompound newCopterTag = new NBTTagCompound();
         newCopterTag.setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
 
         compound.setTag(TAG_WEARABLE_COMPOUND, newCopterTag);
-        compound.removeTag(TAG_FUEL_TANK);
+        compound.removeTag("fuelTank");
     }
 
     public FluidTank getFuelTank()
@@ -213,7 +213,7 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
         containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
     }
 
-    //TODO to interface: getWearableCompound() { return containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);}
+    //TODO to InventoryAdventureBackpack: getWearableCompound() { return containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);}
 
     public void dirtyStatus()
     {

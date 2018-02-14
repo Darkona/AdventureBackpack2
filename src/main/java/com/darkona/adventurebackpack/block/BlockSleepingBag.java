@@ -38,7 +38,7 @@ import com.darkona.adventurebackpack.util.Wearing;
  *
  * @author Darkona
  */
-public class BlockSleepingBag extends BlockDirectional  //TODO should we extend BlockBed instead?
+public class BlockSleepingBag extends BlockDirectional
 {
     private static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
 
@@ -133,7 +133,7 @@ public class BlockSleepingBag extends BlockDirectional  //TODO should we extend 
                     storedSpawn.getInteger(TAG_SPAWN_POS_Z));
             player.setSpawnChunk(coords, false, player.worldObj.provider.dimensionId);
             tag.removeTag(TAG_STORED_SPAWN);
-            LogHelper.info("Restored spawn data for" + player.getDisplayName() + ": " + coords.toString()
+            LogHelper.info("Restored spawn data for " + player.getDisplayName() + ": " + coords.toString()
                     + " dimID: " + player.worldObj.provider.dimensionId);
         }
         else

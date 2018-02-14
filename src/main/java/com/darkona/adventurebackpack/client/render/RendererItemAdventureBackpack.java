@@ -71,7 +71,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
         ResourceLocation modelTexture;
-        if (BackpackTypes.getType(backpack) == BackpackTypes.STANDARD) //TODO check holiday textures
+        if (BackpackTypes.getType(backpack) == BackpackTypes.STANDARD)
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
         }

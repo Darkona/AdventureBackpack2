@@ -53,7 +53,6 @@ public class BackpackUtils
         timer.schedule(unequipTask, 200);
     }
 
-
     //TODO as we unificate NTB structure for all wearables, have to remake this to getWearableTag
     public static NBTTagCompound getBackpackTag(ItemStack backpack)
     {

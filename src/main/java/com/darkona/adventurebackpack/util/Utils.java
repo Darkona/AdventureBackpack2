@@ -115,7 +115,7 @@ public class Utils
                 result += EnumChatFormatting.RED + skinName;
                 break;
             case RAINBOW:
-                result += Utils.makeItRainbow(skinName);
+                result += makeItRainbow(skinName);
                 break;
             case SQUID:
                 result += EnumChatFormatting.DARK_AQUA + skinName;
