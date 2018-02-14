@@ -123,8 +123,6 @@ public enum BackpackTypes
     private final String skinName;
     private final Props[] props;
 
-    //TODO rework NBT for wearable packs. unificate and simplify structure.
-
     BackpackTypes(int meta, String skin, Props... props)
     {
         Validate.inclusiveBetween(0, 127, meta, "wrong meta value: %s (%s)", meta, this);
@@ -225,9 +223,9 @@ public enum BackpackTypes
         return UNKNOWN;
     }
 
-    public static BackpackTypes getType(ItemStack backpack) //TODO solve this damn null
+    public static BackpackTypes getType(ItemStack backpack)
     {
-        if (backpack == null) // well... Wearing.getWearingBackpack() may return null...
+        if (backpack == null) // well... Wearing.getWearingBackpack() may return null... //TODO solve this damn null
             return null;
 
         NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);

@@ -198,7 +198,7 @@ public class ModelCopterPack extends ModelWearable
         InventoryCopterPack copterInv = new InventoryCopterPack(this.copterPack);
         copterInv.openInventory();
         Axis.isHidden = true;
-        if (copterPack != null && copterPack.hasTagCompound()  //TODO these checks are terrible. can we get rid of em?
+        if (copterPack != null && copterPack.hasTagCompound()
                 && copterPack.stackTagCompound.hasKey(TAG_WEARABLE_COMPOUND)
                 && copterPack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).hasKey(TAG_STATUS))
         {

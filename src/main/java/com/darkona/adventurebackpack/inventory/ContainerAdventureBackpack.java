@@ -203,18 +203,6 @@ abstract class ContainerAdventureBackpack extends Container
         return changesMade;
     }
 
-    /*
-    @Override
-    protected void retrySlotClick(int slotIndex, int p_75133_2_, boolean flag, EntityPlayer player)
-    {
-        super.retrySlotClick(slotIndex, p_75133_2_, flag, player);
-        //this.slotClick(index, p_75133_2_, 1, p_75133_4_);
-        // TODO if (slot instanceof slotFluid), see also mergeItemStack
-    }
-
-    //TODO protected List crafters = new ArrayList();
-    */
-
     @Override
     public void onContainerClosed(EntityPlayer player)
     {

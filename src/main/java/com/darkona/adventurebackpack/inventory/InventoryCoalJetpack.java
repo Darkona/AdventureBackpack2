@@ -53,8 +53,8 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
 
         NBTTagCompound oldJetpackTag = compound.getCompoundTag("jetpackData");
         NBTTagList oldItems = oldJetpackTag.getTagList("inventory", NBT.TAG_COMPOUND);
-        waterTank.readFromNBT(oldJetpackTag.getCompoundTag(TAG_WATER_TANK));
-        steamTank.readFromNBT(oldJetpackTag.getCompoundTag(TAG_STEAM_TANK));
+        waterTank.readFromNBT(oldJetpackTag.getCompoundTag("waterTank"));
+        steamTank.readFromNBT(oldJetpackTag.getCompoundTag("steamTank"));
 
         NBTTagCompound newJetpackTag = new NBTTagCompound();
         newJetpackTag.setTag(TAG_INVENTORY, oldItems);

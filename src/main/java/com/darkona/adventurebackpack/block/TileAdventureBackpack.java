@@ -255,8 +255,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     {
         NBTTagCompound oldBackpackTag = compound.getCompoundTag("backpackData");
         NBTTagList oldItems = oldBackpackTag.getTagList("ABPItems", NBT.TAG_COMPOUND);
-        leftTank.readFromNBT(oldBackpackTag.getCompoundTag(TAG_LEFT_TANK));
-        rightTank.readFromNBT(oldBackpackTag.getCompoundTag(TAG_RIGHT_TANK));
+        leftTank.readFromNBT(oldBackpackTag.getCompoundTag("leftTank"));
+        rightTank.readFromNBT(oldBackpackTag.getCompoundTag("rightTank"));
         type = BackpackTypes.getType(oldBackpackTag.getString("colorName"));
 
         NBTTagCompound newBackpackTag = new NBTTagCompound();

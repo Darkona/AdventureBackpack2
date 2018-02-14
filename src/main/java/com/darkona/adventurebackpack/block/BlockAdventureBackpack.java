@@ -250,12 +250,6 @@ public class BlockAdventureBackpack extends BlockContainer
         return backpack;
     }
 
-    /*@Override
-    public int damageDropped(int meta)
-    {
-        return meta; //TODO how to save meta from "tile->item"
-    }*/
-
     @Override
     public boolean hasTileEntity(int meta)
     {
