@@ -125,7 +125,7 @@ public enum BackpackTypes
 
     BackpackTypes(int meta, String skin, Props... props)
     {
-        Validate.inclusiveBetween(0, 127, meta, "wrong meta value: %s (%s)", meta, this);
+        Validate.inclusiveBetween(0, (int) Byte.MAX_VALUE, meta, "wrong meta value: %s (%s)", meta, this);
 
         this.meta = (byte) meta;
         this.props = props;
@@ -134,7 +134,7 @@ public enum BackpackTypes
 
     BackpackTypes(int meta, Props... props)
     {
-        Validate.inclusiveBetween(0, 127, meta, "wrong meta value: %s (%s)", meta, this);
+        Validate.inclusiveBetween(0, (int) Byte.MAX_VALUE, meta, "wrong meta value: %s (%s)", meta, this);
 
         this.meta = (byte) meta;
         this.props = props;
@@ -177,6 +177,7 @@ public enum BackpackTypes
         NIGHT_VISION_TYPES = Sets.immutableEnumSet(nightVisions);
 
         //ImmutableSet.<BackpackTypes>builder().addAll(SPECIAL).addAll(TILE).addAll(OTHER).build();
+        //TODO LogHelper.info("Registered blablabla types, blabla specials...");
     }
 
     public static String getSkinName(BackpackTypes type)
@@ -201,14 +202,14 @@ public enum BackpackTypes
 
     public static BackpackTypes getType(int meta)
     {
-        Validate.inclusiveBetween(0, 127, meta, "wrong meta value: %s", meta);
+        Validate.inclusiveBetween(0, (int) Byte.MAX_VALUE, meta, "wrong meta value: %s", meta);
         BackpackTypes type = BY_META.get((byte) meta);
         return type != null ? type : UNKNOWN;
     }
 
     public static BackpackTypes getType(byte meta)
     {
-        Validate.inclusiveBetween((byte) 0, (byte) 127, meta, "wrong meta value: %s", meta);
+        Validate.inclusiveBetween((byte) 0, Byte.MAX_VALUE, meta, "wrong meta value: %s", meta);
         BackpackTypes type = BY_META.get(meta);
         return type != null ? type : UNKNOWN;
     }
@@ -238,10 +239,10 @@ public enum BackpackTypes
 
     public static int getLowestUnusedMeta()
     {
-        for (byte i = 0; i <= 126; i++)
+        for (byte b = 0; b < Byte.MAX_VALUE; b++)
         {
-            if (BY_META.get(i) == null)
-                return i;
+            if (BY_META.get(b) == null)
+                return b;
         }
         return -1;
     }

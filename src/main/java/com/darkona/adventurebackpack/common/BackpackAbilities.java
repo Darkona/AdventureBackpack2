@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.common;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -168,7 +169,7 @@ public class BackpackAbilities
 
     public void itemSquid(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (player.isInWater())
+        if (player.isInsideOfMaterial(Material.water))
         {
             player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 19, -1, true));
             itemBat(player, world, backpack);

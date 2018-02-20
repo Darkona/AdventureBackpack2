@@ -30,7 +30,7 @@ public class ThaumcraftUtils
         }
         catch (Exception e)
         {
-            LogHelper.error("Error getting Thaumcraft Wands Renderer instance: " + e.getMessage());
+            LogHelper.error("Error getting Thaumcraft Wands Renderer instance: " + e);
         }
     }
 

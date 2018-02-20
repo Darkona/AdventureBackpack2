@@ -106,7 +106,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectLightning(EntityStruckByLightningEvent event)
     {
-        if (event.entity != null && event.entity instanceof EntityPlayer)
+        if (event.entity instanceof EntityPlayer)
         {
             ServerActions.electrify((EntityPlayer) event.entity);
         }

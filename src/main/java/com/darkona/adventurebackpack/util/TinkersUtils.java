@@ -61,7 +61,7 @@ public class TinkersUtils
             }
             catch (Exception e)
             {
-                LogHelper.error("Error getting Tinkers Crafting Station instance: " + e.getMessage());
+                LogHelper.error("Error getting Tinkers Crafting Station instance: " + e);
             }
 
             try
@@ -70,7 +70,7 @@ public class TinkersUtils
             }
             catch (Exception e)
             {
-                LogHelper.error("Error getting Tinkers Tool Renderer instance: " + e.getMessage());
+                LogHelper.error("Error getting Tinkers Tool Renderer instance: " + e);
             }
         }
     }
@@ -106,8 +106,7 @@ public class TinkersUtils
         }
         catch (Exception e)
         {
-            LogHelper.error("Error during reflection in getTinkersRecipe: " + e.getMessage());
-            //e.printStackTrace();
+            LogHelper.error("Error during reflection in getTinkersRecipe: " + e);
             return null;
         }
     }

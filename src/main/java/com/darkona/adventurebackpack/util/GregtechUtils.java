@@ -33,7 +33,7 @@ public class GregtechUtils
             }
             catch (Exception e)
             {
-                LogHelper.error("Error getting instance of Gregtech: " + e.getMessage());
+                LogHelper.error("Error getting instance of Gregtech: " + e);
             }
         }
     }

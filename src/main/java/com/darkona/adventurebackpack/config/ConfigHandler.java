@@ -95,6 +95,8 @@ public class ConfigHandler
     public static boolean allowGolemGen = true;
     public static boolean allowPigmanGen = false;
 
+    public static int bossBarIndent = 12;
+
     public static void init(File configFile)
     {
         if (config == null)
@@ -183,6 +185,9 @@ public class ConfigHandler
         allowBonusGen = config.getBoolean("Bonus Backpack", "worldgen", false, "Include a Standard Adventure Backpack in bonus chest?");
         allowGolemGen = config.getBoolean("IronGolem Backpacks", "worldgen", true, "Allow generation of IronGolem Backpacks in village blacksmith loot. It cannot be obtained by crafting");
         allowPigmanGen = config.getBoolean("Pigman Backpacks", "worldgen", false, "Allow generation of Pigman Backpacks in dungeon loot and villager trades");
+
+        // Experimental
+        bossBarIndent = config.getInt("Boss Bar Indent", "experimental", 0, 0, 500, "Boss health bar indent from top border, 0 = standard Forge render");
 
         if (config.hasChanged())
         {
