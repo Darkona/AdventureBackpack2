@@ -282,10 +282,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         for (int i = itemCount - 1; i >= 0; i--)
         {
             int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
-            if (slotAtI < Constants.TOOL_UPPER)
+            if (slotAtI <= Constants.END_OF_INVENTORY)
                 break;
-            else if (slotAtI == Constants.TOOL_UPPER || slotAtI == Constants.TOOL_LOWER)
-                itemCount--;
+            itemCount--;
         }
         return itemCount;
     }

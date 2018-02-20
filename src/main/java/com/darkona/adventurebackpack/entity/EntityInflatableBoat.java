@@ -34,7 +34,6 @@ import com.darkona.adventurebackpack.inventory.IInventoryTanks;
  */
 public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks, IEntityAdditionalSpawnData
 {
-    @SuppressWarnings({"FieldCanBeLocal"})
     private FluidTank fuelTank;
     private boolean isBoatEmpty;
     private double speedMultiplier;
@@ -83,6 +82,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
     @Override
     public void onUpdate()
     {
+        this.onEntityUpdate();
+
         if (!inflated)
         {
             inflation += 0.025;
