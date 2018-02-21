@@ -25,7 +25,7 @@ public class GregtechUtils
 
     static
     {
-        if (ConfigHandler.IS_GREGTECH)
+        if (ConfigHandler.IS_GREGTECH && Utils.inClient())
         {
             try
             {

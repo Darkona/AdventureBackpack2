@@ -75,6 +75,11 @@ public class Utils
         return FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER;
     }
 
+    public static boolean inClient()
+    {
+        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+    }
+
     private static final EnumChatFormatting[] RAINBOW_SEQUENCE = {EnumChatFormatting.RED, EnumChatFormatting.GOLD,
             EnumChatFormatting.YELLOW, EnumChatFormatting.GREEN, EnumChatFormatting.AQUA, EnumChatFormatting.BLUE,
             EnumChatFormatting.DARK_PURPLE};
