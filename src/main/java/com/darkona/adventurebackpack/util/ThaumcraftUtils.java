@@ -24,13 +24,16 @@ public class ThaumcraftUtils
 
     static
     {
-        try
+        if (ConfigHandler.IS_THAUMCRAFT && Utils.inClient())
         {
-            toolRendererInstance = Class.forName(CLASS_RENDERER).newInstance();
-        }
-        catch (Exception e)
-        {
-            LogHelper.error("Error getting Thaumcraft Wands Renderer instance: " + e);
+            try
+            {
+                toolRendererInstance = Class.forName(CLASS_RENDERER).newInstance();
+            }
+            catch (Exception e)
+            {
+                LogHelper.error("Error getting Thaumcraft Wands Renderer instance: " + e);
+            }
         }
     }
 

@@ -43,7 +43,7 @@ public class TinkersUtils
 
     static
     {
-        if (ConfigHandler.IS_TCONSTRUCT)
+        if (ConfigHandler.IS_TCONSTRUCT && Utils.inClient())
         {
             try
             {
