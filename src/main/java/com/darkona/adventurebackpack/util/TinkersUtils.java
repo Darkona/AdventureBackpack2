@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.util;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -43,35 +44,55 @@ public class TinkersUtils
 
     static
     {
-        if (ConfigHandler.IS_TCONSTRUCT && Utils.inClient())
+        if (ConfigHandler.IS_TCONSTRUCT)
         {
-            try
-            {
-                Class craftingLogic = Class.forName(CLASS_CRAFTING_LOGIC);
-                Object craftingLogicInstance = craftingLogic.newInstance();
+            getCraftingStationInstance();
 
+            if (Utils.inClient())
+            {
+                try
+                {
+                    toolRendererInstance = Class.forName(CLASS_RENDERER).newInstance();
+                }
+                catch (Exception e)
+                {
+                    LogHelper.error("Error getting Tinkers Tool Renderer instance: " + e);
+                }
+            }
+        }
+    }
+
+    private static void getCraftingStationInstance()
+    {
+        try
+        {
+            Class craftingLogic = Class.forName(CLASS_CRAFTING_LOGIC);
+            Object craftingLogicInstance = craftingLogic.newInstance();
+            InventoryPlayer invPlayer;
+
+            if (Utils.inServer())
+            {
                 WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
                 UUID fakeUuid = UUID.fromString("521e749d-2ac0-3459-af7a-160b4be5c62b");
                 GameProfile fakeProfile = new GameProfile(fakeUuid, "[Adventurer]");
-
-                craftingStation = Class.forName(CLASS_CRAFTING_STATION);
-                craftingStationInstance = craftingStation
-                        .getConstructor(InventoryPlayer.class, craftingLogic, int.class, int.class, int.class)
-                        .newInstance(new InventoryPlayer(new FakePlayer(world, fakeProfile)), craftingLogicInstance, 0, 0, 0);
+                invPlayer = new InventoryPlayer(new FakePlayer(world, fakeProfile));
             }
-            catch (Exception e)
+            else
             {
-                LogHelper.error("Error getting Tinkers Crafting Station instance: " + e);
+                invPlayer = Minecraft.getMinecraft().thePlayer.inventory;
             }
 
-            try
-            {
-                toolRendererInstance = Class.forName(CLASS_RENDERER).newInstance();
-            }
-            catch (Exception e)
-            {
-                LogHelper.error("Error getting Tinkers Tool Renderer instance: " + e);
-            }
+            craftingStation = Class.forName(CLASS_CRAFTING_STATION);
+            craftingStationInstance = craftingStation
+                    .getConstructor(InventoryPlayer.class, craftingLogic, int.class, int.class, int.class)
+                    .newInstance(invPlayer, craftingLogicInstance, 0, 0, 0);
+
+            LogHelper.info("Tinkers Crafting Station instance created");
+        }
+        catch (Exception e)
+        {
+            LogHelper.error("Error getting Tinkers Crafting Station instance: " + e);
+            //e.printStackTrace();
         }
     }
 
