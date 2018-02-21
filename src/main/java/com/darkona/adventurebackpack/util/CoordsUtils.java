@@ -274,11 +274,7 @@ public class CoordsUtils
                     ++cX;
                     break;
             }
-            if (world.setBlock(cX, cY, cZ, sleepingBag, meta + 8, 3))
-            {
-                world.markBlockForUpdate(cX, cY, cZ);
-                return true;
-            }
+            return world.setBlock(cX, cY, cZ, sleepingBag, meta + 8, 3);
         }
         return false;
     }
