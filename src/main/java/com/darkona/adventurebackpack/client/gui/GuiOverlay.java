@@ -81,6 +81,7 @@ public class GuiOverlay extends Gui
         if (event.type != RenderGameOverlayEvent.ElementType.EXPERIENCE)
             return;
 
+        EntityPlayer player = mc.thePlayer;
         ScaledResolution resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         screenWidth = resolution.getScaledWidth();
         screenHeight = resolution.getScaledHeight();
@@ -106,6 +107,14 @@ public class GuiOverlay extends Gui
             int yPos = ConfigHandler.statusOverlayTop
                        ? ConfigHandler.statusOverlayIndentV
                        : screenHeight - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentV;
+
+            if (ConfigHandler.IS_THAUMCRAFT
+                    && ConfigHandler.statusOverlayThaumcraft && ConfigHandler.statusOverlayLeft
+                    && ConfigHandler.statusOverlayTop == !ThaumcraftUtils.IS_DIAL_BOTTOM
+                    && ThaumcraftUtils.isTool(player.inventory.getCurrentItem()))
+            {
+                xPos += 50; // do not overlap thaumcraft GUI
+            }
 
             Collection activePotionEffects = this.mc.thePlayer.getActivePotionEffects();
             if (!activePotionEffects.isEmpty())
@@ -144,7 +153,6 @@ public class GuiOverlay extends Gui
 
         if (ConfigHandler.tanksOverlay)
         {
-            EntityPlayer player = mc.thePlayer;
             if (Wearing.isWearingWearable(player))
             {
                 IInventoryTanks inv = Wearing.getWearingWearableInv(player);

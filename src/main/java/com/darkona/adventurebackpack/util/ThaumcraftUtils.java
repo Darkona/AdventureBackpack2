@@ -12,11 +12,14 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
  */
 public class ThaumcraftUtils
 {
-    private static final String CLASS_RENDERER = "thaumcraft.client.renderers.item.ItemWandRenderer";
-    private static final String METHOD_RENDERER = "renderItem";
-    private static final Object[] EMPTY_OBJECT = {};
+    public static final boolean IS_DIAL_BOTTOM = setIsDialBottom();
 
+    private static final String CLASS_RENDERER = "thaumcraft.client.renderers.item.ItemWandRenderer";
+    private static final String CLASS_CONFIG = "thaumcraft.common.config.Config";
     private static final String CLASS_WANDS = "thaumcraft.common.items.wands.ItemWandCasting";
+    private static final String METHOD_RENDERER = "renderItem";
+    private static final String FIELD_DIAL_BOTTOM = "dialBottom";
+    private static final Object[] EMPTY_OBJECT = {};
 
     private static Object toolRendererInstance;
 
@@ -34,6 +37,21 @@ public class ThaumcraftUtils
             {
                 LogHelper.error("Error getting Thaumcraft Wands Renderer instance: " + e);
             }
+        }
+    }
+
+    private static boolean setIsDialBottom()
+    {
+        if (!ConfigHandler.IS_THAUMCRAFT || Utils.inServer())
+            return false;
+
+        try
+        {
+            return Class.forName(CLASS_CONFIG).getField(FIELD_DIAL_BOTTOM).getBoolean(null);
+        }
+        catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e)
+        {
+            return false;
         }
     }
 
