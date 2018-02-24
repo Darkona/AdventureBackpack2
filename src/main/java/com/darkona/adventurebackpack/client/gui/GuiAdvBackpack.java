@@ -21,6 +21,7 @@ import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
+import com.darkona.adventurebackpack.reference.LoadedMods;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.TinkersUtils;
 
@@ -33,7 +34,6 @@ import com.darkona.adventurebackpack.util.TinkersUtils;
 public class GuiAdvBackpack extends GuiWithTanks
 {
     private static final ResourceLocation TEXTURE = Resources.guiTextures("guiBackpackNew");
-    private static final ResourceLocation TINKERS_ICONS = TinkersUtils.getTinkersIcons();
     private static final int TINKERS_SLOT = 38; //ContainerBackpack.CRAFT_MATRIX_EMULATION[4]
 
     private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
@@ -110,11 +110,11 @@ public class GuiAdvBackpack extends GuiWithTanks
                 drawHoveringText(tankRight.getTankTooltip(), mouseX, mouseY, fontRendererObj);
         }
 
-        if (ConfigHandler.IS_TCONSTRUCT && ConfigHandler.tinkerToolsMaintenance)
+        if (LoadedMods.TCONSTRUCT && ConfigHandler.tinkerToolsMaintenance)
         {
             if (inventory.getStackInSlot(TINKERS_SLOT) == null)
             {
-                this.mc.getTextureManager().bindTexture(TINKERS_ICONS);
+                this.mc.getTextureManager().bindTexture(TinkersUtils.GUI_ICONS);
                 this.drawTexturedModalRect(this.guiLeft + 169, this.guiTop + 77, 0, 233, 18, 18);
             }
         }

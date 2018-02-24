@@ -33,6 +33,7 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.reference.LoadedMods;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.reference.ToolHandler;
 import com.darkona.adventurebackpack.util.GregtechUtils;
@@ -108,9 +109,9 @@ public class GuiOverlay extends Gui
                        ? ConfigHandler.statusOverlayIndentV
                        : screenHeight - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentV;
 
-            if (ConfigHandler.IS_THAUMCRAFT
+            if (LoadedMods.THAUMCRAFT
                     && ConfigHandler.statusOverlayThaumcraft && ConfigHandler.statusOverlayLeft
-                    && ConfigHandler.statusOverlayTop == !ThaumcraftUtils.IS_DIAL_BOTTOM
+                    && ConfigHandler.statusOverlayTop == !ThaumcraftUtils.DIAL_BOTTOM
                     && ThaumcraftUtils.isTool(player.inventory.getCurrentItem()))
             {
                 xPos += 50; // do not overlap thaumcraft GUI

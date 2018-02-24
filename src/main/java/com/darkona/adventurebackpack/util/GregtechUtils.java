@@ -3,14 +3,14 @@ package com.darkona.adventurebackpack.util;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.reference.LoadedMods;
 
 /**
  * Created on 30.01.2018
  *
  * @author Ugachaga
  */
-public class GregtechUtils
+public final class GregtechUtils
 {
     private static final String CLASS_RENDERER = "gregtech.common.render.GT_MetaGenerated_Tool_Renderer";
     private static final String METHOD_RENDERER = "renderItem";
@@ -25,7 +25,15 @@ public class GregtechUtils
 
     static
     {
-        if (ConfigHandler.IS_GREGTECH && Utils.inClient())
+        if (LoadedMods.GREGTECH)
+        {
+            createToolRendererInstance();
+        }
+    }
+
+    private static void createToolRendererInstance()
+    {
+        if (Utils.inClient())
         {
             try
             {
@@ -33,19 +41,19 @@ public class GregtechUtils
             }
             catch (Exception e)
             {
-                LogHelper.error("Error getting instance of Gregtech: " + e);
+                LogHelper.error("Error getting instance of Gregtech Tools Renderer: " + e);
             }
         }
     }
 
     public static boolean isTool(ItemStack stack)
     {
-        return ConfigHandler.IS_GREGTECH && stack.getItem().getUnlocalizedName().equals(TOOLS_NAME);
+        return LoadedMods.GREGTECH && stack.getItem().getUnlocalizedName().equals(TOOLS_NAME);
     }
 
     public static boolean isTool(String itemName)
     {
-        return ConfigHandler.IS_GREGTECH && itemName.equals(TOOLS_NAME);
+        return LoadedMods.GREGTECH && itemName.equals(TOOLS_NAME);
     }
 
     public static float getToolRotationAngle(ItemStack stack, boolean isLowerSlot)
@@ -61,6 +69,9 @@ public class GregtechUtils
 
     public static void renderTool(ItemStack stack, IItemRenderer.ItemRenderType renderType)
     {
+        if (toolRendererInstance == null)
+            return;
+
         try
         {
             Class.forName(CLASS_RENDERER)
@@ -68,8 +79,6 @@ public class GregtechUtils
                     .invoke(toolRendererInstance, renderType, stack, EMPTY_OBJECT);
         }
         catch (Exception e)
-        {
-            //e.printStackTrace();
-        }
+        { /*  */ }
     }
 }

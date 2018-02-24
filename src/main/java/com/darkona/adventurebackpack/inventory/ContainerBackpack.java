@@ -96,7 +96,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
         startX = 215;
         startY = -2500;
-        //startY = ConfigHandler.IS_DEVENV ? 125 : -2500;
+        //startY = LoadedMods.DEV_ENV ? 125 : -2500;
         for (int row = 0; row < MATRIX_DIMENSION; row++) // craftMatrix, usually 9 slots, [90-98]
         {
             for (int col = 0; col < MATRIX_DIMENSION; col++)
@@ -268,7 +268,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
-        if (ConfigHandler.tinkerToolsMaintenance && TinkersUtils.isTool(craftMatrix.getStackInSlot(4)))
+        if (ConfigHandler.tinkerToolsMaintenance && TinkersUtils.isToolOrWeapon(craftMatrix.getStackInSlot(4)))
         {
             craftResult.setInventorySlotContents(0, TinkersUtils.getTinkersRecipe(craftMatrix));
             return;

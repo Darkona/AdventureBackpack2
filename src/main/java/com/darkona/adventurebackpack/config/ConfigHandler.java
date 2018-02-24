@@ -17,13 +17,6 @@ public class ConfigHandler
 {
     public static Configuration config;
 
-    public static boolean IS_DEVENV = false;
-    public static boolean IS_BUILDCRAFT = false;
-    public static boolean IS_ENDERIO = false;
-    public static boolean IS_GREGTECH = false;
-    public static boolean IS_TCONSTRUCT = false;
-    public static boolean IS_THAUMCRAFT = false;
-
     public static boolean allowSoulBound = true;
     public static boolean backpackDeathPlace = true;
     public static boolean backpackAbilities = true;

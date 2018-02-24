@@ -3,16 +3,16 @@ package com.darkona.adventurebackpack.util;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.reference.LoadedMods;
 
 /**
  * Created on 06.02.2018
  *
  * @author Ugachaga
  */
-public class ThaumcraftUtils
+public final class ThaumcraftUtils
 {
-    public static final boolean IS_DIAL_BOTTOM = setIsDialBottom();
+    public static final boolean DIAL_BOTTOM = setDialBottom();
 
     private static final String CLASS_RENDERER = "thaumcraft.client.renderers.item.ItemWandRenderer";
     private static final String CLASS_CONFIG = "thaumcraft.common.config.Config";
@@ -27,7 +27,15 @@ public class ThaumcraftUtils
 
     static
     {
-        if (ConfigHandler.IS_THAUMCRAFT && Utils.inClient())
+        if (LoadedMods.THAUMCRAFT)
+        {
+            createToolRendererInstance();
+        }
+    }
+
+    private static void createToolRendererInstance()
+    {
+        if (Utils.inClient())
         {
             try
             {
@@ -35,14 +43,14 @@ public class ThaumcraftUtils
             }
             catch (Exception e)
             {
-                LogHelper.error("Error getting Thaumcraft Wands Renderer instance: " + e);
+                LogHelper.error("Error getting instance of Thaumcraft Wands Renderer: " + e);
             }
         }
     }
 
-    private static boolean setIsDialBottom()
+    private static boolean setDialBottom()
     {
-        if (!ConfigHandler.IS_THAUMCRAFT || Utils.inServer())
+        if (!LoadedMods.THAUMCRAFT || Utils.inServer())
             return false;
 
         try
@@ -57,12 +65,12 @@ public class ThaumcraftUtils
 
     public static boolean isTool(ItemStack stack)
     {
-        if (!ConfigHandler.IS_THAUMCRAFT || stack == null)
+        if (!LoadedMods.THAUMCRAFT || stack == null)
             return false;
 
         try
         {
-            return java.lang.Class.forName(CLASS_WANDS).isInstance(stack.getItem());
+            return Class.forName(CLASS_WANDS).isInstance(stack.getItem());
         }
         catch (ClassNotFoundException e)
         {
@@ -77,6 +85,9 @@ public class ThaumcraftUtils
 
     public static void renderTool(ItemStack stack, IItemRenderer.ItemRenderType renderType)
     {
+        if (toolRendererInstance == null)
+            return;
+
         try
         {
             Class.forName(CLASS_RENDERER)
@@ -84,8 +95,6 @@ public class ThaumcraftUtils
                     .invoke(toolRendererInstance, renderType, stack, EMPTY_OBJECT);
         }
         catch (Exception e)
-        {
-            //e.printStackTrace();
-        }
+        { /*  */ }
     }
 }
