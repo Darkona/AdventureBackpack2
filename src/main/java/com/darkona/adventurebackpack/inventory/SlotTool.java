@@ -56,7 +56,10 @@ public class SlotTool extends SlotAdventureBackpack
 
         // GregTech
         if (GregtechUtils.isTool(itemName))
-            return !(stack.getItemDamage() == 0 || stack.getItemDamage() > 169); // 0 = sword, 170 = turbines
+        {
+            int meta = stack.getItemDamage();
+            return !(meta == 0 || meta == 24 || meta > 169); // 0 = sword, 24 = mortar, 170+ = turbines
+        }
         if (itemName.startsWith("gt.metaitem")) return false; // charged baterries and such
 
         // Tinkers Construct

@@ -1,9 +1,11 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
@@ -37,6 +39,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     private static final int BUCKET_LEFT = TOOL_END + 1;
     private static final int BUCKET_RIGHT = BUCKET_LEFT + 2;
     private static final int MATRIX_DIMENSION = 3;
+    private static final int CRAFT_RESULT = BUCKET_RIGHT + 2 + (MATRIX_DIMENSION * MATRIX_DIMENSION);
     private static final int[] CRAFT_MATRIX_EMULATION = findCraftMatrixEmulationIDs();
 
     private InventoryCraftingBackpack craftMatrix = new InventoryCraftingBackpack(this, MATRIX_DIMENSION, MATRIX_DIMENSION);
@@ -108,6 +111,24 @@ public class ContainerBackpack extends ContainerAdventureBackpack
         }
         addSlotToContainer(new SlotCraftResult(this, invPlayer.player, craftMatrix, craftResult, 0, 226, 97)); // craftResult [99]
         syncCraftMatrixToInventory();
+    }
+
+    @Override
+    public void detectAndSendChanges()
+    {
+        ItemStack stackA = ((Slot) inventorySlots.get(CRAFT_RESULT)).getStack();
+        ItemStack stackB = (ItemStack) inventoryItemStacks.get(CRAFT_RESULT);
+
+        if (!ItemStack.areItemStacksEqual(stackB, stackA))
+        {
+            stackB = stackA == null ? null : stackA.copy();
+            inventoryItemStacks.set(CRAFT_RESULT, stackB);
+
+            if (player instanceof EntityPlayerMP)
+                ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
+        }
+
+        super.detectAndSendChanges();
     }
 
     @Override

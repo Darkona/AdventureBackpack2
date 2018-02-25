@@ -129,24 +129,16 @@ public class GuiOverlay extends Gui
                     PotionEffect potionEffect = (PotionEffect) activeEffect.next();
                     Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
 
-                    try
+                    // yes potion should not be null here, but it sometimes does
+                    // let the vanilla crash itself, no need to report this to us
+                    if (potion != null && potion.hasStatusIcon())
                     {
-                        // yes potion should not be null here, but it sometimes does. let the vanilla crash itself, no need to report this to us
-                        if (potion != null && potion.hasStatusIcon())
-                        {
-                            int iconIndex = potion.getStatusIconIndex();
-                            this.drawTexturedModalRect(
-                                    xPos, yPos,
-                                    BUFF_ICON_BASE_U_OFFSET + iconIndex % BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
-                                    BUFF_ICON_BASE_V_OFFSET + iconIndex / BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
-                                    BUFF_ICON_SIZE, BUFF_ICON_SIZE);
-                        }
-                    }
-                    catch (NullPointerException npe)
-                    {
-                        String msg = "Weird NPE is caught: activePotionEffects: " + activePotionEffects
-                                + "; potionEffect: " + potionEffect + "; potion: " + potion;
-                        throw new NullPointerException(msg);
+                        int iconIndex = potion.getStatusIconIndex();
+                        this.drawTexturedModalRect(
+                                xPos, yPos,
+                                BUFF_ICON_BASE_U_OFFSET + iconIndex % BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
+                                BUFF_ICON_BASE_V_OFFSET + iconIndex / BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
+                                BUFF_ICON_SIZE, BUFF_ICON_SIZE);
                     }
                 }
             }

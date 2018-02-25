@@ -34,15 +34,16 @@ public final class TinkersUtils
     private static final String FIELD_CRAFT_RESULT = "craftResult";
 
     private static final String CLASS_RENDERER = "tconstruct.client.FlexibleToolRenderer";
-    private static final String METHOD_RENDERER = "renderItem";
-    private static final Object[] EMPTY_OBJECT = {};
 
+    private static final String PACKAGE_TCONSTRUCT = "tconstruct";
     private static final String PACKAGE_TOOLS = "tconstruct.items.tools";
     private static final String PACKAGE_AMMO = "tconstruct.weaponry.ammo"; // arrows and bolts
     private static final String PACKAGE_WEAPONS = "tconstruct.weaponry.weapons"; // bows, crossbows, throwing weapons
 
     private static Class<?> craftingStation;
     private static Object craftingStationInstance;
+
+    private static Class<?> toolRenderer;
     private static Object toolRendererInstance;
 
     private TinkersUtils() {}
@@ -62,19 +63,7 @@ public final class TinkersUtils
         {
             Class craftingLogic = Class.forName(CLASS_CRAFTING_LOGIC);
             Object craftingLogicInstance = craftingLogic.newInstance();
-            InventoryPlayer invPlayer;
-
-            if (Utils.inServer())
-            {
-                WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-                UUID fakeUuid = UUID.fromString("521e749d-2ac0-3459-af7a-160b4be5c62b");
-                GameProfile fakeProfile = new GameProfile(fakeUuid, "[Adventurer]");
-                invPlayer = new InventoryPlayer(new FakePlayer(world, fakeProfile));
-            }
-            else
-            {
-                invPlayer = Minecraft.getMinecraft().thePlayer.inventory;
-            }
+            InventoryPlayer invPlayer = getInventoryPlayer();
 
             craftingStation = Class.forName(CLASS_CRAFTING_STATION);
             craftingStationInstance = craftingStation
@@ -87,13 +76,31 @@ public final class TinkersUtils
         }
     }
 
+    private static InventoryPlayer getInventoryPlayer()
+    {
+        InventoryPlayer invPlayer;
+        if (Utils.inServer())
+        {
+            WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
+            UUID fakeUuid = UUID.fromString("521e749d-2ac0-3459-af7a-160b4be5c62b");
+            GameProfile fakeProfile = new GameProfile(fakeUuid, "[Adventurer]");
+            invPlayer = new InventoryPlayer(new FakePlayer(world, fakeProfile));
+        }
+        else
+        {
+            invPlayer = Minecraft.getMinecraft().thePlayer.inventory;
+        }
+        return invPlayer;
+    }
+
     private static void createToolRendererInstance()
     {
         if (Utils.inClient())
         {
             try
             {
-                toolRendererInstance = Class.forName(CLASS_RENDERER).newInstance();
+                toolRenderer = Class.forName(CLASS_RENDERER);
+                toolRendererInstance = toolRenderer.newInstance();
             }
             catch (Exception e)
             {
@@ -108,7 +115,9 @@ public final class TinkersUtils
             return false;
 
         String cn = stack.getItem().getClass().getName();
-        return cn.startsWith(PACKAGE_TOOLS) || cn.startsWith(PACKAGE_WEAPONS) || cn.startsWith(PACKAGE_AMMO);
+        return cn.startsWith(PACKAGE_TCONSTRUCT)
+                && (cn.startsWith(PACKAGE_TOOLS) || cn.startsWith(PACKAGE_WEAPONS) || cn.startsWith(PACKAGE_AMMO));
+
     }
 
     public static boolean isTool(@Nonnull ItemStack stack)
@@ -156,16 +165,6 @@ public final class TinkersUtils
 
     public static void renderTool(ItemStack stack, IItemRenderer.ItemRenderType renderType)
     {
-        if (toolRendererInstance == null)
-            return;
-
-        try
-        {
-            Class.forName(CLASS_RENDERER)
-                    .getMethod(METHOD_RENDERER, IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class)
-                    .invoke(toolRendererInstance, renderType, stack, EMPTY_OBJECT);
-        }
-        catch (Exception e)
-        { /*  */ }
+        ToolRenderHelper.render(stack, renderType, toolRenderer, toolRendererInstance);
     }
 }

@@ -17,10 +17,9 @@ public final class ThaumcraftUtils
     private static final String CLASS_RENDERER = "thaumcraft.client.renderers.item.ItemWandRenderer";
     private static final String CLASS_CONFIG = "thaumcraft.common.config.Config";
     private static final String CLASS_WANDS = "thaumcraft.common.items.wands.ItemWandCasting";
-    private static final String METHOD_RENDERER = "renderItem";
     private static final String FIELD_DIAL_BOTTOM = "dialBottom";
-    private static final Object[] EMPTY_OBJECT = {};
 
+    private static Class<?> toolRenderer;
     private static Object toolRendererInstance;
 
     private ThaumcraftUtils() {}
@@ -39,7 +38,8 @@ public final class ThaumcraftUtils
         {
             try
             {
-                toolRendererInstance = Class.forName(CLASS_RENDERER).newInstance();
+                toolRenderer = Class.forName(CLASS_RENDERER);
+                toolRendererInstance = toolRenderer.newInstance();
             }
             catch (Exception e)
             {
@@ -85,16 +85,6 @@ public final class ThaumcraftUtils
 
     public static void renderTool(ItemStack stack, IItemRenderer.ItemRenderType renderType)
     {
-        if (toolRendererInstance == null)
-            return;
-
-        try
-        {
-            Class.forName(CLASS_RENDERER)
-                    .getMethod(METHOD_RENDERER, IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class)
-                    .invoke(toolRendererInstance, renderType, stack, EMPTY_OBJECT);
-        }
-        catch (Exception e)
-        { /*  */ }
+        ToolRenderHelper.render(stack, renderType, toolRenderer, toolRendererInstance);
     }
 }
