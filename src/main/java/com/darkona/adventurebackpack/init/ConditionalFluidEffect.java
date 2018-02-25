@@ -1,8 +1,8 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.effects.FuelEffect;
 import com.darkona.adventurebackpack.fluids.effects.OilEffect;
+import com.darkona.adventurebackpack.reference.LoadedMods;
 import adventurebackpack.api.FluidEffect;
 
 /**
@@ -17,7 +17,7 @@ public class ConditionalFluidEffect
 
     public static void init()
     {
-        if (ConfigHandler.IS_BUILDCRAFT)
+        if (LoadedMods.BUILDCRAFT)
         {
             oilEffect = new OilEffect();
             fuelEffect = new FuelEffect();

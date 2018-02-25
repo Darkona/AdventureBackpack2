@@ -286,7 +286,7 @@ public class ModRecipes
 
     /*public static void conditionalInit()
     {
-        if(ConfigHandler.IS_BUILDCRAFT)
+        if (LoadedMods.BUILDCRAFT)
         {
 
         }

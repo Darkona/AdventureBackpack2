@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.util;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
@@ -15,101 +16,126 @@ import net.minecraftforge.common.util.FakePlayer;
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.reference.LoadedMods;
 
 /**
  * Created on 03.02.2018
  *
  * @author Ugachaga
  */
-public class TinkersUtils
+public final class TinkersUtils
 {
+    public static final ResourceLocation GUI_ICONS = new ResourceLocation("tinker", "textures/gui/icons.png");
+
     private static final String CLASS_CRAFTING_LOGIC = "tconstruct.tools.logic.CraftingStationLogic";
     private static final String CLASS_CRAFTING_STATION = "tconstruct.tools.inventory.CraftingStationContainer";
-    private static final String METHOD_ON_CRAFT_CHANGED = ConfigHandler.IS_DEVENV ? "onCraftMatrixChanged" : "func_75130_a";
+    private static final String METHOD_ON_CRAFT_CHANGED = LoadedMods.DEV_ENV ? "onCraftMatrixChanged" : "func_75130_a";
     private static final String FIELD_CRAFT_MATRIX = "craftMatrix";
     private static final String FIELD_CRAFT_RESULT = "craftResult";
 
     private static final String CLASS_RENDERER = "tconstruct.client.FlexibleToolRenderer";
-    private static final String METHOD_RENDERER = "renderItem";
-    private static final Object[] EMPTY_OBJECT = {};
 
-    private static final String PACKAGE_INFI_TOOLS = "tconstruct.items.tools";
+    private static final String PACKAGE_TCONSTRUCT = "tconstruct";
+    private static final String PACKAGE_TOOLS = "tconstruct.items.tools";
+    private static final String PACKAGE_AMMO = "tconstruct.weaponry.ammo"; // arrows and bolts
+    private static final String PACKAGE_WEAPONS = "tconstruct.weaponry.weapons"; // bows, crossbows, throwing weapons
 
     private static Class<?> craftingStation;
     private static Object craftingStationInstance;
+
+    private static Class<?> toolRenderer;
     private static Object toolRendererInstance;
 
     private TinkersUtils() {}
 
     static
     {
-        if (ConfigHandler.IS_TCONSTRUCT)
+        if (LoadedMods.TCONSTRUCT)
         {
-            getCraftingStationInstance();
-
-            if (Utils.inClient())
-            {
-                try
-                {
-                    toolRendererInstance = Class.forName(CLASS_RENDERER).newInstance();
-                }
-                catch (Exception e)
-                {
-                    LogHelper.error("Error getting Tinkers Tool Renderer instance: " + e);
-                }
-            }
+            createCraftingStationInstance();
+            createToolRendererInstance();
         }
     }
 
-    private static void getCraftingStationInstance()
+    private static void createCraftingStationInstance()
     {
         try
         {
             Class craftingLogic = Class.forName(CLASS_CRAFTING_LOGIC);
             Object craftingLogicInstance = craftingLogic.newInstance();
-            InventoryPlayer invPlayer;
-
-            if (Utils.inServer())
-            {
-                WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-                UUID fakeUuid = UUID.fromString("521e749d-2ac0-3459-af7a-160b4be5c62b");
-                GameProfile fakeProfile = new GameProfile(fakeUuid, "[Adventurer]");
-                invPlayer = new InventoryPlayer(new FakePlayer(world, fakeProfile));
-            }
-            else
-            {
-                invPlayer = Minecraft.getMinecraft().thePlayer.inventory;
-            }
+            InventoryPlayer invPlayer = getInventoryPlayer();
 
             craftingStation = Class.forName(CLASS_CRAFTING_STATION);
             craftingStationInstance = craftingStation
                     .getConstructor(InventoryPlayer.class, craftingLogic, int.class, int.class, int.class)
                     .newInstance(invPlayer, craftingLogicInstance, 0, 0, 0);
-
-            LogHelper.info("Tinkers Crafting Station instance created");
         }
         catch (Exception e)
         {
-            LogHelper.error("Error getting Tinkers Crafting Station instance: " + e);
-            //e.printStackTrace();
+            LogHelper.error("Error getting instance of Tinkers Crafting Station: " + e);
         }
     }
 
-    public static boolean isTool(ItemStack stack)
+    private static InventoryPlayer getInventoryPlayer()
     {
-        return ConfigHandler.IS_TCONSTRUCT
-                && stack != null && stack.getItem().getClass().getName().startsWith(PACKAGE_INFI_TOOLS);
+        InventoryPlayer invPlayer;
+        if (Utils.inServer())
+        {
+            WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
+            UUID fakeUuid = UUID.fromString("521e749d-2ac0-3459-af7a-160b4be5c62b");
+            GameProfile fakeProfile = new GameProfile(fakeUuid, "[Adventurer]");
+            invPlayer = new InventoryPlayer(new FakePlayer(world, fakeProfile));
+        }
+        else
+        {
+            invPlayer = Minecraft.getMinecraft().thePlayer.inventory;
+        }
+        return invPlayer;
+    }
+
+    private static void createToolRendererInstance()
+    {
+        if (Utils.inClient())
+        {
+            try
+            {
+                toolRenderer = Class.forName(CLASS_RENDERER);
+                toolRendererInstance = toolRenderer.newInstance();
+            }
+            catch (Exception e)
+            {
+                LogHelper.error("Error getting instance of Tinkers Tool Renderer: " + e);
+            }
+        }
+    }
+
+    public static boolean isToolOrWeapon(@Nullable ItemStack stack)
+    {
+        if (stack == null)
+            return false;
+
+        String cn = stack.getItem().getClass().getName();
+        return cn.startsWith(PACKAGE_TCONSTRUCT)
+                && (cn.startsWith(PACKAGE_TOOLS) || cn.startsWith(PACKAGE_WEAPONS) || cn.startsWith(PACKAGE_AMMO));
+
+    }
+
+    public static boolean isTool(@Nonnull ItemStack stack)
+    {
+        return LoadedMods.TCONSTRUCT && stack.getItem().getClass().getName().startsWith(PACKAGE_TOOLS);
     }
 
     public static boolean isTool(String clazzName)
     {
-        return ConfigHandler.IS_TCONSTRUCT && clazzName.startsWith(PACKAGE_INFI_TOOLS);
+        return LoadedMods.TCONSTRUCT && clazzName.startsWith(PACKAGE_TOOLS);
     }
 
     @Nullable
     public static ItemStack getTinkersRecipe(InventoryCrafting craftMatrix)
     {
+        if (craftingStationInstance == null)
+            return null;
+
         try
         {
             craftingStation
@@ -139,20 +165,6 @@ public class TinkersUtils
 
     public static void renderTool(ItemStack stack, IItemRenderer.ItemRenderType renderType)
     {
-        try
-        {
-            Class.forName(CLASS_RENDERER)
-                    .getMethod(METHOD_RENDERER, IItemRenderer.ItemRenderType.class, ItemStack.class, Object[].class)
-                    .invoke(toolRendererInstance, renderType, stack, EMPTY_OBJECT);
-        }
-        catch (Exception e)
-        {
-            //e.printStackTrace();
-        }
-    }
-
-    public static ResourceLocation getTinkersIcons()
-    {
-        return new ResourceLocation("tinker", "textures/gui/icons.png");
+        ToolRenderHelper.render(stack, renderType, toolRenderer, toolRendererInstance);
     }
 }

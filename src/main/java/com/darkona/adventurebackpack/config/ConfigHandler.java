@@ -17,13 +17,6 @@ public class ConfigHandler
 {
     public static Configuration config;
 
-    public static boolean IS_DEVENV = false;
-    public static boolean IS_BUILDCRAFT = false;
-    public static boolean IS_ENDERIO = false;
-    public static boolean IS_GREGTECH = false;
-    public static boolean IS_TCONSTRUCT = false;
-    public static boolean IS_THAUMCRAFT = false;
-
     public static boolean allowSoulBound = true;
     public static boolean backpackDeathPlace = true;
     public static boolean backpackAbilities = true;
@@ -46,6 +39,7 @@ public class ConfigHandler
     public static boolean statusOverlayTop = true;
     public static int statusOverlayIndentH = 2;
     public static int statusOverlayIndentV = 2;
+    public static boolean statusOverlayThaumcraft = true;
 
     public static boolean tanksOverlay = true;
     public static boolean tanksOverlayRight = true;
@@ -134,6 +128,7 @@ public class ConfigHandler
         statusOverlayTop = config.getBoolean("Stick To Top", "graphics.status", true, "Stick to top?");
         statusOverlayIndentH = config.getInt("Indent Horizontal", "graphics.status", 2, 0, 1000, "Horizontal indent from the window border");
         statusOverlayIndentV = config.getInt("Indent Vertical", "graphics.status", 2, 0, 500, "Vertical indent from the window border");
+        statusOverlayThaumcraft = config.getBoolean("Respect Thaumcraft", "graphics.status", true, "Take into account Thaumcraft wands GUI and do not overlap it");
 
         // Graphics.Tanks
         tanksOverlay = config.getBoolean("Enable Overlay", "graphics.tanks", true, "Show the different wearable overlays on screen?");

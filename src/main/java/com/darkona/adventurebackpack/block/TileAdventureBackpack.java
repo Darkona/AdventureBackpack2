@@ -119,6 +119,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             sby = cY;
             sbz = cZ;
             sbdir = meta;
+            world.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
         return sleepingBagDeployed;
     }

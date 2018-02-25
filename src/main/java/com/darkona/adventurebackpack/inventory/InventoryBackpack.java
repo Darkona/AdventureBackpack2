@@ -210,7 +210,7 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
             if (stack.stackSize > this.getInventoryStackLimit())
                 stack.stackSize = this.getInventoryStackLimit();
 
-            if(stack.stackSize == 0)
+            if (stack.stackSize == 0)
                 stack = null;
         }
 

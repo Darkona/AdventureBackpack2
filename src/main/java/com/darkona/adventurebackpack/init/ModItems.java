@@ -55,12 +55,12 @@ public class ModItems
 
     /*public static void conditionalInit()
     {
-        if (ConfigHandler.IS_BUILDCRAFT)
+        if (LoadedMods.BUILDCRAFT)
         {
             GameRegistry.registerItem(copterPack, "copterPack");
         }
 
-        if (ConfigHandler.IS_RAILCRAFT)
+        if (LoadedMods.RAILCRAFT)
         {
             GameRegistry.registerItem(steamJetpack, "steamJetpack");
         }

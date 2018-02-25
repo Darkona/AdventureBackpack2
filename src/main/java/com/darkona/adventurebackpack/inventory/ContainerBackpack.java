@@ -1,9 +1,11 @@
 package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidTank;
@@ -37,6 +39,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     private static final int BUCKET_LEFT = TOOL_END + 1;
     private static final int BUCKET_RIGHT = BUCKET_LEFT + 2;
     private static final int MATRIX_DIMENSION = 3;
+    private static final int CRAFT_RESULT = BUCKET_RIGHT + 2 + (MATRIX_DIMENSION * MATRIX_DIMENSION);
     private static final int[] CRAFT_MATRIX_EMULATION = findCraftMatrixEmulationIDs();
 
     private InventoryCraftingBackpack craftMatrix = new InventoryCraftingBackpack(this, MATRIX_DIMENSION, MATRIX_DIMENSION);
@@ -96,7 +99,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
         startX = 215;
         startY = -2500;
-        //startY = ConfigHandler.IS_DEVENV ? 125 : -2500;
+        //startY = LoadedMods.DEV_ENV ? 125 : -2500;
         for (int row = 0; row < MATRIX_DIMENSION; row++) // craftMatrix, usually 9 slots, [90-98]
         {
             for (int col = 0; col < MATRIX_DIMENSION; col++)
@@ -108,6 +111,24 @@ public class ContainerBackpack extends ContainerAdventureBackpack
         }
         addSlotToContainer(new SlotCraftResult(this, invPlayer.player, craftMatrix, craftResult, 0, 226, 97)); // craftResult [99]
         syncCraftMatrixToInventory();
+    }
+
+    @Override
+    public void detectAndSendChanges()
+    {
+        ItemStack stackA = ((Slot) inventorySlots.get(CRAFT_RESULT)).getStack();
+        ItemStack stackB = (ItemStack) inventoryItemStacks.get(CRAFT_RESULT);
+
+        if (!ItemStack.areItemStacksEqual(stackB, stackA))
+        {
+            stackB = stackA == null ? null : stackA.copy();
+            inventoryItemStacks.set(CRAFT_RESULT, stackB);
+
+            if (player instanceof EntityPlayerMP)
+                ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
+        }
+
+        super.detectAndSendChanges();
     }
 
     @Override
@@ -268,7 +289,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
-        if (ConfigHandler.tinkerToolsMaintenance && TinkersUtils.isTool(craftMatrix.getStackInSlot(4)))
+        if (ConfigHandler.tinkerToolsMaintenance && TinkersUtils.isToolOrWeapon(craftMatrix.getStackInSlot(4)))
         {
             craftResult.setInventorySlotContents(0, TinkersUtils.getTinkersRecipe(craftMatrix));
             return;

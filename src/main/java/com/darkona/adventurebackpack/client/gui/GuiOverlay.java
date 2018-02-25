@@ -33,6 +33,7 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.reference.LoadedMods;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.reference.ToolHandler;
 import com.darkona.adventurebackpack.util.GregtechUtils;
@@ -81,6 +82,7 @@ public class GuiOverlay extends Gui
         if (event.type != RenderGameOverlayEvent.ElementType.EXPERIENCE)
             return;
 
+        EntityPlayer player = mc.thePlayer;
         ScaledResolution resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         screenWidth = resolution.getScaledWidth();
         screenHeight = resolution.getScaledHeight();
@@ -107,6 +109,14 @@ public class GuiOverlay extends Gui
                        ? ConfigHandler.statusOverlayIndentV
                        : screenHeight - BUFF_ICON_SIZE - ConfigHandler.statusOverlayIndentV;
 
+            if (LoadedMods.THAUMCRAFT
+                    && ConfigHandler.statusOverlayThaumcraft && ConfigHandler.statusOverlayLeft
+                    && ConfigHandler.statusOverlayTop == !ThaumcraftUtils.DIAL_BOTTOM
+                    && ThaumcraftUtils.isTool(player.inventory.getCurrentItem()))
+            {
+                xPos += 50; // do not overlap thaumcraft GUI
+            }
+
             Collection activePotionEffects = this.mc.thePlayer.getActivePotionEffects();
             if (!activePotionEffects.isEmpty())
             {
@@ -119,24 +129,16 @@ public class GuiOverlay extends Gui
                     PotionEffect potionEffect = (PotionEffect) activeEffect.next();
                     Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
 
-                    try
+                    // yes potion should not be null here, but it sometimes does
+                    // let the vanilla crash itself, no need to report this to us
+                    if (potion != null && potion.hasStatusIcon())
                     {
-                        // yes potion should not be null here, but it sometimes does. let the vanilla crash itself, no need to report this to us
-                        if (potion != null && potion.hasStatusIcon())
-                        {
-                            int iconIndex = potion.getStatusIconIndex();
-                            this.drawTexturedModalRect(
-                                    xPos, yPos,
-                                    BUFF_ICON_BASE_U_OFFSET + iconIndex % BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
-                                    BUFF_ICON_BASE_V_OFFSET + iconIndex / BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
-                                    BUFF_ICON_SIZE, BUFF_ICON_SIZE);
-                        }
-                    }
-                    catch (NullPointerException npe)
-                    {
-                        String msg = "Weird NPE is caught: activePotionEffects: " + activePotionEffects
-                                + "; potionEffect: " + potionEffect + "; potion: " + potion;
-                        throw new NullPointerException(msg);
+                        int iconIndex = potion.getStatusIconIndex();
+                        this.drawTexturedModalRect(
+                                xPos, yPos,
+                                BUFF_ICON_BASE_U_OFFSET + iconIndex % BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
+                                BUFF_ICON_BASE_V_OFFSET + iconIndex / BUFF_ICONS_PER_ROW * BUFF_ICON_SIZE,
+                                BUFF_ICON_SIZE, BUFF_ICON_SIZE);
                     }
                 }
             }
@@ -144,7 +146,6 @@ public class GuiOverlay extends Gui
 
         if (ConfigHandler.tanksOverlay)
         {
-            EntityPlayer player = mc.thePlayer;
             if (Wearing.isWearingWearable(player))
             {
                 IInventoryTanks inv = Wearing.getWearingWearableInv(player);

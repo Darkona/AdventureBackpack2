@@ -31,7 +31,7 @@ public class GeneralReference
         parseLiquidFuelsConfig();
         parseDimensionBlacklistConfig();
 
-        if (ConfigHandler.IS_DEVENV)
+        if (LoadedMods.DEV_ENV)
             liquidFuels.put("holywater", 0.0f); // shhh.. you did not see anything. hallelujah!
     }
 
