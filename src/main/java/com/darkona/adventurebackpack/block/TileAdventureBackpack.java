@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.block;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -54,34 +56,71 @@ import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
  */
 public class TileAdventureBackpack extends TileEntity implements IInventoryAdventureBackpack, ISidedInventory
 {
+    private BackpackTypes type = BackpackTypes.STANDARD;
     private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
+    private NBTTagCompound extendedProperties = new NBTTagCompound();
 
-    private BackpackTypes type;
     private NBTTagList ench;
-    private NBTTagCompound extendedProperties;
     private boolean disableCycling;
     private boolean disableNVision;
-    private int lastTime;
+    private int lastTime = 0;
 
     private boolean sleepingBagDeployed;
     private int sbdir;
     private int sbx;
     private int sby;
     private int sbz;
-    private int luminosity;
+    private int luminosity = 0;
 
     private int checkTime = 0;
 
     public TileAdventureBackpack()
     {
         sleepingBagDeployed = false;
-        setType(BackpackTypes.STANDARD);
-        luminosity = 0;
-        lastTime = 0;
-        checkTime = 0;
-        extendedProperties = new NBTTagCompound();
+    }
+
+    @Override
+    public BackpackTypes getType()
+    {
+        return type;
+    }
+
+    @Override
+    public ItemStack[] getInventory()
+    {
+        return inventory;
+    }
+
+    @Override
+    public FluidTank getLeftTank()
+    {
+        return leftTank;
+    }
+
+    @Override
+    public FluidTank getRightTank()
+    {
+        return rightTank;
+    }
+
+    @Override
+    public FluidTank[] getTanksArray()
+    {
+        return new FluidTank[]{leftTank, rightTank};
+    }
+
+    @Override
+    public int[] getSlotsOnClosingArray()
+    {
+        return new int[]{BUCKET_IN_LEFT, BUCKET_IN_RIGHT, BUCKET_OUT_LEFT, BUCKET_OUT_RIGHT};
+    }
+
+    @Override
+    public NBTTagCompound getExtendedProperties()
+    {
+        return extendedProperties;
     }
 
     public int getLuminosity()
@@ -99,12 +138,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void setLastTime(int lastTime)
     {
         this.lastTime = lastTime;
-    }
-
-    @Override
-    public NBTTagCompound getExtendedProperties()
-    {
-        return extendedProperties;
     }
 
     public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ)
@@ -149,20 +182,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return false;
     }
 
-    //=====================================================GETTERS====================================================//
-
-    @Override
-    public BackpackTypes getType()
-    {
-        return type;
-    }
-
-    @Override
-    public ItemStack[] getInventory()
-    {
-        return this.inventory;
-    }
-
     @Override
     public int getSizeInventory()
     {
@@ -182,36 +201,17 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
+    public boolean hasCustomInventoryName()
+    {
+        return getInventoryName() != null && !getInventoryName().isEmpty();
+    }
+
+    @Override
     public int getInventoryStackLimit()
     {
         return 64;
     }
 
-    @Override
-    public FluidTank getLeftTank()
-    {
-        return leftTank;
-    }
-
-    @Override
-    public FluidTank getRightTank()
-    {
-        return rightTank;
-    }
-
-    //=====================================================SETTERS====================================================//
-
-    public void setType(BackpackTypes type)
-    {
-        this.type = type;
-    }
-
-    //=====================================================BOOLEANS===================================================//
-    @Override
-    public boolean hasCustomInventoryName()
-    {
-        return false;
-    }
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player)
@@ -330,17 +330,11 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         compound.setTag(TAG_WEARABLE_COMPOUND, backpackTag);
     }
 
-    @Override
-    public FluidTank[] getTanksArray()
-    {
-        return new FluidTank[]{leftTank, rightTank};
-    }
-
     //====================================================INVENTORY===================================================//
     @Override
     public void openInventory()
     {
-
+        //
     }
 
     @Override
@@ -359,24 +353,61 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return (slot == TOOL_UPPER || slot == TOOL_LOWER) && SlotTool.isValidTool(stack);
     }
 
+    @Nullable
     @Override
-    public ItemStack decrStackSize(int i, int count)
+    public ItemStack decrStackSize(int slot, int quantity)
     {
-        ItemStack itemstack = getStackInSlot(i);
-
-        if (itemstack != null)
+        ItemStack stack = getStackInSlot(slot);
+        if (stack != null)
         {
-            if (itemstack.stackSize <= count)
-            {
-                setInventorySlotContents(i, null);
-            }
+            if (stack.stackSize <= quantity)
+                setInventorySlotContents(slot, null);
             else
-            {
-                itemstack = itemstack.splitStack(count);
-            }
+                stack = stack.splitStack(quantity);
         }
         markDirty();
-        return itemstack;
+        return stack;
+    }
+
+
+    @Override
+    public void setInventorySlotContents(int slot, @Nullable ItemStack stack)
+    {
+        setInventorySlotContentsNoSave(slot, stack);
+        markDirty();
+    }
+
+    @Nullable
+    @Override
+    public ItemStack decrStackSizeNoSave(int slot, int quantity)
+    {
+        ItemStack stack = getStackInSlot(slot);
+        if (stack != null)
+        {
+            if (stack.stackSize <= quantity)
+                setInventorySlotContentsNoSave(slot, null);
+            else
+                stack = stack.splitStack(quantity);
+        }
+        return stack;
+    }
+
+    @Override
+    public void setInventorySlotContentsNoSave(int slot, @Nullable ItemStack stack)
+    {
+        if (slot >= getSizeInventory())
+            return;
+
+        if (stack != null)
+        {
+            if (stack.stackSize > getInventoryStackLimit())
+                stack.stackSize = getInventoryStackLimit();
+
+            if (stack.stackSize == 0)
+                stack = null;
+        }
+
+        getInventory()[slot] = stack;
     }
 
     @Override
@@ -389,16 +420,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return null;
     }
 
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack)
-    {
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit())
-        {
-            stack.stackSize = getInventoryStackLimit();
-        }
-        markDirty();
-    }
 
     @Override
     public void markDirty()
@@ -426,36 +447,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
             result = true;
         return result;
-    }
-
-    @Override
-    public void setInventorySlotContentsNoSave(int slot, ItemStack itemstack)
-    {
-        if (slot > inventory.length) return;
-        inventory[slot] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
-        {
-            itemstack.stackSize = getInventoryStackLimit();
-        }
-    }
-
-    @Override
-    public ItemStack decrStackSizeNoSave(int slot, int amount)
-    {
-        ItemStack stack = getStackInSlot(slot);
-
-        if (stack != null)
-        {
-            if (stack.stackSize <= amount)
-            {
-                setInventorySlotContentsNoSave(slot, null);
-            }
-            else
-            {
-                stack = stack.splitStack(amount);
-            }
-        }
-        return stack;
     }
 
     @Override
@@ -522,18 +513,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         {
             checkTime--;
         }
-    }
-
-    @Override
-    public TileAdventureBackpack getTile()
-    {
-        return this;
-    }
-
-    @Override
-    public ItemStack getParentItemStack()
-    {
-        return null;
     }
 
     private ItemStack transferToItemStack(ItemStack stack)

@@ -46,24 +46,34 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
         openInventory();
     }
 
-    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
+    @Override
+    public ItemStack[] getInventory()
     {
-        if (compound == null || !compound.hasKey("jetpackData"))
-            return;
-
-        NBTTagCompound oldJetpackTag = compound.getCompoundTag("jetpackData");
-        NBTTagList oldItems = oldJetpackTag.getTagList("inventory", NBT.TAG_COMPOUND);
-        waterTank.readFromNBT(oldJetpackTag.getCompoundTag("waterTank"));
-        steamTank.readFromNBT(oldJetpackTag.getCompoundTag("steamTank"));
-
-        NBTTagCompound newJetpackTag = new NBTTagCompound();
-        newJetpackTag.setTag(TAG_INVENTORY, oldItems);
-        newJetpackTag.setTag(TAG_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
-        newJetpackTag.setTag(TAG_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
-
-        compound.setTag(TAG_WEARABLE_COMPOUND, newJetpackTag);
-        compound.removeTag("jetpackData");
+        return inventory;
     }
+
+    public FluidTank getWaterTank()
+    {
+        return waterTank;
+    }
+
+    public FluidTank getSteamTank()
+    {
+        return steamTank;
+    }
+
+    @Override
+    public FluidTank[] getTanksArray()
+    {
+        return new FluidTank[]{waterTank, steamTank};
+    }
+
+    @Override
+    public int[] getSlotsOnClosingArray()
+    {
+        return new int[]{BUCKET_IN, BUCKET_OUT};
+    }
+
 
     public int getBurnTimeRemainingScaled(int scale)
     {
@@ -131,12 +141,6 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
         }
         jetpackTag.setTag(TAG_INVENTORY, items);
         compound.setTag(TAG_WEARABLE_COMPOUND, jetpackTag);
-    }
-
-    @Override
-    public FluidTank[] getTanksArray()
-    {
-        return new FluidTank[]{waterTank, steamTank};
     }
 
     @Override
@@ -209,101 +213,9 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
         return TileEntityFurnace.isItemFuel(stack);
     }
 
-    @Override
-    public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
-    {
-        if (slot > inventory.length) return;
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
-        {
-            stack.stackSize = this.getInventoryStackLimit();
-        }
-    }
-
-    @Override
-    public ItemStack decrStackSizeNoSave(int slot, int amount)
-    {
-        if (slot < inventory.length && inventory[slot] != null)
-        {
-            if (inventory[slot].stackSize > amount)
-            {
-                return inventory[slot].splitStack(amount);
-            }
-            ItemStack stack = inventory[slot];
-            setInventorySlotContentsNoSave(slot, null);
-            return stack;
-        }
-        return null;
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        return inventory.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int slot)
-    {
-        return inventory[slot];
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int quantity)
-    {
-        ItemStack itemstack = getStackInSlot(slot);
-
-        if (itemstack != null)
-        {
-            if (itemstack.stackSize <= quantity)
-            {
-                if (slot == FUEL_SLOT)
-                {
-                    setInventorySlotContents(slot, itemstack.getItem().getContainerItem(itemstack));
-                }
-                else
-                {
-                    setInventorySlotContents(slot, null);
-                }
-            }
-            else
-            {
-                itemstack = itemstack.splitStack(quantity);
-            }
-        }
-        return itemstack;
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int slot)
-    {
-        return (slot == BUCKET_IN || slot == BUCKET_OUT) ? inventory[slot] : null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack)
-    {
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit())
-        {
-            stack.stackSize = getInventoryStackLimit();
-        }
-        dirtyInventory();
-    }
-
     public ItemStack getParentItemStack()
     {
         return containerStack;
-    }
-
-    public FluidTank getWaterTank()
-    {
-        return waterTank;
-    }
-
-    public FluidTank getSteamTank()
-    {
-        return steamTank;
     }
 
     public boolean getStatus()
@@ -376,16 +288,6 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
         this.burnTicks = burnTicks;
     }
 
-    public ItemStack[] getInventory()
-    {
-        return inventory;
-    }
-
-    public void setInventory(ItemStack[] inventory)
-    {
-        this.inventory = inventory; //TODO wtf
-    }
-
     public int getIncreasingFactor()
     {
         if (temperature < 50) return 20;
@@ -425,5 +327,24 @@ public class InventoryCoalJetpack extends InventoryAdventureBackpack
     public void calculateLostTime()
     {
         long elapsedTimesince = System.currentTimeMillis() - systemTime;
+    }
+
+    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
+    {
+        if (compound == null || !compound.hasKey("jetpackData"))
+            return;
+
+        NBTTagCompound oldJetpackTag = compound.getCompoundTag("jetpackData");
+        NBTTagList oldItems = oldJetpackTag.getTagList("inventory", NBT.TAG_COMPOUND);
+        waterTank.readFromNBT(oldJetpackTag.getCompoundTag("waterTank"));
+        steamTank.readFromNBT(oldJetpackTag.getCompoundTag("steamTank"));
+
+        NBTTagCompound newJetpackTag = new NBTTagCompound();
+        newJetpackTag.setTag(TAG_INVENTORY, oldItems);
+        newJetpackTag.setTag(TAG_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
+        newJetpackTag.setTag(TAG_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
+
+        compound.setTag(TAG_WEARABLE_COMPOUND, newJetpackTag);
+        compound.removeTag("jetpackData");
     }
 }

@@ -23,8 +23,8 @@ public class SlotCraftResult extends SlotCrafting
     @Override
     public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
     {
-        eventHandler.syncCraftMatrixToInventory(); // pre craft sync
+        eventHandler.syncCraftMatrixWithInventory(true); // pre craft sync
         super.onPickupFromSlot(player, stack);
-        eventHandler.syncInventoryToCraftMatrix(); // post craft sync
+        eventHandler.syncCraftMatrixWithInventory(false); // post craft sync
     }
 }

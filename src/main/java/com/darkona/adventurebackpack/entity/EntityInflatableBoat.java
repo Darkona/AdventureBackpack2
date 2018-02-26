@@ -488,9 +488,21 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks,
     }
 
     @Override
+    public ItemStack[] getInventory()
+    {
+        return new ItemStack[0];
+    }
+
+    @Override
     public FluidTank[] getTanksArray()
     {
         return new FluidTank[0];
+    }
+
+    @Override
+    public int[] getSlotsOnClosingArray()
+    {
+        return new int[0];
     }
 
     @Override

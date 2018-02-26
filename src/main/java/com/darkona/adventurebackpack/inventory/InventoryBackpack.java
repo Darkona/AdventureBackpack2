@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidTank;
 
-import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
@@ -63,25 +62,16 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         openInventory();
     }
 
-    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
+    @Override
+    public BackpackTypes getType()
     {
-        if (compound == null || !compound.hasKey("backpackData"))
-            return;
+        return type;
+    }
 
-        NBTTagCompound oldBackpackTag = compound.getCompoundTag("backpackData");
-        NBTTagList oldItems = oldBackpackTag.getTagList("ABPItems", NBT.TAG_COMPOUND);
-        leftTank.readFromNBT(oldBackpackTag.getCompoundTag("leftTank"));
-        rightTank.readFromNBT(oldBackpackTag.getCompoundTag("rightTank"));
-        type = BackpackTypes.getType(oldBackpackTag.getString("colorName"));
-
-        NBTTagCompound newBackpackTag = new NBTTagCompound();
-        newBackpackTag.setTag(TAG_INVENTORY, oldItems);
-        newBackpackTag.setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
-        newBackpackTag.setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        newBackpackTag.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
-
-        compound.setTag(TAG_WEARABLE_COMPOUND, newBackpackTag);
-        compound.removeTag("backpackData");
+    @Override
+    public ItemStack[] getInventory()
+    {
+        return inventory;
     }
 
     @Override
@@ -97,39 +87,29 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     }
 
     @Override
-    public ItemStack[] getInventory()
+    public FluidTank[] getTanksArray()
     {
-        return inventory;
+        return new FluidTank[]{leftTank, rightTank};
     }
 
     @Override
-    public TileAdventureBackpack getTile()
+    public int[] getSlotsOnClosingArray()
     {
-        return null;
-    }
-
-    @Override
-    public ItemStack getParentItemStack()
-    {
-        return this.containerStack;
-    }
-
-    @Override
-    public BackpackTypes getType()
-    {
-        return type;
-    }
-
-    @Override
-    public int getLastTime()
-    {
-        return this.lastTime;
+        return new int[]{BUCKET_IN_LEFT, BUCKET_IN_RIGHT, BUCKET_OUT_LEFT, BUCKET_OUT_RIGHT};
     }
 
     @Override
     public NBTTagCompound getExtendedProperties()
     {
         return extendedProperties;
+    }
+
+
+
+    @Override
+    public int getLastTime()
+    {
+        return this.lastTime;
     }
 
     @Override
@@ -197,42 +177,6 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     {
         containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).removeTag(TAG_EXTENDED_COMPOUND);
         containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_EXTENDED_COMPOUND, extendedProperties);
-    }
-
-    @Override
-    public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
-    {
-        if (slot >= this.getSizeInventory())
-            return;
-
-        if (stack != null)
-        {
-            if (stack.stackSize > this.getInventoryStackLimit())
-                stack.stackSize = this.getInventoryStackLimit();
-
-            if (stack.stackSize == 0)
-                stack = null;
-        }
-
-        this.inventory[slot] = stack;
-    }
-
-    @Override
-    public ItemStack decrStackSizeNoSave(int slot, int quantity)
-    {
-        ItemStack stack = getStackInSlot(slot);
-        if (stack != null)
-        {
-            if (stack.stackSize <= quantity)
-            {
-                setInventorySlotContentsNoSave(slot, null);
-            }
-            else
-            {
-                stack = stack.splitStack(quantity);
-            }
-        }
-        return stack;
     }
 
     @Override
@@ -316,12 +260,6 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     }
 
     @Override
-    public FluidTank[] getTanksArray()
-    {
-        return new FluidTank[]{leftTank, rightTank};
-    }
-
-    @Override
     public boolean updateTankSlots()
     {
         boolean result = false;
@@ -362,65 +300,6 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
         containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
     }
 
-    @Override
-    public int getSizeInventory()
-    {
-        return inventory.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int slot)
-    {
-        return inventory[slot];
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int quantity)
-    {
-        ItemStack itemstack = getStackInSlot(slot);
-        if (itemstack != null)
-        {
-            if (itemstack.stackSize <= quantity)
-            {
-                setInventorySlotContents(slot, null);
-            }
-            else
-            {
-                itemstack = itemstack.splitStack(quantity);
-            }
-        }
-        return itemstack;
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int slot)
-    {
-        if (slot == BUCKET_IN_LEFT || slot == BUCKET_IN_RIGHT || slot == BUCKET_OUT_LEFT || slot == BUCKET_OUT_RIGHT)
-        {
-            return inventory[slot];
-        }
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack)
-    {
-        if (slot >= this.getSizeInventory())
-            return;
-
-        if (stack != null)
-        {
-            if (stack.stackSize > this.getInventoryStackLimit())
-                stack.stackSize = this.getInventoryStackLimit();
-
-            if(stack.stackSize == 0)
-                stack = null;
-        }
-
-        this.inventory[slot] = stack;
-        this.dirtyInventory();
-    }
-
     public boolean hasBlock(Block block)
     {
         return InventoryActions.hasBlockItem(this, block);
@@ -444,5 +323,26 @@ public class InventoryBackpack extends InventoryAdventureBackpack implements IIn
     public void setDisableNVision(boolean b)
     {
         this.disableNVision = b;
+    }
+
+    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
+    {
+        if (compound == null || !compound.hasKey("backpackData"))
+            return;
+
+        NBTTagCompound oldBackpackTag = compound.getCompoundTag("backpackData");
+        NBTTagList oldItems = oldBackpackTag.getTagList("ABPItems", NBT.TAG_COMPOUND);
+        leftTank.readFromNBT(oldBackpackTag.getCompoundTag("leftTank"));
+        rightTank.readFromNBT(oldBackpackTag.getCompoundTag("rightTank"));
+        type = BackpackTypes.getType(oldBackpackTag.getString("colorName"));
+
+        NBTTagCompound newBackpackTag = new NBTTagCompound();
+        newBackpackTag.setTag(TAG_INVENTORY, oldItems);
+        newBackpackTag.setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
+        newBackpackTag.setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        newBackpackTag.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
+
+        compound.setTag(TAG_WEARABLE_COMPOUND, newBackpackTag);
+        compound.removeTag("backpackData");
     }
 }

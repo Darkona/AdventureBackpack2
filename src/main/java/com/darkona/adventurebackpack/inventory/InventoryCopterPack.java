@@ -34,29 +34,29 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
         openInventory();
     }
 
-    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
+    @Override
+    public ItemStack[] getInventory()
     {
-        if (compound == null || compound.hasKey(TAG_WEARABLE_COMPOUND))
-            return;
-
-        if (compound.hasKey("status"))
-            compound.removeTag("status");
-        if (compound.hasKey("tickCounter"))
-            compound.removeTag("tickCounter");
-
-        fuelTank.readFromNBT(compound.getCompoundTag("fuelTank"));
-
-        NBTTagCompound newCopterTag = new NBTTagCompound();
-        newCopterTag.setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
-
-        compound.setTag(TAG_WEARABLE_COMPOUND, newCopterTag);
-        compound.removeTag("fuelTank");
+        return inventory;
     }
 
     public FluidTank getFuelTank()
     {
         return fuelTank;
     }
+
+    @Override
+    public FluidTank[] getTanksArray()
+    {
+        return new FluidTank[]{fuelTank};
+    }
+
+    @Override
+    public int[] getSlotsOnClosingArray()
+    {
+        return new int[]{BUCKET_IN, BUCKET_OUT};
+    }
+
 
     public void consumeFuel(int quantity)
     {
@@ -67,81 +67,6 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
     public boolean canConsumeFuel(int quantity)
     {
         return fuelTank.drain(quantity, false) != null && fuelTank.drain(quantity, false).amount > 0;
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        return inventory.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int i)
-    {
-        return inventory[i];
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int quantity)
-    {
-        ItemStack itemstack = getStackInSlot(slot);
-
-        if (itemstack != null)
-        {
-            if (itemstack.stackSize <= quantity)
-            {
-                setInventorySlotContents(slot, null);
-            }
-            else
-            {
-                itemstack = itemstack.splitStack(quantity);
-            }
-        }
-        return itemstack;
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int slot)
-    {
-        return (slot == BUCKET_IN || slot == BUCKET_OUT) ? inventory[slot] : null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack)
-    {
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit())
-        {
-            stack.stackSize = getInventoryStackLimit();
-        }
-        dirtyInventory();
-    }
-
-    @Override
-    public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
-    {
-        if (slot > inventory.length) return;
-        inventory[slot] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
-        {
-            stack.stackSize = this.getInventoryStackLimit();
-        }
-    }
-
-    @Override
-    public ItemStack decrStackSizeNoSave(int slot, int amount)
-    {
-        if (slot < inventory.length && inventory[slot] != null)
-        {
-            if (inventory[slot].stackSize > amount)
-            {
-                return inventory[slot].splitStack(amount);
-            }
-            ItemStack stack = inventory[slot];
-            setInventorySlotContentsNoSave(slot, null);
-            return stack;
-        }
-        return null;
     }
 
     public int getTickCounter()
@@ -184,12 +109,6 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
     }
 
     @Override
-    public FluidTank[] getTanksArray()
-    {
-        return new FluidTank[]{fuelTank};
-    }
-
-    @Override
     public boolean updateTankSlots()
     {
         boolean result = false;
@@ -218,5 +137,24 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
     public void dirtyStatus()
     {
         containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, status);
+    }
+
+    private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
+    {
+        if (compound == null || compound.hasKey(TAG_WEARABLE_COMPOUND))
+            return;
+
+        if (compound.hasKey("status"))
+            compound.removeTag("status");
+        if (compound.hasKey("tickCounter"))
+            compound.removeTag("tickCounter");
+
+        fuelTank.readFromNBT(compound.getCompoundTag("fuelTank"));
+
+        NBTTagCompound newCopterTag = new NBTTagCompound();
+        newCopterTag.setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
+
+        compound.setTag(TAG_WEARABLE_COMPOUND, newCopterTag);
+        compound.removeTag("fuelTank");
     }
 }
