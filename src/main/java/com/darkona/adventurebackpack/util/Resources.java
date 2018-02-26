@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryBackpack;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.ModInfo;
 
@@ -31,7 +31,7 @@ public class Resources
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + color + ".png");
     }
 
-    public static ResourceLocation backpackTextureFromSkin(IInventoryAdventureBackpack adventureBackpack)
+    public static ResourceLocation backpackTextureFromSkin(IInventoryBackpack adventureBackpack)
     {
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackTypes.getSkinName(adventureBackpack.getType()) + ".png");
     }

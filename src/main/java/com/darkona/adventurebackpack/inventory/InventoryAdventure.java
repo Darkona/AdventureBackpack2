@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
  *
  * @author Ugachaga
  */
-abstract class InventoryAdventureBackpack implements IInventoryTanks
+abstract class InventoryAdventure implements IInventoryTanks
 {
     ItemStack containerStack;
 

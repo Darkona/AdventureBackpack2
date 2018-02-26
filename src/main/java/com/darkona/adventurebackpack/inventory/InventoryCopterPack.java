@@ -19,7 +19,7 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOU
  *
  * @author Darkona
  */
-public class InventoryCopterPack extends InventoryAdventureBackpack
+public class InventoryCopterPack extends InventoryAdventure
 {
     private FluidTank fuelTank = new FluidTank(Constants.Copter.FUEL_CAPACITY);
     private ItemStack[] inventory = new ItemStack[INVENTORY_SIZE];
@@ -132,7 +132,7 @@ public class InventoryCopterPack extends InventoryAdventureBackpack
         containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
     }
 
-    //TODO to InventoryAdventureBackpack: getWearableCompound() { return containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);}
+    //TODO to InventoryAdventure: getWearableCompound() { return containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);}
 
     public void dirtyStatus()
     {

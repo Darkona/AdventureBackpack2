@@ -33,7 +33,7 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOU
  *
  * @author Darkona
  */
-public class InventoryBackpack extends InventoryAdventureBackpack implements IInventoryAdventureBackpack
+public class InventoryBackpack extends InventoryAdventure implements IInventoryBackpack
 {
     private static final String TAG_IS_SLEEPING_BAG = "sleepingBag";
     private static final String TAG_SLEEPING_BAG_X = "sleepingBagX";

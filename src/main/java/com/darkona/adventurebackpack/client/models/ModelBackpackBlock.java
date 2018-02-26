@@ -12,7 +12,7 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryBackpack;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 
 import static com.darkona.adventurebackpack.reference.BackpackTypes.*;
@@ -268,7 +268,7 @@ public class ModelBackpackBlock extends ModelBase
         this.pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1);
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, IInventoryAdventureBackpack backpack)
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, IInventoryBackpack backpack)
     {
         //scale*=0.9;
         boolean sleepingbag = backpack.isSleepingBagDeployed();
@@ -364,7 +364,7 @@ public class ModelBackpackBlock extends ModelBase
 
     }
 
-    private void renderBackpack(IInventoryAdventureBackpack backpack, float scale)
+    private void renderBackpack(IInventoryBackpack backpack, float scale)
     {
         BackpackTypes type = backpack.getType();
 

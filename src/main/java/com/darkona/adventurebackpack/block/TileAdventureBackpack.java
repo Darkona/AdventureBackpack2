@@ -21,7 +21,7 @@ import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotBackpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
@@ -51,7 +51,7 @@ import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class TileAdventureBackpack extends TileAdventure implements IInventoryAdventureBackpack, ISidedInventory
+public class TileAdventureBackpack extends TileAdventure implements IInventoryBackpack, ISidedInventory
 {
     private BackpackTypes type = BackpackTypes.STANDARD;
     private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];

@@ -15,7 +15,7 @@ import com.darkona.adventurebackpack.util.Utils;
  *
  * @author Darkona
  */
-public class SlotFluid extends SlotAdventureBackpack
+public class SlotFluid extends SlotAdventure
 {
     SlotFluid(IInventory inventory, int slotIndex, int posX, int posY)
     {

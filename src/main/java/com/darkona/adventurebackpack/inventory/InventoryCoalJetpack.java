@@ -22,7 +22,7 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOU
  *
  * @author Darkona
  */
-public class InventoryCoalJetpack extends InventoryAdventureBackpack
+public class InventoryCoalJetpack extends InventoryAdventure
 {
     public int currentItemBurnTime = 0;
 

@@ -27,7 +27,7 @@ import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
  *
  * @author Darkona
  */
-public class ContainerBackpack extends ContainerAdventureBackpack
+public class ContainerBackpack extends ContainerAdventure
 {
     private static final int BACK_INV_ROWS = 6;
     private static final int BACK_INV_COLUMNS = 8;
@@ -43,13 +43,13 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
     private InventoryCraftingBackpack craftMatrix = new InventoryCraftingBackpack(this, MATRIX_DIMENSION, MATRIX_DIMENSION);
     private IInventory craftResult = new InventoryCraftResult();
-    private IInventoryAdventureBackpack inventory;
+    private IInventoryBackpack inventory;
 
     private int leftAmount;
     private int rightAmount;
     private int invCount;
 
-    public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, Source source)
+    public ContainerBackpack(EntityPlayer player, IInventoryBackpack backpack, Source source)
     {
         this.player = player;
         inventory = backpack;
@@ -58,7 +58,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
         this.source = source;
     }
 
-    public IInventoryAdventureBackpack getInventoryBackpack()
+    public IInventoryBackpack getInventoryBackpack()
     {
         return inventory;
     }

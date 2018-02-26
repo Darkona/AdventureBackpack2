@@ -9,7 +9,7 @@ import com.darkona.adventurebackpack.reference.BackpackTypes;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public interface IInventoryAdventureBackpack extends IInventoryTanks
+public interface IInventoryBackpack extends IInventoryTanks
 {
     BackpackTypes getType();
 

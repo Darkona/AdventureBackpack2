@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
  *
  * @author Ugachaga
  */
-public class SlotCraftMatrix extends SlotAdventureBackpack
+public class SlotCraftMatrix extends SlotAdventure
 {
     SlotCraftMatrix(IInventory craftMatrix, int slotIndex, int posX, int posY)
     {

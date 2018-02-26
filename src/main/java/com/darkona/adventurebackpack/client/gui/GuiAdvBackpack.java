@@ -17,7 +17,7 @@ import com.darkona.adventurebackpack.common.Constants.Source;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
-import com.darkona.adventurebackpack.inventory.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.inventory.IInventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
@@ -42,7 +42,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.typeTankRender);
     private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.typeTankRender);
 
-    private IInventoryAdventureBackpack inventory;
+    private IInventoryBackpack inventory;
 
     private boolean isHoldingSpace;
 

@@ -18,7 +18,7 @@ import com.darkona.adventurebackpack.util.TinkersUtils;
  *
  * @author Darkona
  */
-public class SlotTool extends SlotAdventureBackpack
+public class SlotTool extends SlotAdventure
 {
     private static final String[] VALID_TOOL_NAMES = {"axe", "crowbar", "drill", "grafter", "hammer", "scoop", "shovel",
             "wrench",};
