@@ -17,17 +17,13 @@ public interface IInventoryTanks extends IAsynchronousInventory
 
     int[] getSlotsOnClosingArray();
 
-    //TODO
-
-
-
     void loadFromNBT(NBTTagCompound compound);
 
     void saveToNBT(NBTTagCompound compound);
 
+    void dirtyInventory();
+
     boolean updateTankSlots();
 
     void dirtyTanks();
-
-    void dirtyInventory();
 }

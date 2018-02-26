@@ -248,7 +248,7 @@ public class TooltipEventHandler
         boolean toolSlotL = false;
         for (int i = itemCount - 1; i >= 0; i--)
         {
-            int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
+            int slotAtI = itemList.getCompoundTagAt(i).getInteger(Constants.TAG_SLOT);
             if (slotAtI < Constants.TOOL_UPPER)
                 break;
             else if (slotAtI == Constants.TOOL_UPPER)
@@ -339,7 +339,7 @@ public class TooltipEventHandler
         int slotID, slotMeta, slotCount = slotID = slotMeta = 0;
         for (int i = 0; i <= slot; i++)
         {
-            int slotAtI = itemList.getCompoundTagAt(i).getInteger("Slot");
+            int slotAtI = itemList.getCompoundTagAt(i).getInteger(Constants.TAG_SLOT);
             if (slotAtI == slot)
             {
                 slotID = itemList.getCompoundTagAt(i).getInteger("id");

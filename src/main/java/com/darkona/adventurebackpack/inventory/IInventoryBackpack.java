@@ -19,11 +19,7 @@ public interface IInventoryBackpack extends IInventoryTanks
 
     NBTTagCompound getExtendedProperties(); //TODO move to IInventoryTanks to use with Copter/Jet?
 
-    //TODO
 
-
-
-    boolean isSleepingBagDeployed();
 
     int getLastTime();
 
@@ -36,4 +32,9 @@ public interface IInventoryBackpack extends IInventoryTanks
     void dirtyTime();
 
     void dirtyExtended();
+
+
+
+
+    boolean isSleepingBagDeployed();
 }

@@ -4,17 +4,22 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+
+import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
+import static com.darkona.adventurebackpack.common.Constants.TAG_SLOT;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 15.07.2017
  *
  * @author Ugachaga
  */
+@SuppressWarnings("WeakerAccess")
 abstract class InventoryAdventure implements IInventoryTanks
 {
     ItemStack containerStack;
-
-    /** IInventory START --- */
 
     @Override
     public int getSizeInventory()
@@ -110,8 +115,6 @@ abstract class InventoryAdventure implements IInventoryTanks
         return false;
     }
 
-    /* --- IInventory END || IAsynchronousInventory START --- */
-
     @Nullable
     @Override
     public ItemStack decrStackSizeNoSave(int slot, int quantity)
@@ -145,8 +148,48 @@ abstract class InventoryAdventure implements IInventoryTanks
         getInventory()[slot] = stack;
     }
 
-    /* --- IAsynchronousInventory END || IInventoryTanks START --- */
+    @Override
+    public void dirtyInventory()
+    {
+        if (updateTankSlots()) //TODO this can be generalized too
+            dirtyTanks();      //TODO and also this
 
-    //TODO
+        getWearableCompound().removeTag(TAG_INVENTORY); //TODO why? sync related?
+        getWearableCompound().setTag(TAG_INVENTORY, getInventoryTagList());
+    }
 
+    protected NBTTagCompound getWearableCompound()
+    {
+        return containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);
+    }
+
+    protected void setInventoryFromTagList(NBTTagList items)
+    {
+        for (int i = 0; i < items.tagCount(); i++)
+        {
+            NBTTagCompound item = items.getCompoundTagAt(i);
+            byte slot = item.getByte(TAG_SLOT);
+            if (slot >= 0 && slot < getSizeInventory())
+            {
+                getInventory()[slot] = ItemStack.loadItemStackFromNBT(item);
+            }
+        }
+    }
+
+    protected NBTTagList getInventoryTagList()
+    {
+        NBTTagList items = new NBTTagList();
+        for (int i = 0; i < getSizeInventory(); i++)
+        {
+            ItemStack stack = getInventory()[i];
+            if (stack != null)
+            {
+                NBTTagCompound item = new NBTTagCompound();
+                item.setByte(TAG_SLOT, (byte) i);
+                stack.writeToNBT(item);
+                items.appendTag(item);
+            }
+        }
+        return items;
+    }
 }

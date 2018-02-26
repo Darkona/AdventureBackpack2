@@ -53,6 +53,8 @@ import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
  */
 public class TileAdventureBackpack extends TileAdventure implements IInventoryBackpack, ISidedInventory
 {
+    private static final int[] MAIN_INVENTORY_SLOTS = Utils.createSlotArray(0, Constants.INVENTORY_MAIN_SIZE);
+
     private BackpackTypes type = BackpackTypes.STANDARD;
     private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
@@ -69,9 +71,9 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     private int sbx;
     private int sby;
     private int sbz;
-    private int luminosity = 0;
 
     private int checkTime = 0;
+    private int luminosity = 0;
 
     public TileAdventureBackpack()
     {
@@ -120,6 +122,74 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         return extendedProperties;
     }
 
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
+    {
+        super.readFromNBT(compound);
+        loadFromNBT(compound);
+        sleepingBagDeployed = compound.getBoolean("sleepingbag");
+        sbx = compound.getInteger("sbx");
+        sby = compound.getInteger("sby");
+        sbz = compound.getInteger("sbz");
+        sbdir = compound.getInteger("sbdir");
+        luminosity = compound.getInteger("lumen");
+    }
+
+    @Override
+    public void loadFromNBT(NBTTagCompound compound)
+    {
+        if (compound.hasKey("backpackData"))
+            convertFromOldNBTFormat(compound);
+
+        if (compound.hasKey("ench"))
+            ench = compound.getTagList("ench", NBT.TAG_COMPOUND);
+
+        NBTTagCompound backpackTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
+        type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
+        setInventoryFromTagList(backpackTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND));
+        leftTank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
+        rightTank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
+        extendedProperties = backpackTag.getCompoundTag(TAG_EXTENDED_COMPOUND);
+        disableCycling = backpackTag.getBoolean(TAG_DISABLE_CYCLING);
+        disableNVision = backpackTag.getBoolean(TAG_DISABLE_NVISION);
+        lastTime = backpackTag.getInteger("lastTime");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound compound)
+    {
+        super.writeToNBT(compound);
+        saveToNBT(compound);
+        compound.setBoolean("sleepingbag", sleepingBagDeployed);
+        compound.setInteger("sbx", sbx);
+        compound.setInteger("sby", sby);
+        compound.setInteger("sbz", sbz);
+        compound.setInteger("sbdir", sbdir);
+        compound.setInteger("lumen", luminosity);
+    }
+
+    @Override
+    public void saveToNBT(NBTTagCompound compound)
+    {
+        if (ench != null)
+            compound.setTag("ench", ench);
+
+        NBTTagCompound backpackTag = new NBTTagCompound();
+        backpackTag.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
+        backpackTag.setTag(TAG_INVENTORY, getInventoryTagList());
+        backpackTag.setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
+        backpackTag.setTag(TAG_EXTENDED_COMPOUND, extendedProperties);
+        backpackTag.setBoolean(TAG_DISABLE_CYCLING, disableCycling);
+        backpackTag.setBoolean(TAG_DISABLE_NVISION, disableNVision);
+        backpackTag.setInteger("lastTime", lastTime);
+
+        compound.setTag(TAG_WEARABLE_COMPOUND, backpackTag);
+    }
+
+
+
+
 
 
 
@@ -140,142 +210,6 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         this.lastTime = lastTime;
     }
 
-    @Override
-    public boolean isSleepingBagDeployed()
-    {
-        return this.sleepingBagDeployed;
-    }
-
-    public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ)
-    {
-        if (world.isRemote)
-            return false;
-
-        sleepingBagDeployed = CoordsUtils.spawnSleepingBag(player, world, meta, cX, cY, cZ);
-        if (sleepingBagDeployed)
-        {
-            sbx = cX;
-            sby = cY;
-            sbz = cZ;
-            sbdir = meta;
-            world.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-        }
-        return sleepingBagDeployed;
-    }
-
-    public void setSleepingBagDeployed(boolean state)
-    {
-        this.sleepingBagDeployed = state;
-    }
-
-    public boolean removeSleepingBag(World world)
-    {
-        if (sleepingBagDeployed)
-        {
-            if (world.getBlock(sbx, sby, sbz) == ModBlocks.blockSleepingBag)
-            {
-                world.func_147480_a(sbx, sby, sbz, false);
-                this.sleepingBagDeployed = false;
-                markDirty();
-                return true;
-            }
-        }
-        else
-        {
-            this.sleepingBagDeployed = false;
-            markDirty();
-        }
-        return false;
-    }
-
-    //=======================================================NBT======================================================//
-    @Override
-    public void readFromNBT(NBTTagCompound compound)
-    {
-        super.readFromNBT(compound);
-        loadFromNBT(compound);
-        sleepingBagDeployed = compound.getBoolean("sleepingbag");
-        sbx = compound.getInteger("sbx");
-        sby = compound.getInteger("sby");
-        sbz = compound.getInteger("sbz");
-        sbdir = compound.getInteger("sbdir");
-        luminosity = compound.getInteger("lumen");
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound compound)
-    {
-        super.writeToNBT(compound);
-        saveToNBT(compound);
-        compound.setBoolean("sleepingbag", sleepingBagDeployed);
-        compound.setInteger("sbx", sbx);
-        compound.setInteger("sby", sby);
-        compound.setInteger("sbz", sbz);
-        compound.setInteger("sbdir", sbdir);
-        compound.setInteger("lumen", luminosity);
-    }
-
-    @Override
-    public void loadFromNBT(NBTTagCompound compound)
-    {
-        if (compound.hasKey("backpackData"))
-            convertFromOldNBTFormat(compound);
-
-        if (compound.hasKey("ench"))
-            ench = compound.getTagList("ench", NBT.TAG_COMPOUND);
-
-        NBTTagCompound backpackTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
-        type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
-        NBTTagList items = backpackTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND);
-        for (int i = 0; i < items.tagCount(); i++)
-        {
-            NBTTagCompound item = items.getCompoundTagAt(i);
-            byte slot = item.getByte("Slot");
-            if (slot >= 0 && slot < inventory.length)
-            {
-                inventory[slot] = ItemStack.loadItemStackFromNBT(item);
-            }
-        }
-        leftTank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
-        rightTank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
-        extendedProperties = backpackTag.getCompoundTag(TAG_EXTENDED_COMPOUND);
-        disableCycling = backpackTag.getBoolean(TAG_DISABLE_CYCLING);
-        disableNVision = backpackTag.getBoolean(TAG_DISABLE_NVISION);
-        lastTime = backpackTag.getInteger("lastTime");
-    }
-
-    @Override
-    public void saveToNBT(NBTTagCompound compound)
-    {
-        if (ench != null)
-            compound.setTag("ench", ench);
-
-        NBTTagCompound backpackTag = new NBTTagCompound();
-        backpackTag.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
-        NBTTagList items = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++)
-        {
-            ItemStack stack = inventory[i];
-            if (stack != null)
-            {
-                NBTTagCompound item = new NBTTagCompound();
-                item.setByte("Slot", (byte) i);
-                stack.writeToNBT(item);
-                items.appendTag(item);
-            }
-        }
-        backpackTag.setTag(TAG_INVENTORY, items);
-        backpackTag.setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
-        backpackTag.setTag(TAG_LEFT_TANK, leftTank.writeToNBT(new NBTTagCompound()));
-        backpackTag.setTag(TAG_EXTENDED_COMPOUND, extendedProperties);
-        backpackTag.setBoolean(TAG_DISABLE_CYCLING, disableCycling);
-        backpackTag.setBoolean(TAG_DISABLE_NVISION, disableNVision);
-        backpackTag.setInteger("lastTime", lastTime);
-
-        compound.setTag(TAG_WEARABLE_COMPOUND, backpackTag);
-    }
-
-    //====================================================INVENTORY===================================================//
 
     @Override
     public void markDirty()
@@ -284,8 +218,8 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         {
             if (inventory[i] != null)
             {
-                if ((i == BUCKET_IN_LEFT || i == BUCKET_IN_RIGHT)
-                        || (i == BUCKET_OUT_LEFT || i == BUCKET_OUT_RIGHT) && inventory[i].getItem() instanceof ItemHose)
+                if ((i == BUCKET_OUT_LEFT || i == BUCKET_OUT_RIGHT) && inventory[i].getItem() instanceof ItemHose
+                        || (i == BUCKET_IN_LEFT || i == BUCKET_IN_RIGHT))
                 {
                     updateTankSlots();
                 }
@@ -297,12 +231,12 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     @Override
     public boolean updateTankSlots()
     {
-        boolean result = false;
+        boolean changesMade = false;
         while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
-            result = true;
+            changesMade = true;
         while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
-            result = true;
-        return result;
+            changesMade = true;
+        return changesMade;
     }
 
     @Override
@@ -317,61 +251,39 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         InventoryActions.consumeItemInInventory(this, item);
     }
 
-    //===================================================TILE ENTITY==================================================//
 
-    //SEND SYNC PACKET
     @Override
-    public Packet getDescriptionPacket()
+    public void dirtyTanks()
     {
-        NBTTagCompound compound = new NBTTagCompound();
-        writeToNBT(compound);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, compound);
-    }
 
-    //RECEIV SYNC PACKET - This is necessary for the TileEntity to load the nbt as soon as it is loaded and be rendered
-    //properly when the custom renderer reads it
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
-        super.onDataPacket(net, pkt);
-        readFromNBT(pkt.func_148857_g());
     }
 
     @Override
-    public void updateEntity()
+    public void dirtyTime()
     {
-        //Execute this backpack's ability. No, seriously. You might not infer that from the code. Just sayin'
-        if (ConfigHandler.backpackAbilities && BackpackTypes.hasProperty(type, BackpackTypes.Props.TILE))
-        {
-            BackpackAbilities.backpackAbilities.executeTileAbility(this.worldObj, this);
-        }
 
-        //Check for backpack luminosity and a deployed sleeping bag, just in case because i'm super paranoid.
-        if (checkTime == 0)
-        {
-            int lastLumen = luminosity;
-            int left = (leftTank.getFluid() != null) ? leftTank.getFluid().getFluid().getLuminosity() : 0;
-            int right = (rightTank.getFluid() != null) ? rightTank.getFluid().getFluid().getLuminosity() : 0;
-            luminosity = Math.max(left, right);
-            if (luminosity != lastLumen)
-            {
-                int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-                worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
-                worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
-            }
-            if (worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
-            {
-                sleepingBagDeployed = false;
-            }
-            checkTime = 20;
-        }
-        else
-        {
-            checkTime--;
-        }
     }
 
-    //=====================================================BACKPACK===================================================//
+    @Override
+    public void dirtyExtended()
+    {
+
+    }
+
+    @Override
+    public void dirtyInventory()
+    {
+
+    }
+
+
+
+
+
+
+
+
+    // Logic: from tile to item
     public boolean equip(World world, EntityPlayer player, int x, int y, int z)
     {
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
@@ -381,23 +293,16 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         {
             if (Wearing.isWearingWearable(player))
             {
-                if (Wearing.isWearingBackpack(player))
-                {
-                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.backpack"));
-                }
-                else if (Wearing.isWearingCopter(player))
-                {
-                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.copterpack"));
-                }
+                String msg = "backpack";
+                if (Wearing.isWearingCopter(player))
+                    msg = "copterpack";
                 else if (Wearing.isWearingJetpack(player))
-                {
-                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.jetpack"));
-                }
+                    msg = "jetpack";
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped." + msg));
             }
+
             if (!player.inventory.addItemStackToInventory(stacky))
-            {
                 return drop(world, player, x, y, z);
-            }
         }
         return true;
     }
@@ -431,53 +336,62 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         stack.setItemDamage(BackpackTypes.getMeta(type)); // save the meta, cuz why not
     }
 
+    // Sleeping Bag
     @Override
-    public void dirtyTanks()
+    public boolean isSleepingBagDeployed()
     {
-
+        return this.sleepingBagDeployed;
     }
 
-    @Override
-    public void dirtyTime()
+    public void setSleepingBagDeployed(boolean state)
     {
-
+        this.sleepingBagDeployed = state;
     }
 
-    @Override
-    public void dirtyExtended()
+    public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ)
     {
+        if (world.isRemote)
+            return false;
 
-    }
-
-    @Override
-    public void dirtyInventory()
-    {
-
-    }
-
-    // AUTOMATION settings
-
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
-    {
-        if (slot <= Constants.END_OF_INVENTORY)
+        sleepingBagDeployed = CoordsUtils.spawnSleepingBag(player, world, meta, cX, cY, cZ);
+        if (sleepingBagDeployed)
         {
-            return SlotBackpack.isValidItem(stack);
+            sbx = cX;
+            sby = cY;
+            sbz = cZ;
+            sbdir = meta;
+            world.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
-        return (slot == TOOL_UPPER || slot == TOOL_LOWER) && SlotTool.isValidTool(stack);
+        return sleepingBagDeployed;
     }
 
-    //=================================================ISidedInventory================================================//
+    public boolean removeSleepingBag(World world)
+    {
+        if (sleepingBagDeployed)
+        {
+            if (world.getBlock(sbx, sby, sbz) == ModBlocks.blockSleepingBag)
+            {
+                world.func_147480_a(sbx, sby, sbz, false);
+                this.sleepingBagDeployed = false;
+                markDirty();
+                return true;
+            }
+        }
+        else
+        {
+            this.sleepingBagDeployed = false;
+            markDirty();
+        }
+        return false;
+    }
 
-    private static final int[] SLOTS = Utils.createSlotArray(0, Constants.INVENTORY_MAIN_SIZE);
-
+    // Automation
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
-        if (GeneralReference.isDimensionAllowed(this.worldObj.provider.dimensionId))
-        {
-            return SLOTS;
-        }
+        if (GeneralReference.isDimensionAllowed(worldObj.provider.dimensionId))
+            return MAIN_INVENTORY_SLOTS;
+
         return null;
     }
 
@@ -488,9 +402,76 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     }
 
     @Override
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    {
+        if (slot <= Constants.END_OF_INVENTORY)
+            return SlotBackpack.isValidItem(stack);
+
+        return (slot == TOOL_UPPER || slot == TOOL_LOWER) && SlotTool.isValidTool(stack);
+    }
+
+    @Override
     public boolean canExtractItem(int slot, ItemStack item, int side)
     {
         return true;
+    }
+
+    /**
+     * Send sync packet. This is necessary for the TileEntity to load the nbt as soon as it is loaded
+     * and be rendered properly when the custom renderer reads it
+     */
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound compound = new NBTTagCompound();
+        writeToNBT(compound);
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, compound);
+    }
+
+    /**
+     * Receive sync packet. This is necessary for the TileEntity to load the nbt as soon as it is loaded
+     * and be rendered properly when the custom renderer reads it
+     */
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+        super.onDataPacket(net, pkt);
+        readFromNBT(pkt.func_148857_g());
+    }
+
+    // Ticking at World.updateEntities()
+    @Override
+    public void updateEntity()
+    {
+        //Execute this backpack's TILE ability. No, seriously. You might not infer that from the code. Just sayin'
+        if (ConfigHandler.backpackAbilities && BackpackTypes.hasProperty(type, BackpackTypes.Props.TILE))
+        {
+            BackpackAbilities.backpackAbilities.executeTileAbility(this.worldObj, this);
+        }
+
+        //Check for backpack luminosity and a deployed sleeping bag, just in case because i'm super paranoid.
+        if (checkTime > 0)
+        {
+            int lastLumen = luminosity;
+            int left = (leftTank.getFluid() != null) ? leftTank.getFluid().getFluid().getLuminosity() : 0;
+            int right = (rightTank.getFluid() != null) ? rightTank.getFluid().getFluid().getLuminosity() : 0;
+            luminosity = Math.max(left, right);
+            if (luminosity != lastLumen)
+            {
+                int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+                worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
+                worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
+            }
+            if (worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
+            {
+                sleepingBagDeployed = false;
+            }
+            checkTime = 20;
+        }
+        else
+        {
+            checkTime--;
+        }
     }
 
     private void convertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility

@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.inventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.darkona.adventurebackpack.common.Constants;
@@ -12,6 +13,7 @@ import static com.darkona.adventurebackpack.common.Constants.Copter.BUCKET_OUT;
 import static com.darkona.adventurebackpack.common.Constants.Copter.INVENTORY_SIZE;
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_FUEL_TANK;
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
+import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
@@ -57,6 +59,45 @@ public class InventoryCopterPack extends InventoryAdventure
         return new int[]{BUCKET_IN, BUCKET_OUT};
     }
 
+    @Override
+    public void loadFromNBT(NBTTagCompound compound)
+    {
+        NBTTagCompound copterTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
+        setInventoryFromTagList(copterTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND));
+        fuelTank.readFromNBT(copterTag.getCompoundTag(TAG_FUEL_TANK));
+        status = copterTag.getByte(TAG_STATUS);
+        tickCounter = copterTag.getInteger("tickCounter");
+    }
+
+    @Override
+    public void saveToNBT(NBTTagCompound compound)
+    {
+        NBTTagCompound copterTag = new NBTTagCompound();
+        copterTag.setTag(TAG_INVENTORY, getInventoryTagList());
+        copterTag.setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
+        copterTag.setByte(TAG_STATUS, status);
+        copterTag.setInteger("tickCounter", this.tickCounter);
+        compound.setTag(TAG_WEARABLE_COMPOUND, copterTag);
+    }
+
+    @Override
+    public boolean updateTankSlots()
+    {
+        boolean changesMade = false;
+        while (InventoryActions.transferContainerTank(this, getFuelTank(), BUCKET_IN))
+            changesMade = true;
+        return changesMade;
+    }
+
+    @Override
+    public void dirtyTanks()
+    {
+        getWearableCompound().setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
+    }
+
+
+
+
 
     public void consumeFuel(int quantity)
     {
@@ -89,55 +130,14 @@ public class InventoryCopterPack extends InventoryAdventure
         this.status = status;
     }
 
-    @Override
-    public void loadFromNBT(NBTTagCompound compound)
-    {
-        NBTTagCompound copterTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
-        fuelTank.readFromNBT(copterTag.getCompoundTag(TAG_FUEL_TANK));
-        status = copterTag.getByte(TAG_STATUS);
-        tickCounter = copterTag.getInteger("tickCounter");
-    }
-
-    @Override
-    public void saveToNBT(NBTTagCompound compound)
-    {
-        NBTTagCompound copterTag = new NBTTagCompound();
-        copterTag.setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
-        copterTag.setByte(TAG_STATUS, status);
-        copterTag.setInteger("tickCounter", this.tickCounter);
-        compound.setTag(TAG_WEARABLE_COMPOUND, copterTag);
-    }
-
-    @Override
-    public boolean updateTankSlots()
-    {
-        boolean result = false;
-        while (InventoryActions.transferContainerTank(this, getFuelTank(), BUCKET_IN))
-            result = true;
-        return result;
-    }
-
-    @Override
-    public void dirtyInventory()
-    {
-        if (updateTankSlots())
-        {
-            dirtyTanks();
-        }
-    }
-
-    @Override
-    public void dirtyTanks()
-    {
-        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
-    }
-
-    //TODO to InventoryAdventure: getWearableCompound() { return containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);}
-
     public void dirtyStatus()
     {
-        containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, status);
+        getWearableCompound().setByte(TAG_STATUS, status);
     }
+
+
+
+
 
     private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
     {
