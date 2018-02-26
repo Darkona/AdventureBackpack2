@@ -17,7 +17,7 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
 
     FluidTank getRightTank();
 
-    NBTTagCompound getExtendedProperties();
+    NBTTagCompound getExtendedProperties(); //TODO move to IInventoryTanks to use with Copter/Jet?
 
     //TODO
 

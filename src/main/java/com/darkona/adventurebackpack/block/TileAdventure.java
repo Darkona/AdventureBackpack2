@@ -1,19 +1,20 @@
-package com.darkona.adventurebackpack.inventory;
+package com.darkona.adventurebackpack.block;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+
+import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 
 /**
- * Created on 15.07.2017
+ * Created on 26.02.2018
  *
  * @author Ugachaga
  */
-abstract class InventoryAdventureBackpack implements IInventoryTanks
+abstract class TileAdventure extends TileEntity implements IInventoryTanks
 {
-    ItemStack containerStack;
-
     /** IInventory START --- */
 
     @Override
@@ -40,6 +41,7 @@ abstract class InventoryAdventureBackpack implements IInventoryTanks
             else
                 stack = stack.splitStack(quantity);
         }
+        markDirty();
         return stack;
     }
 
@@ -58,14 +60,13 @@ abstract class InventoryAdventureBackpack implements IInventoryTanks
     public void setInventorySlotContents(int slot, @Nullable ItemStack stack)
     {
         setInventorySlotContentsNoSave(slot, stack);
-        dirtyInventory();
+        markDirty();
     }
-
 
     @Override
     public String getInventoryName()
     {
-        return ""; //TODO name heirs
+        return "";
     }
 
     @Override
@@ -80,34 +81,31 @@ abstract class InventoryAdventureBackpack implements IInventoryTanks
         return 64;
     }
 
-    @Override
-    public void markDirty()
-    {
-        saveToNBT(containerStack.stackTagCompound);
-    }
+    // we have to inherit markDirty() implemented in TileEntity.class
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player)
     {
-        return true;
+        return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
+                && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) <= 64;
     }
 
     @Override
     public void openInventory()
     {
-        loadFromNBT(containerStack.stackTagCompound);
+        //
     }
 
     @Override
     public void closeInventory()
     {
-        saveToNBT(containerStack.stackTagCompound);
+        markDirty();
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        return false;
+        return false; // override when automation is allowed
     }
 
     /* --- IInventory END || IAsynchronousInventory START --- */
@@ -147,6 +145,5 @@ abstract class InventoryAdventureBackpack implements IInventoryTanks
 
     /* --- IAsynchronousInventory END || IInventoryTanks START --- */
 
-    //TODO
 
 }
