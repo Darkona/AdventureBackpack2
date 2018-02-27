@@ -27,8 +27,7 @@ import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
  *
  * @author Darkona
  */
-//@invtweaks.api.container.ChestContainer (showButtons=true, rowSize=8)
-public class ContainerBackpack extends ContainerAdventureBackpack
+public class ContainerBackpack extends ContainerAdventure
 {
     private static final int BACK_INV_ROWS = 6;
     private static final int BACK_INV_COLUMNS = 8;
@@ -44,13 +43,13 @@ public class ContainerBackpack extends ContainerAdventureBackpack
 
     private InventoryCraftingBackpack craftMatrix = new InventoryCraftingBackpack(this, MATRIX_DIMENSION, MATRIX_DIMENSION);
     private IInventory craftResult = new InventoryCraftResult();
-    private IInventoryAdventureBackpack inventory;
+    private IInventoryBackpack inventory;
 
     private int leftAmount;
     private int rightAmount;
     private int invCount;
 
-    public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, Source source)
+    public ContainerBackpack(EntityPlayer player, IInventoryBackpack backpack, Source source)
     {
         this.player = player;
         inventory = backpack;
@@ -59,7 +58,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
         this.source = source;
     }
 
-    public IInventoryAdventureBackpack getInventoryBackpack()
+    public IInventoryBackpack getInventoryBackpack()
     {
         return inventory;
     }
@@ -110,11 +109,17 @@ public class ContainerBackpack extends ContainerAdventureBackpack
             }
         }
         addSlotToContainer(new SlotCraftResult(this, invPlayer.player, craftMatrix, craftResult, 0, 226, 97)); // craftResult [99]
-        syncCraftMatrixToInventory();
+        syncCraftMatrixWithInventory(true);
     }
 
     @Override
     public void detectAndSendChanges()
+    {
+        syncCraftResultToServer();
+        super.detectAndSendChanges();
+    }
+
+    private void syncCraftResultToServer()
     {
         ItemStack stackA = ((Slot) inventorySlots.get(CRAFT_RESULT)).getStack();
         ItemStack stackB = (ItemStack) inventoryItemStacks.get(CRAFT_RESULT);
@@ -127,8 +132,6 @@ public class ContainerBackpack extends ContainerAdventureBackpack
             if (player instanceof EntityPlayerMP)
                 ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
         }
-
-        super.detectAndSendChanges();
     }
 
     @Override
@@ -270,7 +273,7 @@ public class ContainerBackpack extends ContainerAdventureBackpack
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
         final ItemStack result = super.slotClick(slot, button, flag, player);
-        syncCraftMatrixToInventory();
+        syncCraftMatrixWithInventory(true);
         return result;
     }
 
@@ -298,35 +301,40 @@ public class ContainerBackpack extends ContainerAdventureBackpack
         craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.worldObj));
     }
 
-    protected void syncCraftMatrixToInventory()
+    protected void syncCraftMatrixWithInventory(boolean preCraft)
     {
+        boolean changesMade = false;
+
         for (int craftSlotID = 0; craftSlotID < CRAFT_MATRIX_EMULATION.length; craftSlotID++)
         {
             int invSlotID = CRAFT_MATRIX_EMULATION[craftSlotID];
-            final ItemStack invStack = inventory.getStackInSlot(invSlotID);
-            craftMatrix.setInventorySlotContentsNoUpdate(craftSlotID, invStack);
-        }
-        onCraftMatrixChanged(craftMatrix);
-    }
+            ItemStack invStack = inventory.getStackInSlot(invSlotID);
+            ItemStack craftStack = craftMatrix.getStackInSlot(craftSlotID);
 
-    protected void syncInventoryToCraftMatrix()
-    {
-        for (int craftSlotID = 0; craftSlotID < CRAFT_MATRIX_EMULATION.length; craftSlotID++)
+            if (!ItemStack.areItemStacksEqual(invStack, craftStack))
+            {
+                if (preCraft)
+                {
+                    craftStack = invStack == null ? null : invStack.copy();
+                    craftMatrix.setInventorySlotContentsNoUpdate(craftSlotID, craftStack);
+                }
+                else
+                {
+                    invStack = craftStack == null ? null : craftStack.copy();
+                    inventory.setInventorySlotContentsNoSave(invSlotID, invStack);
+                }
+                changesMade = true;
+            }
+        }
+
+        if (changesMade)
         {
-            int invSlotID = CRAFT_MATRIX_EMULATION[craftSlotID];
-            final ItemStack craftStack = craftMatrix.getStackInSlot(craftSlotID);
-            inventory.setInventorySlotContentsNoSave(invSlotID, craftStack);
+            if (preCraft)
+                onCraftMatrixChanged(craftMatrix);
+            else
+                inventory.markDirty();
         }
-        inventory.markDirty();
     }
-
-    /*@ContainerSectionCallback //TODO deal with invTweaks
-    public Map<ContainerSection, List<Slot>> getContainerSections()
-    {
-        Map<ContainerSection, List<Slot>> slotMap = new HashMap<>();
-        slotMap.put(ContainerSection.CHEST, inventorySlots.subList(BACK_INV_START, BACK_INV_END + 1));
-        return slotMap;
-    }*/
 
     /**
      *  Returns the array of inventory slotIDs, emulates the craftMatrix in the lower right corner of the inventory.

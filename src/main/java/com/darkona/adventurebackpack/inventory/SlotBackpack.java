@@ -8,7 +8,7 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 /**
  * Created by Darkona on 12/10/2014.
  */
-public class SlotBackpack extends SlotAdventureBackpack
+public class SlotBackpack extends SlotAdventure
 {
     private static final String[] FORBIDDEN_CLASSES = {
             // Adventure Backpack 2
@@ -29,7 +29,7 @@ public class SlotBackpack extends SlotAdventureBackpack
             // Project Red Exploration Backpacks
             "mrtjp.projectred.exploration.ItemBackpack",};
 
-    SlotBackpack(IInventoryAdventureBackpack inventory, int slotIndex, int posX, int posY)
+    SlotBackpack(IInventoryBackpack inventory, int slotIndex, int posX, int posY)
     {
         super(inventory, slotIndex, posX, posY);
     }

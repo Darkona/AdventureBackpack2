@@ -741,6 +741,6 @@ public class BackpackAbilities
 
     /*public void tileCow(World world, TileAdventureBackpack backpack)
     {
-        IInventoryAdventureBackpack inv = backpack; //TODO make CowBackpack (and others) working in tile form
+        IInventoryBackpack inv = backpack; //TODO make CowBackpack (and others) working in tile form
     }*/
 }

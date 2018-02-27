@@ -209,48 +209,33 @@ public class CoordsUtils
         {
             case 0:
                 --cZ;
-                if (world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid())
-                {
-                    if (world.isAirBlock(cX, cY, cZ - 1) && world.getBlock(cX, cY - 1, cZ - 1).getMaterial().isSolid())
-                    {
-                        direction = 2;
-                    }
-                }
+                if (isAirAboveSolid(world, cX, cY, cZ) && isAirAboveSolid(world, cX, cY, cZ - 1))
+                    direction = 2;
                 break;
             case 1:
                 ++cX;
-                if (world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid())
-                {
-                    if (world.isAirBlock(cX + 1, cY, cZ) && world.getBlock(cX + 1, cY - 1, cZ).getMaterial().isSolid())
-                    {
-                        direction = 3;
-                    }
-                }
+                if (isAirAboveSolid(world, cX, cY, cZ) && isAirAboveSolid(world, cX + 1, cY, cZ))
+                    direction = 3;
                 break;
             case 2:
                 ++cZ;
-                if (world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid())
-                {
-                    if (world.isAirBlock(cX, cY, cZ + 1) && world.getBlock(cX, cY - 1, cZ + 1).getMaterial().isSolid())
-                    {
-                        direction = 0;
-                    }
-                }
+                if (isAirAboveSolid(world, cX, cY, cZ) && isAirAboveSolid(world, cX, cY, cZ + 1))
+                    direction = 0;
                 break;
             case 3:
                 --cX;
-                if (world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid())
-                {
-                    if (world.isAirBlock(cX - 1, cY, cZ) && world.getBlock(cX - 1, cY - 1, cZ).getMaterial().isSolid())
-                    {
-                        direction = 1;
-                    }
-                }
+                if (isAirAboveSolid(world, cX, cY, cZ) && isAirAboveSolid(world, cX - 1, cY, cZ))
+                    direction = 1;
                 break;
             default:
                 break;
         }
         return new int[]{direction, cX, cY, cZ};
+    }
+
+    private static boolean isAirAboveSolid(World world, int cX, int cY, int cZ)
+    {
+        return world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ).getMaterial().isSolid();
     }
 
     public static boolean spawnSleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ)

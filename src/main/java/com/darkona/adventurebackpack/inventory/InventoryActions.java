@@ -142,7 +142,7 @@ public class InventoryActions
         }
     }
 
-    public static boolean hasItem(IInventoryAdventureBackpack backpack, Item item)
+    public static boolean hasItem(IInventoryBackpack backpack, Item item)
     {
         ItemStack[] inventory = backpack.getInventory();
         for (ItemStack slotStack : inventory)
@@ -155,7 +155,7 @@ public class InventoryActions
         return false;
     }
 
-    public static boolean hasBlockItem(IInventoryAdventureBackpack backpack, Block item)
+    public static boolean hasBlockItem(IInventoryBackpack backpack, Block item)
     {
         ItemStack[] inventory = backpack.getInventory();
         for (ItemStack slotStack : inventory)

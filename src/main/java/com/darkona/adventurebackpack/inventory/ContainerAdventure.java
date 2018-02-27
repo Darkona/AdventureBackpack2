@@ -15,7 +15,7 @@ import com.darkona.adventurebackpack.common.Constants.Source;
  * @author Ugachaga
  */
 @SuppressWarnings("WeakerAccess")
-abstract class ContainerAdventureBackpack extends Container
+abstract class ContainerAdventure extends Container
 {
     protected static final int PLAYER_HOT_START = 0;
     protected static final int PLAYER_HOT_END = PLAYER_HOT_START + 8;

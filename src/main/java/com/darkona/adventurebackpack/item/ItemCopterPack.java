@@ -46,6 +46,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     public static byte OFF_MODE = 0;
     public static byte NORMAL_MODE = 1;
     public static byte HOVER_MODE = 2;
+
     private float fuelSpent;
 
     public ItemCopterPack()
@@ -128,7 +129,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 }
                 if (inv.getStatus() == HOVER_MODE)
                 {
-
                     inv.setStatus(NORMAL_MODE);
                     inv.dirtyStatus();
                     if (!world.isRemote)

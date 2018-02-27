@@ -21,6 +21,7 @@ public class Constants
     public static final String TAG_WEARABLE_COMPOUND = "wearableData";
     public static final String TAG_EXTENDED_COMPOUND = "extendedProperties";
     public static final String TAG_INVENTORY = "inventory";
+    public static final String TAG_SLOT = "Slot";
 
     /**
      *  ### Adventure Backpack ###

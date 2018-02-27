@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
  *
  * @author Darkona
  */
-public class SlotFuel extends SlotAdventureBackpack
+public class SlotFuel extends SlotAdventure
 {
     SlotFuel(IInventory inventory, int slotIndex, int posX, int posY)
     {

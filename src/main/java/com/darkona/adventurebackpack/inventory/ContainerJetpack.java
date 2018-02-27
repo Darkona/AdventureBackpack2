@@ -16,7 +16,7 @@ import static com.darkona.adventurebackpack.common.Constants.Jetpack.FUEL_SLOT;
  *
  * @author Darkona
  */
-public class ContainerJetpack extends ContainerAdventureBackpack
+public class ContainerJetpack extends ContainerAdventure
 {
     private static final int JETPACK_INV_START = PLAYER_INV_END + 1;
     private static final int JETPACK_FUEL_START = PLAYER_INV_END + 3;

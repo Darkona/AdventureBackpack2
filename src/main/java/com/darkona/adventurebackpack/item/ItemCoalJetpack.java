@@ -79,7 +79,6 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
-        inv.calculateLostTime(); // debug artifact
         if (inv.getTemperature() == 0) inv.setTemperature(getBiomeMinTemp(player, world));
     }
 
@@ -227,7 +226,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         if (inv.getBurnTicks() <= 0)
         {
             inv.setBurnTicks(inv.consumeFuel());
-            inv.currentItemBurnTime = inv.getBurnTicks();
+            inv.setCurrentItemBurnTime(inv.getBurnTicks());
         }
         inv.dirtyInventory();
     }
@@ -249,9 +248,9 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
                 }
             }
         }
-        else if (burnTicks <= 0)
+        else
         {
-            inv.currentItemBurnTime = 0;
+            inv.setCurrentItemBurnTime(0);
             if (coolTicks % inv.getDecreasingFactor() == 0)
             {
                 temperature = (temperature - 1 >= getBiomeMinTemp(player, world)) ? temperature - 1 : 0;
@@ -270,7 +269,6 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         inv.setInUse(false);
         inv.setLeaking(false);
         inv.setStatus(false);
-        inv.setSystemTime(System.currentTimeMillis());
         inv.markDirty();
     }
 

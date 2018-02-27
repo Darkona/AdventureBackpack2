@@ -15,7 +15,7 @@ import static com.darkona.adventurebackpack.common.Constants.Copter.BUCKET_OUT;
  *
  * @author Darkona
  */
-public class ContainerCopter extends ContainerAdventureBackpack
+public class ContainerCopter extends ContainerAdventure
 {
     private static final int COPTER_INV_START = PLAYER_INV_END + 1;
 
