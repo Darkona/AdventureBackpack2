@@ -115,6 +115,12 @@ public class ContainerBackpack extends ContainerAdventure
     @Override
     public void detectAndSendChanges()
     {
+        syncCraftResultToServer();
+        super.detectAndSendChanges();
+    }
+
+    private void syncCraftResultToServer()
+    {
         ItemStack stackA = ((Slot) inventorySlots.get(CRAFT_RESULT)).getStack();
         ItemStack stackB = (ItemStack) inventoryItemStacks.get(CRAFT_RESULT);
 
@@ -126,8 +132,6 @@ public class ContainerBackpack extends ContainerAdventure
             if (player instanceof EntityPlayerMP)
                 ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
         }
-
-        super.detectAndSendChanges();
     }
 
     @Override

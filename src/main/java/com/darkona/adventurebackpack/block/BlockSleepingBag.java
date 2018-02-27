@@ -361,6 +361,7 @@ public class BlockSleepingBag extends BlockDirectional
     @Override
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
     {
+        //TODO make it work if player destroyed head block of sleeping bag (so backpack 1 more tile away)
         //LogHelper.info("onBlockDestroyedByPlayer() : BlockSleepingBag");
         int direction = getDirection(meta);
         int tileZ = z;

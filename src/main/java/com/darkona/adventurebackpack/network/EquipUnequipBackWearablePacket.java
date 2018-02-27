@@ -30,27 +30,21 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
             EntityPlayer player = ctx.getServerHandler().playerEntity;
             if (message.action == EQUIP_WEARABLE)
             {
-                if (Wearing.isHoldingWearable(player) && !Wearing.isWearingWearable(player))
+                if (Wearing.isHoldingWearable(player))
                 {
-                    if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.Reasons.SUCCESSFUL)
+                    if (Wearing.isWearingWearable(player))
                     {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                        player.inventoryContainer.detectAndSendChanges();
+                        Wearing.WearableType wtype = Wearing.getWearingWearableType(player);
+                        if (wtype != Wearing.WearableType.UNKNOWN)
+                            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped." + wtype.name().toLowerCase()));
                     }
-                }
-                else if (Wearing.isWearingWearable(player))
-                {
-                    if (Wearing.isWearingBackpack(player))
+                    else
                     {
-                        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.backpack"));
-                    }
-                    else if (Wearing.isWearingCopter(player))
-                    {
-                        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.copterpack"));
-                    }
-                    else if (Wearing.isWearingJetpack(player))
-                    {
-                        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped.jetpack"));
+                        if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.Reasons.SUCCESSFUL)
+                        {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                            player.inventoryContainer.detectAndSendChanges();
+                        }
                     }
                 }
             }

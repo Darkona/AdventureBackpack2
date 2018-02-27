@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.inventory;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -157,13 +156,29 @@ public class InventoryBackpack extends InventoryAdventure implements IInventoryB
         getWearableCompound().setTag(TAG_RIGHT_TANK, rightTank.writeToNBT(new NBTTagCompound()));
     }
 
+    @Override
+    public void dirtyExtended() //TODO is it redundant?
+    {
+        getWearableCompound().removeTag(TAG_EXTENDED_COMPOUND); //TODO again: why?
+        getWearableCompound().setTag(TAG_EXTENDED_COMPOUND, extendedProperties);
+    }
 
-
+    @Override
+    public void dirtyTime()
+    {
+        getWearableCompound().setInteger("lastTime", lastTime);
+    }
 
     @Override
     public int getLastTime()
     {
         return this.lastTime;
+    }
+
+    @Override
+    public void setLastTime(int time)
+    {
+        this.lastTime = time;
     }
 
     @Override
@@ -177,35 +192,6 @@ public class InventoryBackpack extends InventoryAdventure implements IInventoryB
     {
         InventoryActions.consumeItemInInventory(this, item);
     }
-
-    @Override
-    public void setLastTime(int time)
-    {
-        this.lastTime = time;
-    }
-
-    @Override
-    public void dirtyTime()
-    {
-        getWearableCompound().setInteger("lastTime", lastTime);
-    }
-
-    @Override
-    public void dirtyExtended() //TODO is it redundant?
-    {
-        getWearableCompound().removeTag(TAG_EXTENDED_COMPOUND);
-        getWearableCompound().setTag(TAG_EXTENDED_COMPOUND, extendedProperties);
-    }
-
-    public boolean hasBlock(Block block)
-    {
-        return InventoryActions.hasBlockItem(this, block);
-    }
-
-
-
-
-
 
     public boolean getDisableCycling()
     {

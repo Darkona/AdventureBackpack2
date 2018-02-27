@@ -40,11 +40,15 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
         if (stack != null)
         {
             if (stack.stackSize <= quantity)
+            {
                 setInventorySlotContents(slot, null);
+            }
             else
+            {
                 stack = stack.splitStack(quantity);
+                dirtyInventory();
+            }
         }
-        markDirty();
         return stack;
     }
 
@@ -63,7 +67,7 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
     public void setInventorySlotContents(int slot, @Nullable ItemStack stack)
     {
         setInventorySlotContentsNoSave(slot, stack);
-        markDirty();
+        dirtyInventory();
     }
 
     @Override
@@ -102,7 +106,7 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
     @Override
     public void closeInventory()
     {
-        markDirty();
+        dirtyInventory();
     }
 
     @Override
@@ -142,6 +146,21 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
         }
 
         getInventory()[slot] = stack;
+    }
+
+    @Override
+    public void dirtyInventory()
+    {
+        updateTankSlots();
+        markDirty();
+    }
+
+    @Override
+    public void dirtyTanks()
+    {
+        // for now none is calling this for tile.backpack
+        // if we really want to use it, we have to re-implement it, more efficient way
+        dirtyInventory();
     }
 
     protected void setInventoryFromTagList(NBTTagList items)

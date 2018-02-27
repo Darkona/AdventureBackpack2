@@ -95,14 +95,9 @@ public class InventoryCopterPack extends InventoryAdventure
         getWearableCompound().setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
     }
 
-
-
-
-
-    public void consumeFuel(int quantity)
+    public void dirtyStatus()
     {
-        fuelTank.drain(quantity, true);
-        dirtyTanks();
+        getWearableCompound().setByte(TAG_STATUS, status);
     }
 
     public boolean canConsumeFuel(int quantity)
@@ -110,14 +105,10 @@ public class InventoryCopterPack extends InventoryAdventure
         return fuelTank.drain(quantity, false) != null && fuelTank.drain(quantity, false).amount > 0;
     }
 
-    public int getTickCounter()
+    public void consumeFuel(int quantity)
     {
-        return tickCounter;
-    }
-
-    public void setTickCounter(int ticks)
-    {
-        this.tickCounter = ticks;
+        fuelTank.drain(quantity, true);
+        dirtyTanks();
     }
 
     public byte getStatus()
@@ -130,14 +121,15 @@ public class InventoryCopterPack extends InventoryAdventure
         this.status = status;
     }
 
-    public void dirtyStatus()
+    public int getTickCounter()
     {
-        getWearableCompound().setByte(TAG_STATUS, status);
+        return tickCounter;
     }
 
-
-
-
+    public void setTickCounter(int ticks)
+    {
+        this.tickCounter = ticks;
+    }
 
     private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
     {

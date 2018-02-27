@@ -24,19 +24,18 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOU
  */
 public class InventoryCoalJetpack extends InventoryAdventure
 {
-    public int currentItemBurnTime = 0;
-
     private ItemStack[] inventory = new ItemStack[Constants.Jetpack.INVENTORY_SIZE];
     private FluidTank waterTank = new FluidTank(Constants.Jetpack.WATER_CAPACITY);
     private FluidTank steamTank = new FluidTank(Constants.Jetpack.STEAM_CAPACITY);
 
-    private boolean boiling = false;
     private boolean inUse = false;
-    private boolean leaking = false;
     private boolean status = false;
+    private boolean boiling = false;
+    private boolean leaking = false;
     private int temperature = 25;
     private int burnTicks = 0;
     private int coolTicks = 5000;
+    private int currentItemBurnTime = 0;
 
     public InventoryCoalJetpack(final ItemStack jetpack)
     {
@@ -80,13 +79,13 @@ public class InventoryCoalJetpack extends InventoryAdventure
         setInventoryFromTagList(jetpackTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND));
         waterTank.readFromNBT(jetpackTag.getCompoundTag(TAG_WATER_TANK));
         steamTank.readFromNBT(jetpackTag.getCompoundTag(TAG_STEAM_TANK));
-        temperature = jetpackTag.getInteger("temperature");
-        status = jetpackTag.getBoolean("status");
-        burnTicks = jetpackTag.getInteger("burnTicks");
-        coolTicks = jetpackTag.getInteger("coolTicks");
         inUse = jetpackTag.getBoolean("inUse");
+        status = jetpackTag.getBoolean("status");
         boiling = jetpackTag.getBoolean("boiling");
         leaking = jetpackTag.getBoolean("leaking");
+        temperature = jetpackTag.getInteger("temperature");
+        burnTicks = jetpackTag.getInteger("burnTicks");
+        coolTicks = jetpackTag.getInteger("coolTicks");
         currentItemBurnTime = jetpackTag.getInteger("currentBurn");
     }
 
@@ -97,13 +96,13 @@ public class InventoryCoalJetpack extends InventoryAdventure
         jetpackTag.setTag(TAG_INVENTORY, getInventoryTagList());
         jetpackTag.setTag(TAG_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
         jetpackTag.setTag(TAG_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
-        jetpackTag.setInteger("temperature", temperature);
-        jetpackTag.setBoolean("status", status);
-        jetpackTag.setInteger("burnTicks", burnTicks);
-        jetpackTag.setInteger("coolTicks", coolTicks);
         jetpackTag.setBoolean("inUse", inUse);
+        jetpackTag.setBoolean("status", status);
         jetpackTag.setBoolean("boiling", boiling);
         jetpackTag.setBoolean("leaking", leaking);
+        jetpackTag.setInteger("temperature", temperature);
+        jetpackTag.setInteger("burnTicks", burnTicks);
+        jetpackTag.setInteger("coolTicks", coolTicks);
         jetpackTag.setInteger("currentBurn", currentItemBurnTime);
         compound.setTag(TAG_WEARABLE_COMPOUND, jetpackTag);
     }
@@ -124,22 +123,6 @@ public class InventoryCoalJetpack extends InventoryAdventure
         getWearableCompound().setTag(TAG_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
     }
 
-
-
-
-
-
-
-    public int getBurnTimeRemainingScaled(int scale)
-    {
-        if (this.currentItemBurnTime == 0)
-        {
-            this.currentItemBurnTime = 200;
-        }
-
-        return this.burnTicks * scale / this.currentItemBurnTime;
-    }
-
     public void dirtyBoiler()
     {
         NBTTagCompound jetpackTag = getWearableCompound();
@@ -149,6 +132,14 @@ public class InventoryCoalJetpack extends InventoryAdventure
         jetpackTag.setInteger("burnTicks", burnTicks);
         jetpackTag.setInteger("coolTicks", coolTicks);
         jetpackTag.setInteger("currentBurn", currentItemBurnTime);
+    }
+
+    public int getBurnTimeRemainingScaled(int scale)
+    {
+        if (this.currentItemBurnTime == 0)
+            this.currentItemBurnTime = 200;
+
+        return this.burnTicks * scale / this.currentItemBurnTime;
     }
 
     public int consumeFuel()
@@ -172,9 +163,31 @@ public class InventoryCoalJetpack extends InventoryAdventure
         return TileEntityFurnace.isItemFuel(stack);
     }
 
-    public ItemStack getParentItemStack()
+    public int getIncreasingFactor()
     {
-        return containerStack;
+        if (temperature < 50) return 20;
+        if (temperature < 100) return 15;
+        if (temperature < 150) return 10;
+        return 5;
+    }
+
+    public int getDecreasingFactor()
+    {
+        if (temperature > 150) return 40;
+        if (temperature > 100) return 80;
+        if (temperature > 50) return 120;
+        return 5;
+    }
+
+
+    public boolean isInUse()
+    {
+        return inUse;
+    }
+
+    public void setInUse(boolean inUse)
+    {
+        this.inUse = inUse;
     }
 
     public boolean getStatus()
@@ -185,26 +198,6 @@ public class InventoryCoalJetpack extends InventoryAdventure
     public void setStatus(boolean status)
     {
         this.status = status;
-    }
-
-    public int getTemperature()
-    {
-        return temperature;
-    }
-
-    public void setTemperature(int temperature)
-    {
-        this.temperature = temperature;
-    }
-
-    public boolean isInUse()
-    {
-        return inUse;
-    }
-
-    public void setInUse(boolean inUse)
-    {
-        this.inUse = inUse;
     }
 
     public boolean isBoiling()
@@ -227,6 +220,16 @@ public class InventoryCoalJetpack extends InventoryAdventure
         this.leaking = leaking;
     }
 
+    public int getTemperature()
+    {
+        return temperature;
+    }
+
+    public void setTemperature(int temperature)
+    {
+        this.temperature = temperature;
+    }
+
     public int getBurnTicks()
     {
         return burnTicks;
@@ -235,22 +238,6 @@ public class InventoryCoalJetpack extends InventoryAdventure
     public void setBurnTicks(int burnTicks)
     {
         this.burnTicks = burnTicks;
-    }
-
-    public int getIncreasingFactor()
-    {
-        if (temperature < 50) return 20;
-        if (temperature < 100) return 15;
-        if (temperature < 150) return 10;
-        return 5;
-    }
-
-    public int getDecreasingFactor()
-    {
-        if (temperature > 150) return 40;
-        if (temperature > 100) return 80;
-        if (temperature > 50) return 120;
-        return 5;
     }
 
     public int getCoolTicks()
@@ -263,21 +250,10 @@ public class InventoryCoalJetpack extends InventoryAdventure
         this.coolTicks = coolTicks;
     }
 
-    public ItemStack getContainerStack()
+    public void setCurrentItemBurnTime(int currentItemBurnTime)
     {
-        return containerStack;
+        this.currentItemBurnTime = currentItemBurnTime;
     }
-
-    public void setContainerStack(ItemStack containerStack)
-    {
-        this.containerStack = containerStack;
-    }
-
-
-
-
-
-
 
     private void detectAndConvertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
     {

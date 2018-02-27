@@ -25,7 +25,6 @@ import com.darkona.adventurebackpack.inventory.IInventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotBackpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
-import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.BackpackUtils;
@@ -187,15 +186,31 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         compound.setTag(TAG_WEARABLE_COMPOUND, backpackTag);
     }
 
-
-
-
-
-
-
-    public int getLuminosity()
+    @Override
+    public boolean updateTankSlots()
     {
-        return luminosity;
+        boolean changesMade = false;
+        while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
+            changesMade = true;
+        while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
+            changesMade = true;
+        return changesMade;
+    }
+
+    @Override
+    public void dirtyExtended()
+    {
+        // for now none is calling this for tile.backpack
+        // if we really want to use it, we have to re-implement it, more efficient way
+        dirtyInventory();
+    }
+
+    @Override
+    public void dirtyTime()
+    {
+        // for now none is calling this for tile.backpack
+        // if we really want to use it, we have to re-implement it, more efficient way
+        dirtyInventory();
     }
 
     @Override
@@ -210,35 +225,6 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         this.lastTime = lastTime;
     }
 
-
-    @Override
-    public void markDirty()
-    {
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (inventory[i] != null)
-            {
-                if ((i == BUCKET_OUT_LEFT || i == BUCKET_OUT_RIGHT) && inventory[i].getItem() instanceof ItemHose
-                        || (i == BUCKET_IN_LEFT || i == BUCKET_IN_RIGHT))
-                {
-                    updateTankSlots();
-                }
-            }
-        }
-        super.markDirty();
-    }
-
-    @Override
-    public boolean updateTankSlots()
-    {
-        boolean changesMade = false;
-        while (InventoryActions.transferContainerTank(this, getLeftTank(), BUCKET_IN_LEFT))
-            changesMade = true;
-        while (InventoryActions.transferContainerTank(this, getRightTank(), BUCKET_IN_RIGHT))
-            changesMade = true;
-        return changesMade;
-    }
-
     @Override
     public boolean hasItem(Item item)
     {
@@ -251,38 +237,6 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         InventoryActions.consumeItemInInventory(this, item);
     }
 
-
-    @Override
-    public void dirtyTanks()
-    {
-
-    }
-
-    @Override
-    public void dirtyTime()
-    {
-
-    }
-
-    @Override
-    public void dirtyExtended()
-    {
-
-    }
-
-    @Override
-    public void dirtyInventory()
-    {
-
-    }
-
-
-
-
-
-
-
-
     // Logic: from tile to item
     public boolean equip(World world, EntityPlayer player, int x, int y, int z)
     {
@@ -291,15 +245,9 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         removeSleepingBag(world);
         if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.Reasons.SUCCESSFUL)
         {
-            if (Wearing.isWearingWearable(player))
-            {
-                String msg = "backpack";
-                if (Wearing.isWearingCopter(player))
-                    msg = "copterpack";
-                else if (Wearing.isWearingJetpack(player))
-                    msg = "jetpack";
-                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped." + msg));
-            }
+            Wearing.WearableType wtype = Wearing.getWearingWearableType(player);
+            if (wtype != Wearing.WearableType.UNKNOWN)
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped." + wtype.name().toLowerCase()));
 
             if (!player.inventory.addItemStackToInventory(stacky))
                 return drop(world, player, x, y, z);
@@ -313,14 +261,13 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         if (player.capabilities.isCreativeMode) return true;
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
         transferToItemStack(stacky);
+
         float spawnX = x + world.rand.nextFloat();
         float spawnY = y + world.rand.nextFloat();
         float spawnZ = z + world.rand.nextFloat();
-
         EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stacky);
 
         float mult = 0.05F;
-
         droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
         droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
         droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
@@ -365,24 +312,13 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         return sleepingBagDeployed;
     }
 
-    public boolean removeSleepingBag(World world)
+    public void removeSleepingBag(World world)
     {
-        if (sleepingBagDeployed)
-        {
-            if (world.getBlock(sbx, sby, sbz) == ModBlocks.blockSleepingBag)
-            {
-                world.func_147480_a(sbx, sby, sbz, false);
-                this.sleepingBagDeployed = false;
-                markDirty();
-                return true;
-            }
-        }
-        else
-        {
-            this.sleepingBagDeployed = false;
-            markDirty();
-        }
-        return false;
+        if (sleepingBagDeployed && world.getBlock(sbx, sby, sbz) == ModBlocks.blockSleepingBag)
+            world.func_147480_a(sbx, sby, sbz, false);
+
+        sleepingBagDeployed = false;
+        markDirty();
     }
 
     // Automation
@@ -450,7 +386,7 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         }
 
         //Check for backpack luminosity and a deployed sleeping bag, just in case because i'm super paranoid.
-        if (checkTime > 0)
+        if (checkTime == 0)
         {
             int lastLumen = luminosity;
             int left = (leftTank.getFluid() != null) ? leftTank.getFluid().getFluid().getLuminosity() : 0;
@@ -462,16 +398,21 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
                 worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
                 worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
             }
-            if (worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
-            {
+
+            if (sleepingBagDeployed && worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
                 sleepingBagDeployed = false;
-            }
+
             checkTime = 20;
         }
         else
         {
             checkTime--;
         }
+    }
+
+    public int getLuminosity()
+    {
+        return luminosity;
     }
 
     private void convertFromOldNBTFormat(NBTTagCompound compound) // backwards compatibility
