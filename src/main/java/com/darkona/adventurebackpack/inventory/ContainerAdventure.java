@@ -23,10 +23,20 @@ abstract class ContainerAdventure extends Container
     protected static final int PLAYER_INV_END = PLAYER_INV_START + 26;
     protected static final int PLAYER_INV_LENGTH = PLAYER_INV_END + 1;
 
-    protected EntityPlayer player;
-    protected Source source;
+    protected final EntityPlayer player;
+    protected final IInventoryTanks inventory;
+    protected final Source source;
 
-    public abstract IInventoryTanks getInventoryTanks();
+    private final int[] fluidsAmount;
+    private int itemsCount;
+
+    protected ContainerAdventure(EntityPlayer player, IInventoryTanks inventory, Source source)
+    {
+        this.player = player;
+        this.inventory = inventory;
+        this.source = source;
+        this.fluidsAmount = new int[this.inventory.getTanksArray().length];
+    }
 
     protected void bindPlayerInventory(InventoryPlayer invPlayer, int startX, int startY)
     {
@@ -51,14 +61,44 @@ abstract class ContainerAdventure extends Container
 
         if (source == Source.HOLDING) // used for refresh tooltips and redraw tanks content while GUI is open
         {
-            if (detectChanges() && player instanceof EntityPlayerMP)
+            if ((detectItemChanges() | detectFluidChanges()) && player instanceof EntityPlayerMP)
             {
                 ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
             }
         }
     }
 
-    protected abstract boolean detectChanges();
+    protected boolean detectItemChanges()
+    {
+        ItemStack[] inv = inventory.getInventory();
+        int tempCount = 0;
+        for (int i = 0; i < inv.length - inventory.getSlotsOnClosing().length; i++)
+        {
+            if (inv[i] != null)
+                tempCount++;
+        }
+        if (itemsCount != tempCount)
+        {
+            itemsCount = tempCount;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean detectFluidChanges()
+    {
+        boolean changesDetected = false;
+        for (int i = 0; i < fluidsAmount.length; i++)
+        {
+            int amount = inventory.getTanksArray()[i].getFluidAmount();
+            if (fluidsAmount[i] != amount)
+            {
+                fluidsAmount[i] = amount;
+                changesDetected = true;
+            }
+        }
+        return changesDetected;
+    }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
@@ -126,7 +166,7 @@ abstract class ContainerAdventure extends Container
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return getInventoryTanks().isUseableByPlayer(player);
+        return inventory.isUseableByPlayer(player);
     }
 
     @Override
@@ -221,14 +261,12 @@ abstract class ContainerAdventure extends Container
 
     protected void dropContentOnClose()
     {
-        IInventoryTanks inv = getInventoryTanks();
-
-        for (int i = 0; i < inv.getSizeInventory(); i++)
+        for (int i = 0; i < inventory.getSizeInventory(); i++)
         {
-            ItemStack itemstack = inv.getStackInSlotOnClosing(i);
+            ItemStack itemstack = inventory.getStackInSlotOnClosing(i);
             if (itemstack != null)
             {
-                inv.setInventorySlotContents(i, null);
+                inventory.setInventorySlotContents(i, null);
                 player.dropPlayerItemWithRandomChoice(itemstack, false);
             }
         }

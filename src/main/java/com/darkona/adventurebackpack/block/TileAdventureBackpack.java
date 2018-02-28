@@ -55,7 +55,6 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     private static final int[] MAIN_INVENTORY_SLOTS = Utils.createSlotArray(0, Constants.INVENTORY_MAIN_SIZE);
 
     private BackpackTypes type = BackpackTypes.STANDARD;
-    private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private NBTTagCompound extendedProperties = new NBTTagCompound();
@@ -76,7 +75,7 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
 
     public TileAdventureBackpack()
     {
-        sleepingBagDeployed = false;
+        super(Constants.INVENTORY_SIZE);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     }
 
     @Override
-    public int[] getSlotsOnClosingArray()
+    public int[] getSlotsOnClosing()
     {
         return new int[]{BUCKET_IN_LEFT, BUCKET_IN_RIGHT, BUCKET_OUT_LEFT, BUCKET_OUT_RIGHT};
     }
@@ -197,6 +196,7 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         return changesMade;
     }
 
+    @Deprecated
     @Override
     public void dirtyExtended()
     {
@@ -205,6 +205,7 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         dirtyInventory();
     }
 
+    @Deprecated
     @Override
     public void dirtyTime()
     {

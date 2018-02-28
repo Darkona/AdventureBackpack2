@@ -19,18 +19,27 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOU
 @SuppressWarnings("WeakerAccess")
 abstract class InventoryAdventure implements IInventoryTanks
 {
-    ItemStack containerStack;
+    // when porting to java 8+ most this methods should move to IInventoryTanks
+
+    protected final ItemStack containerStack;
+    protected final ItemStack[] inventory;
+
+    protected InventoryAdventure(ItemStack container, int inventorySize)
+    {
+        this.containerStack = container;
+        this.inventory = new ItemStack[inventorySize];
+    }
 
     @Override
     public int getSizeInventory()
     {
-        return getInventory().length;
+        return inventory.length;
     }
 
     @Override
     public ItemStack getStackInSlot(int slot)
     {
-        return getInventory()[slot];
+        return inventory[slot];
     }
 
     @Nullable
@@ -52,9 +61,9 @@ abstract class InventoryAdventure implements IInventoryTanks
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-        for (int s : getSlotsOnClosingArray())
+        for (int s : getSlotsOnClosing())
             if (slot == s)
-                return getInventory()[slot];
+                return inventory[slot];
 
         return null;
     }
@@ -145,7 +154,7 @@ abstract class InventoryAdventure implements IInventoryTanks
                 stack = null;
         }
 
-        getInventory()[slot] = stack;
+        inventory[slot] = stack;
     }
 
     @Override
@@ -171,7 +180,7 @@ abstract class InventoryAdventure implements IInventoryTanks
             byte slot = item.getByte(TAG_SLOT);
             if (slot >= 0 && slot < getSizeInventory())
             {
-                getInventory()[slot] = ItemStack.loadItemStackFromNBT(item);
+                inventory[slot] = ItemStack.loadItemStackFromNBT(item);
             }
         }
     }
@@ -181,7 +190,7 @@ abstract class InventoryAdventure implements IInventoryTanks
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < getSizeInventory(); i++)
         {
-            ItemStack stack = getInventory()[i];
+            ItemStack stack = inventory[i];
             if (stack != null)
             {
                 NBTTagCompound item = new NBTTagCompound();

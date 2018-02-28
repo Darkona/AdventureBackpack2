@@ -15,7 +15,7 @@ public interface IInventoryTanks extends IAsynchronousInventory
 
     FluidTank[] getTanksArray();
 
-    int[] getSlotsOnClosingArray();
+    int[] getSlotsOnClosing();
 
     void loadFromNBT(NBTTagCompound compound);
 
