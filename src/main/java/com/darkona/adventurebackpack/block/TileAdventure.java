@@ -22,7 +22,7 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
 {
     // when porting to java 8+ most this methods should move to IInventoryTanks
 
-    protected ItemStack[] inventory;
+    protected final ItemStack[] inventory;
 
     protected TileAdventure(int inventorySize)
     {

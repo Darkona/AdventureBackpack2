@@ -170,13 +170,13 @@ public class ContainerBackpack extends ContainerAdventure
 
     private boolean isHoldingSpace()
     {
-        return ((InventoryBackpack) inventory).getExtendedProperties().hasKey(Constants.TAG_HOLDING_SPACE);
+        return getInventoryBackpack().getExtendedProperties().hasKey(Constants.TAG_HOLDING_SPACE);
     }
 
     private boolean transferFluidContainer(ItemStack container)
     {
-        FluidTank leftTank = ((InventoryBackpack) inventory).getLeftTank();
-        FluidTank rightTank = ((InventoryBackpack) inventory).getRightTank();
+        FluidTank leftTank = getInventoryBackpack().getLeftTank();
+        FluidTank rightTank = getInventoryBackpack().getRightTank();
         ItemStack leftStackOut = getSlot(BUCKET_LEFT + 1).getStack();
         ItemStack rightStackOut = getSlot(BUCKET_RIGHT + 1).getStack();
 

@@ -106,7 +106,7 @@ public class InventoryBackpack extends InventoryAdventure implements IInventoryB
     public void loadFromNBT(NBTTagCompound compound)
     {
         if (compound == null)
-            return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
+            return; // this need for NEI and WAILA trying to render tile.backpack and comes here w/o nbt
 
         NBTTagCompound backpackTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
         type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
