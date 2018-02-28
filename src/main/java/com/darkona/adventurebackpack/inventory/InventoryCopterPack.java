@@ -10,7 +10,6 @@ import com.darkona.adventurebackpack.item.ItemCopterPack;
 
 import static com.darkona.adventurebackpack.common.Constants.Copter.BUCKET_IN;
 import static com.darkona.adventurebackpack.common.Constants.Copter.BUCKET_OUT;
-import static com.darkona.adventurebackpack.common.Constants.Copter.INVENTORY_SIZE;
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_FUEL_TANK;
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
 import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
@@ -24,14 +23,13 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOU
 public class InventoryCopterPack extends InventoryAdventure
 {
     private FluidTank fuelTank = new FluidTank(Constants.Copter.FUEL_CAPACITY);
-    private ItemStack[] inventory = new ItemStack[INVENTORY_SIZE];
 
     private byte status = ItemCopterPack.OFF_MODE;
     private int tickCounter = 0;
 
     public InventoryCopterPack(ItemStack copterPack)
     {
-        containerStack = copterPack;
+        super(copterPack, Constants.Copter.INVENTORY_SIZE);
         detectAndConvertFromOldNBTFormat(containerStack.stackTagCompound);
         openInventory();
     }
@@ -54,7 +52,7 @@ public class InventoryCopterPack extends InventoryAdventure
     }
 
     @Override
-    public int[] getSlotsOnClosingArray()
+    public int[] getSlotsOnClosing()
     {
         return new int[]{BUCKET_IN, BUCKET_OUT};
     }

@@ -193,7 +193,7 @@ public class BlockAdventureBackpack extends BlockContainer
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister)
+    public void registerBlockIcons(IIconRegister iconRegister) //TODO why this is HERE?
     {
         Icons.milkStill = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.milk");
         Icons.melonJuiceStill = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.melonJuiceStill");
@@ -408,7 +408,6 @@ public class BlockAdventureBackpack extends BlockContainer
                     world.spawnEntityInWorld(droppedItem);
                 }
             }
-
         }
 
         super.breakBlock(world, x, y, z, world.getBlock(x, y, z), meta);

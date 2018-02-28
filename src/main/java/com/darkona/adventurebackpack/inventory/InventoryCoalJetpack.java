@@ -24,7 +24,6 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOU
  */
 public class InventoryCoalJetpack extends InventoryAdventure
 {
-    private ItemStack[] inventory = new ItemStack[Constants.Jetpack.INVENTORY_SIZE];
     private FluidTank waterTank = new FluidTank(Constants.Jetpack.WATER_CAPACITY);
     private FluidTank steamTank = new FluidTank(Constants.Jetpack.STEAM_CAPACITY);
 
@@ -39,7 +38,7 @@ public class InventoryCoalJetpack extends InventoryAdventure
 
     public InventoryCoalJetpack(final ItemStack jetpack)
     {
-        containerStack = jetpack;
+        super(jetpack, Constants.Jetpack.INVENTORY_SIZE);
         detectAndConvertFromOldNBTFormat(containerStack.stackTagCompound);
         openInventory();
     }
@@ -67,7 +66,7 @@ public class InventoryCoalJetpack extends InventoryAdventure
     }
 
     @Override
-    public int[] getSlotsOnClosingArray()
+    public int[] getSlotsOnClosing()
     {
         return new int[]{BUCKET_IN, BUCKET_OUT};
     }

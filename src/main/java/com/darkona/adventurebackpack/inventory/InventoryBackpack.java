@@ -40,7 +40,6 @@ public class InventoryBackpack extends InventoryAdventure implements IInventoryB
     private static final String TAG_SLEEPING_BAG_Z = "sleepingBagZ";
 
     private BackpackTypes type = BackpackTypes.STANDARD;
-    private ItemStack[] inventory = new ItemStack[Constants.INVENTORY_SIZE];
     private FluidTank leftTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
     private NBTTagCompound extendedProperties = new NBTTagCompound();
@@ -56,7 +55,7 @@ public class InventoryBackpack extends InventoryAdventure implements IInventoryB
 
     public InventoryBackpack(ItemStack backpack)
     {
-        containerStack = backpack;
+        super(backpack, Constants.INVENTORY_SIZE);
         detectAndConvertFromOldNBTFormat(containerStack.stackTagCompound);
         openInventory();
     }
@@ -92,7 +91,7 @@ public class InventoryBackpack extends InventoryAdventure implements IInventoryB
     }
 
     @Override
-    public int[] getSlotsOnClosingArray()
+    public int[] getSlotsOnClosing()
     {
         return new int[]{BUCKET_IN_LEFT, BUCKET_IN_RIGHT, BUCKET_OUT_LEFT, BUCKET_OUT_RIGHT};
     }
@@ -107,7 +106,7 @@ public class InventoryBackpack extends InventoryAdventure implements IInventoryB
     public void loadFromNBT(NBTTagCompound compound)
     {
         if (compound == null)
-            return; //this need for NEI trying to render tile.backpack and comes here w/o nbt
+            return; // this need for NEI and WAILA trying to render tile.backpack and comes here w/o nbt
 
         NBTTagCompound backpackTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
         type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));

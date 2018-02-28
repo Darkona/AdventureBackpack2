@@ -43,30 +43,17 @@ public class ContainerBackpack extends ContainerAdventure
 
     private InventoryCraftingBackpack craftMatrix = new InventoryCraftingBackpack(this, MATRIX_DIMENSION, MATRIX_DIMENSION);
     private IInventory craftResult = new InventoryCraftResult();
-    private IInventoryBackpack inventory;
-
-    private int leftAmount;
-    private int rightAmount;
-    private int invCount;
 
     public ContainerBackpack(EntityPlayer player, IInventoryBackpack backpack, Source source)
     {
-        this.player = player;
-        inventory = backpack;
+        super(player, backpack, source);
         makeSlots(player.inventory);
         inventory.openInventory();
-        this.source = source;
     }
 
     public IInventoryBackpack getInventoryBackpack()
     {
-        return inventory;
-    }
-
-    @Override
-    public IInventoryTanks getInventoryTanks()
-    {
-        return inventory;
+        return (IInventoryBackpack) inventory;
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
@@ -75,8 +62,6 @@ public class ContainerBackpack extends ContainerAdventure
 
         int startX = 62;
         int startY = 7;
-        int slot = 0;
-
         for (int row = 0; row < BACK_INV_ROWS; row++) // 6*8 inventory, 48 Slots (#1-#48) [36-83]
         {
             for (int col = 0; col < BACK_INV_COLUMNS; col++)
@@ -84,7 +69,7 @@ public class ContainerBackpack extends ContainerAdventure
                 int offsetX = startX + (18 * col);
                 int offsetY = startY + (18 * row);
 
-                addSlotToContainer(new SlotBackpack(inventory, slot++, offsetX, offsetY));
+                addSlotToContainer(new SlotBackpack((IInventoryBackpack) inventory, (row * BACK_INV_COLUMNS + col), offsetX, offsetY));
             }
         }
 
@@ -108,6 +93,7 @@ public class ContainerBackpack extends ContainerAdventure
                 addSlotToContainer(new SlotCraftMatrix(craftMatrix, (row * MATRIX_DIMENSION + col), offsetX, offsetY));
             }
         }
+
         addSlotToContainer(new SlotCraftResult(this, invPlayer.player, craftMatrix, craftResult, 0, 226, 97)); // craftResult [99]
         syncCraftMatrixWithInventory(true);
     }
@@ -119,6 +105,7 @@ public class ContainerBackpack extends ContainerAdventure
         super.detectAndSendChanges();
     }
 
+    @SuppressWarnings("unchecked")
     private void syncCraftResultToServer()
     {
         ItemStack stackA = ((Slot) inventorySlots.get(CRAFT_RESULT)).getStack();
@@ -132,38 +119,6 @@ public class ContainerBackpack extends ContainerAdventure
             if (player instanceof EntityPlayerMP)
                 ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
         }
-    }
-
-    @Override
-    protected boolean detectChanges()
-    {
-        boolean changesDetected = false;
-
-        ItemStack[] inv = inventory.getInventory();
-        int tempCount = 0;
-        for (int i = 0; i <= TOOL_LOWER; i++)
-        {
-            if (inv[i] != null)
-                tempCount++;
-        }
-        if (invCount != tempCount)
-        {
-            invCount = tempCount;
-            changesDetected = true;
-        }
-
-        if (leftAmount != inventory.getLeftTank().getFluidAmount())
-        {
-            leftAmount = inventory.getLeftTank().getFluidAmount();
-            changesDetected = true;
-        }
-        if (rightAmount != inventory.getRightTank().getFluidAmount())
-        {
-            rightAmount = inventory.getRightTank().getFluidAmount();
-            changesDetected = true;
-        }
-
-        return changesDetected;
     }
 
     @Override
@@ -215,13 +170,13 @@ public class ContainerBackpack extends ContainerAdventure
 
     private boolean isHoldingSpace()
     {
-        return inventory.getExtendedProperties().hasKey(Constants.TAG_HOLDING_SPACE);
+        return getInventoryBackpack().getExtendedProperties().hasKey(Constants.TAG_HOLDING_SPACE);
     }
 
     private boolean transferFluidContainer(ItemStack container)
     {
-        FluidTank leftTank = inventory.getLeftTank();
-        FluidTank rightTank = inventory.getRightTank();
+        FluidTank leftTank = getInventoryBackpack().getLeftTank();
+        FluidTank rightTank = getInventoryBackpack().getRightTank();
         ItemStack leftStackOut = getSlot(BUCKET_LEFT + 1).getStack();
         ItemStack rightStackOut = getSlot(BUCKET_RIGHT + 1).getStack();
 

@@ -20,16 +20,25 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_SLOT;
 @SuppressWarnings("WeakerAccess")
 abstract class TileAdventure extends TileEntity implements IInventoryTanks
 {
+    // when porting to java 8+ most this methods should move to IInventoryTanks
+
+    protected final ItemStack[] inventory;
+
+    protected TileAdventure(int inventorySize)
+    {
+        this.inventory = new ItemStack[inventorySize];
+    }
+
     @Override
     public int getSizeInventory()
     {
-        return getInventory().length;
+        return inventory.length;
     }
 
     @Override
     public ItemStack getStackInSlot(int slot)
     {
-        return getInventory()[slot];
+        return inventory[slot];
     }
 
     @Nullable
@@ -56,9 +65,9 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-        for (int s : getSlotsOnClosingArray())
+        for (int s : getSlotsOnClosing())
             if (slot == s)
-                return getInventory()[slot];
+                return inventory[slot];
 
         return null;
     }
@@ -145,7 +154,7 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
                 stack = null;
         }
 
-        getInventory()[slot] = stack;
+        inventory[slot] = stack;
     }
 
     @Override
@@ -155,6 +164,7 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
         markDirty();
     }
 
+    @Deprecated
     @Override
     public void dirtyTanks()
     {
@@ -171,7 +181,7 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
             byte slot = item.getByte(TAG_SLOT);
             if (slot >= 0 && slot < getSizeInventory())
             {
-                getInventory()[slot] = ItemStack.loadItemStackFromNBT(item);
+                inventory[slot] = ItemStack.loadItemStackFromNBT(item);
             }
         }
     }
@@ -181,7 +191,7 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
         NBTTagList items = new NBTTagList();
         for (int i = 0; i < getSizeInventory(); i++)
         {
-            ItemStack stack = getInventory()[i];
+            ItemStack stack = inventory[i];
             if (stack != null)
             {
                 NBTTagCompound item = new NBTTagCompound();

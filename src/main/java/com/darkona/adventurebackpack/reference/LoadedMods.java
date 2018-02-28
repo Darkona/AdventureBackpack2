@@ -18,6 +18,7 @@ public final class LoadedMods
     public static final boolean BUILDCRAFT = registerMod("BuildCraft|Core");
     public static final boolean ENDERIO = registerMod("EnderIO");
     public static final boolean GREGTECH = registerMod("gregtech");
+    public static final boolean NEI = registerMod("NotEnoughItems");
     public static final boolean TCONSTRUCT = registerMod("TConstruct");
     public static final boolean THAUMCRAFT = registerMod("Thaumcraft");
 

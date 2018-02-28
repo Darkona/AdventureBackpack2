@@ -21,25 +21,13 @@ public class ContainerJetpack extends ContainerAdventure
     private static final int JETPACK_INV_START = PLAYER_INV_END + 1;
     private static final int JETPACK_FUEL_START = PLAYER_INV_END + 3;
 
-    private InventoryCoalJetpack inventory;
-
-    private int waterAmount;
-    private int steamAmount;
     private ItemStack fuelStack;
 
     public ContainerJetpack(EntityPlayer player, InventoryCoalJetpack jetpack, Source source)
     {
-        this.player = player;
-        inventory = jetpack;
+        super(player, jetpack, source);
         makeSlots(player.inventory);
         inventory.openInventory();
-        this.source = source;
-    }
-
-    @Override
-    public IInventoryTanks getInventoryTanks()
-    {
-        return inventory;
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
@@ -52,29 +40,16 @@ public class ContainerJetpack extends ContainerAdventure
     }
 
     @Override
-    protected boolean detectChanges()
+    protected boolean detectItemChanges()
     {
-        boolean changesDetected = false;
-
+        // determine not only the presence of item in the slot but also check if the item type same as tick before
         ItemStack[] inv = inventory.getInventory();
         if (inv[FUEL_SLOT] != fuelStack)
         {
             fuelStack = inv[FUEL_SLOT];
-            changesDetected = true;
+            return true;
         }
-
-        if (waterAmount != inventory.getWaterTank().getFluidAmount())
-        {
-            waterAmount = inventory.getWaterTank().getFluidAmount();
-            changesDetected = true;
-        }
-        if (steamAmount != inventory.getSteamTank().getFluidAmount())
-        {
-            steamAmount = inventory.getSteamTank().getFluidAmount();
-            changesDetected = true;
-        }
-
-        return changesDetected;
+        return false;
     }
 
     @Override
@@ -82,7 +57,7 @@ public class ContainerJetpack extends ContainerAdventure
     {
         if (SlotFluid.isContainer(stack))
         {
-            FluidTank waterTank = inventory.getWaterTank();
+            FluidTank waterTank = ((InventoryCoalJetpack ) inventory).getWaterTank();
             ItemStack stackOut = getSlot(JETPACK_INV_START + 1).getStack();
 
             boolean isWaterTankEmpty = SlotFluid.isEmpty(waterTank);

@@ -73,6 +73,7 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
+        LoadedMods.init();
         proxy.init();
         ModRecipes.init();
         ModWorldGen.init();
@@ -85,7 +86,6 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        LoadedMods.init();
         GeneralReference.init();
 
         //ConditionalFluidEffect.init();
