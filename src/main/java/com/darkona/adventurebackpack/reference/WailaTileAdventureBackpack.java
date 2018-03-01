@@ -16,6 +16,7 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.handlers.TooltipEventHandler;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Utils;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -43,6 +44,7 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
 
     public static void callbackRegister(IWailaRegistrar registrar)
     {
+        registrar.registerStackProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
         registrar.registerHeadProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
         registrar.registerBodyProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
     }
@@ -50,7 +52,18 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
     {
-        return null;
+        return addTypeToStack(accessor);
+    }
+
+    private ItemStack addTypeToStack(IWailaDataAccessor accessor)
+    {
+        if (accessor.getNBTData().hasKey(TAG_WEARABLE_COMPOUND))
+        {
+            NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(TAG_WEARABLE_COMPOUND);
+            BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
+            return BackpackUtils.createBackpackStack(type);
+        }
+        return BackpackUtils.createBackpackStack(BackpackTypes.STANDARD);
     }
 
     @Override
@@ -75,7 +88,7 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
         BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
         String skin = "";
         if (type != BackpackTypes.STANDARD)
-            skin = " [" + Utils.getColoredSkinName(type) + EnumChatFormatting.WHITE + "]";
+            skin = EnumChatFormatting.GRAY + " \"" + Utils.getColoredSkinName(type) + EnumChatFormatting.GRAY + "\"";
         currenttip.add(EnumChatFormatting.WHITE + "Adventure Backpack" + skin);
     }
 
@@ -88,14 +101,10 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
 
     private static void addTipToBackpack(List<String> currenttip, IWailaDataAccessor accessor)
     {
-        TileEntity te = accessor.getTileEntity();
-        if (te instanceof TileAdventureBackpack)
+        if (accessor.getNBTData().hasKey(TAG_WEARABLE_COMPOUND))
         {
-            if (accessor.getNBTData().hasKey(TAG_WEARABLE_COMPOUND))
-            {
-                NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(TAG_WEARABLE_COMPOUND);
-                addTipToBackpack(currenttip, backpackTag);
-            }
+            NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(TAG_WEARABLE_COMPOUND);
+            addTipToBackpack(currenttip, backpackTag);
         }
     }
 

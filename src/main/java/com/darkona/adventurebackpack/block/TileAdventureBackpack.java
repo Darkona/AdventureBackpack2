@@ -276,7 +276,7 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         return world.spawnEntityInWorld(droppedItem);
     }
 
-    private void transferToItemStack(ItemStack stack)
+    private void transferToItemStack(ItemStack stack) //TODO replace by BackpackUtils.createBackpackStack()
     {
         NBTTagCompound compound = new NBTTagCompound();
         saveToNBT(compound);

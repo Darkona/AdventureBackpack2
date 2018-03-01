@@ -27,6 +27,7 @@ import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.GeneralReference;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 
 /**
  * Created on 24.03.2017
@@ -51,7 +52,7 @@ public class TooltipEventHandler
         if (theItem instanceof ItemAdventureBackpack)
         {
             FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
-            NBTTagCompound backpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
+            NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(event.itemStack);
 
             if (GuiScreen.isShiftKeyDown())
             {
@@ -91,7 +92,7 @@ public class TooltipEventHandler
         {
             FluidTank waterTank = new FluidTank(Constants.Jetpack.WATER_CAPACITY);
             FluidTank steamTank = new FluidTank(Constants.Jetpack.STEAM_CAPACITY);
-            NBTTagCompound jetpackTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
+            NBTTagCompound jetpackTag = BackpackUtils.getWearableCompound(event.itemStack);
 
             if (GuiScreen.isShiftKeyDown())
             {
@@ -122,7 +123,7 @@ public class TooltipEventHandler
         else if (theItem instanceof ItemCopterPack)
         {
             FluidTank fuelTank = new FluidTank(Constants.Copter.FUEL_CAPACITY);
-            NBTTagCompound copterTag = event.itemStack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
+            NBTTagCompound copterTag = BackpackUtils.getWearableCompound(event.itemStack);
 
             if (GuiScreen.isShiftKeyDown())
             {

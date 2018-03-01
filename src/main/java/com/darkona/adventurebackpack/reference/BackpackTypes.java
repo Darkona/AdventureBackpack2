@@ -227,8 +227,8 @@ public enum BackpackTypes
         if (backpack == null) // well... Wearing.getWearingBackpack() may return null... //TODO solve this damn null
             return null;
 
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        if (backpackTag.getByte(TAG_TYPE) == UNKNOWN.meta) //TODO remove? stay?
+        NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(backpack);
+        if (backpackTag.getByte(TAG_TYPE) == UNKNOWN.meta) //TODO remove? are we rly need to normalize it?
         {
             backpackTag.setByte(TAG_TYPE, STANDARD.meta);
         }
@@ -280,23 +280,23 @@ public enum BackpackTypes
 
     // ---
 
-    public static ItemStack setBackpackTypeFromMeta(ItemStack backpack, int meta)
+    public static ItemStack setBackpackTypeFromMeta(ItemStack backpack, int meta) //TODO what if meta value is wrong?
     {
         if (backpack == null || !(backpack.getItem() instanceof ItemAdventureBackpack))
             return null;
 
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
+        NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(backpack);
         backpack.setItemDamage(meta);
         backpackTag.setByte(TAG_TYPE, (byte) meta);
-        BackpackUtils.setBackpackTag(backpack, backpackTag);
+        BackpackUtils.setWearableCompound(backpack, backpackTag);
 
         return backpack;
     }
 
     public static void setBackpackType(ItemStack backpack, BackpackTypes type)
     {
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
+        NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(backpack);
         backpackTag.setByte(TAG_TYPE, getMeta(type));
-        BackpackUtils.setBackpackTag(backpack, backpackTag);
+        BackpackUtils.setWearableCompound(backpack, backpackTag);
     }
 }

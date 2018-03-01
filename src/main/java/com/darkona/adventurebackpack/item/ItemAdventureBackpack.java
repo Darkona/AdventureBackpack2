@@ -7,7 +7,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +16,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,7 +30,6 @@ import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
@@ -50,18 +47,16 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
  *
  * @author Darkona
  */
-public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
+public class ItemAdventureBackpack extends ItemAdventure
 {
     public ItemAdventureBackpack()
     {
         super();
         setUnlocalizedName("adventureBackpack");
-        setFull3D();
-        setMaxStackSize(1);
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"unchecked"})
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List subItems)
     {
@@ -70,12 +65,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             if (type == BackpackTypes.UNKNOWN)
                 continue;
 
-            ItemStack backpackStack = new ItemStack(this, 1, 0);
-            backpackStack.setItemDamage(BackpackTypes.getMeta(type));
-            NBTTagCompound compound = new NBTTagCompound();
-            compound.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
-            BackpackUtils.setBackpackTag(backpackStack, compound);
-            subItems.add(backpackStack);
+            subItems.add(BackpackUtils.createBackpackStack(type));
         }
     }
 
@@ -84,7 +74,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
     {
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(stack);
+        NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(stack);
         if (backpackTag.hasKey(TAG_TYPE))
         {
             BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
@@ -120,16 +110,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
-    {
-        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerBackpack)
-        {
-            player.closeScreen();
-        }
-        return super.onDroppedByPlayer(stack, player);
-    }
-
-    @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
         if (world.isRemote || !ConfigHandler.backpackDeathPlace || EnchUtils.isSoulBounded(stack)
@@ -146,7 +126,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         BackpackProperty.get(player).setWearable(null);
     }
 
-    private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
+    private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack) //TODO extract behavior to CoordsUtils
     {
         int X = (int) player.posX;
         if (player.posX < 0) X--;
@@ -276,13 +256,12 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     private int getItemCount(ItemStack backpack)
     {
-        NBTTagCompound backpackTag = backpack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
-        NBTTagList itemList = backpackTag.getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
+        NBTTagList itemList = BackpackUtils.getInventoryTag(backpack);
         int itemCount = itemList.tagCount();
         for (int i = itemCount - 1; i >= 0; i--)
         {
             int slotAtI = itemList.getCompoundTagAt(i).getInteger(Constants.TAG_SLOT);
-            if (slotAtI <= Constants.END_OF_INVENTORY)
+            if (slotAtI < Constants.INVENTORY_MAIN_SIZE)
                 break;
             itemCount--;
         }
@@ -307,7 +286,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         String modelTexture;
-        if (BackpackTypes.getType(stack) == BackpackTypes.STANDARD)
+        if (BackpackTypes.getType(stack) == BackpackTypes.STANDARD) //TODO see RendererAdventureBackpackBlock and RendererItemAdventureBackpack for same code
         {
             modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday()).toString();
         }
@@ -340,24 +319,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
             modelTexture = Resources.backpackTextureFromString(BackpackTypes.getSkinName(wearable));
         }
         return modelTexture;
-    }
-
-    @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair)
-    {
-        return false;
-    }
-
-    @Override
-    public int getItemEnchantability()
-    {
-        return 0;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
-    {
-        return EnchUtils.isSoulBook(book);
     }
 
     @Override

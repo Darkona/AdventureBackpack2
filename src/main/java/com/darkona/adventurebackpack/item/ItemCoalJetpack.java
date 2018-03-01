@@ -10,8 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
@@ -23,14 +21,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.ContainerJetpack;
 import com.darkona.adventurebackpack.inventory.InventoryCoalJetpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
-import com.darkona.adventurebackpack.util.EnchUtils;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
 
 /**
@@ -38,31 +35,19 @@ import com.darkona.adventurebackpack.util.Resources;
  *
  * @author Darkona
  */
-public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
+public class ItemCoalJetpack extends ItemAdventure
 {
     public ItemCoalJetpack()
     {
         super();
         setUnlocalizedName("coalJetpack");
-        setFull3D();
-        setMaxStackSize(1);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void getSubItems(Item item, CreativeTabs tab, List list)
     {
-        ItemStack iStack = new ItemStack(item, 1, 0);
-        NBTTagCompound compound = new NBTTagCompound();
-        iStack.setTagCompound(compound);
-
-        NBTTagCompound jetpackTag = new NBTTagCompound();
-        //jetpackTag.setTag(Constants.Jetpack.TAG_WATER_TANK, new FluidTank(Constants.Jetpack.WATER_CAPACITY).writeToNBT(new NBTTagCompound()));
-        //jetpackTag.setTag(Constants.Jetpack.TAG_STEAM_TANK, new FluidTank(Constants.Jetpack.STEAM_CAPACITY).writeToNBT(new NBTTagCompound()));
-        jetpackTag.setTag(Constants.TAG_INVENTORY, new NBTTagList());
-        compound.setTag(Constants.TAG_WEARABLE_COMPOUND, jetpackTag);
-
-        list.add(iStack);
+        list.add(BackpackUtils.createJetpackStack());
     }
 
     @Override
@@ -83,7 +68,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
+    public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack) //TODO extract behavior to separate class
     {
         InventoryCoalJetpack inv = new InventoryCoalJetpack(stack);
         inv.openInventory();
@@ -273,16 +258,6 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
     }
 
     @Override
-    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
-    {
-        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerJetpack)
-        {
-            player.closeScreen();
-        }
-        return super.onDroppedByPlayer(stack, player);
-    }
-
-    @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
         onUnequipped(world, player, stack);
@@ -296,7 +271,7 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
 
     private int getTemperature(ItemStack jetpack)
     {
-        return jetpack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND).getInteger("temperature");
+        return BackpackUtils.getWearableCompound(jetpack).getInteger("temperature");
     }
 
     @Override
@@ -350,15 +325,5 @@ public class ItemCoalJetpack extends ItemAB implements IBackWearableItem
         return Resources.modelTextures("coalJetpack");
     }
 
-    @Override
-    public int getItemEnchantability()
-    {
-        return 0;
-    }
 
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
-    {
-        return EnchUtils.isSoulBook(book);
-    }
 }

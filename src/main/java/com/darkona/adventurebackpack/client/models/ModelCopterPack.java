@@ -12,10 +12,10 @@ import codechicken.lib.vec.Vector3;
 
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Utils;
 
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
-import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 31/12/2014
@@ -182,12 +182,6 @@ public class ModelCopterPack extends ModelWearable
         return this;
     }
 
-    public ModelCopterPack(ItemStack wearable)
-    {
-        this.copterPack = wearable;
-        init();
-    }
-
     public ModelCopterPack()
     {
         init();
@@ -198,25 +192,20 @@ public class ModelCopterPack extends ModelWearable
         InventoryCopterPack copterInv = new InventoryCopterPack(this.copterPack);
         copterInv.openInventory();
         Axis.isHidden = true;
-        if (copterPack != null && copterPack.hasTagCompound()
-                && copterPack.stackTagCompound.hasKey(TAG_WEARABLE_COMPOUND)
-                && copterPack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).hasKey(TAG_STATUS))
+        if (BackpackUtils.getWearableCompound(copterPack).getByte(TAG_STATUS) != ItemCopterPack.OFF_MODE)
         {
-            if (copterPack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).getByte(TAG_STATUS) != ItemCopterPack.OFF_MODE)
+            Axis.isHidden = false;
+            int degrees;
+            if (entity.onGround || (entity.isSneaking()))
             {
-                Axis.isHidden = false;
-                int degrees;
-                if (entity.onGround || (entity.isSneaking()))
-                {
-                    degrees = 16;
-                }
-                else
-                {
-                    degrees = entity.motionY > 0 ? 36 : 28;
-                }
-                float deg = Utils.radiansToDegrees(this.Axis.rotateAngleY);
-                this.Axis.rotateAngleY = (deg <= 360 + degrees) ? Utils.degreesToRadians(deg + degrees) : 0;
+                degrees = 16;
             }
+            else
+            {
+                degrees = entity.motionY > 0 ? 36 : 28;
+            }
+            float deg = Utils.radiansToDegrees(this.Axis.rotateAngleY);
+            this.Axis.rotateAngleY = (deg <= 360 + degrees) ? Utils.degreesToRadians(deg + degrees) : 0;
         }
         this.Base.render(scale);
         this.Axis.render(scale);

@@ -91,7 +91,7 @@ public class InventoryCoalJetpack extends InventoryAdventure
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
-        NBTTagCompound jetpackTag = compound.getCompoundTag(TAG_WEARABLE_COMPOUND);
+        NBTTagCompound jetpackTag = new NBTTagCompound();
         jetpackTag.setTag(TAG_INVENTORY, getInventoryTagList());
         jetpackTag.setTag(TAG_WATER_TANK, waterTank.writeToNBT(new NBTTagCompound()));
         jetpackTag.setTag(TAG_STEAM_TANK, steamTank.writeToNBT(new NBTTagCompound()));
@@ -103,6 +103,7 @@ public class InventoryCoalJetpack extends InventoryAdventure
         jetpackTag.setInteger("burnTicks", burnTicks);
         jetpackTag.setInteger("coolTicks", coolTicks);
         jetpackTag.setInteger("currentBurn", currentItemBurnTime);
+
         compound.setTag(TAG_WEARABLE_COMPOUND, jetpackTag);
     }
 

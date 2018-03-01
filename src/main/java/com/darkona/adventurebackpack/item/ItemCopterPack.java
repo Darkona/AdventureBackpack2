@@ -9,10 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
@@ -23,25 +21,23 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.ContainerCopter;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.GeneralReference;
-import com.darkona.adventurebackpack.util.EnchUtils;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
-import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 31/12/2014
  *
  * @author Darkona
  */
-public class ItemCopterPack extends ItemAB implements IBackWearableItem
+public class ItemCopterPack extends ItemAdventure
 {
     public static byte OFF_MODE = 0;
     public static byte NORMAL_MODE = 1;
@@ -53,23 +49,13 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     {
         super();
         setUnlocalizedName("copterPack");
-        setFull3D();
-        setMaxStackSize(1);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void getSubItems(Item item, CreativeTabs tab, List list)
     {
-        ItemStack iStack = new ItemStack(item, 1, 0);
-        NBTTagCompound compound = new NBTTagCompound();
-        iStack.setTagCompound(compound);
-
-        NBTTagCompound copterTag = new NBTTagCompound();
-        //copterTag.setTag(Constants.Copter.TAG_FUEL_TANK, new FluidTank(Constants.Copter.FUEL_CAPACITY).writeToNBT(new NBTTagCompound()));
-        compound.setTag(TAG_WEARABLE_COMPOUND, copterTag);
-
-        list.add(iStack);
+        list.add(BackpackUtils.createCopterStack());
     }
 
     @Override
@@ -91,11 +77,11 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, OFF_MODE);
+        BackpackUtils.getWearableCompound(stack).setByte(TAG_STATUS, OFF_MODE);
     }
 
     @Override
-    public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
+    public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack) //TODO extract behavior to separate class
     {
         InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
         inv.openInventory();
@@ -287,17 +273,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, OFF_MODE);
-    }
-
-    @Override
-    public boolean onDroppedByPlayer(ItemStack stack, EntityPlayer player)
-    {
-        if (stack != null && player instanceof EntityPlayerMP && player.openContainer instanceof ContainerCopter)
-        {
-            player.closeScreen();
-        }
-        return super.onDroppedByPlayer(stack, player);
+        BackpackUtils.getWearableCompound(stack).setByte(TAG_STATUS, OFF_MODE);
     }
 
     @Override
@@ -337,15 +313,4 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         return Resources.modelTextures("copterPack");
     }
 
-    @Override
-    public int getItemEnchantability()
-    {
-        return 0;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book)
-    {
-        return EnchUtils.isSoulBook(book);
-    }
 }

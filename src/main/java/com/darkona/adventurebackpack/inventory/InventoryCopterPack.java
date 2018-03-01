@@ -75,6 +75,7 @@ public class InventoryCopterPack extends InventoryAdventure
         copterTag.setTag(TAG_FUEL_TANK, fuelTank.writeToNBT(new NBTTagCompound()));
         copterTag.setByte(TAG_STATUS, status);
         copterTag.setInteger("tickCounter", this.tickCounter);
+
         compound.setTag(TAG_WEARABLE_COMPOUND, copterTag);
     }
 

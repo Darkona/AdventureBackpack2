@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.util;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
@@ -53,19 +55,15 @@ public class CoordsUtils
         return null;
     }
 
-    private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int cX, int cY, int cZ, boolean except)
+    @Nullable
+    private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int cX, int cY, int cZ)
     {
-        if (world.isAirBlock(cX, cY, cZ) || isReplaceable(world, cX, cY, cZ))
-        {
-            return new ChunkCoordinates(cX, cY, cZ);
-        }
-        return null;
+        return isAirOrReplaceable(world, cX, cY, cZ) ? new ChunkCoordinates(cX, cY, cZ) : null;
     }
 
-    public static boolean isReplaceable(IBlockAccess world, int cX, int cY, int cZ)
+    private static boolean isAirOrReplaceable(IBlockAccess world, int cX, int cY, int cZ)
     {
-        Block block = world.getBlock(cX, cY, cZ);
-        return block.isReplaceable(world, cX, cY, cZ);
+        return world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY, cZ).isReplaceable(world, cX, cY, cZ);
     }
 
     private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int cX, int cY, int cZ, boolean except)
@@ -118,7 +116,7 @@ public class CoordsUtils
             {
                 for (; i <= cX + steps; i++)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, origX, origZ, cX, cY, cZ, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, cX, cY, cZ);
                     if (coords != null)
                     {
                         return coords;
@@ -131,7 +129,7 @@ public class CoordsUtils
             {
                 for (; j >= cZ - steps; j--)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, origX, origZ, cX, cY, cZ, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, cX, cY, cZ);
                     if (coords != null)
                     {
                         return coords;
@@ -149,7 +147,7 @@ public class CoordsUtils
             {
                 for (; i >= cX - steps; i--)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, origX, origZ, cX, cY, cZ, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, cX, cY, cZ);
                     if (coords != null)
                     {
                         return coords;
@@ -162,7 +160,7 @@ public class CoordsUtils
             {
                 for (; j <= cZ + steps; j++)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, origX, origZ, cX, cY, cZ, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, cX, cY, cZ, except) : checkCoordsForBackpack(world, cX, cY, cZ);
                     if (coords != null)
                     {
                         return coords;
