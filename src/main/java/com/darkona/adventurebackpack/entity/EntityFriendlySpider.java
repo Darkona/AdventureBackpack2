@@ -34,12 +34,10 @@ import com.darkona.adventurebackpack.util.Wearing;
  */
 public class EntityFriendlySpider extends EntityCreature
 {
-
     private float prevRearingAmount;
     private int jumpTicks;
     private EntityPlayer owner;
     private boolean tamed = false;
-    @SuppressWarnings("FieldCanBeLocal")
     private final EntityAIControlledByPlayer aiControlledByPlayer;
 
     @Override
@@ -81,27 +79,18 @@ public class EntityFriendlySpider extends EntityCreature
         return 300;
     }
 
-    /**
-     * Returns the sound this mob makes while it's alive.
-     */
     @Override
     protected String getLivingSound()
     {
         return "mob.spider.say";
     }
 
-    /**
-     * Returns the sound this mob makes when it is hurt.
-     */
     @Override
     protected String getHurtSound()
     {
         return "mob.spider.say";
     }
 
-    /**
-     * Returns the sound this mob makes on death.
-     */
     @Override
     protected String getDeathSound()
     {
@@ -157,19 +146,12 @@ public class EntityFriendlySpider extends EntityCreature
         }
     }
 
-    /**
-     * Takes a coordinate in and returns a weight to determine how likely this creature will try to path to the block.
-     * Args: x, y, z
-     */
     @Override
     public float getBlockPathWeight(int p_70783_1_, int p_70783_2_, int p_70783_3_)
     {
         return 0.5F - this.worldObj.getLightBrightness(p_70783_1_, p_70783_2_, p_70783_3_);
     }
 
-    /**
-     * Checks if the entity's current position is a valid location to spawn this entity.
-     */
     @Override
     public boolean getCanSpawnHere()
     {
@@ -182,30 +164,18 @@ public class EntityFriendlySpider extends EntityCreature
         return true;
     }
 
-    /**
-     * Returns the item that this EntityLiving is holding, if any.
-     */
     @Override
     public ItemStack getHeldItem()
     {
         return null;
     }
 
-    /**
-     * 0: Tool in Hand; 1-4: Armor
-     */
     @Override
     public ItemStack getEquipmentInSlot(int slot)
     {
         return null;
     }
 
-    /**
-     * Sets the held item, or an armor slot. Slot 0 is held item. Slot 1-4 is armor. Params: Item, slot
-     *
-     * @param slot
-     * @param stack
-     */
     @Override
     public void setCurrentItemOrArmor(int slot, ItemStack stack)
     {
@@ -253,6 +223,7 @@ public class EntityFriendlySpider extends EntityCreature
     {
         if (this.riddenByEntity != null)
             return null;
+
         float f = this.getBrightness(1.0F);
 
         if (f < 0.5F)
@@ -508,7 +479,7 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
 
-    public void spiderJump()
+    public void spiderJump() //TODO
     {
         this.getJumpHelper().setJumping();
         //this.getJumpHelper().doJump();
@@ -542,9 +513,6 @@ public class EntityFriendlySpider extends EntityCreature
         }
     }
 
-    /**
-     * Basic mob attack. Default to touch of death in EntityCreature. Overridden by each mob to define their attack.
-     */
     @Override
     protected void attackEntity(Entity p_70785_1_, float p_70785_2_)
     {
@@ -581,10 +549,6 @@ public class EntityFriendlySpider extends EntityCreature
         return Items.string;
     }
 
-    /**
-     * Drop 0-2 items of this living's type. @param par1 - Whether this entity has recently been hit by a player. @param
-     * par2 - Level of Looting used to kill this mob.
-     */
     @Override
     protected void dropFewItems(boolean p_70628_1_, int p_70628_2_)
     {
@@ -596,26 +560,18 @@ public class EntityFriendlySpider extends EntityCreature
         }
     }
 
-    /**
-     * returns true if this entity is by a ladder, false otherwise
-     */
     @Override
     public boolean isOnLadder()
     {
         return this.isBesideClimbableBlock();
     }
 
-    /**
-     * Sets the Entity inside a web block.
-     */
     @Override
     public void setInWeb()
     {
+
     }
 
-    /**
-     * Get this Entity's EnumCreatureAttribute
-     */
     @Override
     public EnumCreatureAttribute getCreatureAttribute()
     {

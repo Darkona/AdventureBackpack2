@@ -49,24 +49,14 @@ public class ContainerCopter extends ContainerAdventure
             if (SlotFluid.isFilled(stack))
             {
                 if ((stackOut == null || areSameType) && SlotFluidFuel.isValidItem(stack))
-                {
                     if (isFuelTankEmpty || suitableToTank)
-                    {
-                        if (!mergeBucket(stack))
-                            return false;
-                    }
-                }
+                        return mergeBucket(stack);
             }
             else if (SlotFluid.isEmpty(stack))
             {
                 if ((stackOut == null || areSameType) && SlotFluidFuel.isValidItem(stack))
-                {
                     if (!isFuelTankEmpty)
-                    {
-                        if (!mergeBucket(stack))
-                            return false;
-                    }
-                }
+                        return mergeBucket(stack);
             }
         }
         return true;

@@ -21,11 +21,6 @@ import com.darkona.adventurebackpack.util.LogHelper;
  */
 public class ModRecipes
 {
-    private static ItemStack bc(int meta)
-    {
-        return BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), meta);
-    }
-
     public static void init()
     {
         if (ConfigHandler.recipeSaddle)
@@ -258,7 +253,7 @@ public class ModRecipes
                 {
                     if (field.getName().equals(BackpackTypes.getSkinName(type)))
                     {
-                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(type)), (Object[]) field.get(br)));
+                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackUtils.createBackpackStack(type), (Object[]) field.get(br)));
                         counter++;
                     }
                 }

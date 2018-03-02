@@ -20,7 +20,7 @@ public class ToolAB extends ItemTool
     ToolAB(ToolMaterial material, Set breakableBlocks)
     {
         super(1f, material, breakableBlocks);
-        //setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+        //setCreativeTab(CreativeTabAB.TAB_AB);
     }
 
     @Override

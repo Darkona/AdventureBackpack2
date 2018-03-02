@@ -149,11 +149,11 @@ public class ServerActions
 
         if (BackpackTypes.getType(backpack) == BackpackTypes.PIG)
         {
-            BackpackTypes.setBackpackType(backpack, BackpackTypes.PIGMAN);
+            BackpackUtils.setBackpackType(backpack, BackpackTypes.PIGMAN);
         }
         if (BackpackTypes.getType(backpack) == BackpackTypes.DIAMOND)
         {
-            BackpackTypes.setBackpackType(backpack, BackpackTypes.ELECTRIC);
+            BackpackUtils.setBackpackType(backpack, BackpackTypes.ELECTRIC);
         }
     }
 

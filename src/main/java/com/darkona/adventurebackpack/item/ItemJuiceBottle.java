@@ -22,7 +22,7 @@ public class ItemJuiceBottle extends ItemAB
     public ItemJuiceBottle()
     {
         super();
-        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+        setCreativeTab(CreativeTabAB.TAB_AB);
         setFull3D();
         setUnlocalizedName("melonJuiceBottle");
         setMaxStackSize(1);
@@ -40,12 +40,6 @@ public class ItemJuiceBottle extends ItemAB
     {
         player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
         return stack;
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int meta, float hitX, float hitY, float hitZ)
-    {
-        return false;
     }
 
     @Override

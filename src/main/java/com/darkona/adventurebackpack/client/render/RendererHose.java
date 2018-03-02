@@ -19,9 +19,7 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 public class RendererHose implements IItemRenderer
 {
     private static RenderItem renderHose = new RenderItem();
-    @SuppressWarnings("FieldCanBeLocal")
     private FontRenderer fontRenderer;
-    //private Tessellator tessellator = Tessellator.instance;
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type)

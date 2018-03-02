@@ -10,11 +10,11 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class TileCampfire extends TileEntity
 {
+    private int burnTicks;
+    private ItemStack[] foodCooking = new ItemStack[4];
+
     public TileCampfire()
     {
 
     }
-
-    private int burnTicks;
-    private ItemStack[] foodCooking = new ItemStack[4];
 }

@@ -20,15 +20,6 @@ public class MelonJuiceEffect extends FluidEffect
         super(ModFluids.melonJuice, 30);
     }
 
-    /**
-     * This method determines what will happen to the player when drinking the
-     * corresponding fluid. For example set potion effects, set player on fire,
-     * heal, fill hunger, etc. You can use the world parameter to make
-     * conditions based on where the player is.
-     *
-     * @param world  The World.
-     * @param entity The Player.
-     */
     @Override
     public void affectDrinker(World world, Entity entity)
     {

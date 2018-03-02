@@ -26,7 +26,7 @@ public class ArmorAB extends ItemArmor
     ArmorAB(int renderIndex, int type)
     {
         super(ModMaterials.ruggedLeather, renderIndex, type);
-        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+        setCreativeTab(CreativeTabAB.TAB_AB);
     }
 
     private String getUnwrappedUnlocalizedName(String unlocalizedName)

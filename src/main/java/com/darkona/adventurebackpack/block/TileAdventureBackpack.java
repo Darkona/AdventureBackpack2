@@ -20,7 +20,6 @@ import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.IInventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotBackpack;
@@ -241,9 +240,11 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     // Logic: from tile to item
     public boolean equip(World world, EntityPlayer player, int x, int y, int z)
     {
-        ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
-        transferToItemStack(stacky);
         removeSleepingBag(world);
+
+        ItemStack stacky = BackpackUtils.createBackpackStack(type);
+        transferCompoundToStack(stacky);
+
         if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.Reasons.SUCCESSFUL)
         {
             Wearing.WearableType wtype = Wearing.getWearingWearableType(player);
@@ -259,9 +260,12 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     public boolean drop(World world, EntityPlayer player, int x, int y, int z)
     {
         removeSleepingBag(world);
-        if (player.capabilities.isCreativeMode) return true;
-        ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
-        transferToItemStack(stacky);
+
+        if (player.capabilities.isCreativeMode)
+            return true;
+
+        ItemStack stacky = BackpackUtils.createBackpackStack(type);
+        transferCompoundToStack(stacky);
 
         float spawnX = x + world.rand.nextFloat();
         float spawnY = y + world.rand.nextFloat();
@@ -269,19 +273,18 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
         EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stacky);
 
         float mult = 0.05F;
-        droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
-        droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
-        droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
+        droppedItem.motionX = (-0.3F + world.rand.nextFloat()) * mult;
+        droppedItem.motionY = (3 + world.rand.nextFloat()) * mult;
+        droppedItem.motionZ = (-0.3F + world.rand.nextFloat()) * mult;
 
         return world.spawnEntityInWorld(droppedItem);
     }
 
-    private void transferToItemStack(ItemStack stack) //TODO replace by BackpackUtils.createBackpackStack()
+    private void transferCompoundToStack(ItemStack stack)
     {
         NBTTagCompound compound = new NBTTagCompound();
         saveToNBT(compound);
         stack.setTagCompound(compound);
-        stack.setItemDamage(BackpackTypes.getMeta(type)); // save the meta, cuz why not
     }
 
     // Sleeping Bag

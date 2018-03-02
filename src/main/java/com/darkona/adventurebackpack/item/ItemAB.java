@@ -17,7 +17,7 @@ public class ItemAB extends Item
     ItemAB()
     {
         super();
-        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+        setCreativeTab(CreativeTabAB.TAB_AB);
     }
 
     @Override

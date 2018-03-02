@@ -57,10 +57,6 @@ public class PlayerEventHandler
         if (event.entity instanceof EntityPlayer && BackpackProperty.get((EntityPlayer) event.entity) == null)
         {
             BackpackProperty.register((EntityPlayer) event.entity);
-            /*if (!event.entity.worldObj.isRemote)
-            {
-                AdventureBackpack.proxy.joinPlayer((EntityPlayer)event.entity);
-            }*/
         }
     }
 

@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -303,16 +302,6 @@ public class ItemCoalJetpack extends ItemAdventure
 
     @Override
     @SideOnly(Side.CLIENT)
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
-    {
-        String modelTexture;
-        modelTexture = Resources.modelTextures("coalJetpack").toString();
-
-        return modelTexture;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
     public ModelBiped getWearableModel(ItemStack wearable)
     {
         return ClientProxy.modelCoalJetpack.setWearable(wearable);
@@ -324,6 +313,5 @@ public class ItemCoalJetpack extends ItemAdventure
     {
         return Resources.modelTextures("coalJetpack");
     }
-
 
 }

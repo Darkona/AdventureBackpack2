@@ -33,16 +33,6 @@ public class CopterPackSound extends MovingSound
         thePlayer = player;
     }
 
-    public EntityPlayer getThePlayer()
-    {
-        return thePlayer;
-    }
-
-    public void setThePlayer(EntityPlayer player)
-    {
-        thePlayer = player;
-    }
-
     public void setRepeat(boolean newRepeat)
     {
         LogHelper.info("Setting sound repeat");

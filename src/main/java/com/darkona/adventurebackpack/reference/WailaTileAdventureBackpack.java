@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.reference;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -42,6 +43,7 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
         FMLInterModComms.sendMessage("Waila", "register", "com.darkona.adventurebackpack.reference.WailaTileAdventureBackpack.callbackRegister");
     }
 
+    @SuppressWarnings("unused")
     public static void callbackRegister(IWailaRegistrar registrar)
     {
         registrar.registerStackProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
@@ -124,12 +126,14 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
                 + ": " + TooltipEventHandler.tankTooltip(tank));
     }
 
+    @Nullable
     @Override
     public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
     {
         return null;
     }
 
+    @Nullable
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z)
     {

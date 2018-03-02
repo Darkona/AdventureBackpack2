@@ -6,18 +6,16 @@ import java.util.TimerTask;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants.NBT;
 
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 
 import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
+import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 08/01/2015
@@ -26,7 +24,7 @@ import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
  */
 public class BackpackUtils
 {
-    private static Timer timer = new Timer();
+    private static Timer timer = new Timer(); //TODO remove timer, find the dupe, fix the dupe
 
     public enum Reasons
     {
@@ -58,60 +56,6 @@ public class BackpackUtils
         TimerTask unequipTask = new DelayUnequipTask(player);
         timer.schedule(unequipTask, 200);
     }
-
-    public static NBTTagCompound getWearableCompound(ItemStack stack)
-    {
-        if (!stack.hasTagCompound() || !stack.stackTagCompound.hasKey(Constants.TAG_WEARABLE_COMPOUND))
-            setWearableCompound(stack, new NBTTagCompound());
-
-        return stack.stackTagCompound.getCompoundTag(Constants.TAG_WEARABLE_COMPOUND);
-    }
-
-    public static void setWearableCompound(ItemStack stack, NBTTagCompound compound)
-    {
-        if (!stack.hasTagCompound())
-            stack.stackTagCompound = new NBTTagCompound();
-
-        stack.stackTagCompound.setTag(Constants.TAG_WEARABLE_COMPOUND, compound);
-    }
-
-    public static NBTTagList getInventoryTag(NBTTagCompound compound)
-    {
-        if (!compound.hasKey(Constants.TAG_INVENTORY))
-            return compound.getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
-
-        return new NBTTagList();
-    }
-
-    public static NBTTagList getInventoryTag(ItemStack stack)
-    {
-        return getInventoryTag(getWearableCompound(stack));
-    }
-
-    public static ItemStack createBackpackStack(BackpackTypes type)
-    {
-        ItemStack backpackStack = new ItemStack(ModItems.adventureBackpack, 1, 0);
-        backpackStack.setItemDamage(BackpackTypes.getMeta(type));
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setByte(TAG_TYPE, BackpackTypes.getMeta(type));
-        setWearableCompound(backpackStack, compound);
-        return backpackStack;
-    }
-
-    public static ItemStack createCopterStack()
-    {
-        ItemStack copterStack = new ItemStack(ModItems.copterPack, 1, 0);
-        setWearableCompound(copterStack, new NBTTagCompound());
-        return copterStack;
-    }
-
-    public static ItemStack createJetpackStack()
-    {
-        ItemStack jetpackStack = new ItemStack(ModItems.coalJetpack, 1, 0);
-        setWearableCompound(jetpackStack, new NBTTagCompound());
-        return jetpackStack;
-    }
-
 
     private static class DelayUnequipTask extends TimerTask
     {
@@ -146,4 +90,48 @@ public class BackpackUtils
             }
         }
     }
+
+    public static NBTTagCompound getWearableCompound(ItemStack stack)
+    {
+        // well, it also creates wearable compound if stack has no own, so maybe worth to rename the method
+        if (!stack.hasTagCompound() || !stack.stackTagCompound.hasKey(TAG_WEARABLE_COMPOUND))
+            createWearableCompound(stack);
+
+        return stack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);
+    }
+
+    private static void createWearableCompound(ItemStack stack)
+    {
+        if (!stack.hasTagCompound())
+            stack.stackTagCompound = new NBTTagCompound();
+
+        stack.stackTagCompound.setTag(TAG_WEARABLE_COMPOUND, new NBTTagCompound());
+    }
+
+    public static ItemStack createBackpackStack(BackpackTypes type)
+    {
+        ItemStack backpackStack = new ItemStack(ModItems.adventureBackpack, 1, BackpackTypes.getMeta(type));
+        setBackpackType(backpackStack, type);
+        return backpackStack;
+    }
+
+    public static void setBackpackType(ItemStack stack, BackpackTypes type)
+    {
+        getWearableCompound(stack).setByte(TAG_TYPE, BackpackTypes.getMeta(type));
+    }
+
+    public static ItemStack createCopterStack()
+    {
+        ItemStack copterStack = new ItemStack(ModItems.copterPack, 1, 0);
+        createWearableCompound(copterStack);
+        return copterStack;
+    }
+
+    public static ItemStack createJetpackStack()
+    {
+        ItemStack jetpackStack = new ItemStack(ModItems.coalJetpack, 1, 0);
+        createWearableCompound(jetpackStack);
+        return jetpackStack;
+    }
+
 }

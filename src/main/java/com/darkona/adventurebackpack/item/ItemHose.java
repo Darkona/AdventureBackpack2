@@ -54,13 +54,11 @@ public class ItemHose extends ItemAB
         super();
         setMaxStackSize(1);
         setFull3D();
-        //.setCreativeTab(CreativeTabs.tabTools)
         setNoRepair();
         setUnlocalizedName("backpackHose");
-        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+        setCreativeTab(CreativeTabAB.TAB_AB);
     }
 
-    // ================================================ GETTERS  =====================================================//
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int pass)
@@ -140,8 +138,6 @@ public class ItemHose extends ItemAB
         return 0;
     }
 
-    // ================================================ SETTERS  =====================================================//
-    // ================================================= ICONS  ======================================================//
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister)
@@ -151,7 +147,6 @@ public class ItemHose extends ItemAB
         suckIcon = iconRegister.registerIcon(Resources.getIconString("hoseSuck"));
         itemIcon = iconRegister.registerIcon(Resources.getIconString("hoseLeft"));
     }
-    // ================================================ ACTIONS  =====================================================//
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int inv_slot, boolean isCurrent)
@@ -202,7 +197,7 @@ public class ItemHose extends ItemAB
         if (te != null && te instanceof IFluidHandler)
         {
             IFluidHandler exTank = (IFluidHandler) te;
-            int accepted = 0;
+            int accepted;
             switch (getHoseMode(stack))
             {
                 case HOSE_SUCK_MODE:
@@ -235,19 +230,6 @@ public class ItemHose extends ItemAB
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
-    {
-        return false;
-    }
-
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     *
-     * @param stack
-     * @param world
-     * @param player
-     */
-    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (!Wearing.isWearingBackpack(player)) return stack;
@@ -263,11 +245,6 @@ public class ItemHose extends ItemAB
 
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
-                        /* if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
-                         {
-                         return stack;
-                         }*/
-
                         if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
                         {
                             return stack;
@@ -399,18 +376,6 @@ public class ItemHose extends ItemAB
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
-    {
-        return false;
-    }
-
-    @Override
     public ItemStack onEaten(ItemStack hose, World world, EntityPlayer player)
     {
         if (!Wearing.isWearingBackpack(player)) return hose;
@@ -438,13 +403,6 @@ public class ItemHose extends ItemAB
         return hose;
     }
 
-    @Override
-    public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
-    {
-        return true;
-    }
-
-    // ================================================ BOOLEANS =====================================================//
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
     {

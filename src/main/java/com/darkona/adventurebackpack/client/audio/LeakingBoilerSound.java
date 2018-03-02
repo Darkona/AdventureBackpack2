@@ -28,16 +28,6 @@ public class LeakingBoilerSound extends MovingSound
         thePlayer = player;
     }
 
-    public EntityPlayer getThePlayer()
-    {
-        return thePlayer;
-    }
-
-    public void setThePlayer(EntityPlayer player)
-    {
-        thePlayer = player;
-    }
-
     public void setDonePlaying()
     {
         repeat = false;

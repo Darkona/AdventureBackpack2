@@ -15,7 +15,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 
 import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
@@ -278,25 +277,4 @@ public enum BackpackTypes
         public static final ImmutableSet<Props> POTION_EFFECT = Sets.immutableEnumSet(SPECIAL, REMOVAL);
     }
 
-    // ---
-
-    public static ItemStack setBackpackTypeFromMeta(ItemStack backpack, int meta) //TODO what if meta value is wrong?
-    {
-        if (backpack == null || !(backpack.getItem() instanceof ItemAdventureBackpack))
-            return null;
-
-        NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(backpack);
-        backpack.setItemDamage(meta);
-        backpackTag.setByte(TAG_TYPE, (byte) meta);
-        BackpackUtils.setWearableCompound(backpack, backpackTag);
-
-        return backpack;
-    }
-
-    public static void setBackpackType(ItemStack backpack, BackpackTypes type)
-    {
-        NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(backpack);
-        backpackTag.setByte(TAG_TYPE, getMeta(type));
-        BackpackUtils.setWearableCompound(backpack, backpackTag);
-    }
 }

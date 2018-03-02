@@ -4,8 +4,6 @@ import java.util.List;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,19 +14,18 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
-import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.GUIPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
@@ -83,10 +80,10 @@ public class ItemAdventureBackpack extends ItemAdventure
     }
 
     @Override
-    public void onCreated(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer)
+    public void onCreated(ItemStack stack, World world, EntityPlayer player)
     {
-        super.onCreated(stack, par2World, par3EntityPlayer);
-        BackpackTypes.setBackpackTypeFromMeta(stack, stack.getItemDamage());
+        super.onCreated(stack, world, player);
+        BackpackUtils.setBackpackType(stack, BackpackTypes.getType(stack.getItemDamage()));
     }
 
     @Override
@@ -256,7 +253,7 @@ public class ItemAdventureBackpack extends ItemAdventure
 
     private int getItemCount(ItemStack backpack)
     {
-        NBTTagList itemList = BackpackUtils.getInventoryTag(backpack);
+        NBTTagList itemList = BackpackUtils.getWearableCompound(backpack).getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
         int itemCount = itemList.tagCount();
         for (int i = itemCount - 1; i >= 0; i--)
         {
@@ -276,29 +273,6 @@ public class ItemAdventureBackpack extends ItemAdventure
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
-    {
-        return new ModelBackpackArmor();
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
-    {
-        String modelTexture;
-        if (BackpackTypes.getType(stack) == BackpackTypes.STANDARD) //TODO see RendererAdventureBackpackBlock and RendererItemAdventureBackpack for same code
-        {
-            modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday()).toString();
-        }
-        else
-        {
-            modelTexture = Resources.backpackTexturesStringFromSkin(stack);
-        }
-        return modelTexture;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
     public ModelBiped getWearableModel(ItemStack wearable)
     {
         return ClientProxy.modelAdventureBackpack.setWearable(wearable);
@@ -308,22 +282,6 @@ public class ItemAdventureBackpack extends ItemAdventure
     @SideOnly(Side.CLIENT)
     public ResourceLocation getWearableTexture(ItemStack wearable)
     {
-        ResourceLocation modelTexture;
-
-        if (BackpackTypes.getType(wearable) == BackpackTypes.STANDARD)
-        {
-            modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
-        }
-        else
-        {
-            modelTexture = Resources.backpackTextureFromString(BackpackTypes.getSkinName(wearable));
-        }
-        return modelTexture;
-    }
-
-    @Override
-    public boolean isDamageable()
-    {
-        return false;
+        return Resources.getBackpackTexture(BackpackTypes.getType(wearable));
     }
 }

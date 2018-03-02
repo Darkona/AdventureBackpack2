@@ -17,18 +17,8 @@ public class NyanMovingSound extends MovingSound
 {
     public static NyanMovingSound instance = new NyanMovingSound();
 
-    public EntityPlayer getPlayer()
-    {
-        return player;
-    }
-
-    public NyanMovingSound setPlayer(EntityPlayer p)
-    {
-        this.player = p;
-        return this;
-    }
-
     private EntityPlayer player;
+
 
     public NyanMovingSound(EntityPlayer player)
     {

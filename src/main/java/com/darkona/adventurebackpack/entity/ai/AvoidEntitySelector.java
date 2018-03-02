@@ -12,9 +12,6 @@ public class AvoidEntitySelector implements IEntitySelector
         this.entityAvoiderAI = par1EntityAIAvoidEntity;
     }
 
-    /**
-     * Return whether the specified com.darkona.adventurebackpack.entity is applicable to this filter.
-     */
     @Override
     public boolean isEntityApplicable(Entity par1Entity)
     {

@@ -23,6 +23,12 @@ public abstract class ItemAdventure extends ItemAB implements IBackWearableItem
     }
 
     @Override
+    public boolean isDamageable()
+    {
+        return false;
+    }
+
+    @Override
     public int getItemEnchantability()
     {
         return 0;

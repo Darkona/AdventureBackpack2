@@ -32,7 +32,7 @@ public class BlockCampFire extends BlockContainer
     {
         super(Material.rock);
         this.setTickRandomly(true);
-        this.setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+        this.setCreativeTab(CreativeTabAB.TAB_AB);
     }
 
     @Override

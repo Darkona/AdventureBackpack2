@@ -17,7 +17,6 @@ import com.darkona.adventurebackpack.util.Resources;
  */
 public class RendererCampFire extends TileEntitySpecialRenderer
 {
-    //private ModelAdventureBackpackBlock model;
     private ModelCampFire model;
 
     public RendererCampFire()

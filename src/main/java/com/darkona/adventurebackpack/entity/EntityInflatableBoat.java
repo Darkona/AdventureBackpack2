@@ -77,9 +77,6 @@ public class EntityInflatableBoat extends EntityBoat implements /*IInventoryTank
         return inflated;
     }
 
-    /**
-     * Called to update the entity's position/logic.
-     */
     @Override
     public void onUpdate()
     {
@@ -420,9 +417,6 @@ public class EntityInflatableBoat extends EntityBoat implements /*IInventoryTank
         }
     }
 
-    /**
-     * Save the entity to NBT (calls an abstract helper method to write extra data)
-     */
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
@@ -430,9 +424,6 @@ public class EntityInflatableBoat extends EntityBoat implements /*IInventoryTank
         writeEntityToNBT(compound);
     }
 
-    /**
-     * Reads the entity from NBT (calls an abstract helper method to read specialized data)
-     */
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
