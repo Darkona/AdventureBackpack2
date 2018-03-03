@@ -10,6 +10,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
+import com.darkona.adventurebackpack.init.recipes.ShapedBackpackRecipe;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -253,7 +254,7 @@ public class ModRecipes
                 {
                     if (field.getName().equals(BackpackTypes.getSkinName(type)))
                     {
-                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackUtils.createBackpackStack(type), (Object[]) field.get(br)));
+                        GameRegistry.addRecipe(new ShapedBackpackRecipe(BackpackUtils.createBackpackStack(type), (Object[]) field.get(br)));
                         counter++;
                     }
                 }

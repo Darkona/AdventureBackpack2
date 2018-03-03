@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.item;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -10,6 +11,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
@@ -26,9 +28,13 @@ import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.TipUtils;
 import com.darkona.adventurebackpack.util.Wearing;
 
+import static com.darkona.adventurebackpack.common.Constants.Copter.FUEL_CAPACITY;
+import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_FUEL_TANK;
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
+import static com.darkona.adventurebackpack.util.TipUtils.l10n;
 
 /**
  * Created on 31/12/2014
@@ -54,6 +60,38 @@ public class ItemCopterPack extends ItemAdventure
     public void getSubItems(Item item, CreativeTabs tab, List list)
     {
         list.add(BackpackUtils.createCopterStack());
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean advanced)
+    {
+        FluidTank fuelTank = new FluidTank(FUEL_CAPACITY);
+        NBTTagCompound copterTag = BackpackUtils.getWearableCompound(stack);
+
+        if (GuiScreen.isShiftKeyDown())
+        {
+            fuelTank.readFromNBT(copterTag.getCompoundTag(TAG_FUEL_TANK));
+            tooltips.add(l10n("copter.tank.fuel") + ": " + TipUtils.tankTooltip(fuelTank));
+            tooltips.add(l10n("copter.rate.fuel") + ": " + TipUtils.fuelConsumptionTooltip(fuelTank));
+
+            TipUtils.shiftFooter(tooltips);
+        }
+        else if (!GuiScreen.isCtrlKeyDown())
+        {
+            tooltips.add(TipUtils.holdShift());
+        }
+
+        if (GuiScreen.isCtrlKeyDown())
+        {
+            tooltips.add(l10n("max.altitude") + ": " + TipUtils.whiteFormat("250 ") + l10n("meters"));
+            tooltips.add(TipUtils.pressShiftKeyFormat(TipUtils.actionKeyFormat()) + l10n("copter.key.onoff1"));
+            tooltips.add(l10n("copter.key.onoff2") + " " + l10n("on"));
+
+            tooltips.add(TipUtils.pressKeyFormat(TipUtils.actionKeyFormat()) + l10n("copter.key.hover1"));
+            tooltips.add(l10n("copter.key.hover2"));
+        }
     }
 
     @Override

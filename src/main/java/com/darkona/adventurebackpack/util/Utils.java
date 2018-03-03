@@ -55,13 +55,11 @@ public class Utils
 
     public static String makeItRainbow(String theString)
     {
-        int len = theString.length();
-        StringBuilder rainbowed = new StringBuilder( len * 3);
-        for (int i = 0; i < len; i++)
+        StringBuilder rainbowed = new StringBuilder(theString.length() * 3); // special characters = length * 2
+        for (int i = 0; i < theString.length(); i++)
         {
             rainbowed.append(RAINBOW_SEQUENCE[i % RAINBOW_SEQUENCE.length]).append(theString.charAt(i));
         }
-        System.out.println(rainbowed.length());
         return rainbowed.toString();
     }
 
@@ -80,14 +78,14 @@ public class Utils
             case PIGMAN:
                 result += EnumChatFormatting.RED + skinName;
                 break;
+            case QUARTZ:
+                result += makeWhiteAnimation(skinName);
+                break;
             case RAINBOW:
                 result += makeItRainbow(skinName);
                 break;
             case SQUID:
                 result += EnumChatFormatting.DARK_AQUA + skinName;
-                break;
-            case QUARTZ:
-                result += makeWhiteAnimation(skinName);
                 break;
             default:
                 result += skinName;

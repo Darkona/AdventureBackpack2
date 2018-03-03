@@ -1,9 +1,12 @@
 package com.darkona.adventurebackpack.item;
 
+import java.util.List;
+
 import org.apache.commons.lang3.text.WordUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,6 +18,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -33,9 +37,11 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.TipUtils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
+import static com.darkona.adventurebackpack.util.TipUtils.l10n;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -57,6 +63,27 @@ public class ItemHose extends ItemAB
         setNoRepair();
         setUnlocalizedName("backpackHose");
         setCreativeTab(CreativeTabAB.TAB_AB);
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean advanced)
+    {
+        if (GuiScreen.isCtrlKeyDown())
+        {
+            tooltips.add(l10n("hose.key.header"));
+            tooltips.add("- " + TipUtils.pressKeyFormat(TipUtils.actionKeyFormat()) + l10n("hose.key.tank"));
+            tooltips.add("- " + TipUtils.pressShiftKeyFormat(TipUtils.whiteFormat(l10n("mouse.wheel"))) + l10n("hose.key.mode"));
+            tooltips.add("");
+            tooltips.add(l10n("hose.dump1"));
+            tooltips.add(l10n("hose.dump2"));
+            tooltips.add(EnumChatFormatting.RED.toString() + l10n("hose.dump.warn"));
+        }
+        else
+        {
+            tooltips.add(TipUtils.holdCtrl());
+        }
     }
 
     @Override

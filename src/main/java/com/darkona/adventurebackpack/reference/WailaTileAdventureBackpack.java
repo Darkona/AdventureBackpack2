@@ -16,7 +16,7 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.handlers.TooltipEventHandler;
+import com.darkona.adventurebackpack.util.TipUtils;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Utils;
 
@@ -113,17 +113,17 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
     private static void addTipToBackpack(List<String> currenttip, NBTTagCompound backpackTag)
     {
         NBTTagList itemList = backpackTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND);
-        currenttip.add(TooltipEventHandler.local("backpack.slots.used") + ": " + TooltipEventHandler.inventoryTooltip(itemList));
+        currenttip.add(TipUtils.l10n("backpack.slots.used") + ": " + TipUtils.inventoryTooltip(itemList));
 
         FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
         tank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
-        currenttip.add(EnumChatFormatting.RESET + TooltipEventHandler.local("backpack.tank.left")
-                + ": " + TooltipEventHandler.tankTooltip(tank));
+        currenttip.add(EnumChatFormatting.RESET + TipUtils.l10n("backpack.tank.left")
+                + ": " + TipUtils.tankTooltip(tank));
 
         tank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
-        currenttip.add(EnumChatFormatting.RESET + TooltipEventHandler.local("backpack.tank.right")
-                + ": " + TooltipEventHandler.tankTooltip(tank));
+        currenttip.add(EnumChatFormatting.RESET + TipUtils.l10n("backpack.tank.right")
+                + ": " + TipUtils.tankTooltip(tank));
     }
 
     @Nullable

@@ -30,7 +30,6 @@ public class ConfigHandler
     public static boolean enableFullnessBar = false;
     public static boolean enableTemperatureBar = false;
     public static boolean enableToolsRender = true;
-    public static boolean enableTooltips = true;
     public static int typeTankRender = 2;
     public static boolean tanksHoveringText = false;
 
@@ -119,7 +118,6 @@ public class ConfigHandler
         enableFullnessBar = config.getBoolean("Enable Fullness Bar", "graphics", false, "Enable durability bar showing fullness of backpacks inventory");
         enableTemperatureBar = config.getBoolean("Enable Temperature Bar", "graphics", false, "Enable durability bar showing temperature of jetpack");
         enableToolsRender = config.getBoolean("Enable Tools Render", "graphics", true, "Enable rendering for tools in the backpack tool slots");
-        enableTooltips = config.getBoolean("Enable Tooltips", "graphics", true, "Enable tooltips? Client side");
         tanksHoveringText = config.getBoolean("Hovering Text", "graphics", false, "Show hovering text on fluid tanks?");
 
         // Graphics.Status

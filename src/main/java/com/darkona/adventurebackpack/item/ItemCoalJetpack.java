@@ -3,17 +3,23 @@ package com.darkona.adventurebackpack.item;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -28,6 +34,9 @@ import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.TipUtils;
+
+import static com.darkona.adventurebackpack.util.TipUtils.l10n;
 
 /**
  * Created on 15/01/2015
@@ -47,6 +56,43 @@ public class ItemCoalJetpack extends ItemAdventure
     public void getSubItems(Item item, CreativeTabs tab, List list)
     {
         list.add(BackpackUtils.createJetpackStack());
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean advanced)
+    {
+        FluidTank waterTank = new FluidTank(Constants.Jetpack.WATER_CAPACITY);
+        FluidTank steamTank = new FluidTank(Constants.Jetpack.STEAM_CAPACITY);
+        NBTTagCompound jetpackTag = BackpackUtils.getWearableCompound(stack);
+
+        if (GuiScreen.isShiftKeyDown())
+        {
+            NBTTagList itemList = jetpackTag.getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
+            tooltips.add(l10n("jetpack.fuel") + ": " + TipUtils.slotStackTooltip(itemList, Constants.Jetpack.FUEL_SLOT));
+
+            waterTank.readFromNBT(jetpackTag.getCompoundTag(Constants.Jetpack.TAG_WATER_TANK));
+            tooltips.add(l10n("jetpack.tank.water") + ": " + TipUtils.tankTooltip(waterTank));
+
+            steamTank.readFromNBT(jetpackTag.getCompoundTag(Constants.Jetpack.TAG_STEAM_TANK));
+            // special case for steam, have to set displayed fluid name manually, cuz technically it's water
+            String theSteam = steamTank.getFluidAmount() > 0 ? EnumChatFormatting.AQUA + l10n("steam") : "";
+            tooltips.add(l10n("jetpack.tank.steam") + ": " + TipUtils.tankTooltip(steamTank, false) + theSteam);
+
+            TipUtils.shiftFooter(tooltips);
+        }
+        else if (!GuiScreen.isCtrlKeyDown())
+        {
+            tooltips.add(TipUtils.holdShift());
+        }
+
+        if (GuiScreen.isCtrlKeyDown())
+        {
+            tooltips.add(l10n("max.altitude") + ": " + TipUtils.whiteFormat("185 ") + l10n("meters"));
+            tooltips.add(TipUtils.pressShiftKeyFormat(TipUtils.actionKeyFormat()) + l10n("jetpack.key.onoff1"));
+            tooltips.add(l10n("jetpack.key.onoff2") + " " + l10n("on"));
+        }
     }
 
     @Override

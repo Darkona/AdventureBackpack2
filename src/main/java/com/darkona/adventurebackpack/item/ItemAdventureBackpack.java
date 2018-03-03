@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.item;
 
 import java.util.List;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,6 +27,7 @@ import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.events.WearableEvent;
+import com.darkona.adventurebackpack.util.TipUtils;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -37,7 +40,14 @@ import com.darkona.adventurebackpack.util.EnchUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 
+import static com.darkona.adventurebackpack.common.Constants.BASIC_TANK_CAPACITY;
+import static com.darkona.adventurebackpack.common.Constants.TAG_DISABLE_CYCLING;
+import static com.darkona.adventurebackpack.common.Constants.TAG_DISABLE_NVISION;
+import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
+import static com.darkona.adventurebackpack.common.Constants.TAG_LEFT_TANK;
+import static com.darkona.adventurebackpack.common.Constants.TAG_RIGHT_TANK;
 import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
+import static com.darkona.adventurebackpack.util.TipUtils.l10n;
 
 /**
  * Created on 12/10/2014
@@ -69,13 +79,47 @@ public class ItemAdventureBackpack extends ItemAdventure
     @Override
     @SuppressWarnings({"unchecked"})
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4)
+    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean advanced)
     {
         NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(stack);
-        if (backpackTag.hasKey(TAG_TYPE))
+
+        BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
+        tooltips.add(Utils.getColoredSkinName(type));
+
+        FluidTank tank = new FluidTank(BASIC_TANK_CAPACITY);
+
+        if (GuiScreen.isShiftKeyDown())
         {
-            BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
-            list.add(Utils.getColoredSkinName(type));
+            NBTTagList itemList = backpackTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND);
+            tooltips.add(l10n("backpack.slots.used") + ": " + TipUtils.inventoryTooltip(itemList));
+
+            tank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
+            tooltips.add(l10n("backpack.tank.left") + ": " + TipUtils.tankTooltip(tank));
+
+            tank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
+            tooltips.add(l10n("backpack.tank.right") + ": " + TipUtils.tankTooltip(tank));
+
+            TipUtils.shiftFooter(tooltips);
+        }
+        else if (!GuiScreen.isCtrlKeyDown())
+        {
+            tooltips.add(TipUtils.holdShift());
+        }
+
+        if (GuiScreen.isCtrlKeyDown())
+        {
+            boolean cycling = !backpackTag.getBoolean(TAG_DISABLE_CYCLING);
+            tooltips.add(l10n("backpack.cycling") + ": " + TipUtils.switchTooltip(cycling, true));
+            tooltips.add(TipUtils.pressKeyFormat(TipUtils.actionKeyFormat()) + l10n("backpack.cycling.key1"));
+            tooltips.add(l10n("backpack.cycling.key2") + " " + TipUtils.switchTooltip(!cycling, false));
+
+            if (BackpackTypes.isNightVision(BackpackTypes.getType(backpackTag.getByte(TAG_TYPE))))
+            {
+                boolean vision = !backpackTag.getBoolean(TAG_DISABLE_NVISION);
+                tooltips.add(l10n("backpack.vision") + ": " + TipUtils.switchTooltip(vision, true));
+                tooltips.add(TipUtils.pressShiftKeyFormat(TipUtils.actionKeyFormat()) + l10n("backpack.vision.key1"));
+                tooltips.add(l10n("backpack.vision.key2") + " " + TipUtils.switchTooltip(!vision, false));
+            }
         }
     }
 
@@ -253,7 +297,7 @@ public class ItemAdventureBackpack extends ItemAdventure
 
     private int getItemCount(ItemStack backpack)
     {
-        NBTTagList itemList = BackpackUtils.getWearableCompound(backpack).getTagList(Constants.TAG_INVENTORY, NBT.TAG_COMPOUND);
+        NBTTagList itemList = BackpackUtils.getWearableInventory(backpack);
         int itemCount = itemList.tagCount();
         for (int i = itemCount - 1; i >= 0; i--)
         {

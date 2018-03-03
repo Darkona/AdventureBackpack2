@@ -6,14 +6,17 @@ import java.util.TimerTask;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 
+import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
 import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
@@ -93,7 +96,7 @@ public class BackpackUtils
 
     public static NBTTagCompound getWearableCompound(ItemStack stack)
     {
-        // well, it also creates wearable compound if stack has no own, so maybe worth to rename the method
+        // it also creates wearable compound if stack has no own, so maybe worth to rename the method
         if (!stack.hasTagCompound() || !stack.stackTagCompound.hasKey(TAG_WEARABLE_COMPOUND))
             createWearableCompound(stack);
 
@@ -106,6 +109,20 @@ public class BackpackUtils
             stack.stackTagCompound = new NBTTagCompound();
 
         stack.stackTagCompound.setTag(TAG_WEARABLE_COMPOUND, new NBTTagCompound());
+    }
+
+    public static NBTTagList getWearableInventory(ItemStack stack)
+    {
+        // it also creates TagList if stack has no own, so maybe worth to rename the method
+        if (!getWearableCompound(stack).hasKey(TAG_INVENTORY))
+            createWearableInventory(stack);
+
+        return getWearableCompound(stack).getTagList(TAG_INVENTORY, Constants.NBT.TAG_COMPOUND);
+    }
+
+    private static void createWearableInventory(ItemStack stack)
+    {
+        getWearableCompound(stack).setTag(TAG_INVENTORY, new NBTTagList());
     }
 
     public static ItemStack createBackpackStack(BackpackTypes type)
