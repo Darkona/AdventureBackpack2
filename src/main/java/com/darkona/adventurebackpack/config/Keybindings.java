@@ -12,12 +12,12 @@ import net.minecraft.client.settings.KeyBinding;
  */
 public class Keybindings
 {
-    private static final String CATEGORY = "keys.adventureBackpack.category";
+    private static final String KEYS_CATEGORY = "keys.adventureBackpack.category";
     private static final String OPEN_INVENTORY = "keys.adventureBackpack.openInventory";
     private static final String TOGGLE_ACTIONS = "keys.adventureBackpack.toggleActions";
 
-    public static KeyBinding openInventory = new KeyBinding(OPEN_INVENTORY, Keyboard.KEY_B, CATEGORY);
-    public static KeyBinding toggleActions = new KeyBinding(TOGGLE_ACTIONS, Keyboard.KEY_N, CATEGORY);
+    public static KeyBinding openInventory = new KeyBinding(OPEN_INVENTORY, Keyboard.KEY_B, KEYS_CATEGORY);
+    public static KeyBinding toggleActions = new KeyBinding(TOGGLE_ACTIONS, Keyboard.KEY_N, KEYS_CATEGORY);
 
     public static String getInventoryKeyName()
     {

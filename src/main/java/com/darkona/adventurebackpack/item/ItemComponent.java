@@ -28,7 +28,7 @@ import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
  */
 public class ItemComponent extends ItemAB
 {
-    private HashMap<String, IIcon> componentIcons = new HashMap<String, IIcon>();
+    private HashMap<String, IIcon> componentIcons = new HashMap<>();
     private String[] names = {
             "sleepingBag",
             "backpackTank",
@@ -53,13 +53,11 @@ public class ItemComponent extends ItemAB
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister)
     {
-
         for (String name : names)
         {
             IIcon temporalIcon = iconRegister.registerIcon(super.getUnlocalizedName(name).substring(this.getUnlocalizedName().indexOf(".") + 1));
             componentIcons.put(name, temporalIcon);
         }
-
         itemIcon = iconRegister.registerIcon(super.getUnlocalizedName("sleepingBag").substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
 
@@ -74,14 +72,12 @@ public class ItemComponent extends ItemAB
     public IIcon getIconFromDamage(int damage)
     {
         return componentIcons.get(names[damage - 1]);
-
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
         return super.getUnlocalizedName(names[getDamage(stack) - 1]);
-
     }
 
     @Override
@@ -96,59 +92,13 @@ public class ItemComponent extends ItemAB
     }
 
     @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int meta, float f1, float f2, float f3)
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        return false;
-        /*if (itemStack.getItemDamage() != 1) return true;
-        if (world.isRemote)
-        {
-            return true;
-        } else if (meta != 1)
-        {
-            return false;
-        } else
-        {
-           /* ++y;
-            BlockSleepingBag blockbed = ModBlocks.blockSleepingBag;
-            int i1 = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            byte b0 = 0;
-            byte b1 = 0;
-            if (i1 == 0)
-            {
-                b1 = 1;
-            }
-            if (i1 == 1)
-            {
-                b0 = -1;
-            }
-            if (i1 == 2)
-            {
-                b1 = -1;
-            }
-            if (i1 == 3)
-            {
-                b0 = 1;
-            }
-            if (player.canPlayerEdit(x, y, z, meta, itemStack) && player.canPlayerEdit(x + b0, y, z + b1, meta, itemStack))
-            {
-                if (world.isAirBlock(x, y, z) && world.isAirBlock(x + b0, y, z + b1) && World.doesBlockHaveSolidTopSurface(world, x, y - 1, z) && World.doesBlockHaveSolidTopSurface(world, x + b0, y - 1, z + b1))
-                {
-                    world.setBlock(x, y, z, blockbed, i1, 3);
-                    if (world.getBlock(x, y, z) == blockbed)
-                    {
-                        world.setBlock(x + b0, y, z + b1, blockbed, i1 + 8, 3);
-                    }
-                    --itemStack.stackSize;
-                    return true;
-                } else
-                {
-                    return false;
-                }
-            } else
-            {
-                return false;
-            }
-        }*/
+        if (stack.getItemDamage() == 7)
+            return placeBoat(stack, world, player, false);
+        if (stack.getItemDamage() == 8)
+            return placeBoat(stack, world, player, true);
+        return stack;
     }
 
     private ItemStack placeBoat(ItemStack stack, World world, EntityPlayer player, boolean motorized)
@@ -236,13 +186,5 @@ public class ItemComponent extends ItemAB
                 return stack;
             }
         }
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
-        if (stack.getItemDamage() == 7) return placeBoat(stack, world, player, false);
-        if (stack.getItemDamage() == 8) return placeBoat(stack, world, player, true);
-        return stack;
     }
 }

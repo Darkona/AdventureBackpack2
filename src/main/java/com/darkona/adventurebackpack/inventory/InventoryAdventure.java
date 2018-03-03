@@ -7,9 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import com.darkona.adventurebackpack.util.BackpackUtils;
+
 import static com.darkona.adventurebackpack.common.Constants.TAG_INVENTORY;
 import static com.darkona.adventurebackpack.common.Constants.TAG_SLOT;
-import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 15.07.2017
@@ -169,7 +170,7 @@ abstract class InventoryAdventure implements IInventoryTanks
 
     protected NBTTagCompound getWearableCompound()
     {
-        return containerStack.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND);
+        return BackpackUtils.getWearableCompound(containerStack);
     }
 
     protected void setInventoryFromTagList(NBTTagList items)

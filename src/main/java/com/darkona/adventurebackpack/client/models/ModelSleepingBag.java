@@ -13,7 +13,6 @@ import net.minecraft.entity.Entity;
 
 public class ModelSleepingBag extends ModelBase
 {
-    //fields
     ModelRenderer footer;
     ModelRenderer header;
     ModelRenderer pillow;

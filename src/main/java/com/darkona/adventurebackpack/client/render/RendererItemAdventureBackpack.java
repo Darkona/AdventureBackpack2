@@ -8,7 +8,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
-import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Resources;
@@ -67,21 +66,13 @@ public class RendererItemAdventureBackpack implements IItemRenderer
     }
 
     @Override
-    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack backpack, Object... data)
+    public void renderItem(IItemRenderer.ItemRenderType renderType, ItemStack backpack, Object... data)
     {
         InventoryBackpack inv = new InventoryBackpack(backpack);
-        ResourceLocation modelTexture;
-        if (BackpackTypes.getType(backpack) == BackpackTypes.STANDARD)
-        {
-            modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
-        }
-        else
-        {
-            modelTexture = Resources.backpackTextureFromSkin(inv);
-        }
-        switch (type)
-        {
+        ResourceLocation modelTexture = Resources.getBackpackTexture(BackpackTypes.getType(backpack));
 
+        switch (renderType)
+        {
             case INVENTORY:
                 Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
             {
@@ -187,4 +178,5 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 break;
         }
     }
+
 }

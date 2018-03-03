@@ -61,9 +61,6 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
         this.type = type;
     }
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
     @Override
     public boolean shouldExecute()
     {
@@ -113,36 +110,24 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
         return false;
     }
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
     @Override
     public boolean continueExecuting()
     {
         return !this.entityPathNavigate.noPath();
     }
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
     @Override
     public void startExecuting()
     {
         this.entityPathNavigate.setPath(this.entityPathEntity, this.farSpeed);
     }
 
-    /**
-     * Resets the task
-     */
     @Override
     public void resetTask()
     {
         this.closestLivingEntity = null;
     }
 
-    /**
-     * Updates the task
-     */
     @Override
     public void updateTask()
     {

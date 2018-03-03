@@ -91,10 +91,6 @@ public class ItemCrossbow extends ItemAB
             int reloading = stack.stackTagCompound.getInteger("Reloading");
             if (shot > 0) stack.stackTagCompound.setByte("Shot", (byte) (shot - 1));
             if (reloading > 0) stack.stackTagCompound.setInteger("Reloading", reloading - 1);
-            /*if (entity instanceof EntityPlayer)
-            {
-                //((EntityPlayer)entity).setItemInUse(stack,2);
-            }*/
         }
     }
 

@@ -1,9 +1,12 @@
 package com.darkona.adventurebackpack.item;
 
+import java.util.List;
+
 import org.apache.commons.lang3.text.WordUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,6 +18,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -33,9 +37,11 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.TipUtils;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
+import static com.darkona.adventurebackpack.util.TipUtils.l10n;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -54,13 +60,32 @@ public class ItemHose extends ItemAB
         super();
         setMaxStackSize(1);
         setFull3D();
-        //.setCreativeTab(CreativeTabs.tabTools)
         setNoRepair();
         setUnlocalizedName("backpackHose");
-        setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
+        setCreativeTab(CreativeTabAB.TAB_AB);
     }
 
-    // ================================================ GETTERS  =====================================================//
+    @Override
+    @SuppressWarnings({"unchecked"})
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List tooltips, boolean advanced)
+    {
+        if (GuiScreen.isCtrlKeyDown())
+        {
+            tooltips.add(l10n("hose.key.header"));
+            tooltips.add("- " + TipUtils.pressKeyFormat(TipUtils.actionKeyFormat()) + l10n("hose.key.tank"));
+            tooltips.add("- " + TipUtils.pressShiftKeyFormat(TipUtils.whiteFormat(l10n("mouse.wheel"))) + l10n("hose.key.mode"));
+            tooltips.add("");
+            tooltips.add(l10n("hose.dump1"));
+            tooltips.add(l10n("hose.dump2"));
+            tooltips.add(EnumChatFormatting.RED.toString() + l10n("hose.dump.warn"));
+        }
+        else
+        {
+            tooltips.add(TipUtils.holdCtrl());
+        }
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int pass)
@@ -140,8 +165,6 @@ public class ItemHose extends ItemAB
         return 0;
     }
 
-    // ================================================ SETTERS  =====================================================//
-    // ================================================= ICONS  ======================================================//
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister)
@@ -151,7 +174,6 @@ public class ItemHose extends ItemAB
         suckIcon = iconRegister.registerIcon(Resources.getIconString("hoseSuck"));
         itemIcon = iconRegister.registerIcon(Resources.getIconString("hoseLeft"));
     }
-    // ================================================ ACTIONS  =====================================================//
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int inv_slot, boolean isCurrent)
@@ -202,7 +224,7 @@ public class ItemHose extends ItemAB
         if (te != null && te instanceof IFluidHandler)
         {
             IFluidHandler exTank = (IFluidHandler) te;
-            int accepted = 0;
+            int accepted;
             switch (getHoseMode(stack))
             {
                 case HOSE_SUCK_MODE:
@@ -235,19 +257,6 @@ public class ItemHose extends ItemAB
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
-    {
-        return false;
-    }
-
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     *
-     * @param stack
-     * @param world
-     * @param player
-     */
-    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (!Wearing.isWearingBackpack(player)) return stack;
@@ -263,11 +272,6 @@ public class ItemHose extends ItemAB
 
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
-                        /* if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
-                         {
-                         return stack;
-                         }*/
-
                         if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
                         {
                             return stack;
@@ -399,18 +403,6 @@ public class ItemHose extends ItemAB
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
-    {
-        return false;
-    }
-
-    @Override
     public ItemStack onEaten(ItemStack hose, World world, EntityPlayer player)
     {
         if (!Wearing.isWearingBackpack(player)) return hose;
@@ -438,13 +430,6 @@ public class ItemHose extends ItemAB
         return hose;
     }
 
-    @Override
-    public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player)
-    {
-        return true;
-    }
-
-    // ================================================ BOOLEANS =====================================================//
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
     {

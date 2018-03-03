@@ -57,10 +57,6 @@ public class PlayerEventHandler
         if (event.entity instanceof EntityPlayer && BackpackProperty.get((EntityPlayer) event.entity) == null)
         {
             BackpackProperty.register((EntityPlayer) event.entity);
-            /*if (!event.entity.worldObj.isRemote)
-            {
-                AdventureBackpack.proxy.joinPlayer((EntityPlayer)event.entity);
-            }*/
         }
     }
 
@@ -275,7 +271,9 @@ public class PlayerEventHandler
     {
         if (event.crafting.getItem() == ModItems.adventureBackpack)
         {
-            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + BackpackTypes.getSkinName(event.crafting));
+            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: "
+                    + BackpackTypes.getSkinName(event.crafting));
+
             if (!ConfigHandler.consumeDragonEgg && BackpackTypes.getType(event.crafting) == BackpackTypes.DRAGON)
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);

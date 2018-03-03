@@ -18,7 +18,7 @@ import com.darkona.adventurebackpack.util.LogHelper;
  */
 public class ServerProxy implements IProxy
 {
-    private static final Map<UUID, NBTTagCompound> extendedEntityData = new HashMap<UUID, NBTTagCompound>();
+    private static final Map<UUID, NBTTagCompound> extendedEntityData = new HashMap<>();
 
     @Override
     public void init()
@@ -36,23 +36,6 @@ public class ServerProxy implements IProxy
     public void initNetwork()
     {
 
-    }
-
-    @Override
-    public void joinPlayer(EntityPlayer player)
-    {
-        NBTTagCompound playerData = extractPlayerProps(player.getUniqueID());
-
-        if (playerData != null)
-        {
-            LogHelper.info("Stored properties retrieved");
-            BackpackProperty.get(player).loadNBTData(playerData);
-            BackpackProperty.sync(player);
-        }
-        else
-        {
-            LogHelper.info("Data is null! WTF!");
-        }
     }
 
     @Override

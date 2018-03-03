@@ -21,10 +21,10 @@ import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 public class BackpackProperty implements IExtendedEntityProperties
 {
     private static final String PROPERTY_NAME = "abp.property";
-    private EntityPlayer player = null;
+
+    private EntityPlayer player;
     private ItemStack wearable = null;
     private ChunkCoordinates campFire = null;
-    private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
 
@@ -38,11 +38,6 @@ public class BackpackProperty implements IExtendedEntityProperties
     public boolean isWakingUpInPortableBag()
     {
         return this.isWakingUpInPortableBag;
-    }
-
-    public NBTTagCompound getWearableData()
-    {
-        return wearableData;
     }
 
     public static void sync(EntityPlayer player)
@@ -91,12 +86,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         return (BackpackProperty) player.getExtendedProperties(PROPERTY_NAME);
     }
 
-    /**
-     * Called when the entity that this class is attached to is saved.
-     * Any custom entity data  that needs saving should be saved here.
-     *
-     * @param compound The compound to save to.
-     */
     @Override
     public void saveNBTData(NBTTagCompound compound)
     {
@@ -111,13 +100,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         compound.setBoolean("forceCampFire", forceCampFire);
     }
 
-    /**
-     * Called when the entity that this class is attached to is loaded.
-     * In order to hook into this, you will need to subscribe to the EntityConstructing event.
-     * Otherwise, you will need to initialize manually.
-     *
-     * @param compound The compound to load from.
-     */
     @Override
     public void loadNBTData(NBTTagCompound compound)
     {
@@ -130,16 +112,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         }
     }
 
-    /**
-     * Used to initialize the extended properties with the entity that this is attached to, as well
-     * as the world object.
-     * Called automatically if you register with the EntityConstructing event.
-     * May be called multiple times if the extended properties is moved over to a new entity.
-     * Such as when a player switches dimension {Minecraft re-creates the player entity}
-     *
-     * @param entity The entity that this extended properties is attached to
-     * @param world  The world in which the entity exists
-     */
     @Override
     public void init(Entity entity, World world)
     {
@@ -161,11 +133,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         campFire = cf;
     }
 
-    public boolean hasWearable()
-    {
-        return wearable != null;
-    }
-
     public ChunkCoordinates getCampFire()
     {
         return campFire;
@@ -174,16 +141,6 @@ public class BackpackProperty implements IExtendedEntityProperties
     public EntityPlayer getPlayer()
     {
         return player;
-    }
-
-    public void setDimension(int dimension)
-    {
-        this.dimension = dimension;
-    }
-
-    public int getDimension()
-    {
-        return dimension;
     }
 
     public boolean isForcedCampFire()
@@ -202,14 +159,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         if (wearable.getItem() instanceof IBackWearableItem)
         {
             ((IBackWearableItem) wearable.getItem()).onEquippedUpdate(player.getEntityWorld(), player, wearable);
-        }
-    }
-
-    public void executeWearableDeathProtocol()
-    {
-        if (wearable.getItem() instanceof IBackWearableItem)
-        {
-            ((IBackWearableItem) wearable.getItem()).onPlayerDeath(player.getEntityWorld(), player, wearable);
         }
     }
 

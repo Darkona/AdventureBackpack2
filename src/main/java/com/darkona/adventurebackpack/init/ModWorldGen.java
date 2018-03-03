@@ -13,6 +13,7 @@ import cpw.mods.fml.common.registry.VillagerRegistry;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 
 import static com.darkona.adventurebackpack.reference.BackpackTypes.BAT;
 import static com.darkona.adventurebackpack.reference.BackpackTypes.IRON_GOLEM;
@@ -30,31 +31,31 @@ public class ModWorldGen
     public static void init()
     {
         {
-            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(VILLAGER));
+            ItemStack backpack = BackpackUtils.createBackpackStack(VILLAGER);
             VillagerRegistry.instance().registerVillageTradeHandler(1, new ModWorldGen.TradeHandler(backpack));
             VillagerRegistry.instance().registerVillageTradeHandler(2, new ModWorldGen.TradeHandler(backpack));
             VillagerRegistry.instance().registerVillageTradeHandler(3, new ModWorldGen.TradeHandler(backpack));
         }
         if (ConfigHandler.allowGolemGen)
         {
-            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(IRON_GOLEM));
+            ItemStack backpack = BackpackUtils.createBackpackStack(IRON_GOLEM);
             ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, new WeightedRandomChestContent(backpack, 1, 1, 2));
         }
         if (ConfigHandler.allowBatGen)
         {
-            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(BAT));
+            ItemStack backpack = BackpackUtils.createBackpackStack(BAT);
             ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 2));
             ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, new WeightedRandomChestContent(backpack, 1, 1, 12));
         }
         if (ConfigHandler.allowPigmanGen)
         {
-            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(PIGMAN));
+            ItemStack backpack = BackpackUtils.createBackpackStack(PIGMAN);
             ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 12));
             VillagerRegistry.instance().registerVillageTradeHandler(BackpackTypes.getMeta(PIGMAN), new ModWorldGen.TradeHandler(backpack));
         }
         if (ConfigHandler.allowBonusGen)
         {
-            ItemStack backpack = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), BackpackTypes.getMeta(STANDARD));
+            ItemStack backpack = BackpackUtils.createBackpackStack(STANDARD);
             ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(backpack, 0, 1, 5));
         }
     }
@@ -68,10 +69,6 @@ public class ModWorldGen
             this.backpack = backpack;
         }
 
-        /**
-         * Called to allow changing the content of the {@link net.minecraft.village.MerchantRecipeList} for the villager
-         * supplied during creation
-         */
         @Override
         @SuppressWarnings("unchecked")
         public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
@@ -79,13 +76,12 @@ public class ModWorldGen
             //0 Farmer, 1 Librarian, 2Priest, 3 Blacksmith, 4 Butcher
             if (villager.getProfession() == 1 || villager.getProfession() == 2)
             {
-                ItemStack payment = BackpackTypes.setBackpackTypeFromMeta(new ItemStack(ModItems.adventureBackpack), 0);
+                ItemStack payment = BackpackUtils.createBackpackStack(STANDARD);
                 recipeList.add(new MerchantRecipe(new ItemStack(Items.emerald, 10), payment, this.backpack));
             }
             if (villager.getProfession() == 3)
             {
-                ItemStack payment = new ItemStack(ModItems.adventureBackpack);
-                BackpackTypes.setBackpackType(payment, IRON_GOLEM);
+                ItemStack payment = BackpackUtils.createBackpackStack(IRON_GOLEM);
                 recipeList.add(new MerchantRecipe(new ItemStack(Items.emerald, 10), payment, this.backpack));
             }
         }

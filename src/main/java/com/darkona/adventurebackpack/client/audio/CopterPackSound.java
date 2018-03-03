@@ -7,11 +7,11 @@ import net.minecraft.util.ResourceLocation;
 
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
-import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 16/10/2014
@@ -30,16 +30,6 @@ public class CopterPackSound extends MovingSound
         super(new ResourceLocation(ModInfo.MOD_ID, "helicopter3"));
         volume = 0.6f;
         pitch = 1.0F;
-        thePlayer = player;
-    }
-
-    public EntityPlayer getThePlayer()
-    {
-        return thePlayer;
-    }
-
-    public void setThePlayer(EntityPlayer player)
-    {
         thePlayer = player;
     }
 
@@ -73,7 +63,7 @@ public class CopterPackSound extends MovingSound
             return;
         }
 
-        status = copter.getTagCompound().getCompoundTag(TAG_WEARABLE_COMPOUND).getByte(TAG_STATUS);
+        status = BackpackUtils.getWearableCompound(copter).getByte(TAG_STATUS);
         if (status == ItemCopterPack.OFF_MODE)
         {
             setDonePlaying();

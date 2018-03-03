@@ -15,7 +15,6 @@ import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GeneralEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
-import com.darkona.adventurebackpack.handlers.TooltipEventHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModDates;
 import com.darkona.adventurebackpack.init.ModEntities;
@@ -64,9 +63,7 @@ public class AdventureBackpack
         //Events
         MinecraftForge.EVENT_BUS.register(new GeneralEventHandler());
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
-        MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
-
         FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
     }
 

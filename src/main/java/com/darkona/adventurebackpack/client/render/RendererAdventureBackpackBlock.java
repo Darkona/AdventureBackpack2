@@ -9,8 +9,6 @@ import net.minecraft.util.ResourceLocation;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
-import com.darkona.adventurebackpack.init.ModDates;
-import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Resources;
 
 /**
@@ -21,7 +19,6 @@ import com.darkona.adventurebackpack.util.Resources;
 
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
-    //private ModelAdventureBackpackBlock model;
     private ModelBackpackBlock model;
 
     public RendererAdventureBackpackBlock()
@@ -63,15 +60,7 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         {
             GL11.glRotatef(dir * (-180F), 0.0F, 1.0F, 0.0F);
         }
-        ResourceLocation modelTexture;
-        if (tileBackpack.getType() == BackpackTypes.STANDARD)
-        {
-            modelTexture = Resources.backpackTextureFromString(ModDates.getHoliday());
-        }
-        else
-        {
-            modelTexture = Resources.backpackTextureFromSkin(tileBackpack);
-        }
+        ResourceLocation modelTexture = Resources.getBackpackTexture(tileBackpack.getType());
 
         bindTexture(modelTexture);
         model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1 / 20F, tileBackpack);

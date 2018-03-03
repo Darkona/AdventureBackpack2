@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.proxy;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -15,8 +14,6 @@ public interface IProxy
     void registerKeybindings();
 
     void initNetwork();
-
-    void joinPlayer(EntityPlayer player);
 
     void synchronizePlayer(int id, NBTTagCompound compound);
 }

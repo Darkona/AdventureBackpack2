@@ -142,19 +142,5 @@ public class BackpackRemovals
                 }
             }
         }
-        /*potion = null;
-        if (player.isPotionActive(Potion.jump.id)) {
-            potion = player.getActivePotionEffect(Potion.jump);
-            if (potion != null && potion.getAmplifier() == 1)
-            {
-                if (player.worldObj.isRemote)
-                {
-                    player.removePotionEffectClient(Potion.jump.id);
-                } else
-                {
-                    player.removePotionEffect(Potion.jump.id);
-                }
-            }
-        }*/
     }
 }

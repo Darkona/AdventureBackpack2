@@ -93,7 +93,8 @@ public abstract class GuiWithTanks extends GuiContainer
             {
                 if (j > marginY && j < marginY + ySize)
                 {
-                    return; // forbid mouseWheel when mouse over our GUI,
+                    return;
+                    // forbid mouseWheel when mouse over our GUI,
                     // Shift+Wheel on stacks of fluid containers places them to clients bucket slots, causes desync
                 }
             }

@@ -25,8 +25,6 @@ public class EntityBolt extends Entity implements IProjectile
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
-     *
-     * @param compound
      */
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
@@ -36,8 +34,6 @@ public class EntityBolt extends Entity implements IProjectile
 
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.
-     *
-     * @param compound
      */
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound)
@@ -47,12 +43,6 @@ public class EntityBolt extends Entity implements IProjectile
 
     /**
      * Similar to setArrowHeading, it's point the throwable entity to a x, y, z direction.
-     *
-     * @param x
-     * @param y
-     * @param z
-     * @param speedMultiplier
-     * @param whatever
      */
     @Override
     public void setThrowableHeading(double x, double y, double z, float speedMultiplier, float whatever)

@@ -67,30 +67,19 @@ public class ContainerJetpack extends ContainerAdventure
             if (SlotFluid.isFilled(stack))
             {
                 if ((stackOut == null || areSameType) && SlotFluidWater.isValidItem(stack))
-                {
                     if (isWaterTankEmpty || suitableToTank)
-                    {
-                        if (!mergeBucket(stack))
-                            return false;
-                    }
-                }
+                        return mergeBucket(stack);
             }
             else if (SlotFluid.isEmpty(stack))
             {
                 if ((stackOut == null || areSameType) && SlotFluidWater.isValidItem(stack))
-                {
                     if (!isWaterTankEmpty)
-                    {
-                        if (!mergeBucket(stack))
-                            return false;
-                    }
-                }
+                        return mergeBucket(stack);
             }
         }
         else if (SlotFuel.isValidItem(stack))
         {
-            if (!mergeFuel(stack))
-                return false;
+            return mergeFuel(stack);
         }
         return true;
     }

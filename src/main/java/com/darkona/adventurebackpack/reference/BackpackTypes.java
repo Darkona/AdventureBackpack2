@@ -15,7 +15,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 
 import static com.darkona.adventurebackpack.common.Constants.TAG_TYPE;
@@ -227,8 +226,8 @@ public enum BackpackTypes
         if (backpack == null) // well... Wearing.getWearingBackpack() may return null... //TODO solve this damn null
             return null;
 
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        if (backpackTag.getByte(TAG_TYPE) == UNKNOWN.meta) //TODO remove? stay?
+        NBTTagCompound backpackTag = BackpackUtils.getWearableCompound(backpack);
+        if (backpackTag.getByte(TAG_TYPE) == UNKNOWN.meta) //TODO remove? are we rly need to normalize it?
         {
             backpackTag.setByte(TAG_TYPE, STANDARD.meta);
         }
@@ -278,25 +277,4 @@ public enum BackpackTypes
         public static final ImmutableSet<Props> POTION_EFFECT = Sets.immutableEnumSet(SPECIAL, REMOVAL);
     }
 
-    // ---
-
-    public static ItemStack setBackpackTypeFromMeta(ItemStack backpack, int meta)
-    {
-        if (backpack == null || !(backpack.getItem() instanceof ItemAdventureBackpack))
-            return null;
-
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        backpack.setItemDamage(meta);
-        backpackTag.setByte(TAG_TYPE, (byte) meta);
-        BackpackUtils.setBackpackTag(backpack, backpackTag);
-
-        return backpack;
-    }
-
-    public static void setBackpackType(ItemStack backpack, BackpackTypes type)
-    {
-        NBTTagCompound backpackTag = BackpackUtils.getBackpackTag(backpack);
-        backpackTag.setByte(TAG_TYPE, getMeta(type));
-        BackpackUtils.setBackpackTag(backpack, backpackTag);
-    }
 }

@@ -79,7 +79,7 @@ adventurebackpack:messages.cycling.on=Tool Cycling: On.
 adventurebackpack:messages.cycling.off=Tool Cycling: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.
 
-## Tooltips ("@" - line separator)
+## Tooltips
 adventurebackpack:tooltips.on=ON
 adventurebackpack:tooltips.off=OFF
 adventurebackpack:tooltips.empty=Empty
@@ -96,22 +96,28 @@ adventurebackpack:tooltips.backpack.slots.used=Slots used
 adventurebackpack:tooltips.backpack.tank.left=Left Tank
 adventurebackpack:tooltips.backpack.tank.right=Right Tank
 adventurebackpack:tooltips.backpack.cycling=Tool Cycling
-adventurebackpack:tooltips.backpack.cycling.key=while wearing@backpack, for turn cycling
+adventurebackpack:tooltips.backpack.cycling.key1=while wearing
+adventurebackpack:tooltips.backpack.cycling.key2=backpack, for turn cycling
 adventurebackpack:tooltips.backpack.vision=Night Vision
-adventurebackpack:tooltips.backpack.vision.key=while wearing@backpack, for turn nightvision
+adventurebackpack:tooltips.backpack.vision.key1=while wearing
+adventurebackpack:tooltips.backpack.vision.key2=backpack, for turn nightvision
 
 adventurebackpack:tooltips.jetpack.fuel=Fuel
 adventurebackpack:tooltips.jetpack.tank.water=Left Tank
 adventurebackpack:tooltips.jetpack.tank.steam=Right Tank
-adventurebackpack:tooltips.jetpack.key.onoff=while wearing@jetpack, for turn it
+adventurebackpack:tooltips.jetpack.key.onoff1=while wearing
+adventurebackpack:tooltips.jetpack.key.onoff2=jetpack, for turn it
 
 adventurebackpack:tooltips.copter.tank.fuel=Fuel Tank
 adventurebackpack:tooltips.copter.rate.fuel=Fuel consumption rate
-adventurebackpack:tooltips.copter.key.onoff=while wearing@copterpack, for turn it
-adventurebackpack:tooltips.copter.key.hover=during flight to@switch hover mode
+adventurebackpack:tooltips.copter.key.onoff1=while wearing
+adventurebackpack:tooltips.copter.key.onoff2=copterpack, for turn it
+adventurebackpack:tooltips.copter.key.hover1=during flight to
+adventurebackpack:tooltips.copter.key.hover2=switch hover mode
 
 adventurebackpack:tooltips.hose.key.header=While holding Hose:
 adventurebackpack:tooltips.hose.key.tank=to change active tank
 adventurebackpack:tooltips.hose.key.mode=to change mode
-adventurebackpack:tooltips.hose.dump=@Put Hose into bucketOut slot of wearable pack@to empty corresponded tank
+adventurebackpack:tooltips.hose.dump1=Put Hose into bucketOut slot of wearable pack
+adventurebackpack:tooltips.hose.dump2=to empty corresponded tank
 adventurebackpack:tooltips.hose.dump.warn=WARNING! Fluid will be dumped and lost. Forever.

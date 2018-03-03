@@ -32,15 +32,14 @@ import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.GeneralReference;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.CoordsUtils;
-import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Wearing;
 
 import static com.darkona.adventurebackpack.common.Constants.BUCKET;
 import static com.darkona.adventurebackpack.common.Constants.Copter.TAG_STATUS;
 import static com.darkona.adventurebackpack.common.Constants.TOOL_LOWER;
 import static com.darkona.adventurebackpack.common.Constants.TOOL_UPPER;
-import static com.darkona.adventurebackpack.common.Constants.TAG_WEARABLE_COMPOUND;
 
 /**
  * Created on 23/12/2014
@@ -53,59 +52,28 @@ public class ServerActions
     public static final boolean HOSE_TOGGLE = true;
 
     /**
-     * Cycles tools. In a cycle. The tool in your hand with the tools in the special tool slot of the backpack, to be precise.
+     * Cycles tools. In a cycle. The tool in your hand with the tools in the special tool playerSlot of the backpack,
+     * to be precise.
      *
-     * @param player    Duh
-     * @param isWheelUp An boolean indicating the direction of the switch. Nobody likes to swith always in the same
-     *                  direction all the timeInSeconds. That's stupid.
-     * @param slot      The slot that will be switched with the backpack.
+     * @param player      Duh
+     * @param isWheelUp   A boolean indicating the direction of the switch. Nobody likes to swith always in the same
+     *                    direction all the timeInSeconds. That's stupid.
+     * @param playerSlot  The slot that will be switched with the backpack.
      */
-    public static void cycleTool(EntityPlayer player, boolean isWheelUp, int slot)
+    public static void cycleTool(EntityPlayer player, boolean isWheelUp, int playerSlot)
     {
         if (!GeneralReference.isDimensionAllowed(player))
             return;
 
-        try
+        ItemStack current = player.getCurrentEquippedItem();
+        if (SlotTool.isValidTool(current))
         {
+            int backpackSlot = isWheelUp ? TOOL_UPPER : TOOL_LOWER;
             InventoryBackpack backpack = Wearing.getWearingBackpackInv(player);
-            ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if (SlotTool.isValidTool(current))
-            {
-                if (isWheelUp)
-                {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(TOOL_UPPER);
-                    backpack.setInventorySlotContentsNoSave(TOOL_UPPER, current);
-                }
-                else
-                {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(TOOL_LOWER);
-                    backpack.setInventorySlotContentsNoSave(TOOL_LOWER, current);
-                }
-            }
-            //old behavior, cycling all 3 slots:
-            /*if (SlotTool.isValidTool(current))
-            {
-                if (direction < 0)
-                {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(TOOL_UPPER);
-                    backpack.setInventorySlotContentsNoSave(TOOL_UPPER, backpack.getStackInSlot(TOOL_LOWER));
-                    backpack.setInventorySlotContentsNoSave(TOOL_LOWER, current);
-                }
-                else if (direction > 0)
-                {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(TOOL_LOWER);
-                    backpack.setInventorySlotContentsNoSave(TOOL_LOWER, backpack.getStackInSlot(TOOL_UPPER));
-                    backpack.setInventorySlotContentsNoSave(TOOL_UPPER, current);
-                }
-            }*/
-            backpack.markDirty();
-            player.inventory.closeInventory();
-        }
-        catch (Exception oops)
-        {
-            LogHelper.debug("Exception trying to cycle tools.");
-            oops.printStackTrace();
+            player.inventory.mainInventory[playerSlot] = backpack.getStackInSlot(backpackSlot);
+            backpack.setInventorySlotContentsNoSave(backpackSlot, current);
+            backpack.dirtyInventory();
         }
     }
 
@@ -115,7 +83,7 @@ public class ServerActions
      * @param player Is a player. To whom  the nice or evil effects you're going to apply will affect.
      *               See? I know the proper use of the words "effect" & "affect".
      * @param tank   The tank that holds the fluid, whose effect will affect the player that's in the world.
-     * @return If the effect can be applied, and it is actually applied, returns true.
+     * @return       If the effect can be applied, and it is actually applied, returns true.
      */
     public static boolean setFluidEffect(World world, EntityPlayer player, FluidTank tank)
     {
@@ -181,11 +149,11 @@ public class ServerActions
 
         if (BackpackTypes.getType(backpack) == BackpackTypes.PIG)
         {
-            BackpackTypes.setBackpackType(backpack, BackpackTypes.PIGMAN);
+            BackpackUtils.setBackpackType(backpack, BackpackTypes.PIGMAN);
         }
         if (BackpackTypes.getType(backpack) == BackpackTypes.DIAMOND)
         {
-            BackpackTypes.setBackpackType(backpack, BackpackTypes.ELECTRIC);
+            BackpackUtils.setBackpackType(backpack, BackpackTypes.ELECTRIC);
         }
     }
 
@@ -341,8 +309,7 @@ public class ServerActions
 
     public static void copterSoundAtLogin(EntityPlayer player)
     {
-        byte status = BackpackProperty.get(player).getWearable().getTagCompound()
-                .getCompoundTag(TAG_WEARABLE_COMPOUND).getByte(TAG_STATUS);
+        byte status = BackpackUtils.getWearableCompound(BackpackProperty.get(player).getWearable()).getByte(TAG_STATUS);
 
         if (!player.worldObj.isRemote && status != ItemCopterPack.OFF_MODE)
         {
@@ -352,8 +319,7 @@ public class ServerActions
 
     public static void jetpackSoundAtLogin(EntityPlayer player)
     {
-        boolean isBoiling = BackpackProperty.get(player).getWearable().getTagCompound()
-                .getCompoundTag(TAG_WEARABLE_COMPOUND).getBoolean("boiling");
+        boolean isBoiling = BackpackUtils.getWearableCompound(BackpackProperty.get(player).getWearable()).getBoolean("boiling");
 
         if (!player.worldObj.isRemote && isBoiling)
         {
@@ -366,7 +332,7 @@ public class ServerActions
     {
         String message = "";
         boolean actionPerformed = false;
-        byte mode = copter.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).getByte(TAG_STATUS);
+        byte mode = BackpackUtils.getWearableCompound(copter).getByte(TAG_STATUS);
         byte newMode = ItemCopterPack.OFF_MODE;
 
         if (type == WearableModePacket.COPTER_ON_OFF)
@@ -407,7 +373,7 @@ public class ServerActions
 
         if (actionPerformed)
         {
-            copter.stackTagCompound.getCompoundTag(TAG_WEARABLE_COMPOUND).setByte(TAG_STATUS, newMode);
+            BackpackUtils.getWearableCompound(copter).setByte(TAG_STATUS, newMode);
             if (player.worldObj.isRemote)
             {
                 player.addChatComponentMessage(new ChatComponentTranslation(message));

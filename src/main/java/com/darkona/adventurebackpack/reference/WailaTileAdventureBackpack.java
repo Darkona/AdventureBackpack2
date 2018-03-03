@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.reference;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,7 +16,8 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.Constants;
-import com.darkona.adventurebackpack.handlers.TooltipEventHandler;
+import com.darkona.adventurebackpack.util.TipUtils;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Utils;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -41,8 +43,10 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
         FMLInterModComms.sendMessage("Waila", "register", "com.darkona.adventurebackpack.reference.WailaTileAdventureBackpack.callbackRegister");
     }
 
+    @SuppressWarnings("unused")
     public static void callbackRegister(IWailaRegistrar registrar)
     {
+        registrar.registerStackProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
         registrar.registerHeadProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
         registrar.registerBodyProvider(new WailaTileAdventureBackpack(), TileAdventureBackpack.class);
     }
@@ -50,7 +54,18 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
     {
-        return null;
+        return addTypeToStack(accessor);
+    }
+
+    private ItemStack addTypeToStack(IWailaDataAccessor accessor)
+    {
+        if (accessor.getNBTData().hasKey(TAG_WEARABLE_COMPOUND))
+        {
+            NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(TAG_WEARABLE_COMPOUND);
+            BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
+            return BackpackUtils.createBackpackStack(type);
+        }
+        return BackpackUtils.createBackpackStack(BackpackTypes.STANDARD);
     }
 
     @Override
@@ -75,7 +90,7 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
         BackpackTypes type = BackpackTypes.getType(backpackTag.getByte(TAG_TYPE));
         String skin = "";
         if (type != BackpackTypes.STANDARD)
-            skin = " [" + Utils.getColoredSkinName(type) + EnumChatFormatting.WHITE + "]";
+            skin = EnumChatFormatting.GRAY + " \"" + Utils.getColoredSkinName(type) + EnumChatFormatting.GRAY + "\"";
         currenttip.add(EnumChatFormatting.WHITE + "Adventure Backpack" + skin);
     }
 
@@ -88,39 +103,37 @@ public class WailaTileAdventureBackpack implements IWailaDataProvider
 
     private static void addTipToBackpack(List<String> currenttip, IWailaDataAccessor accessor)
     {
-        TileEntity te = accessor.getTileEntity();
-        if (te instanceof TileAdventureBackpack)
+        if (accessor.getNBTData().hasKey(TAG_WEARABLE_COMPOUND))
         {
-            if (accessor.getNBTData().hasKey(TAG_WEARABLE_COMPOUND))
-            {
-                NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(TAG_WEARABLE_COMPOUND);
-                addTipToBackpack(currenttip, backpackTag);
-            }
+            NBTTagCompound backpackTag = accessor.getNBTData().getCompoundTag(TAG_WEARABLE_COMPOUND);
+            addTipToBackpack(currenttip, backpackTag);
         }
     }
 
     private static void addTipToBackpack(List<String> currenttip, NBTTagCompound backpackTag)
     {
         NBTTagList itemList = backpackTag.getTagList(TAG_INVENTORY, NBT.TAG_COMPOUND);
-        currenttip.add(TooltipEventHandler.local("backpack.slots.used") + ": " + TooltipEventHandler.inventoryTooltip(itemList));
+        currenttip.add(TipUtils.l10n("backpack.slots.used") + ": " + TipUtils.inventoryTooltip(itemList));
 
         FluidTank tank = new FluidTank(Constants.BASIC_TANK_CAPACITY);
 
         tank.readFromNBT(backpackTag.getCompoundTag(TAG_LEFT_TANK));
-        currenttip.add(EnumChatFormatting.RESET + TooltipEventHandler.local("backpack.tank.left")
-                + ": " + TooltipEventHandler.tankTooltip(tank));
+        currenttip.add(EnumChatFormatting.RESET + TipUtils.l10n("backpack.tank.left")
+                + ": " + TipUtils.tankTooltip(tank));
 
         tank.readFromNBT(backpackTag.getCompoundTag(TAG_RIGHT_TANK));
-        currenttip.add(EnumChatFormatting.RESET + TooltipEventHandler.local("backpack.tank.right")
-                + ": " + TooltipEventHandler.tankTooltip(tank));
+        currenttip.add(EnumChatFormatting.RESET + TipUtils.l10n("backpack.tank.right")
+                + ": " + TipUtils.tankTooltip(tank));
     }
 
+    @Nullable
     @Override
     public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
     {
         return null;
     }
 
+    @Nullable
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z)
     {

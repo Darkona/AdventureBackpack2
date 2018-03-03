@@ -127,23 +127,16 @@ public class ContainerBackpack extends ContainerAdventure
         if (SlotTool.isValidTool(stack))
         {
             if (!mergeToolSlot(stack))
-            {
                 if (SlotBackpack.isValidItem(stack))
-                {
-                    if (!mergeBackpackInv(stack))
-                        return false;
-                }
-            }
+                    return mergeBackpackInv(stack);
         }
         else if (SlotFluid.isContainer(stack) && !isHoldingSpace())
         {
-            if (!transferFluidContainer(stack))
-                return false;
+            return transferFluidContainer(stack);
         }
         else if (SlotBackpack.isValidItem(stack))
         {
-            if (!mergeBackpackInv(stack))
-                return false;
+            return mergeBackpackInv(stack);
         }
         return true;
     }

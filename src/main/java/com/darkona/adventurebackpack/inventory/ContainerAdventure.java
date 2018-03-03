@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -15,12 +17,13 @@ import com.darkona.adventurebackpack.common.Constants.Source;
  * @author Ugachaga
  */
 @SuppressWarnings("WeakerAccess")
-abstract class ContainerAdventure extends Container
+public abstract class ContainerAdventure extends Container
 {
+    protected static final int PLAYER_INV_ROWS = 3;
+    protected static final int PLAYER_INV_COLUMNS = 9;
     protected static final int PLAYER_HOT_START = 0;
-    protected static final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
-    protected static final int PLAYER_INV_START = PLAYER_HOT_END + 1;
-    protected static final int PLAYER_INV_END = PLAYER_INV_START + 26;
+    protected static final int PLAYER_HOT_END = PLAYER_HOT_START + PLAYER_INV_COLUMNS - 1;
+    protected static final int PLAYER_INV_END = PLAYER_HOT_END + PLAYER_INV_COLUMNS * PLAYER_INV_ROWS;
     protected static final int PLAYER_INV_LENGTH = PLAYER_INV_END + 1;
 
     protected final EntityPlayer player;
@@ -40,18 +43,12 @@ abstract class ContainerAdventure extends Container
 
     protected void bindPlayerInventory(InventoryPlayer invPlayer, int startX, int startY)
     {
-        for (int x = 0; x < 9; x++) // hotbar - 9 slots
-        {
-            addSlotToContainer(new Slot(invPlayer, x, (startX + 18 * x), (58 + startY)));
-        }
+        for (int col = 0; col < PLAYER_INV_COLUMNS; col++) // hotbar - 9 slots
+            addSlotToContainer(new Slot(invPlayer, col, (startX + 18 * col), (58 + startY)));
 
-        for (int y = 0; y < 3; y++) // inventory - 9*3, 27 slots
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (startX + 18 * x), (startY + y * 18)));
-            }
-        }
+        for (int row = 0; row < PLAYER_INV_ROWS; row++) // inventory - 3*9, 27 slots
+            for (int col = 0; col < PLAYER_INV_COLUMNS; col++)
+                addSlotToContainer(new Slot(invPlayer, (PLAYER_INV_COLUMNS + row * PLAYER_INV_COLUMNS + col), (startX + 18 * col), (startY + row * 18)));
     }
 
     @Override
@@ -100,6 +97,7 @@ abstract class ContainerAdventure extends Container
         return changesDetected;
     }
 
+    @Nullable
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int fromSlot)
     {
@@ -111,15 +109,14 @@ abstract class ContainerAdventure extends Container
         ItemStack stack = slot.getStack();
         ItemStack result = stack.copy();
 
-        if (fromSlot >= PLAYER_INV_LENGTH)
-        {
-            if (!mergePlayerInv(stack))
-                return null;
-        }
-
         if (fromSlot < PLAYER_INV_LENGTH)
         {
             if (!transferStackToPack(stack))
+                return null;
+        }
+        else
+        {
+            if (!mergePlayerInv(stack))
                 return null;
         }
 
@@ -146,6 +143,7 @@ abstract class ContainerAdventure extends Container
 
     protected abstract boolean transferStackToPack(ItemStack stack);
 
+    @Nullable
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {

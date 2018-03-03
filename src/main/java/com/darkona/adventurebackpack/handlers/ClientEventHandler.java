@@ -55,8 +55,7 @@ public class ClientEventHandler
                             ServerActions.cycleTool(player, isWheelUp, slot);
                             event.setCanceled(true);
                         }
-
-                        if (theItem instanceof ItemHose)
+                        else if (theItem instanceof ItemHose)
                         {
                             ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(isWheelUp, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
                             ServerActions.switchHose(player, isWheelUp, ServerActions.HOSE_SWITCH);

@@ -32,10 +32,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Icons;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
-import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.CoordsUtils;
 
 import static com.darkona.adventurebackpack.reference.BackpackTypes.BOOKSHELF;
@@ -245,9 +245,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
-        ItemStack backpack = new ItemStack(ModItems.adventureBackpack, 1);
-        BackpackTypes.setBackpackTypeFromMeta(backpack, BackpackTypes.getMeta(getAssociatedTileBackpackType(world, x, y, z)));
-        return backpack;
+        return BackpackUtils.createBackpackStack(getAssociatedTileBackpackType(world, x, y, z));
     }
 
     @Override
