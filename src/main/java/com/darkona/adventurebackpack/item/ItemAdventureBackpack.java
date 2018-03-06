@@ -113,7 +113,7 @@ public class ItemAdventureBackpack extends ItemAdventure
             tooltips.add(TipUtils.pressKeyFormat(TipUtils.actionKeyFormat()) + l10n("backpack.cycling.key1"));
             tooltips.add(l10n("backpack.cycling.key2") + " " + TipUtils.switchTooltip(!cycling, false));
 
-            if (BackpackTypes.isNightVision(BackpackTypes.getType(backpackTag.getByte(TAG_TYPE))))
+            if (BackpackTypes.isNightVision(type))
             {
                 boolean vision = !backpackTag.getBoolean(TAG_DISABLE_NVISION);
                 tooltips.add(l10n("backpack.vision") + ": " + TipUtils.switchTooltip(vision, true));

@@ -63,7 +63,7 @@ public class CoordsUtils
 
     private static boolean isAirOrReplaceable(IBlockAccess world, int cX, int cY, int cZ)
     {
-        return world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY, cZ).isReplaceable(world, cX, cY, cZ);
+        return world.isAirBlock(cX, cY, cZ) || world.getBlock(cX, cY, cZ).isReplaceable(world, cX, cY, cZ);
     }
 
     private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int cX, int cY, int cZ, boolean except)

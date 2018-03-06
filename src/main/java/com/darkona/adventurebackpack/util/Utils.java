@@ -53,63 +53,80 @@ public class Utils
             EnumChatFormatting.YELLOW, EnumChatFormatting.GREEN, EnumChatFormatting.AQUA, EnumChatFormatting.BLUE,
             EnumChatFormatting.DARK_PURPLE};
 
-    public static String makeItRainbow(String theString)
+    public static String makeItRainbow(String stringIn)
     {
-        StringBuilder rainbowed = new StringBuilder(theString.length() * 3); // special characters = length * 2
-        for (int i = 0; i < theString.length(); i++)
+        StringBuilder rainbowed = new StringBuilder(stringIn.length() * 3); // special characters = length * 2
+        for (int i = 0; i < stringIn.length(); i++)
         {
-            rainbowed.append(RAINBOW_SEQUENCE[i % RAINBOW_SEQUENCE.length]).append(theString.charAt(i));
+            rainbowed.append(RAINBOW_SEQUENCE[i % RAINBOW_SEQUENCE.length]).append(stringIn.charAt(i));
         }
         return rainbowed.toString();
     }
 
     public static String getColoredSkinName(BackpackTypes type)
     {
-        String result = "";
-        String skinName = BackpackTypes.getSkinName(type);
+        String result;
+        String name = BackpackTypes.getLocalizedName(type);
         switch (type)
         {
             case BAT:
-                result += EnumChatFormatting.DARK_PURPLE + skinName;
+                result = EnumChatFormatting.DARK_PURPLE + name;
+                break;
+            case EMERALD:
+                result = animateString(name, EnumChatFormatting.GREEN);
+                break;
+            case DIAMOND:
+                result = animateString(name, EnumChatFormatting.AQUA);
                 break;
             case DRAGON:
-                result += EnumChatFormatting.LIGHT_PURPLE + skinName;
+                result = EnumChatFormatting.LIGHT_PURPLE + name;
+                break;
+            case GOLD:
+                result = animateString(name, EnumChatFormatting.YELLOW);
+                break;
+            case IRON_GOLEM:
+                result = EnumChatFormatting.WHITE + name;
+                break;
+            case OBSIDIAN:
+                result = animateString(name, EnumChatFormatting.DARK_PURPLE);
                 break;
             case PIGMAN:
-                result += EnumChatFormatting.RED + skinName;
+                result = EnumChatFormatting.RED + name;
                 break;
             case QUARTZ:
-                result += makeWhiteAnimation(skinName);
+                result = animateString(name, EnumChatFormatting.WHITE);
                 break;
             case RAINBOW:
-                result += makeItRainbow(skinName);
+                result = makeItRainbow(name);
                 break;
             case SQUID:
-                result += EnumChatFormatting.DARK_AQUA + skinName;
+                result = EnumChatFormatting.DARK_AQUA + name;
                 break;
             default:
-                result += skinName;
+                result = name;
                 break;
         }
         return result;
     }
 
-    private static String makeWhiteAnimation(String string)
+    private static String animateString(String stringIn, EnumChatFormatting bold)
     {
-        return animateString(string, EnumChatFormatting.GRAY, EnumChatFormatting.WHITE);
+        return animateString(stringIn, EnumChatFormatting.GRAY, bold);
     }
 
     private static String animateString(String stringIn, EnumChatFormatting regular, EnumChatFormatting bold)
     {
         int len = stringIn.length();
         int time = Math.abs((int) Minecraft.getMinecraft().theWorld.getWorldTime());
-        int charID = time % len;
 
-        int n = 10;
-        int phaseFactor = time % (n * len); // makes n phases with len length
+        int k = 1; // animation slowness coefficient, changes charID every k ticks, k = 1 for max speed
+        int charID = (time / k) % len ;
+
+        int n = 100 / len; // makes n phases with len length
+        int phaseFactor = (time / k) % (len * n);
         int phase = 1 + phaseFactor / len;
 
-        if (phase < 3)
+        if (phase == 1)
         {
             return decorateCharInString(stringIn, charID, regular, bold, phase % 2 != 0);
         }
@@ -130,4 +147,5 @@ public class Utils
         }
         return decorated.toString();
     }
+
 }
