@@ -14,6 +14,7 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 import com.darkona.adventurebackpack.util.BackpackUtils;
 
@@ -190,6 +191,11 @@ public enum BackpackTypes
     public static String getSkinName(ItemStack backpack)
     {
         return getSkinName(getType(backpack));
+    }
+
+    public static String getLocalizedName(BackpackTypes type)
+    {
+        return StatCollector.translateToLocal("adventurebackpack:skin.name." + type.name().toLowerCase());
     }
 
     public static byte getMeta(BackpackTypes type)

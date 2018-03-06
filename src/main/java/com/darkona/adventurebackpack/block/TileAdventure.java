@@ -168,7 +168,6 @@ abstract class TileAdventure extends TileEntity implements IInventoryTanks
     @Override
     public void dirtyTanks()
     {
-        // for now none is calling this for tile.backpack
         // if we really want to use it, we have to re-implement it, more efficient way
         dirtyInventory();
     }

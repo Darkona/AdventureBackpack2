@@ -53,9 +53,9 @@ public final class TipUtils
                                                                      : l10n("hold.ctrl")) + ">");
     }
 
-    public static String whiteFormat(String theString)
+    public static String whiteFormat(String stringIn)
     {
-        return EnumChatFormatting.WHITE + theString + EnumChatFormatting.GRAY;
+        return EnumChatFormatting.WHITE + stringIn + EnumChatFormatting.GRAY;
     }
 
     public static String actionKeyFormat()

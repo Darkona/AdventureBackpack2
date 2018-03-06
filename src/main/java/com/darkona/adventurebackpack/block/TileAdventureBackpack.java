@@ -199,7 +199,6 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     @Override
     public void dirtyExtended()
     {
-        // for now none is calling this for tile.backpack
         // if we really want to use it, we have to re-implement it, more efficient way
         dirtyInventory();
     }
@@ -208,7 +207,6 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     @Override
     public void dirtyTime()
     {
-        // for now none is calling this for tile.backpack
         // if we really want to use it, we have to re-implement it, more efficient way
         dirtyInventory();
     }
