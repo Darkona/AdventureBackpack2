@@ -70,10 +70,8 @@ public class ServerActions
         {
             int backpackSlot = isWheelUp ? TOOL_UPPER : TOOL_LOWER;
             InventoryBackpack backpack = Wearing.getWearingBackpackInv(player);
-            backpack.openInventory();
-            player.inventory.mainInventory[playerSlot] = backpack.getStackInSlot(backpackSlot);
-            backpack.setInventorySlotContentsNoSave(backpackSlot, current);
-            backpack.dirtyInventory();
+            player.inventory.setInventorySlotContents(playerSlot, backpack.getStackInSlot(backpackSlot));
+            backpack.setInventorySlotContents(backpackSlot, current);
         }
     }
 
