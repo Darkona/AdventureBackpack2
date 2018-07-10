@@ -13,7 +13,5 @@ public interface IProxy
 
     void registerKeybindings();
 
-    void initNetwork();
-
     void synchronizePlayer(int id, NBTTagCompound compound);
 }

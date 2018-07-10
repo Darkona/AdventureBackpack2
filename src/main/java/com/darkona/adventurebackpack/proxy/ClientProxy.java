@@ -66,12 +66,6 @@ public class ClientProxy implements IProxy
     }
 
     @Override
-    public void initNetwork()
-    {
-
-    }
-
-    @Override
     public void synchronizePlayer(int id, NBTTagCompound properties)
     {
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
