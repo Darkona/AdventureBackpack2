@@ -131,7 +131,7 @@ public final class TinkersUtils
     }
 
     @Nullable
-    public static ItemStack getTinkersRecipe(InventoryCrafting craftMatrix)
+    public synchronized static ItemStack getTinkersRecipe(InventoryCrafting craftMatrix)
     {
         if (craftingStationInstance == null)
             return null;
