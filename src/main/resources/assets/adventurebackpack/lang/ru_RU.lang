@@ -42,7 +42,7 @@ item.adventurebackpack:adventurePants.name=Дублёные штаны
 item.adventurebackpack:pistonBoots.name=Поршневые ботинки
 
 ## Blocks
-blockAdventureBackpack.name=Основа рюкзака путешественника
+blockAdventureBackpack.name=Рюкзак путешественника
 blockCampFire.name=Костёр
 blockSleepingBag.name=Спальный мешок
 
