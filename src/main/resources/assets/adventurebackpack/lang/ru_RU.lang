@@ -1,3 +1,5 @@
+#Перевод сделан pingvikin
+
 # Items
 
 ## Component Items For Crafting
@@ -5,6 +7,7 @@ item.adventurebackpack:backpackComponent.name=Компонент рюкзака
 item.adventurebackpack:sleepingBag.name=Спальный мешок
 item.adventurebackpack:backpackTank.name=Резервуар для жидкости рюкзака
 item.adventurebackpack:macheteHandle=Ручка от мачете
+item.adventurebackpack:macheteHandle.name=Ручка от мачете
 item.adventurebackpack:hoseHead.name=Наконечник для трубки
 item.adventurebackpack:copterEngine.name=Двухцилиндровый дизельный двигатель
 item.adventurebackpack:copterBlades.name=Вертолётные лопасти
@@ -28,25 +31,28 @@ item.adventurebackpack:hose_rightTank_drink.name=Трубка для жидко�
 item.adventurebackpack:hoseUseless.name=Трубка для жидкостей: Не используется / Нет рюкзака
 
 ## Wearables
-item.adventurebackpack:adventureBackpack.name=Рюкзак искателя приключений
+item.adventurebackpack:adventureBackpack.name=Рюкзак путешественника
 item.adventurebackpack:copterPack.name=Вертолётный ранец
 item.adventurebackpack:steamJetpack.name=Паровой ранец
+item.adventurebackpack:coalJetpack.name=Угольный Ранец
 
 ## Armor
-item.adventurebackpack:adventureSuit.name=Костюм искателя приключений
-item.adventurebackpack:adventureHat.name=Фетровая шляпа искателя приключений
+item.adventurebackpack:adventureSuit.name=Дублёнка
+item.adventurebackpack:adventureHat.name=Фетровая шляпа
+item.adventurebackpack:adventurePants.name=Штаны из Дублёной кожи
 item.adventurebackpack:pistonBoots.name=Поршневые ботинки
 
 ## Blocks
-block.adventurebackpack:blockAdventureBackpack.name=Основа рюкзака искателя приключений
+block.adventurebackpack:blockAdventureBackpack.name=Основа рюкзака путешественника
 block.adventurebackpack:blockCampFire.name=Костёр
+blockCampFire.name=Костёр
 block.adventurebackpack:blockSleepingBag.name=Спальный мешок
 
 ## CreativeTab
-itemGroup.adventurebackpack=Рюкзак искателя приключений
+itemGroup.adventurebackpack=Рюкзак путешественника
 
 ## Keybindings
-keys.adventureBackpack.category=Рюкзак искателя приключений
+keys.adventureBackpack.category=Рюкзак путешественника
 keys.adventureBackpack.openBackpackInventory=Открыть инвентарь рюкзака
 keys.adventureBackpack.switchHoseTank=Сменить используемый резервуар
 
@@ -67,9 +73,108 @@ adventurebackpack:messages.jetpack.on=Паровой ранец: Включен.
 adventurebackpack:messages.jetpack.off=Паровой ранец: Выключен.
 adventurebackpack:messages.crossbow.outofammo=Арбалет с часовым механизмом: Нет боеприпасов.
 
+adventurebackpack:messages.backpack.cant.bag=Недостаточно места, для установки спального мешка
+adventurebackpack:messages.cant.sleep.here=Древние силы не приветствуют сон здесь.
+adventurebackpack:messages.nightvision.on=Ночное зрение Включено.
+adventurebackpack:messages.nightvision.off=Ночное зрение Выключено.
+adventurebackpack:messages.cycling.on=Карманы для инструментов Включены.
+adventurebackpack:messages.cycling.off=Карманы для инструментов Выключены.
 
 ##
 adventurebackpack:tooltips.on=ВКЛ
 adventurebackpack:tooltips.off=ВЫКЛ
 adventurebackpack:tooltips.empty=Пусто
 adventurebackpack:tooltips.meters=метров (кубов)@над уровнем бедрока
+adventurebackpack:tooltips.backpack.slots.used=Доступные слоты
+adventurebackpack:tooltips.backpack.tank.left=Левый бак
+adventurebackpack:tooltips.backpack.tank.right=Правый бак
+adventurebackpack:tooltips.backpack.cycling=Карманы для инструментов
+adventurebackpack:tooltips.backpack.cycling.key1=во время ношения
+adventurebackpack:tooltips.backpack.cycling.key2=рюкзака
+adventurebackpack:tooltips.backpack.vision=Ночное зрение
+adventurebackpack:tooltips.backpack.vision.key1=во время носки
+adventurebackpack:tooltips.backpack.vision.key2=рюкзака
+
+adventurebackpack:tooltips.jetpack.fuel=Топливо
+adventurebackpack:tooltips.jetpack.tank.water=Левый бак
+adventurebackpack:tooltips.jetpack.tank.steam=Правый бак
+
+## Skins
+adventurebackpack:skin.name.standard=Обычный
+adventurebackpack:skin.name.bat=Летучие мыши ^-^
+adventurebackpack:skin.name.black=Чёрный
+adventurebackpack:skin.name.blaze=Ифрита
+adventurebackpack:skin.name.blue=Синий
+adventurebackpack:skin.name.bookshelf=Книжный
+adventurebackpack:skin.name.brown=Серый
+adventurebackpack:skin.name.brown_mushroom=Серый Гриб
+adventurebackpack:skin.name.cactus=Кактус
+adventurebackpack:skin.name.cake=Торт
+adventurebackpack:skin.name.carrot=Морковь
+adventurebackpack:skin.name.chest=Сундук
+adventurebackpack:skin.name.chicken=Курица
+adventurebackpack:skin.name.coal=Уголь
+adventurebackpack:skin.name.cookie=Печенька
+adventurebackpack:skin.name.cow=Бык
+adventurebackpack:skin.name.creeper=Крипер
+adventurebackpack:skin.name.cyan=Бирюзовый
+adventurebackpack:skin.name.deluxe=Делюкс
+adventurebackpack:skin.name.diamond=Алмазный
+adventurebackpack:skin.name.dragon=Дракон
+adventurebackpack:skin.name.egg=Яйцо
+adventurebackpack:skin.name.electric=Электрический
+adventurebackpack:skin.name.emerald=Изумруд
+adventurebackpack:skin.name.end=Край
+adventurebackpack:skin.name.enderman=Эндермен
+adventurebackpack:skin.name.ghast=Гаст
+adventurebackpack:skin.name.glowstone=Свето-каменный
+adventurebackpack:skin.name.gold=Золотой
+adventurebackpack:skin.name.gray=Серый
+adventurebackpack:skin.name.green=Зелёный
+adventurebackpack:skin.name.haybale=СЕНО
+adventurebackpack:skin.name.horse=Пони
+adventurebackpack:skin.name.iron=Железный
+adventurebackpack:skin.name.iron_golem=Железный Голем
+adventurebackpack:skin.name.lapis=Лазурит
+adventurebackpack:skin.name.leather=Кожанный
+adventurebackpack:skin.name.light_blue=Голубой
+adventurebackpack:skin.name.light_gray=Светло-Серый
+adventurebackpack:skin.name.lime=Лаймовый
+adventurebackpack:skin.name.magenta=Пурпурный
+adventurebackpack:skin.name.magma_cube=Магмовый Куб
+adventurebackpack:skin.name.melon=Арбузный
+adventurebackpack:skin.name.modded_network=Молодёжный
+adventurebackpack:skin.name.mooshroom=Грибной
+adventurebackpack:skin.name.nether=Адский
+adventurebackpack:skin.name.obsidian=Обсидиановый
+adventurebackpack:skin.name.ocelot=Кошачий
+adventurebackpack:skin.name.orange=Оранжевый
+adventurebackpack:skin.name.overworld=Земной
+adventurebackpack:skin.name.pig=Поросёнок
+adventurebackpack:skin.name.pigman=Свино-Зомби
+adventurebackpack:skin.name.pink=Розовый
+adventurebackpack:skin.name.pumpkin=Тыква
+adventurebackpack:skin.name.purple=Фиолетовый
+adventurebackpack:skin.name.quartz=Кварцевый
+adventurebackpack:skin.name.rainbow=Нян-Кет
+adventurebackpack:skin.name.red=Красный
+adventurebackpack:skin.name.red_mushroom=Красный Гриб
+adventurebackpack:skin.name.redstone=Красный камень
+adventurebackpack:skin.name.sandstone=Песчанник
+adventurebackpack:skin.name.sheep=Овечка
+adventurebackpack:skin.name.silverfish=Чешуйница
+adventurebackpack:skin.name.skeleton=Скелет
+adventurebackpack:skin.name.slime=Слизень
+adventurebackpack:skin.name.snow=Зимний
+adventurebackpack:skin.name.spider=Паук
+adventurebackpack:skin.name.sponge=Губка
+adventurebackpack:skin.name.squid=Спрут
+adventurebackpack:skin.name.sunflower=Подсолнух
+adventurebackpack:skin.name.villager=Житель
+adventurebackpack:skin.name.white=Белый
+adventurebackpack:skin.name.wither=Иссушитель
+adventurebackpack:skin.name.wither_skeleton=Скелет-Иссушитель
+adventurebackpack:skin.name.wolf=Волк
+adventurebackpack:skin.name.yellow=Жёлтый
+adventurebackpack:skin.name.zombie=Зомби
+adventurebackpack:skin.name.unknown=Неизвестный
