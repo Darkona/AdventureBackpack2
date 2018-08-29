@@ -32,6 +32,7 @@ public abstract class ContainerAdventure extends Container
 
     private final int[] fluidsAmount;
     private int itemsCount;
+    private boolean requestedUpdate;
 
     protected ContainerAdventure(EntityPlayer player, IInventoryTanks inventory, Source source)
     {
@@ -58,9 +59,17 @@ public abstract class ContainerAdventure extends Container
 
         if (source == Source.HOLDING) // used for refresh tooltips and redraw tanks content while GUI is open
         {
-            if ((detectItemChanges() | detectFluidChanges()) && player instanceof EntityPlayerMP)
+            // intentionally update container with 1 tick delay after detect changes due to visual glitches
+            // in rare cases on some modded items, ex.: shift+q on blood magic lava crystals
+            if (requestedUpdate && player instanceof EntityPlayerMP)
             {
                 ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, this.getInventory());
+                requestedUpdate = false;
+            }
+
+            if ((detectItemChanges() | detectFluidChanges()))
+            {
+                requestedUpdate = true;
             }
         }
     }

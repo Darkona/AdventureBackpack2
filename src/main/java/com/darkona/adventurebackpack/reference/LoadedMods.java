@@ -21,6 +21,7 @@ public final class LoadedMods
     public static final boolean NEI = registerMod("NotEnoughItems");
     public static final boolean TCONSTRUCT = registerMod("TConstruct");
     public static final boolean THAUMCRAFT = registerMod("Thaumcraft");
+    public static final boolean WAILA = registerMod("waila");
 
     private LoadedMods() {}
 

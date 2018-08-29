@@ -1,8 +1,8 @@
 package com.darkona.adventurebackpack.util;
 
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -131,7 +131,7 @@ public final class TinkersUtils
     }
 
     @Nullable
-    public static ItemStack getTinkersRecipe(InventoryCrafting craftMatrix)
+    public synchronized static ItemStack getTinkersRecipe(InventoryCrafting craftMatrix)
     {
         if (craftingStationInstance == null)
             return null;

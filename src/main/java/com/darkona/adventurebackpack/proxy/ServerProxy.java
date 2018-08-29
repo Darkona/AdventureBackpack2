@@ -33,12 +33,6 @@ public class ServerProxy implements IProxy
     }
 
     @Override
-    public void initNetwork()
-    {
-
-    }
-
-    @Override
     public void synchronizePlayer(int id, NBTTagCompound compound)
     {
 

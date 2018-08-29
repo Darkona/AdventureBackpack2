@@ -58,7 +58,6 @@ public class AdventureBackpack
         FluidEffectRegistry.init();
         ModEntities.init();
         ModNetwork.init();
-        proxy.initNetwork();
 
         //Events
         MinecraftForge.EVENT_BUS.register(new GeneralEventHandler());
@@ -74,7 +73,7 @@ public class AdventureBackpack
         proxy.init();
         ModRecipes.init();
         ModWorldGen.init();
-        WailaTileAdventureBackpack.init();
+        if (LoadedMods.WAILA) WailaTileAdventureBackpack.init();
 
         //GUIs
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
