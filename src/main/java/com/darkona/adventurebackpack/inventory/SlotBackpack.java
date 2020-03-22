@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -29,7 +30,7 @@ public class SlotBackpack extends SlotAdventure
             // Project Red Exploration Backpacks
             "mrtjp.projectred.exploration.ItemBackpack",};
 
-    SlotBackpack(IInventoryBackpack inventory, int slotIndex, int posX, int posY)
+    SlotBackpack(IInventory inventory, int slotIndex, int posX, int posY)
     {
         super(inventory, slotIndex, posX, posY);
     }

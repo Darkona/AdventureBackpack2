@@ -182,8 +182,8 @@ public class GuiOverlay extends Gui
                 }
                 if (Wearing.isWearingBackpack(player))
                 {
-                    int u[] = {10, 10};
-                    int v[] = {0, 0};
+                    int[] u = {10, 10};
+                    int[] v = {0, 0};
                     int[] xStart = {xPos, xPos + textureWidth + 1};
                     int[] yStart = {yPos, yPos};
                     short tank = -1;

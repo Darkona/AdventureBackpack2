@@ -328,7 +328,7 @@ public class TileAdventureBackpack extends TileAdventure implements IInventoryBa
     public int[] getAccessibleSlotsFromSide(int side)
     {
         if (GeneralReference.isDimensionAllowed(worldObj.provider.dimensionId))
-            return MAIN_INVENTORY_SLOTS;
+            return MAIN_INVENTORY_SLOTS.clone();
 
         return null;
     }

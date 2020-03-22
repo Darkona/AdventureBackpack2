@@ -20,7 +20,7 @@ public class FluidUtils
                 if (data.fluid != null && data.fluid.getFluid() != null
                         && data.fluid.getFluid().getID() == fluid.getID()
                         && (data.emptyContainer.getItem().equals(container.getItem())
-                        || data.filledContainer.getItem().equals(container.getItem())))
+                            || data.filledContainer.getItem().equals(container.getItem())))
                 {
                     return true;
                 }

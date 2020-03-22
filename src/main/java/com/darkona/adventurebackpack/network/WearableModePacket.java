@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.network;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -31,24 +32,34 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
-            if (player != null)
+            if (player != null && !player.isDead)
             {
-                if ((message.type == COPTER_ON_OFF || message.type == COPTER_TOGGLE))
-                    ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), message.type);
-
+                if (message.type == COPTER_ON_OFF || message.type == COPTER_TOGGLE)
+                {
+                    ItemStack copter = Wearing.getWearingCopter(player);
+                    // for concurrency reasons, at the time of death with OpenBlocks mod, the copter may already be
+                    // in the grave, and Wearing#getWearingCopter will return null (c) Relvl
+                    if (copter != null)
+                        ServerActions.toggleCopterPack(player, copter, message.type);
+                }
                 if (message.type == JETPACK_ON_OFF)
-                    ServerActions.toggleCoalJetpack(player, Wearing.getWearingJetpack(player));
-
-                if (message.type == CYCLING_ON_OFF)
-                    ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player));
-
-                if (message.type == NIGHTVISION_ON_OFF)
-                    ServerActions.toggleNightVision(player, Wearing.getWearingBackpack(player));
+                {
+                    ItemStack jetpack = Wearing.getWearingJetpack(player);
+                    if (jetpack != null) // so now we are well-defended
+                        ServerActions.toggleCoalJetpack(player, jetpack);
+                }
+                if (message.type == CYCLING_ON_OFF || message.type == NIGHTVISION_ON_OFF)
+                {
+                    ItemStack backpack = Wearing.getWearingBackpack(player);
+                    if (backpack != null) // null shall not pass!
+                    {
+                        if (message.type == CYCLING_ON_OFF)
+                            ServerActions.toggleToolCycling(player, backpack);
+                        if (message.type == NIGHTVISION_ON_OFF)
+                            ServerActions.toggleNightVision(player, backpack);
+                    }
+                }
             }
-        }
-        if (ctx.side.isClient())
-        {
-
         }
         return null;
     }
@@ -58,10 +69,7 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
         private byte type;
         private String playerID;
 
-        public Message()
-        {
-
-        }
+        public Message() {}
 
         public Message(byte type, String playerID)
         {
