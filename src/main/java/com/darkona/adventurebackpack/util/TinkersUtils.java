@@ -117,7 +117,6 @@ public final class TinkersUtils
         String cn = stack.getItem().getClass().getName();
         return cn.startsWith(PACKAGE_TCONSTRUCT)
                 && (cn.startsWith(PACKAGE_TOOLS) || cn.startsWith(PACKAGE_WEAPONS) || cn.startsWith(PACKAGE_AMMO));
-
     }
 
     public static boolean isTool(@Nonnull ItemStack stack)

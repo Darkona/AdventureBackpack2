@@ -67,7 +67,7 @@ public abstract class ContainerAdventure extends Container
                 requestedUpdate = false;
             }
 
-            if ((detectItemChanges() | detectFluidChanges()))
+            if (detectItemChanges() | detectFluidChanges())
             {
                 requestedUpdate = true;
             }

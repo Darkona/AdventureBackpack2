@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.network;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -32,11 +33,11 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
-            if (player != null)
+            if (player != null && !player.isDead)
             {
                 if (message.type == SPIDER_JUMP)
                 {
-                    if (player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
+                    if (player.ridingEntity instanceof EntityFriendlySpider)
                     {
                         ((EntityFriendlySpider) player.ridingEntity).setJumping(true);
                     }
@@ -44,9 +45,10 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
 
                 if (message.type == JETPACK_IN_USE || message.type == JETPACK_NOT_IN_USE)
                 {
-                    if (Wearing.isWearingJetpack(player))
+                    ItemStack jetpack = Wearing.getWearingJetpack(player);
+                    if (jetpack != null)
                     {
-                        InventoryCoalJetpack inv = new InventoryCoalJetpack(Wearing.getWearingJetpack(player));
+                        InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
                         inv.setInUse(message.type == JETPACK_IN_USE);
                         inv.markDirty();
                     }
@@ -77,10 +79,7 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
     {
         private byte type;
 
-        public ActionMessage()
-        {
-
-        }
+        public ActionMessage() {}
 
         public ActionMessage(byte type)
         {

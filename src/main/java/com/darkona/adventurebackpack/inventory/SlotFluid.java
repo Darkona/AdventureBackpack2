@@ -42,38 +42,9 @@ public class SlotFluid extends SlotAdventure
         return FluidContainerRegistry.isFilledContainer(stack);
     }
 
-    static boolean isBucket(ItemStack stack)
-    {
-        return FluidContainerRegistry.isBucket(stack);
-    }
-
-    static boolean isEmptyBucket(ItemStack stack)
-    {
-        return FluidContainerRegistry.isBucket(stack) && isEmpty(stack);
-    }
-
-    static boolean isFilledBucket(ItemStack stack)
-    {
-        return FluidContainerRegistry.isBucket(stack) && isFilled(stack);
-    }
-
     static boolean isEqualFluid(ItemStack container, FluidTank tank)
     {
         return getFluidID(container) == getFluidID(tank);
-    }
-
-    static String getFluidName(ItemStack stack)
-    {
-        if (stack == null || isEmpty(stack))
-            return "";
-        return FluidContainerRegistry.getFluidForFilledItem(stack).getFluid().getName();
-    }
-
-    static String getFluidName(FluidTank tank)
-    {
-        if (tank == null || tank.getFluidAmount() <= 0)
-            return "";
-        return tank.getFluid().getFluid().getName();
     }
 
     static int getFluidID(ItemStack stack)

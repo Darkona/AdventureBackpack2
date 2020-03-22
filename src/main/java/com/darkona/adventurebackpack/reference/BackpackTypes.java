@@ -131,7 +131,7 @@ public enum BackpackTypes
 
         this.meta = (byte) meta;
         this.skinName = skin.isEmpty() ? generateSkinName() : skin;
-        this.props = Sets.immutableEnumSet((Arrays.asList(props)));
+        this.props = Sets.immutableEnumSet(Arrays.asList(props));
     }
 
     BackpackTypes(int meta, Props... props)

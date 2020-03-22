@@ -32,7 +32,7 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
-            if (player != null)
+            if (player != null && !player.isDead)
             {
                 if (message.type == COPTER_ON_OFF || message.type == COPTER_TOGGLE)
                 {
