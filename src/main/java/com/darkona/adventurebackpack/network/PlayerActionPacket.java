@@ -33,42 +33,33 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
-            if (player != null && !player.isDead)
+            if (player == null || player.isDead)
+                return null;
+
+            if (message.type == SPIDER_JUMP)
             {
-                if (message.type == SPIDER_JUMP)
+                if (player.ridingEntity instanceof EntityFriendlySpider)
+                    ((EntityFriendlySpider) player.ridingEntity).setJumping(true);
+            }
+            else if (message.type == JETPACK_IN_USE || message.type == JETPACK_NOT_IN_USE)
+            {
+                ItemStack jetpack = Wearing.getWearingJetpack(player);
+                if (jetpack != null)
                 {
-                    if (player.ridingEntity instanceof EntityFriendlySpider)
-                    {
-                        ((EntityFriendlySpider) player.ridingEntity).setJumping(true);
-                    }
+                    InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
+                    inv.setInUse(message.type == JETPACK_IN_USE);
+                    inv.markDirty();
                 }
-
-                if (message.type == JETPACK_IN_USE || message.type == JETPACK_NOT_IN_USE)
+            }
+            else if (message.type == GUI_HOLDING_SPACE || message.type == GUI_NOT_HOLDING_SPACE)
+            {
+                if (player.openContainer instanceof ContainerBackpack)
                 {
-                    ItemStack jetpack = Wearing.getWearingJetpack(player);
-                    if (jetpack != null)
-                    {
-                        InventoryCoalJetpack inv = new InventoryCoalJetpack(jetpack);
-                        inv.setInUse(message.type == JETPACK_IN_USE);
-                        inv.markDirty();
-                    }
-                }
-
-                if (message.type == GUI_HOLDING_SPACE || message.type == GUI_NOT_HOLDING_SPACE)
-                {
-                    if (player.openContainer instanceof ContainerBackpack)
-                    {
-                        IInventoryBackpack inv = ((ContainerBackpack) player.openContainer).getInventoryBackpack();
-
-                        if (message.type == GUI_HOLDING_SPACE)
-                        {
-                            inv.getExtendedProperties().setBoolean(Constants.TAG_HOLDING_SPACE, true);
-                        }
-                        else if (message.type == GUI_NOT_HOLDING_SPACE)
-                        {
-                            inv.getExtendedProperties().removeTag(Constants.TAG_HOLDING_SPACE);
-                        }
-                    }
+                    IInventoryBackpack inv = ((ContainerBackpack) player.openContainer).getInventoryBackpack();
+                    if (message.type == GUI_HOLDING_SPACE)
+                        inv.getExtendedProperties().setBoolean(Constants.TAG_HOLDING_SPACE, true);
+                    else if (message.type == GUI_NOT_HOLDING_SPACE)
+                        inv.getExtendedProperties().removeTag(Constants.TAG_HOLDING_SPACE);
                 }
             }
         }

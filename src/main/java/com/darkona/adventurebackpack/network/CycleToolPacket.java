@@ -26,6 +26,10 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
         if (ctx.side.isServer())
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+
+            if (player == null || player.isDead)
+                return null;
+
             switch (message.typeOfAction)
             {
                 case CYCLE_TOOL_ACTION:

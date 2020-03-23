@@ -24,31 +24,28 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
-
         if (ctx.side.isServer())
         {
             EntityPlayer player = ctx.getServerHandler().playerEntity;
-            if (message.action == EQUIP_WEARABLE)
+
+            if (player == null || player.isDead)
+                return null;
+
+            if (message.action == EQUIP_WEARABLE && Wearing.isHoldingWearable(player))
             {
-                if (Wearing.isHoldingWearable(player))
+                if (Wearing.isWearingWearable(player))
                 {
-                    if (Wearing.isWearingWearable(player))
-                    {
-                        Wearing.WearableType wtype = Wearing.getWearingWearableType(player);
-                        if (wtype != Wearing.WearableType.UNKNOWN)
-                            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped." + wtype.name().toLowerCase()));
-                    }
-                    else
-                    {
-                        if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.Reasons.SUCCESSFUL)
-                        {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                            player.inventoryContainer.detectAndSendChanges();
-                        }
-                    }
+                    Wearing.WearableType wtype = Wearing.getWearingWearableType(player);
+                    if (wtype != Wearing.WearableType.UNKNOWN)
+                        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped." + wtype.name().toLowerCase()));
+                }
+                else if (BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.Reasons.SUCCESSFUL)
+                {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                    player.inventoryContainer.detectAndSendChanges();
                 }
             }
-            if (message.action == UNEQUIP_WEARABLE)
+            else if (message.action == UNEQUIP_WEARABLE)
             {
                 BackpackUtils.unequipWearable(player);
             }
@@ -60,10 +57,7 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
     {
         private byte action;
 
-        public Message()
-        {
-
-        }
+        public Message() {}
 
         public Message(byte action)
         {

@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.network;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -21,9 +22,14 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
     {
         if (ctx.side.isServer())
         {
+            EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+
+            if (player == null || player.isDead)
+                return null;
+
             if (message.isTile || ConfigHandler.portableSleepingBag) // serverside check
             {
-                ServerActions.toggleSleepingBag(ctx.getServerHandler().playerEntity, message.isTile, message.cX, message.cY, message.cZ);
+                ServerActions.toggleSleepingBag(player, message.isTile, message.cX, message.cY, message.cZ);
             }
         }
         return null;
@@ -36,10 +42,7 @@ public class SleepingBagPacket implements IMessageHandler<SleepingBagPacket.Slee
         private int cY;
         private int cZ;
 
-        public SleepingBagMessage()
-        {
-
-        }
+        public SleepingBagMessage() {}
 
         public SleepingBagMessage(boolean isTile, int cX, int cY, int cZ)
         {

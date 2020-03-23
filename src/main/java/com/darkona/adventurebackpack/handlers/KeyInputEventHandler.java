@@ -35,7 +35,7 @@ public class KeyInputEventHandler
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
 
-        if (pressedKey == Key.UNKNOWN || player == null)
+        if (pressedKey == Key.UNKNOWN || player == null || player.isDead)
             return;
 
         if (pressedKey == Key.INVENTORY && mc.inGameHasFocus)
@@ -157,7 +157,7 @@ public class KeyInputEventHandler
 
     private void sendWearableModePacket(byte type)
     {
-        ModNetwork.net.sendToServer(new WearableModePacket.Message(type, "")); //TODO playerID?
+        ModNetwork.net.sendToServer(new WearableModePacket.Message(type));
     }
 
     private void sendCycleToolPacket(int slot, byte type)
