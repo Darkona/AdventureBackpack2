@@ -33,7 +33,7 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
             switch (message.typeOfAction)
             {
                 case CYCLE_TOOL_ACTION:
-                    ServerActions.cycleTool(player, message.isWheelUp, message.slot);
+                    ServerActions.cycleTool(player, message.isWheelUp);
                     break;
                 case TOGGLE_HOSE_TANK:
                     ServerActions.switchHose(player, message.isWheelUp, ServerActions.HOSE_TOGGLE);
@@ -50,18 +50,13 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
     {
         private byte typeOfAction;
         private boolean isWheelUp;
-        private int slot;
 
-        public CycleToolMessage()
-        {
+        public CycleToolMessage() {}
 
-        }
-
-        public CycleToolMessage(boolean isWheelUp, int slot, byte typeOfAction)
+        public CycleToolMessage(boolean isWheelUp, byte typeOfAction)
         {
             this.typeOfAction = typeOfAction;
             this.isWheelUp = isWheelUp;
-            this.slot = slot;
         }
 
         @Override
@@ -69,7 +64,6 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
         {
             this.typeOfAction = buf.readByte();
             this.isWheelUp = buf.readBoolean();
-            this.slot = buf.readInt();
         }
 
         @Override
@@ -77,7 +71,6 @@ public class CycleToolPacket implements IMessageHandler<CycleToolPacket.CycleToo
         {
             buf.writeByte(typeOfAction);
             buf.writeBoolean(isWheelUp);
-            buf.writeInt(slot);
         }
     }
 }

@@ -20,7 +20,6 @@ import com.darkona.adventurebackpack.util.Wearing;
 /**
  * Created by Darkona on 11/10/2014.
  */
-
 public class KeyInputEventHandler
 {
     public enum Key
@@ -59,13 +58,11 @@ public class KeyInputEventHandler
                 {
                     sendGUIPacket(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_HOLDING);
                 }
-
-                if (Wearing.isWearingCopter(player))
+                else if (Wearing.isWearingCopter(player))
                 {
                     sendGUIPacket(GUIPacket.COPTER_GUI, GUIPacket.FROM_WEARING);
                 }
-
-                if (Wearing.isWearingJetpack(player))
+                else if (Wearing.isWearingJetpack(player))
                 {
                     sendGUIPacket(GUIPacket.JETPACK_GUI, GUIPacket.FROM_WEARING);
                 }
@@ -76,7 +73,7 @@ public class KeyInputEventHandler
         {
             if (Wearing.isHoldingHose(player))
             {
-                sendCycleToolPacket(player.inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK);
+                sendCycleToolPacket(CycleToolPacket.TOGGLE_HOSE_TANK);
                 ServerActions.switchHose(player, false, ServerActions.HOSE_TOGGLE);
             }
             else if (Wearing.isWearingBackpack(player))
@@ -95,7 +92,7 @@ public class KeyInputEventHandler
                     ServerActions.toggleToolCycling(player, Wearing.getWearingBackpack(player));
                 }
             }
-            if (Wearing.isWearingCopter(player))
+            else if (Wearing.isWearingCopter(player))
             {
                 if (player.isSneaking())
                 {
@@ -108,7 +105,7 @@ public class KeyInputEventHandler
                     ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_TOGGLE);
                 }
             }
-            if (Wearing.isWearingJetpack(player))
+            else if (Wearing.isWearingJetpack(player))
             {
                 if (player.isSneaking())
                 {
@@ -120,7 +117,7 @@ public class KeyInputEventHandler
 
         if (pressedKey == Key.JUMP)
         {
-            if (player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
+            if (player.ridingEntity instanceof EntityFriendlySpider)
             {
                 sendPlayerActionPacket(PlayerActionPacket.SPIDER_JUMP);
                 ((EntityFriendlySpider) player.ridingEntity).setJumping(true);
@@ -160,9 +157,9 @@ public class KeyInputEventHandler
         ModNetwork.net.sendToServer(new WearableModePacket.Message(type));
     }
 
-    private void sendCycleToolPacket(int slot, byte type)
+    private void sendCycleToolPacket(byte type)
     {
-        ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(false, slot, type));
+        ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(false, type));
     }
 
     private void sendPlayerActionPacket(byte type)

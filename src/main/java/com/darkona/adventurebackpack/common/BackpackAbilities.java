@@ -498,7 +498,7 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (world.isRemote) return; //TODO not syncing properly with client if GUI is open
+        if (world.isRemote) return; //TODO not syncing properly with client if GUI is open (see unused CowAbilityPacket?)
         InventoryBackpack inv = new InventoryBackpack(backpack);
         inv.openInventory();
 

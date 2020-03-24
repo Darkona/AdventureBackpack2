@@ -48,13 +48,10 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
 
     public static class CowAbilityMessage implements IMessage
     {
-
         private byte action;
         private String playerID;
 
-        public CowAbilityMessage()
-        {
-        }
+        public CowAbilityMessage() {}
 
         public CowAbilityMessage(String playerID, byte action)
         {
@@ -65,7 +62,6 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
         @Override
         public void fromBytes(ByteBuf buf)
         {
-
             playerID = ByteBufUtils.readUTF8String(buf);
             action = buf.readByte();
         }

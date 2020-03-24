@@ -30,10 +30,9 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
         if (ctx.side.isServer())
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-
             // we don't want to process any packets from a player who's already considered dead on the server.
             // in the current tick, at the time the packets are processed, the entity data must already be updated
-            // and isDead flag must already be set
+            // and isDead flag will be set, see: MinecraftServer#updateTimeLightAndEntities (func_71190_q)
             if (player == null || player.isDead)
                 return null;
 
@@ -45,20 +44,20 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
                 if (copter != null)
                     ServerActions.toggleCopterPack(player, copter, message.type);
             }
-            if (message.type == JETPACK_ON_OFF)
+            else if (message.type == JETPACK_ON_OFF)
             {
                 ItemStack jetpack = Wearing.getWearingJetpack(player);
                 if (jetpack != null) // so now we are well-defended
                     ServerActions.toggleCoalJetpack(player, jetpack);
             }
-            if (message.type == CYCLING_ON_OFF || message.type == NIGHTVISION_ON_OFF)
+            else if (message.type == CYCLING_ON_OFF || message.type == NIGHTVISION_ON_OFF)
             {
                 ItemStack backpack = Wearing.getWearingBackpack(player);
                 if (backpack != null) // null shall not pass!
                 {
                     if (message.type == CYCLING_ON_OFF)
                         ServerActions.toggleToolCycling(player, backpack);
-                    if (message.type == NIGHTVISION_ON_OFF)
+                    else if (message.type == NIGHTVISION_ON_OFF)
                         ServerActions.toggleNightVision(player, backpack);
                 }
             }

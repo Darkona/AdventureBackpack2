@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.reference;
 
 import java.util.Arrays;
-import java.util.EnumSet;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumHashBiMap;
@@ -117,9 +116,6 @@ public enum BackpackTypes
     // @formatter:on
 
     public static final ImmutableBiMap<Byte, BackpackTypes> BY_META;
-    public static final ImmutableSet<BackpackTypes> SPECIAL_TYPES; //TODO okay... how can we use all these sets?
-    public static final ImmutableSet<BackpackTypes> REMOVAL_TYPES;
-    public static final ImmutableSet<BackpackTypes> NIGHT_VISION_TYPES;
 
     private final byte meta;
     private final String skinName;
@@ -149,33 +145,12 @@ public enum BackpackTypes
     static
     {
         BiMap<BackpackTypes, Byte> byMeta = EnumHashBiMap.create(BackpackTypes.class);
-        EnumSet<BackpackTypes> specials = EnumSet.noneOf(BackpackTypes.class);
-        EnumSet<BackpackTypes> removals = EnumSet.noneOf(BackpackTypes.class);
-        EnumSet<BackpackTypes> nightVisions = EnumSet.noneOf(BackpackTypes.class);
 
         for (BackpackTypes type : BackpackTypes.values())
-        {
             if (byMeta.put(type, type.meta) != null)
                 throw new IllegalArgumentException("duplicate meta: " + type.meta);
 
-            for (Props property : type.props)
-            {
-                if (property == SPECIAL)
-                    specials.add(type);
-                if (property == REMOVAL)
-                    removals.add(type);
-                if (property == NIGHT_VISION)
-                    nightVisions.add(type);
-            }
-        }
-
         BY_META = ImmutableBiMap.copyOf(byMeta.inverse());
-        SPECIAL_TYPES = Sets.immutableEnumSet(specials);
-        REMOVAL_TYPES = Sets.immutableEnumSet(removals);
-        NIGHT_VISION_TYPES = Sets.immutableEnumSet(nightVisions);
-
-        //ImmutableSet.<BackpackTypes>builder().addAll(SPECIAL).addAll(TILE).addAll(OTHER).build();
-        //TODO LogHelper.info("Registered blablabla types, blabla specials...");
     }
 
     public static String getSkinName(BackpackTypes type)

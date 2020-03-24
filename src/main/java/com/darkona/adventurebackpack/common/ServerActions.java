@@ -55,16 +55,16 @@ public class ServerActions
      * Cycles tools. In a cycle. The tool in your hand with the tools in the special tool playerSlot of the backpack,
      * to be precise.
      *
-     * @param player      Duh
-     * @param isWheelUp   A boolean indicating the direction of the switch. Nobody likes to swith always in the same
-     *                    direction all the timeInSeconds. That's stupid.
-     * @param playerSlot  The slot that will be switched with the backpack.
+     * @param player    Duh
+     * @param isWheelUp A boolean indicating the direction of the switch. Nobody likes to swith always in the same
+     *                  direction all the timeInSeconds. That's stupid.
      */
-    public static void cycleTool(EntityPlayer player, boolean isWheelUp, int playerSlot)
+    public static void cycleTool(EntityPlayer player, boolean isWheelUp)
     {
         if (!GeneralReference.isDimensionAllowed(player))
             return;
 
+        int playerSlot = player.inventory.currentItem;
         ItemStack current = player.getCurrentEquippedItem();
         if (SlotTool.isValidTool(current))
         {
@@ -81,7 +81,7 @@ public class ServerActions
      * @param player Is a player. To whom  the nice or evil effects you're going to apply will affect.
      *               See? I know the proper use of the words "effect" & "affect".
      * @param tank   The tank that holds the fluid, whose effect will affect the player that's in the world.
-     * @return       If the effect can be applied, and it is actually applied, returns true.
+     * @return If the effect can be applied, and it is actually applied, returns true.
      */
     public static boolean setFluidEffect(World world, EntityPlayer player, FluidTank tank)
     {
@@ -149,7 +149,7 @@ public class ServerActions
         {
             BackpackUtils.setBackpackType(backpack, BackpackTypes.PIGMAN);
         }
-        if (BackpackTypes.getType(backpack) == BackpackTypes.DIAMOND)
+        else if (BackpackTypes.getType(backpack) == BackpackTypes.DIAMOND)
         {
             BackpackUtils.setBackpackType(backpack, BackpackTypes.ELECTRIC);
         }
@@ -207,17 +207,17 @@ public class ServerActions
             else
             {
                 /*
-                * From here, instead of leaking an arrow to the player inventory, which may be full and then it would be
-                * pointless, leak an arrow straight from the backpack ^_^
-                *
-                * It could be possible to switch a whole stack with the player inventory, fire the arrow, and then
-                * switch back, but that's stupid.
-                *
-                * That's how you make a quiver (for vanilla bows at least, or anything that uses the events and vanilla
-                * arrows) Until we have an event that fires when a player consumes items in his/her inventory.
-                *
-                * I should make a pull request. Too lazy, though.
-                * */
+                 * From here, instead of leaking an arrow to the player inventory, which may be full and then it would be
+                 * pointless, leak an arrow straight from the backpack ^_^
+                 *
+                 * It could be possible to switch a whole stack with the player inventory, fire the arrow, and then
+                 * switch back, but that's stupid.
+                 *
+                 * That's how you make a quiver (for vanilla bows at least, or anything that uses the events and vanilla
+                 * arrows) Until we have an event that fires when a player consumes items in his/her inventory.
+                 *
+                 * I should make a pull request. Too lazy, though.
+                 * */
                 backpack.consumeInventoryItem(Items.arrow);
                 backpack.dirtyInventory();
             }
