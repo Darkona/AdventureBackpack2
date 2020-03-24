@@ -36,80 +36,61 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
         {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 
-            if (player != null)
+            if (player == null || player.isDead)
+                return null;
+
+            World world = player.worldObj;
+            int playerX = (int) player.posX;
+            int playerY = (int) player.posY;
+            int playerZ = (int) player.posZ;
+
+            if (message.type == COPTER_GUI)
             {
-                int playerX = (int) player.posX;
-                int playerY = (int) player.posY;
-                int playerZ = (int) player.posZ;
-                World world = player.worldObj;
-
-                if (message.type == COPTER_GUI)
+                if (message.from == FROM_WEARING)
                 {
-                    if (message.from == FROM_WEARING)
-                    {
-                        if (Wearing.isWearingCopter(player))
-                        {
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_WEARING, world, playerX, playerY, playerZ);
-                            return null;
-                        }
-                    }
-                    if (message.from == FROM_HOLDING)
-                    {
-                        if (Wearing.isHoldingCopter(player))
-                        {
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_HOLDING, world, playerX, playerY, playerZ);
-                            return null;
-                        }
-                    }
+                    if (Wearing.isWearingCopter(player))
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_WEARING, world, playerX, playerY, playerZ);
                 }
-                if (message.type == JETPACK_GUI)
+                else if (message.from == FROM_HOLDING)
                 {
-                    if (message.from == FROM_WEARING)
-                    {
-                        if (Wearing.isWearingJetpack(player))
-                        {
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_WEARING, world, playerX, playerY, playerZ);
-                            return null;
-                        }
-                    }
-                    if (message.from == FROM_HOLDING)
-                    {
-                        if (Wearing.isHoldingJetpack(player))
-                        {
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_HOLDING, world, playerX, playerY, playerZ);
-                            return null;
-                        }
-                    }
+                    if (Wearing.isHoldingCopter(player))
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.COPTER_HOLDING, world, playerX, playerY, playerZ);
                 }
-                if (message.type == BACKPACK_GUI)
+            }
+            else if (message.type == JETPACK_GUI)
+            {
+                if (message.from == FROM_WEARING)
                 {
-                    if (!GeneralReference.isDimensionAllowed(player))
-                        return null;
+                    if (Wearing.isWearingJetpack(player))
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_WEARING, world, playerX, playerY, playerZ);
+                }
+                else if (message.from == FROM_HOLDING)
+                {
+                    if (Wearing.isHoldingJetpack(player))
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_HOLDING, world, playerX, playerY, playerZ);
+                }
+            }
+            else if (message.type == BACKPACK_GUI)
+            {
+                if (!GeneralReference.isDimensionAllowed(player))
+                    return null;
 
-                    if (message.from == FROM_WEARING)
+                if (message.from == FROM_WEARING)
+                {
+                    if (Wearing.isWearingBackpack(player))
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_WEARING, world, playerX, playerY, playerZ);
+                }
+                else if (message.from == FROM_HOLDING)
+                {
+                    if (Wearing.isHoldingBackpack(player))
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_HOLDING, world, playerX, playerY, playerZ);
+                }
+                else if (message.from == FROM_TILE)
+                {
+                    if (player.openContainer instanceof ContainerBackpack)
                     {
-                        if (Wearing.isWearingBackpack(player))
-                        {
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_WEARING, world, playerX, playerY, playerZ);
-                            return null;
-                        }
-                    }
-                    if (message.from == FROM_HOLDING)
-                    {
-                        if (Wearing.isHoldingBackpack(player))
-                        {
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_HOLDING, world, playerX, playerY, playerZ);
-                            return null;
-                        }
-                    }
-                    if (message.from == FROM_TILE)
-                    {
-                        if (player.openContainer instanceof ContainerBackpack)
-                        {
-                            TileAdventureBackpack te = (TileAdventureBackpack) ((ContainerBackpack) player.openContainer).getInventoryBackpack();
-                            FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, te.xCoord, te.yCoord, te.zCoord);
-                            return null;
-                        }
+                        TileAdventureBackpack te = (TileAdventureBackpack) ((ContainerBackpack) player.openContainer).getInventoryBackpack();
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, te.xCoord, te.yCoord, te.zCoord);
                     }
                 }
             }
@@ -122,10 +103,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
         private byte type;
         private byte from;
 
-        public GUImessage()
-        {
-
-        }
+        public GUImessage() {}
 
         public GUImessage(byte type, byte from)
         {

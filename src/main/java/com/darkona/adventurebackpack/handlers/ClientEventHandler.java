@@ -12,10 +12,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.SlotTool;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
-import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
 import com.darkona.adventurebackpack.reference.BackpackTypes;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -32,38 +31,30 @@ public class ClientEventHandler
     public void mouseWheelDetect(MouseEvent event)
     {
         /*Special thanks go to MachineMuse, both for inspiration and the event. God bless you girl.*/
-        Minecraft mc = Minecraft.getMinecraft();
-        if (event.dwheel != 0)
-        {
-            boolean isWheelUp = event.dwheel > 0;
-            EntityClientPlayerMP player = mc.thePlayer;
-            if (player != null && !player.isDead && player.isSneaking())
-            {
-                ItemStack backpack = Wearing.getWearingBackpack(player);
-                if (backpack != null && backpack.getItem() instanceof ItemAdventureBackpack)
-                {
-                    if (player.getCurrentEquippedItem() != null)
-                    {
-                        int slot = player.inventory.currentItem;
-                        ItemStack heldItem = player.inventory.getStackInSlot(slot);
-                        Item theItem = heldItem.getItem();
+        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+        if (event.dwheel == 0 || player == null || player.isDead || !player.isSneaking())
+            return;
 
-                        if ((ConfigHandler.enableToolsCycling && !Wearing.getWearingBackpackInv(player).getDisableCycling() && SlotTool.isValidTool(heldItem))
-                                || (BackpackTypes.getType(backpack) == BackpackTypes.SKELETON && theItem.equals(Items.bow)))
-                        {
-                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(isWheelUp, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
-                            ServerActions.cycleTool(player, isWheelUp, slot);
-                            event.setCanceled(true);
-                        }
-                        else if (theItem instanceof ItemHose)
-                        {
-                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(isWheelUp, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
-                            ServerActions.switchHose(player, isWheelUp, ServerActions.HOSE_SWITCH);
-                            event.setCanceled(true);
-                        }
-                    }
-                }
-            }
+        ItemStack backpack = Wearing.getWearingBackpack(player);
+        ItemStack heldItem = player.getCurrentEquippedItem();
+        if (backpack == null || heldItem == null)
+            return;
+
+        boolean isWheelUp = event.dwheel > 0;
+        Item theItem = heldItem.getItem();
+
+        if (ConfigHandler.enableToolsCycling && !Wearing.getWearingBackpackInv(player).getDisableCycling() && SlotTool.isValidTool(heldItem)
+                || BackpackTypes.getType(backpack) == BackpackTypes.SKELETON && theItem.equals(Items.bow)) //TODO add bow case to server
+        {
+            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(isWheelUp, CycleToolPacket.CYCLE_TOOL_ACTION));
+            ServerActions.cycleTool(player, isWheelUp);
+            event.setCanceled(true);
+        }
+        else if (theItem == ModItems.hose)
+        {
+            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(isWheelUp, CycleToolPacket.SWITCH_HOSE_ACTION));
+            ServerActions.switchHose(player, isWheelUp, ServerActions.HOSE_SWITCH);
+            event.setCanceled(true);
         }
     }
 }
