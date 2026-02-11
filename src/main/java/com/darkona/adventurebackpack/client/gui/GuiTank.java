@@ -169,22 +169,18 @@ public class GuiTank
                 IIcon icon = fluid.getFluid().getStillIcon();
                 TextureUtils.bindAtlas(fluid.getFluid().getSpriteNumber());
                 int top = (startY + offsetY) + height - (fluid.amount / liquidPerPixel);
-                for (int j = (startY + offsetY) + height - 1; j >= top; j--)
+                // Every texel of the fluid is sampled at the same UV point (srcW = srcH = 0), so a whole band of
+                // rows is one flat quad: two quads instead of width*height ones (#41).
+                int bottom = (startY + offsetY) + height;
+                int split = Math.min(top + 5, bottom);
+                GL11.glColor4f(1, 1, 1, 1);
+                drawFluidPixelFromIcon(startX + offsetX, top, icon, width, split - top, 0, 0, 0, 0, zLevel);
+                if (split < bottom)
                 {
-                    for (int i = (startX + offsetX); i <= (startX + offsetX) + width - 1; i++)
-                    {
-                        GL11.glPushMatrix();
-                        if (j >= top + 5)
-                        {
-                            GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
-                        } else
-                        {
-                            GL11.glColor4f(1, 1, 1, 1);
-                        }
-                        drawFluidPixelFromIcon(i, j, icon, 1, 1, 0, 0, 0, 0, zLevel);
-                        GL11.glPopMatrix();
-                    }
+                    GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
+                    drawFluidPixelFromIcon(startX + offsetX, split, icon, width, bottom - split, 0, 0, 0, 0, zLevel);
                 }
+                GL11.glColor4f(1, 1, 1, 1);
             } catch (Exception oops)
             {
                 LogHelper.error("Exception while trying to render the fluid in the GUI");
