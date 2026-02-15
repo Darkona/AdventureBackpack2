@@ -1,0 +1,50 @@
+name: Build
+
+# A push or PR that only touches documentation does not build. One that mixes docs and code does.
+on:
+  push:
+    branches: ['master']
+    paths-ignore:
+      - 'wiki/**'
+      - '**/*.md'
+      - '.gitignore'
+      - '.github/workflows/publish-wiki.yml'
+  pull_request:
+    branches: ['master']
+    paths-ignore:
+      - 'wiki/**'
+      - '**/*.md'
+      - '.gitignore'
+      - '.github/workflows/publish-wiki.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Java version
+        run: echo "JAVA_VERSION=$(grep '^java_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_ENV"
+
+      # Gradle runs on this JDK; the Java 8 toolchain that compiles the mod is downloaded by Gradle.
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          validate-wrappers: true
+
+      - name: Build
+        run: ./gradlew build --no-daemon
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: jars
+          path: build/libs/*.jar

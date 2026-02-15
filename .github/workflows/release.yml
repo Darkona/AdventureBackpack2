@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      # Empty when the repository has no such secret: the Modrinth step is then skipped.
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check tag, version and branch
+        run: |
+          prop() { grep "^$1=" gradle.properties | cut -d= -f2; }
+          version=$(prop mod_version)
+          [ "$GITHUB_REF_NAME" = "v${version}" ] || { echo "::error::Tag $GITHUB_REF_NAME does not match v${version} in gradle.properties"; exit 1; }
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/master || { echo "::error::$GITHUB_SHA is not on branch master"; exit 1; }
+          # A 0.x version or a -alpha/-beta one is a prerelease on GitHub and a beta/alpha on Modrinth.
+          channel=release
+          case "$version" in 0.*|*-beta*) channel=beta;; esac
+          case "$version" in *-alpha*) channel=alpha;; esac
+          {
+            echo "JAVA_VERSION=$(prop java_version)"
+            echo "MOD_VERSION=${version}"
+            echo "MOD_NAME=$(prop mod_name)"
+            echo "MC_VERSION=$(prop minecraft_version)"
+            echo "CHANNEL=${channel}"
+            echo "JAR=build/libs/$(prop archive_name)-$(prop minecraft_version)-${version}.jar"
+          } >> "$GITHUB_ENV"
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          validate-wrappers: true
+
+      - name: Build
+        run: ./gradlew build --no-daemon
+
+      - name: Release notes
+        run: |
+          # actions/checkout leaves an annotated tag as a lightweight one; fetch it again for its message.
+          git fetch --force origin "refs/tags/${GITHUB_REF_NAME}:refs/tags/${GITHUB_REF_NAME}"
+          git tag -l --format='%(contents)' "$GITHUB_REF_NAME" > "$RUNNER_TEMP/notes.md"
+          [ -s "$RUNNER_TEMP/notes.md" ] || { echo "::error::Tag $GITHUB_REF_NAME has no message"; exit 1; }
+          [ -f "$JAR" ] || { echo "::error::$JAR was not built"; exit 1; }
+
+      - name: GitHub release
+        run: |
+          pre=""; [ "$CHANNEL" = release ] || pre="--prerelease"
+          gh release create "$GITHUB_REF_NAME" "$JAR" --verify-tag --notes-file "$RUNNER_TEMP/notes.md" --title "${MOD_NAME} ${MOD_VERSION}" $pre
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      # Needs the secret MODRINTH_TOKEN (a Modrinth personal access token with "Create versions") and the repository
+      # variable MODRINTH_PROJECT (the project's slug or id).
+      - name: Modrinth
+        if: env.MODRINTH_TOKEN != ''
+        run: |
+          [ -n "$MODRINTH_PROJECT" ] || { echo "::error::MODRINTH_TOKEN is set but the variable MODRINTH_PROJECT is not"; exit 1; }
+          ua="Darkona/AdventureBackpack2 release workflow"
+          id=$(curl -fsS -A "$ua" "https://api.modrinth.com/v2/project/${MODRINTH_PROJECT}" | jq -r .id)
+          jq -n --arg project "$id" --arg name "${MOD_NAME} ${MOD_VERSION}" --arg number "${MC_VERSION}-${MOD_VERSION}" \
+                --arg mc "$MC_VERSION" --arg channel "$CHANNEL" --rawfile changelog "$RUNNER_TEMP/notes.md" \
+            '{project_id: $project, name: $name, version_number: $number, changelog: $changelog,
+              game_versions: [$mc], loaders: ["forge"], version_type: $channel, featured: true, status: "listed",
+              dependencies: [], file_parts: ["jar"], primary_file: "jar"}' > "$RUNNER_TEMP/modrinth.json"
+          code=$(curl -sS -o "$RUNNER_TEMP/modrinth-response.json" -w '%{http_code}' -A "$ua" \
+            -H "Authorization: ${MODRINTH_TOKEN}" \
+            -F "data=<$RUNNER_TEMP/modrinth.json;type=application/json" \
+            -F "jar=@${JAR};type=application/java-archive" \
+            https://api.modrinth.com/v2/version)
+          [ "$code" = 200 ] || { echo "::error::Modrinth answered HTTP $code: $(jq -c . "$RUNNER_TEMP/modrinth-response.json" 2>/dev/null)"; exit 1; }
+          echo "Modrinth version $(jq -r .id "$RUNNER_TEMP/modrinth-response.json") created"
+        env:
+          MODRINTH_PROJECT: ${{ vars.MODRINTH_PROJECT }}
