@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        maven {
+            // RetroFuturaGradle
+            name = 'GTNH Maven'
+            url = 'https://nexus.gtnewhorizons.com/repository/public/'
+            mavenContent {
+                includeGroupByRegex 'com\\.gtnewhorizons\\..+'
+                includeGroup 'com.gtnewhorizons'
+            }
+        }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+plugins {
+    // Downloads the Java 8 toolchain when it is not installed
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'adventurebackpack'

@@ -1,69 +1,60 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.gtnewhorizons.retrofuturagradle' version '2.0.6'
+}
 
+group = mod_group
+version = mod_version
+base.archivesName = "${archive_name}-${minecraft_version}"
+
+// Gradle runs on any recent JDK; the mod compiles and runs on Java 8 like every 1.7.10 mod
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+        vendor = JvmVendorSpec.AZUL
     }
 }
 
-apply plugin: 'forge'
-
-version = "1.7.10-0.8d"
-group = "com.darkona.adventurebackpack" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "adventurebackpack"
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
 
 minecraft {
-    version = "1.7.10-10.13.4.1558-1.7.10"
-    runDir = "eclipse"
+    mcVersion = minecraft_version
+    username = 'Developer'
+    injectedTags.put('VERSION', project.version)
+    extraRunJvmArguments.add("-ea:${project.group}")
 }
 
+// Generates com.darkona.adventurebackpack.Tags with the version, read by ModInfo
+tasks.injectTags.configure {
+    outputClassName = "${project.group}.Tags"
+}
+
+tasks.processResources.configure {
+    def projVersion = project.version.toString()
+    inputs.property 'version', projVersion
+    filesMatching('mcmod.info') {
+        expand 'modVersion': projVersion
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
+        downloadSources = true
+    }
+}
+
+// Unit tests run on plain JUnit 5 without starting Minecraft: they cover logic that does not touch the game classes
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-
-    // real examples
-
-    //compile 'com.mod-buildcraft:buildcraft:6.0.18:dev'
-
-
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
-
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-                exclude '\\arg'
-                // replace version and mcversion
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
-
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
-
-idea { module { inheritOutputDirs = true } }
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    testLogging { events 'failed' ; exceptionFormat 'short' }
+}
