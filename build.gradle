@@ -46,3 +46,15 @@ idea {
         downloadSources = true
     }
 }
+
+// Unit tests run on plain JUnit 5 without starting Minecraft: they cover logic that does not touch the game classes
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    testLogging { events 'failed' ; exceptionFormat 'short' }
+}

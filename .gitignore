@@ -28,3 +28,4 @@ whitelist.json
 *.iws
 *.DS_Store
 /notes/
+/.claude/
