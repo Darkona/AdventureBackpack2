@@ -202,13 +202,12 @@ public class BackpackAbilities
     {
         //Shameless rip-off from Machinemuse. Thanks Claire, I don't have to reinvent the wheel thanks to you.
         //I will use a different potion id to avoid conflicting with her modular suits
-        PotionEffect nightVision = null;
-        if (player.isPotionActive(Potion.nightVision.id)) {
-            nightVision = player.getActivePotionEffect(Potion.nightVision);
-        }
-        if (nightVision == null || nightVision.getDuration() < 40 && nightVision.getAmplifier() != -4)
+        PotionEffect nightVision = player.getActivePotionEffect(Potion.nightVision);
+        if (NightVisionRefresh.needsRefresh(nightVision != null,
+                nightVision != null ? nightVision.getDuration() : 0,
+                nightVision != null ? nightVision.getAmplifier() : 0, -4))
         {
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 5000, -4));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, NightVisionRefresh.DURATION, -4));
         }
     }
 
