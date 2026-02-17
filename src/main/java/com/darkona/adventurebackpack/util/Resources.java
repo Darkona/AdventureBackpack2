@@ -31,6 +31,33 @@ public class Resources
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + color + ".png");
     }
 
+    private static String cachedHoliday;
+    private static ResourceLocation cachedHolidayTexture;
+
+    /**
+     * Texture of the special-day backpack, falling back to Standard when the file does not exist (#106).
+     * The resource lookup runs once per holiday name, never per frame. Client side only.
+     */
+    public static synchronized ResourceLocation holidayTexture(String holiday)
+    {
+        if (cachedHolidayTexture == null || holiday == null || !holiday.equals(cachedHoliday))
+        {
+            String name = HolidayTexture.resolve(holiday, h -> {
+                try
+                {
+                    net.minecraft.client.Minecraft.getMinecraft().getResourceManager().getResource(backpackTextureFromString(h));
+                    return true;
+                } catch (Exception e)
+                {
+                    return false;
+                }
+            });
+            cachedHoliday = holiday;
+            cachedHolidayTexture = backpackTextureFromString(name);
+        }
+        return cachedHolidayTexture;
+    }
+
     public static ResourceLocation backpackTextureFromColor(IInventoryAdventureBackpack adventureBackpack)
     {
         return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + adventureBackpack.getColorName() + ".png");

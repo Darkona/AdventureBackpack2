@@ -238,7 +238,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
         String modelTexture;
         if (BackpackNames.getBackpackColorName(stack).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday).toString();
+            modelTexture = Resources.holidayTexture(AdventureBackpack.instance.Holiday).toString();
         } else
         {
             modelTexture = Resources.backpackTexturesStringFromColor(stack);
@@ -362,7 +362,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
         if (BackpackNames.getBackpackColorName(wearable).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
+            modelTexture = Resources.holidayTexture(AdventureBackpack.instance.Holiday);
         } else
         {
             modelTexture = Resources.backpackTextureFromString(BackpackNames.getBackpackColorName(wearable));

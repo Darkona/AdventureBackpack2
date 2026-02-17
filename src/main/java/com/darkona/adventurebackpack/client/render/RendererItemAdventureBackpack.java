@@ -67,7 +67,7 @@ public class RendererItemAdventureBackpack implements IItemRenderer
         ResourceLocation modelTexture;
         if (BackpackNames.getBackpackColorName(backpack).equals("Standard"))
         {
-            modelTexture = Resources.backpackTextureFromString(AdventureBackpack.instance.Holiday);
+            modelTexture = Resources.holidayTexture(AdventureBackpack.instance.Holiday);
         } else
         {
             modelTexture = Resources.backpackTextureFromColor(inv);
