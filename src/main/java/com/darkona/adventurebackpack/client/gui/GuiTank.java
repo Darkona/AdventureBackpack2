@@ -72,7 +72,7 @@ public class GuiTank
     {
 
         tank = theFluid;
-        liquidPerPixel = tank.getCapacity() / this.height;
+        liquidPerPixel = Math.max(1, tank.getCapacity() / Math.max(1, this.height));
         this.zLevel = gui.getZLevel()+1;
         switch (ConfigHandler.GUI_TANK_RENDER)
         {
@@ -110,6 +110,7 @@ public class GuiTank
             FluidStack fluid = tank.getFluid();
 
             IIcon icon = fluid.getFluid().getStillIcon();
+            if (icon == null) return;
             int pixelsY = fluid.amount / liquidPerPixel;
             Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
             int maxY = (startY + offsetY) + height;
@@ -117,10 +118,8 @@ public class GuiTank
             {
                 for (int j = maxY - resolution; j >= maxY - pixelsY; j -= resolution)
                 {
-                    GL11.glPushMatrix();
                     GL11.glColor4f(1, 1, 1, 1);
                     gui.drawTexturedModelRectFromIcon(i, j, icon, resolution, resolution);
-                    GL11.glPopMatrix();
                 }
             }
         }
@@ -136,6 +135,7 @@ public class GuiTank
             FluidStack fluid = tank.getFluid();
 
             IIcon icon = fluid.getFluid().getStillIcon();
+            if (icon == null) return;
             int pixelsY = fluid.amount / liquidPerPixel;
             Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
             int top = (startY + offsetY) + height - pixelsY;
@@ -145,11 +145,9 @@ public class GuiTank
                 int iconY = 7;
                 for (int j = maxY; j >= top; j--)
                 {
-                    GL11.glPushMatrix();
                     GL11.glColor4f(1, 1, 1, 1);
                     drawFluidPixelFromIcon(i, j, icon, resolution, 1, 0, iconY, resolution, 0, zLevel);
                     iconY = (iconY == 0) ? 7 : iconY - 1;
-                    GL11.glPopMatrix();
                 }
             }
         }
@@ -167,20 +165,9 @@ public class GuiTank
             try
             {
                 IIcon icon = fluid.getFluid().getStillIcon();
+                if (icon == null) return;
                 TextureUtils.bindAtlas(fluid.getFluid().getSpriteNumber());
-                int top = (startY + offsetY) + height - (fluid.amount / liquidPerPixel);
-                // Every texel of the fluid is sampled at the same UV point (srcW = srcH = 0), so a whole band of
-                // rows is one flat quad: two quads instead of width*height ones (#41).
-                int bottom = (startY + offsetY) + height;
-                int split = Math.min(top + 5, bottom);
-                GL11.glColor4f(1, 1, 1, 1);
-                drawFluidPixelFromIcon(startX + offsetX, top, icon, width, split - top, 0, 0, 0, 0, zLevel);
-                if (split < bottom)
-                {
-                    GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
-                    drawFluidPixelFromIcon(startX + offsetX, split, icon, width, bottom - split, 0, 0, 0, 0, zLevel);
-                }
-                GL11.glColor4f(1, 1, 1, 1);
+                drawFluidColumn(startX + offsetX, startY + offsetY, width, height, icon, fluid.amount, liquidPerPixel, zLevel);
             } catch (Exception oops)
             {
                 LogHelper.error("Exception while trying to render the fluid in the GUI");
@@ -219,6 +206,43 @@ public class GuiTank
      * @param srcH The height of the selection in the icon to draw from. Starts
      *             at 0.
      */
+    /**
+     * First pixel row of the fluid column: bottom minus the filled height, clamped to the tank (never above it,
+     * never a division by zero for tanks smaller than the drawing area).
+     */
+    public static int fluidTop(int startY, int height, int amount, int liquidPerPixel)
+    {
+        int filled = liquidPerPixel <= 0 ? height : Math.min(height, amount / liquidPerPixel);
+        return startY + height - Math.max(0, filled);
+    }
+
+    /**
+     * Draws the fluid as two flat quads (lit top band and shaded body). Every texel of the fluid is sampled at the
+     * same UV point, so one quad per pixel was pure waste (#41). Colour is restored to white afterwards.
+     */
+    public static void drawFluidColumn(int x, int startY, int width, int height, IIcon icon, int amount, int liquidPerPixel, float z)
+    {
+        int bottom = startY + height;
+        int top = fluidTop(startY, height, amount, liquidPerPixel);
+        int split = Math.min(top + 5, bottom);
+        try
+        {
+            if (split > top)
+            {
+                GL11.glColor4f(1, 1, 1, 1);
+                drawFluidPixelFromIcon(x, top, icon, width, split - top, 0, 0, 0, 0, z);
+            }
+            if (split < bottom)
+            {
+                GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
+                drawFluidPixelFromIcon(x, split, icon, width, bottom - split, 0, 0, 0, 0, z);
+            }
+        } finally
+        {
+            GL11.glColor4f(1, 1, 1, 1);
+        }
+    }
+
     public static void drawFluidPixelFromIcon(int x, int y, IIcon icon, int w, int h, int srcX, int srcY, int srcW, int srcH, float zLevel)
     {
         double minU = icon.getMinU();

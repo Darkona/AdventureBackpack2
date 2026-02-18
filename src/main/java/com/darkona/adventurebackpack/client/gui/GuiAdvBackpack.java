@@ -10,6 +10,7 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.TickThrottle;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -43,6 +44,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
     private FluidTank lft;
     private FluidTank rgt;
+    private int lastReloadTick = Integer.MIN_VALUE;
     public int lefties;
     public int topsies;
 
@@ -144,7 +146,13 @@ public class GuiAdvBackpack extends GuiWithTanks
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
 
-        inventory.openInventory();
+        // Reloading the whole inventory from NBT on every frame was the cursor lag of #41: once per 5 ticks is plenty.
+        int now = player.ticksExisted;
+        if (TickThrottle.due(lastReloadTick, now, 5))
+        {
+            lastReloadTick = now;
+            inventory.openInventory();
+        }
         lft = inventory.getLeftTank();
         rgt = inventory.getRightTank();
         tankLeft.draw(this, lft);
