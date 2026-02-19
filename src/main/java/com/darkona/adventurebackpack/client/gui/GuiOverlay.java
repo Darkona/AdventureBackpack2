@@ -44,6 +44,9 @@ public class GuiOverlay extends Gui
     protected static RenderItem itemRender = new RenderItem();
     protected FontRenderer fontRendererObj;
     ScaledResolution resolution;
+    private static final ResourceLocation INVENTORY_TEXTURE = new ResourceLocation("textures/gui/container/inventory.png");
+    private static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png");
+    private int lastInvReloadTick = Integer.MIN_VALUE;
     public GuiOverlay(Minecraft mc)
     {
         super();
@@ -80,7 +83,7 @@ public class GuiOverlay extends Gui
             {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glDisable(GL11.GL_LIGHTING);
-                this.mc.renderEngine.bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
+                this.mc.renderEngine.bindTexture(INVENTORY_TEXTURE);
 
                 for (Iterator iterator = this.mc.thePlayer.getActivePotionEffects()
                         .iterator(); iterator.hasNext(); xPos += BUFF_ICON_SPACING)
@@ -107,7 +110,12 @@ public class GuiOverlay extends Gui
             {
                 IInventoryTanks inv = Wearing.getWearableInv(player);
                 assert inv != null;
-                inv.openInventory();
+                int now = player.ticksExisted;
+                if (com.darkona.adventurebackpack.util.TickThrottle.due(lastInvReloadTick, now, 5))
+                {
+                    lastInvReloadTick = now;
+                    inv.openInventory();
+                }
 
                 int textureHeight = 23;
                 int textureWidth = 10;
@@ -125,7 +133,7 @@ public class GuiOverlay extends Gui
                 for (FluidTank tank : inv.getTanksArray())
                 {
 
-                    mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
+                    mc.renderEngine.bindTexture(OVERLAY_TEXTURE);
                     drawTexturedModalRect(tankX, yPos, 10, 0, textureWidth, textureHeight);
                     drawTank(tank, tankX + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
                     ++tankX;
@@ -147,7 +155,7 @@ public class GuiOverlay extends Gui
                         u[0] = (tank == 0) ? 0 : 10;
                         u[1] = (tank == 1) ? 0 : 10;
                     }
-                    mc.renderEngine.bindTexture(new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png"));
+                    mc.renderEngine.bindTexture(OVERLAY_TEXTURE);
 
                     //Left Tank
                     drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight);
@@ -156,12 +164,17 @@ public class GuiOverlay extends Gui
                     RenderHelper.enableStandardItemLighting();
                     RenderHelper.enableGUIStandardItemLighting();
                     GL11.glPushMatrix();
-                    GL11.glTranslatef(xStart[1] + textureWidth + 2, yStart[0], 0);
-                    GL11.glScalef(0.5f, 0.5f, 0.5f);
-                    drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
-                    drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);
-                    GL11.glPopMatrix();
-                    RenderHelper.disableStandardItemLighting();
+                    try
+                    {
+                        GL11.glTranslatef(xStart[1] + textureWidth + 2, yStart[0], 0);
+                        GL11.glScalef(0.5f, 0.5f, 0.5f);
+                        drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
+                        drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);
+                    } finally
+                    {
+                        GL11.glPopMatrix();
+                        RenderHelper.disableStandardItemLighting();
+                    }
 
                 }
                 GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -172,34 +185,19 @@ public class GuiOverlay extends Gui
 
     private void drawTank(FluidTank tank, int startX, int startY, int height, int width)
     {
-        int liquidPerPixel = tank.getCapacity() / height;
+        int liquidPerPixel = Math.max(1, tank.getCapacity() / Math.max(1, height));
         FluidStack fluid = tank.getFluid();
-        if (fluid != null)
+        if (fluid != null && fluid.getFluid() != null)
         {
             try
             {
                 IIcon icon = fluid.getFluid().getStillIcon();
+                if (icon == null) return;
                 TextureUtils.bindAtlas(fluid.getFluid().getSpriteNumber());
-                int top = startY + height - (fluid.amount / liquidPerPixel);
-                for (int j = startY + height - 1; j >= top; j--)
-                {
-                    for (int i = startX; i <= startX + width - 1; i++)
-                    {
-                        GL11.glPushMatrix();
-                        if (j >= top + 5)
-                        {
-                            GL11.glColor4f(0.9f, 0.9f, 0.9f, 1);
-                        } else
-                        {
-                            GL11.glColor4f(1, 1, 1, 1);
-                        }
-                        GuiTank.drawFluidPixelFromIcon(i, j, icon, 1, 1, 0, 0, 0, 0,1);
-                        GL11.glPopMatrix();
-                    }
-                }
+                GuiTank.drawFluidColumn(startX, startY, width, height, icon, fluid.amount, liquidPerPixel, 1);
             } catch (Exception oops)
             {
-                LogHelper.error("Exception while trying to render the fluid in the GUI");
+                LogHelper.error("Exception while trying to render the fluid in the overlay");
             }
         }
     }
@@ -207,14 +205,26 @@ public class GuiOverlay extends Gui
     private void drawItemStack(ItemStack stack, int x, int y)
     {
         if(stack == null)return;
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        this.zLevel = 200.0F;
-        itemRender.zLevel = 200.0F;
-        FontRenderer font = null;
-        font = stack.getItem().getFontRenderer(stack);
-        if (font == null) font = fontRendererObj;
-        itemRender.renderItemIntoGUI(font,mc.getTextureManager(),stack,x,y);
-        this.zLevel = 0.0F;
-        itemRender.zLevel = 0.0F;
+        // Items from other mods (e.g. GregTech tools) may throw or leave GL state dirty: contain both (#110).
+        GL11.glPushMatrix();
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        try
+        {
+            GL11.glTranslatef(0.0F, 0.0F, 32.0F);
+            this.zLevel = 200.0F;
+            itemRender.zLevel = 200.0F;
+            FontRenderer font = stack.getItem().getFontRenderer(stack);
+            if (font == null) font = fontRendererObj;
+            itemRender.renderItemIntoGUI(font,mc.getTextureManager(),stack,x,y);
+        } catch (Throwable t)
+        {
+            LogHelper.error("Could not render " + stack.getItem().getUnlocalizedName() + " in the overlay: " + t);
+        } finally
+        {
+            this.zLevel = 0.0F;
+            itemRender.zLevel = 0.0F;
+            GL11.glPopAttrib();
+            GL11.glPopMatrix();
+        }
     }
 }
