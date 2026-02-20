@@ -38,25 +38,29 @@ public class RendererStack extends ModelRenderer
             }
             GL11.glPushMatrix();
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-            if (which)
+            GL11.glPushMatrix();
+            try
             {
-                GL11.glScalef(0.6F, 0.6F, 0.6F);
-                GL11.glPushMatrix();
-                GL11.glRotatef(-90F, 0, 1, 0);
-                GL11.glRotatef(-225F, 0, 0, 1);
-
-            } else
+                if (which)
+                {
+                    GL11.glScalef(0.6F, 0.6F, 0.6F);
+                    GL11.glRotatef(-90F, 0, 1, 0);
+                    GL11.glRotatef(-225F, 0, 0, 1);
+                } else
+                {
+                    GL11.glScalef(0.7F, 0.7F, 0.7F);
+                    GL11.glRotatef(45F, 0, 0, 1);
+                }
+                RenderUtils.renderItemIn3d(stack);
+            } catch (Throwable t)
             {
-                GL11.glScalef(0.7F, 0.7F, 0.7F);
-                GL11.glPushMatrix();
-                GL11.glRotatef(45F, 0, 0, 1);
-
+                // A foreign item (e.g. GregTech tools) failed to render: do not break the player (#110).
+            } finally
+            {
+                GL11.glPopMatrix();
+                GL11.glPopAttrib();
+                GL11.glPopMatrix();
             }
-            RenderUtils.renderItemIn3d(stack);
-            GL11.glPopAttrib();
-            GL11.glPopMatrix();
-            GL11.glPopMatrix();
-
         }
     }
 

@@ -290,12 +290,17 @@ public class ModelBackpackBlock extends ModelBase
             Vector3 victor = new Vector3((tankLeftTop.rotationPointX * 0.1f - 0.22f), (tankLeftTop.rotationPointY * 0.1f + 0.05f),
                     (tankLeftTop.rotationPointZ * 0.1f + 0.15f));
             GL11.glPushMatrix();
-            CCRenderState.reset();
-            CCRenderState.pullLightmap();
-            CCRenderState.useNormals = true;
-            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), new Cuboid6(0f, 0.39f, 0f, 0.15f, 0f, 0.15f).add(victor),
-                    ((1.0F * tankLeft.getFluidAmount()) / (1.0F * tankLeft.getCapacity())), 0.8);
-            GL11.glPopMatrix();
+            try
+            {
+                CCRenderState.reset();
+                CCRenderState.pullLightmap();
+                CCRenderState.useNormals = true;
+                RenderUtils.renderFluidCuboid(tankLeft.getFluid(), new Cuboid6(0f, 0.39f, 0f, 0.15f, 0f, 0.15f).add(victor),
+                        ((1.0F * tankLeft.getFluidAmount()) / (1.0F * tankLeft.getCapacity())), 0.8);
+            } finally
+            {
+                GL11.glPopMatrix();
+            }
 
         }
 
@@ -304,12 +309,17 @@ public class ModelBackpackBlock extends ModelBase
             Vector3 victor = new Vector3((tankRightTop.rotationPointX * 0.1f + 0.48f), (tankRightTop.rotationPointY * 0.1f + 0.05f),
                     (tankRightTop.rotationPointZ * 0.1f + 0.15f));
             GL11.glPushMatrix();
-            CCRenderState.reset();
-            CCRenderState.pullLightmap();
-            CCRenderState.useNormals = true;
-            RenderUtils.renderFluidCuboid(tankRight.getFluid(), new Cuboid6(0, 0.39, 0, 0.15, 0, 0.15).add(victor),
-                    ((1.0F * tankRight.getFluidAmount()) / (1.0F * tankRight.getCapacity())), 0.8);
-            GL11.glPopMatrix();
+            try
+            {
+                CCRenderState.reset();
+                CCRenderState.pullLightmap();
+                CCRenderState.useNormals = true;
+                RenderUtils.renderFluidCuboid(tankRight.getFluid(), new Cuboid6(0, 0.39, 0, 0.15, 0, 0.15).add(victor),
+                        ((1.0F * tankRight.getFluidAmount()) / (1.0F * tankRight.getCapacity())), 0.8);
+            } finally
+            {
+                GL11.glPopMatrix();
+            }
         }
     }
 

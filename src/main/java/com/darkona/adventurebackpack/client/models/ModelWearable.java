@@ -63,7 +63,17 @@ public abstract class ModelWearable extends ModelBiped
 
             Cuboid6 cat = new Cuboid6(minCoords.x,minCoords.y,minCoords.z, maxCoords.x, maxCoords.y, maxCoords.z);
             //Thanks Chickenbones!
-            RenderUtils.renderFluidCuboid(tank.getFluid(), cat.add(victor),((1.0F * tank.getFluidAmount()) / (1.0F * tank.getCapacity())), 0.8);
+            GL11.glPushMatrix();
+            try
+            {
+                RenderUtils.renderFluidCuboid(tank.getFluid(), cat.add(victor), ((1.0F * tank.getFluidAmount()) / (1.0F * tank.getCapacity())), 0.8);
+            } catch (Exception e)
+            {
+                // a broken fluid icon must never unbalance the GL stack (#136)
+            } finally
+            {
+                GL11.glPopMatrix();
+            }
         }
     }
 
