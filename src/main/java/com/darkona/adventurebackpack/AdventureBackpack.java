@@ -35,6 +35,7 @@ import java.util.Calendar;
 @Mod(modid = ModInfo.MOD_ID,
         name = ModInfo.MOD_NAME,
         version = ModInfo.MOD_VERSION,
+        acceptedMinecraftVersions = "[1.7.10]",
         guiFactory = ModInfo.GUI_FACTORY_CLASS
 )
 public class AdventureBackpack
