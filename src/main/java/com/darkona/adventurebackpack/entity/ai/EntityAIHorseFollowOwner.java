@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.entity.ai;
 
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.passive.EntityHorse;
@@ -30,13 +31,19 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
         {
             theHorse = horse;
             theWorld = horse.worldObj;
-            theOwner = theWorld.func_152378_a(UUID.fromString(theHorse.func_152119_ch()));
+            theOwner = findOwner();
             this.speed = speed * 2;
             petPathfinder = horse.getNavigator();
             this.minDist = minDist;
             this.maxDist = maxDist;
         }
 
+
+        private EntityPlayer findOwner()
+        {
+            UUID ownerUUID = Utils.parseUUIDOrNull(theHorse.func_152119_ch());
+            return ownerUUID != null ? theWorld.func_152378_a(ownerUUID) : null;
+        }
 
         public double getDistanceSquaredToOwner()
         {
@@ -52,7 +59,7 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
         {
             if(!theHorse.isTame() || theHorse.getLeashed() || !theHorse.hasCustomNameTag())return false;
             if (theOwner == null) {
-                theOwner = theWorld.func_152378_a(UUID.fromString(theHorse.func_152119_ch()));
+                theOwner = findOwner();
                 if (theOwner == null)
                 {
                     return false;

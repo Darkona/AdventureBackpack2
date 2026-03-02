@@ -11,6 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 
+import com.darkona.adventurebackpack.util.Utils;
+
 import java.util.UUID;
 
 /**
@@ -28,9 +30,11 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
     {
         if (ctx.side.isClient())
         {
-            EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(UUID.fromString(message.playerID));
+            UUID playerUUID = Utils.parseUUIDOrNull(message.playerID);
+            if (playerUUID == null || Minecraft.getMinecraft().theWorld == null) return null;
+            EntityPlayer player = Minecraft.getMinecraft().theWorld.func_152378_a(playerUUID);
 
-            if (player.openContainer instanceof ContainerBackpack)
+            if (player != null && player.openContainer instanceof ContainerBackpack)
             {
                 ContainerBackpack cont = ((ContainerBackpack) player.openContainer);
                 cont.detectAndSendChanges();

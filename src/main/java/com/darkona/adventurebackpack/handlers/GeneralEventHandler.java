@@ -132,11 +132,11 @@ public class GeneralEventHandler
             EntityHorse horse = ((EntityHorse)event.entity);
             if(!horse.isDead && horse.isTame() && horse.hasCustomNameTag())
             {
-                String ownerUUIDstring = horse.func_152119_ch();
-                if (ownerUUIDstring != null && !ownerUUIDstring.isEmpty())
+                UUID ownerUUID = Utils.parseUUIDOrNull(horse.func_152119_ch());
+                if (ownerUUID != null)
                 {
                     boolean set = true;
-                    if(horse.worldObj.func_152378_a(UUID.fromString(ownerUUIDstring)) != null)
+                    if(horse.worldObj.func_152378_a(ownerUUID) != null)
                     {
                         for (Object entry : horse.tasks.taskEntries)
                         {

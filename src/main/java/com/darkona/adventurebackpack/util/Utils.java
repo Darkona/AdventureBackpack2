@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * Created on 12/10/2014
@@ -454,6 +455,24 @@ public class Utils
         } else
         {
             return text; // Text is the first word itself.
+        }
+    }
+
+    /**
+     * Parses an owner UUID string without throwing: horses tamed before 1.7.6 or edited by other
+     * mods can store an empty string or a player name instead of a UUID (#99).
+     *
+     * @return the UUID, or null when the string is null, empty or not a UUID.
+     */
+    public static UUID parseUUIDOrNull(String text)
+    {
+        if (text == null || text.isEmpty()) return null;
+        try
+        {
+            return UUID.fromString(text);
+        } catch (IllegalArgumentException e)
+        {
+            return null;
         }
     }
 }
