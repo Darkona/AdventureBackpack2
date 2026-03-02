@@ -31,6 +31,7 @@ public class EntitySoundPacket implements IMessageHandler<EntitySoundPacket.Mess
     {
         if (ctx.side.isClient())
         {
+            if (Minecraft.getMinecraft().theWorld == null) return null;
             ClientActions.playSoundAtEntity(Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID), message.soundCode);
         } else
         {

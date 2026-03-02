@@ -71,6 +71,8 @@ public class ClientProxy implements IProxy
     @Override
     public void synchronizePlayer(int id, NBTTagCompound properties)
     {
+        // The client world is null while joining or changing worlds; the server syncs again later (#121).
+        if (Minecraft.getMinecraft().theWorld == null) return;
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
         if(Utils.notNullAndInstanceOf(entity, EntityPlayer.class)&& properties != null)
         {
