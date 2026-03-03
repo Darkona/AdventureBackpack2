@@ -89,9 +89,11 @@ public class GuiOverlay extends Gui
                         .iterator(); iterator.hasNext(); xPos += BUFF_ICON_SPACING)
                 {
                     PotionEffect potioneffect = (PotionEffect) iterator.next();
-                    Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
+                    int potionId = potioneffect.getPotionID();
+                    // Effects from other mods can carry an id with no Potion registered on this client (#108)
+                    Potion potion = potionId >= 0 && potionId < Potion.potionTypes.length ? Potion.potionTypes[potionId] : null;
 
-                    if (potion.hasStatusIcon())
+                    if (potion != null && potion.hasStatusIcon())
                     {
                         int iconIndex = potion.getStatusIconIndex();
                         this.drawTexturedModalRect(
