@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.WearableModePacket;
@@ -47,33 +48,59 @@ public class ServerActions
      */
     public static void cycleTool(EntityPlayer player, int direction, int slot)
     {
+        // The client sends the slot it scrolled on; the server's currentItem can lag behind it, so the
+        // swap uses the stack that is in that slot right now and checks it again (#56, #67, #78).
+        if (direction == 0 || !isHotbarSlot(slot) || !Wearing.isWearingBackpack(player)) return;
         try
         {
+            ItemStack current = player.inventory.mainInventory[slot];
+            if (!canCycleTool(Wearing.getWearingBackpack(player), current)) return;
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
-            ItemStack current = player.getCurrentEquippedItem();
             backpack.openInventory();
-            if (direction < 0)
-            {
-                //LogHelper.info("Item of class " + backpack.getStackInSlot(Constants.lowerTool).getItem().getClass().getName());
-                player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.upperTool);
-                backpack.setInventorySlotContentsNoSave(Constants.upperTool, backpack.getStackInSlot(Constants.lowerTool));
-                backpack.setInventorySlotContentsNoSave(Constants.lowerTool, current);
-
-            } else
-            {
-                if (direction > 0)
-                {
-                    player.inventory.mainInventory[slot] = backpack.getStackInSlot(Constants.lowerTool);
-                    backpack.setInventorySlotContentsNoSave(Constants.lowerTool, backpack.getStackInSlot(Constants.upperTool));
-                    backpack.setInventorySlotContentsNoSave(Constants.upperTool, current);
-                }
-            }
+            ItemStack[] tools = {current, backpack.getStackInSlot(Constants.upperTool), backpack.getStackInSlot(Constants.lowerTool)};
+            rotateTools(tools, direction);
+            player.inventory.mainInventory[slot] = tools[0];
+            backpack.setInventorySlotContentsNoSave(Constants.upperTool, tools[1]);
+            backpack.setInventorySlotContentsNoSave(Constants.lowerTool, tools[2]);
             backpack.markDirty();
-            player.inventory.closeInventory();
+            player.inventory.markDirty();
         } catch (Exception oops)
         {
             LogHelper.debug("Exception trying to cycle tools.");
             oops.printStackTrace();
+        }
+    }
+
+    /** True when the held stack may go into the backpack's tool slots by cycling. */
+    public static boolean canCycleTool(ItemStack backpack, ItemStack held)
+    {
+        if (held == null) return false;
+        return SlotTool.isValidTool(held)
+                || (held.getItem() == Items.bow && "Skeleton".equals(BackpackNames.getBackpackColorName(backpack)));
+    }
+
+    public static boolean isHotbarSlot(int slot)
+    {
+        return slot >= 0 && slot < 9;
+    }
+
+    /**
+     * Rotates {held, upperTool, lowerTool} in place. A negative direction takes the upper tool into the hand,
+     * a positive one the lower tool; every stack ends in exactly one place.
+     */
+    public static void rotateTools(Object[] tools, int direction)
+    {
+        Object held = tools[0];
+        if (direction < 0)
+        {
+            tools[0] = tools[1];
+            tools[1] = tools[2];
+            tools[2] = held;
+        } else if (direction > 0)
+        {
+            tools[0] = tools[2];
+            tools[2] = tools[1];
+            tools[1] = held;
         }
     }
 
@@ -105,7 +132,7 @@ public class ServerActions
      */
     public static void switchHose(EntityPlayer player, boolean action, int direction, int slot)
     {
-
+        if (!isHotbarSlot(slot)) return;
         ItemStack hose = player.inventory.mainInventory[slot];
         if (hose != null && hose.getItem() instanceof ItemHose)
         {
