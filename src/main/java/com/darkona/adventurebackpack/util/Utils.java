@@ -271,15 +271,26 @@ public class Utils
         return side == Side.SERVER;
     }
 
+    /**
+     * Air, or a block that placing replaces and that is not a fluid (snow layer, tall grass, vines).
+     * Without it a player who dies on a snow layer or in tall grass finds no spot for the backpack (#128).
+     */
+    private static boolean isFreeForBackpack(IBlockAccess world, int X, int Y, int Z)
+    {
+        Block block = world.getBlock(X, Y, Z);
+        return block.isAir(world, X, Y, Z)
+                || (block.isReplaceable(world, X, Y, Z) && !block.getMaterial().isLiquid());
+    }
+
     private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
         //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
-        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
+        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeForBackpack(world, X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
         {
             //LogHelper.info("Found spot with the exception of the death point");
             return new ChunkCoordinates(X, Y, Z);
         }
-        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z))
+        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeForBackpack(world, X, Y, Z))
         {
             //LogHelper.info("Found spot without exceptions");
             return new ChunkCoordinates(X, Y, Z);
@@ -338,7 +349,7 @@ public class Utils
                 for (; i <= X + steps; i++)
                 {
 
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, i, Y, j, except) : checkCoordsForBackpack(world, origX, origZ, i, Y, j, except);
                     if (coords != null)
                     {
                         return coords;
@@ -351,7 +362,7 @@ public class Utils
             {
                 for (; j >= Z - steps; j--)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, i, Y, j, except) : checkCoordsForBackpack(world, origX, origZ, i, Y, j, except);
                     if (coords != null)
                     {
                         return coords;
@@ -369,7 +380,7 @@ public class Utils
             {
                 for (; i >= X - steps; i--)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, i, Y, j, except) : checkCoordsForBackpack(world, origX, origZ, i, Y, j, except);
                     if (coords != null)
                     {
                         return coords;
@@ -382,7 +393,7 @@ public class Utils
             {
                 for (; j <= Z + steps; j++)
                 {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, X, Y, Z, except) : checkCoordsForBackpack(world, origX, origZ, X, Y, Z, except);
+                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, i, Y, j, except) : checkCoordsForBackpack(world, origX, origZ, i, Y, j, except);
                     if (coords != null)
                     {
                         return coords;

@@ -32,6 +32,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -179,19 +180,7 @@ public class PlayerEventHandler
             EntityPlayer player = (EntityPlayer) event.entity;
             if (!player.worldObj.isRemote)
             {
-                //LogHelper.info("Player died");
                 BackpackProperty props = BackpackProperty.get(player);
-
-                if (props.hasWearable())
-                {
-                    //We want to keep the wearables on the player if KeepInventory is active.
-                    if (!player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
-                    {
-                        //So if it isn't, we drop it like it's hot, drop it like it's hot, drop it like it's hot.
-                        ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
-                    }
-                }
-
                 if (props.isForcedCampFire())
                 {
                     ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
@@ -201,10 +190,35 @@ public class PlayerEventHandler
                     }
                     //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
                 }
-                ServerProxy.storePlayerProps(player);
             }
         }
         event.setResult(Event.Result.ALLOW);
+    }
+
+    /**
+     * Drops or places the wearable together with the rest of the player's drops, so grave and
+     * soulbound mods see it in the drop list and a death another mod cancels drops nothing (#117).
+     * Receives cancelled events so the wearable still leaves the player when another mod cancels the drops.
+     */
+    @SubscribeEvent(priority = EventPriority.HIGH, receiveCanceled = true)
+    public void playerDrops(PlayerDropsEvent event)
+    {
+        EntityPlayer player = event.entityPlayer;
+        if (player == null || player.worldObj.isRemote) return;
+        BackpackProperty props = BackpackProperty.get(player);
+        if (props.hasWearable() && !player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+        {
+            // While capturing, a dropped wearable joins event.drops instead of spawning on its own
+            player.captureDrops = !event.isCanceled();
+            try
+            {
+                ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
+            } finally
+            {
+                player.captureDrops = false;
+            }
+        }
+        ServerProxy.storePlayerProps(player);
     }
 
     @SubscribeEvent

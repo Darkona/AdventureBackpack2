@@ -29,6 +29,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
@@ -316,14 +317,14 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
 
     private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
     {
-        int X = (int) player.posX;
-        int Z = (int) player.posZ;
+        int X = MathHelper.floor_double(player.posX);
+        int Z = MathHelper.floor_double(player.posZ);
         int positions[] = {0,-1,1,-2,2,-3,3,-4,4,-5,5,-6,6};
 
         for (int Y: positions)
         {
             ChunkCoordinates spawn =
-                    Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, (int)player.posY + Y, Z, 12, true, 1, (byte) 0, false);
+                    Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, MathHelper.floor_double(player.posY) + Y, Z, 12, true, 1, (byte) 0, false);
             if (spawn != null)
             {
                 return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
