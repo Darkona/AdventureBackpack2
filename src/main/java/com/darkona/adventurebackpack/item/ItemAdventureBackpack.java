@@ -178,7 +178,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
                     ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(stack.stackTagCompound);
                     if (from)
                     {
-                        player.inventory.decrStackSize(player.inventory.currentItem, 1);
+                        // Shrink the used stack like ItemBlock does, so a cancelled place event (protected
+                        // area) can give it back; taking it out of the slot loses the backpack (#86).
+                        --stack.stackSize;
                     } else
                     {
                         BackpackProperty.get(player).setWearable(null);
