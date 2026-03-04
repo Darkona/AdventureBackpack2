@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.inventory;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -142,6 +143,16 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
+        // The server closes the GUI once the backpack is no longer the stack it was opened on
+        // (equipped, unequipped, moved out of the hand): editing a stale copy duplicates or loses items.
+        if (source == SOURCE_HOLDING)
+        {
+            return player.getCurrentEquippedItem() == inventory.getParentItemStack();
+        }
+        if (source == SOURCE_WEARING)
+        {
+            return Wearing.getWearingBackpack(player) == inventory.getParentItemStack();
+        }
         return inventory.isUseableByPlayer(player);
     }
 
@@ -187,6 +198,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
         if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
+        {
+            return null;
+        }
+        // Number keys swap a hotbar slot with the clicked one: never move the open backpack that way
+        if (flag == 2 && source == SOURCE_HOLDING && button == player.inventory.currentItem)
         {
             return null;
         }

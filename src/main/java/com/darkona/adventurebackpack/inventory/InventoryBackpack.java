@@ -156,7 +156,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        if (slot > inventory.length) return;
+        if (slot < 0 || slot >= inventory.length) return;
         inventory[slot] = stack;
         if (stack != null && stack.stackSize > this.getInventoryStackLimit())
         {
@@ -168,7 +168,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
     {
-        if (slot > inventory.length) return;
+        if (slot < 0 || slot >= inventory.length) return;
         inventory[slot] = stack;
         if (stack != null && stack.stackSize > this.getInventoryStackLimit())
         {
@@ -222,6 +222,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         {
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
             NBTTagList items = backpackData.getTagList("ABPItems", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+            // Slots missing from the list are empty: without this, a stack removed through another
+            // InventoryBackpack on the same item (abilities, hose, closing) comes back on the next save.
+            java.util.Arrays.fill(inventory, null);
             for (int i = 0; i < items.tagCount(); i++)
             {
                 NBTTagCompound item = items.getCompoundTagAt(i);
