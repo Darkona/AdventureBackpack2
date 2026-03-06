@@ -10,6 +10,7 @@ import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -153,7 +154,6 @@ public class GuiSteamJetpack extends GuiWithTanks
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
         if(wearing)
         {
             if(unequipButton.inButton(this,mouseX,mouseY))
@@ -165,7 +165,7 @@ public class GuiSteamJetpack extends GuiWithTanks
         {
             if(equipButton.inButton(this,mouseX,mouseY))
             {
-                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
+                ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak)));
                 player.closeScreen();
             }
         }

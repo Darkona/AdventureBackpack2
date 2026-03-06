@@ -14,6 +14,7 @@ import com.darkona.adventurebackpack.util.TickThrottle;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
@@ -212,7 +213,6 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-        int sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
         if(isTile)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
@@ -233,7 +233,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             {
                 if(equipButton.inButton(this,mouseX,mouseY))
                 {
-                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, Keyboard.isKeyDown(sneakKey)));
+                    ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak)));
                     player.closeScreen();
                 }
 
