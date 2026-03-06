@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.init;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.init.recipes.BackpackKeepContentsRecipe;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -145,7 +146,7 @@ public class ModRecipes
                 {
                     if (field.getName().equals((BackpackNames.backpackNames[i])))
                     {
-                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
+                        GameRegistry.addRecipe(new BackpackKeepContentsRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
                         counter++;
                     }
                 } catch (Exception oops)
