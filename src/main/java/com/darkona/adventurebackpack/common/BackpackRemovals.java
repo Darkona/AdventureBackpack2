@@ -70,7 +70,7 @@ public class BackpackRemovals
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.damageBoost.id)) {
             potion = player.getActivePotionEffect(Potion.damageBoost);
-            if (potion != null && potion.getAmplifier() == -5) {
+            if (potion != null && AbilityEffects.isDragonEffect(potion.getAmplifier(), potion.getDuration(), AbilityEffects.DRAGON_STRENGTH_AMPLIFIER)) {
                 if (player.worldObj.isRemote) {
                     player.removePotionEffectClient(Potion.damageBoost.id);
                 } else {
@@ -82,7 +82,7 @@ public class BackpackRemovals
         if (player.isPotionActive(Potion.regeneration.id)) {
             potion = player.getActivePotionEffect(Potion.regeneration);
 
-            if (potion != null && potion.getAmplifier() == -5) {
+            if (potion != null && AbilityEffects.isDragonEffect(potion.getAmplifier(), potion.getDuration(), AbilityEffects.DRAGON_REGENERATION_AMPLIFIER)) {
                 if (player.worldObj.isRemote) {
                     player.removePotionEffectClient(Potion.regeneration.id);
                 } else {

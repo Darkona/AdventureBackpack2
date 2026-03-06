@@ -233,7 +233,8 @@ public class BackpackAbilities
         if (player.isPotionActive(Potion.fireResistance.id)) {
             potion = player.getActivePotionEffect(Potion.fireResistance);
         }
-        if (potion == null || potion.getDuration() < 5 && potion.getAmplifier() != -5)
+        // Refreshed before it runs out: letting it expire leaves a tick without it, and lava hurts in that tick (#105)
+        if (potion == null || AbilityEffects.needsRefresh(potion.getDuration()))
         {
             player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 5000, -5));
         }
@@ -417,16 +418,16 @@ public class BackpackAbilities
         if (player.isPotionActive(Potion.regeneration.id)) {
             potion = player.getActivePotionEffect(Potion.regeneration);
         }
-        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5)
+        if (potion == null || AbilityEffects.needsRefresh(potion.getDuration()))
         {
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), 5000, -5));
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), AbilityEffects.DRAGON_EFFECT_TICKS, AbilityEffects.DRAGON_REGENERATION_AMPLIFIER));
         }
         potion = null;
         if (player.isPotionActive(Potion.damageBoost.id)) {
             potion = player.getActivePotionEffect(Potion.damageBoost);
         }
-        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5) {
-            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), 5000, -5));
+        if (potion == null || AbilityEffects.needsRefresh(potion.getDuration())) {
+            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), AbilityEffects.DRAGON_EFFECT_TICKS, AbilityEffects.DRAGON_STRENGTH_AMPLIFIER));
         }
     }
 
