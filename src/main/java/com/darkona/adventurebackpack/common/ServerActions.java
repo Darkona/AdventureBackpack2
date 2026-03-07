@@ -12,6 +12,7 @@ import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -265,6 +266,8 @@ public class ServerActions
     public static void toggleSleepingBag(EntityPlayer player, int coordX, int coordY, int coordZ)
     {
         World world = player.worldObj;
+        // The coordinates come from the client: only a backpack within reach can deploy its bag
+        if (player.getDistanceSq(coordX + 0.5, coordY + 0.5, coordZ + 0.5) > 64) return;
         if (world.getTileEntity(coordX, coordY, coordZ) instanceof TileAdventureBackpack)
         {
             TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
@@ -302,9 +305,9 @@ public class ServerActions
             {
                 case 0:
                     --coordZ;
-                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
+                    if (Utils.isFreeSpace(world, coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
                     {
-                        if (world.isAirBlock(coordX, coordY, coordZ - 1) && world.getBlock(coordX, coordY - 1, coordZ - 1).getMaterial().isSolid())
+                        if (Utils.isFreeSpace(world, coordX, coordY, coordZ - 1) && world.getBlock(coordX, coordY - 1, coordZ - 1).getMaterial().isSolid())
                         {
                             newMeta = 2;
                         }
@@ -312,9 +315,9 @@ public class ServerActions
                     break;
                 case 1:
                     ++coordX;
-                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
+                    if (Utils.isFreeSpace(world, coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
                     {
-                        if (world.isAirBlock(coordX + 1, coordY, coordZ) && world.getBlock(coordX + 1, coordY - 1, coordZ).getMaterial().isSolid())
+                        if (Utils.isFreeSpace(world, coordX + 1, coordY, coordZ) && world.getBlock(coordX + 1, coordY - 1, coordZ).getMaterial().isSolid())
                         {
                             newMeta = 3;
                         }
@@ -322,9 +325,9 @@ public class ServerActions
                     break;
                 case 2:
                     ++coordZ;
-                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
+                    if (Utils.isFreeSpace(world, coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
                     {
-                        if (world.isAirBlock(coordX, coordY, coordZ + 1) && world.getBlock(coordX, coordY - 1, coordZ + 1).getMaterial().isSolid())
+                        if (Utils.isFreeSpace(world, coordX, coordY, coordZ + 1) && world.getBlock(coordX, coordY - 1, coordZ + 1).getMaterial().isSolid())
                         {
                             newMeta = 0;
                         }
@@ -332,9 +335,9 @@ public class ServerActions
                     break;
                 case 3:
                     --coordX;
-                    if (world.isAirBlock(coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
+                    if (Utils.isFreeSpace(world, coordX, coordY, coordZ) && world.getBlock(coordX, coordY - 1, coordZ).getMaterial().isSolid())
                     {
-                        if (world.isAirBlock(coordX - 1, coordY, coordZ) && world.getBlock(coordX - 1, coordY - 1, coordZ).getMaterial().isSolid())
+                        if (Utils.isFreeSpace(world, coordX - 1, coordY, coordZ) && world.getBlock(coordX - 1, coordY - 1, coordZ).getMaterial().isSolid())
                         {
                             newMeta = 1;
                         }

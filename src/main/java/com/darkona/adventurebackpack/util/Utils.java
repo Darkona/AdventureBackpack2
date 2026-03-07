@@ -273,9 +273,9 @@ public class Utils
 
     /**
      * Air, or a block that placing replaces and that is not a fluid (snow layer, tall grass, vines).
-     * Without it a player who dies on a snow layer or in tall grass finds no spot for the backpack (#128).
+     * Without it a backpack finds no spot on a snow layer or in tall grass (#128, #104).
      */
-    private static boolean isFreeForBackpack(IBlockAccess world, int X, int Y, int Z)
+    public static boolean isFreeSpace(IBlockAccess world, int X, int Y, int Z)
     {
         Block block = world.getBlock(X, Y, Z);
         return block.isAir(world, X, Y, Z)
@@ -285,12 +285,12 @@ public class Utils
     private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
         //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
-        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeForBackpack(world, X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
+        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeSpace(world, X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
         {
             //LogHelper.info("Found spot with the exception of the death point");
             return new ChunkCoordinates(X, Y, Z);
         }
-        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeForBackpack(world, X, Y, Z))
+        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeSpace(world, X, Y, Z))
         {
             //LogHelper.info("Found spot without exceptions");
             return new ChunkCoordinates(X, Y, Z);
