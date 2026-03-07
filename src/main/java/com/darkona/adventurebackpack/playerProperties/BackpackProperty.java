@@ -117,9 +117,10 @@ public class BackpackProperty implements IExtendedEntityProperties
         if(compound!=null)
         {
             setWearable( compound.hasKey("wearable") ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null);
-            setCampFire( new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")));
-            dimension = compound.getInteger("compFireDim");
-            forceCampFire = compound.getBoolean("forceCampfire");
+            // Keys must match saveNBTData: a misspelt key reads as 0/false and the campfire spawn is lost
+            setCampFire(compound.hasKey("campFireX") ? new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")) : null);
+            dimension = compound.getInteger("campFireDim");
+            forceCampFire = compound.getBoolean("forceCampFire");
         }
     }
 
