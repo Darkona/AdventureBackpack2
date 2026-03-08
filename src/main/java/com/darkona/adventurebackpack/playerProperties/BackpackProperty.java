@@ -28,6 +28,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
+    private NBTTagCompound lastSentData = null;
 
     public NBTTagCompound getWearableData()
     {
@@ -41,6 +42,29 @@ public class BackpackProperty implements IExtendedEntityProperties
         {
             syncToNear(player);
         }
+    }
+
+    /**
+     * Sends the properties to the player and its trackers only when they differ from the last ones sent.
+     * Called every tick: building the compound is local, the packet goes out only on a real change.
+     */
+    public static void syncToNearIfChanged(EntityPlayer player)
+    {
+        if (!(player instanceof EntityPlayerMP)) return;
+        BackpackProperty props = get(player);
+        NBTTagCompound data = props.getData();
+        if (!data.equals(props.lastSentData))
+        {
+            props.lastSentData = data;
+            syncToNear(player);
+        }
+    }
+
+    /** Sends the properties of {@code target} to one player that just started tracking it. */
+    public static void syncTo(EntityPlayer target, EntityPlayerMP receiver)
+    {
+        if (target == null || receiver == null || get(target) == null) return;
+        ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(target.getEntityId(), get(target).getData()), receiver);
     }
 
     public static void syncToNear(EntityPlayer player)

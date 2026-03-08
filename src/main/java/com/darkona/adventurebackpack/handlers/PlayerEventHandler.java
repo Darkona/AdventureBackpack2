@@ -293,6 +293,16 @@ public class PlayerEventHandler
     }
 
 
+    /** A player that comes into range gets the wearable of the one it now sees, since syncs only follow changes. */
+    @SubscribeEvent
+    public void startTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event)
+    {
+        if (event.target instanceof EntityPlayer && event.entityPlayer instanceof EntityPlayerMP)
+        {
+            BackpackProperty.syncTo((EntityPlayer) event.target, (EntityPlayerMP) event.entityPlayer);
+        }
+    }
+
     @SubscribeEvent
     public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
@@ -306,8 +316,7 @@ public class PlayerEventHandler
             {
                 if (event.side.isServer())
                 {
-                    EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
-                    BackpackProperty.syncToNear(event.player);
+                    BackpackProperty.syncToNearIfChanged(event.player);
 //                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
 //                    {
 //                        //playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
