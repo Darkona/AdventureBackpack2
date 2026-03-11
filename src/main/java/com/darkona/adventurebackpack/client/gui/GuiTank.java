@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.client.gui;
 
 import codechicken.lib.render.TextureUtils;
-import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.util.LogHelper;
 import net.minecraft.client.Minecraft;
@@ -57,7 +56,7 @@ public class GuiTank
     {
         FluidStack fluid = tank.getFluid();
         String fluidName = (fluid != null) ? fluid.getLocalizedName() : "None";
-        String fluidAmount = (fluid != null) ? fluid.amount + "/" + Constants.basicTankCapacity : "Empty";
+        String fluidAmount = (fluid != null) ? fluid.amount + "/" + ConfigHandler.BACKPACK_TANK_CAPACITY : "Empty";
         ArrayList<String> tankTips = new ArrayList<String>();
         tankTips.add(fluidName);
         tankTips.add(fluidAmount);

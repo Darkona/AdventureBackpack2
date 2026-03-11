@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.block.Block;
@@ -24,8 +25,8 @@ import net.minecraftforge.fluids.FluidTank;
 public class InventoryBackpack implements IInventoryAdventureBackpack
 {
     public ItemStack[] inventory = new ItemStack[Constants.inventorySize];
-    private FluidTank leftTank = new FluidTank(Constants.basicTankCapacity);
-    private FluidTank rightTank = new FluidTank(Constants.basicTankCapacity);
+    private FluidTank leftTank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
+    private FluidTank rightTank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
 
     public ItemStack getContainerStack()
     {

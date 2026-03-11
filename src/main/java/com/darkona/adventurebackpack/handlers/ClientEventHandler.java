@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
-import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.SlotTool;
@@ -40,7 +40,7 @@ public class ClientEventHandler
         if (event.itemStack.getItem() instanceof ItemAdventureBackpack)
         {
             NBTTagCompound compound = event.itemStack.stackTagCompound;
-            FluidTank tank = new FluidTank(Constants.basicTankCapacity);
+            FluidTank tank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
             String tankInfo = "";
             if (compound != null)
             {

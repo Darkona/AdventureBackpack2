@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.block;
 
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
@@ -74,8 +75,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     public TileAdventureBackpack()
     {
-        leftTank = new FluidTank(Constants.basicTankCapacity);
-        rightTank = new FluidTank(Constants.basicTankCapacity);
+        leftTank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
+        rightTank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
         inventory = new ItemStack[Constants.inventorySize];
         sleepingBagDeployed = false;
         setColorName("Standard");

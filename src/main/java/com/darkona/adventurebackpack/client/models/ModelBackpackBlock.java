@@ -4,7 +4,7 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
-import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -351,7 +351,7 @@ public class ModelBackpackBlock extends ModelBase
 
             Cuboid6 left = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
             //Thanks Chickenbones!
-            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), left.add(victor), ((1.0F * tankLeft.getFluidAmount()) / (1.0F * Constants.basicTankCapacity)), 0.2);
+            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), left.add(victor), ((1.0F * tankLeft.getFluidAmount()) / (1.0F * ConfigHandler.BACKPACK_TANK_CAPACITY)), 0.2);
         }
 
         if (tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getFluid().getIcon() != null)
@@ -369,7 +369,7 @@ public class ModelBackpackBlock extends ModelBase
             CCRenderState.useNormals = true;
 
             Cuboid6 right = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
-            RenderUtils.renderFluidCuboid(tankRight.getFluid(), right.add(victor), ((1.0F * tankRight.getFluidAmount()) / (1.0F * Constants.basicTankCapacity)), 0.2);
+            RenderUtils.renderFluidCuboid(tankRight.getFluid(), right.add(victor), ((1.0F * tankRight.getFluidAmount()) / (1.0F * ConfigHandler.BACKPACK_TANK_CAPACITY)), 0.2);
         }
 
     }

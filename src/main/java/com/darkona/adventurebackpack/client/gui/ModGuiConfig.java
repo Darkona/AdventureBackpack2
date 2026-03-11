@@ -16,7 +16,7 @@ public class ModGuiConfig extends GuiConfig
     public ModGuiConfig(GuiScreen guiScreen)
     {
         super(guiScreen,
-                new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
+                new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.ROOT)).getChildElements(),
                 ModInfo.MOD_ID,
                 false,
                 false,
