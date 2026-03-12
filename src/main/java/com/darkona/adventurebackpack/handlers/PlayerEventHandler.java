@@ -159,11 +159,11 @@ public class PlayerEventHandler
 
             if (event.entityLiving instanceof EntityPlayer)
             {
-                if (Wearing.isWearingBoots(((EntityPlayer) event.entityLiving)) && event.distance < 8)
+                if (ConfigHandler.PISTONBOOTS_ENABLED && Wearing.isWearingBoots(((EntityPlayer) event.entityLiving)) && event.distance < ConfigHandler.PISTONBOOTS_SAFE_FALL_DISTANCE)
                 {
                     event.setCanceled(true);
                 }
-                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.BACKPACK_ABILITIES)
+                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.IRONGOLEM_ENABLED)
                 {
                     event.setCanceled(true);
                 }

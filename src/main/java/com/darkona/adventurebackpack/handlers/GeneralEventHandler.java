@@ -43,7 +43,7 @@ public class GeneralEventHandler
     public void eatGoldenApple(PlayerUseItemEvent.Finish event)
     {
         EntityPlayer player = event.entityPlayer;
-        if (ConfigHandler.BACKPACK_ABILITIES)
+        if (ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.RAINBOW_ENABLED)
         {
             if (event.item.getItem() instanceof ItemAppleGold &&
                     //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
@@ -52,7 +52,7 @@ public class GeneralEventHandler
 
                 InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
                 if (inv.getLastTime() > 0) return;
-                inv.setLastTime(Utils.secondsToTicks(150));
+                inv.setLastTime(Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS));
                 inv.dirtyTime();
                 if (!player.worldObj.isRemote)
                 {
@@ -83,7 +83,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectBow(ArrowNockEvent event)
     {
-        if (!ConfigHandler.BACKPACK_ABILITIES) return;
+        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.SKELETON_ENABLED) return;
         if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -98,7 +98,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectArrow(ArrowLooseEvent event)
     {
-        if (!ConfigHandler.BACKPACK_ABILITIES) return;
+        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.SKELETON_ENABLED) return;
         if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -125,7 +125,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void makeHorsesFollowOwner(EntityJoinWorldEvent event)
     {
-        if(!ConfigHandler.BACKPACK_ABILITIES)return;
+        if (!ConfigHandler.HORSES_FOLLOW_OWNER) return;
         if(event.entity instanceof EntityHorse)
         {
 

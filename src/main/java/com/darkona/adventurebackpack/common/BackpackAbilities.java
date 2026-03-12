@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.ai.EntityAIAvoidPlayerWithBackpack;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -80,6 +81,7 @@ public class BackpackAbilities
      */
     public void executeAbility(EntityPlayer player, World world, Object backpack)
     {
+        if (!ConfigHandler.BACKPACK_ABILITIES) return;
         if (backpack instanceof ItemStack)
         {
             String colorName = BackpackNames.getBackpackColorName((ItemStack)backpack);
@@ -175,6 +177,7 @@ public class BackpackAbilities
      */
     public void itemSunflower(EntityPlayer player, World world, ItemStack backpack)
     {
+        if (!ConfigHandler.SUNFLOWER_ENABLED) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
 
         if (inv.getLastTime() <= 0)
@@ -182,10 +185,10 @@ public class BackpackAbilities
             if(world.isDaytime() &&
                     /*!world.isRemote &&*/
                     world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY+1),MathHelper.floor_double(player.posZ))) {
-                player.getFoodStats().addStats(2, 0.2f);
+                player.getFoodStats().addStats(ConfigHandler.SUNFLOWER_FOOD, ConfigHandler.SUNFLOWER_SATURATION);
                 //LogHelper.info("OMNOMNOMNOM");
             }
-            inv.setLastTime(Utils.secondsToTicks(120));
+            inv.setLastTime(Utils.secondsToTicks(ConfigHandler.SUNFLOWER_INTERVAL_SECONDS));
         }else{
             inv.setLastTime(inv.getLastTime() - 1);
         }
@@ -200,6 +203,11 @@ public class BackpackAbilities
      */
     public void itemBat(EntityPlayer player, World world, ItemStack backpack)
     {
+        if (ConfigHandler.BAT_ENABLED) giveNightVision(player);
+    }
+
+    private void giveNightVision(EntityPlayer player)
+    {
         //Shameless rip-off from Machinemuse. Thanks Claire, I don't have to reinvent the wheel thanks to you.
         //I will use a different potion id to avoid conflicting with her modular suits
         PotionEffect nightVision = player.getActivePotionEffect(Potion.nightVision);
@@ -207,16 +215,21 @@ public class BackpackAbilities
                 nightVision != null ? nightVision.getDuration() : 0,
                 nightVision != null ? nightVision.getAmplifier() : 0, -4))
         {
-            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, NightVisionRefresh.DURATION, -4));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, ConfigHandler.BAT_NIGHT_VISION_TICKS, -4));
         }
     }
 
     public void itemSquid(EntityPlayer player, World world, ItemStack backpack)
     {
+        if (ConfigHandler.SQUID_ENABLED) giveWaterBreathing(player, world, backpack);
+    }
+
+    private void giveWaterBreathing(EntityPlayer player, World world, ItemStack backpack)
+    {
         if (player.isInWater())
         {
             player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, -5));
-            itemBat(player, world, backpack);
+            giveNightVision(player);
         }else{
             backpackRemovals.itemSquid(player,world, backpack);
         }
@@ -229,6 +242,11 @@ public class BackpackAbilities
 
     public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
     {
+        if (ConfigHandler.PIGMAN_ENABLED) giveFireResistance(player);
+    }
+
+    private void giveFireResistance(EntityPlayer player)
+    {
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.fireResistance.id)) {
             potion = player.getActivePotionEffect(Potion.fireResistance);
@@ -236,7 +254,7 @@ public class BackpackAbilities
         // Refreshed before it runs out: letting it expire leaves a tick without it, and lava hurts in that tick (#105)
         if (potion == null || AbilityEffects.needsRefresh(potion.getDuration()))
         {
-            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 5000, -5));
+            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, ConfigHandler.PIGMAN_FIRE_RESISTANCE_TICKS, -5));
         }
     }
 
@@ -254,21 +272,21 @@ public class BackpackAbilities
     public void itemCactus(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in ticks for this backpack.
-        if(world.isRemote)return;
+        if (!ConfigHandler.CACTUS_ENABLED || world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int drops = 0;
         if (player.isInWater())
         {
-            drops += 2;
+            drops += ConfigHandler.CACTUS_WATER_IN_WATER;
         }
         if (isUnderRain(player))
         {
-            drops += 1;
+            drops += ConfigHandler.CACTUS_WATER_IN_RAIN;
         }
 
         if (inv.getLastTime() <= 0 && drops > 0)
         {
-            inv.setLastTime(5);
+            inv.setLastTime(ConfigHandler.CACTUS_WORN_INTERVAL_TICKS);
             FluidStack raindrop = new FluidStack(FluidRegistry.WATER, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
@@ -292,12 +310,13 @@ public class BackpackAbilities
     public void itemPig(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in seconds for this backpack.
+        if (!ConfigHandler.PIG_ENABLED) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int oinkTime = inv.getLastTime() - 1;
         if (oinkTime <= 0)
         {
             world.playSoundAtEntity(player, "mob.pig.say", 0.8f, 1f);
-            oinkTime = Utils.secondsToTicks(world.rand.nextInt(61));
+            oinkTime = Utils.secondsToTicks(world.rand.nextInt(ConfigHandler.PIG_OINK_MAX_SECONDS + 1));
         }
         inv.setLastTime(oinkTime);
         inv.dirtyTime();
@@ -316,7 +335,8 @@ public class BackpackAbilities
         //lastTime is in Ticks for this backpack.
         //0 is Full Moon, 1 is Waning Gibbous, 2 is Last Quarter, 3 is Waning Crescent,
         // 4 is New Moon, 5 is Waxing Crescent, 6 is First Quarter and 7 is Waxing Gibbous
-        if (world.getMoonPhase() == 0 && !world.isDaytime())
+        if (!ConfigHandler.SLIME_ENABLED) return;
+        if (ConfigHandler.SLIME_FULL_MOON_SPEED && world.getMoonPhase() == 0 && !world.isDaytime())
         {
             player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, 1));
         }
@@ -330,7 +350,7 @@ public class BackpackAbilities
             if (player.isSprinting())
             {
                 InventoryBackpack inv = new InventoryBackpack(backpack);
-                int slimeTime = inv.getLastTime() > 0 ? inv.getLastTime() - 1 : 5;
+                int slimeTime = inv.getLastTime() > 0 ? inv.getLastTime() - 1 : ConfigHandler.SLIME_TRAIL_INTERVAL_TICKS;
                 if (slimeTime <= 0)
                 {
                     if (!world.isRemote)
@@ -338,7 +358,7 @@ public class BackpackAbilities
                         ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.SLIME_PARTICLE, player), player);
                     }
                     world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
-                    slimeTime = 5;
+                    slimeTime = ConfigHandler.SLIME_TRAIL_INTERVAL_TICKS;
                 }
                 inv.setLastTime(slimeTime);
                 inv.dirtyTime();
@@ -355,13 +375,14 @@ public class BackpackAbilities
      */
     public void itemChicken(EntityPlayer player, World world, ItemStack backpack)
     {
+        if (!ConfigHandler.CHICKEN_ENABLED) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int eggTime = inv.getLastTime() - 1 ;
         if (eggTime <= 0)
         {
             player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
             if (!world.isRemote) player.dropItem(Items.egg, 1);
-            eggTime = Utils.secondsToTicks(200 + 10 * world.rand.nextInt(10));
+            eggTime = Utils.secondsToTicks(ConfigHandler.CHICKEN_EGG_MIN_SECONDS + world.rand.nextInt(ConfigHandler.CHICKEN_EGG_RANDOM_SECONDS + 1));
         }
         inv.setLastTime(eggTime);
         inv.dirtyTime();
@@ -378,21 +399,21 @@ public class BackpackAbilities
     public void itemMelon(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in ticks for this backpack.
-        if(world.isRemote)return;
+        if (!ConfigHandler.MELON_ENABLED || world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int drops = 0;
         if (player.isInWater())
         {
-            drops += 2;
+            drops += ConfigHandler.MELON_JUICE_IN_WATER;
         }
         if (isUnderRain(player))
         {
-            drops += 1;
+            drops += ConfigHandler.MELON_JUICE_IN_RAIN;
         }
 
         if (inv.getLastTime() <= 0 && drops > 0)
         {
-            inv.setLastTime(5);
+            inv.setLastTime(ConfigHandler.MELON_WORN_INTERVAL_TICKS);
             FluidStack raindrop = new FluidStack(ModFluids.melonJuice, drops);
             inv.getLeftTank().fill(raindrop, true);
             inv.getRightTank().fill(raindrop, true);
@@ -412,22 +433,23 @@ public class BackpackAbilities
      */
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
-        itemPigman(player,world,backpack);
-        itemSquid(player, world, backpack);
+        if (!ConfigHandler.DRAGON_ENABLED) return;
+        giveFireResistance(player);
+        giveWaterBreathing(player, world, backpack);
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.regeneration.id)) {
             potion = player.getActivePotionEffect(Potion.regeneration);
         }
         if (potion == null || AbilityEffects.needsRefresh(potion.getDuration()))
         {
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), AbilityEffects.DRAGON_EFFECT_TICKS, AbilityEffects.DRAGON_REGENERATION_AMPLIFIER));
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), ConfigHandler.DRAGON_EFFECT_TICKS, ConfigHandler.DRAGON_REGENERATION_AMPLIFIER));
         }
         potion = null;
         if (player.isPotionActive(Potion.damageBoost.id)) {
             potion = player.getActivePotionEffect(Potion.damageBoost);
         }
         if (potion == null || AbilityEffects.needsRefresh(potion.getDuration())) {
-            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), AbilityEffects.DRAGON_EFFECT_TICKS, AbilityEffects.DRAGON_STRENGTH_AMPLIFIER));
+            player.addPotionEffect(new PotionEffect(Potion.damageBoost.getId(), ConfigHandler.DRAGON_EFFECT_TICKS, ConfigHandler.DRAGON_STRENGTH_AMPLIFIER));
         }
     }
 
@@ -445,12 +467,13 @@ public class BackpackAbilities
     public void itemCreeper(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in seconds for this ability
+        if (!ConfigHandler.CREEPER_ENABLED) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int pssstTime = inv.getLastTime() - 1;
 
         if (pssstTime <= 0)
         {
-            pssstTime = 20;
+            pssstTime = ConfigHandler.CREEPER_CHECK_INTERVAL_TICKS;
             if (player.isSneaking())
             {
                 List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity(player,
@@ -467,10 +490,10 @@ public class BackpackAbilities
                 {
                     if (entity instanceof EntityPlayer)
                     {
-                        if (player.getDistanceToEntity(entity) <= 3)
+                        if (player.getDistanceToEntity(entity) <= ConfigHandler.CREEPER_SCARE_RANGE)
                         {
                             world.playSoundAtEntity(player, "creeper.primed", 1.2F, 0.5F);
-                            pssstTime = Utils.secondsToTicks(120);
+                            pssstTime = Utils.secondsToTicks(ConfigHandler.CREEPER_SCARE_COOLDOWN_SECONDS);
                         }
                     }
                 }
@@ -495,7 +518,7 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (world.isRemote) return;
+        if (!ConfigHandler.COW_ENABLED || world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         inv.openInventory();
 
@@ -518,7 +541,7 @@ public class BackpackAbilities
         int eatTime = (inv.getLastTime() - 1 >= 0) ? inv.getLastTime() - 1 : 0;
         if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
         {
-            eatTime = 20;
+            eatTime = ConfigHandler.COW_EAT_INTERVAL_TICKS;
             //LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
             wheatConsumed++;
@@ -526,10 +549,10 @@ public class BackpackAbilities
         }
 
         int factor = 1;
-        if (wheatConsumed == 16)
+        if (wheatConsumed >= ConfigHandler.COW_WHEAT_PER_BATCH)
         {
             wheatConsumed = 0;
-            milkTime = (1000 * factor) - factor;
+            milkTime = (ConfigHandler.COW_MILK_PER_BATCH * factor) - factor;
             world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
         }
 
@@ -556,7 +579,7 @@ public class BackpackAbilities
 
     public void itemMooshroom(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (world.isRemote) return;
+        if (!ConfigHandler.MOOSHROOM_ENABLED || world.isRemote) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         inv.openInventory();
 
@@ -579,7 +602,7 @@ public class BackpackAbilities
         int eatTime = (inv.getLastTime() - 1 >= 0) ? inv.getLastTime() - 1 : 0;
         if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
         {
-            eatTime = 20;
+            eatTime = ConfigHandler.MOOSHROOM_EAT_INTERVAL_TICKS;
             //LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
             wheatConsumed++;
@@ -587,10 +610,10 @@ public class BackpackAbilities
         }
 
         int factor = 1;
-        if (wheatConsumed == 16)
+        if (wheatConsumed >= ConfigHandler.MOOSHROOM_WHEAT_PER_BATCH)
         {
             wheatConsumed = 0;
-            milkTime = (1000 * factor) - factor;
+            milkTime = (ConfigHandler.MOOSHROOM_STEW_PER_BATCH * factor) - factor;
             world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
         }
 
@@ -628,17 +651,18 @@ public class BackpackAbilities
     public void itemWolf(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime is in Ticks for this backpack
+        if (!ConfigHandler.WOLF_ENABLED) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int lastCheckTime =  inv.getLastTime() - 1;
 
         if (lastCheckTime <= 0)
         {
-            lastCheckTime = 20;
+            lastCheckTime = ConfigHandler.WOLF_CHECK_INTERVAL_TICKS;
             List<EntityWolf> wolves = world.getEntitiesWithinAABB(
                     EntityWolf.class,
                     AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
                             player.posX + 1.0D, player.posY + 1.0D,
-                            player.posZ + 1.0D).expand(16.0D, 4.0D, 16.0D));
+                            player.posZ + 1.0D).expand(ConfigHandler.WOLF_RANGE, 4.0D, ConfigHandler.WOLF_RANGE));
             if (wolves.isEmpty()) return;
 
             for (EntityWolf wolf : wolves)
@@ -686,16 +710,17 @@ public class BackpackAbilities
     public void itemOcelot(EntityPlayer player, World world, ItemStack backpack)
     {
         //lastTime in this backpack is in Ticks.
+        if (!ConfigHandler.OCELOT_ENABLED) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int lastCheckTime = inv.getLastTime() - 1;
         if (lastCheckTime <= 0)
         {
-            lastCheckTime = 20;
+            lastCheckTime = ConfigHandler.OCELOT_CHECK_INTERVAL_TICKS;
             List<EntityCreeper> creepers = player.worldObj.getEntitiesWithinAABB(
                     EntityCreeper.class,
                     AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
                             player.posX + 1.0D, player.posY + 1.0D,
-                            player.posZ + 1.0D).expand(16.0D, 4.0D, 16.0D));
+                            player.posZ + 1.0D).expand(ConfigHandler.OCELOT_RANGE, 4.0D, ConfigHandler.OCELOT_RANGE));
 
             for (EntityCreeper creeper : creepers)
             {
@@ -725,13 +750,14 @@ public class BackpackAbilities
 
     public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
     {
+        if (!ConfigHandler.RAINBOW_ENABLED) return;
         InventoryBackpack inv = new InventoryBackpack(backpack);
         int noteTime = inv.getLastTime() - 1;
-        if (noteTime >= 0 && noteTime < Utils.secondsToTicks(147))
+        if (noteTime >= 0 && noteTime < Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS - 3))
         {
             player.setSprinting(true);
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 40, 2));
-            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 40, 2));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 40, ConfigHandler.RAINBOW_SPEED_AMPLIFIER));
+            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 40, ConfigHandler.RAINBOW_JUMP_AMPLIFIER));
             if (noteTime % 2 == 0)
             {
                 //Visuals.NyanParticles(player, world);
@@ -777,13 +803,13 @@ public class BackpackAbilities
      */
     public void tileCactus(World world, TileAdventureBackpack backpack)
     {
-        fillWithRain(world, backpack, new FluidStack(FluidRegistry.WATER, 2), 5);
+        if (ConfigHandler.CACTUS_ENABLED) fillWithRain(world, backpack, new FluidStack(FluidRegistry.WATER, ConfigHandler.CACTUS_PLACED_RAIN_AMOUNT), ConfigHandler.CACTUS_PLACED_INTERVAL_TICKS);
     }
 
 
     public void tileMelon(World world, TileAdventureBackpack backpack)
     {
-        fillWithRain(world, backpack, new FluidStack(ModFluids.melonJuice, 2), 5);
+        if (ConfigHandler.MELON_ENABLED) fillWithRain(world, backpack, new FluidStack(ModFluids.melonJuice, ConfigHandler.MELON_PLACED_RAIN_AMOUNT), ConfigHandler.MELON_PLACED_INTERVAL_TICKS);
     }
 
 }

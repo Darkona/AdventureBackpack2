@@ -62,16 +62,16 @@ public class ClientActions
                     }
                     break;
                 case EntitySoundPacket.NYAN_SOUND:
-                    snd.playSound(new NyanMovingSound(player));
+                    if (ConfigHandler.RAINBOW_SOUND) snd.playSound(new NyanMovingSound(player));
                     break;
                 case EntitySoundPacket.JETPACK_FIZZ:
-                    snd.playSound(new JetpackSoundOn(player));
+                    if (ConfigHandler.ALLOW_JETPACK_SOUNDS) snd.playSound(new JetpackSoundOn(player));
                     break;
                 case EntitySoundPacket.BOILING_BUBBLES:
-                    snd.playSound(new BoilingBoilerSound(player));
+                    if (ConfigHandler.ALLOW_JETPACK_SOUNDS) snd.playSound(new BoilingBoilerSound(player));
                     break;
                 case EntitySoundPacket.LEAKING_STEAM:
-                    snd.playSound(new LeakingBoilerSound(player));
+                    if (ConfigHandler.ALLOW_JETPACK_SOUNDS) snd.playSound(new LeakingBoilerSound(player));
                     break;
             }
         }

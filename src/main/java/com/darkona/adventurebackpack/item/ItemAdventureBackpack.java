@@ -299,9 +299,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     {
         if(world.isRemote)return;
 
-        if (Wearing.isWearingTheRightBackpack(player, "Creeper"))
+        if (ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.CREEPER_DEATH_EXPLOSION && Wearing.isWearingTheRightBackpack(player, "Creeper"))
         {
-            player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
+            player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, ConfigHandler.CREEPER_DEATH_EXPLOSION_POWER, false);
         }
 
         if(ConfigHandler.BACKPACK_DEATH_PLACE)
