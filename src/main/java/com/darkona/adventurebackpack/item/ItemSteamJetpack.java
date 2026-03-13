@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.common.Flight;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -44,7 +46,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if (world.isRemote)
+        if (world.isRemote && ConfigHandler.STEAMJETPACK_ENABLED)
         {
             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_HOLDING));
         }
@@ -115,10 +117,11 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
+        if (!ConfigHandler.STEAMJETPACK_ENABLED) return;
         InventorySteamJetpack inv = new InventorySteamJetpack(stack);
         inv.openInventory();
         boolean mustFizzz = !inv.isInUse();
-        int steamConsumed = 13;
+        int steamConsumed = ConfigHandler.JETPACK_STEAM_PER_TICK;
         boolean canUse = inv.getSteamTank().drain(steamConsumed,false) != null;
 
         if (inv.getStatus())
@@ -132,7 +135,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         //Suction
         if(player.isInWater())
         {
-            inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER,2),true);
+            inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER, ConfigHandler.JETPACK_WATER_INTAKE),true);
         }
 
         //Elevation
@@ -162,7 +165,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             {
                 inv.setInUse(false);
             }
-            player.moveFlying(player.moveStrafing, player.moveForward, 0.02f);
+            player.moveFlying(player.moveStrafing, player.moveForward, ConfigHandler.JETPACK_AIR_CONTROL);
             if(player.fallDistance > 1)
             {
                 player.fallDistance -= 1;
@@ -186,7 +189,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         boolean boiling = inv.isBoiling();
         boolean leaking = inv.isLeaking();
 
-        if (temperature >= 100 && inv.getWaterTank().getFluidAmount() > 0)
+        if (temperature >= ConfigHandler.JETPACK_BOILING_TEMPERATURE && inv.getWaterTank().getFluidAmount() > 0)
         {
             if(!boiling)boiling = true;
 
@@ -208,8 +211,8 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             {
                 if (inv.getWaterTank().getFluid() != null)
                 {
-                    int steam = inv.getWaterTank().drain((temperature / 100), true).amount;
-                    inv.getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), steam * 4), true);
+                    int steam = inv.getWaterTank().drain((temperature / ConfigHandler.JETPACK_BOILING_TEMPERATURE), true).amount;
+                    inv.getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), steam * ConfigHandler.JETPACK_STEAM_PER_WATER), true);
                     inv.dirtyTanks();
                 }
             }
@@ -239,14 +242,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
 
     public static void elevate(EntityPlayer player)
     {
-        if (player.motionY <= 0.32 && player.posY < 100)
-        {
-            player.motionY += 0.1;
-        } else
-        {
-            if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.32);
-            if (player.posY > 100) player.motionY = 0.32 - ((player.posY % 100) / 100);
-        }
+        player.motionY = Flight.thrustSpeed(player.posY, player.motionY, ConfigHandler.JETPACK_THRUST, ConfigHandler.JETPACK_MAX_RISE_SPEED, ConfigHandler.JETPACK_MAX_ALTITUDE);
     }
 
     @Override

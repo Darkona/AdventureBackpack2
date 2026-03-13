@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.util.FluidUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -19,8 +20,8 @@ public class InventorySteamJetpack implements IInventoryTanks
 {
     public static final boolean OFF = false;
     public static final boolean ON = true;
-    private FluidTank waterTank = new FluidTank(6000);
-    private FluidTank steamTank = new FluidTank(12000);
+    private FluidTank waterTank = new FluidTank(ConfigHandler.JETPACK_WATER_CAPACITY);
+    private FluidTank steamTank = new FluidTank(ConfigHandler.JETPACK_STEAM_CAPACITY);
     private ItemStack[] inventory = new ItemStack[3];
     private int temperature = 25;
     private boolean status = OFF;

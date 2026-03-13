@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.block;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.Icons;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -43,9 +44,9 @@ public class BlockAdventureBackpack extends BlockContainer
     public BlockAdventureBackpack()
     {
         super(new BackpackMaterial());
-        setHardness(1.0f);
+        setHardness(ConfigHandler.BACKPACK_HARDNESS);
         setStepSound(soundTypeCloth);
-        setResistance(2000f);
+        setResistance(ConfigHandler.BACKPACK_BLAST_RESISTANCE);
     }
 
     /**

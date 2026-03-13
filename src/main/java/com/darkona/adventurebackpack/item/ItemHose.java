@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
@@ -120,7 +121,7 @@ public class ItemHose extends ItemAB
     @Override
     public int getMaxItemUseDuration(ItemStack stack)
     {
-        return 24;
+        return ConfigHandler.HOSE_DRINK_TICKS;
     }
 
     @Override
@@ -187,7 +188,7 @@ public class ItemHose extends ItemAB
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        if(!Wearing.isWearingBackpack(player))return true;
+        if (!ConfigHandler.HOSE_ENABLED || !Wearing.isWearingBackpack(player)) return true;
 
         InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
         inv.openInventory();
@@ -201,7 +202,7 @@ public class ItemHose extends ItemAB
             {
                 case HOSE_SUCK_MODE:
 
-                    accepted = tank.fill(exTank.drain(ForgeDirection.UNKNOWN, Constants.bucket, false), false);
+                    accepted = tank.fill(exTank.drain(ForgeDirection.UNKNOWN, ConfigHandler.HOSE_TRANSFER_AMOUNT, false), false);
                     if (accepted > 0)
                     {
                         tank.fill(exTank.drain(ForgeDirection.UNKNOWN, accepted, true), true);
@@ -213,7 +214,7 @@ public class ItemHose extends ItemAB
 
                 case HOSE_SPILL_MODE:
 
-                    accepted = exTank.fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false);
+                    accepted = exTank.fill(ForgeDirection.UNKNOWN, tank.drain(ConfigHandler.HOSE_TRANSFER_AMOUNT, false), false);
                     if (accepted > 0)
                     {
                         exTank.fill(ForgeDirection.UNKNOWN, tank.drain(accepted, true), true);
@@ -244,7 +245,7 @@ public class ItemHose extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if(!Wearing.isWearingBackpack(player))return stack;
+        if (!ConfigHandler.HOSE_ENABLED || !Wearing.isWearingBackpack(player)) return stack;
         InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
         inv.openInventory();
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, true);
@@ -375,7 +376,7 @@ public class ItemHose extends ItemAB
                     }
                     break;
                 case HOSE_DRINK_MODE:
-                    if (tank.getFluid() != null && tank.getFluidAmount() >= Constants.bucket)
+                    if (tank.getFluid() != null && tank.getFluidAmount() >= ConfigHandler.HOSE_DRINK_AMOUNT)
                     {
                         if (FluidEffectRegistry.hasFluidEffect(tank.getFluid().getFluid()))
                         {
@@ -405,7 +406,7 @@ public class ItemHose extends ItemAB
     @Override
     public ItemStack onEaten(ItemStack hose, World world, EntityPlayer player)
     {
-        if(!Wearing.isWearingBackpack(player))return hose;
+        if (!ConfigHandler.HOSE_ENABLED || !Wearing.isWearingBackpack(player)) return hose;
         int mode = -1;
         int tank = -1;
         if (hose.stackTagCompound != null)
@@ -422,7 +423,7 @@ public class ItemHose extends ItemAB
             {
                 if (ServerActions.setFluidEffect(world, player, backpackTank))
                 {
-                    backpackTank.drain(Constants.bucket, true);
+                    backpackTank.drain(ConfigHandler.HOSE_DRINK_AMOUNT, true);
                     inv.dirtyTanks();
                 }
             }
@@ -440,14 +441,14 @@ public class ItemHose extends ItemAB
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
     {
-        if(!Wearing.isWearingBackpack(player))return false;
+        if (!ConfigHandler.HOSE_ENABLED || !Wearing.isWearingBackpack(player)) return false;
         InventoryBackpack inventory = new InventoryBackpack(Wearing.getWearingBackpack(player));
         inventory.openInventory();
         if (entity instanceof EntityCow && !(entity instanceof EntityMooshroom))
         {
 
             FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
-            tank.fill(new FluidStack(ModFluids.milk, Constants.bucket), true);
+            tank.fill(new FluidStack(ModFluids.milk, ConfigHandler.HOSE_MILK_AMOUNT), true);
             inventory.dirtyTanks();
 
             ((EntityCow) entity).faceEntity(player, 0.1f, 0.1f);
@@ -456,7 +457,7 @@ public class ItemHose extends ItemAB
         if (entity instanceof EntityMooshroom)
         {
             FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
-            tank.fill(new FluidStack(ModFluids.mushroomStew, Constants.bucket), true);
+            tank.fill(new FluidStack(ModFluids.mushroomStew, ConfigHandler.HOSE_MILK_AMOUNT), true);
             inventory.dirtyTanks();
 
             ((EntityMooshroom) entity).faceEntity(player, 0.1f, 0.1f);

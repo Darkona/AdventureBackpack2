@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.config.FeatureVisibility;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.GeneralEventHandler;
@@ -132,6 +133,7 @@ public class AdventureBackpack
         ConditionalFluidEffect.init();
         ModItems.conditionalInit();
         ModRecipes.conditionalInit();
+        FeatureVisibility.hideDisabledItems();
 
 
         /*

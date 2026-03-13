@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -118,13 +119,14 @@ public class ItemCrossbow extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
+        if (!ConfigHandler.CROSSBOW_ENABLED) return stack;
         if(!stack.hasTagCompound())stack.setTagCompound(new NBTTagCompound());
         if(!stack.stackTagCompound.hasKey("Reloading"))stack.stackTagCompound.setInteger("Reloading",0);
         int reloading = stack.stackTagCompound.getInteger("Reloading");
         if(reloading <= 0){
             shootArrow(stack,player.worldObj,player, 1000);
             stack.stackTagCompound.setByte("Shot",(byte)4);
-            int reloadTime = 20;
+            int reloadTime = ConfigHandler.CROSSBOW_RELOAD_TICKS;
             stack.stackTagCompound.setInteger("Reloading", reloadTime);
 
         }
@@ -164,7 +166,8 @@ public class ItemCrossbow extends ItemAB
                 f = 1.0F;
             }
 
-            EntityArrow entityarrow = new EntityArrow(world, player, f * 3.0F);
+            EntityArrow entityarrow = new EntityArrow(world, player, f * ConfigHandler.CROSSBOW_ARROW_VELOCITY);
+            entityarrow.setDamage(ConfigHandler.CROSSBOW_ARROW_DAMAGE);
             f = 1.0f;
 
             int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, stack);

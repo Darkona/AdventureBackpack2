@@ -105,7 +105,7 @@ public class ModRecipes
                 'P', Items.leather_leggings
         );
 */
-        GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
+        if (ConfigHandler.PISTONBOOTS_ENABLED) GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
                 " B ",
                 "PSP",
                 'B', Items.leather_boots,
@@ -117,7 +117,7 @@ public class ModRecipes
                 Items.melon, Items.potionitem
         );
 
-        GameRegistry.addRecipe(new ItemStack(ModItems.hose),
+        if (ConfigHandler.HOSE_ENABLED) GameRegistry.addRecipe(new ItemStack(ModItems.hose),
                 "NGG",
                 "  G",
                 "  G",
@@ -221,7 +221,7 @@ public class ModRecipes
             );
 
             //Copter Pack
-            GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
+            if (ConfigHandler.COPTERPACK_ENABLED) GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
                     "WBW",
                     "TEI",
                     "CDI",
@@ -244,7 +244,7 @@ public class ModRecipes
                 LogHelper.info("Railcraft is present. Adding Steam Jetpack.");
                 ItemStack firebox = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.firebox.solid", 1);
                 ItemStack boiler = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.tank.pressure.low", 1);
-                if(firebox != null && boiler != null)
+                if(ConfigHandler.STEAMJETPACK_ENABLED && firebox != null && boiler != null)
                 {
                     GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.steamJetpack),
                             "BWT",

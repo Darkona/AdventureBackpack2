@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -90,6 +91,7 @@ public class ItemComponent extends ItemAB
     {
         for (int i = 1; i <= names.length; i++)
         {
+            if ((i == 7 || i == 8) && !ConfigHandler.INFLATABLEBOAT_ENABLED) continue;
             list.add(new ItemStack(this, 1, i));
         }
     }
@@ -256,6 +258,7 @@ public class ItemComponent extends ItemAB
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         LogHelper.info("Damage: " + stack.getItemDamage());
+        if (!ConfigHandler.INFLATABLEBOAT_ENABLED) return stack;
         if(stack.getItemDamage() == 7)return placeBoat(stack,world,player,false);
         if(stack.getItemDamage() == 8)return placeBoat(stack,world,player,true);
         return stack;

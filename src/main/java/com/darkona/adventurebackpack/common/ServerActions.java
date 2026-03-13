@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
@@ -271,7 +272,7 @@ public class ServerActions
         if (world.getTileEntity(coordX, coordY, coordZ) instanceof TileAdventureBackpack)
         {
             TileAdventureBackpack te = (TileAdventureBackpack) world.getTileEntity(coordX, coordY, coordZ);
-            if (!te.isSBDeployed())
+            if (!te.isSBDeployed() && ConfigHandler.SLEEPINGBAG_ENABLED)
             {
                 int can[] = canDeploySleepingBag(world, coordX, coordY, coordZ);
                 if (can[0] > -1)

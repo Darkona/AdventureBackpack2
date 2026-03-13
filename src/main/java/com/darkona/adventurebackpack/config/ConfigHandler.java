@@ -337,7 +337,7 @@ public class ConfigHandler
     {
         BACKPACK_DEATH_PLACE = bool(cfg, BACKPACK, "placeOnDeath", true, "Place the backpack as a block where the player dies. When false it drops as an item.");
         BACKPACK_TANK_CAPACITY = integer(cfg, BACKPACK, "tankCapacity", 4000, 1000, 64000, "Capacity of each of the two backpack tanks, in millibuckets. Use the same value on server and clients. Lowering it does not delete fluid already stored above the new limit.", true);
-        BACKPACK_BLAST_RESISTANCE = (float) decimal(cfg, BACKPACK, "blastResistance", 2000.0, 0.0, 6000000.0, "Explosion resistance of a placed backpack. 2000 survives TNT and creepers; obsidian is 6000.", true);
+        BACKPACK_BLAST_RESISTANCE = (float) decimal(cfg, BACKPACK, "blastResistance", 2000.0, 0.0, 6000000.0, "Explosion resistance of a placed backpack, on the same scale as Block.setResistance: 2000 is obsidian (survives TNT and creepers), 10 is stone.", true);
         BACKPACK_HARDNESS = (float) decimal(cfg, BACKPACK, "hardness", 1.0, 0.0, 100.0, "How long a placed backpack takes to break by hand. Stone is 1.5.", true);
     }
 

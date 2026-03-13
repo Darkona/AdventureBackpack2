@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.entity;
 
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import cpw.mods.fml.relauncher.Side;
@@ -209,21 +210,21 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 
             d2 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 
-            if (d2 > 0.35D)
+            if (d2 > ConfigHandler.BOAT_MAX_SPEED)
             {
-                d4 = 0.35D / d2;
+                d4 = ConfigHandler.BOAT_MAX_SPEED / d2;
                 this.motionX *= d4;
                 this.motionZ *= d4;
-                d2 = 0.35D;
+                d2 = ConfigHandler.BOAT_MAX_SPEED;
             }
 
-            if (d2 > horizontalMotion && this.speedMultiplier < 0.35D)
+            if (d2 > horizontalMotion && this.speedMultiplier < ConfigHandler.BOAT_MAX_SPEED)
             {
-                this.speedMultiplier += (0.35D - this.speedMultiplier) / 35.0D;
+                this.speedMultiplier += (ConfigHandler.BOAT_MAX_SPEED - this.speedMultiplier) / 35.0D;
 
-                if (this.speedMultiplier > 0.35D)
+                if (this.speedMultiplier > ConfigHandler.BOAT_MAX_SPEED)
                 {
-                    this.speedMultiplier = 0.35D;
+                    this.speedMultiplier = ConfigHandler.BOAT_MAX_SPEED;
                 }
             } else
             {

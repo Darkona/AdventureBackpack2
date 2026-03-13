@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
+import com.darkona.adventurebackpack.common.Flight;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -50,7 +52,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if (world.isRemote)
+        if (world.isRemote && ConfigHandler.COPTERPACK_ENABLED)
         {
             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_HOLDING));
         }
@@ -66,6 +68,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @SuppressWarnings(value = "unchecked")
     public void pushEntities(World world, EntityPlayer player, float speed)
     {
+        double range = ConfigHandler.COPTER_PUSH_RANGE;
+        if (range <= 0) return;
         double posX = player.posX;
         double posY = player.posY;
         double posZ = player.posZ;
@@ -73,7 +77,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 EntityItem.class,
                 AxisAlignedBB.getBoundingBox(posX, posY, posZ,
                         posX + 1.0D, posY + 1.0D,
-                        posZ + 1.0D).expand(4.0D, 4.0D, 4.0D));
+                        posZ + 1.0D).expand(range, range, range));
 
         for (EntityItem groundItem : groundItems)
         {
@@ -124,13 +128,13 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
 
     public static void elevate(EntityPlayer player, ItemStack copter)
     {
-        if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.18);
-        if (player.posY > 100) player.motionY = 0.18 - ((player.posY % 100) / 100);
+        player.motionY = Flight.liftSpeed(player.posY, player.motionY, ConfigHandler.COPTER_LIFT_SPEED, ConfigHandler.COPTER_MAX_ALTITUDE);
     }
 
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
+        if (!ConfigHandler.COPTERPACK_ENABLED) return;
         InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
         inv.openInventory();
         boolean canElevate = true;
@@ -177,16 +181,16 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
 
         if (inv.getStatus() != OFF_MODE)
         {
-            fuelConsumption++;
+            fuelConsumption += ConfigHandler.COPTER_FUEL_PER_TICK;
             if (inv.getStatus() == NORMAL_MODE)
             {
                 if (!player.onGround && !player.isSneaking() && player.motionY < 0.0D)
                 {
-                    player.motionY = player.motionY * 0.6;
+                    player.motionY = player.motionY * ConfigHandler.COPTER_GLIDE_FACTOR;
                 }
                 if (player.isSneaking())
                 {
-                    player.motionY = -0.3;
+                    player.motionY = -ConfigHandler.COPTER_DESCEND_SPEED;
                 }
             }
 
@@ -194,9 +198,9 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 if (player.isSneaking())
                 {
-                    player.motionY = -0.3;
+                    player.motionY = -ConfigHandler.COPTER_DESCEND_SPEED;
                 }else{
-                    fuelConsumption+=2;
+                    fuelConsumption += ConfigHandler.COPTER_HOVER_EXTRA_FUEL;
                     player.motionY = 0.0f;
                 }
             }
@@ -210,7 +214,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             //Sound
 
 
-            float factor = 0.05f;
+            float factor = ConfigHandler.COPTER_AIR_CONTROL;
             if (!player.onGround)
             {
                 //Airwave
@@ -227,7 +231,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 if (Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
                 {
-                    if (inv.canConsumeFuel(fuelConsumption + 2) && canElevate)
+                    if (inv.canConsumeFuel(fuelConsumption + ConfigHandler.COPTER_CLIMB_EXTRA_FUEL) && canElevate)
                     {
                         elevate(player, stack);
                     }
@@ -237,7 +241,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             //Elevation serverside
             if (!player.onGround && player.motionY > 0)
             {
-                fuelConsumption += 2;
+                fuelConsumption += ConfigHandler.COPTER_CLIMB_EXTRA_FUEL;
             }
             int ticks = inv.tickCounter - 1;
             if (inv.fuelTank.getFluid() != null)
@@ -249,7 +253,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             }
             if (ticks <= 0)
             {
-                inv.tickCounter = 3;
+                inv.tickCounter = ConfigHandler.COPTER_FUEL_INTERVAL_TICKS;
                 inv.consumeFuel(fuelConsumption);
                 inv.dirtyTanks();
             } else
