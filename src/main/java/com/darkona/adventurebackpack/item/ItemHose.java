@@ -154,6 +154,8 @@ public class ItemHose extends ItemAB
         if (entity == null || !(entity instanceof EntityPlayer)) return;
 
         EntityPlayer player = (EntityPlayer) entity;
+        // The tank readout only feeds the HUD: refresh it every 5 ticks, not by reading the backpack NBT each tick.
+        if (player.ticksExisted % 5 != 0 && stack.hasTagCompound()) return;
         if (world.isRemote && player.getItemInUse() != null && player.getItemInUse().getItem().equals(this)) return;
 
 
