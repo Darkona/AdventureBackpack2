@@ -24,7 +24,7 @@ item.adventurebackpack:hose_rightTank_drink.name=Mangueira: Tanque Direito / Mod
 item.adventurebackpack:hoseUseless.name=Mangueira: Inútil / Sem Mochila
 item.adventurebackpack:copterPack.name=
 #Blocks
-block.adventurebackpack:blockAdventureBackpack.name=Base Para Mochila do Aventureiro
+block.adventurebackpack:AdventureBackpack.name=Base Para Mochila do Aventureiro
 
 #CreativeTab
 itemGroup.adventurebackpack=Mochila do Aventureiro
