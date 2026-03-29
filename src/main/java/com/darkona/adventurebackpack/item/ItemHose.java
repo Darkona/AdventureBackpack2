@@ -215,7 +215,9 @@ public class ItemHose extends ItemAB
 
                 case HOSE_SPILL_MODE:
 
-                    accepted = exTank.fill(ForgeDirection.UNKNOWN, tank.drain(Constants.bucket, false), false);
+                    FluidStack offered = tank.drain(Constants.bucket, false);
+                    if (offered == null) break; // another mod's handler may not accept a null stack
+                    accepted = exTank.fill(ForgeDirection.UNKNOWN, offered, false);
                     if (accepted > 0)
                     {
                         exTank.fill(ForgeDirection.UNKNOWN, tank.drain(accepted, true), true);
