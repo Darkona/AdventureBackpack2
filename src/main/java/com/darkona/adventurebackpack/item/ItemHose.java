@@ -270,10 +270,11 @@ public class ItemHose extends ItemAB
                         }
                         //TODO adjust for Adventure Mode
                         Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
-                        if (fluidBlock != null)
+                        // Only a source block (metadata 0) is a full bucket; flowing blocks must not create fluid.
+                        if (fluidBlock != null && world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ) == 0)
                         {
                             FluidStack fluid = new FluidStack(fluidBlock, Constants.bucket);
-                            if (tank.getFluid() == null || tank.getFluid().containsFluid(fluid))
+                            if (tank.getFluid() == null || tank.getFluid().isFluidEqual(fluid))
                             {
                                 int accepted = tank.fill(fluid, false);
                                 if (accepted > 0)
