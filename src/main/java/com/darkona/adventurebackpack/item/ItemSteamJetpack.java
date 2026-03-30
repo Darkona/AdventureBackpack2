@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
+import com.darkona.adventurebackpack.util.FlightCeiling;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -245,7 +246,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         } else
         {
             if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.32);
-            if (player.posY > 100) player.motionY = 0.32 - ((player.posY % 100) / 100);
+            else player.motionY = FlightCeiling.motionAbove(player.posY, 0.32);
         }
     }
 
