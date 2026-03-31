@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -207,10 +208,11 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         {
             if (inv.getSteamTank().getFluidAmount() < inv.getSteamTank().getCapacity())
             {
-                if (inv.getWaterTank().getFluid() != null)
+                Fluid steamFluid = getSteam();
+                if (steamFluid != null && inv.getWaterTank().getFluid() != null)
                 {
                     int steam = inv.getWaterTank().drain((temperature / 100), true).amount;
-                    inv.getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), steam * 4), true);
+                    inv.getSteamTank().fill(new FluidStack(steamFluid, steam * 4), true);
                     inv.dirtyTanks();
                 }
             }
@@ -236,6 +238,15 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         inv.setBoiling(boiling);
         inv.setLeaking(leaking);
         inv.setTemperature(temperature);
+    }
+
+    private static Fluid steam;
+
+    /** The "steam" fluid comes from another mod (Railcraft, IC2...); without one the boiler makes nothing. */
+    private static Fluid getSteam()
+    {
+        if (steam == null) steam = FluidRegistry.getFluid("steam");
+        return steam;
     }
 
     public static void elevate(EntityPlayer player)
