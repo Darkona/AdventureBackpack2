@@ -141,15 +141,16 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         //Elevation
         if (world.isRemote)
         {
+            // Tell the server only when the state changes, not every tick (performance contract, rule 5).
             if (inv.getStatus() && canUse && Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
             {
-                inv.setInUse(true);
-                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_IN_USE));
                 if (mustFizzz)
                 {
+                    inv.setInUse(true);
+                    ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_IN_USE));
                     ModNetwork.net.sendToServer(new EntitySoundPacket.Message(EntitySoundPacket.JETPACK_FIZZ, player));
                 }
-            } else
+            } else if (!mustFizzz)
             {
                 inv.setInUse(false);
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_NOT_IN_USE));
