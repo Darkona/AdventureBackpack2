@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.common.JetpackHeat;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -80,12 +81,12 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                     coolTicks = coolTicks < 5000 ? coolTicks + 100 : coolTicks;
                 }
             }
-        } else if (burnTicks <= 0)
+        } else
         {
             inv.currentItemBurnTime = 0;
             if (coolTicks % inv.getDecreasingFactor() == 0)
             {
-                temperature = (temperature - 1 >= getBiomeMinTemp(player, world)) ? temperature - 1 : 0;
+                temperature = JetpackHeat.coolDown(temperature, getBiomeMinTemp(player, world));
             }
         }
         inv.setTemperature(temperature);
