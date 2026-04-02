@@ -45,18 +45,6 @@ public class ItemCrossbow extends ItemAB
     }
 
     @Override
-    public boolean isRepairable()
-    {
-        return super.isRepairable();
-    }
-
-    @Override
-    public String getItemStackDisplayName(ItemStack stack)
-    {
-        return super.getItemStackDisplayName(stack);
-    }
-
-    @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
         return false;
@@ -66,25 +54,6 @@ public class ItemCrossbow extends ItemAB
     public EnumAction getItemUseAction(ItemStack p_77661_1_)
     {
         return EnumAction.bow;
-    }
-
-    /**
-     * Called when item is crafted/smelted. Used only by maps so far.
-     *
-     * @param stack
-     * @param world
-     * @param player
-     */
-    @Override
-    public void onCreated(ItemStack stack, World world, EntityPlayer player)
-    {
-        super.onCreated(stack, world, player);
-
-        NBTTagCompound xbowProps = new NBTTagCompound();
-
-        xbowProps.setBoolean("Loaded", false);
-        xbowProps.setShort("Magazine", (short) 0);
-        xbowProps.setBoolean("Charging", false);
     }
 
     @Override
@@ -108,10 +77,6 @@ public class ItemCrossbow extends ItemAB
             int reloading = stack.stackTagCompound.getInteger("Reloading");
             if(shot > 0)stack.stackTagCompound.setByte("Shot", (byte)(shot-1));
             if(reloading > 0)stack.stackTagCompound.setInteger("Reloading",reloading-1);
-            if(entity instanceof EntityPlayer)
-            {
-                //((EntityPlayer)entity).setItemInUse(stack,2);
-            }
         }
     }
 
