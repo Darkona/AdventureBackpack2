@@ -72,15 +72,21 @@ public class ItemComponent extends ItemAB
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int damage)
     {
-        return componentIcons.get(names[damage-1]);
+        return componentIcons.get(nameFor(damage));
 
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        return super.getUnlocalizedName(names[getDamage(stack)-1]);
+        return super.getUnlocalizedName(nameFor(getDamage(stack)));
 
+    }
+
+    /** Components start at damage 1; a stack with damage 0 or past the list (/give, NEI) must not crash. */
+    private String nameFor(int damage)
+    {
+        return names[MathHelper.clamp_int(damage - 1, 0, names.length - 1)];
     }
 
     @Override
