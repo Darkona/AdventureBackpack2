@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
-import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -61,12 +60,6 @@ public class ItemComponent extends ItemAB
         itemIcon = iconRegister.registerIcon(super.getUnlocalizedName("sleepingBag").substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
 
-    @Override
-    public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
-    {
-        return super.getIcon(stack, renderPass, player, usingItem, useRemaining);
-    }
-
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -104,63 +97,6 @@ public class ItemComponent extends ItemAB
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int meta, float f1, float f2, float f3)
     {
         return false;
-        /*if (itemStack.getItemDamage() != 1) return true;
-        if (world.isRemote)
-        {
-            return true;
-        } else if (meta != 1)
-        {
-            return false;
-        } else
-        {
-           /* ++y;
-            BlockSleepingBag blockbed = ModBlocks.blockSleepingBag;
-            int i1 = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            byte b0 = 0;
-            byte b1 = 0;
-
-            if (i1 == 0)
-            {
-                b1 = 1;
-            }
-
-            if (i1 == 1)
-            {
-                b0 = -1;
-            }
-
-            if (i1 == 2)
-            {
-                b1 = -1;
-            }
-
-            if (i1 == 3)
-            {
-                b0 = 1;
-            }
-
-            if (player.canPlayerEdit(x, y, z, meta, itemStack) && player.canPlayerEdit(x + b0, y, z + b1, meta, itemStack))
-            {
-                if (world.isAirBlock(x, y, z) && world.isAirBlock(x + b0, y, z + b1) && World.doesBlockHaveSolidTopSurface(world, x, y - 1, z) && World.doesBlockHaveSolidTopSurface(world, x + b0, y - 1, z + b1))
-                {
-                    world.setBlock(x, y, z, blockbed, i1, 3);
-
-                    if (world.getBlock(x, y, z) == blockbed)
-                    {
-                        world.setBlock(x + b0, y, z + b1, blockbed, i1 + 8, 3);
-                    }
-
-                    --itemStack.stackSize;
-                    return true;
-                } else
-                {
-                    return false;
-                }
-            } else
-            {
-                return false;
-            }
-        }*/
     }
 
 
@@ -261,7 +197,6 @@ public class ItemComponent extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        LogHelper.info("Damage: " + stack.getItemDamage());
         if(stack.getItemDamage() == 7)return placeBoat(stack,world,player,false);
         if(stack.getItemDamage() == 8)return placeBoat(stack,world,player,true);
         return stack;
