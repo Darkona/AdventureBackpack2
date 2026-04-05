@@ -220,18 +220,18 @@ public class ModRecipes
             );
 
             //Copter Pack
-            GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.copterPack),
                     "WBW",
                     "TEI",
                     "CDI",
-                    'W', Blocks.planks,
+                    'W', "plankWood",
                     'B', new ItemStack(ModItems.component, 1, 6),
                     'T', new ItemStack(ModItems.component, 1, 2),
                     'E', new ItemStack(ModItems.component, 1, 5),
                     'C', new ItemStack(Items.dye, 1, 2),
                     'D', Items.diamond,
                     'I', Items.iron_ingot
-            );
+            ));
         }
 
         //Ok let's try getting railcraft stuff.
