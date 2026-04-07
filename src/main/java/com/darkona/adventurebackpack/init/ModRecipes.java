@@ -2,12 +2,15 @@ package com.darkona.adventurebackpack.init;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
+import com.darkona.adventurebackpack.init.recipes.BackpackUpgradeRecipe;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.Field;
@@ -145,7 +148,7 @@ public class ModRecipes
                 {
                     if (field.getName().equals((BackpackNames.backpackNames[i])))
                     {
-                        GameRegistry.addRecipe(new ShapedOreRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
+                        GameRegistry.addRecipe(new BackpackUpgradeRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
                         counter++;
                     }
                 } catch (Exception oops)
@@ -156,6 +159,7 @@ public class ModRecipes
             }
 
         }
+        RecipeSorter.register(ModInfo.MOD_ID + ":backpackUpgrade", BackpackUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
         LogHelper.info("Loaded " + counter + " backpack recipes.");
 
         //GameRegistry.addRecipe(new AbstractBackpackRecipe());
