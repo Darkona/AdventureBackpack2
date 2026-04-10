@@ -127,17 +127,6 @@ public class ModRecipes
                 'G', new ItemStack(Items.dye, 1, 2)
         );
 
-        /*GameRegistry.addRecipe(a,
-                "LGL",
-                "TCT",
-                "LSL",
-                'L', Items.leather,
-                'G', Items.gold_ingot,
-                'T', new ItemStack(ModItems.component, 1, 2),
-                'S', new ItemStack(ModItems.component, 1, 1),
-                'C', Blocks.chest
-        );*/
-
         BackpackRecipesList br = new BackpackRecipesList();
         int counter = 0;
         for (int i = 0; i < BackpackNames.backpackNames.length; i++)
@@ -162,28 +151,6 @@ public class ModRecipes
         RecipeSorter.register(ModInfo.MOD_ID + ":backpackUpgrade", BackpackUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
         LogHelper.info("Loaded " + counter + " backpack recipes.");
 
-        //GameRegistry.addRecipe(new AbstractBackpackRecipe());
-        /*BackpackRecipes br = new BackpackRecipes();
-        int i = 0;
-        for (Field field : BackpackRecipes.class.getFields())
-        {
-            try
-            {
-                if (field.getType() == ItemStack[].class)
-                {
-                    AbstractBackpackRecipeTwo recipe = new AbstractBackpackRecipeTwo(field.getName(), (ItemStack[]) field.get(br));
-                    GameRegistry.addRecipe(recipe);
-                    //LogHelper.info("Loaded recipe for " + field.getName() + " backpack.");
-                    i++;
-                }
-            } catch (Exception oops)
-            {
-                LogHelper.error("Huge mistake during reflection. Some bad things might happen.");
-            }
-        }
-        LogHelper.info("Loaded " + i + " backpack recipes.");
-        RecipeSorter.register(ModInfo.MOD_ID + ":adventureBackpack", AbstractBackpackRecipeTwo.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless");
-        */
     }
 
     public static void conditionalInit()
