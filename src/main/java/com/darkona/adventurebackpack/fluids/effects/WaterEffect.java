@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
@@ -30,7 +31,7 @@ public class WaterEffect extends FluidEffect
         if (entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
-            BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(player.serverPosX, player.serverPosZ);
+            BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posZ));
 
             //If it's hot
             if (
