@@ -76,7 +76,7 @@ public class FluidEffectRegistry
 
     public static boolean hasFluidEffect(Fluid fluid)
     {
-        for (FluidEffect effect : getRegisteredFluidEffects().values())
+        for (FluidEffect effect : EFFECT_REGISTRY.values())
         {
             if (fluid == effect.fluid)
             {
