@@ -159,6 +159,13 @@ public class EntityFriendlySpider extends EntityCreature
         return false;
     }
 
+    /** A spider tamed with the Spider backpack is a mount: it must not vanish when the player walks away. */
+    @Override
+    protected boolean canDespawn()
+    {
+        return false;
+    }
+
     @Override
     protected boolean func_146066_aG()
     {
