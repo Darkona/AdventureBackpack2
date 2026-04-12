@@ -74,6 +74,8 @@ public class EntityAIAvoidPlayerWithBackpack extends EntityAIBase
 
             List<?> list = this.theEntity.worldObj.selectEntitiesWithinAABB(this.targetEntityClass, this.theEntity.boundingBox.expand(this.distanceFromEntity, 3.0D, this.distanceFromEntity), this.field_98218_a);
 
+            // forget the player of an earlier check: it may have taken the backpack off or left
+            this.closestLivingEntity = null;
             if (list.isEmpty())
             {
                 return false;
