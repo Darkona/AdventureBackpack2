@@ -30,13 +30,25 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
         {
             theHorse = horse;
             theWorld = horse.worldObj;
-            theOwner = theWorld.func_152378_a(UUID.fromString(theHorse.func_152119_ch()));
+            theOwner = findOwner();
             this.speed = speed * 2;
             petPathfinder = horse.getNavigator();
             this.minDist = minDist;
             this.maxDist = maxDist;
         }
 
+
+        /** The owner string is empty for an untamed horse and can be an old player name: UUID.fromString would throw. */
+        private EntityPlayer findOwner()
+        {
+            try
+            {
+                return theWorld.func_152378_a(UUID.fromString(theHorse.func_152119_ch()));
+            } catch (IllegalArgumentException notAUuid)
+            {
+                return null;
+            }
+        }
 
         public double getDistanceSquaredToOwner()
         {
@@ -52,7 +64,7 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
         {
             if(!theHorse.isTame() || theHorse.getLeashed() || !theHorse.hasCustomNameTag())return false;
             if (theOwner == null) {
-                theOwner = theWorld.func_152378_a(UUID.fromString(theHorse.func_152119_ch()));
+                theOwner = findOwner();
                 if (theOwner == null)
                 {
                     return false;
