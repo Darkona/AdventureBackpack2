@@ -140,6 +140,7 @@ public class BackpackNames
             assert backpackData != null;
             backpackData.setString("colorName", newName);
             BackpackUtils.setBackpackData(backpack, backpackData);
+            backpack.setItemDamage(getBackpackDamageFromName(newName));
         }
     }
 }

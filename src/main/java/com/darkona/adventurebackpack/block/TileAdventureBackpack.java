@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -538,6 +539,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         NBTTagCompound compound = new NBTTagCompound();
         saveToNBT(compound);
         stack.setTagCompound(compound);
+        // the damage value is the backpack type: without it a picked-up Creeper backpack crafted like a Standard one
+        stack.setItemDamage(BackpackNames.getBackpackDamageFromName(colorName));
         return stack;
     }
 
