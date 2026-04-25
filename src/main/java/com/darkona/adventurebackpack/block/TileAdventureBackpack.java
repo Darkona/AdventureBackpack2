@@ -258,6 +258,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         {
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
             NBTTagList items = backpackData.getTagList("ABPItems", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+            // empty slots are not written: clear first, or a client update keeps items that were taken out
+            java.util.Arrays.fill(inventory, null);
             for (int i = 0; i < items.tagCount(); i++)
             {
                 NBTTagCompound item = items.getCompoundTagAt(i);
