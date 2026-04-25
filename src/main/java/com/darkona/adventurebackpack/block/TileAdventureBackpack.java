@@ -481,7 +481,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
                 worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
             }
-            if (worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
+            // only look when a bag is out: sbx/sby/sbz default to 0,0,0 and getBlock would load that chunk
+            if (sleepingBagDeployed && worldObj.blockExists(sbx, sby, sbz)
+                    && worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
             {
                 sleepingBagDeployed = false;
             }
