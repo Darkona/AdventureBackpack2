@@ -393,6 +393,8 @@ public class BlockAdventureBackpack extends BlockContainer
                     ((TileAdventureBackpack) tile).equip(world, player, x, y, z) :
                     ((TileAdventureBackpack) tile).drop(world, player, x, y, z))
             {
+                // the item now holds every slot; empty the tile so breakBlock does not drop the bucket slots again
+                java.util.Arrays.fill(((TileAdventureBackpack) tile).inventory, null);
                 return world.func_147480_a(x, y, z, false);
             }
         } else
