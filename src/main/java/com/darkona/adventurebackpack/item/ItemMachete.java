@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -48,7 +47,6 @@ public class ItemMachete extends ToolAB
             Blocks.waterlily,
             Blocks.wheat,
             Blocks.wool);
-    private float field_150934_a;
 
     public ItemMachete()
     {
@@ -56,7 +54,6 @@ public class ItemMachete extends ToolAB
         super(ModMaterials.ruggedIron, breakableBlocks);
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
         setMaxDamage(Items.iron_sword.getMaxDamage() + 250);
-        this.field_150934_a = ModMaterials.ruggedIron.getDamageVsEntity();
         this.setUnlocalizedName("machete");
     }
 
@@ -101,43 +98,8 @@ public class ItemMachete extends ToolAB
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
     {
-        /*
-        if (player.worldObj.isRemote)
-        {
-            return false;
-        }
-        int id = player.worldObj.getBlockId(x, y, z);
-        for(ItemStack stacky : OreDictionary.getOres("treeLeaves")){
-			if (stacky.itemID == id) return false;
-		}
-
-        if (Block.blocksList[id] instanceof IShearable )
-        {
-            IShearable target = (IShearable)Block.blocksList[id];
-            if (target.isShearable(itemstack, player.worldObj, x, y, z))
-            {
-                ArrayList<ItemStack> drops = target.onSheared(itemstack, player.worldObj, x, y, z,
-                		EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemstack));
-                Random rand = new Random();
-
-                for(ItemStack stack : drops)
-                {
-                    float f = 0.7F;
-                    double d  = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-                    double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-                    double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-                    EntityItem entityitem = new EntityItem(player.worldObj, (double)x + d, (double)y + d1, (double)z + d2, stack);
-                    entityitem.delayBeforeCanPickup = 10;
-                    player.worldObj.spawnEntityInWorld(entityitem);
-                }
-
-                itemstack.damageItem(1, player);
-                player.addStat(StatList.mineBlockStatArray[id], 1);
-            }
-        }
-        return false;
-         */
-        return new ItemStack(new ItemShears()).getItem().onBlockStartBreak(itemstack, x, y, z, player);
+        // Shear leaves, tall grass and other IShearable blocks like shears do.
+        return Items.shears.onBlockStartBreak(itemstack, x, y, z, player);
     }
 
 }

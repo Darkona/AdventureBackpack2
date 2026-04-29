@@ -215,7 +215,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public String getUnlocalizedName()
     {
-        return "blockAdventureBackpack";
+        return "block.adventurebackpack:AdventureBackpack";
     }
 
     @Override
@@ -393,6 +393,8 @@ public class BlockAdventureBackpack extends BlockContainer
                     ((TileAdventureBackpack) tile).equip(world, player, x, y, z) :
                     ((TileAdventureBackpack) tile).drop(world, player, x, y, z))
             {
+                // the item now holds every slot; empty the tile so breakBlock does not drop the bucket slots again
+                java.util.Arrays.fill(((TileAdventureBackpack) tile).inventory, null);
                 return world.func_147480_a(x, y, z, false);
             }
         } else
@@ -423,9 +425,9 @@ public class BlockAdventureBackpack extends BlockContainer
 
                     EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stack);
 
-                    droppedItem.motionX = -0.5F + world.rand.nextFloat() * mult;
-                    droppedItem.motionY = 4 + world.rand.nextFloat() * mult;
-                    droppedItem.motionZ = -0.5 + world.rand.nextFloat() * mult;
+                    droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
+                    droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
+                    droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
 
                     world.spawnEntityInWorld(droppedItem);
                 }

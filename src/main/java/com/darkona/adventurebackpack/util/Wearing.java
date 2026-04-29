@@ -146,6 +146,7 @@ public class Wearing
     public static IInventoryTanks getWearableInv(EntityPlayer player)
     {
         ItemStack wearable = Wearing.getWearingWearable(player);
+        if (wearable == null) return null;
         if(wearable.getItem() instanceof ItemAdventureBackpack)return new InventoryBackpack(wearable);
         if (wearable.getItem() instanceof ItemSteamJetpack) return new InventorySteamJetpack(wearable);
         if (wearable.getItem() instanceof ItemCopterPack) return new InventoryCopterPack(wearable);

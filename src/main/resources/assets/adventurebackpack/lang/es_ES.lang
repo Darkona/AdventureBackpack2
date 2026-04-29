@@ -27,7 +27,7 @@ item.adventurebackpack:hoseUseless.name=Hose: Inútil / Sin Mochila
 
 item.adventurebackpack:copterPack.name=Mochilacóptero
 #Blocks
-block.adventurebackpack:blockAdventureBackpack.name=Mochila de Aventura Base
+block.adventurebackpack:AdventureBackpack.name=Mochila de Aventura Base
 
 #CreativeTab
 itemGroup.adventurebackpack=Mochila de Aventura

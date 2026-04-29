@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.reference.GeneralReference;
+import com.darkona.adventurebackpack.util.FlightCeiling;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.relauncher.Side;
@@ -125,7 +126,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     public static void elevate(EntityPlayer player, ItemStack copter)
     {
         if (player.posY < 100) player.motionY = Math.max(player.motionY, 0.18);
-        if (player.posY > 100) player.motionY = 0.18 - ((player.posY % 100) / 100);
+        else player.motionY = FlightCeiling.motionAbove(player.posY, 0.18);
     }
 
     @Override
@@ -279,7 +280,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.setByte("status",OFF_MODE);
+        if (stack.stackTagCompound != null) stack.stackTagCompound.setByte("status",OFF_MODE);
     }
 
     @Override

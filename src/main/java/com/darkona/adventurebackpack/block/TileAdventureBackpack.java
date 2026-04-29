@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -257,6 +258,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         {
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
             NBTTagList items = backpackData.getTagList("ABPItems", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+            // empty slots are not written: clear first, or a client update keeps items that were taken out
+            java.util.Arrays.fill(inventory, null);
             for (int i = 0; i < items.tagCount(); i++)
             {
                 NBTTagCompound item = items.getCompoundTagAt(i);
@@ -478,7 +481,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
                 worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
             }
-            if (worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
+            // only look when a bag is out: sbx/sby/sbz default to 0,0,0 and getBlock would load that chunk
+            if (sleepingBagDeployed && worldObj.blockExists(sbx, sby, sbz)
+                    && worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
             {
                 sleepingBagDeployed = false;
             }
@@ -538,6 +543,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         NBTTagCompound compound = new NBTTagCompound();
         saveToNBT(compound);
         stack.setTagCompound(compound);
+        // the damage value is the backpack type: without it a picked-up Creeper backpack crafted like a Standard one
+        stack.setItemDamage(BackpackNames.getBackpackDamageFromName(colorName));
         return stack;
     }
 
@@ -549,7 +556,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         removeSleepingBag(world);
         if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.reasons.SUCCESFUL)
         {
-            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:already.equipped"));
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped"));
             if (!player.inventory.addItemStackToInventory(stacky))
             {
                 return drop(world, player, x, y, z);

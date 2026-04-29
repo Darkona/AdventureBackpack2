@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -107,12 +108,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     public double getDurabilityForDisplay(ItemStack stack)
     {
         return 1;
-    }
-
-    @Override
-    public String getItemStackDisplayName(ItemStack stack)
-    {
-        return "Adventure Backpack";// + stack.getTagCompound().getString("colorName");
     }
 
     @Override

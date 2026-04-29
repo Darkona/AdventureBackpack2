@@ -300,15 +300,12 @@ public class Utils
 
     private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
-        LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
         if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X,Y+1,Z) && !areCoordinatesTheSame2D(origX, origZ, X, Z))
         {
-            LogHelper.info("Found spot with the exception of the origin point");
             return new ChunkCoordinates(X, Y, Z);
         }
         if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z)&& world.isAirBlock(X,Y+1,Z))
         {
-            LogHelper.info("Found spot without exceptions");
             return new ChunkCoordinates(X, Y, Z);
         }
         return null;
@@ -331,99 +328,21 @@ public class Utils
      * @param type   True = for player, False = for backpack
      * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
      */
-    public static ChunkCoordinates getNearestEmptyChunkCoordinatesSpiral(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, int radius, boolean except, int steps, byte pass, boolean type)
+    public static ChunkCoordinates getNearestEmptyChunkCoordinatesSpiral(final IBlockAccess world, final int origX, final int origZ, int X, final int Y, int Z, int radius, final boolean except, int steps, byte pass, final boolean type)
     {
-        //Spiral search, because I'm awesome :)
-        //This is so the backpack tries to get placed near the death point first
-        //And then goes looking farther away at each step
-        //Steps mod 2 == 0 => X++, Z--
-        //Steps mod 2 == 1 => X--, Z++
-
-        //
-        if (steps >= radius) return null;
-        int i = X, j = Z;
-        if (steps % 2 == 0)
+        // Spiral search so the backpack (or player) lands near the starting point first.
+        // steps and pass are kept for callers; the walk always starts with legs of length 1.
+        long found = SpiralSearch.find(X, Z, radius, new SpiralSearch.Cell()
         {
-            if (pass == 0)
+            @Override
+            public boolean accept(int x, int z)
             {
-                for (; i <= X + steps; i++)
-                {
-
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, i, Y, j, except) : checkCoordsForBackpack(world, origX, origZ, i, Y, j, except);
-                    if (coords != null)
-                    {
-                        return coords;
-                    }
-                }
-                pass++;
-                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
+                return (type ? checkCoordsForPlayer(world, origX, origZ, x, Y, z, except)
+                        : checkCoordsForBackpack(world, origX, origZ, x, Y, z, except)) != null;
             }
-            if (pass == 1)
-            {
-                for (; j >= Z - steps; j--)
-                {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, i, Y, j, except) : checkCoordsForBackpack(world, origX, origZ, i, Y, j, except);
-                    if (coords != null)
-                    {
-                        return coords;
-                    }
-                }
-                pass--;
-                steps++;
-                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
-            }
-        }
-
-        if (steps % 2 == 1)
-        {
-            if (pass == 0)
-            {
-                for (; i >= X - steps; i--)
-                {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, i, Y, j, except) : checkCoordsForBackpack(world, origX, origZ, i, Y, j, except);
-                    if (coords != null)
-                    {
-                        return coords;
-                    }
-                }
-                pass++;
-                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
-            }
-            if (pass == 1)
-            {
-                for (; j <= Z + steps; j++)
-                {
-                    ChunkCoordinates coords = type ? checkCoordsForPlayer(world, origX, origZ, i, Y, j, except) : checkCoordsForBackpack(world, origX, origZ, i, Y, j, except);
-                    if (coords != null)
-                    {
-                        return coords;
-                    }
-                }
-                pass--;
-                steps++;
-                return getNearestEmptyChunkCoordinatesSpiral(world, origX, origZ, i, Y, j, radius, except, steps, pass, type);
-            }
-        }
-
-       /* Old code. Still works, though.
-       for (int i = x - radius; i <= x + radius; i++)
-        {
-            for (int j = y - (radius / 2); j <= y + (radius / 2); j++)
-            {
-                for (int k = z + radius; k <= z + (radius); k++)
-                {
-                    if (except && world.isSideSolid(i, j - 1, k, ForgeDirection.UP) && world.isAirBlock(i, j, k) && !areCoordinatesTheSame(x, y, z, i, j, k))
-                    {
-                        return new ChunkCoordinates(i, j, k);
-                    }
-                    if (!except && world.isSideSolid(i, j - 1, k, ForgeDirection.UP) && world.isAirBlock(i, j, k))
-                    {
-                        return new ChunkCoordinates(i, j, k);
-                    }
-                }
-            }
-        }*/
-        return null;
+        });
+        return found == SpiralSearch.NONE ? null
+                : new ChunkCoordinates(SpiralSearch.unpackX(found), Y, SpiralSearch.unpackZ(found));
     }
 
     /**

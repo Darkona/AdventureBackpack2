@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -94,7 +93,14 @@ public class BackpackRemovals
 
     public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
     {
-        InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
+        // the long amplifier -5 speed effect the ability keeps refreshing must go even while the song still plays
+        PotionEffect marker = player.getActivePotionEffect(Potion.moveSpeed);
+        if (marker != null && marker.getAmplifier() == -5)
+        {
+            if (player.worldObj.isRemote) player.removePotionEffectClient(Potion.moveSpeed.id);
+            else player.removePotionEffect(Potion.moveSpeed.id);
+        }
+        InventoryBackpack inv = new InventoryBackpack(backpack);
         if (inv.getLastTime() > 0) return;
         inv.setLastTime(0);
         inv.dirtyTime();

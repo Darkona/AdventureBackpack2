@@ -66,7 +66,7 @@ public class BlockSleepingBag extends BlockDirectional
     @Override
     public String getUnlocalizedName()
     {
-        return "blockSleepingBag";
+        return "block.adventurebackpack:SleepingBag";
     }
 
 

@@ -40,7 +40,10 @@ public class ModWorldGen
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 12));
-                VillagerRegistry.instance().registerVillageTradeHandler(i, new ModWorldGen.TradeHandler(backpack));
+                // the first argument is the villager profession, not the backpack index (which no villager has)
+                VillagerRegistry.instance().registerVillageTradeHandler(1, new ModWorldGen.TradeHandler(backpack));
+                VillagerRegistry.instance().registerVillageTradeHandler(2, new ModWorldGen.TradeHandler(backpack));
+                VillagerRegistry.instance().registerVillageTradeHandler(3, new ModWorldGen.TradeHandler(backpack));
             } else if (BackpackNames.backpackNames[i].equals("Villager"))
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
