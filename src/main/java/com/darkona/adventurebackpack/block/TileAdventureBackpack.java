@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.block;
 
+import com.darkona.adventurebackpack.util.FluidMigration;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
@@ -269,8 +270,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                     inventory[slot] = ItemStack.loadItemStackFromNBT(item);
                 }
             }
-            leftTank.readFromNBT(backpackData.getCompoundTag("leftTank"));
-            rightTank.readFromNBT(backpackData.getCompoundTag("rightTank"));
+            FluidMigration.readTank(leftTank, backpackData.getCompoundTag("leftTank"));
+            FluidMigration.readTank(rightTank, backpackData.getCompoundTag("rightTank"));
             colorName = backpackData.getString("colorName");
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
@@ -520,8 +521,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         if(compound.hasKey("backpackData"))
         {
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
-            leftTank.readFromNBT(backpackData.getCompoundTag("leftTank"));
-            rightTank.readFromNBT(backpackData.getCompoundTag("rightTank"));
+            FluidMigration.readTank(leftTank, backpackData.getCompoundTag("leftTank"));
+            FluidMigration.readTank(rightTank, backpackData.getCompoundTag("rightTank"));
         }
     }
 

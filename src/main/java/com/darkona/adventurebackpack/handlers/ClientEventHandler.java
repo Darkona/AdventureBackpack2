@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.util.FluidMigration;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -46,7 +47,7 @@ public class ClientEventHandler
             {
                 if (compound.hasKey("leftTank"))
                 {
-                    tank.readFromNBT(compound.getCompoundTag("leftTank"));
+                    FluidMigration.readTank(tank, compound.getCompoundTag("leftTank"));
                     String name = tank.getFluid() == null ? "" : tank.getFluid().getLocalizedName();
                     tankInfo = EnumChatFormatting.BLUE + "Left Tank: " + tank.getFluidAmount() + "/" + tank.getCapacity() + " " + name;
 
@@ -54,7 +55,7 @@ public class ClientEventHandler
                 }
                 if (compound.hasKey("rightTank"))
                 {
-                    tank.readFromNBT(compound.getCompoundTag("rightTank"));
+                    FluidMigration.readTank(tank, compound.getCompoundTag("rightTank"));
                     String name = tank.getFluid() == null ? "" : tank.getFluid().getLocalizedName();
                     tankInfo = EnumChatFormatting.RED + "Right Tank: " + tank.getFluidAmount() + "/" + tank.getCapacity() + " " + name;
 

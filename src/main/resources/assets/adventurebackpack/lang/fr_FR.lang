@@ -53,7 +53,7 @@ keys.adventureBackpack.switchHoseTank=Touche de bascule d'action
 ## Fluids
 fluid.melonJuice=Jus de melon
 fluid.milk=Lait
-fluid.mushroomStew=Soupe de champignon
+fluid.mushroomstew=Soupe de champignon
 
 ## Messages
 adventurebackpack:messages.already.equipped=Vous êtes déjà équipé d'un sac à dos.
