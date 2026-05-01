@@ -21,11 +21,16 @@ public class ItemAdventureHat extends ArmorAB
         setUnlocalizedName("adventureHat");
     }
 
+    /** Built once: getArmorModel runs on every frame the hat is rendered (performance contract, tier 4). */
+    @SideOnly(Side.CLIENT)
+    private static ModelBiped armorModel;
+
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
     {
-        return new ModelAdventureHat();
+        if (armorModel == null) armorModel = new ModelAdventureHat();
+        return armorModel;
     }
 
 

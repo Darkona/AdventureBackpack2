@@ -283,7 +283,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        stack.stackTagCompound.setByte("status",OFF_MODE);
+        if (stack.stackTagCompound != null) stack.stackTagCompound.setByte("status",OFF_MODE);
     }
 
     @Override

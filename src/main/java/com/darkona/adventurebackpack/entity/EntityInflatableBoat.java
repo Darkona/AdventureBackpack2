@@ -404,30 +404,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         }
     }
 
-    /**
-     * Save the entity to NBT (calls an abstract helper method to write extra data)
-     *
-     * @param compound
-     */
-    @Override
-    public void writeToNBT(NBTTagCompound compound)
-    {
-        super.writeToNBT(compound);
-        writeEntityToNBT(compound);
-    }
-
-    /**
-     * Reads the entity from NBT (calls an abstract helper method to read specialized data)
-     *
-     * @param compound
-     */
-    @Override
-    public void readFromNBT(NBTTagCompound compound)
-    {
-        super.readFromNBT(compound);
-        readEntityFromNBT(compound);
-    }
-
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
         compound.setFloat("Inflation",inflation);

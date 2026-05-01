@@ -14,7 +14,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.Random;
 
 /**
  * Created on 11/01/2015
@@ -24,10 +23,7 @@ import java.util.Random;
 public class EntityFriendlySpider extends EntityCreature
 {
 
-    private float prevRearingAmount;
     private int jumpTicks;
-    private EntityPlayer owner;
-    private boolean tamed = false;
     private final EntityAIControlledByPlayer aiControlledByPlayer;
 
     @Override
@@ -159,6 +155,13 @@ public class EntityFriendlySpider extends EntityCreature
         return false;
     }
 
+    /** A spider tamed with the Spider backpack is a mount: it must not vanish when the player walks away. */
+    @Override
+    protected boolean canDespawn()
+    {
+        return false;
+    }
+
     @Override
     protected boolean func_146066_aG()
     {
@@ -283,10 +286,6 @@ public class EntityFriendlySpider extends EntityCreature
         if (this.worldObj.isRemote && this.dataWatcher.hasChanges())
         {
             this.dataWatcher.func_111144_e();
-        }
-        if (this.riddenByEntity instanceof EntityPlayer)
-        {
-
         }
         if (this.riddenByEntity != null && this.riddenByEntity.isDead)
         {
@@ -451,60 +450,6 @@ public class EntityFriendlySpider extends EntityCreature
             this.stepHeight = 0.5F;
             this.jumpMovementFactor = 0.02F;
             super.moveEntityWithHeading(strafe, forward);
-        }
-    }
-
-    @Override
-    public void updateRiderPosition() {
-        super.updateRiderPosition();
-
-		if (this.prevRearingAmount > 0.0F)
-		{
-			float f = MathHelper.sin(this.renderYawOffset * (float) Math.PI / 180.0F);
-			float f1 = MathHelper.cos(this.renderYawOffset * (float) Math.PI / 180.0F);
-			float f2 = 0.7F * this.prevRearingAmount;
-			float f3 = 0.15F * this.prevRearingAmount;
-			this.riddenByEntity.setPosition(this.posX + (f2 * f), this.posY + this.getMountedYOffset() + this.riddenByEntity.getYOffset()
-					+  f3, this.posZ -  (f2 * f1));
-
-			if (this.riddenByEntity instanceof EntityLivingBase)
-			{
-				((EntityLivingBase) this.riddenByEntity).renderYawOffset = this.renderYawOffset;
-			}
-		}
-    }
-
-
-    public void spiderJump()
-    {
-        this.getJumpHelper().setJumping();
-        //this.getJumpHelper().doJump();
-    }
-
-    public static class GroupData implements IEntityLivingData
-    {
-        public int field_111105_a;
-
-        public void func_111104_a(Random p_111104_1_)
-        {
-            int i = p_111104_1_.nextInt(5);
-
-            if (i <= 1)
-            {
-                this.field_111105_a = Potion.moveSpeed.id;
-            }
-            else if (i <= 2)
-            {
-                this.field_111105_a = Potion.damageBoost.id;
-            }
-            else if (i <= 3)
-            {
-                this.field_111105_a = Potion.regeneration.id;
-            }
-            else if (i <= 4)
-            {
-                this.field_111105_a = Potion.invisibility.id;
-            }
         }
     }
 

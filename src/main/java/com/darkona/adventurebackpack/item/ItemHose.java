@@ -155,6 +155,8 @@ public class ItemHose extends ItemAB
         if (entity == null || !(entity instanceof EntityPlayer)) return;
 
         EntityPlayer player = (EntityPlayer) entity;
+        // The tank readout only feeds the HUD: refresh it every 5 ticks, not by reading the backpack NBT each tick.
+        if (player.ticksExisted % 5 != 0 && stack.hasTagCompound()) return;
         if (world.isRemote && player.getItemInUse() != null && player.getItemInUse().getItem().equals(this)) return;
 
 
@@ -214,7 +216,9 @@ public class ItemHose extends ItemAB
 
                 case HOSE_SPILL_MODE:
 
-                    accepted = exTank.fill(ForgeDirection.UNKNOWN, tank.drain(ConfigHandler.HOSE_TRANSFER_AMOUNT, false), false);
+                    FluidStack offered = tank.drain(ConfigHandler.HOSE_TRANSFER_AMOUNT, false);
+                    if (offered == null) break; // another mod's handler may not accept a null stack
+                    accepted = exTank.fill(ForgeDirection.UNKNOWN, offered, false);
                     if (accepted > 0)
                     {
                         exTank.fill(ForgeDirection.UNKNOWN, tank.drain(accepted, true), true);
@@ -269,10 +273,11 @@ public class ItemHose extends ItemAB
                         }
                         //TODO adjust for Adventure Mode
                         Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
-                        if (fluidBlock != null)
+                        // Only a source block (metadata 0) is a full bucket; flowing blocks must not create fluid.
+                        if (fluidBlock != null && world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ) == 0)
                         {
                             FluidStack fluid = new FluidStack(fluidBlock, Constants.bucket);
-                            if (tank.getFluid() == null || tank.getFluid().containsFluid(fluid))
+                            if (tank.getFluid() == null || tank.getFluid().isFluidEqual(fluid))
                             {
                                 int accepted = tank.fill(fluid, false);
                                 if (accepted > 0)

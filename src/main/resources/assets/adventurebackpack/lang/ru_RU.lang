@@ -38,9 +38,9 @@ item.adventurebackpack:adventureHat.name=Фетровая шляпа искат�
 item.adventurebackpack:pistonBoots.name=Поршневые ботинки
 
 ## Blocks
-block.adventurebackpack:blockAdventureBackpack.name=Основа рюкзака искателя приключений
-block.adventurebackpack:blockCampFire.name=Костёр
-block.adventurebackpack:blockSleepingBag.name=Спальный мешок
+block.adventurebackpack:AdventureBackpack.name=Основа рюкзака искателя приключений
+block.adventurebackpack:CampFire.name=Костёр
+block.adventurebackpack:SleepingBag.name=Спальный мешок
 
 ## CreativeTab
 itemGroup.adventurebackpack=Рюкзак искателя приключений
@@ -53,10 +53,10 @@ keys.adventureBackpack.switchHoseTank=Сменить используемый р
 ## Fluids
 fluid.melonJuice=Арбузный сок
 fluid.milk=Молоко
-fluid.mushrromstew=Тушеные грибы
+fluid.mushroomstew=Тушеные грибы
 
 ## Messages
-adventurebackpack:already.equipped=Рюкзак уже надет на вас.
+adventurebackpack:messages.already.equipped=Рюкзак уже надет на вас.
 adventurebackpack:messages.already.impossibru=Вы не можете надеть больше рюкзаков.
 adventurebackpack:messages.copterpack.hover=Вертолётный ранец: Режим зависания.
 adventurebackpack:messages.copterpack.normal=Вертолётный ранец: Обычный режим.

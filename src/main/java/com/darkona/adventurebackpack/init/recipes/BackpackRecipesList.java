@@ -6,7 +6,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import java.util.List;
 
 /**
  * Created on 20/10/2014
@@ -15,8 +14,6 @@ import java.util.List;
  */
 public class BackpackRecipesList
 {
-
-    public List<BackpackRecipe> recipes;
 
     public BackpackRecipesList()
     {

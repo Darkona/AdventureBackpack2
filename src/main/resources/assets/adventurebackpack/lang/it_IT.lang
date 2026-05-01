@@ -24,7 +24,7 @@ item.adventurebackpack:hose_rightTank_drink.name=Tubo: Serbatoio destro / Mod. b
 item.adventurebackpack:hoseUseless.name=Tubo: Inutilizzabile / Nessuno zaino equipaggiato
 item.adventurebackpack:copterPack.name=
 #Blocks
-block.adventurebackpack:blockAdventureBackpack.name=Adventure Backpack Base
+block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Base
 
 #CreativeTab
 itemGroup.adventurebackpack=Zaino dell'avventuriero

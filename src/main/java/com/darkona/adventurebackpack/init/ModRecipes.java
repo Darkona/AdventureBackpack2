@@ -1,14 +1,16 @@
 package com.darkona.adventurebackpack.init;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.init.recipes.BackpackKeepContentsRecipe;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
+import com.darkona.adventurebackpack.init.recipes.BackpackUpgradeRecipe;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.Field;
@@ -125,17 +127,6 @@ public class ModRecipes
                 'G', new ItemStack(Items.dye, 1, 2)
         );
 
-        /*GameRegistry.addRecipe(a,
-                "LGL",
-                "TCT",
-                "LSL",
-                'L', Items.leather,
-                'G', Items.gold_ingot,
-                'T', new ItemStack(ModItems.component, 1, 2),
-                'S', new ItemStack(ModItems.component, 1, 1),
-                'C', Blocks.chest
-        );*/
-
         BackpackRecipesList br = new BackpackRecipesList();
         int counter = 0;
         for (int i = 0; i < BackpackNames.backpackNames.length; i++)
@@ -146,7 +137,7 @@ public class ModRecipes
                 {
                     if (field.getName().equals((BackpackNames.backpackNames[i])))
                     {
-                        GameRegistry.addRecipe(new BackpackKeepContentsRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
+                        GameRegistry.addRecipe(new BackpackUpgradeRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
                         counter++;
                     }
                 } catch (Exception oops)
@@ -157,30 +148,9 @@ public class ModRecipes
             }
 
         }
+        RecipeSorter.register(ModInfo.MOD_ID + ":backpackUpgrade", BackpackUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
         LogHelper.info("Loaded " + counter + " backpack recipes.");
 
-        //GameRegistry.addRecipe(new AbstractBackpackRecipe());
-        /*BackpackRecipes br = new BackpackRecipes();
-        int i = 0;
-        for (Field field : BackpackRecipes.class.getFields())
-        {
-            try
-            {
-                if (field.getType() == ItemStack[].class)
-                {
-                    AbstractBackpackRecipeTwo recipe = new AbstractBackpackRecipeTwo(field.getName(), (ItemStack[]) field.get(br));
-                    GameRegistry.addRecipe(recipe);
-                    //LogHelper.info("Loaded recipe for " + field.getName() + " backpack.");
-                    i++;
-                }
-            } catch (Exception oops)
-            {
-                LogHelper.error("Huge mistake during reflection. Some bad things might happen.");
-            }
-        }
-        LogHelper.info("Loaded " + i + " backpack recipes.");
-        RecipeSorter.register(ModInfo.MOD_ID + ":adventureBackpack", AbstractBackpackRecipeTwo.class, RecipeSorter.Category.SHAPED, "after:minecraft:shapeless");
-        */
     }
 
     public static void conditionalInit()
@@ -221,18 +191,18 @@ public class ModRecipes
             );
 
             //Copter Pack
-            if (ConfigHandler.COPTERPACK_ENABLED) GameRegistry.addRecipe(new ItemStack(ModItems.copterPack),
+            if (ConfigHandler.COPTERPACK_ENABLED) GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.copterPack),
                     "WBW",
                     "TEI",
                     "CDI",
-                    'W', Blocks.planks,
+                    'W', "plankWood",
                     'B', new ItemStack(ModItems.component, 1, 6),
                     'T', new ItemStack(ModItems.component, 1, 2),
                     'E', new ItemStack(ModItems.component, 1, 5),
                     'C', new ItemStack(Items.dye, 1, 2),
                     'D', Items.diamond,
                     'I', Items.iron_ingot
-            );
+            ));
         }
 
         //Ok let's try getting railcraft stuff.

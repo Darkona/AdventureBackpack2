@@ -56,7 +56,7 @@ public class BlockCampFire extends BlockContainer
     @Override
     public String getUnlocalizedName()
     {
-        return "blockCampFire";
+        return "block.adventurebackpack:CampFire";
     }
 
     @Override

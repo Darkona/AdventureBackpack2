@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.common.Flight;
+import com.darkona.adventurebackpack.common.JetpackHeat;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -80,12 +82,12 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                     coolTicks = coolTicks < 5000 ? coolTicks + 100 : coolTicks;
                 }
             }
-        } else if (burnTicks <= 0)
+        } else
         {
             inv.currentItemBurnTime = 0;
             if (coolTicks % inv.getDecreasingFactor() == 0)
             {
-                temperature = (temperature - 1 >= getBiomeMinTemp(player, world)) ? temperature - 1 : 0;
+                temperature = JetpackHeat.coolDown(temperature, getBiomeMinTemp(player, world));
             }
         }
         inv.setTemperature(temperature);
@@ -141,15 +143,16 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         //Elevation
         if (world.isRemote)
         {
+            // Tell the server only when the state changes, not every tick (performance contract, rule 5).
             if (inv.getStatus() && canUse && Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
             {
-                inv.setInUse(true);
-                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_IN_USE));
                 if (mustFizzz)
                 {
+                    inv.setInUse(true);
+                    ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_IN_USE));
                     ModNetwork.net.sendToServer(new EntitySoundPacket.Message(EntitySoundPacket.JETPACK_FIZZ, player));
                 }
-            } else
+            } else if (!mustFizzz)
             {
                 inv.setInUse(false);
                 ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_NOT_IN_USE));
@@ -209,10 +212,11 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         {
             if (inv.getSteamTank().getFluidAmount() < inv.getSteamTank().getCapacity())
             {
-                if (inv.getWaterTank().getFluid() != null)
+                Fluid steamFluid = getSteam();
+                if (steamFluid != null && inv.getWaterTank().getFluid() != null)
                 {
                     int steam = inv.getWaterTank().drain((temperature / ConfigHandler.JETPACK_BOILING_TEMPERATURE), true).amount;
-                    inv.getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), steam * ConfigHandler.JETPACK_STEAM_PER_WATER), true);
+                    inv.getSteamTank().fill(new FluidStack(steamFluid, steam * ConfigHandler.JETPACK_STEAM_PER_WATER), true);
                     inv.dirtyTanks();
                 }
             }
@@ -238,6 +242,15 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         inv.setBoiling(boiling);
         inv.setLeaking(leaking);
         inv.setTemperature(temperature);
+    }
+
+    private static Fluid steam;
+
+    /** The "steam" fluid comes from another mod (Railcraft, IC2...); without one the boiler makes nothing. */
+    private static Fluid getSteam()
+    {
+        if (steam == null) steam = FluidRegistry.getFluid("steam");
+        return steam;
     }
 
     public static void elevate(EntityPlayer player)

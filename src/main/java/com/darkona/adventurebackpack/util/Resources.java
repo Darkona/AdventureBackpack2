@@ -6,6 +6,8 @@ import com.darkona.adventurebackpack.reference.ModInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Created on 10/10/2014
  *
@@ -21,14 +23,32 @@ public class Resources
         return new ResourceLocation(TEXTURE_LOCATION, "textures/models/" + name).toString();
     }
 
+    // Texture locations are asked for on every rendered frame (performance contract, tier 4): build each one once.
+    private static final ConcurrentHashMap<String, ResourceLocation> BACKPACK_TEXTURES = new ConcurrentHashMap<String, ResourceLocation>();
+    private static final ConcurrentHashMap<String, String> BACKPACK_TEXTURE_STRINGS = new ConcurrentHashMap<String, String>();
+    private static final ConcurrentHashMap<String, ResourceLocation> MODEL_TEXTURES = new ConcurrentHashMap<String, ResourceLocation>();
+
     public static String backpackTexturesStringFromColor(ItemStack backpack)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + BackpackNames.getBackpackColorName(backpack) + ".png").toString();
+        String color = BackpackNames.getBackpackColorName(backpack);
+        String cached = BACKPACK_TEXTURE_STRINGS.get(color);
+        if (cached == null)
+        {
+            cached = backpackTextureFromString(color).toString();
+            BACKPACK_TEXTURE_STRINGS.put(color, cached);
+        }
+        return cached;
     }
 
     public static ResourceLocation backpackTextureFromString(String color)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + color + ".png");
+        ResourceLocation cached = BACKPACK_TEXTURES.get(color);
+        if (cached == null)
+        {
+            cached = new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + color + ".png");
+            BACKPACK_TEXTURES.put(color, cached);
+        }
+        return cached;
     }
 
     private static String cachedHoliday;
@@ -60,7 +80,7 @@ public class Resources
 
     public static ResourceLocation backpackTextureFromColor(IInventoryAdventureBackpack adventureBackpack)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/backpack/" + adventureBackpack.getColorName() + ".png");
+        return backpackTextureFromString(adventureBackpack.getColorName());
     }
 
     public static ResourceLocation guiTextures(String name)
@@ -85,7 +105,13 @@ public class Resources
 
     public static ResourceLocation modelTextures(String name)
     {
-        return new ResourceLocation(TEXTURE_LOCATION, "textures/models/" + name + ".png");
+        ResourceLocation cached = MODEL_TEXTURES.get(name);
+        if (cached == null)
+        {
+            cached = new ResourceLocation(TEXTURE_LOCATION, "textures/models/" + name + ".png");
+            MODEL_TEXTURES.put(name, cached);
+        }
+        return cached;
     }
 
     public static String getIconString(String name)

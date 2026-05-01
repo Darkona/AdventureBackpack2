@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
 
+import com.darkona.adventurebackpack.util.FluidMigration;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
@@ -125,8 +126,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public void loadTanks(NBTTagCompound compound)
     {
-        leftTank.readFromNBT(compound.getCompoundTag("leftTank"));
-        rightTank.readFromNBT(compound.getCompoundTag("rightTank"));
+        FluidMigration.readTank(leftTank, compound.getCompoundTag("leftTank"));
+        FluidMigration.readTank(rightTank, compound.getCompoundTag("rightTank"));
     }
 
     @Override
@@ -236,8 +237,8 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
                 }
             }
 
-            leftTank.readFromNBT(backpackData.getCompoundTag("leftTank"));
-            rightTank.readFromNBT(backpackData.getCompoundTag("rightTank"));
+            FluidMigration.readTank(leftTank, backpackData.getCompoundTag("leftTank"));
+            FluidMigration.readTank(rightTank, backpackData.getCompoundTag("rightTank"));
             colorName = backpackData.getString("colorName");
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
