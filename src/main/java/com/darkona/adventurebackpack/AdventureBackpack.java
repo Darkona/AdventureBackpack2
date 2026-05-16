@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.FeatureVisibility;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
@@ -118,6 +119,7 @@ public class AdventureBackpack
         ConfigHandler.IS_ENVIROMINE = Loader.isModLoaded("EnviroMine");
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
         ConfigHandler.IS_RAILCRAFT = Loader.isModLoaded("Railcraft");
+        GraveCompat.init();
 
 
         if (ConfigHandler.IS_BUILDCRAFT)

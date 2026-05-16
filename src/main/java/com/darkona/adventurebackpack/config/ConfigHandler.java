@@ -46,6 +46,8 @@ public class ConfigHandler
     public static final String WORLDGEN = ROOT + ".worldgen";
     public static final String RECIPES = ROOT + ".recipes";
     public static final String TWEAKS = ROOT + ".tweaks";
+    public static final String COMPAT = ROOT + ".compat";
+    public static final String COMPAT_GRAVES = COMPAT + ".graves";
 
     /** Keys that lived in the old flat "general" category: old name, new category, new name. */
     static final String[][] LEGACY_KEYS = {
@@ -87,6 +89,7 @@ public class ConfigHandler
     public static int BACKPACK_TANK_CAPACITY = 4000;
     public static float BACKPACK_BLAST_RESISTANCE = 2000f;
     public static float BACKPACK_HARDNESS = 1.0f;
+    public static boolean BACKPACK_DEATH_MESSAGE = true;
 
     // ---------------------------------------------------------------- abilities
     public static int ABILITY_EFFECT_REFRESH_TICKS = AbilityEffects.EFFECT_REFRESH_TICKS;
@@ -233,6 +236,9 @@ public class ConfigHandler
     public static boolean FIX_LEAD = true;
     public static boolean HORSES_FOLLOW_OWNER = true;
 
+    // ---------------------------------------------------------------- compat (each bridge only acts when its mod is loaded)
+    public static boolean COMPAT_GRAVES_ENABLED = true;
+
     /** Order in which each category writes its keys: insertion order, so {@code enabled} flags come first. */
     private static final Map<String, List<String>> ORDER = new HashMap<String, List<String>>();
 
@@ -266,6 +272,7 @@ public class ConfigHandler
         readRender(cfg);
         readKeys(cfg);
         readWorldgenRecipesTweaks(cfg);
+        readCompat(cfg);
         validate();
         for (Map.Entry<String, List<String>> e : ORDER.entrySet())
         {
@@ -300,6 +307,8 @@ public class ConfigHandler
         cfg.setCategoryComment(WORLDGEN, "Backpacks found in the world.");
         cfg.setCategoryComment(RECIPES, "Extra recipes.");
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
+        cfg.setCategoryComment(COMPAT, "Integrations with other mods. Each one only acts when its mod is loaded; nothing here is a hard dependency.");
+        cfg.setCategoryComment(COMPAT_GRAVES, "Grave mods (OpenBlocks graves, GraveStone). When one of them is loaded and makes a grave, the worn backpack (or copter pack, or jetpack) goes into the grave instead of being placed as a block. Without a grave mod, backpack.placeOnDeath decides.");
         cfg.getCategory(KEYS).setRequiresMcRestart(true);
     }
 
@@ -339,6 +348,7 @@ public class ConfigHandler
         BACKPACK_TANK_CAPACITY = integer(cfg, BACKPACK, "tankCapacity", 4000, 1000, 64000, "Capacity of each of the two backpack tanks, in millibuckets. Use the same value on server and clients. Lowering it does not delete fluid already stored above the new limit.", true);
         BACKPACK_BLAST_RESISTANCE = (float) decimal(cfg, BACKPACK, "blastResistance", 2000.0, 0.0, 6000000.0, "Explosion resistance of a placed backpack, on the same scale as Block.setResistance: 2000 is obsidian (survives TNT and creepers), 10 is stone.", true);
         BACKPACK_HARDNESS = (float) decimal(cfg, BACKPACK, "hardness", 1.0, 0.0, 100.0, "How long a placed backpack takes to break by hand. Stone is 1.5.", true);
+        BACKPACK_DEATH_MESSAGE = bool(cfg, BACKPACK, "deathMessage", true, "On death, tell the player in chat where the worn backpack, copter pack or jetpack went (placed, dropped or in the grave) with its coordinates.");
     }
 
     private static void readAbilities(Configuration cfg)
@@ -523,6 +533,11 @@ public class ConfigHandler
         SADDLE_RECIPE = bool(cfg, RECIPES, "saddle", true, "Add a crafting recipe for the saddle.");
         FIX_LEAD = bool(cfg, TWEAKS, "fixVanillaLead", true, "Mobs on a lead held by a player take no fall damage unless they fall fast.");
         HORSES_FOLLOW_OWNER = bool(cfg, TWEAKS, "namedHorsesFollowOwner", true, "Tamed horses with a name tag follow their owner.");
+    }
+
+    private static void readCompat(Configuration cfg)
+    {
+        COMPAT_GRAVES_ENABLED = bool(cfg, COMPAT_GRAVES, "enabled", true, "Send the worn wearable to the grave of OpenBlocks or GraveStone when one of them is loaded. When false, backpack.placeOnDeath decides as if no grave mod were there.");
     }
 
     /** Fixes values that are valid alone but not together. Pure: the unit test calls it. */

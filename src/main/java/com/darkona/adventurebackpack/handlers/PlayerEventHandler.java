@@ -1,12 +1,15 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.common.DeathRoute;
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ServerProxy;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -28,7 +31,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemNameTag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -196,8 +201,39 @@ public class PlayerEventHandler
     }
 
     /**
-     * Drops or places the wearable together with the rest of the player's drops, so grave and
-     * soulbound mods see it in the drop list and a death another mod cancels drops nothing (#117).
+     * Before GraveStone (HIGH) empties the inventory into its grave: moves the worn wearable into a free main
+     * inventory slot so the grave takes it with everything else. Without a free slot, or without a GraveStone
+     * grave for this death, {@link #playerDrops} handles it as usual. If another mod cancels the death later,
+     * the wearable is simply in the inventory: nothing is lost.
+     */
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void wearableToInventoryGrave(LivingDeathEvent event)
+    {
+        if (!(event.entityLiving instanceof EntityPlayer) || event.entityLiving.worldObj.isRemote) return;
+        EntityPlayer player = (EntityPlayer) event.entityLiving;
+        BackpackProperty props = BackpackProperty.get(player);
+        if (props == null || !props.hasWearable()) return;
+        boolean keepInventory = player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory");
+        int freeSlot = player.inventory.getFirstEmptyStack();
+        DeathRoute.Route route = DeathRoute.beforeDeath(true, false, keepInventory, ConfigHandler.COMPAT_GRAVES_ENABLED,
+                GraveCompat.graveStoneMakesGrave(event.source), freeSlot >= 0);
+        if (route != DeathRoute.Route.GRAVE_INVENTORY) return;
+
+        ItemStack wearable = props.getWearable();
+        props.executeWearableUnequipProtocol();
+        if (wearable.getItem() instanceof ItemAdventureBackpack)
+        {
+            ItemAdventureBackpack.deathEffects(player.worldObj, player, wearable);
+        }
+        player.inventory.setInventorySlotContents(freeSlot, wearable);
+        props.setWearable(null);
+        deathMessage(player, wearable, "grave", MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ));
+    }
+
+    /**
+     * Drops or places the wearable together with the rest of the player's drops, so grave and soulbound mods see
+     * it in the drop list and a death another mod cancels drops nothing (#117). HIGH on purpose: OpenBlocks reads
+     * the drop list at LOW and Baubles adds its slots at NORMAL, so the wearable must be in the list before them.
      * Receives cancelled events so the wearable still leaves the player when another mod cancels the drops.
      */
     @SubscribeEvent(priority = EventPriority.HIGH, receiveCanceled = true)
@@ -206,19 +242,64 @@ public class PlayerEventHandler
         EntityPlayer player = event.entityPlayer;
         if (player == null || player.worldObj.isRemote) return;
         BackpackProperty props = BackpackProperty.get(player);
-        if (props.hasWearable() && !player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory"))
+        ItemStack wearable = props.getWearable();
+        boolean keepInventory = player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory");
+        DeathRoute.Route route = DeathRoute.onDrops(wearable != null, false, keepInventory, event.isCanceled(),
+                ConfigHandler.COMPAT_GRAVES_ENABLED, GraveCompat.hasDropsGrave(), ConfigHandler.BACKPACK_DEATH_PLACE,
+                wearable != null && wearable.getItem() instanceof ItemAdventureBackpack);
+        int x = MathHelper.floor_double(player.posX), y = MathHelper.floor_double(player.posY), z = MathHelper.floor_double(player.posZ);
+        // While capturing, a dropped wearable joins event.drops instead of spawning on its own
+        player.captureDrops = !event.isCanceled();
+        try
         {
-            // While capturing, a dropped wearable joins event.drops instead of spawning on its own
-            player.captureDrops = !event.isCanceled();
-            try
+            switch (route)
             {
-                ((IBackWearableItem) props.getWearable().getItem()).onPlayerDeath(player.worldObj, player, props.getWearable());
-            } finally
-            {
-                player.captureDrops = false;
+                case GRAVE_DROPS:
+                    dropWearable(player, wearable);
+                    deathMessage(player, wearable, "grave", x, y, z);
+                    break;
+                case PLACE:
+                    ChunkCoordinates placed = ((ItemAdventureBackpack) wearable.getItem()).placeOrDropOnDeath(player.worldObj, player, wearable);
+                    if (placed != null)
+                    {
+                        deathMessage(player, wearable, "placed", placed.posX, placed.posY, placed.posZ);
+                    } else
+                    {
+                        deathMessage(player, wearable, "dropped", x, y, z);
+                    }
+                    break;
+                case DROP:
+                    dropWearable(player, wearable);
+                    deathMessage(player, wearable, "dropped", x, y, z);
+                    break;
+                default:
+                    break;
             }
+        } finally
+        {
+            player.captureDrops = false;
         }
         ServerProxy.storePlayerProps(player);
+    }
+
+    private static void dropWearable(EntityPlayer player, ItemStack wearable)
+    {
+        if (wearable.getItem() instanceof ItemAdventureBackpack)
+        {
+            ((ItemAdventureBackpack) wearable.getItem()).dropOnDeath(player.worldObj, player, wearable);
+        } else if (wearable.getItem() instanceof IBackWearableItem)
+        {
+            // Copter pack and jetpack always drop
+            ((IBackWearableItem) wearable.getItem()).onPlayerDeath(player.worldObj, player, wearable);
+        }
+    }
+
+    /** Chat line with where the wearable went; the player reads it after respawning (backpack.deathMessage). */
+    private static void deathMessage(EntityPlayer player, ItemStack wearable, String where, int x, int y, int z)
+    {
+        if (!ConfigHandler.BACKPACK_DEATH_MESSAGE) return;
+        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.death." + where,
+                wearable.getDisplayName(), x, y, z, player.dimension));
     }
 
     @SubscribeEvent

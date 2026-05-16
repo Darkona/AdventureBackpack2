@@ -292,27 +292,47 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     @Override
     public void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
     {
-        if(world.isRemote)return;
-
-        if (ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.CREEPER_DEATH_EXPLOSION && Wearing.isWearingTheRightBackpack(player, "Creeper"))
+        if (world.isRemote) return;
+        if (ConfigHandler.BACKPACK_DEATH_PLACE)
         {
-            player.worldObj.createExplosion(player, player.posX, player.posY, player.posZ, ConfigHandler.CREEPER_DEATH_EXPLOSION_POWER, false);
-        }
-
-        if(ConfigHandler.BACKPACK_DEATH_PLACE)
+            placeOrDropOnDeath(world, player, stack);
+        } else
         {
-            if (!tryPlace(world, player, stack))
-            {
-                player.dropPlayerItemWithRandomChoice(stack, false);
-                BackpackProperty.get(player).setWearable(null);
-            }
-        }else{
-            player.dropPlayerItemWithRandomChoice(stack, false);
-            BackpackProperty.get(player).setWearable(null);
+            dropOnDeath(world, player, stack);
         }
     }
 
-    private boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
+    /** The Creeper Backpack explodes when its wearer dies, wherever the backpack goes afterwards. */
+    public static void deathEffects(World world, EntityPlayer player, ItemStack stack)
+    {
+        if (ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.CREEPER_DEATH_EXPLOSION && "Creeper".equals(BackpackNames.getBackpackColorName(stack)))
+        {
+            world.createExplosion(player, player.posX, player.posY, player.posZ, ConfigHandler.CREEPER_DEATH_EXPLOSION_POWER, false);
+        }
+    }
+
+    /** Places the worn backpack near the death point, or drops it when no spot is free. Returns where it was placed, or null when dropped. */
+    public ChunkCoordinates placeOrDropOnDeath(World world, EntityPlayer player, ItemStack stack)
+    {
+        deathEffects(world, player, stack);
+        ChunkCoordinates placed = tryPlace(world, player, stack);
+        if (placed == null)
+        {
+            player.dropPlayerItemWithRandomChoice(stack, false);
+            BackpackProperty.get(player).setWearable(null);
+        }
+        return placed;
+    }
+
+    /** Drops the worn backpack as an item (into the death drop list while the player captures drops). */
+    public void dropOnDeath(World world, EntityPlayer player, ItemStack stack)
+    {
+        deathEffects(world, player, stack);
+        player.dropPlayerItemWithRandomChoice(stack, false);
+        BackpackProperty.get(player).setWearable(null);
+    }
+
+    private ChunkCoordinates tryPlace(World world, EntityPlayer player, ItemStack backpack)
     {
         int X = MathHelper.floor_double(player.posX);
         int Z = MathHelper.floor_double(player.posZ);
@@ -324,10 +344,10 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
                     Utils.getNearestEmptyChunkCoordinatesSpiral(world, X, Z, X, MathHelper.floor_double(player.posY) + Y, Z, 12, true, 1, (byte) 0, false);
             if (spawn != null)
             {
-                return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false);
+                return placeBackpack(backpack, player, world, spawn.posX, spawn.posY, spawn.posZ, ForgeDirection.UP.ordinal(), false) ? spawn : null;
             }
         }
-        return false;
+        return null;
     }
 
     @Override
