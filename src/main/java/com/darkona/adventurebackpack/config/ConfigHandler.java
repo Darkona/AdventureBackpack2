@@ -48,6 +48,7 @@ public class ConfigHandler
     public static final String TWEAKS = ROOT + ".tweaks";
     public static final String COMPAT = ROOT + ".compat";
     public static final String COMPAT_GRAVES = COMPAT + ".graves";
+    public static final String COMPAT_BAUBLES = COMPAT + ".baubles";
 
     /** Keys that lived in the old flat "general" category: old name, new category, new name. */
     static final String[][] LEGACY_KEYS = {
@@ -238,6 +239,7 @@ public class ConfigHandler
 
     // ---------------------------------------------------------------- compat (each bridge only acts when its mod is loaded)
     public static boolean COMPAT_GRAVES_ENABLED = true;
+    public static boolean COMPAT_BAUBLES_ENABLED = true;
 
     /** Order in which each category writes its keys: insertion order, so {@code enabled} flags come first. */
     private static final Map<String, List<String>> ORDER = new HashMap<String, List<String>>();
@@ -309,6 +311,7 @@ public class ConfigHandler
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
         cfg.setCategoryComment(COMPAT, "Integrations with other mods. Each one only acts when its mod is loaded; nothing here is a hard dependency.");
         cfg.setCategoryComment(COMPAT_GRAVES, "Grave mods (OpenBlocks graves, GraveStone). When one of them is loaded and makes a grave, the worn backpack (or copter pack, or jetpack) goes into the grave instead of being placed as a block. Without a grave mod, backpack.placeOnDeath decides.");
+        cfg.setCategoryComment(COMPAT_BAUBLES, "Baubles and Baubles Expanded. The Adventure Backpack can be worn in a bauble slot and then works as if worn the usual way (abilities, open key, hose, model on the back). Baubles Expanded gets a new back slot; the original Baubles uses the belt slot. Only one backpack is worn at a time. The default open key (B) is the same as the Baubles inventory key: change one of them in Options > Controls.");
         cfg.getCategory(KEYS).setRequiresMcRestart(true);
     }
 
@@ -537,6 +540,7 @@ public class ConfigHandler
 
     private static void readCompat(Configuration cfg)
     {
+        COMPAT_BAUBLES_ENABLED = bool(cfg, COMPAT_BAUBLES, "enabled", true, "Let the Adventure Backpack go into a bauble slot and work from there. When false the backpack does not fit a bauble slot and one already there does nothing. The Baubles Expanded back slot exists anyway (so client and server always match); its layout can be changed in the Baubles Expanded config.");
         COMPAT_GRAVES_ENABLED = bool(cfg, COMPAT_GRAVES, "enabled", true, "Send the worn wearable to the grave of OpenBlocks or GraveStone when one of them is loaded. When false, backpack.placeOnDeath decides as if no grave mod were there.");
     }
 

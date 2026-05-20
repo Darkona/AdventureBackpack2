@@ -29,6 +29,12 @@ public class BackpackProperty implements IExtendedEntityProperties
     private boolean forceCampFire = false;
     private int dimension = 0;
     private NBTTagCompound lastSentData = null;
+    /**
+     * Server only. True when {@link #wearable} is the very stack in a Baubles slot (compat/baubles). Baubles owns
+     * and saves that stack; these properties only point at it, so they never save it to disk nor hand it to the
+     * respawn store, which would duplicate it.
+     */
+    private boolean wearableInBauble = false;
 
     public NBTTagCompound getWearableData()
     {
@@ -52,7 +58,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     {
         if (!(player instanceof EntityPlayerMP)) return;
         BackpackProperty props = get(player);
-        NBTTagCompound data = props.getData();
+        NBTTagCompound data = props.getSyncData();
         if (!data.equals(props.lastSentData))
         {
             props.lastSentData = data;
@@ -64,7 +70,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     public static void syncTo(EntityPlayer target, EntityPlayerMP receiver)
     {
         if (target == null || receiver == null || get(target) == null) return;
-        ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(target.getEntityId(), get(target).getData()), receiver);
+        ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(target.getEntityId(), get(target).getSyncData()), receiver);
     }
 
     public static void syncToNear(EntityPlayer player)
@@ -77,7 +83,7 @@ public class BackpackProperty implements IExtendedEntityProperties
                 ((EntityPlayerMP) player)
                         .getServerForPlayer()
                         .getEntityTracker()
-                        .func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getData())));
+                        .func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getSyncData())));
             }catch(Exception ex){
                 ex.printStackTrace();
             }
@@ -89,11 +95,20 @@ public class BackpackProperty implements IExtendedEntityProperties
         this.player = player;
     }
 
+    /** What is stored for the player (disk, respawn): a wearable worn in a Baubles slot is left out, Baubles keeps it. */
     public NBTTagCompound getData()
     {
         NBTTagCompound data = new NBTTagCompound();
         saveNBTData(data);
 
+        return data;
+    }
+
+    /** What clients see: also the wearable worn in a Baubles slot, so they draw it and show its tanks. */
+    public NBTTagCompound getSyncData()
+    {
+        NBTTagCompound data = new NBTTagCompound();
+        write(data, true);
         return data;
     }
 
@@ -116,7 +131,12 @@ public class BackpackProperty implements IExtendedEntityProperties
     @Override
     public void saveNBTData(NBTTagCompound compound)
     {
-        if(wearable != null) compound.setTag("wearable", wearable.writeToNBT(new NBTTagCompound()));
+        write(compound, false);
+    }
+
+    private void write(NBTTagCompound compound, boolean withBauble)
+    {
+        if (wearable != null && (withBauble || !wearableInBauble)) compound.setTag("wearable", wearable.writeToNBT(new NBTTagCompound()));
         if (campFire != null)
         {
             compound.setInteger("campFireX", campFire.posX);
@@ -167,6 +187,29 @@ public class BackpackProperty implements IExtendedEntityProperties
     public void setWearable(ItemStack bp)
     {
         wearable = bp;
+        wearableInBauble = false;
+    }
+
+    public boolean isWearableInBauble()
+    {
+        return wearableInBauble;
+    }
+
+    /** Server: wear the stack that sits in a Baubles slot. The caller checked that nothing else is worn. */
+    public void linkBauble(ItemStack inSlot)
+    {
+        wearable = inSlot;
+        wearableInBauble = true;
+        executeWearableEquipProtocol();
+    }
+
+    /** Server: the Baubles slot no longer gives the wearable. Does nothing when the wearable is not from a slot. */
+    public void unlinkBauble()
+    {
+        if (!wearableInBauble) return;
+        if (wearable != null) executeWearableUnequipProtocol();
+        wearable = null;
+        wearableInBauble = false;
     }
 
 

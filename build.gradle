@@ -47,6 +47,21 @@ idea {
     }
 }
 
+// Optional integrations: compiled against, never shipped in the jar and never required at runtime.
+// Each one is used only from its bridge in compat/, which runs only when Loader.isModLoaded says the mod is there.
+repositories {
+    maven {
+        name = 'GTNH Maven'
+        url = 'https://nexus.gtnewhorizons.com/repository/public/'
+        content { includeGroup 'com.github.GTNewHorizons' }
+    }
+}
+
+dependencies {
+    // Baubles Expanded keeps the original Baubles API (baubles.api) and adds baubles.api.expanded
+    compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.25-GTNH:dev') { transitive = false }
+}
+
 // Unit tests run on plain JUnit 5 without starting Minecraft: they cover logic that does not touch the game classes
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.14.4')

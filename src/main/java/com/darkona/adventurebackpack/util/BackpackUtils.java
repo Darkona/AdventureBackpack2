@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.util;
 
+import com.darkona.adventurebackpack.compat.baubles.BackpackBauble;
 import com.darkona.adventurebackpack.events.WearableEvent;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,9 +45,18 @@ public class BackpackUtils
         if(prop.getWearable() != null)
         {
             player.openContainer.onContainerClosed(player);
-            ItemStack gimme = prop.getWearable().copy();
-            BackpackProperty.get(player).executeWearableUnequipProtocol();
-            prop.setWearable(null);
+            ItemStack gimme;
+            if (prop.isWearableInBauble())
+            {
+                // Worn from a Baubles slot: empty that slot so the stack exists only in the inventory
+                gimme = BackpackBauble.takeOutOfSlot(player);
+                if (gimme == null) return;
+            } else
+            {
+                gimme = prop.getWearable().copy();
+                BackpackProperty.get(player).executeWearableUnequipProtocol();
+                prop.setWearable(null);
+            }
             if(!player.inventory.addItemStackToInventory(gimme))
             {
                 player.dropPlayerItemWithRandomChoice(gimme,false);

@@ -215,7 +215,7 @@ public class PlayerEventHandler
         if (props == null || !props.hasWearable()) return;
         boolean keepInventory = player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory");
         int freeSlot = player.inventory.getFirstEmptyStack();
-        DeathRoute.Route route = DeathRoute.beforeDeath(true, false, keepInventory, ConfigHandler.COMPAT_GRAVES_ENABLED,
+        DeathRoute.Route route = DeathRoute.beforeDeath(true, props.isWearableInBauble(), keepInventory, ConfigHandler.COMPAT_GRAVES_ENABLED,
                 GraveCompat.graveStoneMakesGrave(event.source), freeSlot >= 0);
         if (route != DeathRoute.Route.GRAVE_INVENTORY) return;
 
@@ -244,7 +244,7 @@ public class PlayerEventHandler
         BackpackProperty props = BackpackProperty.get(player);
         ItemStack wearable = props.getWearable();
         boolean keepInventory = player.getEntityWorld().getGameRules().getGameRuleBooleanValue("keepInventory");
-        DeathRoute.Route route = DeathRoute.onDrops(wearable != null, false, keepInventory, event.isCanceled(),
+        DeathRoute.Route route = DeathRoute.onDrops(wearable != null, props.isWearableInBauble(), keepInventory, event.isCanceled(),
                 ConfigHandler.COMPAT_GRAVES_ENABLED, GraveCompat.hasDropsGrave(), ConfigHandler.BACKPACK_DEATH_PLACE,
                 wearable != null && wearable.getItem() instanceof ItemAdventureBackpack);
         int x = MathHelper.floor_double(player.posX), y = MathHelper.floor_double(player.posY), z = MathHelper.floor_double(player.posZ);
@@ -254,6 +254,10 @@ public class PlayerEventHandler
         {
             switch (route)
             {
+                case BAUBLES:
+                    // Baubles drops (or keeps) its own slot; only stop pointing at it so it is not stored for respawn
+                    props.unlinkBauble();
+                    break;
                 case GRAVE_DROPS:
                     dropWearable(player, wearable);
                     deathMessage(player, wearable, "grave", x, y, z);

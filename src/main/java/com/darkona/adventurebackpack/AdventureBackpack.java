@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.compat.baubles.BackpackBauble;
 import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.FeatureVisibility;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
@@ -75,6 +76,7 @@ public class AdventureBackpack
         Holiday = Utils.getHoliday();
 
         //ModStuff
+        BackpackBauble.preInit();
         ModItems.init();
         ModBlocks.init();
         ModFluids.init();
@@ -119,6 +121,7 @@ public class AdventureBackpack
         ConfigHandler.IS_ENVIROMINE = Loader.isModLoaded("EnviroMine");
         ConfigHandler.IS_BUILDCRAFT = Loader.isModLoaded("BuildCraft|Core");
         ConfigHandler.IS_RAILCRAFT = Loader.isModLoaded("Railcraft");
+        ConfigHandler.IS_BAUBLES = BackpackBauble.isLoaded();
         GraveCompat.init();
 
 

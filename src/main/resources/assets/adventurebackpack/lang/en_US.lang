@@ -69,3 +69,6 @@ adventurebackpack:messages.copterpack.off=CopterPack: Off.
 adventurebackpack:messages.jetpack.on=Steam Jetpack: On.
 adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.
+
+## Baubles Expanded back slot
+slot.back=§aBack§7

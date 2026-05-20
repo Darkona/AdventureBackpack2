@@ -18,6 +18,11 @@ import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
 import com.darkona.adventurebackpack.util.Wearing;
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
+import baubles.api.expanded.IBaubleExpanded;
+import com.darkona.adventurebackpack.compat.baubles.BackpackBauble;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -45,7 +50,11 @@ import java.util.List;
  *
  * @author Darkona
  */
-public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles"),
+        @Optional.Interface(iface = "baubles.api.expanded.IBaubleExpanded", modid = "Baubles|Expanded")
+})
+public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, IBauble, IBaubleExpanded
 {
 
 
@@ -389,4 +398,55 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem
     }
 
 
+    // ---------------------------------------------------------------- Baubles (compat/baubles; stripped without Baubles)
+
+    /** Original Baubles has no back slot: the belt is the closest. */
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public BaubleType getBaubleType(ItemStack itemstack)
+    {
+        return BaubleType.BELT;
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles|Expanded")
+    public String[] getBaubleTypes(ItemStack itemstack)
+    {
+        return BackpackBauble.TYPES;
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player)
+    {
+        BackpackBauble.tick(itemstack, player);
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onEquipped(ItemStack itemstack, EntityLivingBase player)
+    {
+        BackpackBauble.onEquipped(itemstack, player);
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onUnequipped(ItemStack itemstack, EntityLivingBase player)
+    {
+        BackpackBauble.onUnequipped(itemstack, player);
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
+    {
+        return BackpackBauble.canEquip(itemstack, player);
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
+    {
+        return true;
+    }
 }
