@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.util.FluidMigration;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -15,6 +17,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -65,48 +68,48 @@ public class ClientEventHandler
         }
     }
 
-    /**
-     * @param event
-     */
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void mouseWheelDetect(MouseEvent event)
     {
         /*Special thanks go to MachineMuse, both for inspiration and the event. God bless you girl.*/
-        Minecraft mc = Minecraft.getMinecraft();
-        int dWheel = event.dwheel;
-        if (dWheel != 0)
+        if (event.dwheel == 0) return;
+        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null || player.isDead) return;
+        int direction = ToolCycleInput.wheelDirection(ConfigHandler.TOOL_CYCLE_ENABLED, ConfigHandler.TOOL_CYCLE_MODE,
+                Keybindings.isToolModifierDown(player), event.dwheel, ConfigHandler.TOOL_CYCLE_INVERT_WHEEL);
+        if (direction != 0 && cycleHeldTool(player, direction))
         {
-            //LogHelper.debug("Mouse Wheel moving");
-            EntityClientPlayerMP player = mc.thePlayer;
-            if (player != null && !player.isDead && player.isSneaking())
-            {
-                ItemStack backpack = Wearing.getWearingBackpack(player);
-                if (backpack != null && backpack.getItem() instanceof ItemAdventureBackpack)
-                {
-                    if (player.getCurrentEquippedItem() != null)
-                    {
-                        int slot = player.inventory.currentItem;
-                        ItemStack heldItem = player.inventory.getStackInSlot(slot);
-                        Item theItem = heldItem.getItem();
-
-                        if (ServerActions.canCycleTool(backpack, heldItem))
-                        {
-                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
-                            ServerActions.cycleTool(player, dWheel, slot);
-                            event.setCanceled(true);
-                        }
-
-                        if (theItem instanceof ItemHose)
-                        {
-                            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(dWheel, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
-                            ServerActions.switchHose(player, ServerActions.HOSE_SWITCH, dWheel, slot);
-                            event.setCanceled(true);
-                        }
-                    }
-                }
-            }
+            event.setCanceled(true);
         }
+    }
+
+    /**
+     * Sends the intent to swap the held tool with the backpack's tool slots, or to change the held hose's mode,
+     * and applies it locally for a smooth hand; the server checks it again. True when something was cycled.
+     */
+    @SideOnly(Side.CLIENT)
+    public static boolean cycleHeldTool(EntityPlayer player, int direction)
+    {
+        ItemStack backpack = Wearing.getWearingBackpack(player);
+        if (backpack == null || !(backpack.getItem() instanceof ItemAdventureBackpack)) return false;
+        int slot = player.inventory.currentItem;
+        ItemStack heldItem = player.inventory.getStackInSlot(slot);
+        if (heldItem == null) return false;
+
+        if (ServerActions.canCycleTool(backpack, heldItem))
+        {
+            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(direction, slot, CycleToolPacket.CYCLE_TOOL_ACTION));
+            ServerActions.cycleTool(player, direction, slot);
+            return true;
+        }
+        if (heldItem.getItem() instanceof ItemHose)
+        {
+            ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(direction, slot, CycleToolPacket.SWITCH_HOSE_ACTION));
+            ServerActions.switchHose(player, ServerActions.HOSE_SWITCH, direction, slot);
+            return true;
+        }
+        return false;
     }
 
 }

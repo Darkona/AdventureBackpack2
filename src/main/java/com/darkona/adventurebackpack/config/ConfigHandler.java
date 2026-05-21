@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.config;
 
 import com.darkona.adventurebackpack.common.AbilityEffects;
 import com.darkona.adventurebackpack.common.NightVisionRefresh;
+import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -43,6 +44,7 @@ public class ConfigHandler
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
     public static final String RENDER = ROOT + ".render";
     public static final String KEYS = ROOT + ".keys";
+    public static final String TOOL_CYCLE = KEYS + ".toolcycle";
     public static final String WORLDGEN = ROOT + ".worldgen";
     public static final String RECIPES = ROOT + ".recipes";
     public static final String TWEAKS = ROOT + ".tweaks";
@@ -225,6 +227,12 @@ public class ConfigHandler
     // ---------------------------------------------------------------- keys (client, defaults only)
     public static int KEY_OPEN_BACKPACK = Keyboard.KEY_B;
     public static int KEY_TOGGLE = Keyboard.KEY_N;
+    public static boolean TOOL_CYCLE_ENABLED = true;
+    public static ToolCycleInput.Mode TOOL_CYCLE_MODE = ToolCycleInput.Mode.BOTH;
+    public static boolean TOOL_CYCLE_INVERT_WHEEL = false;
+    public static int KEY_TOOL_MODIFIER = 0;
+    public static int KEY_NEXT_TOOL = 0;
+    public static int KEY_PREVIOUS_TOOL = 0;
 
     // ---------------------------------------------------------------- worldgen, recipes, tweaks
     public static boolean BONUS_CHEST_ALLOWED = false;
@@ -300,7 +308,7 @@ public class ConfigHandler
         cfg.setCategoryComment(WORLDGEN, "Backpacks found in the world.");
         cfg.setCategoryComment(RECIPES, "Extra recipes.");
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
-        cfg.getCategory(KEYS).setRequiresMcRestart(true);
+        cfg.setCategoryComment(TOOL_CYCLE, "Client only: swapping the held tool with the backpack's tool slots (and the hose mode). The keys themselves are changed in Options > Controls.");
     }
 
     /** Moves keys from the old flat "general" category into the tree, keeping their values, then drops "general". */
@@ -514,6 +522,13 @@ public class ConfigHandler
     {
         KEY_OPEN_BACKPACK = integer(cfg, KEYS, "openBackpack", Keyboard.KEY_B, 0, 255, "Default key that opens the worn backpack, copter pack or jetpack (48 = B).", true);
         KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and toggles the copter pack or jetpack (49 = N). Sneak + toggle changes the copter mode.", true);
+        TOOL_CYCLE_ENABLED = bool(cfg, TOOL_CYCLE, "enabled", true, "Swap the held tool with the backpack's tool slots, and change the hose mode, from the keyboard or mouse wheel. False turns both off, so the wheel always scrolls the hotbar.");
+        TOOL_CYCLE_MODE = ToolCycleInput.Mode.parse(choice(cfg, TOOL_CYCLE, "mode", "both", ToolCycleInput.Mode.NAMES,
+                "wheel: hold the modifier key and turn the mouse wheel. keys: only the next and previous tool keys. both: either one."));
+        TOOL_CYCLE_INVERT_WHEEL = bool(cfg, TOOL_CYCLE, "invertWheel", false, "Turn the mouse wheel the other way to cycle.");
+        KEY_TOOL_MODIFIER = integer(cfg, TOOL_CYCLE, "modifierKey", 0, 0, 255, "Default key to hold while turning the wheel. 0 means the sneak key (Left Shift by default): a separate binding on the same key as sneak would stop one of the two from working in 1.7.10.", true);
+        KEY_NEXT_TOOL = integer(cfg, TOOL_CYCLE, "nextToolKey", 0, 0, 255, "Default key for the next tool. 0 = not bound.", true);
+        KEY_PREVIOUS_TOOL = integer(cfg, TOOL_CYCLE, "previousToolKey", 0, 0, 255, "Default key for the previous tool. 0 = not bound.", true);
     }
 
     private static void readWorldgenRecipesTweaks(Configuration cfg)
@@ -555,6 +570,12 @@ public class ConfigHandler
     {
         order(category, key);
         return cfg.getBoolean(key, category, def, comment);
+    }
+
+    private static String choice(Configuration cfg, String category, String key, String def, String[] valid, String comment)
+    {
+        order(category, key);
+        return cfg.getString(key, category, def, comment + " Values: " + String.join(", ", valid) + ".", valid);
     }
 
     private static int integer(Configuration cfg, String category, String key, int def, int min, int max, String comment)

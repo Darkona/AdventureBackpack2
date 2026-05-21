@@ -36,3 +36,6 @@ itemGroup.adventurebackpack=Mochila de Aventura
 keys.adventureBackpack.category=Mochila de Aventura
 keys.adventureBackpack.openBackpackInventory=Abrir Inventario de Mochila
 keys.adventureBackpack.switchHoseTank=Cambiar Tanque de Manguera
+keys.adventureBackpack.toolModifier=Modificador para cambiar herramienta (ninguna = agacharse)
+keys.adventureBackpack.nextTool=Herramienta siguiente de la mochila
+keys.adventureBackpack.previousTool=Herramienta anterior de la mochila

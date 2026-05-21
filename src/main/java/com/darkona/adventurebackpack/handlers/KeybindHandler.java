@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.common.ToolCycleInput;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -40,12 +42,20 @@ public class KeybindHandler
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event)
     {
-        Key keypressed = getPressedKeyBinding();
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
+        // isPressed() consumes the press, so both tool keys are read on every event, before the other keys.
+        int toolDirection = ToolCycleInput.keyDirection(ConfigHandler.TOOL_CYCLE_ENABLED, ConfigHandler.TOOL_CYCLE_MODE,
+                Keybindings.nextTool.isPressed(), Keybindings.previousTool.isPressed());
+        Key keypressed = getPressedKeyBinding();
 
         if(player != null)
         {
+            if (toolDirection != 0 && !player.isDead && mc.inGameHasFocus)
+            {
+                ClientEventHandler.cycleHeldTool(player, toolDirection);
+            }
+
             if (keypressed == Key.INVENTORY_KEY)
             {
                 if (mc.inGameHasFocus)
