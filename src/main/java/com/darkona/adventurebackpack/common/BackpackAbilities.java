@@ -756,8 +756,8 @@ public class BackpackAbilities
         if (noteTime >= 0 && noteTime < Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS - 3))
         {
             player.setSprinting(true);
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 40, ConfigHandler.RAINBOW_SPEED_AMPLIFIER));
-            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 40, ConfigHandler.RAINBOW_JUMP_AMPLIFIER));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), AbilityEffects.RAINBOW_EFFECT_TICKS, ConfigHandler.RAINBOW_SPEED_AMPLIFIER));
+            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), AbilityEffects.RAINBOW_EFFECT_TICKS, ConfigHandler.RAINBOW_JUMP_AMPLIFIER));
             if (noteTime % 2 == 0)
             {
                 //Visuals.NyanParticles(player, world);
@@ -767,12 +767,13 @@ public class BackpackAbilities
                 }
             }
         }
-        PotionEffect potion = null;
-        if (player.isPotionActive(Potion.moveSpeed.id)) {
-            potion = player.getActivePotionEffect(Potion.moveSpeed);
-        }
-        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5) {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 5000, -5));
+        // Older versions kept a 5000-tick Speed with the -5 marker on the wearer; Speed scales with (amplifier + 1),
+        // so that was -80 % walking speed between runs. It is no longer given; a leftover one is removed here.
+        PotionEffect stale = player.getActivePotionEffect(Potion.moveSpeed);
+        if (stale != null && AbilityEffects.isStaleRainbowMarker(stale.getAmplifier()))
+        {
+            if (world.isRemote) player.removePotionEffectClient(Potion.moveSpeed.id);
+            else player.removePotionEffect(Potion.moveSpeed.id);
         }
         inv.setLastTime(noteTime);
         inv.markDirty();

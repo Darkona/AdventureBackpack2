@@ -30,4 +30,23 @@ public final class AbilityEffects
     {
         return amplifier == dragonAmplifier && ticksLeft <= ConfigHandler.DRAGON_EFFECT_TICKS;
     }
+
+    /** Speed and Jump of the Rainbow's Nyan run last this long and are renewed every tick while it runs. */
+    public static final int RAINBOW_EFFECT_TICKS = 40;
+    /** Amplifier of the long Speed effect older versions gave the Rainbow wearer (a slowdown, see itemRainbow). */
+    public static final int STALE_RAINBOW_MARKER = -5;
+
+    /**
+     * True when the Speed or Jump effect is the Rainbow's own: its level and no longer than the run renews it, so a
+     * Speed III potion or a beacon is not taken away when the backpack comes off.
+     */
+    public static boolean isRainbowEffect(int amplifier, int ticksLeft, int rainbowAmplifier)
+    {
+        return amplifier == rainbowAmplifier && ticksLeft <= RAINBOW_EFFECT_TICKS;
+    }
+
+    public static boolean isStaleRainbowMarker(int amplifier)
+    {
+        return amplifier == STALE_RAINBOW_MARKER;
+    }
 }
