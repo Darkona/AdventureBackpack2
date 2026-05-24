@@ -247,4 +247,17 @@ public class BackpackProperty implements IExtendedEntityProperties
             ((IBackWearableItem) wearable.getItem()).onUnequipped(player.getEntityWorld(), player, wearable);
         }
     }
+
+    /** Not saved: the Piston Boots changed this player's step height and must put it back (ItemPistonBoots). */
+    private boolean pistonStepApplied = false;
+
+    public boolean isPistonStepApplied()
+    {
+        return pistonStepApplied;
+    }
+
+    public void setPistonStepApplied(boolean applied)
+    {
+        this.pistonStepApplied = applied;
+    }
 }
