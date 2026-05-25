@@ -26,4 +26,25 @@ class TickThrottleTest {
     void dueWhenTheClockGoesBackwards() {
         assertTrue(TickThrottle.due(5000, 3, 5));
     }
+
+    @Test
+    void everyFiresOncePerInterval() {
+        int hits = 0;
+        for (long t = 1000; t < 1012; t++) if (TickThrottle.every(t, 7, 3)) hits++;
+        assertTrue(hits == 4, "hits " + hits);
+    }
+
+    @Test
+    void everyIsShiftedByTheEntityId() {
+        assertTrue(TickThrottle.every(9, 0, 3));
+        assertFalse(TickThrottle.every(9, 1, 3));
+        assertTrue(TickThrottle.every(8, 1, 3));
+    }
+
+    @Test
+    void everyWithIntervalOneOrNegativeIdsIsSafe() {
+        assertTrue(TickThrottle.every(12345, 99, 1));
+        assertTrue(TickThrottle.every(0, -3, 3));
+        assertFalse(TickThrottle.every(0, -2, 3));
+    }
 }

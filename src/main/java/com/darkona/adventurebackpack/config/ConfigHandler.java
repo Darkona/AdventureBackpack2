@@ -190,6 +190,7 @@ public class ConfigHandler
     public static float COPTER_AIR_CONTROL = 0.05f;
     public static int COPTER_MAX_ALTITUDE = 100;
     public static double COPTER_PUSH_RANGE = 4.0;
+    public static int COPTER_PUSH_INTERVAL_TICKS = 2;
 
     // ---------------------------------------------------------------- steam jetpack
     public static boolean ALLOW_JETPACK_SOUNDS = true;
@@ -473,6 +474,7 @@ public class ConfigHandler
         COPTER_AIR_CONTROL = (float) decimal(cfg, COPTERPACK, "airControl", 0.05, 0.0, 0.5, "Horizontal acceleration while flying.");
         COPTER_MAX_ALTITUDE = integer(cfg, COPTERPACK, "maxAltitude", 100, 1, 255, "Height above which lift fades out.");
         COPTER_PUSH_RANGE = decimal(cfg, COPTERPACK, "itemPushRange", 4.0, 0.0, 16.0, "Distance in blocks at which the rotor blows dropped items away. 0 turns it off.");
+        COPTER_PUSH_INTERVAL_TICKS = integer(cfg, COPTERPACK, "itemPushIntervalTicks", 2, 1, 20, "The rotor looks for dropped items to blow away once every this many ticks.");
     }
 
     private static void readSteamJetpack(Configuration cfg)

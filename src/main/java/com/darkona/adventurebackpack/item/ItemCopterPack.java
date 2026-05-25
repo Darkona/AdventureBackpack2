@@ -2,7 +2,9 @@ package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.common.Flight;
+import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -206,28 +208,27 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             }
             player.fallDistance = 0;
 
-            //Smoke
-            if (!world.isRemote)
+            //Smoke: every client draws it for the players it sees, from the synced status (no packet per tick)
+            if (world.isRemote)
             {
-                ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.COPTER_PARTICLE, player), player);
+                ClientActions.showParticlesAtEntity(player, EntityParticlePacket.COPTER_PARTICLE);
             }
-            //Sound
-
 
             float factor = ConfigHandler.COPTER_AIR_CONTROL;
+            // Airwave: item motion belongs to the server, and the item search runs once every few ticks
+            boolean push = !world.isRemote && TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), ConfigHandler.COPTER_PUSH_INTERVAL_TICKS);
             if (!player.onGround)
             {
-                //Airwave
-                pushEntities(world, player, 0.2f);
+                if (push) pushEntities(world, player, 0.2f);
                 //movement boost
                 player.moveFlying(player.moveStrafing,player.moveForward,factor);
             } else
             {
-                pushEntities(world, player, factor + 0.4f);
+                if (push) pushEntities(world, player, factor + 0.4f);
             }
 
-            //Elevation clientside
-            if (world.isRemote)
+            //Elevation clientside, only for this client's own player (not the other players it sees)
+            if (world.isRemote && ClientActions.isLocalPlayer(player))
             {
                 if (Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
                 {
@@ -243,7 +244,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 fuelConsumption += ConfigHandler.COPTER_CLIMB_EXTRA_FUEL;
             }
-            int ticks = inv.tickCounter - 1;
             if (inv.fuelTank.getFluid() != null)
             {
                 if(GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
@@ -251,18 +251,13 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                     fuelConsumption = (int)Math.floor(fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName()));
                 }
             }
-            if (ticks <= 0)
+            // Fuel is taken on a world-time beat instead of a counter saved in the stack every tick, so the stack's
+            // NBT (and the sync to nearby players) only changes when fuel or status really change.
+            if (TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), ConfigHandler.COPTER_FUEL_INTERVAL_TICKS))
             {
-                inv.tickCounter = ConfigHandler.COPTER_FUEL_INTERVAL_TICKS;
                 inv.consumeFuel(fuelConsumption);
-                inv.dirtyTanks();
-            } else
-            {
-                inv.tickCounter = ticks;
             }
         }
-       // if(!world.isRemote)inv.closeInventory();
-        inv.closeInventory();
     }
 
     @Override
