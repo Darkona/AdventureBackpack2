@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.common.Flight;
 import com.darkona.adventurebackpack.common.JetpackHeat;
+import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
@@ -140,8 +141,8 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER, ConfigHandler.JETPACK_WATER_INTAKE),true);
         }
 
-        //Elevation
-        if (world.isRemote)
+        //Elevation: only this client's own player reads the jump key (the update also runs for players it sees)
+        if (world.isRemote && ClientActions.isLocalPlayer(player))
         {
             // Tell the server only when the state changes, not every tick (performance contract, rule 5).
             if (inv.getStatus() && canUse && Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
@@ -177,8 +178,8 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             {
                 player.fallDistance = 0;
             }
-            if(!world.isRemote)
-            ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.JETPACK_PARTICLE, player), player);
+            // Every client draws the exhaust for the players it sees, from the synced in-use flag (no packet per tick)
+            if (world.isRemote) ClientActions.showParticlesAtEntity(player, EntityParticlePacket.JETPACK_PARTICLE);
 
         }
         inv.closeInventory();
