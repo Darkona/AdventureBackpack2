@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -177,22 +178,16 @@ public class BackpackAbilities
      */
     public void itemSunflower(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (!ConfigHandler.SUNFLOWER_ENABLED) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-
-        if (inv.getLastTime() <= 0)
+        // Food is server state (EntityPlayerMP sends the new food level to its client). The beat comes from the
+        // world clock: a countdown saved in the stack changed its NBT every tick, which re-synced the wearable to
+        // every nearby player every tick.
+        if (!ConfigHandler.SUNFLOWER_ENABLED || world.isRemote) return;
+        if (!TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), Utils.secondsToTicks(ConfigHandler.SUNFLOWER_INTERVAL_SECONDS))) return;
+        if (world.isDaytime()
+                && world.canBlockSeeTheSky(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY + 1), MathHelper.floor_double(player.posZ)))
         {
-            if(world.isDaytime() &&
-                    /*!world.isRemote &&*/
-                    world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY+1),MathHelper.floor_double(player.posZ))) {
-                player.getFoodStats().addStats(ConfigHandler.SUNFLOWER_FOOD, ConfigHandler.SUNFLOWER_SATURATION);
-                //LogHelper.info("OMNOMNOMNOM");
-            }
-            inv.setLastTime(Utils.secondsToTicks(ConfigHandler.SUNFLOWER_INTERVAL_SECONDS));
-        }else{
-            inv.setLastTime(inv.getLastTime() - 1);
+            player.getFoodStats().addStats(ConfigHandler.SUNFLOWER_FOOD, ConfigHandler.SUNFLOWER_SATURATION);
         }
-        inv.dirtyTime();
     }
 
     /**
