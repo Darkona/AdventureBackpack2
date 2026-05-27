@@ -770,8 +770,13 @@ public class BackpackAbilities
             if (world.isRemote) player.removePotionEffectClient(Potion.moveSpeed.id);
             else player.removePotionEffect(Potion.moveSpeed.id);
         }
-        inv.setLastTime(noteTime);
-        inv.markDirty();
+        // Count down only while a run plays: the old code kept decrementing (and saving the whole inventory) every
+        // tick forever, which also re-synced the wearable to nearby players every tick.
+        if (inv.getLastTime() > 0)
+        {
+            inv.setLastTime(noteTime);
+            inv.dirtyTime();
+        }
     }
     /* ==================================== TILE ABILITIES ==========================================*/
 
