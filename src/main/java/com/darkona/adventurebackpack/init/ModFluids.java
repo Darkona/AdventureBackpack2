@@ -3,6 +3,8 @@ package com.darkona.adventurebackpack.init;
 import com.darkona.adventurebackpack.fluids.FluidMelonJuice;
 import com.darkona.adventurebackpack.fluids.FluidMilk;
 import com.darkona.adventurebackpack.fluids.FluidMushroomStew;
+import com.darkona.adventurebackpack.fluids.FluidSteam;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -38,6 +40,23 @@ public class ModFluids
         FluidContainerRegistry.registerFluidContainer(mushroomStew, new ItemStack(Items.mushroom_stew), new ItemStack(Items.bowl));
 
         GeneralReference.init();
+    }
+
+    /** The "steam" the jetpack boils: another mod's, ours, or null when there is none (see registerSteamIfMissing). */
+    public static Fluid steam;
+
+    /**
+     * Called in postInit, once every mod had its chance to register "steam" (Railcraft, IC2...): only then is
+     * Adventure Backpack's own registered, so it never replaces theirs.
+     */
+    public static void registerSteamIfMissing()
+    {
+        if (!FluidRegistry.isFluidRegistered("steam") && ConfigHandler.JETPACK_OWN_STEAM)
+        {
+            FluidRegistry.registerFluid(new FluidSteam());
+            LogHelper.info("No other mod registers steam: using Adventure Backpack's own for the Steam Jetpack.");
+        }
+        steam = FluidRegistry.getFluid("steam");
     }
 
     /** Registers our fluid, or returns the fluid another mod already registered under that name. */

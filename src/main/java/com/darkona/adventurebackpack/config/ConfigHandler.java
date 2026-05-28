@@ -194,6 +194,7 @@ public class ConfigHandler
 
     // ---------------------------------------------------------------- steam jetpack
     public static boolean ALLOW_JETPACK_SOUNDS = true;
+    public static boolean JETPACK_OWN_STEAM = true;
     public static int JETPACK_WATER_CAPACITY = 6000;
     public static int JETPACK_STEAM_CAPACITY = 12000;
     public static int JETPACK_STEAM_PER_TICK = 13;
@@ -300,7 +301,7 @@ public class ConfigHandler
         }
         cfg.setCategoryComment(HOSE, "The Backpack Hose: suck, spill and drink from the worn backpack's tanks. Amounts in millibuckets (1000 = one bucket).");
         cfg.setCategoryComment(COPTERPACK, "The Copter Pack (needs BuildCraft). Speeds in blocks per tick.");
-        cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack (needs Railcraft). Speeds in blocks per tick.");
+        cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow.");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
@@ -335,7 +336,7 @@ public class ConfigHandler
         BACKPACK_ABILITIES = bool(cfg, ENABLED, "abilities", true, "Backpack abilities. When false every backpack is only cosmetic (the lightning transformation still works). Set it the same on server and clients.");
         HOSE_ENABLED = bool(cfg, ENABLED, "hose", true, "The Backpack Hose.");
         COPTERPACK_ENABLED = bool(cfg, ENABLED, "copterPack", true, "The Copter Pack (only present with BuildCraft).");
-        STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack (only present with Railcraft).");
+        STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack.");
         INFLATABLEBOAT_ENABLED = bool(cfg, ENABLED, "inflatableBoat", true, "The Inflatable Boat and the Motorized Inflatable Boat.");
         CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow.");
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "Deploying the sleeping bag from a placed backpack.");
@@ -480,6 +481,8 @@ public class ConfigHandler
     private static void readSteamJetpack(Configuration cfg)
     {
         ALLOW_JETPACK_SOUNDS = bool(cfg, STEAMJETPACK, "sound", true, "Play the boiler and thrust sounds (client only).");
+        JETPACK_OWN_STEAM = bool(cfg, STEAMJETPACK, "ownSteamFluid", true, "When no other mod (Railcraft, IC2...) registers a 'steam' fluid, register Adventure Backpack's own so the jetpack boils water without them. When another mod has steam, that one is used. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(STEAMJETPACK).get("ownSteamFluid").setRequiresMcRestart(true);
         JETPACK_WATER_CAPACITY = integer(cfg, STEAMJETPACK, "waterCapacity", 6000, 1000, 64000, "Water tank capacity in millibuckets. Use the same value on server and clients.", true);
         JETPACK_STEAM_CAPACITY = integer(cfg, STEAMJETPACK, "steamCapacity", 12000, 1000, 64000, "Steam tank capacity in millibuckets. Use the same value on server and clients.", true);
         JETPACK_STEAM_PER_TICK = integer(cfg, STEAMJETPACK, "steamPerTick", 13, 0, 1000, "Steam spent per tick of thrust.");

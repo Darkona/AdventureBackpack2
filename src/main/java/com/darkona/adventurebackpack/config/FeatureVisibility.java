@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.config;
 
+import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModItems;
 import net.minecraft.item.Item;
 
@@ -16,7 +17,8 @@ public final class FeatureVisibility
     {
         hideUnless(ModItems.hose, ConfigHandler.HOSE_ENABLED);
         hideUnless(ModItems.copterPack, ConfigHandler.COPTERPACK_ENABLED);
-        hideUnless(ModItems.steamJetpack, ConfigHandler.STEAMJETPACK_ENABLED);
+        // Without any steam fluid (no other mod and ownSteamFluid off) the jetpack cannot work
+        hideUnless(ModItems.steamJetpack, ConfigHandler.STEAMJETPACK_ENABLED && ModFluids.steam != null);
         hideUnless(ModItems.cwxbow, ConfigHandler.CROSSBOW_ENABLED);
         hideUnless(ModItems.pistonBoots, ConfigHandler.PISTONBOOTS_ENABLED);
     }

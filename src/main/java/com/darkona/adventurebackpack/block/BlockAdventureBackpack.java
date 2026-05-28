@@ -228,6 +228,7 @@ public class BlockAdventureBackpack extends BlockContainer
         Icons.melonJuiceFlowing = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.melonJuiceFlowing");
         Icons.mushRoomStewStill = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.mushroomstewStill");
         Icons.mushRoomStewFlowing = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.mushroomstewFlowing");
+        Icons.steamStill = iconRegister.registerIcon(ModInfo.MOD_ID + ":fluid.steam");
     }
 
     @Override

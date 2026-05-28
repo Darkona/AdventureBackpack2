@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.common.Flight;
 import com.darkona.adventurebackpack.common.JetpackHeat;
 import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.network.GUIPacket;
@@ -213,7 +214,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         {
             if (inv.getSteamTank().getFluidAmount() < inv.getSteamTank().getCapacity())
             {
-                Fluid steamFluid = getSteam();
+                Fluid steamFluid = ModFluids.steam;
                 if (steamFluid != null && inv.getWaterTank().getFluid() != null)
                 {
                     int steam = inv.getWaterTank().drain((temperature / ConfigHandler.JETPACK_BOILING_TEMPERATURE), true).amount;
@@ -243,15 +244,6 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         inv.setBoiling(boiling);
         inv.setLeaking(leaking);
         inv.setTemperature(temperature);
-    }
-
-    private static Fluid steam;
-
-    /** The "steam" fluid comes from another mod (Railcraft, IC2...); without one the boiler makes nothing. */
-    private static Fluid getSteam()
-    {
-        if (steam == null) steam = FluidRegistry.getFluid("steam");
-        return steam;
     }
 
     public static void elevate(EntityPlayer player)
