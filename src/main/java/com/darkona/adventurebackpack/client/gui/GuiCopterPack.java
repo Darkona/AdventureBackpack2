@@ -129,6 +129,7 @@ public class GuiCopterPack extends GuiWithTanks
             {
                 ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE,false));
                 player.closeScreen();
+                return;
             }
         } else
         {
@@ -136,8 +137,10 @@ public class GuiCopterPack extends GuiWithTanks
             {
                 ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak)));
                 player.closeScreen();
+                return;
             }
         }
+        // A click on our button is not also a click on the container (no slot, no drop of the held cursor stack)
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
