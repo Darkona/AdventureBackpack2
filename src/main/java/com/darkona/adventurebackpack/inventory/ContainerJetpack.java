@@ -114,6 +114,18 @@ public class ContainerJetpack extends Container implements IWearableContainer
     }
 
     @Override
+    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    {
+        boolean clickedIsHeld = slot >= 0 && slot < inventorySlots.size() && player.getHeldItem() != null
+                && getSlot(slot).getStack() == player.getHeldItem();
+        if (HeldContainerGuard.refuses(!wearing, clickedIsHeld, flag, button, player.inventory.currentItem))
+        {
+            return null;
+        }
+        return super.slotClick(slot, button, flag, player);
+    }
+
+    @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
     {
         refresh();
