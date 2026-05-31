@@ -27,7 +27,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.List;
 
 /**
@@ -80,6 +83,24 @@ public class BackpackAbilities
      * @param world    This is necessary, so get it from wherever you can inside the class you're calling this.
      * @param backpack An object representing a backpack, either in its ItemStack form or its TileEntity form.
      */
+    /** Ability methods by backpack color name, built once: read-only afterwards, so the client and server threads can share them. */
+    private static final Map<String, Method> ITEM_ABILITIES = abilityTable("item", EntityPlayer.class, World.class, ItemStack.class);
+    private static final Map<String, Method> TILE_ABILITIES = abilityTable("tile", World.class, TileAdventureBackpack.class);
+
+    private static Map<String, Method> abilityTable(String prefix, Class<?>... params)
+    {
+        Map<String, Method> table = new HashMap<String, Method>();
+        for (Method m : BackpackAbilities.class.getMethods())
+        {
+            if (m.getName().startsWith(prefix) && m.getName().length() > prefix.length()
+                    && java.util.Arrays.equals(m.getParameterTypes(), params))
+            {
+                table.put(m.getName().substring(prefix.length()), m);
+            }
+        }
+        return table;
+    }
+
     public void executeAbility(EntityPlayer player, World world, Object backpack)
     {
         if (!ConfigHandler.BACKPACK_ABILITIES) return;
@@ -88,13 +109,12 @@ public class BackpackAbilities
             String colorName = BackpackNames.getBackpackColorName((ItemStack)backpack);
             try
             {
-                //This is black magic and shouldn't be attempted by the faint of heart.
-                this.getClass()
-                        .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class).
-                        invoke(backpackAbilities, player, world, backpack);
+                // item<Color>(player, world, stack), looked up once in a table instead of getMethod every tick
+                Method ability = ITEM_ABILITIES.get(colorName);
+                if (ability != null) ability.invoke(backpackAbilities, player, world, backpack);
             } catch (Exception oops)
             {
-                //NOBODY CARES
+                LogHelper.debug("Backpack ability " + colorName + " failed: " + oops);
             }
         }
 
@@ -111,12 +131,11 @@ public class BackpackAbilities
                         You have to indicate exactly the classes that the method should use as parameters so
                         be very careful with "getMethod".
                      */
-                this.getClass()
-                        .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
-                        .invoke(backpackAbilities, world, backpack);
+                Method ability = TILE_ABILITIES.get(colorName);
+                if (ability != null) ability.invoke(backpackAbilities, world, backpack);
             } catch (Exception oops)
             {
-                //Seriously, nobody cares if this can't work, this is just so the game won't explode.
+                LogHelper.debug("Placed backpack ability " + colorName + " failed: " + oops);
             }
         }
 
