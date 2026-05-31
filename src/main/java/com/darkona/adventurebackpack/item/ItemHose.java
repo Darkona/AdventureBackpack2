@@ -262,12 +262,9 @@ public class ItemHose extends ItemAB
 
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
-                       /* if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ))
-                        {
-                            return stack;
-                        }*/
-
-                        if (!player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, null))
+                        // Same checks as a vanilla bucket: spawn protection (canMineBlock) and edit rights
+                        if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ)
+                                || !player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, stack))
                         {
                             return stack;
                         }
@@ -322,7 +319,13 @@ public class ItemHose extends ItemAB
                                     break;
                             }
                         }
-                        if (tank.getFluidAmount() > 0)
+                        // Same checks as a vanilla bucket, on the block that receives the fluid
+                        if (!world.canMineBlock(player, x, y, z) || !player.canPlayerEdit(x, y, z, mop.sideHit, stack))
+                        {
+                            return stack;
+                        }
+                        // A bucket's worth is needed, as for a vanilla bucket (also to evaporate it in the Nether)
+                        if (tank.getFluidAmount() >= Constants.bucket)
                         {
                             FluidStack fluid = tank.getFluid();
                             if (fluid != null)
