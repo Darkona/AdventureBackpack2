@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.config;
 
 import com.darkona.adventurebackpack.common.AbilityEffects;
 import com.darkona.adventurebackpack.common.NightVisionRefresh;
+import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -43,6 +44,7 @@ public class ConfigHandler
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
     public static final String RENDER = ROOT + ".render";
     public static final String KEYS = ROOT + ".keys";
+    public static final String TOOL_CYCLE = KEYS + ".toolcycle";
     public static final String WORLDGEN = ROOT + ".worldgen";
     public static final String RECIPES = ROOT + ".recipes";
     public static final String TWEAKS = ROOT + ".tweaks";
@@ -192,9 +194,11 @@ public class ConfigHandler
     public static float COPTER_AIR_CONTROL = 0.05f;
     public static int COPTER_MAX_ALTITUDE = 100;
     public static double COPTER_PUSH_RANGE = 4.0;
+    public static int COPTER_PUSH_INTERVAL_TICKS = 2;
 
     // ---------------------------------------------------------------- steam jetpack
     public static boolean ALLOW_JETPACK_SOUNDS = true;
+    public static boolean JETPACK_OWN_STEAM = true;
     public static int JETPACK_WATER_CAPACITY = 6000;
     public static int JETPACK_STEAM_CAPACITY = 12000;
     public static int JETPACK_STEAM_PER_TICK = 13;
@@ -229,6 +233,12 @@ public class ConfigHandler
     // ---------------------------------------------------------------- keys (client, defaults only)
     public static int KEY_OPEN_BACKPACK = Keyboard.KEY_B;
     public static int KEY_TOGGLE = Keyboard.KEY_N;
+    public static boolean TOOL_CYCLE_ENABLED = true;
+    public static ToolCycleInput.Mode TOOL_CYCLE_MODE = ToolCycleInput.Mode.BOTH;
+    public static boolean TOOL_CYCLE_INVERT_WHEEL = false;
+    public static int KEY_TOOL_MODIFIER = 0;
+    public static int KEY_NEXT_TOOL = 0;
+    public static int KEY_PREVIOUS_TOOL = 0;
 
     // ---------------------------------------------------------------- worldgen, recipes, tweaks
     public static boolean BONUS_CHEST_ALLOWED = false;
@@ -300,7 +310,7 @@ public class ConfigHandler
         }
         cfg.setCategoryComment(HOSE, "The Backpack Hose: suck, spill and drink from the worn backpack's tanks. Amounts in millibuckets (1000 = one bucket).");
         cfg.setCategoryComment(COPTERPACK, "The Copter Pack (needs BuildCraft). Speeds in blocks per tick.");
-        cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack (needs Railcraft). Speeds in blocks per tick.");
+        cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow.");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
@@ -313,6 +323,7 @@ public class ConfigHandler
         cfg.setCategoryComment(COMPAT_GRAVES, "Grave mods (OpenBlocks graves, GraveStone). When one of them is loaded and makes a grave, the worn backpack (or copter pack, or jetpack) goes into the grave instead of being placed as a block. Without a grave mod, backpack.placeOnDeath decides.");
         cfg.setCategoryComment(COMPAT_BAUBLES, "Baubles and Baubles Expanded. The Adventure Backpack can be worn in a bauble slot and then works as if worn the usual way (abilities, open key, hose, model on the back). Baubles Expanded gets a new back slot; the original Baubles uses the belt slot. Only one backpack is worn at a time. The default open key (B) is the same as the Baubles inventory key: change one of them in Options > Controls.");
         cfg.getCategory(KEYS).setRequiresMcRestart(true);
+        cfg.setCategoryComment(TOOL_CYCLE, "Client only: swapping the held tool with the backpack's tool slots (and the hose mode). The keys themselves are changed in Options > Controls.");
     }
 
     /** Moves keys from the old flat "general" category into the tree, keeping their values, then drops "general". */
@@ -338,7 +349,7 @@ public class ConfigHandler
         BACKPACK_ABILITIES = bool(cfg, ENABLED, "abilities", true, "Backpack abilities. When false every backpack is only cosmetic (the lightning transformation still works). Set it the same on server and clients.");
         HOSE_ENABLED = bool(cfg, ENABLED, "hose", true, "The Backpack Hose.");
         COPTERPACK_ENABLED = bool(cfg, ENABLED, "copterPack", true, "The Copter Pack (only present with BuildCraft).");
-        STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack (only present with Railcraft).");
+        STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack.");
         INFLATABLEBOAT_ENABLED = bool(cfg, ENABLED, "inflatableBoat", true, "The Inflatable Boat and the Motorized Inflatable Boat.");
         CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow.");
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "Deploying the sleeping bag from a placed backpack.");
@@ -478,11 +489,14 @@ public class ConfigHandler
         COPTER_AIR_CONTROL = (float) decimal(cfg, COPTERPACK, "airControl", 0.05, 0.0, 0.5, "Horizontal acceleration while flying.");
         COPTER_MAX_ALTITUDE = integer(cfg, COPTERPACK, "maxAltitude", 100, 1, 255, "Height above which lift fades out.");
         COPTER_PUSH_RANGE = decimal(cfg, COPTERPACK, "itemPushRange", 4.0, 0.0, 16.0, "Distance in blocks at which the rotor blows dropped items away. 0 turns it off.");
+        COPTER_PUSH_INTERVAL_TICKS = integer(cfg, COPTERPACK, "itemPushIntervalTicks", 2, 1, 20, "The rotor looks for dropped items to blow away once every this many ticks.");
     }
 
     private static void readSteamJetpack(Configuration cfg)
     {
         ALLOW_JETPACK_SOUNDS = bool(cfg, STEAMJETPACK, "sound", true, "Play the boiler and thrust sounds (client only).");
+        JETPACK_OWN_STEAM = bool(cfg, STEAMJETPACK, "ownSteamFluid", true, "When no other mod (Railcraft, IC2...) registers a 'steam' fluid, register Adventure Backpack's own so the jetpack boils water without them. When another mod has steam, that one is used. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(STEAMJETPACK).get("ownSteamFluid").setRequiresMcRestart(true);
         JETPACK_WATER_CAPACITY = integer(cfg, STEAMJETPACK, "waterCapacity", 6000, 1000, 64000, "Water tank capacity in millibuckets. Use the same value on server and clients.", true);
         JETPACK_STEAM_CAPACITY = integer(cfg, STEAMJETPACK, "steamCapacity", 12000, 1000, 64000, "Steam tank capacity in millibuckets. Use the same value on server and clients.", true);
         JETPACK_STEAM_PER_TICK = integer(cfg, STEAMJETPACK, "steamPerTick", 13, 0, 1000, "Steam spent per tick of thrust.");
@@ -527,6 +541,13 @@ public class ConfigHandler
     {
         KEY_OPEN_BACKPACK = integer(cfg, KEYS, "openBackpack", Keyboard.KEY_B, 0, 255, "Default key that opens the worn backpack, copter pack or jetpack (48 = B).", true);
         KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and toggles the copter pack or jetpack (49 = N). Sneak + toggle changes the copter mode.", true);
+        TOOL_CYCLE_ENABLED = bool(cfg, TOOL_CYCLE, "enabled", true, "Swap the held tool with the backpack's tool slots, and change the hose mode, from the keyboard or mouse wheel. False turns both off, so the wheel always scrolls the hotbar.");
+        TOOL_CYCLE_MODE = ToolCycleInput.Mode.parse(choice(cfg, TOOL_CYCLE, "mode", "both", ToolCycleInput.Mode.NAMES,
+                "wheel: hold the modifier key and turn the mouse wheel. keys: only the next and previous tool keys. both: either one."));
+        TOOL_CYCLE_INVERT_WHEEL = bool(cfg, TOOL_CYCLE, "invertWheel", false, "Turn the mouse wheel the other way to cycle.");
+        KEY_TOOL_MODIFIER = integer(cfg, TOOL_CYCLE, "modifierKey", 0, 0, 255, "Default key to hold while turning the wheel. 0 means the sneak key (Left Shift by default): a separate binding on the same key as sneak would stop one of the two from working in 1.7.10.", true);
+        KEY_NEXT_TOOL = integer(cfg, TOOL_CYCLE, "nextToolKey", 0, 0, 255, "Default key for the next tool. 0 = not bound.", true);
+        KEY_PREVIOUS_TOOL = integer(cfg, TOOL_CYCLE, "previousToolKey", 0, 0, 255, "Default key for the previous tool. 0 = not bound.", true);
     }
 
     private static void readWorldgenRecipesTweaks(Configuration cfg)
@@ -574,6 +595,12 @@ public class ConfigHandler
     {
         order(category, key);
         return cfg.getBoolean(key, category, def, comment);
+    }
+
+    private static String choice(Configuration cfg, String category, String key, String def, String[] valid, String comment)
+    {
+        order(category, key);
+        return cfg.getString(key, category, def, comment + " Values: " + String.join(", ", valid) + ".", valid);
     }
 
     private static int integer(Configuration cfg, String category, String key, int def, int min, int max, String comment)

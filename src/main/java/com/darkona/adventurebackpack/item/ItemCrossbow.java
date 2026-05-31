@@ -66,6 +66,8 @@ public class ItemCrossbow extends ItemAB
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean current)
     {
+        // A disabled crossbow is inert: no reload counters written to the stack every tick
+        if (!ConfigHandler.CROSSBOW_ENABLED) return;
         if(!stack.hasTagCompound()){
             stack.stackTagCompound = new NBTTagCompound();
             stack.stackTagCompound.setByte("Shot",(byte)0);

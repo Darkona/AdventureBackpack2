@@ -21,6 +21,12 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class ClientActions
 {
+    /** True for this client's own player; wearable updates also run for the other players a client sees. */
+    @SideOnly(Side.CLIENT)
+    public static boolean isLocalPlayer(EntityPlayer player)
+    {
+        return player != null && player == net.minecraft.client.Minecraft.getMinecraft().thePlayer;
+    }
 
     @SideOnly(Side.CLIENT)
     public static void showParticlesAtEntity(Entity entity, byte particleCode)

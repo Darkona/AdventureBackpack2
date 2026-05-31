@@ -17,7 +17,6 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;
-import net.minecraft.item.ItemPotion;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -70,8 +69,8 @@ public class GeneralEventHandler
             }
         }
 
-        if (event.item.getItem() instanceof ItemPotion
-                && (event.item.getItem()).getDamage(event.item) == 0)
+        // Only the vanilla water bottle: other mods' ItemPotion subclasses also use damage 0.
+        if (event.item.getItem() == Items.potionitem && event.item.getItemDamage() == 0)
         {
             if (!player.worldObj.isRemote)
             {

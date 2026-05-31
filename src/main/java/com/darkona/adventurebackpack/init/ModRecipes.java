@@ -205,32 +205,36 @@ public class ModRecipes
             ));
         }
 
-        //Ok let's try getting railcraft stuff.
-        //Seriously this is hard
-        if(ConfigHandler.IS_RAILCRAFT)
+        // Railcraft's firebox and low pressure boiler tank when Railcraft is present, a furnace and a cauldron otherwise
+        if (ConfigHandler.STEAMJETPACK_ENABLED && ModFluids.steam != null)
         {
             try
             {
-                LogHelper.info("Railcraft is present. Adding Steam Jetpack.");
-                ItemStack firebox = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.firebox.solid", 1);
-                ItemStack boiler = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.tank.pressure.low", 1);
-                if(ConfigHandler.STEAMJETPACK_ENABLED && firebox != null && boiler != null)
+                ItemStack firebox = null;
+                ItemStack boiler = null;
+                if (ConfigHandler.IS_RAILCRAFT)
                 {
-                    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.steamJetpack),
-                            "BWT",
-                            "GIG",
-                            "xWC",
-                            'W', "plankWood",
-                            'G', "ingotGold",
-                            'I',"ingotIron",
-                            'B', boiler,
-                            'x', firebox,
-                            'C', new ItemStack(Items.dye, 1, 2),
-                            'T', new ItemStack(ModItems.component, 1, 2)
-                    ));
+                    firebox = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.firebox.solid", 1);
+                    boiler = GameRegistry.findItemStack("Railcraft", "machine.beta.boiler.tank.pressure.low", 1);
                 }
-
-            }catch(Exception ex)
+                if (firebox == null || boiler == null)
+                {
+                    firebox = new ItemStack(Blocks.furnace);
+                    boiler = new ItemStack(Items.cauldron);
+                }
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.steamJetpack),
+                        "BWT",
+                        "GIG",
+                        "xWC",
+                        'W', "plankWood",
+                        'G', "ingotGold",
+                        'I', "ingotIron",
+                        'B', boiler,
+                        'x', firebox,
+                        'C', new ItemStack(Items.dye, 1, 2),
+                        'T', new ItemStack(ModItems.component, 1, 2)
+                ));
+            } catch (Exception ex)
             {
                 ex.printStackTrace();
             }

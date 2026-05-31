@@ -94,9 +94,9 @@ public class BackpackRemovals
 
     public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
     {
-        // the long amplifier -5 speed effect the ability keeps refreshing must go even while the song still plays
+        // a -5 marker speed effect left by older versions must go even while the song still plays
         PotionEffect marker = player.getActivePotionEffect(Potion.moveSpeed);
-        if (marker != null && marker.getAmplifier() == -5)
+        if (marker != null && AbilityEffects.isStaleRainbowMarker(marker.getAmplifier()))
         {
             if (player.worldObj.isRemote) player.removePotionEffectClient(Potion.moveSpeed.id);
             else player.removePotionEffect(Potion.moveSpeed.id);
@@ -108,7 +108,7 @@ public class BackpackRemovals
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.moveSpeed.id)) {
             potion = player.getActivePotionEffect(Potion.moveSpeed);
-            if (potion != null && potion.getAmplifier() == ConfigHandler.RAINBOW_SPEED_AMPLIFIER) {
+            if (potion != null && AbilityEffects.isRainbowEffect(potion.getAmplifier(), potion.getDuration(), ConfigHandler.RAINBOW_SPEED_AMPLIFIER)) {
                 if (player.worldObj.isRemote) {
                     player.removePotionEffectClient(Potion.moveSpeed.id);
                 } else {
@@ -119,7 +119,7 @@ public class BackpackRemovals
         potion = null;
         if (player.isPotionActive(Potion.jump.id)) {
             potion = player.getActivePotionEffect(Potion.jump);
-            if (potion != null && potion.getAmplifier() == ConfigHandler.RAINBOW_JUMP_AMPLIFIER) {
+            if (potion != null && AbilityEffects.isRainbowEffect(potion.getAmplifier(), potion.getDuration(), ConfigHandler.RAINBOW_JUMP_AMPLIFIER)) {
                 if (player.worldObj.isRemote) {
                     player.removePotionEffectClient(Potion.jump.id);
                 } else {

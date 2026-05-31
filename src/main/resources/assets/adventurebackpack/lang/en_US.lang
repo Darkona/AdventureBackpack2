@@ -49,11 +49,15 @@ itemGroup.adventurebackpack=Adventure Backpack
 keys.adventureBackpack.category=Adventure Backpack
 keys.adventureBackpack.openBackpackInventory=Open Inventory Key
 keys.adventureBackpack.switchHoseTank=Toggle Action Key
+keys.adventureBackpack.toolModifier=Tool Cycle Modifier (none = sneak)
+keys.adventureBackpack.nextTool=Next Backpack Tool
+keys.adventureBackpack.previousTool=Previous Backpack Tool
 
 ## Fluids
 fluid.melonJuice=Melon Juice
 fluid.milk=Milk
 fluid.mushroomstew=Mushroom Stew
+fluid.steam=Steam
 
 ## Messages
 adventurebackpack:messages.already.equipped=You are already equipping a backpack.

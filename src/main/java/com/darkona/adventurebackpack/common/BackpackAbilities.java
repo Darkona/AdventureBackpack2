@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.LogHelper;
+import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -26,7 +27,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.List;
 
 /**
@@ -79,6 +83,24 @@ public class BackpackAbilities
      * @param world    This is necessary, so get it from wherever you can inside the class you're calling this.
      * @param backpack An object representing a backpack, either in its ItemStack form or its TileEntity form.
      */
+    /** Ability methods by backpack color name, built once: read-only afterwards, so the client and server threads can share them. */
+    private static final Map<String, Method> ITEM_ABILITIES = abilityTable("item", EntityPlayer.class, World.class, ItemStack.class);
+    private static final Map<String, Method> TILE_ABILITIES = abilityTable("tile", World.class, TileAdventureBackpack.class);
+
+    private static Map<String, Method> abilityTable(String prefix, Class<?>... params)
+    {
+        Map<String, Method> table = new HashMap<String, Method>();
+        for (Method m : BackpackAbilities.class.getMethods())
+        {
+            if (m.getName().startsWith(prefix) && m.getName().length() > prefix.length()
+                    && java.util.Arrays.equals(m.getParameterTypes(), params))
+            {
+                table.put(m.getName().substring(prefix.length()), m);
+            }
+        }
+        return table;
+    }
+
     public void executeAbility(EntityPlayer player, World world, Object backpack)
     {
         if (!ConfigHandler.BACKPACK_ABILITIES) return;
@@ -87,13 +109,12 @@ public class BackpackAbilities
             String colorName = BackpackNames.getBackpackColorName((ItemStack)backpack);
             try
             {
-                //This is black magic and shouldn't be attempted by the faint of heart.
-                this.getClass()
-                        .getMethod("item" + colorName, EntityPlayer.class, World.class, ItemStack.class).
-                        invoke(backpackAbilities, player, world, backpack);
+                // item<Color>(player, world, stack), looked up once in a table instead of getMethod every tick
+                Method ability = ITEM_ABILITIES.get(colorName);
+                if (ability != null) ability.invoke(backpackAbilities, player, world, backpack);
             } catch (Exception oops)
             {
-                //NOBODY CARES
+                LogHelper.debug("Backpack ability " + colorName + " failed: " + oops);
             }
         }
 
@@ -110,12 +131,11 @@ public class BackpackAbilities
                         You have to indicate exactly the classes that the method should use as parameters so
                         be very careful with "getMethod".
                      */
-                this.getClass()
-                        .getMethod("tile" + colorName, World.class, TileAdventureBackpack.class)
-                        .invoke(backpackAbilities, world, backpack);
+                Method ability = TILE_ABILITIES.get(colorName);
+                if (ability != null) ability.invoke(backpackAbilities, world, backpack);
             } catch (Exception oops)
             {
-                //Seriously, nobody cares if this can't work, this is just so the game won't explode.
+                LogHelper.debug("Placed backpack ability " + colorName + " failed: " + oops);
             }
         }
 
@@ -144,7 +164,7 @@ public class BackpackAbilities
             "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"};
 
     private static String[] validRemovalBackpacks = {
-            "Bat", "Squid", "Dragon", "Rainbow"
+            "Bat", "Squid", "Pigman", "Dragon", "Rainbow"
     };
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -177,22 +197,16 @@ public class BackpackAbilities
      */
     public void itemSunflower(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (!ConfigHandler.SUNFLOWER_ENABLED) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-
-        if (inv.getLastTime() <= 0)
+        // Food is server state (EntityPlayerMP sends the new food level to its client). The beat comes from the
+        // world clock: a countdown saved in the stack changed its NBT every tick, which re-synced the wearable to
+        // every nearby player every tick.
+        if (!ConfigHandler.SUNFLOWER_ENABLED || world.isRemote) return;
+        if (!TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), Utils.secondsToTicks(ConfigHandler.SUNFLOWER_INTERVAL_SECONDS))) return;
+        if (world.isDaytime()
+                && world.canBlockSeeTheSky(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY + 1), MathHelper.floor_double(player.posZ)))
         {
-            if(world.isDaytime() &&
-                    /*!world.isRemote &&*/
-                    world.canBlockSeeTheSky(MathHelper.floor_double(player.posX),MathHelper.floor_double(player.posY+1),MathHelper.floor_double(player.posZ))) {
-                player.getFoodStats().addStats(ConfigHandler.SUNFLOWER_FOOD, ConfigHandler.SUNFLOWER_SATURATION);
-                //LogHelper.info("OMNOMNOMNOM");
-            }
-            inv.setLastTime(Utils.secondsToTicks(ConfigHandler.SUNFLOWER_INTERVAL_SECONDS));
-        }else{
-            inv.setLastTime(inv.getLastTime() - 1);
+            player.getFoodStats().addStats(ConfigHandler.SUNFLOWER_FOOD, ConfigHandler.SUNFLOWER_SATURATION);
         }
-        inv.dirtyTime();
     }
 
     /**
@@ -756,8 +770,8 @@ public class BackpackAbilities
         if (noteTime >= 0 && noteTime < Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS - 3))
         {
             player.setSprinting(true);
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 40, ConfigHandler.RAINBOW_SPEED_AMPLIFIER));
-            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), 40, ConfigHandler.RAINBOW_JUMP_AMPLIFIER));
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), AbilityEffects.RAINBOW_EFFECT_TICKS, ConfigHandler.RAINBOW_SPEED_AMPLIFIER));
+            player.addPotionEffect(new PotionEffect(Potion.jump.getId(), AbilityEffects.RAINBOW_EFFECT_TICKS, ConfigHandler.RAINBOW_JUMP_AMPLIFIER));
             if (noteTime % 2 == 0)
             {
                 //Visuals.NyanParticles(player, world);
@@ -767,15 +781,21 @@ public class BackpackAbilities
                 }
             }
         }
-        PotionEffect potion = null;
-        if (player.isPotionActive(Potion.moveSpeed.id)) {
-            potion = player.getActivePotionEffect(Potion.moveSpeed);
+        // Older versions kept a 5000-tick Speed with the -5 marker on the wearer; Speed scales with (amplifier + 1),
+        // so that was -80 % walking speed between runs. It is no longer given; a leftover one is removed here.
+        PotionEffect stale = player.getActivePotionEffect(Potion.moveSpeed);
+        if (stale != null && AbilityEffects.isStaleRainbowMarker(stale.getAmplifier()))
+        {
+            if (world.isRemote) player.removePotionEffectClient(Potion.moveSpeed.id);
+            else player.removePotionEffect(Potion.moveSpeed.id);
         }
-        if (potion == null || potion.getDuration() < 40 && potion.getAmplifier() != -5) {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 5000, -5));
+        // Count down only while a run plays: the old code kept decrementing (and saving the whole inventory) every
+        // tick forever, which also re-synced the wearable to nearby players every tick.
+        if (inv.getLastTime() > 0)
+        {
+            inv.setLastTime(noteTime);
+            inv.dirtyTime();
         }
-        inv.setLastTime(noteTime);
-        inv.markDirty();
     }
     /* ==================================== TILE ABILITIES ==========================================*/
 

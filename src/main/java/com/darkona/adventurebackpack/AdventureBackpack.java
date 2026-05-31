@@ -135,6 +135,7 @@ public class AdventureBackpack
             LogHelper.info("Twilight Forest is present. Acting accordingly");
         }
 
+        ModFluids.registerSteamIfMissing();
         ConditionalFluidEffect.init();
         ModItems.conditionalInit();
         ModRecipes.conditionalInit();

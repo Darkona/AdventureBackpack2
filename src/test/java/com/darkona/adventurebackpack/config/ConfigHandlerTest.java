@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -36,6 +37,14 @@ class ConfigHandlerTest
         Field f = Class.forName("cpw.mods.fml.relauncher.FMLInjectionData").getDeclaredField("minecraftHome");
         f.setAccessible(true);
         f.set(null, home);
+    }
+
+    /** The fields are static: put the defaults back so other test classes do not see this class's values. */
+    @AfterEach
+    void restoreDefaults() throws IOException
+    {
+        Files.deleteIfExists(new File(home, "defaults.cfg").toPath());
+        load("defaults.cfg", null);
     }
 
     private static Configuration load(String fileName, String contents) throws IOException

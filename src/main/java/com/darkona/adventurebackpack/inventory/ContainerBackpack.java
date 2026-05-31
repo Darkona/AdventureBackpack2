@@ -197,12 +197,9 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && source == SOURCE_HOLDING)
-        {
-            return null;
-        }
-        // Number keys swap a hotbar slot with the clicked one: never move the open backpack that way
-        if (flag == 2 && source == SOURCE_HOLDING && button == player.inventory.currentItem)
+        boolean clickedIsHeld = slot >= 0 && slot < inventorySlots.size() && player.getHeldItem() != null
+                && getSlot(slot).getStack() == player.getHeldItem();
+        if (HeldContainerGuard.refuses(source == SOURCE_HOLDING, clickedIsHeld, flag, button, player.inventory.currentItem))
         {
             return null;
         }

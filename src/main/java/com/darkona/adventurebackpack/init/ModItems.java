@@ -35,6 +35,8 @@ public class ModItems
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
         GameRegistry.registerItem(cwxbow, "clockworkCrossbow");
+        // Always registered: it boils another mod's steam or its own (ModFluids.registerSteamIfMissing)
+        GameRegistry.registerItem(steamJetpack, "steamJetpack");
 
     }
 
@@ -45,9 +47,5 @@ public class ModItems
             GameRegistry.registerItem(copterPack, "copterPack");
         }
 
-        if (ConfigHandler.IS_RAILCRAFT)
-        {
-            GameRegistry.registerItem(steamJetpack, "steamJetpack");
-        }
     }
 }

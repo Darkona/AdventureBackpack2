@@ -118,6 +118,9 @@ public class ClientProxy implements IProxy
         Keybindings.init();
         ClientRegistry.registerKeyBinding(Keybindings.openBackpack);
         ClientRegistry.registerKeyBinding(Keybindings.toggleHose);
+        ClientRegistry.registerKeyBinding(Keybindings.toolModifier);
+        ClientRegistry.registerKeyBinding(Keybindings.nextTool);
+        ClientRegistry.registerKeyBinding(Keybindings.previousTool);
         FMLCommonHandler.instance().bus().register(new KeybindHandler());
     }
 

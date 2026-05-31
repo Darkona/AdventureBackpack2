@@ -40,3 +40,6 @@ adventurebackpack:messages.death.placed=%1$s se colocó en %2$s, %3$s, %4$s (dim
 adventurebackpack:messages.death.dropped=%1$s cayó donde moriste: %2$s, %3$s, %4$s (dimensión %5$s).
 adventurebackpack:messages.death.grave=%1$s está en tu tumba, cerca de %2$s, %3$s, %4$s (dimensión %5$s).
 slot.back=§aEspalda§7
+keys.adventureBackpack.toolModifier=Modificador para cambiar herramienta (ninguna = agacharse)
+keys.adventureBackpack.nextTool=Herramienta siguiente de la mochila
+keys.adventureBackpack.previousTool=Herramienta anterior de la mochila

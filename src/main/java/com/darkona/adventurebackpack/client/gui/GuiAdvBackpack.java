@@ -219,6 +219,7 @@ public class GuiAdvBackpack extends GuiWithTanks
             {
                 TileAdventureBackpack te = (TileAdventureBackpack) inventory;
                 ModNetwork.net.sendToServer(new SleepingBagPacket.SleepingBagMessage(te.xCoord, te.yCoord, te.zCoord));
+                return;
             }
         }else
         {
@@ -228,6 +229,7 @@ public class GuiAdvBackpack extends GuiWithTanks
                 {
                     ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.UNEQUIP_WEARABLE,false));
                     player.closeScreen();
+                    return;
                 }
             } else
             {
@@ -235,10 +237,12 @@ public class GuiAdvBackpack extends GuiWithTanks
                 {
                     ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak)));
                     player.closeScreen();
+                    return;
                 }
 
             }
         }
+        // A click on our button is not also a click on the container (no slot, no drop of the held cursor stack)
         super.mouseClicked(mouseX, mouseY, button);
     }
 

@@ -97,7 +97,9 @@ public class ContainerCopter extends Container implements IWearableContainer
     @Override
     public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
     {
-        if (slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem() && !wearing)
+        boolean clickedIsHeld = slot >= 0 && slot < inventorySlots.size() && player.getHeldItem() != null
+                && getSlot(slot).getStack() == player.getHeldItem();
+        if (HeldContainerGuard.refuses(!wearing, clickedIsHeld, flag, button, player.inventory.currentItem))
         {
             return null;
         }
