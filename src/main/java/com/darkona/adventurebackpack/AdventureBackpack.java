@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.FeatureVisibility;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
+import com.darkona.adventurebackpack.handlers.CrossbowEventHandler;
 import com.darkona.adventurebackpack.handlers.GeneralEventHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
@@ -93,6 +94,7 @@ public class AdventureBackpack
         MinecraftForge.EVENT_BUS.register(generalEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
         MinecraftForge.EVENT_BUS.register(playerEventHandler);
+        MinecraftForge.EVENT_BUS.register(new CrossbowEventHandler());
 
         FMLCommonHandler.instance().bus().register(playerEventHandler);
 
