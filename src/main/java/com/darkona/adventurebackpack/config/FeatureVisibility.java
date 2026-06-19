@@ -18,6 +18,7 @@ public final class FeatureVisibility
         hideUnless(ModItems.copterPack, ConfigHandler.COPTERPACK_ENABLED);
         hideUnless(ModItems.steamJetpack, ConfigHandler.STEAMJETPACK_ENABLED);
         hideUnless(ModItems.cwxbow, ConfigHandler.CROSSBOW_ENABLED);
+        hideUnless(ModItems.boltCartridge, ConfigHandler.CROSSBOW_ENABLED);
         hideUnless(ModItems.pistonBoots, ConfigHandler.PISTONBOOTS_ENABLED);
     }
 
