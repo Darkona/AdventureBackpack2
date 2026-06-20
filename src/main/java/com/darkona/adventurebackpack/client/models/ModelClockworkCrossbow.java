@@ -1,12 +1,15 @@
 package com.darkona.adventurebackpack.client.models;
 
 import com.darkona.adventurebackpack.client.render.RendererStack;
+import com.darkona.adventurebackpack.item.ItemCrossbow;
 import com.darkona.adventurebackpack.util.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -233,9 +236,10 @@ public class ModelClockworkCrossbow extends ModelBase
             setOffset(arrow, -.75f, .1f, -.2f);
             arrow.render(f5);
         }
-        if(xbow != null && xbow.hasTagCompound() && xbow.stackTagCompound.hasKey("Shot"))
+        World world = Minecraft.getMinecraft().theWorld;
+        if(xbow != null && world != null)
         {
-            if((xbow.stackTagCompound.getByte("Shot")>0))
+            if(ItemCrossbow.isRecoiling(xbow, world.getTotalWorldTime()))
             {
                 setRotateAngle(stringLeft, 1.5707963267948966F, -0.5235987755982988F, 0.0F);
                 setRotateAngle(stringRight, -1.5707963267948966F, 0.5235987755982988F, 0.0F);
