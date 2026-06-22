@@ -14,6 +14,11 @@ item.adventurebackpack:inflatableBoatMotorized.name=Inflatable Boat (Motorized)
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Clockwork Crossbow
+item.adventurebackpack:boltCartridge.name=Bolt Cartridge
+item.adventurebackpack:boltCartridgeBlazing.name=Blazing Bolt Cartridge
+item.adventurebackpack:boltCartridgeFreezing.name=Freezing Bolt Cartridge
+item.adventurebackpack:boltCartridgePoison.name=Poison Bolt Cartridge
+item.adventurebackpack:boltCartridgeStunning.name=Stunning Bolt Cartridge
 item.adventurebackpack:melonJuiceBottle.name=Melon Juice Bottle
 item.adventurebackpack:machete.name=Machete
 
@@ -68,7 +73,10 @@ adventurebackpack:messages.copterpack.cantwater=CopterPack: Can't function in wa
 adventurebackpack:messages.copterpack.off=CopterPack: Off.
 adventurebackpack:messages.jetpack.on=Steam Jetpack: On.
 adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
-adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: Out of ammo.
+adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: out of bolts. Craft a Bolt Cartridge.
+adventurebackpack:tooltip.crossbow.loaded=Bolts: %1$s/%2$s
+adventurebackpack:tooltip.crossbow.controls=Hold right click to fire. Sneak + right click to change the cartridge.
+adventurebackpack:tooltip.cartridge.bolts=Bolts: %1$s/%2$s
 
 ## Baubles Expanded back slot
 slot.back=§aBack§7
