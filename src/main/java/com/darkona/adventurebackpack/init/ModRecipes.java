@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.init;
 
+import com.darkona.adventurebackpack.common.CrossbowLogic;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.init.recipes.BackpackUpgradeRecipe;
@@ -10,6 +11,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -22,6 +24,41 @@ import java.lang.reflect.Field;
  */
 public class ModRecipes
 {
+    /** The Clockwork Crossbow, built around a clock, and its Bolt Cartridges: 6 arrows and an iron ingot each. */
+    private static void crossbowRecipes()
+    {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.cwxbow),
+                "IBI",
+                "SCS",
+                " P ",
+                'I', "ingotIron",
+                'B', new ItemStack(Items.bow, 1, OreDictionary.WILDCARD_VALUE),
+                'S', Items.string,
+                'C', Items.clock,
+                'P', "plankWood"
+        ));
+        cartridgeRecipe(CrossbowLogic.NORMAL, "stickWood");
+        if (ConfigHandler.CROSSBOW_ELEMENTAL_ENABLED)
+        {
+            cartridgeRecipe(CrossbowLogic.BLAZING, Items.blaze_powder);
+            cartridgeRecipe(CrossbowLogic.FREEZING, Items.snowball);
+            cartridgeRecipe(CrossbowLogic.POISON, Items.spider_eye);
+            cartridgeRecipe(CrossbowLogic.STUNNING, Items.slime_ball);
+        }
+    }
+
+    private static void cartridgeRecipe(int type, Object extra)
+    {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.boltCartridge, 1, type),
+                "AAA",
+                "XIX",
+                "AAA",
+                'A', Items.arrow,
+                'X', extra,
+                'I', "ingotIron"
+        ));
+    }
+
     private static ItemStack bc(int damage)
     {
         return BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), damage);
@@ -118,6 +155,8 @@ public class ModRecipes
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.melonJuiceBottle),
                 Items.melon, Items.potionitem
         );
+
+        if (ConfigHandler.CROSSBOW_ENABLED) crossbowRecipes();
 
         if (ConfigHandler.HOSE_ENABLED) GameRegistry.addRecipe(new ItemStack(ModItems.hose),
                 "NGG",

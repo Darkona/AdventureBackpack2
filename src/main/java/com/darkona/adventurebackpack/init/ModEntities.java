@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.init;
 
 import com.darkona.adventurebackpack.AdventureBackpack;
+import com.darkona.adventurebackpack.entity.EntityBolt;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -23,6 +24,8 @@ public class ModEntities
         EntityRegistry.registerModEntity(EntityInflatableBoat.class, "inflatableBoat", counter++, AdventureBackpack.instance, 64, 1, true);
 
         EntityRegistry.registerModEntity(EntityFriendlySpider.class, "rideableSpider", counter++, AdventureBackpack.instance, 64, 2, true);
+        // Always registered, also with the crossbow disabled, so entity ids match between client and server.
+        EntityRegistry.registerModEntity(EntityBolt.class, "crossbowBolt", counter++, AdventureBackpack.instance, 64, 20, true);
         //EntityRegistry.registerGlobalEntityID(EntityRideableSpider.class, "rideableSpider", EntityRegistry.findGlobalUniqueEntityId(),color_int2,color_int1);
     }
 }

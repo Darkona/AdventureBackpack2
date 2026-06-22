@@ -12,6 +12,12 @@ item.adventurebackpack:backpackHose.name=Manquera de Mochila
 item.adventurebackpack:adventureSuit.name=Traje de Aventurero
 item.adventurebackpack:adventureHat.name=Fedora de Aventurero
 item.adventurebackpack:pistonBoots.name=Botas Pistón
+item.adventurebackpack:clockworkCrossbow.name=Ballesta de Relojería
+item.adventurebackpack:boltCartridge.name=Cartucho de Virotes
+item.adventurebackpack:boltCartridgeBlazing.name=Cartucho de Virotes Ígneos
+item.adventurebackpack:boltCartridgeFreezing.name=Cartucho de Virotes Gélidos
+item.adventurebackpack:boltCartridgePoison.name=Cartucho de Virotes Venenosos
+item.adventurebackpack:boltCartridgeStunning.name=Cartucho de Virotes Aturdidores
 
 
 item.adventurebackpack:hose_leftTank_suck.name=Manquera: Tanque Izq. / Modo Succión
@@ -43,3 +49,7 @@ slot.back=§aEspalda§7
 keys.adventureBackpack.toolModifier=Modificador para cambiar herramienta (ninguna = agacharse)
 keys.adventureBackpack.nextTool=Herramienta siguiente de la mochila
 keys.adventureBackpack.previousTool=Herramienta anterior de la mochila
+adventurebackpack:messages.crossbow.outofammo=Ballesta de Relojería: sin virotes. Fabrica un Cartucho de Virotes.
+adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
+adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Agáchate + clic derecho para cambiar el cartucho.
+adventurebackpack:tooltip.cartridge.bolts=Virotes: %1$s/%2$s

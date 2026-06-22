@@ -22,6 +22,7 @@ public class ModItems
     public static final ItemJuiceBottle melonJuiceBottle = new ItemJuiceBottle();
     public static final ItemCopterPack copterPack = new ItemCopterPack();
     public static final ItemCrossbow cwxbow = new ItemCrossbow();
+    public static final ItemBoltCartridge boltCartridge = new ItemBoltCartridge();
     public static final ItemSteamJetpack steamJetpack = new ItemSteamJetpack();
 
     public static void init()
@@ -37,6 +38,7 @@ public class ModItems
         GameRegistry.registerItem(cwxbow, "clockworkCrossbow");
         // Always registered: it boils another mod's steam or its own (ModFluids.registerSteamIfMissing)
         GameRegistry.registerItem(steamJetpack, "steamJetpack");
+        GameRegistry.registerItem(boltCartridge, "boltCartridge");
 
     }
 

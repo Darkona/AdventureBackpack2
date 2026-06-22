@@ -20,6 +20,7 @@ public final class FeatureVisibility
         // Without any steam fluid (no other mod and ownSteamFluid off) the jetpack cannot work
         hideUnless(ModItems.steamJetpack, ConfigHandler.STEAMJETPACK_ENABLED && ModFluids.steam != null);
         hideUnless(ModItems.cwxbow, ConfigHandler.CROSSBOW_ENABLED);
+        hideUnless(ModItems.boltCartridge, ConfigHandler.CROSSBOW_ENABLED);
         hideUnless(ModItems.pistonBoots, ConfigHandler.PISTONBOOTS_ENABLED);
     }
 

@@ -41,6 +41,7 @@ public class ConfigHandler
     public static final String STEAMJETPACK = ROOT + ".steamjetpack";
     public static final String INFLATABLEBOAT = ROOT + ".inflatableboat";
     public static final String CROSSBOW = ROOT + ".crossbow";
+    public static final String CROSSBOW_ELEMENTAL = CROSSBOW + ".elemental";
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
     public static final String RENDER = ROOT + ".render";
     public static final String KEYS = ROOT + ".keys";
@@ -214,9 +215,21 @@ public class ConfigHandler
     public static double BOAT_MAX_SPEED = 0.35;
 
     // ---------------------------------------------------------------- crossbow
-    public static int CROSSBOW_RELOAD_TICKS = 20;
-    public static float CROSSBOW_ARROW_VELOCITY = 3.0f;
-    public static double CROSSBOW_ARROW_DAMAGE = 2.0;
+    public static int CROSSBOW_SHOTS_PER_MAGAZINE = 6;
+    public static int CROSSBOW_SHOT_DELAY_TICKS = 4;
+    public static int CROSSBOW_RELOAD_TICKS = 30;
+    public static float CROSSBOW_BOLT_VELOCITY = 3.0f;
+    public static double CROSSBOW_BOLT_DAMAGE = 4.0;
+    public static boolean CROSSBOW_IGNORE_HURT_COOLDOWN = true;
+    public static boolean CROSSBOW_BOLTS_RECOVERABLE = false;
+    public static int CROSSBOW_DURABILITY = 0;
+    public static boolean CROSSBOW_ELEMENTAL_ENABLED = true;
+    public static int CROSSBOW_FREEZING_TICKS = 60;
+    public static int CROSSBOW_FREEZING_AMPLIFIER = 2;
+    public static int CROSSBOW_POISON_TICKS = 100;
+    public static int CROSSBOW_POISON_AMPLIFIER = 0;
+    public static int CROSSBOW_STUNNING_TICKS = 30;
+    public static int CROSSBOW_STUNNING_AMPLIFIER = 4;
 
     // ---------------------------------------------------------------- piston boots
     public static float PISTONBOOTS_STEP_HEIGHT = 1.001f;
@@ -312,7 +325,8 @@ public class ConfigHandler
         cfg.setCategoryComment(COPTERPACK, "The Copter Pack (needs BuildCraft). Speeds in blocks per tick.");
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
-        cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow.");
+        cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. Ticks: 20 per second.");
+        cfg.setCategoryComment(CROSSBOW_ELEMENTAL, "Blazing, Freezing, Poison and Stunning Bolt Cartridges. Blazing bolts burn and set the target on fire for 5 seconds, like a Flame bow. The other effects are potion effects; an amplifier is the effect level minus one (0 = level I).");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
         cfg.setCategoryComment(RENDER, "Client only: how the mod draws things. The server ignores this category.");
         cfg.setCategoryComment(KEYS, "Client only: default keys, as LWJGL key codes (B = 48, N = 49, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
@@ -351,7 +365,7 @@ public class ConfigHandler
         COPTERPACK_ENABLED = bool(cfg, ENABLED, "copterPack", true, "The Copter Pack (only present with BuildCraft).");
         STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack.");
         INFLATABLEBOAT_ENABLED = bool(cfg, ENABLED, "inflatableBoat", true, "The Inflatable Boat and the Motorized Inflatable Boat.");
-        CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow.");
+        CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow and its Bolt Cartridges.");
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "Deploying the sleeping bag from a placed backpack.");
         PISTONBOOTS_ENABLED = bool(cfg, ENABLED, "pistonBoots", true, "The Piston Boots: step assist, sprint speed and fall protection.");
     }
@@ -516,9 +530,27 @@ public class ConfigHandler
 
     private static void readCrossbow(Configuration cfg)
     {
-        CROSSBOW_RELOAD_TICKS = integer(cfg, CROSSBOW, "reloadTicks", 20, 1, 1200, "Ticks between two shots.");
-        CROSSBOW_ARROW_VELOCITY = (float) decimal(cfg, CROSSBOW, "arrowVelocity", 3.0, 0.1, 10.0, "Arrow speed (a fully drawn vanilla bow is 3).");
-        CROSSBOW_ARROW_DAMAGE = decimal(cfg, CROSSBOW, "arrowDamage", 2.0, 0.0, 100.0, "Base arrow damage before speed and Power (vanilla arrows are 2).");
+        ConfigCategory crossbow = cfg.getCategory(CROSSBOW);
+        for (String gone : new String[]{"arrowVelocity", "arrowDamage"})
+        {
+            // Keys of the single-shot crossbow; their scale does not match the bolt keys, so they are dropped, not moved.
+            if (crossbow.containsKey(gone)) crossbow.remove(gone);
+        }
+        CROSSBOW_SHOTS_PER_MAGAZINE = integer(cfg, CROSSBOW, "shotsPerMagazine", 6, 1, 24, "Bolts in a full magazine, and in a full Bolt Cartridge (the recipe still takes 6 arrows).");
+        CROSSBOW_SHOT_DELAY_TICKS = integer(cfg, CROSSBOW, "shotDelayTicks", 4, 1, 40, "Pause between two bolts. Minecraft repeats a held right click every 4 ticks, so the real pause while holding is this value rounded up to a multiple of 4 (4 = 5 bolts a second, 5 to 8 = 2.5 a second).");
+        CROSSBOW_RELOAD_TICKS = integer(cfg, CROSSBOW, "reloadTicks", 30, 0, 200, "Time to load a cartridge, during which the crossbow does not fire.");
+        CROSSBOW_BOLT_VELOCITY = (float) decimal(cfg, CROSSBOW, "boltVelocity", 3.0, 0.5, 6.0, "Bolt speed in blocks per tick when it leaves the crossbow (a fully drawn bow shoots at 3). Faster bolts fly flatter and further.");
+        CROSSBOW_BOLT_DAMAGE = decimal(cfg, CROSSBOW, "boltDamage", 4.0, 0.0, 100.0, "Damage of a bolt as it leaves the crossbow, in half hearts (a fully drawn bow does 6 to 10). It drops a little with distance as the bolt slows down.");
+        CROSSBOW_IGNORE_HURT_COOLDOWN = bool(cfg, CROSSBOW, "ignoreHurtCooldown", true, "Bolts ignore the short invulnerability a mob gets after a hit, so every bolt of a burst lands. When false about half of a fast burst bounces off the same target.");
+        CROSSBOW_BOLTS_RECOVERABLE = bool(cfg, CROSSBOW, "boltsRecoverable", false, "Bolts stuck in a block can be picked up as arrows. Off by default: a cartridge is spent ammunition.");
+        CROSSBOW_DURABILITY = integer(cfg, CROSSBOW, "durability", 0, 0, 100000, "Bolts the crossbow fires before it breaks. 0 means it never breaks.");
+        CROSSBOW_ELEMENTAL_ENABLED = bool(cfg, CROSSBOW_ELEMENTAL, "enabled", true, "Elemental cartridges: their recipes, their place in the creative tab and their effects. When false they still load, and fire plain bolts.");
+        CROSSBOW_FREEZING_TICKS = integer(cfg, CROSSBOW_ELEMENTAL, "freezingTicks", 60, 1, 1200, "Length of the Slowness a Freezing bolt gives.");
+        CROSSBOW_FREEZING_AMPLIFIER = integer(cfg, CROSSBOW_ELEMENTAL, "freezingAmplifier", 2, 0, 6, "Slowness level minus one of a Freezing bolt (2 = Slowness III).");
+        CROSSBOW_POISON_TICKS = integer(cfg, CROSSBOW_ELEMENTAL, "poisonTicks", 100, 1, 1200, "Length of the Poison a Poison bolt gives.");
+        CROSSBOW_POISON_AMPLIFIER = integer(cfg, CROSSBOW_ELEMENTAL, "poisonAmplifier", 0, 0, 4, "Poison level minus one of a Poison bolt (0 = Poison I).");
+        CROSSBOW_STUNNING_TICKS = integer(cfg, CROSSBOW_ELEMENTAL, "stunningTicks", 30, 1, 1200, "Length of the stun of a Stunning bolt: Slowness, and Nausea on players.");
+        CROSSBOW_STUNNING_AMPLIFIER = integer(cfg, CROSSBOW_ELEMENTAL, "stunningAmplifier", 4, 0, 6, "Slowness level minus one of a Stunning bolt (4 = Slowness V, almost still).");
     }
 
     private static void readPistonBoots(Configuration cfg)
