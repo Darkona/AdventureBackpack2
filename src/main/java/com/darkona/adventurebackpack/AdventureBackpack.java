@@ -137,7 +137,6 @@ public class AdventureBackpack
 
         ModFluids.registerSteamIfMissing();
         ConditionalFluidEffect.init();
-        ModItems.conditionalInit();
         ModRecipes.conditionalInit();
         FeatureVisibility.hideDisabledItems();
 

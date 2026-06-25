@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.network;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
+import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -42,7 +43,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                 int playerZ = (int) player.posZ;
                 World world = player.worldObj;
 
-                if (message.type == COPTER_GUI)
+                if (message.type == COPTER_GUI && ItemCopterPack.isUsable())
                 {
                     if(message.from == FROM_KEYBIND)
                     {

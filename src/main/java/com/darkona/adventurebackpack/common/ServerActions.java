@@ -370,6 +370,7 @@ public class ServerActions
 
     public static void toggleCopterPack(EntityPlayer player, ItemStack copter, byte type)
     {
+        if (!ItemCopterPack.isUsable()) return;
         String message = "";
         boolean actionPerformed = false;
 

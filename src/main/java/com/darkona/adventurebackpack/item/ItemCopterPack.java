@@ -47,6 +47,16 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         setMaxStackSize(1);
     }
 
+    /**
+     * The copter pack is always registered (so worlds and servers keep their ids whatever mods are installed), but it
+     * only works when it is enabled in the config and BuildCraft is loaded: its fuels come from BuildCraft. This class
+     * does not touch any BuildCraft class, so it loads fine without the mod.
+     */
+    public static boolean isUsable()
+    {
+        return ConfigHandler.COPTERPACK_ENABLED && ConfigHandler.IS_BUILDCRAFT;
+    }
+
     public static byte OFF_MODE = 0;
     public static byte NORMAL_MODE = 1;
     public static byte HOVER_MODE = 2;
@@ -54,7 +64,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if (world.isRemote && ConfigHandler.COPTERPACK_ENABLED)
+        if (world.isRemote && isUsable())
         {
             ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_HOLDING));
         }
@@ -136,7 +146,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
-        if (!ConfigHandler.COPTERPACK_ENABLED) return;
+        if (!isUsable()) return;
         InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
         inv.openInventory();
         boolean canElevate = true;

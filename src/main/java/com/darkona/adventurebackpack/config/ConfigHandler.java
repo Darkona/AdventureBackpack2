@@ -309,7 +309,7 @@ public class ConfigHandler
             cfg.getCategory(ABILITIES + "." + a);
         }
         cfg.setCategoryComment(HOSE, "The Backpack Hose: suck, spill and drink from the worn backpack's tanks. Amounts in millibuckets (1000 = one bucket).");
-        cfg.setCategoryComment(COPTERPACK, "The Copter Pack (needs BuildCraft). Speeds in blocks per tick.");
+        cfg.setCategoryComment(COPTERPACK, "The Copter Pack (works only with BuildCraft loaded). Speeds in blocks per tick.");
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow.");
@@ -348,7 +348,7 @@ public class ConfigHandler
     {
         BACKPACK_ABILITIES = bool(cfg, ENABLED, "abilities", true, "Backpack abilities. When false every backpack is only cosmetic (the lightning transformation still works). Set it the same on server and clients.");
         HOSE_ENABLED = bool(cfg, ENABLED, "hose", true, "The Backpack Hose.");
-        COPTERPACK_ENABLED = bool(cfg, ENABLED, "copterPack", true, "The Copter Pack (only present with BuildCraft).");
+        COPTERPACK_ENABLED = bool(cfg, ENABLED, "copterPack", true, "The Copter Pack. It is always registered, but it only works (and shows in the creative tab) when BuildCraft is loaded.");
         STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack.");
         INFLATABLEBOAT_ENABLED = bool(cfg, ENABLED, "inflatableBoat", true, "The Inflatable Boat and the Motorized Inflatable Boat.");
         CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow.");
