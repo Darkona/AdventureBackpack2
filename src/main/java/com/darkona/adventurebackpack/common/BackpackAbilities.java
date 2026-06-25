@@ -8,6 +8,7 @@ import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.util.Utils;
@@ -19,11 +20,13 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -46,6 +49,11 @@ public class BackpackAbilities
 
     public static BackpackAbilities backpackAbilities = new BackpackAbilities();
     public static BackpackRemovals backpackRemovals = new BackpackRemovals();
+
+    /** Root key of the stack: world time when the Pig, Chicken or Creeper ability may fire next. */
+    public static final String NEXT_ABILITY = "abilityNext";
+    /** Root key of the stack: world time when the Rainbow's Nyan run ends. */
+    public static final String RAINBOW_END = "rainbowEnd";
 
     /**
      *
@@ -285,30 +293,26 @@ public class BackpackAbilities
      */
     public void itemCactus(EntityPlayer player, World world, ItemStack backpack)
     {
-        //lastTime is in ticks for this backpack.
-        if (!ConfigHandler.CACTUS_ENABLED || world.isRemote) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        int drops = 0;
-        if (player.isInWater())
-        {
-            drops += ConfigHandler.CACTUS_WATER_IN_WATER;
-        }
-        if (isUnderRain(player))
-        {
-            drops += ConfigHandler.CACTUS_WATER_IN_RAIN;
-        }
+        if (ConfigHandler.CACTUS_ENABLED) fillWhenWet(player, world, backpack, FluidRegistry.WATER,
+                ConfigHandler.CACTUS_WORN_INTERVAL_TICKS, ConfigHandler.CACTUS_WATER_IN_WATER, ConfigHandler.CACTUS_WATER_IN_RAIN);
+    }
 
-        if (inv.getLastTime() <= 0 && drops > 0)
-        {
-            inv.setLastTime(ConfigHandler.CACTUS_WORN_INTERVAL_TICKS);
-            FluidStack raindrop = new FluidStack(FluidRegistry.WATER, drops);
-            inv.getLeftTank().fill(raindrop, true);
-            inv.getRightTank().fill(raindrop, true);
-        }else{
-            inv.setLastTime(inv.getLastTime() - 1);
-        }
-        inv.dirtyTime();
-        inv.dirtyTanks();
+    /**
+     * Cactus and Melon: on a world-time beat of {@code interval} ticks, adds the wet amounts to both tanks. The stack
+     * only changes when fluid really goes in (the old countdown in the stack changed it every tick).
+     */
+    private void fillWhenWet(EntityPlayer player, World world, ItemStack backpack, Fluid fluid, int interval, int inWater, int inRain)
+    {
+        if (world.isRemote || fluid == null) return;
+        if (!TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), interval)) return;
+        int drops = 0;
+        if (player.isInWater()) drops += inWater;
+        if (isUnderRain(player)) drops += inRain;
+        if (drops <= 0) return;
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        FluidStack raindrop = new FluidStack(fluid, drops);
+        int filled = inv.getLeftTank().fill(raindrop, true) + inv.getRightTank().fill(raindrop, true);
+        if (filled > 0) inv.dirtyTanks();
     }
 
     /**
@@ -323,17 +327,15 @@ public class BackpackAbilities
      */
     public void itemPig(EntityPlayer player, World world, ItemStack backpack)
     {
-        //lastTime is in seconds for this backpack.
-        if (!ConfigHandler.PIG_ENABLED) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        int oinkTime = inv.getLastTime() - 1;
-        if (oinkTime <= 0)
-        {
-            world.playSoundAtEntity(player, "mob.pig.say", 0.8f, 1f);
-            oinkTime = Utils.secondsToTicks(world.rand.nextInt(ConfigHandler.PIG_OINK_MAX_SECONDS + 1));
-        }
-        inv.setLastTime(oinkTime);
-        inv.dirtyTime();
+        // The oink is a server sound every nearby player hears; the wait is in whole seconds, checked once a second.
+        if (!ConfigHandler.PIG_ENABLED || world.isRemote) return;
+        long now = world.getTotalWorldTime();
+        if (!TickThrottle.every(now, player.getEntityId(), AbilityTimer.SECOND_CHECK_TICKS)) return;
+        long next = BackpackUtils.getTimeMark(backpack, NEXT_ABILITY);
+        if (next >= 0 && !AbilityTimer.due(now, next, Utils.secondsToTicks(ConfigHandler.PIG_OINK_MAX_SECONDS))) return;
+        // A backpack without a mark (new, or from an older version) only starts its wait
+        if (next >= 0) world.playSoundAtEntity(player, "mob.pig.say", 0.8f, 1f);
+        BackpackUtils.setTimeMark(backpack, NEXT_ABILITY, now + Utils.secondsToTicks(world.rand.nextInt(ConfigHandler.PIG_OINK_MAX_SECONDS + 1)));
     }
 
     /**
@@ -346,7 +348,6 @@ public class BackpackAbilities
      */
     public void itemSlime(EntityPlayer player, World world, ItemStack backpack)
     {
-        //lastTime is in Ticks for this backpack.
         //0 is Full Moon, 1 is Waning Gibbous, 2 is Last Quarter, 3 is Waning Crescent,
         // 4 is New Moon, 5 is Waxing Crescent, 6 is First Quarter and 7 is Waxing Gibbous
         if (!ConfigHandler.SLIME_ENABLED) return;
@@ -361,21 +362,12 @@ public class BackpackAbilities
             {
                 player.addVelocity(player.motionX *= 0.828, 0, player.motionZ *= 0.828);
             }
-            if (player.isSprinting())
+            // Trail on a world-time beat: the server sends the particles and the sound to every nearby player
+            if (player.isSprinting() && !world.isRemote
+                    && TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), ConfigHandler.SLIME_TRAIL_INTERVAL_TICKS))
             {
-                InventoryBackpack inv = new InventoryBackpack(backpack);
-                int slimeTime = inv.getLastTime() > 0 ? inv.getLastTime() - 1 : ConfigHandler.SLIME_TRAIL_INTERVAL_TICKS;
-                if (slimeTime <= 0)
-                {
-                    if (!world.isRemote)
-                    {
-                        ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.SLIME_PARTICLE, player), player);
-                    }
-                    world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
-                    slimeTime = ConfigHandler.SLIME_TRAIL_INTERVAL_TICKS;
-                }
-                inv.setLastTime(slimeTime);
-                inv.dirtyTime();
+                ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.SLIME_PARTICLE, player), player);
+                world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
             }
         }
     }
@@ -389,17 +381,21 @@ public class BackpackAbilities
      */
     public void itemChicken(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (!ConfigHandler.CHICKEN_ENABLED) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        int eggTime = inv.getLastTime() - 1 ;
-        if (eggTime <= 0)
+        // The egg and its sound come from the server; the wait is in whole seconds, checked once a second.
+        if (!ConfigHandler.CHICKEN_ENABLED || world.isRemote) return;
+        long now = world.getTotalWorldTime();
+        if (!TickThrottle.every(now, player.getEntityId(), AbilityTimer.SECOND_CHECK_TICKS)) return;
+        long next = BackpackUtils.getTimeMark(backpack, NEXT_ABILITY);
+        int longest = Utils.secondsToTicks(ConfigHandler.CHICKEN_EGG_MIN_SECONDS + ConfigHandler.CHICKEN_EGG_RANDOM_SECONDS);
+        if (next >= 0 && !AbilityTimer.due(now, next, longest)) return;
+        // A backpack without a mark (new, placed and picked up, or from an older version) waits a full time first,
+        // so placing and taking it again does not lay an egg every time.
+        if (next >= 0)
         {
-            player.playSound("mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
-            if (!world.isRemote) player.dropItem(Items.egg, 1);
-            eggTime = Utils.secondsToTicks(ConfigHandler.CHICKEN_EGG_MIN_SECONDS + world.rand.nextInt(ConfigHandler.CHICKEN_EGG_RANDOM_SECONDS + 1));
+            world.playSoundAtEntity(player, "mob.chicken.plop", 1.0F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F + 1.0F);
+            player.dropItem(Items.egg, 1);
         }
-        inv.setLastTime(eggTime);
-        inv.dirtyTime();
+        BackpackUtils.setTimeMark(backpack, NEXT_ABILITY, now + Utils.secondsToTicks(ConfigHandler.CHICKEN_EGG_MIN_SECONDS + world.rand.nextInt(ConfigHandler.CHICKEN_EGG_RANDOM_SECONDS + 1)));
     }
 
     /**
@@ -412,30 +408,8 @@ public class BackpackAbilities
      */
     public void itemMelon(EntityPlayer player, World world, ItemStack backpack)
     {
-        //lastTime is in ticks for this backpack.
-        if (!ConfigHandler.MELON_ENABLED || world.isRemote) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        int drops = 0;
-        if (player.isInWater())
-        {
-            drops += ConfigHandler.MELON_JUICE_IN_WATER;
-        }
-        if (isUnderRain(player))
-        {
-            drops += ConfigHandler.MELON_JUICE_IN_RAIN;
-        }
-
-        if (inv.getLastTime() <= 0 && drops > 0)
-        {
-            inv.setLastTime(ConfigHandler.MELON_WORN_INTERVAL_TICKS);
-            FluidStack raindrop = new FluidStack(ModFluids.melonJuice, drops);
-            inv.getLeftTank().fill(raindrop, true);
-            inv.getRightTank().fill(raindrop, true);
-        }else{
-            inv.setLastTime(inv.getLastTime() - 1);
-        }
-        inv.dirtyTime();
-        inv.dirtyTanks();
+        if (ConfigHandler.MELON_ENABLED) fillWhenWet(player, world, backpack, ModFluids.melonJuice,
+                ConfigHandler.MELON_WORN_INTERVAL_TICKS, ConfigHandler.MELON_JUICE_IN_WATER, ConfigHandler.MELON_JUICE_IN_RAIN);
     }
 
     /**
@@ -480,41 +454,25 @@ public class BackpackAbilities
     @SuppressWarnings("unchecked")
     public void itemCreeper(EntityPlayer player, World world, ItemStack backpack)
     {
-        //lastTime is in seconds for this ability
-        if (!ConfigHandler.CREEPER_ENABLED) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        int pssstTime = inv.getLastTime() - 1;
-
-        if (pssstTime <= 0)
+        // Searched on a world-time beat while sneaking; the cooldown mark is written only when it hisses.
+        if (!ConfigHandler.CREEPER_ENABLED || world.isRemote || !player.isSneaking()) return;
+        long now = world.getTotalWorldTime();
+        if (!TickThrottle.every(now, player.getEntityId(), ConfigHandler.CREEPER_CHECK_INTERVAL_TICKS)) return;
+        int cooldown = Utils.secondsToTicks(ConfigHandler.CREEPER_SCARE_COOLDOWN_SECONDS);
+        if (!AbilityTimer.due(now, BackpackUtils.getTimeMark(backpack, NEXT_ABILITY), cooldown)) return;
+        List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity(player,
+                AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
+                        player.posX + 1.0D, player.posY + 1.0D,
+                        player.posZ + 1.0D).expand(5.0D, 1.0D, 5.0D));
+        for (Entity entity : entities)
         {
-            pssstTime = ConfigHandler.CREEPER_CHECK_INTERVAL_TICKS;
-            if (player.isSneaking())
+            if (entity instanceof EntityPlayer && player.getDistanceToEntity(entity) <= ConfigHandler.CREEPER_SCARE_RANGE)
             {
-                List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity(player,
-                        AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
-                                player.posX + 1.0D, player.posY + 1.0D,
-                                player.posZ + 1.0D).expand(5.0D, 1.0D, 5.0D));
-                if (entities.isEmpty())
-                {
-                    pssstTime -= 1;
-                    return;
-                }
-
-                for (Entity entity : entities)
-                {
-                    if (entity instanceof EntityPlayer)
-                    {
-                        if (player.getDistanceToEntity(entity) <= ConfigHandler.CREEPER_SCARE_RANGE)
-                        {
-                            world.playSoundAtEntity(player, "creeper.primed", 1.2F, 0.5F);
-                            pssstTime = Utils.secondsToTicks(ConfigHandler.CREEPER_SCARE_COOLDOWN_SECONDS);
-                        }
-                    }
-                }
+                world.playSoundAtEntity(player, "creeper.primed", 1.2F, 0.5F);
+                BackpackUtils.setTimeMark(backpack, NEXT_ABILITY, now + cooldown);
+                return;
             }
         }
-        inv.setLastTime(pssstTime);
-        inv.markDirty();
     }
 
     private FluidStack milkStack = new FluidStack(FluidRegistry.getFluid("milk"), 1);
@@ -532,124 +490,73 @@ public class BackpackAbilities
      */
     public void itemCow(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (!ConfigHandler.COW_ENABLED || world.isRemote) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        inv.openInventory();
+        if (ConfigHandler.COW_ENABLED) makeFromWheat(player, world, backpack, milkStack,
+                ConfigHandler.COW_EAT_INTERVAL_TICKS, ConfigHandler.COW_WHEAT_PER_BATCH, ConfigHandler.COW_MILK_PER_BATCH);
+    }
 
-        if (inv.getLeftTank().fill(milkStack, false) <= 0 && inv.getRightTank().fill(milkStack, false) <= 0)
+    /**
+     * Cow and Mooshroom: eat one wheat on a world-time beat of {@code eatInterval} ticks; every {@code wheatPerBatch}
+     * wheat start a batch that adds one millibucket per tick until {@code perBatch} are made. Without wheat and without
+     * a batch running nothing is read or written (the old eat countdown in the stack changed it every tick).
+     */
+    private void makeFromWheat(EntityPlayer player, World world, ItemStack backpack, FluidStack drop, int eatInterval, int wheatPerBatch, int perBatch)
+    {
+        if (world.isRemote || drop.getFluid() == null) return;
+        boolean eatBeat = TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), eatInterval);
+        if (!eatBeat && storedBatchTicks(backpack) <= 0) return;
+
+        InventoryBackpack inv = new InventoryBackpack(backpack);
+        if (inv.getLeftTank().fill(drop, false) <= 0 && inv.getRightTank().fill(drop, false) <= 0)
         {
             return;
         }
-        //Set Cow Properties
         int wheatConsumed = 0;
         int milkTime = -1;
-        if (inv.getExtendedProperties() != null)
+        if (inv.getExtendedProperties() != null && inv.extendedProperties.hasKey("wheatConsumed"))
         {
-            if (inv.extendedProperties.hasKey("wheatConsumed"))
-            {
-                wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
-                milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
-            }
+            wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
+            milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
         }
 
-        int eatTime = (inv.getLastTime() - 1 >= 0) ? inv.getLastTime() - 1 : 0;
-        if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
+        if (eatBeat && milkTime <= 0 && inv.hasItem(Items.wheat))
         {
-            eatTime = ConfigHandler.COW_EAT_INTERVAL_TICKS;
-            //LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
             inv.consumeInventoryItem(Items.wheat);
             wheatConsumed++;
             inv.dirtyInventory();
         }
 
-        int factor = 1;
-        if (wheatConsumed >= ConfigHandler.COW_WHEAT_PER_BATCH)
+        if (wheatConsumed >= wheatPerBatch)
         {
             wheatConsumed = 0;
-            milkTime = (ConfigHandler.COW_MILK_PER_BATCH * factor) - factor;
+            milkTime = perBatch - 1;
             world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
         }
 
-        if (milkTime >= 0 && (milkTime % factor == 0))
+        if (milkTime >= 0)
         {
-            if (inv.getLeftTank().fill(milkStack, true) <= 0)
+            if (inv.getLeftTank().fill(drop, true) <= 0)
             {
-                inv.getRightTank().fill(milkStack, true);
+                inv.getRightTank().fill(drop, true);
             }
             inv.dirtyTanks();
         }
         if (milkTime < -1) milkTime = -1;
         inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
         inv.extendedProperties.setInteger("milkTime", milkTime);
-        inv.setLastTime(eatTime);
-      //  inv.setLastTime(eatTime);
         inv.dirtyExtended();
-        //inv.dirtyTanks();
-        inv.dirtyTime();
-        //inv.dirtyInventory();
+    }
 
-        //So naughty!!!
+    /** Ticks of milk or stew still to make, read straight from the stack (no inventory built). */
+    private static int storedBatchTicks(ItemStack backpack)
+    {
+        NBTTagCompound data = BackpackUtils.getBackpackData(backpack);
+        return data == null ? 0 : data.getCompoundTag("extendedProperties").getInteger("milkTime");
     }
 
     public void itemMooshroom(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (!ConfigHandler.MOOSHROOM_ENABLED || world.isRemote) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        inv.openInventory();
-
-        if (inv.getLeftTank().fill(soupStack, false) <= 0 && inv.getRightTank().fill(soupStack, false) <= 0)
-        {
-            return;
-        }
-        //Set Cow Properties
-        int wheatConsumed = 0;
-        int milkTime = -1;
-        if (inv.getExtendedProperties() != null)
-        {
-            if (inv.extendedProperties.hasKey("wheatConsumed"))
-            {
-                wheatConsumed = inv.extendedProperties.getInteger("wheatConsumed");
-                milkTime = inv.extendedProperties.getInteger("milkTime") - 1;
-            }
-        }
-
-        int eatTime = (inv.getLastTime() - 1 >= 0) ? inv.getLastTime() - 1 : 0;
-        if (inv.hasItem(Items.wheat) && eatTime <= 0 && milkTime <= 0)
-        {
-            eatTime = ConfigHandler.MOOSHROOM_EAT_INTERVAL_TICKS;
-            //LogHelper.info("Consuming Wheat in " + ((world.isRemote) ? "Client" : "Server"));
-            inv.consumeInventoryItem(Items.wheat);
-            wheatConsumed++;
-            inv.dirtyInventory();
-        }
-
-        int factor = 1;
-        if (wheatConsumed >= ConfigHandler.MOOSHROOM_WHEAT_PER_BATCH)
-        {
-            wheatConsumed = 0;
-            milkTime = (ConfigHandler.MOOSHROOM_STEW_PER_BATCH * factor) - factor;
-            world.playSoundAtEntity(player, "mob.cow.say", 1f, 1f);
-        }
-
-        if (milkTime >= 0 && (milkTime % factor == 0))
-        {
-            if (inv.getLeftTank().fill(soupStack, true) <= 0)
-            {
-                inv.getRightTank().fill(soupStack, true);
-            }
-            inv.dirtyTanks();
-        }
-        if (milkTime < -1) milkTime = -1;
-        inv.extendedProperties.setInteger("wheatConsumed", wheatConsumed);
-        inv.extendedProperties.setInteger("milkTime", milkTime);
-        inv.setLastTime(eatTime);
-        //  inv.setLastTime(eatTime);
-        inv.dirtyExtended();
-        //inv.dirtyTanks();
-        inv.dirtyTime();
-        //inv.dirtyInventory();
-
-        //So naughty!!!
+        if (ConfigHandler.MOOSHROOM_ENABLED) makeFromWheat(player, world, backpack, soupStack,
+                ConfigHandler.MOOSHROOM_EAT_INTERVAL_TICKS, ConfigHandler.MOOSHROOM_WHEAT_PER_BATCH, ConfigHandler.MOOSHROOM_STEW_PER_BATCH);
     }
 
     /**
@@ -664,38 +571,28 @@ public class BackpackAbilities
     @SuppressWarnings("unchecked")
     public void itemWolf(EntityPlayer player, World world, ItemStack backpack)
     {
-        //lastTime is in Ticks for this backpack
-        if (!ConfigHandler.WOLF_ENABLED) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        int lastCheckTime =  inv.getLastTime() - 1;
-
-        if (lastCheckTime <= 0)
+        // Wolf AI is server state; the search runs on a world-time beat instead of a countdown in the stack
+        if (!ConfigHandler.WOLF_ENABLED || world.isRemote) return;
+        if (!TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), ConfigHandler.WOLF_CHECK_INTERVAL_TICKS)) return;
+        List<EntityWolf> wolves = world.getEntitiesWithinAABB(
+                EntityWolf.class,
+                AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
+                        player.posX + 1.0D, player.posY + 1.0D,
+                        player.posZ + 1.0D).expand(ConfigHandler.WOLF_RANGE, 4.0D, ConfigHandler.WOLF_RANGE));
+        for (EntityWolf wolf : wolves)
         {
-            lastCheckTime = ConfigHandler.WOLF_CHECK_INTERVAL_TICKS;
-            List<EntityWolf> wolves = world.getEntitiesWithinAABB(
-                    EntityWolf.class,
-                    AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
-                            player.posX + 1.0D, player.posY + 1.0D,
-                            player.posZ + 1.0D).expand(ConfigHandler.WOLF_RANGE, 4.0D, ConfigHandler.WOLF_RANGE));
-            if (wolves.isEmpty()) return;
-
-            for (EntityWolf wolf : wolves)
+            if (wolf.isAngry() && wolf.getAttackTarget() == player)
             {
-                if (wolf.isAngry() && wolf.getAttackTarget() == player)
+                wolf.setAngry(false);
+                wolf.setAttackTarget(null);
+                wolf.setRevengeTarget(null);
+                Iterator<?> i2 = wolf.targetTasks.taskEntries.iterator();
+                while (i2.hasNext())
                 {
-                    wolf.setAngry(false);
-                    wolf.setAttackTarget(null);
-                    wolf.setRevengeTarget(null);
-                    Iterator<?> i2 = wolf.targetTasks.taskEntries.iterator();
-                    while (i2.hasNext())
-                    {
-                        ((EntityAIBase) i2.next()).resetTask();
-                    }
+                    ((EntityAIBase) i2.next()).resetTask();
                 }
             }
         }
-        inv.setLastTime(lastCheckTime);
-        inv.dirtyTime();
     }
 
     /**
@@ -723,62 +620,50 @@ public class BackpackAbilities
     @SuppressWarnings("unchecked")
     public void itemOcelot(EntityPlayer player, World world, ItemStack backpack)
     {
-        //lastTime in this backpack is in Ticks.
-        if (!ConfigHandler.OCELOT_ENABLED) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        int lastCheckTime = inv.getLastTime() - 1;
-        if (lastCheckTime <= 0)
+        // Creeper AI is server state; the search runs on a world-time beat instead of a countdown in the stack
+        if (!ConfigHandler.OCELOT_ENABLED || world.isRemote) return;
+        if (!TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), ConfigHandler.OCELOT_CHECK_INTERVAL_TICKS)) return;
+        List<EntityCreeper> creepers = player.worldObj.getEntitiesWithinAABB(
+                EntityCreeper.class,
+                AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
+                        player.posX + 1.0D, player.posY + 1.0D,
+                        player.posZ + 1.0D).expand(ConfigHandler.OCELOT_RANGE, 4.0D, ConfigHandler.OCELOT_RANGE));
+
+        for (EntityCreeper creeper : creepers)
         {
-            lastCheckTime = ConfigHandler.OCELOT_CHECK_INTERVAL_TICKS;
-            List<EntityCreeper> creepers = player.worldObj.getEntitiesWithinAABB(
-                    EntityCreeper.class,
-                    AxisAlignedBB.getBoundingBox(player.posX, player.posY, player.posZ,
-                            player.posX + 1.0D, player.posY + 1.0D,
-                            player.posZ + 1.0D).expand(ConfigHandler.OCELOT_RANGE, 4.0D, ConfigHandler.OCELOT_RANGE));
-
-            for (EntityCreeper creeper : creepers)
+            boolean set = true;
+            for (Object entry : creeper.tasks.taskEntries)
             {
-                boolean set = true;
-                EntityAIAvoidPlayerWithBackpack task = new EntityAIAvoidPlayerWithBackpack(creeper, EntityPlayer.class, 10.0F, 1.0, 1.3, "Ocelot");
-
-                for (Object entry : creeper.tasks.taskEntries)
+                if (((EntityAITasks.EntityAITaskEntry) entry).action instanceof EntityAIAvoidPlayerWithBackpack)
                 {
-                    if (((EntityAITasks.EntityAITaskEntry) entry).action instanceof EntityAIAvoidPlayerWithBackpack)
-                    {
-                        set = false;
-                        break;
-                    }
-                }
-
-                if (set)
-                {
-                    //System.out.println("Found creeper who doesn't know to fear the backpack, making it a pussy now");
-                    creeper.tasks.addTask(3, task);
+                    set = false;
+                    break;
                 }
             }
+            if (set)
+            {
+                creeper.tasks.addTask(3, new EntityAIAvoidPlayerWithBackpack(creeper, EntityPlayer.class, 10.0F, 1.0, 1.3, "Ocelot"));
+            }
         }
-        inv.setLastTime(lastCheckTime);
-        inv.markDirty();
     }
 
 
     public void itemRainbow(EntityPlayer player, World world, ItemStack backpack)
     {
         if (!ConfigHandler.RAINBOW_ENABLED) return;
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        int noteTime = inv.getLastTime() - 1;
-        if (noteTime >= 0 && noteTime < Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS - 3))
+        // The run is a world-time end mark set once when the golden apple is eaten (GeneralEventHandler): both sides
+        // read it, nothing is written while it plays.
+        int length = Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS);
+        long left = AbilityTimer.remaining(world.getTotalWorldTime(), BackpackUtils.getTimeMark(backpack, RAINBOW_END), length);
+        long noteTime = left - 1;
+        if (left > 0 && noteTime < Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS - 3))
         {
             player.setSprinting(true);
             player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), AbilityEffects.RAINBOW_EFFECT_TICKS, ConfigHandler.RAINBOW_SPEED_AMPLIFIER));
             player.addPotionEffect(new PotionEffect(Potion.jump.getId(), AbilityEffects.RAINBOW_EFFECT_TICKS, ConfigHandler.RAINBOW_JUMP_AMPLIFIER));
-            if (noteTime % 2 == 0)
+            if (noteTime % 2 == 0 && !world.isRemote)
             {
-                //Visuals.NyanParticles(player, world);
-                if (!world.isRemote)
-                {
-                    ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.NYAN_PARTICLE, player), player);
-                }
+                ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.NYAN_PARTICLE, player), player);
             }
         }
         // Older versions kept a 5000-tick Speed with the -5 marker on the wearer; Speed scales with (amplifier + 1),
@@ -789,13 +674,19 @@ public class BackpackAbilities
             if (world.isRemote) player.removePotionEffectClient(Potion.moveSpeed.id);
             else player.removePotionEffect(Potion.moveSpeed.id);
         }
-        // Count down only while a run plays: the old code kept decrementing (and saving the whole inventory) every
-        // tick forever, which also re-synced the wearable to nearby players every tick.
-        if (inv.getLastTime() > 0)
-        {
-            inv.setLastTime(noteTime);
-            inv.dirtyTime();
-        }
+    }
+
+    /** True while the Nyan run of this Rainbow backpack plays. */
+    public static boolean isRainbowRunning(World world, ItemStack backpack)
+    {
+        return AbilityTimer.remaining(world.getTotalWorldTime(), BackpackUtils.getTimeMark(backpack, RAINBOW_END),
+                Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS)) > 0;
+    }
+
+    /** Starts the Nyan run: one write of its end mark. */
+    public static void startRainbowRun(World world, ItemStack backpack)
+    {
+        BackpackUtils.setTimeMark(backpack, RAINBOW_END, world.getTotalWorldTime() + Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS));
     }
     /* ==================================== TILE ABILITIES ==========================================*/
 

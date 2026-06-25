@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
@@ -17,6 +18,7 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -49,10 +51,9 @@ public class GeneralEventHandler
                     Wearing.isWearingTheRightBackpack(player, "Rainbow"))
             {
 
-                InventoryBackpack inv = new InventoryBackpack(Wearing.getWearingBackpack(player));
-                if (inv.getLastTime() > 0) return;
-                inv.setLastTime(Utils.secondsToTicks(ConfigHandler.RAINBOW_DURATION_SECONDS));
-                inv.dirtyTime();
+                ItemStack backpack = Wearing.getWearingBackpack(player);
+                if (BackpackAbilities.isRainbowRunning(player.worldObj, backpack)) return;
+                BackpackAbilities.startRainbowRun(player.worldObj, backpack);
                 if (!player.worldObj.isRemote)
                 {
                     String nyanString =
