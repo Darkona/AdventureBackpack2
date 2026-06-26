@@ -29,12 +29,24 @@ public class BackpackProperty implements IExtendedEntityProperties
     private boolean forceCampFire = false;
     private int dimension = 0;
     private NBTTagCompound lastSentData = null;
+    /** Server, memory only: world time of the last particle or sound packet of this player relayed to others (RelayGuard). */
+    private long lastRelayTick = Long.MIN_VALUE / 2;
     /**
      * Server only. True when {@link #wearable} is the very stack in a Baubles slot (compat/baubles). Baubles owns
      * and saves that stack; these properties only point at it, so they never save it to disk nor hand it to the
      * respawn store, which would duplicate it.
      */
     private boolean wearableInBauble = false;
+
+    public long getLastRelayTick()
+    {
+        return lastRelayTick;
+    }
+
+    public void setLastRelayTick(long tick)
+    {
+        lastRelayTick = tick;
+    }
 
     public NBTTagCompound getWearableData()
     {

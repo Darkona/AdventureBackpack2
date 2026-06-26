@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.network.RelayGuard;
 import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -18,6 +19,7 @@ import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -393,7 +395,8 @@ public class ServerActions
                 newMode = ItemCopterPack.NORMAL_MODE;
                 message = "adventurebackpack:messages.copterpack.normal";
                 actionPerformed = true;
-                if (!player.worldObj.isRemote)
+                // Turning it on and off quickly does not flood the nearby players with start sounds
+                if (player instanceof EntityPlayerMP && RelayGuard.mayRelayFrom((EntityPlayerMP) player))
                 {
                     ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.COPTER_SOUND,player), player);
 
