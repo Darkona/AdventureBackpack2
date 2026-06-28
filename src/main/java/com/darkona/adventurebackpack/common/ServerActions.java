@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
@@ -392,6 +393,17 @@ public class ServerActions
         {
             if (mode == ItemCopterPack.OFF_MODE)
             {
+                // Starting the engine takes fuel, and it does not start without that much in the tank
+                InventoryCopterPack inv = new InventoryCopterPack(copter);
+                if (!FlightCost.canStart(inv.getFuelTank().getFluidAmount(), ConfigHandler.COPTER_START_FUEL))
+                {
+                    if (player.worldObj.isRemote)
+                    {
+                        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.copterpack.outoffuel"));
+                    }
+                    return;
+                }
+                if (ConfigHandler.COPTER_START_FUEL > 0) inv.consumeFuel(ConfigHandler.COPTER_START_FUEL);
                 newMode = ItemCopterPack.NORMAL_MODE;
                 message = "adventurebackpack:messages.copterpack.normal";
                 actionPerformed = true;

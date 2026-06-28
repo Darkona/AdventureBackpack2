@@ -450,21 +450,6 @@ public class InventorySteamJetpack implements IInventoryTanks
         this.inventory = inventory;
     }
 
-    public int getIncreasingFactor()
-    {
-       if(temperature < 50)return 20;
-       if(temperature < 100)return 15;
-       if(temperature < 150)return 10;
-       return 5;
-    }
-
-    public int getDecreasingFactor()
-    {
-        if(temperature > 150)return 40;
-        if(temperature > 100)return 80;
-        if(temperature > 50)return 120;
-        return 5;
-    }
     public int getCoolTicks()
     {
         return coolTicks;

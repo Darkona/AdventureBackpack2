@@ -185,14 +185,17 @@ public class ConfigHandler
     public static boolean ALLOW_COPTER_SOUND = true;
     public static int COPTER_TANK_CAPACITY = 6000;
     public static int COPTER_FUEL_INTERVAL_TICKS = 3;
-    public static int COPTER_FUEL_PER_TICK = 1;
+    public static int COPTER_FUEL_PER_TICK = 2;
     public static int COPTER_HOVER_EXTRA_FUEL = 2;
     public static int COPTER_CLIMB_EXTRA_FUEL = 2;
-    public static double COPTER_LIFT_SPEED = 0.18;
+    public static int COPTER_START_FUEL = 100;
+    public static final String[] COPTER_FUELS_DEFAULT = {"fuel=1.0", "oil=1.5", "bioethanol=1.2", "biofuel=1.0", "creosote=1.8", "coal=0.8"};
+    public static String[] COPTER_FUELS = COPTER_FUELS_DEFAULT;
+    public static double COPTER_LIFT_SPEED = 0.15;
     public static double COPTER_DESCEND_SPEED = 0.3;
     public static double COPTER_GLIDE_FACTOR = 0.6;
-    public static float COPTER_AIR_CONTROL = 0.05f;
-    public static int COPTER_MAX_ALTITUDE = 100;
+    public static float COPTER_AIR_CONTROL = 0.03f;
+    public static int COPTER_MAX_ALTITUDE = 90;
     public static double COPTER_PUSH_RANGE = 4.0;
     public static int COPTER_PUSH_INTERVAL_TICKS = 2;
 
@@ -201,14 +204,19 @@ public class ConfigHandler
     public static boolean JETPACK_OWN_STEAM = true;
     public static int JETPACK_WATER_CAPACITY = 6000;
     public static int JETPACK_STEAM_CAPACITY = 12000;
-    public static int JETPACK_STEAM_PER_TICK = 13;
+    public static int JETPACK_STEAM_PER_TICK = 20;
+    public static int JETPACK_IGNITION_STEAM = 150;
+    public static int JETPACK_THRUST_FUEL_BURN = 3;
+    public static int JETPACK_THRUST_HEAT_LOSS_TICKS = 10;
+    public static double JETPACK_HEATING_SPEED = 1.0;
+    public static double JETPACK_COOLING_SPEED = 1.5;
     public static int JETPACK_WATER_INTAKE = 2;
     public static int JETPACK_STEAM_PER_WATER = 4;
     public static int JETPACK_BOILING_TEMPERATURE = 100;
-    public static double JETPACK_THRUST = 0.1;
-    public static double JETPACK_MAX_RISE_SPEED = 0.32;
+    public static double JETPACK_THRUST = 0.08;
+    public static double JETPACK_MAX_RISE_SPEED = 0.28;
     public static float JETPACK_AIR_CONTROL = 0.02f;
-    public static int JETPACK_MAX_ALTITUDE = 100;
+    public static int JETPACK_MAX_ALTITUDE = 90;
 
     // ---------------------------------------------------------------- inflatable boat
     public static double BOAT_MAX_SPEED = 0.35;
@@ -479,15 +487,19 @@ public class ConfigHandler
     {
         ALLOW_COPTER_SOUND = bool(cfg, COPTERPACK, "sound", true, "Play the rotor sound (client only; other players may still hear theirs).");
         COPTER_TANK_CAPACITY = integer(cfg, COPTERPACK, "tankCapacity", 6000, 1000, 64000, "Fuel tank capacity in millibuckets. Use the same value on server and clients.", true);
-        COPTER_FUEL_INTERVAL_TICKS = integer(cfg, COPTERPACK, "fuelIntervalTicks", 3, 1, 200, "Fuel is taken once every this many ticks.");
-        COPTER_FUEL_PER_TICK = integer(cfg, COPTERPACK, "fuelPerTick", 1, 0, 100, "Fuel cost per tick while running, before the fuel's own multiplier.");
-        COPTER_HOVER_EXTRA_FUEL = integer(cfg, COPTERPACK, "hoverExtraFuel", 2, 0, 100, "Extra fuel per tick while hovering.");
-        COPTER_CLIMB_EXTRA_FUEL = integer(cfg, COPTERPACK, "climbExtraFuel", 2, 0, 100, "Extra fuel per tick while climbing.");
-        COPTER_LIFT_SPEED = decimal(cfg, COPTERPACK, "liftSpeed", 0.18, 0.01, 2.0, "Climbing speed.");
+        COPTER_FUEL_INTERVAL_TICKS = integer(cfg, COPTERPACK, "fuelIntervalTicks", 3, 1, 200, "Fuel is taken once every this many ticks: the cost of all those ticks at once.");
+        COPTER_FUEL_PER_TICK = integer(cfg, COPTERPACK, "fuelPerTick", 2, 0, 100, "Millibuckets of fuel per tick while the engine runs, before the fuel's own multiplier (oil 1.5, fuel 1.0, creosote 1.8...). With the defaults a full tank lasts about 2.5 minutes of gliding, 75 seconds of hovering and 50 seconds of climbing while hovering.");
+        COPTER_HOVER_EXTRA_FUEL = integer(cfg, COPTERPACK, "hoverExtraFuel", 2, 0, 100, "Extra fuel per tick while hovering (not while sinking with sneak).");
+        COPTER_CLIMB_EXTRA_FUEL = integer(cfg, COPTERPACK, "climbExtraFuel", 2, 0, 100, "Extra fuel per tick while climbing (jump held).");
+        COPTER_START_FUEL = integer(cfg, COPTERPACK, "startFuel", 100, 0, 64000, "Fuel the engine takes when it is turned on. It does not start with less in the tank. 0 turns it off.");
+        order(COPTERPACK, "fuels");
+        COPTER_FUELS = cfg.getStringList("fuels", COPTERPACK, COPTER_FUELS_DEFAULT, "Fluids the copter pack burns, as name=multiplier: the fuel cost is multiplied by it (higher burns faster). Fluid names as registered by the mods (BuildCraft fuel and oil, Railcraft creosote...). Needs a restart.");
+        cfg.getCategory(COPTERPACK).get("fuels").setRequiresMcRestart(true);
+        COPTER_LIFT_SPEED = decimal(cfg, COPTERPACK, "liftSpeed", 0.15, 0.01, 2.0, "Climbing speed.");
         COPTER_DESCEND_SPEED = decimal(cfg, COPTERPACK, "descendSpeed", 0.3, 0.01, 2.0, "Descending speed while sneaking.");
         COPTER_GLIDE_FACTOR = decimal(cfg, COPTERPACK, "glideFactor", 0.6, 0.0, 1.0, "Falling speed is multiplied by this every tick in normal mode (lower = slower fall).");
-        COPTER_AIR_CONTROL = (float) decimal(cfg, COPTERPACK, "airControl", 0.05, 0.0, 0.5, "Horizontal acceleration while flying.");
-        COPTER_MAX_ALTITUDE = integer(cfg, COPTERPACK, "maxAltitude", 100, 1, 255, "Height above which lift fades out.");
+        COPTER_AIR_CONTROL = (float) decimal(cfg, COPTERPACK, "airControl", 0.03, 0.0, 0.5, "Horizontal acceleration while flying. Top horizontal speed is about (0.02 + this) / 0.09 blocks per tick: 0.03 gives about 11 blocks per second.");
+        COPTER_MAX_ALTITUDE = integer(cfg, COPTERPACK, "maxAltitude", 90, 1, 255, "Height above which lift fades out: climbing stops about liftSpeed x 100 blocks higher. Hover mode holds any height already reached.");
         COPTER_PUSH_RANGE = decimal(cfg, COPTERPACK, "itemPushRange", 4.0, 0.0, 16.0, "Distance in blocks at which the rotor blows dropped items away. 0 turns it off.");
         COPTER_PUSH_INTERVAL_TICKS = integer(cfg, COPTERPACK, "itemPushIntervalTicks", 2, 1, 20, "The rotor looks for dropped items to blow away once every this many ticks.");
     }
@@ -499,14 +511,19 @@ public class ConfigHandler
         cfg.getCategory(STEAMJETPACK).get("ownSteamFluid").setRequiresMcRestart(true);
         JETPACK_WATER_CAPACITY = integer(cfg, STEAMJETPACK, "waterCapacity", 6000, 1000, 64000, "Water tank capacity in millibuckets. Use the same value on server and clients.", true);
         JETPACK_STEAM_CAPACITY = integer(cfg, STEAMJETPACK, "steamCapacity", 12000, 1000, 64000, "Steam tank capacity in millibuckets. Use the same value on server and clients.", true);
-        JETPACK_STEAM_PER_TICK = integer(cfg, STEAMJETPACK, "steamPerTick", 13, 0, 1000, "Steam spent per tick of thrust.");
+        JETPACK_STEAM_PER_TICK = integer(cfg, STEAMJETPACK, "steamPerTick", 20, 0, 1000, "Steam spent per tick of thrust. With the defaults a full steam tank gives 30 seconds of thrust, and full water and steam tanks with a hot boiler about 90 seconds.");
+        JETPACK_IGNITION_STEAM = integer(cfg, STEAMJETPACK, "ignitionSteam", 150, 0, 64000, "Steam spent at once each time the thrust starts, so taking off costs more than keeping it going. 0 turns it off.");
+        JETPACK_THRUST_FUEL_BURN = integer(cfg, STEAMJETPACK, "thrustFuelBurn", 3, 1, 20, "Ticks of firebox burn time used per tick of thrust (1 = as fast as idle). Coal burns 1600 ticks, so 3 makes one coal last about 27 seconds of thrust.");
+        JETPACK_THRUST_HEAT_LOSS_TICKS = integer(cfg, STEAMJETPACK, "thrustHeatLossTicks", 10, 0, 1200, "While thrusting the boiler loses one degree every this many ticks, down to the ambient temperature. With the fire lit it still heats up; without fuel a long flight cools it below boiling. 0 turns it off.");
+        JETPACK_HEATING_SPEED = decimal(cfg, STEAMJETPACK, "heatingSpeed", 1.0, 0.1, 10.0, "How fast the firebox heats the boiler. 1 is the built-in curve (about 62 seconds from 25 to boiling at 100, then faster); 2 is twice as fast.");
+        JETPACK_COOLING_SPEED = decimal(cfg, STEAMJETPACK, "coolingSpeed", 1.5, 0.1, 10.0, "How fast the boiler cools without fire. 1 is the old curve (from 200 to 100 in 5 minutes); 1.5 cools it in about 3 minutes and 20 seconds.");
         JETPACK_WATER_INTAKE = integer(cfg, STEAMJETPACK, "waterIntake", 2, 0, 1000, "Millibuckets of water taken per tick while the wearer is in water.");
         JETPACK_STEAM_PER_WATER = integer(cfg, STEAMJETPACK, "steamPerWater", 4, 1, 100, "Millibuckets of steam made from one millibucket of water.");
         JETPACK_BOILING_TEMPERATURE = integer(cfg, STEAMJETPACK, "boilingTemperature", 100, 1, 199, "Boiler temperature at which water turns into steam (the boiler tops out at 200).");
-        JETPACK_THRUST = decimal(cfg, STEAMJETPACK, "thrust", 0.1, 0.01, 1.0, "Upward acceleration per tick.");
-        JETPACK_MAX_RISE_SPEED = decimal(cfg, STEAMJETPACK, "maxRiseSpeed", 0.32, 0.01, 2.0, "Top climbing speed.");
+        JETPACK_THRUST = decimal(cfg, STEAMJETPACK, "thrust", 0.08, 0.01, 1.0, "Upward acceleration per tick.");
+        JETPACK_MAX_RISE_SPEED = decimal(cfg, STEAMJETPACK, "maxRiseSpeed", 0.28, 0.01, 2.0, "Top climbing speed.");
         JETPACK_AIR_CONTROL = (float) decimal(cfg, STEAMJETPACK, "airControl", 0.02, 0.0, 0.5, "Horizontal acceleration while thrusting.");
-        JETPACK_MAX_ALTITUDE = integer(cfg, STEAMJETPACK, "maxAltitude", 100, 1, 255, "Height above which thrust fades out.");
+        JETPACK_MAX_ALTITUDE = integer(cfg, STEAMJETPACK, "maxAltitude", 90, 1, 255, "Height above which thrust fades out: thrust holds the wearer at about maxRiseSpeed x 100 blocks higher.");
     }
 
     private static void readInflatableBoat(Configuration cfg)

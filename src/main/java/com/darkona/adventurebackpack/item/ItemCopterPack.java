@@ -2,12 +2,14 @@ package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.common.Flight;
+import com.darkona.adventurebackpack.common.FlightCost;
 import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.network.PlayerActionPacket;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.proxy.ClientProxy;
@@ -150,7 +152,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
         InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
         inv.openInventory();
         boolean canElevate = true;
-        int fuelConsumption = 0;
         if (inv.getStatus() != OFF_MODE)
         {
             if (player.isInWater())
@@ -193,7 +194,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
 
         if (inv.getStatus() != OFF_MODE)
         {
-            fuelConsumption += ConfigHandler.COPTER_FUEL_PER_TICK;
+            boolean hovering = false;
             if (inv.getStatus() == NORMAL_MODE)
             {
                 if (!player.onGround && !player.isSneaking() && player.motionY < 0.0D)
@@ -212,7 +213,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 {
                     player.motionY = -ConfigHandler.COPTER_DESCEND_SPEED;
                 }else{
-                    fuelConsumption += ConfigHandler.COPTER_HOVER_EXTRA_FUEL;
+                    hovering = true;
                     player.motionY = 0.0f;
                 }
             }
@@ -237,35 +238,39 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
                 if (push) pushEntities(world, player, factor + 0.4f);
             }
 
-            //Elevation clientside, only for this client's own player (not the other players it sees)
-            if (world.isRemote && ClientActions.isLocalPlayer(player))
+            // Climbing: this client's own player reads the jump key and lifts itself; the server only learns when
+            // climbing starts or stops (one packet per change), and charges the climb from that.
+            boolean climbing = false;
+            BackpackProperty props = BackpackProperty.get(player);
+            if (world.isRemote)
             {
-                if (Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
+                if (ClientActions.isLocalPlayer(player))
                 {
-                    if (inv.canConsumeFuel(fuelConsumption + ConfigHandler.COPTER_CLIMB_EXTRA_FUEL) && canElevate)
+                    climbing = canElevate && Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed()
+                            && inv.canConsumeFuel(FlightCost.copterPerTick(ConfigHandler.COPTER_FUEL_PER_TICK, hovering, ConfigHandler.COPTER_HOVER_EXTRA_FUEL, true, ConfigHandler.COPTER_CLIMB_EXTRA_FUEL));
+                    if (climbing) elevate(player, stack);
+                    if (props != null && props.isCopterClimbing() != climbing)
                     {
-                        elevate(player, stack);
+                        props.setCopterClimbing(climbing);
+                        ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(climbing ? PlayerActionPacket.COPTER_CLIMBING : PlayerActionPacket.COPTER_NOT_CLIMBING));
                     }
                 }
+            } else
+            {
+                climbing = canElevate && props != null && props.isCopterClimbing();
             }
 
-            //Elevation serverside
-            if (!player.onGround && player.motionY > 0)
+            int perTick = FlightCost.copterPerTick(ConfigHandler.COPTER_FUEL_PER_TICK, hovering, ConfigHandler.COPTER_HOVER_EXTRA_FUEL, climbing, ConfigHandler.COPTER_CLIMB_EXTRA_FUEL);
+            double multiplier = 1.0;
+            if (inv.fuelTank.getFluid() != null && GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
             {
-                fuelConsumption += ConfigHandler.COPTER_CLIMB_EXTRA_FUEL;
-            }
-            if (inv.fuelTank.getFluid() != null)
-            {
-                if(GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
-                {
-                    fuelConsumption = (int)Math.floor(fuelConsumption * GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName()));
-                }
+                multiplier = GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName());
             }
             // Fuel is taken on a world-time beat instead of a counter saved in the stack every tick, so the stack's
             // NBT (and the sync to nearby players) only changes when fuel or status really change.
             if (TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), ConfigHandler.COPTER_FUEL_INTERVAL_TICKS))
             {
-                inv.consumeFuel(fuelConsumption);
+                inv.consumeFuel(FlightCost.copterFuelPerInterval(perTick, ConfigHandler.COPTER_FUEL_INTERVAL_TICKS, multiplier));
             }
         }
     }
