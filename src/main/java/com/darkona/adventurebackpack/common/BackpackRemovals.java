@@ -1,7 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -101,10 +100,7 @@ public class BackpackRemovals
             if (player.worldObj.isRemote) player.removePotionEffectClient(Potion.moveSpeed.id);
             else player.removePotionEffect(Potion.moveSpeed.id);
         }
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        if (inv.getLastTime() > 0) return;
-        inv.setLastTime(0);
-        inv.dirtyTime();
+        if (BackpackAbilities.isRainbowRunning(world, backpack)) return;
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.moveSpeed.id)) {
             potion = player.getActivePotionEffect(Potion.moveSpeed);

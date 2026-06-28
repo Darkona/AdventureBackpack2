@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.network;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import cpw.mods.fml.common.network.ByteBufUtils;
+import net.minecraft.entity.player.EntityPlayerMP;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -31,7 +32,10 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
         }
         if (ctx.side.isServer())
         {
-            BackpackProperty.sync(ctx.getServerHandler().playerEntity);
+            // A client asks for its own data: answer that client only, and not more often than RelayGuard allows.
+            // The nearby players already get every real change (BackpackProperty.syncToNearIfChanged).
+            EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+            if (RelayGuard.mayRelayFrom(player)) BackpackProperty.syncTo(player, player);
         }
         return null;
     }

@@ -1,7 +1,10 @@
 package com.darkona.adventurebackpack.network;
 
+import com.darkona.adventurebackpack.common.FlightCost;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -16,6 +19,8 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
     public static final byte spiderJump = 0;
     public static final byte JETPACK_IN_USE = 1;
     public static final byte JETPACK_NOT_IN_USE = 2;
+    public static final byte COPTER_CLIMBING = 3;
+    public static final byte COPTER_NOT_CLIMBING = 4;
 
     @Override
     public IMessage onMessage(ActionMessage message, MessageContext ctx)
@@ -34,9 +39,23 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
                 if(Wearing.isWearingSteam(ctx.getServerHandler().playerEntity))
                 {
                     InventorySteamJetpack inv = new InventorySteamJetpack(Wearing.getWearingSteam(ctx.getServerHandler().playerEntity));
-                    inv.setInUse(message.type == JETPACK_IN_USE);
+                    // Thrust only with the jetpack switched on; each ignition costs a burst of steam
+                    boolean start = message.type == JETPACK_IN_USE && inv.getStatus();
+                    if (start && !inv.isInUse())
+                    {
+                        int ignition = FlightCost.ignitionSteam(inv.getSteamTank().getFluidAmount(), ConfigHandler.JETPACK_IGNITION_STEAM);
+                        if (ignition > 0) inv.getSteamTank().drain(ignition, true);
+                    }
+                    inv.setInUse(start);
                     inv.markDirty();
                 }
+            }
+
+            if (message.type == COPTER_CLIMBING || message.type == COPTER_NOT_CLIMBING)
+            {
+                // Read by ItemCopterPack to charge the climb; memory only, sent by the client on each change
+                BackpackProperty props = BackpackProperty.get(ctx.getServerHandler().playerEntity);
+                if (props != null) props.setCopterClimbing(message.type == COPTER_CLIMBING);
             }
 
         }

@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.common.BucketRule;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
@@ -276,15 +277,15 @@ public class ItemHose extends ItemAB
                             FluidStack fluid = new FluidStack(fluidBlock, Constants.bucket);
                             if (tank.getFluid() == null || tank.getFluid().isFluidEqual(fluid))
                             {
-                                int accepted = tank.fill(fluid, false);
-                                if (accepted > 0)
+                                // The whole bucket must fit, or the block stays where it is (no fluid is lost)
+                                if (BucketRule.canTakeSource(tank.fill(fluid, false), Constants.bucket))
                                 {
                                     world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
-                                    tank.fill(new FluidStack(fluidBlock, accepted), true);
+                                    tank.fill(fluid, true);
+                                    inv.dirtyTanks();
                                 }
                             }
                         }
-                        inv.dirtyTanks();
                     }
                     break;
 

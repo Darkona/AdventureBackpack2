@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
@@ -9,6 +10,7 @@ import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
+import com.darkona.adventurebackpack.network.RelayGuard;
 import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -18,6 +20,7 @@ import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -370,6 +373,7 @@ public class ServerActions
 
     public static void toggleCopterPack(EntityPlayer player, ItemStack copter, byte type)
     {
+        if (!ItemCopterPack.isUsable()) return;
         String message = "";
         boolean actionPerformed = false;
 
@@ -389,10 +393,22 @@ public class ServerActions
         {
             if (mode == ItemCopterPack.OFF_MODE)
             {
+                // Starting the engine takes fuel, and it does not start without that much in the tank
+                InventoryCopterPack inv = new InventoryCopterPack(copter);
+                if (!FlightCost.canStart(inv.getFuelTank().getFluidAmount(), ConfigHandler.COPTER_START_FUEL))
+                {
+                    if (player.worldObj.isRemote)
+                    {
+                        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.copterpack.outoffuel"));
+                    }
+                    return;
+                }
+                if (ConfigHandler.COPTER_START_FUEL > 0) inv.consumeFuel(ConfigHandler.COPTER_START_FUEL);
                 newMode = ItemCopterPack.NORMAL_MODE;
                 message = "adventurebackpack:messages.copterpack.normal";
                 actionPerformed = true;
-                if (!player.worldObj.isRemote)
+                // Turning it on and off quickly does not flood the nearby players with start sounds
+                if (player instanceof EntityPlayerMP && RelayGuard.mayRelayFrom((EntityPlayerMP) player))
                 {
                     ModNetwork.sendToNearby(new EntitySoundPacket.Message(EntitySoundPacket.COPTER_SOUND,player), player);
 

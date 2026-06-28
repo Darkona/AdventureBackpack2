@@ -79,6 +79,22 @@ public class BackpackUtils
         return null;
     }
 
+    /**
+     * A world-time mark kept in the stack's root tag (abilities, see BackpackAbilities), or -1 when the stack has none.
+     * The root tag is used because InventoryBackpack rebuilds "backpackData" from its own fields when it saves.
+     */
+    public static long getTimeMark(ItemStack stack, String key)
+    {
+        NBTTagCompound tag = stack.stackTagCompound;
+        return tag != null && tag.hasKey(key) ? tag.getLong(key) : -1;
+    }
+
+    public static void setTimeMark(ItemStack stack, String key, long worldTime)
+    {
+        if (stack.stackTagCompound == null) stack.stackTagCompound = new NBTTagCompound();
+        stack.stackTagCompound.setLong(key, worldTime);
+    }
+
     public static void setBackpackData(ItemStack stack, NBTTagCompound compound)
     {
         if(!stack.hasTagCompound())stack.stackTagCompound = new NBTTagCompound();

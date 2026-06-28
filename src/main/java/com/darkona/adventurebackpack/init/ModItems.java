@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.init;
 
-import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.item.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -39,15 +38,8 @@ public class ModItems
         // Always registered: it boils another mod's steam or its own (ModFluids.registerSteamIfMissing)
         GameRegistry.registerItem(steamJetpack, "steamJetpack");
         GameRegistry.registerItem(boltCartridge, "boltCartridge");
-
-    }
-
-    public static void conditionalInit()
-    {
-        if (ConfigHandler.IS_BUILDCRAFT)
-        {
-            GameRegistry.registerItem(copterPack, "copterPack");
-        }
+        // Always registered; it only works with BuildCraft (ItemCopterPack.isUsable)
+        GameRegistry.registerItem(copterPack, "copterPack");
 
     }
 }

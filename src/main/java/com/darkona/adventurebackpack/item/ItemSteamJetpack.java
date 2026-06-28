@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.common.Flight;
 import com.darkona.adventurebackpack.common.JetpackHeat;
+import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModFluids;
@@ -67,30 +68,36 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         inv.dirtyInventory();
     }
 
-    private void runHeater(InventorySteamJetpack inv, World world, EntityPlayer player)
+    private void runHeater(InventorySteamJetpack inv, World world, EntityPlayer player, boolean thrusting)
     {
         int temperature = inv.getTemperature();
-        int burnTicks = inv.getBurnTicks() - 1;
+        // Thrusting burns the fuel faster (steamjetpack.thrustFuelBurn)
+        int burnTicks = inv.getBurnTicks() - JetpackHeat.burnPerTick(thrusting, ConfigHandler.JETPACK_THRUST_FUEL_BURN);
         int coolTicks = inv.getCoolTicks() - 1;
-        //Run the boiler: increase/maintain heat if there's burn ticks, or decrease temperature if there aren't
-
+        long now = world.getTotalWorldTime();
+        //Run the boiler: increase/maintain heat if there's burn ticks, or decrease temperature if there aren't.
+        // The steps run on world-time beats: the burn counter no longer falls by one per tick while thrusting.
         if (burnTicks > 0)
         {
-            if (temperature < InventorySteamJetpack.MAX_TEMPERATURE)
+            if (temperature < InventorySteamJetpack.MAX_TEMPERATURE
+                    && TickThrottle.every(now, player.getEntityId(), JetpackHeat.scaled(JetpackHeat.heatingTicks(temperature), ConfigHandler.JETPACK_HEATING_SPEED)))
             {
-                if (burnTicks % inv.getIncreasingFactor() == 0)
-                {
-                    ++temperature;
-                    coolTicks = coolTicks < 5000 ? coolTicks + 100 : coolTicks;
-                }
+                ++temperature;
+                coolTicks = coolTicks < 5000 ? coolTicks + 100 : coolTicks;
             }
         } else
         {
             inv.currentItemBurnTime = 0;
-            if (coolTicks % inv.getDecreasingFactor() == 0)
+            if (TickThrottle.every(now, player.getEntityId(), JetpackHeat.scaled(JetpackHeat.coolingTicks(temperature), ConfigHandler.JETPACK_COOLING_SPEED)))
             {
                 temperature = JetpackHeat.coolDown(temperature, getBiomeMinTemp(player, world));
             }
+        }
+        // Steam leaving takes heat from the boiler (steamjetpack.thrustHeatLossTicks)
+        if (thrusting && ConfigHandler.JETPACK_THRUST_HEAT_LOSS_TICKS > 0
+                && TickThrottle.every(now, player.getEntityId(), ConfigHandler.JETPACK_THRUST_HEAT_LOSS_TICKS))
+        {
+            temperature = JetpackHeat.coolDown(temperature, getBiomeMinTemp(player, world));
         }
         inv.setTemperature(temperature);
         inv.setCoolTicks(coolTicks);
@@ -132,7 +139,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         {
             runFirebox(inv);
         }
-        runHeater(inv, world, player);
+        runHeater(inv, world, player, inv.isInUse() && canUse);
         runBoiler(inv, world, player);
         inv.dirtyBoiler();
 
