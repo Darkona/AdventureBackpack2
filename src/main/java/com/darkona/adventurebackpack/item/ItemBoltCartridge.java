@@ -28,8 +28,8 @@ public class ItemBoltCartridge extends ItemAB
 
     /** Unlocalized names per type. */
     static final String[] NAMES = {"boltCartridge", "boltCartridgeBlazing", "boltCartridgeFreezing", "boltCartridgePoison", "boltCartridgeStunning"};
-    /** Placeholder icons per type: the bolt and dart textures of 2015, until cartridge textures exist. */
-    static final String[] ICONS = {"boltIron", "dartBlazing", "dartFreezing", "dartPoison", "dartStunning"};
+    /** Icons per type: a brass clip of bolts with a stripe in the type's colour. */
+    static final String[] ICONS = {"boltCartridge", "boltCartridgeBlazing", "boltCartridgeFreezing", "boltCartridgePoison", "boltCartridgeStunning"};
 
     @SideOnly(Side.CLIENT)
     private IIcon[] icons;
