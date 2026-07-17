@@ -9,8 +9,10 @@ import com.darkona.adventurebackpack.client.models.ModelSteamJetpack;
 import com.darkona.adventurebackpack.client.render.*;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
+import com.darkona.adventurebackpack.entity.EntityBolt;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
+import com.darkona.adventurebackpack.handlers.CrossbowRenderHandler;
 import com.darkona.adventurebackpack.handlers.KeybindHandler;
 import com.darkona.adventurebackpack.handlers.RenderHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
@@ -111,6 +113,10 @@ public class ClientProxy implements IProxy
 
         renderCrossbow = new RendererItemClockworkCrossbow();
         MinecraftForgeClient.registerItemRenderer(ModItems.cwxbow, renderCrossbow);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBolt.class, new RenderBolt());
+        CrossbowRenderHandler crossbowRenderHandler = new CrossbowRenderHandler();
+        MinecraftForge.EVENT_BUS.register(crossbowRenderHandler);
+        FMLCommonHandler.instance().bus().register(crossbowRenderHandler);
     }
 
     public void registerKeybindings()
