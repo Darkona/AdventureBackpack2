@@ -1,143 +1,153 @@
 package com.darkona.adventurebackpack.client.render;
 
-
 import com.darkona.adventurebackpack.client.models.ModelClockworkCrossbow;
+import com.darkona.adventurebackpack.common.CrossbowAnimation;
+import com.darkona.adventurebackpack.common.CrossbowLogic;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.util.Resources;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-
 /**
- * Created by Darkona on 11/10/2014.
+ * Draws the Clockwork Crossbow model in the hand, on other players, in the inventory and on the ground.
+ * <p>
+ * Every render type arrives in a different GL frame (see {@code ItemRenderer}, {@code RenderBiped},
+ * {@code ForgeHooksClient}); each case first undoes the vanilla transform of that frame and then places the model,
+ * whose frame is +Y up and -Z forward, where the weapon should be. The first person hold is a two-handed aim: grip
+ * low right, muzzle toed in towards the centre, the whole weapon kicking up and back for a few ticks after a shot.
+ * Frame by frame this reads cached fields and does arithmetic (performance contract, tier 4); GL state is restored
+ * in {@code finally}.
  */
-
-
+@SideOnly(Side.CLIENT)
 public class RendererItemClockworkCrossbow implements IItemRenderer
 {
+    /** One model unit in blocks. */
+    private static final float MODEL_SCALE = 0.0625F;
+    /** The hand holds the grip 3.5 units under the model origin. */
+    private static final float GRIP_CENTER = 3.5F;
 
-    private final ModelClockworkCrossbow model;
-    private ResourceLocation modelTexture = Resources.modelTextures("clockworkCrossbow");
+    /** Partial tick of the frame being drawn, written by {@code CrossbowRenderHandler} at the start of each frame. */
+    public static float partialTicks;
 
-    public RendererItemClockworkCrossbow()
-    {
-        model = new ModelClockworkCrossbow();
-    }
+    private final ModelClockworkCrossbow model = new ModelClockworkCrossbow();
+    private final ResourceLocation texture = Resources.modelTextures("clockworkCrossbow");
+    private final CrossbowRenderState state = new CrossbowRenderState();
 
+    @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type)
     {
-        return (type != ItemRenderType.FIRST_PERSON_MAP);
+        return type != ItemRenderType.FIRST_PERSON_MAP;
     }
 
+    /** The block helpers give a centred, lit frame for every type; the item is treated as a 3D block. */
+    @Override
     public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
     {
-        return (type != ItemRenderType.FIRST_PERSON_MAP);
+        return true;
     }
 
+    @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data)
     {
+        Minecraft mc = Minecraft.getMinecraft();
+        WorldClient world = mc.theWorld;
+        long now = world != null ? world.getTotalWorldTime() : 0L;
+        state.update(item);
+        float sinceShot = CrossbowAnimation.sinceShot(now, partialTicks, state.lastShot);
+        float reload = CrossbowAnimation.reloadProgress(now, partialTicks, state.lastReload, ConfigHandler.CROSSBOW_RELOAD_TICKS);
+        float recoil = CrossbowAnimation.recoil(sinceShot);
+        int capacity = ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE;
+        int ammo = CrossbowLogic.clampAmmo(state.ammo, capacity);
 
-        Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
-        EntityPlayer player;
-        switch (type)
+        mc.renderEngine.bindTexture(texture);
+        GL11.glPushMatrix();
+        try
         {
-            case INVENTORY:
-
+            GL11.glColor4f(1F, 1F, 1F, 1F);
+            switch (type)
             {
-                GL11.glPushMatrix();
-                GL11.glColor4f(1, 1, 1, 128);
-
-                GL11.glPushMatrix();
-                GL11.glTranslatef(-0.5f, -.5f, -0.5f);
-
-                GL11.glPushMatrix();
-                GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
-                GL11.glPushMatrix();
-                GL11.glScalef(0.7f, 0.7f, 0.7f);
-
-                model.render(null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F);
-
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
+                case EQUIPPED_FIRST_PERSON:
+                    firstPerson(recoil);
+                    break;
+                case EQUIPPED:
+                    thirdPerson(recoil);
+                    break;
+                case INVENTORY:
+                    inventory();
+                    break;
+                case ENTITY:
+                    entity();
+                    break;
+                default:
+                    return;
             }
-            break;
-            case ENTITY:
-                Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
-            {
-                GL11.glPushMatrix();
-                GL11.glColor4f(1, 1, 1, 128);
-
-                GL11.glPushMatrix();
-                GL11.glTranslatef(0f, .50f, 0f);
-
-                GL11.glPushMatrix();
-                GL11.glRotatef(180, 0, 0, 1);
-
-                GL11.glPushMatrix();
-                GL11.glScalef(1.0f, 1.0f, 1.0f);
-
-                model.render(null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F);
-
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-            }
-            break;
-            case EQUIPPED:
-                Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
-
-                GL11.glPushMatrix();
-                GL11.glColor4f(1, 1, 1, 128);
-                GL11.glPushMatrix();
-                GL11.glScalef(1.2f, 1.2f, 1.2f);
-
-                GL11.glPushMatrix();
-                GL11.glRotatef(180, 0, 0, 1);
-                GL11.glRotatef(-45, 0, 1, 0);
-                GL11.glRotatef(75, 1, 0, 0);
-
-                GL11.glTranslatef(0.0f, 0.4f, 0.2f);
-                player = (EntityPlayer) data[1];
-                model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F, item);
-
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-
-                break;
-            case EQUIPPED_FIRST_PERSON:
-                Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
-                player = (EntityPlayer) data[1];
-
-                GL11.glPushMatrix();
-                GL11.glColor4f(1, 1, 1, 128);
-                GL11.glRotatef(180, 0, 0, 1);
-                GL11.glScalef(1.2f, 1.2f, 1.2f);
-
-                GL11.glPushMatrix();
-                GL11.glTranslatef(0.81f, -1f, 0f);
-
-                GL11.glPushMatrix();
-                GL11.glRotatef(45, 0, 1, 0);
-                GL11.glRotatef(20, 1, 0, 0);
-
-                GL11.glRotatef(-20, 1.0F, 0.0F, 0.0F);
-                GL11.glTranslatef(0.0F, -0.32F, .42F);
-                model.render(player, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.05F, item);
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-                GL11.glPopMatrix();
-                break;
-            case FIRST_PERSON_MAP:
-                break;
+            model.render(MODEL_SCALE, ammo, capacity, state.type, sinceShot, reload);
+        } finally
+        {
+            GL11.glColor4f(1F, 1F, 1F, 1F);
+            GL11.glPopMatrix();
         }
     }
 
+    /**
+     * Frame on entry: the view frame moved to the hand, turned 45 degrees about Y, scaled 0.4, shifted by the block
+     * helper. Undo the shift and the turn, then hold the weapon lower and nearer the centre, muzzle toed in 8
+     * degrees; the recoil pushes it back and tips the muzzle up.
+     */
+    private static void firstPerson(float recoil)
+    {
+        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+        GL11.glRotatef(-45F, 0F, 1F, 0F);
+        GL11.glTranslatef(-0.35F, -0.15F, 0.05F + recoil * 0.12F);
+        GL11.glRotatef(8F, 0F, 1F, 0F);
+        GL11.glRotatef(recoil * 6F, 1F, 0F, 0F);
+    }
+
+    /**
+     * Frame on entry: the right arm's frame at the hand, scaled (0.625, -0.625, 0.625), turned -100 about X and 45
+     * about Y (the full-3D item branch of {@code RenderBiped}), shifted by the block helper. Undo all of it, mirror X
+     * once so the arm's reflection and this one cancel (back faces stay culled), then turn the weapon so its
+     * muzzle follows the arm and its top faces the front of the arm: with the aiming pose the arm points forward.
+     */
+    private static void thirdPerson(float recoil)
+    {
+        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+        GL11.glRotatef(-45F, 0F, 1F, 0F);
+        GL11.glRotatef(100F, 1F, 0F, 0F);
+        GL11.glScalef(-1F, 1F, 1F);
+        GL11.glRotatef(-90F, 1F, 0F, 0F);
+        GL11.glScalef(0.8F, 0.8F, 0.8F);
+        GL11.glTranslatef(0F, GRIP_CENTER * MODEL_SCALE, recoil * 2F * MODEL_SCALE);
+        GL11.glRotatef(recoil * 4F, 1F, 0F, 0F);
+    }
+
+    /**
+     * Frame on entry: the GUI block frame (10 px per unit, mirrored in Z, turned 210 about X and -45 about Y).
+     * Undo it, flip to Y up, and show the right side from above with the muzzle up and to the left.
+     */
+    private static void inventory()
+    {
+        GL11.glRotatef(45F, 0F, 1F, 0F);
+        GL11.glRotatef(-210F, 1F, 0F, 0F);
+        GL11.glScalef(1F, 1F, -1F);
+        GL11.glRotatef(180F, 0F, 0F, 1F);
+        GL11.glRotatef(30F, 0F, 0F, 1F);
+        GL11.glRotatef(-70F, 0F, 1F, 0F);
+        GL11.glRotatef(20F, 1F, 0F, 0F);
+        GL11.glScalef(0.6F, 0.6F, 0.6F);
+        GL11.glTranslatef(0F, -2F * MODEL_SCALE, -2F * MODEL_SCALE);
+    }
+
+    /** Frame on entry: the item's position, Y up, spinning and bobbing, scaled 0.5. Lie flat and a little raised. */
+    private static void entity()
+    {
+        GL11.glTranslatef(0F, 0.25F, 0F);
+        GL11.glScalef(0.8F, 0.8F, 0.8F);
+    }
 }
