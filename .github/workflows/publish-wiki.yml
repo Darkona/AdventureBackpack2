@@ -1,0 +1,13 @@
+name: Publish wiki
+on:
+  push:
+    branches: [master]
+    paths: [wiki/**, .github/workflows/publish-wiki.yml]
+permissions:
+  contents: write
+jobs:
+  publish-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: Andrew-Chen-Wang/github-wiki-action@v5
