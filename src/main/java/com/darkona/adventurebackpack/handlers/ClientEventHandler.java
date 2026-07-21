@@ -44,6 +44,8 @@ public class ClientEventHandler
         if (event.itemStack.getItem() instanceof ItemAdventureBackpack)
         {
             NBTTagCompound compound = event.itemStack.stackTagCompound;
+            // The tanks live in "backpackData" (InventoryBackpack.saveToNBT); very old stacks kept them at the root
+            if (compound != null && compound.hasKey("backpackData")) compound = compound.getCompoundTag("backpackData");
             FluidTank tank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
             String tankInfo = "";
             if (compound != null)
