@@ -47,6 +47,8 @@ public class GuiOverlay extends Gui
     private static final ResourceLocation INVENTORY_TEXTURE = new ResourceLocation("textures/gui/container/inventory.png");
     private static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png");
     private int lastInvReloadTick = Integer.MIN_VALUE;
+    private IInventoryTanks overlayInv;
+    private ItemStack overlayStack;
     public GuiOverlay(Minecraft mc)
     {
         super();
@@ -110,14 +112,22 @@ public class GuiOverlay extends Gui
             EntityPlayer player= mc.thePlayer;
             if(Wearing.isWearingWearable(player))
             {
-                IInventoryTanks inv = Wearing.getWearableInv(player);
-                assert inv != null;
+                // One inventory per worn stack, reloaded from its NBT every few ticks: building it reads every
+                // slot and tank, which must not happen on every frame (a sync replaces the stack, so it is rebuilt)
+                ItemStack wearable = Wearing.getWearingWearable(player);
                 int now = player.ticksExisted;
-                if (com.darkona.adventurebackpack.util.TickThrottle.due(lastInvReloadTick, now, 5))
+                if (overlayInv == null || wearable != overlayStack)
+                {
+                    overlayInv = Wearing.getWearableInv(player);
+                    overlayStack = wearable;
+                    lastInvReloadTick = now;
+                } else if (com.darkona.adventurebackpack.util.TickThrottle.due(lastInvReloadTick, now, 5))
                 {
                     lastInvReloadTick = now;
-                    inv.openInventory();
+                    overlayInv.openInventory();
                 }
+                IInventoryTanks inv = overlayInv;
+                if (inv == null) return;
 
                 int textureHeight = 23;
                 int textureWidth = 10;
