@@ -28,7 +28,16 @@ public class BackpackProperty implements IExtendedEntityProperties
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
     private int dimension = 0;
-    private NBTTagCompound lastSentData = null;
+    /**
+     * Server, memory only: what the last sync sent, compared every tick without building NBT. The wearable is a
+     * deep copy: a written stack shares its tag with the live one, so comparing written NBT never saw a change
+     * made inside the tag (tanks, fuel, heat, inventory).
+     */
+    private boolean sentOnce = false;
+    private ItemStack sentWearable = null;
+    private ChunkCoordinates sentCampFire = null;
+    private int sentDimension = 0;
+    private boolean sentForceCampFire = false;
     /** Server, memory only: world time of the last particle or sound packet of this player relayed to others (RelayGuard). */
     private long lastRelayTick = Long.MIN_VALUE / 2;
     /**
@@ -79,18 +88,26 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     /**
      * Sends the properties to the player and its trackers only when they differ from the last ones sent.
-     * Called every tick: building the compound is local, the packet goes out only on a real change.
+     * Called every tick: it compares fields and the wearable's tag, and copies them only when a packet goes out.
      */
     public static void syncToNearIfChanged(EntityPlayer player)
     {
         if (!(player instanceof EntityPlayerMP)) return;
         BackpackProperty props = get(player);
-        NBTTagCompound data = props.getSyncData();
-        if (!data.equals(props.lastSentData))
-        {
-            props.lastSentData = data;
-            syncToNear(player);
-        }
+        if (props == null || props.sameAsSent()) return;
+        props.sentOnce = true;
+        props.sentWearable = ItemStack.copyItemStack(props.wearable);
+        props.sentCampFire = props.campFire == null ? null : new ChunkCoordinates(props.campFire);
+        props.sentDimension = props.dimension;
+        props.sentForceCampFire = props.forceCampFire;
+        syncToNear(player);
+    }
+
+    private boolean sameAsSent()
+    {
+        return sentOnce && forceCampFire == sentForceCampFire && dimension == sentDimension
+                && (campFire == null ? sentCampFire == null : campFire.equals(sentCampFire))
+                && ItemStack.areItemStacksEqual(wearable, sentWearable);
     }
 
     /** Sends the properties of {@code target} to one player that just started tracking it. */
