@@ -18,7 +18,6 @@ import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -149,6 +148,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
         if (!isUsable()) return;
+        // Switched off: nothing to fly, so no inventory is rebuilt from the stack's NBT every tick
+        if (stack == null || stack.stackTagCompound == null || stack.stackTagCompound.getByte("status") == OFF_MODE) return;
         InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
         inv.openInventory();
         boolean canElevate = true;
@@ -246,7 +247,7 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
             {
                 if (ClientActions.isLocalPlayer(player))
                 {
-                    climbing = canElevate && Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed()
+                    climbing = canElevate && ClientActions.isJumpKeyDown()
                             && inv.canConsumeFuel(FlightCost.copterPerTick(ConfigHandler.COPTER_FUEL_PER_TICK, hovering, ConfigHandler.COPTER_HOVER_EXTRA_FUEL, true, ConfigHandler.COPTER_CLIMB_EXTRA_FUEL));
                     if (climbing) elevate(player, stack);
                     if (props != null && props.isCopterClimbing() != climbing)
