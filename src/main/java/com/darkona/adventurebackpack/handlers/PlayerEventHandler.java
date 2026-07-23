@@ -54,7 +54,6 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 public class PlayerEventHandler
 {
 
-    private static int tickCounter = 0;
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {

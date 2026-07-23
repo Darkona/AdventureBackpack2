@@ -15,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 /**
