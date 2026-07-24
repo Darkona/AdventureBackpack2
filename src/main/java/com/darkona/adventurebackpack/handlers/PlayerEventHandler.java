@@ -195,6 +195,12 @@ public class PlayerEventHandler
                     }
                     //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
                 }
+                // With keepInventory there is no PlayerDropsEvent (EntityPlayerMP.onDeath) and the respawn clone does not
+                // copy these properties: store them here or the worn wearable and the campfire are lost on respawn.
+                if (player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
+                {
+                    ServerProxy.storePlayerProps(player);
+                }
             }
         }
         event.setResult(Event.Result.ALLOW);
