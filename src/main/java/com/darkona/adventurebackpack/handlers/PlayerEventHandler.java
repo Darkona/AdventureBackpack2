@@ -309,9 +309,9 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void playerCraftsBackpack(PlayerEvent.ItemCraftedEvent event)
     {
-        if (event.crafting.getItem() == ModItems.adventureBackpack)
+        if (event.crafting != null && event.crafting.getItem() == ModItems.adventureBackpack)
         {
-            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + event.crafting.getTagCompound().getString("colorName"));
+            // A backpack from another mod's recipe may have no tag: getBackpackColorName copes, getTagCompound() did not
             if (BackpackNames.getBackpackColorName(event.crafting).equals("Dragon"))
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);
