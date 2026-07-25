@@ -17,7 +17,6 @@ import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.Resources;
 import com.darkona.adventurebackpack.util.Utils;
-import com.darkona.adventurebackpack.util.Wearing;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import baubles.api.expanded.IBaubleExpanded;

@@ -54,7 +54,6 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 public class PlayerEventHandler
 {
 
-    private static int tickCounter = 0;
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {
@@ -196,6 +195,12 @@ public class PlayerEventHandler
                     }
                     //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
                 }
+                // With keepInventory there is no PlayerDropsEvent (EntityPlayerMP.onDeath) and the respawn clone does not
+                // copy these properties: store them here or the worn wearable and the campfire are lost on respawn.
+                if (player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
+                {
+                    ServerProxy.storePlayerProps(player);
+                }
             }
         }
         event.setResult(Event.Result.ALLOW);
@@ -310,9 +315,9 @@ public class PlayerEventHandler
     @SubscribeEvent
     public void playerCraftsBackpack(PlayerEvent.ItemCraftedEvent event)
     {
-        if (event.crafting.getItem() == ModItems.adventureBackpack)
+        if (event.crafting != null && event.crafting.getItem() == ModItems.adventureBackpack)
         {
-            LogHelper.info("Player crafted a backpack, and that backpack's appearance is: " + event.crafting.getTagCompound().getString("colorName"));
+            // A backpack from another mod's recipe may have no tag: getBackpackColorName copes, getTagCompound() did not
             if (BackpackNames.getBackpackColorName(event.crafting).equals("Dragon"))
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);

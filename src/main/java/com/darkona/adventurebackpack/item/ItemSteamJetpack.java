@@ -17,7 +17,6 @@ import com.darkona.adventurebackpack.proxy.ClientProxy;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -153,7 +152,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         if (world.isRemote && ClientActions.isLocalPlayer(player))
         {
             // Tell the server only when the state changes, not every tick (performance contract, rule 5).
-            if (inv.getStatus() && canUse && Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed())
+            if (inv.getStatus() && canUse && ClientActions.isJumpKeyDown())
             {
                 if (mustFizzz)
                 {

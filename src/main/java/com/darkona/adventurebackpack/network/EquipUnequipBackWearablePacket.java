@@ -39,10 +39,10 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
                     if(BackpackUtils.equipWearable(player.getCurrentEquippedItem(), player) == BackpackUtils.reasons.SUCCESFUL){
                         player.inventory.setInventorySlotContents(player.inventory.currentItem,null);
                         player.inventoryContainer.detectAndSendChanges();
+                    }else
+                    {
+                        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped"));
                     }
-                }else
-                {
-                    player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:already.equipped"));
                 }
             }
             if(message.action == UNEQUIP_WEARABLE)

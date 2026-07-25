@@ -6,11 +6,9 @@ import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.util.FluidMigration;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.CycleToolPacket;
-import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -18,8 +16,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
@@ -44,6 +40,8 @@ public class ClientEventHandler
         if (event.itemStack.getItem() instanceof ItemAdventureBackpack)
         {
             NBTTagCompound compound = event.itemStack.stackTagCompound;
+            // The tanks live in "backpackData" (InventoryBackpack.saveToNBT); very old stacks kept them at the root
+            if (compound != null && compound.hasKey("backpackData")) compound = compound.getCompoundTag("backpackData");
             FluidTank tank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
             String tankInfo = "";
             if (compound != null)

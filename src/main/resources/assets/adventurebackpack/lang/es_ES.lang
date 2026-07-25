@@ -1,55 +1,86 @@
 # Items
-item.adventurebackpack:machete.name=Machete
+
+## Component Items For Crafting
 item.adventurebackpack:backpackComponent.name=Componente de Mochila
 item.adventurebackpack:sleepingBag.name=Bolsa de dormir
 item.adventurebackpack:backpackTank.name=Tanque de Mochila
-item.adventurebackpack:macheteHandle=Empuñadura de Machete
-item.adventurebackpack:hoseHead.name=Boquilla de Manquera
-item.adventurebackpack:copterEngine.name=Motor Diesel de Dos Cilindros
+item.adventurebackpack:macheteHandle.name=Empuñadura de Machete
+item.adventurebackpack:hoseHead.name=Boquilla de Manguera
+item.adventurebackpack:copterEngine.name=Motor Diésel de Dos Cilindros
 item.adventurebackpack:copterBlades.name=Aspas de Cóptero
-item.adventurebackpack:adventureBackpack.name=Mochila de Aventura
-item.adventurebackpack:backpackHose.name=Manquera de Mochila
-item.adventurebackpack:adventureSuit.name=Traje de Aventurero
-item.adventurebackpack:adventureHat.name=Fedora de Aventurero
-item.adventurebackpack:pistonBoots.name=Botas Pistón
+item.adventurebackpack:hydroBlades.name=Hélice Acuática
+item.adventurebackpack:inflatableBoat.name=Bote Inflable
+item.adventurebackpack:inflatableBoatMotorized.name=Bote Inflable (Motorizado)
+
+## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Ballesta de Relojería
 item.adventurebackpack:boltCartridge.name=Cartucho de Virotes
 item.adventurebackpack:boltCartridgeBlazing.name=Cartucho de Virotes Ígneos
 item.adventurebackpack:boltCartridgeFreezing.name=Cartucho de Virotes Gélidos
 item.adventurebackpack:boltCartridgePoison.name=Cartucho de Virotes Venenosos
 item.adventurebackpack:boltCartridgeStunning.name=Cartucho de Virotes Aturdidores
+item.adventurebackpack:melonJuiceBottle.name=Botella de Jugo de Sandía
+item.adventurebackpack:machete.name=Machete
 
-
-item.adventurebackpack:hose_leftTank_suck.name=Manquera: Tanque Izq. / Modo Succión
-item.adventurebackpack:hose_leftTank_spill.name=Manguera: Tanque Izq. / Modo Vertir
+item.adventurebackpack:backpackHose.name=Manguera de Mochila
+item.adventurebackpack:hose_leftTank_suck.name=Manguera: Tanque Izq. / Modo Succión
+item.adventurebackpack:hose_leftTank_spill.name=Manguera: Tanque Izq. / Modo Verter
 item.adventurebackpack:hose_leftTank_drink.name=Manguera: Tanque Izq. / Modo Beber
 
-
 item.adventurebackpack:hose_rightTank_suck.name=Manguera: Tanque Der. / Modo Succión
-item.adventurebackpack:hose_rightTank_spill.name=Manguera: Tanque Der. / Modo Vertir
+item.adventurebackpack:hose_rightTank_spill.name=Manguera: Tanque Der. / Modo Verter
 item.adventurebackpack:hose_rightTank_drink.name=Manguera: Tanque Der. / Modo Beber
+item.adventurebackpack:hoseUseless.name=Manguera: Inútil / Sin Mochila
 
-item.adventurebackpack:hoseUseless.name=Hose: Inútil / Sin Mochila
-
+## Wearables
+item.adventurebackpack:adventureBackpack.name=Mochila de Aventura
 item.adventurebackpack:copterPack.name=Mochilacóptero
-#Blocks
-block.adventurebackpack:AdventureBackpack.name=Mochila de Aventura Base
+item.adventurebackpack:steamJetpack.name=Jetpack de Vapor
 
-#CreativeTab
+## Armor
+item.adventurebackpack:adventureSuit.name=Traje de Aventurero
+item.adventurebackpack:adventureHat.name=Fedora de Aventurero
+item.adventurebackpack:pistonBoots.name=Botas Pistón
+
+## Blocks
+block.adventurebackpack:AdventureBackpack.name=Mochila de Aventura Base
+block.adventurebackpack:CampFire.name=Fogata
+block.adventurebackpack:SleepingBag.name=Bolsa de dormir
+
+## CreativeTab
 itemGroup.adventurebackpack=Mochila de Aventura
 
-#Keybindings
+## Keybindings
 keys.adventureBackpack.category=Mochila de Aventura
 keys.adventureBackpack.openBackpackInventory=Abrir Inventario de Mochila
-keys.adventureBackpack.switchHoseTank=Cambiar Tanque de Manguera
-adventurebackpack:messages.death.placed=%1$s se colocó en %2$s, %3$s, %4$s (dimensión %5$s).
-adventurebackpack:messages.death.dropped=%1$s cayó donde moriste: %2$s, %3$s, %4$s (dimensión %5$s).
-adventurebackpack:messages.death.grave=%1$s está en tu tumba, cerca de %2$s, %3$s, %4$s (dimensión %5$s).
-slot.back=§aEspalda§7
+keys.adventureBackpack.switchHoseTank=Tecla de Acción
 keys.adventureBackpack.toolModifier=Modificador para cambiar herramienta (ninguna = agacharse)
 keys.adventureBackpack.nextTool=Herramienta siguiente de la mochila
 keys.adventureBackpack.previousTool=Herramienta anterior de la mochila
+
+## Fluids
+fluid.melonJuice=Jugo de Sandía
+fluid.milk=Leche
+fluid.mushroomstew=Sopa de Champiñones
+fluid.steam=Vapor
+
+## Messages
+adventurebackpack:messages.already.equipped=Ya llevas una mochila puesta.
+adventurebackpack:messages.already.impossibru=No llevas ninguna mochila puesta.
+adventurebackpack:messages.death.placed=%1$s se colocó en %2$s, %3$s, %4$s (dimensión %5$s).
+adventurebackpack:messages.death.dropped=%1$s cayó donde moriste: %2$s, %3$s, %4$s (dimensión %5$s).
+adventurebackpack:messages.death.grave=%1$s está en tu tumba, cerca de %2$s, %3$s, %4$s (dimensión %5$s).
+adventurebackpack:messages.copterpack.hover=Mochilacóptero: Modo Suspendido.
+adventurebackpack:messages.copterpack.normal=Mochilacóptero: Modo Normal.
+adventurebackpack:messages.copterpack.outoffuel=Mochilacóptero: Sin combustible.
+adventurebackpack:messages.copterpack.cantwater=Mochilacóptero: No funciona en el agua.
+adventurebackpack:messages.copterpack.off=Mochilacóptero: Apagado.
+adventurebackpack:messages.jetpack.on=Jetpack de Vapor: Encendido.
+adventurebackpack:messages.jetpack.off=Jetpack de Vapor: Apagado.
 adventurebackpack:messages.crossbow.outofammo=Ballesta de Relojería: sin virotes. Fabrica un Cartucho de Virotes.
 adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
 adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Agáchate + clic derecho para cambiar el cartucho.
 adventurebackpack:tooltip.cartridge.bolts=Virotes: %1$s/%2$s
+
+## Baubles Expanded back slot
+slot.back=§aEspalda§7

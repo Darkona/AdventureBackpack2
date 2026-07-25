@@ -28,6 +28,13 @@ public class ClientActions
         return player != null && player == net.minecraft.client.Minecraft.getMinecraft().thePlayer;
     }
 
+    /** True while this client holds the jump key: the copter and the jetpack climb with it. */
+    @SideOnly(Side.CLIENT)
+    public static boolean isJumpKeyDown()
+    {
+        return net.minecraft.client.Minecraft.getMinecraft().gameSettings.keyBindJump.getIsKeyPressed();
+    }
+
     @SideOnly(Side.CLIENT)
     public static void showParticlesAtEntity(Entity entity, byte particleCode)
     {
