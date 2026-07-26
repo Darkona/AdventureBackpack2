@@ -37,7 +37,7 @@ public class BackpackRemovals
         if (player.isPotionActive(Potion.waterBreathing.id)) {
             potion = player.getActivePotionEffect(Potion.waterBreathing);
 
-            if (potion != null && potion.getAmplifier() == -5) {
+            if (potion != null && AbilityEffects.isSquidWaterBreathing(potion.getAmplifier())) {
                 if (player.worldObj.isRemote) {
                     player.removePotionEffectClient(Potion.waterBreathing.id);
                 } else {
@@ -88,6 +88,16 @@ public class BackpackRemovals
                     player.removePotionEffect(Potion.regeneration.id);
                 }
             }
+        }
+    }
+
+    public void itemSlime(EntityPlayer player, World world, ItemStack backpack)
+    {
+        PotionEffect potion = player.getActivePotionEffect(Potion.moveSpeed);
+        if (potion != null && AbilityEffects.isSlimeSpeed(potion.getAmplifier(), potion.getDuration()))
+        {
+            if (player.worldObj.isRemote) player.removePotionEffectClient(Potion.moveSpeed.id);
+            else player.removePotionEffect(Potion.moveSpeed.id);
         }
     }
 

@@ -172,7 +172,7 @@ public class BackpackAbilities
             "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"};
 
     private static String[] validRemovalBackpacks = {
-            "Bat", "Squid", "Pigman", "Dragon", "Rainbow"
+            "Bat", "Squid", "Pigman", "Dragon", "Rainbow", "Slime"
     };
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -248,9 +248,18 @@ public class BackpackAbilities
 
     private void giveWaterBreathing(EntityPlayer player, World world, ItemStack backpack)
     {
+        // The server owns the effects and syncs them; the client would only add a local copy the server overwrites
+        if (world.isRemote) return;
         if (player.isInWater())
         {
-            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(), 1, -5));
+            PotionEffect breathing = player.getActivePotionEffect(Potion.waterBreathing);
+            if (AbilityEffects.needsShortRefresh(breathing != null,
+                    breathing != null ? breathing.getDuration() : 0,
+                    breathing != null ? breathing.getAmplifier() : 0, AbilityEffects.SQUID_WATER_BREATHING_MARKER))
+            {
+                player.addPotionEffect(new PotionEffect(Potion.waterBreathing.getId(),
+                        AbilityEffects.SHORT_EFFECT_TICKS, AbilityEffects.SQUID_WATER_BREATHING_MARKER));
+            }
             giveNightVision(player);
         }else{
             backpackRemovals.itemSquid(player,world, backpack);
@@ -351,9 +360,17 @@ public class BackpackAbilities
         //0 is Full Moon, 1 is Waning Gibbous, 2 is Last Quarter, 3 is Waning Crescent,
         // 4 is New Moon, 5 is Waxing Crescent, 6 is First Quarter and 7 is Waxing Gibbous
         if (!ConfigHandler.SLIME_ENABLED) return;
-        if (ConfigHandler.SLIME_FULL_MOON_SPEED && world.getMoonPhase() == 0 && !world.isDaytime())
+        if (!world.isRemote)
         {
-            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(), 1, 1));
+            // Server only: it owns the effect and syncs it, and it knows the real time of day
+            if (ConfigHandler.SLIME_FULL_MOON_SPEED && world.getMoonPhase() == 0 && !world.isDaytime())
+            {
+                giveFullMoonSpeed(player);
+            }
+            else
+            {
+                backpackRemovals.itemSlime(player, world, backpack);
+            }
         }
         if (player.onGround)
         {
@@ -369,6 +386,18 @@ public class BackpackAbilities
                 ModNetwork.sendToNearby(new EntityParticlePacket.Message(EntityParticlePacket.SLIME_PARTICLE, player), player);
                 world.playSoundAtEntity(player, "mob.slime.small", 0.6F, (world.rand.nextFloat() - world.rand.nextFloat()) * 1F);
             }
+        }
+    }
+
+    private void giveFullMoonSpeed(EntityPlayer player)
+    {
+        PotionEffect speed = player.getActivePotionEffect(Potion.moveSpeed);
+        if (AbilityEffects.needsShortRefresh(speed != null,
+                speed != null ? speed.getDuration() : 0,
+                speed != null ? speed.getAmplifier() : 0, AbilityEffects.SLIME_SPEED_AMPLIFIER))
+        {
+            player.addPotionEffect(new PotionEffect(Potion.moveSpeed.getId(),
+                    AbilityEffects.SHORT_EFFECT_TICKS, AbilityEffects.SLIME_SPEED_AMPLIFIER));
         }
     }
 

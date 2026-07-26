@@ -49,4 +49,47 @@ public final class AbilityEffects
     {
         return amplifier == STALE_RAINBOW_MARKER;
     }
+
+    /*
+     * Squid water breathing (in water) and Slime Speed II (full moon nights) used to be given for 1 tick on every
+     * tick, which sent one effect packet per tick to the wearer and the players around. They now last a short while
+     * and are renewed only near their end: one packet every SHORT_EFFECT_TICKS - SHORT_EFFECT_REFRESH_BELOW ticks.
+     * They are taken away explicitly when the player leaves the water, when the full moon night ends and when the
+     * backpack comes off, so the length does not need to be long. Neither effect fades on screen, so no flicker margin
+     * is needed (night vision needs one, see NightVisionRefresh). Constants, not config: there is no analogous key in
+     * abilities.squid or abilities.slime and the numbers only trade packets for how long a stray effect can linger.
+     */
+    /** Length of the Squid's water breathing and the Slime's full moon Speed. */
+    public static final int SHORT_EFFECT_TICKS = 100;
+    /** Ticks left under which those effects are renewed. Must stay below SHORT_EFFECT_TICKS. */
+    public static final int SHORT_EFFECT_REFRESH_BELOW = 40;
+    /** Amplifier marker of the Squid's water breathing (the effect does not scale, so the level carries the owner). */
+    public static final int SQUID_WATER_BREATHING_MARKER = -5;
+    /** Speed II: a real level, because Speed scales with it, so the Slime's own effect is also told apart by length. */
+    public static final int SLIME_SPEED_AMPLIFIER = 1;
+
+    /**
+     * True when a short ability effect must be (re)applied: it is missing, or it is the ability's own (same amplifier)
+     * and about to run out. An effect of another level from another source is never overridden.
+     */
+    public static boolean needsShortRefresh(boolean active, int ticksLeft, int amplifier, int ownAmplifier)
+    {
+        if (!active) return true;
+        return amplifier == ownAmplifier && ticksLeft < SHORT_EFFECT_REFRESH_BELOW;
+    }
+
+    /** True for the Squid's own water breathing: only its -5 marker, never a potion's. */
+    public static boolean isSquidWaterBreathing(int amplifier)
+    {
+        return amplifier == SQUID_WATER_BREATHING_MARKER;
+    }
+
+    /**
+     * True when the Speed effect is the Slime's own: Speed II and no longer than the Slime gives it, so a Speed II
+     * potion or a beacon is not taken away when the full moon night ends or the backpack comes off.
+     */
+    public static boolean isSlimeSpeed(int amplifier, int ticksLeft)
+    {
+        return amplifier == SLIME_SPEED_AMPLIFIER && ticksLeft <= SHORT_EFFECT_TICKS;
+    }
 }
