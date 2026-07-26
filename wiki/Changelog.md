@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0
+## 1.0.0 (2026-10-15)
 
 For Minecraft 1.7.10 with Forge.
 
