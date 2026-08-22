@@ -29,8 +29,8 @@ public class ItemCrossbow extends ItemAB
 {
     /** int: bolts in the magazine. */
     public static final String TAG_AMMO = "Ammo";
-    /** int: type of the loaded bolts, one of the {@link CrossbowLogic} types. */
-    public static final String TAG_AMMO_TYPE = "AmmoType";
+    /** int: type of the loaded bolts in 1.0 (elemental bolts, removed); dropped from old stacks on the next click. */
+    static final String LEGACY_TAG_AMMO_TYPE = "AmmoType";
     /** long: world tick from which the crossbow can fire or reload again. */
     public static final String TAG_READY_AT = "ReadyAt";
     /** long: world tick of the last shot (recoil animation). */
@@ -88,6 +88,7 @@ public class ItemCrossbow extends ItemAB
     {
         if (world.isRemote || !ConfigHandler.CROSSBOW_ENABLED) return stack;
         NBTTagCompound tag = tag(stack);
+        if (tag.hasKey(LEGACY_TAG_AMMO_TYPE)) tag.removeTag(LEGACY_TAG_AMMO_TYPE);
         int capacity = ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE;
         int ammo = CrossbowLogic.clampAmmo(tag.getInteger(TAG_AMMO), capacity);
         long now = world.getTotalWorldTime();
@@ -133,7 +134,7 @@ public class ItemCrossbow extends ItemAB
     private static void fire(ItemStack stack, NBTTagCompound tag, World world, EntityPlayer player, int ammo, long now, boolean creative)
     {
         float speed = ConfigHandler.CROSSBOW_BOLT_VELOCITY;
-        EntityBolt bolt = new EntityBolt(world, player, speed, tag.getInteger(TAG_AMMO_TYPE));
+        EntityBolt bolt = new EntityBolt(world, player, speed);
         bolt.setDamage(CrossbowLogic.damageFactor(ConfigHandler.CROSSBOW_BOLT_DAMAGE, speed));
         bolt.canBePickedUp = creative ? 2 : (ConfigHandler.CROSSBOW_BOLTS_RECOVERABLE ? 1 : 0);
         world.spawnEntityInWorld(bolt);
@@ -156,15 +157,13 @@ public class ItemCrossbow extends ItemAB
     }
 
     /**
-     * Loads the cartridge in {@code slot} (in creative without one, a full normal magazine). A partly used magazine
-     * goes back to the player as a partly used cartridge of the same type.
+     * Loads the cartridge in {@code slot} (in creative without one, a full magazine). A partly used magazine goes
+     * back to the player as a partly used cartridge.
      */
     private static void reload(NBTTagCompound tag, World world, EntityPlayer player, int slot, int ammo, int capacity, long now, boolean creative)
     {
         ItemStack cartridge = slot >= 0 ? player.inventory.mainInventory[slot] : null;
-        int type = cartridge != null ? ItemBoltCartridge.getType(cartridge) : CrossbowLogic.NORMAL;
         int charges = cartridge != null ? ItemBoltCartridge.getCharges(cartridge, capacity) : capacity;
-        int oldType = CrossbowLogic.clampType(tag.getInteger(TAG_AMMO_TYPE));
 
         if (cartridge != null && !creative)
         {
@@ -172,7 +171,7 @@ public class ItemCrossbow extends ItemAB
         }
         if (ammo > 0 && !creative)
         {
-            ItemStack ejected = ItemBoltCartridge.create(oldType, ammo, capacity);
+            ItemStack ejected = ItemBoltCartridge.create(ammo, capacity);
             if (!player.inventory.addItemStackToInventory(ejected))
             {
                 player.dropPlayerItemWithRandomChoice(ejected, false);
@@ -180,7 +179,6 @@ public class ItemCrossbow extends ItemAB
         }
 
         tag.setInteger(TAG_AMMO, CrossbowLogic.clampAmmo(charges, capacity));
-        tag.setInteger(TAG_AMMO_TYPE, type);
         tag.setLong(TAG_LAST_RELOAD, now);
         tag.setLong(TAG_READY_AT, now + ConfigHandler.CROSSBOW_RELOAD_TICKS);
         world.playSoundAtEntity(player, "random.click", 0.6F, 0.8F);
@@ -214,12 +212,7 @@ public class ItemCrossbow extends ItemAB
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced)
     {
-        int ammo = getAmmo(stack);
-        tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.crossbow.loaded", ammo, ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE));
-        if (ammo > 0)
-        {
-            tooltip.add(ItemBoltCartridge.typeName(stack.getTagCompound().getInteger(TAG_AMMO_TYPE)));
-        }
+        tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.crossbow.loaded", getAmmo(stack), ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE));
         tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.crossbow.controls"));
     }
 

@@ -139,17 +139,4 @@ class CrossbowAnimationTest {
         CrossbowAnimation.stringTransform(CrossbowAnimation.TIP_X, CrossbowAnimation.TIP_Y, CrossbowAnimation.TIP_Z, 0, CrossbowAnimation.STRING_Y, CrossbowAnimation.STRING_Z_COCKED, out);
         assertTrue(out[3] > CrossbowAnimation.TIP_X && out[3] < CrossbowAnimation.TIP_X + 3F);
     }
-
-    @Test
-    void everyBoltTypeHasItsOwnTintAndUnknownTypesFallBackToPlain() {
-        int plain = CrossbowAnimation.typeColor(CrossbowLogic.NORMAL);
-        for (int type = CrossbowLogic.BLAZING; type < CrossbowLogic.TYPES; type++) {
-            assertTrue(CrossbowAnimation.typeColor(type) != plain);
-            for (int other = type + 1; other < CrossbowLogic.TYPES; other++) {
-                assertTrue(CrossbowAnimation.typeColor(type) != CrossbowAnimation.typeColor(other));
-            }
-        }
-        assertEquals(plain, CrossbowAnimation.typeColor(-1));
-        assertEquals(plain, CrossbowAnimation.typeColor(99));
-    }
 }

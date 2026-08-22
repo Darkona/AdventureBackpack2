@@ -120,13 +120,6 @@ class CrossbowLogicTest {
     }
 
     @Test
-    void unknownTypeFallsBackToNormal() {
-        assertEquals(CrossbowLogic.NORMAL, CrossbowLogic.clampType(-1));
-        assertEquals(CrossbowLogic.NORMAL, CrossbowLogic.clampType(CrossbowLogic.TYPES));
-        assertEquals(CrossbowLogic.POISON, CrossbowLogic.clampType(CrossbowLogic.POISON));
-    }
-
-    @Test
     void zeroDurabilityNeverBreaks() {
         assertFalse(CrossbowLogic.breaks(1000000, 0));
         assertFalse(CrossbowLogic.breaks(9, 10));

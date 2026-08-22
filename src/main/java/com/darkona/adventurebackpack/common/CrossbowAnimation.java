@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
 /**
- * Pure animation math of the Clockwork Crossbow model: recoil, string travel, drum step, reload and bolt tints. No
+ * Pure animation math of the Clockwork Crossbow model: recoil, string travel, drum step, reload. No
  * game classes, so the unit tests run without Minecraft and the renderer only does arithmetic per frame (performance
  * contract, tier 4: no allocation). Times are world ticks plus the partial tick of the frame.
  * <p>
@@ -33,8 +33,8 @@ public final class CrossbowAnimation
     /** Returned by {@link #sinceShot} when the stack never fired or its clock is from another world. */
     public static final float NEVER = 1.0E9F;
 
-    /** Fletching tint per bolt type (packed RGB): plain, blazing, freezing, poison, stunning. */
-    private static final int[] TYPE_COLORS = {0xD8D8D8, 0xFF8C1E, 0x7CE0FF, 0x5CC83C, 0xF0D030};
+    /** Fletching tint of the bolts in the drum, packed RGB. */
+    public static final int FLETCH_COLOR = 0xD8D8D8;
 
     private CrossbowAnimation() {}
 
@@ -136,11 +136,5 @@ public final class CrossbowAnimation
         out[1] = dz;
         out[2] = -dx;
         out[3] = length;
-    }
-
-    /** Fletching tint of a bolt type, packed RGB. Unknown types use the plain tint. */
-    public static int typeColor(int type)
-    {
-        return TYPE_COLORS[CrossbowLogic.clampType(type)];
     }
 }

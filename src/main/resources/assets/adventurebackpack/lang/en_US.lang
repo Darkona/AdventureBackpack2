@@ -15,10 +15,6 @@ item.adventurebackpack:inflatableBoatMotorized.name=Inflatable Boat (Motorized)
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Clockwork Crossbow
 item.adventurebackpack:boltCartridge.name=Bolt Cartridge
-item.adventurebackpack:boltCartridgeBlazing.name=Blazing Bolt Cartridge
-item.adventurebackpack:boltCartridgeFreezing.name=Freezing Bolt Cartridge
-item.adventurebackpack:boltCartridgePoison.name=Poison Bolt Cartridge
-item.adventurebackpack:boltCartridgeStunning.name=Stunning Bolt Cartridge
 item.adventurebackpack:melonJuiceBottle.name=Melon Juice Bottle
 item.adventurebackpack:machete.name=Machete
 

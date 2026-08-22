@@ -278,7 +278,7 @@ public class ModelClockworkCrossbow extends ModelBase
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-        render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, 0, CrossbowAnimation.NEVER, -1F);
+        render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, CrossbowAnimation.NEVER, -1F);
     }
 
     /**
@@ -287,11 +287,10 @@ public class ModelClockworkCrossbow extends ModelBase
      * @param scale          model unit in blocks (1/16)
      * @param ammo           bolts in the magazine
      * @param capacity       bolts in a full magazine
-     * @param type           bolt type of the loaded magazine (fletching tint)
      * @param sinceShot      ticks since the last shot with the partial tick, or {@link CrossbowAnimation#NEVER}
      * @param reloadProgress 0..1 while a reload runs, else -1
      */
-    public void render(float scale, int ammo, int capacity, int type, float sinceShot, float reloadProgress)
+    public void render(float scale, int ammo, int capacity, float sinceShot, float reloadProgress)
     {
         float drumDegrees = CrossbowAnimation.drumDegrees(ammo, capacity, sinceShot, reloadProgress);
         drum.rotateAngleZ = drumDegrees * DEG;
@@ -319,7 +318,7 @@ public class ModelClockworkCrossbow extends ModelBase
 
         if (CrossbowAnimation.boltsVisible(reloadProgress))
         {
-            renderBolts(scale, ammo, capacity, type);
+            renderBolts(scale, ammo, capacity);
         }
 
         float nockZ = CrossbowAnimation.stringZ(sinceShot);
@@ -340,10 +339,10 @@ public class ModelClockworkCrossbow extends ModelBase
         }
     }
 
-    /** One bolt per loaded chamber, drawn inside the drum and chamber transforms; the fletching takes the type tint. */
-    private void renderBolts(float scale, int ammo, int capacity, int type)
+    /** One bolt per loaded chamber, drawn inside the drum and chamber transforms; the fletching is tinted. */
+    private void renderBolts(float scale, int ammo, int capacity)
     {
-        int color = CrossbowAnimation.typeColor(type);
+        int color = CrossbowAnimation.FLETCH_COLOR;
         float red = (color >> 16 & 0xFF) / 255F;
         float green = (color >> 8 & 0xFF) / 255F;
         float blue = (color & 0xFF) / 255F;

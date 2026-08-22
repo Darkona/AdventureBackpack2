@@ -21,14 +21,6 @@ public final class CrossbowLogic
         NONE
     }
 
-    /** Bolt and cartridge types: the cartridge metadata and the {@code AmmoType} of the crossbow. */
-    public static final int NORMAL = 0;
-    public static final int BLAZING = 1;
-    public static final int FREEZING = 2;
-    public static final int POISON = 3;
-    public static final int STUNNING = 4;
-    public static final int TYPES = 5;
-
     /** Ticks after a shot during which the model shows the released string. */
     public static final int RECOIL_TICKS = 4;
 
@@ -101,12 +93,6 @@ public final class CrossbowLogic
     public static int ejectedCharges(int ammo, int capacity)
     {
         return ammo >= capacity ? -1 : ammo;
-    }
-
-    /** An unknown type (removed variant, edited NBT) falls back to the normal bolt. */
-    public static int clampType(int type)
-    {
-        return type < 0 || type >= TYPES ? NORMAL : type;
     }
 
     /** True when the shot that brought the wear to {@code wear} breaks the crossbow. 0 durability never breaks. */

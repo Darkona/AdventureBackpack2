@@ -1,6 +1,5 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.common.CrossbowLogic;
 import com.darkona.adventurebackpack.item.ItemCrossbow;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,7 +16,6 @@ public class CrossbowRenderState
 {
     private ItemStack cached;
     public int ammo;
-    public int type;
     public long lastShot;
     public long lastReload;
 
@@ -30,13 +28,11 @@ public class CrossbowRenderState
         if (tag == null)
         {
             ammo = 0;
-            type = CrossbowLogic.NORMAL;
             lastShot = 0;
             lastReload = 0;
             return;
         }
         ammo = tag.getInteger(ItemCrossbow.TAG_AMMO);
-        type = CrossbowLogic.clampType(tag.getInteger(ItemCrossbow.TAG_AMMO_TYPE));
         lastShot = tag.getLong(ItemCrossbow.TAG_LAST_SHOT);
         lastReload = tag.getLong(ItemCrossbow.TAG_LAST_RELOAD);
     }

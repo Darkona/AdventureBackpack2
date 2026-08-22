@@ -15,10 +15,6 @@ item.adventurebackpack:inflatableBoatMotorized.name=Bote Inflable (Motorizado)
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Ballesta de Relojería
 item.adventurebackpack:boltCartridge.name=Cartucho de Virotes
-item.adventurebackpack:boltCartridgeBlazing.name=Cartucho de Virotes Ígneos
-item.adventurebackpack:boltCartridgeFreezing.name=Cartucho de Virotes Gélidos
-item.adventurebackpack:boltCartridgePoison.name=Cartucho de Virotes Venenosos
-item.adventurebackpack:boltCartridgeStunning.name=Cartucho de Virotes Aturdidores
 item.adventurebackpack:melonJuiceBottle.name=Botella de Jugo de Sandía
 item.adventurebackpack:machete.name=Machete
 
