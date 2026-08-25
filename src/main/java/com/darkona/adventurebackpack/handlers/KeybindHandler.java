@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.client.GrappleClient;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -47,6 +48,7 @@ public class KeybindHandler
         // isPressed() consumes the press, so both tool keys are read on every event, before the other keys.
         int toolDirection = ToolCycleInput.keyDirection(ConfigHandler.TOOL_CYCLE_ENABLED, ConfigHandler.TOOL_CYCLE_MODE,
                 Keybindings.nextTool.isPressed(), Keybindings.previousTool.isPressed());
+        boolean crossbowMode = Keybindings.crossbowMode.isPressed();
         Key keypressed = getPressedKeyBinding();
 
         if(player != null)
@@ -54,6 +56,12 @@ public class KeybindHandler
             if (toolDirection != 0 && !player.isDead && mc.inGameHasFocus)
             {
                 ClientEventHandler.cycleHeldTool(player, toolDirection);
+            }
+
+            if (crossbowMode && mc.inGameHasFocus && CrossbowRenderHandler.isHoldingCrossbow(player.getHeldItem()))
+            {
+                // The server checks the held item and changes the mode; the new name shows when the stack syncs.
+                ModNetwork.net.sendToServer(new CrossbowPacket.Message(CrossbowPacket.CYCLE_MODE));
             }
 
             if (keypressed == Key.INVENTORY_KEY)
@@ -107,6 +115,7 @@ public class KeybindHandler
 
             if(keypressed == Key.JUMP )
             {
+                GrappleClient.releaseOnJump(player);
                 if(player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
                 {
                     ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.spiderJump));

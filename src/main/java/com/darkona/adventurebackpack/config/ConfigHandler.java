@@ -41,6 +41,7 @@ public class ConfigHandler
     public static final String STEAMJETPACK = ROOT + ".steamjetpack";
     public static final String INFLATABLEBOAT = ROOT + ".inflatableboat";
     public static final String CROSSBOW = ROOT + ".crossbow";
+    public static final String CROSSBOW_GRAPPLE = CROSSBOW + ".grapple";
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
     public static final String RENDER = ROOT + ".render";
     public static final String KEYS = ROOT + ".keys";
@@ -230,6 +231,15 @@ public class ConfigHandler
     public static boolean CROSSBOW_IGNORE_HURT_COOLDOWN = true;
     public static boolean CROSSBOW_BOLTS_RECOVERABLE = false;
     public static int CROSSBOW_DURABILITY = 0;
+    public static boolean GRAPPLE_ENABLED = true;
+    public static double GRAPPLE_MAX_DISTANCE = 32.0;
+    public static double GRAPPLE_HOOK_SPEED = 2.5;
+    public static double GRAPPLE_PULL_SPEED = 0.8;
+    public static double GRAPPLE_RELEASE_DISTANCE = 1.5;
+    public static int GRAPPLE_MAX_PULL_TICKS = 60;
+    public static int GRAPPLE_COOLDOWN_TICKS = 20;
+    public static int GRAPPLE_CHARGES = 1;
+    public static boolean GRAPPLE_NO_FALL_DAMAGE = true;
 
     // ---------------------------------------------------------------- piston boots
     public static float PISTONBOOTS_STEP_HEIGHT = 1.001f;
@@ -246,6 +256,7 @@ public class ConfigHandler
     // ---------------------------------------------------------------- keys (client, defaults only)
     public static int KEY_OPEN_BACKPACK = Keyboard.KEY_B;
     public static int KEY_TOGGLE = Keyboard.KEY_N;
+    public static int KEY_CROSSBOW_MODE = Keyboard.KEY_V;
     public static boolean TOOL_CYCLE_ENABLED = true;
     public static ToolCycleInput.Mode TOOL_CYCLE_MODE = ToolCycleInput.Mode.BOTH;
     public static boolean TOOL_CYCLE_INVERT_WHEEL = false;
@@ -325,7 +336,8 @@ public class ConfigHandler
         cfg.setCategoryComment(COPTERPACK, "The Copter Pack (works only with BuildCraft loaded). Speeds in blocks per tick.");
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
-        cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. Ticks: 20 per second.");
+        cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
+        cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak, jump or right click again to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
         cfg.setCategoryComment(RENDER, "Client only: how the mod draws things. The server ignores this category.");
         cfg.setCategoryComment(KEYS, "Client only: default keys, as LWJGL key codes (B = 48, N = 49, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
@@ -555,6 +567,15 @@ public class ConfigHandler
         CROSSBOW_IGNORE_HURT_COOLDOWN = bool(cfg, CROSSBOW, "ignoreHurtCooldown", true, "Bolts ignore the short invulnerability a mob gets after a hit, so every bolt of a burst lands. When false about half of a fast burst bounces off the same target.");
         CROSSBOW_BOLTS_RECOVERABLE = bool(cfg, CROSSBOW, "boltsRecoverable", false, "Bolts stuck in a block can be picked up as arrows. Off by default: a cartridge is spent ammunition.");
         CROSSBOW_DURABILITY = integer(cfg, CROSSBOW, "durability", 0, 0, 100000, "Bolts the crossbow fires before it breaks. 0 means it never breaks.");
+        GRAPPLE_ENABLED = bool(cfg, CROSSBOW_GRAPPLE, "enabled", true, "The grappling hook mode. When false the mode is skipped and a crossbow left in it shoots bolts.");
+        GRAPPLE_MAX_DISTANCE = decimal(cfg, CROSSBOW_GRAPPLE, "maxDistance", 32.0, 4.0, 64.0, "Range of the hook in blocks. A hook that reaches it without catching comes back.");
+        GRAPPLE_HOOK_SPEED = decimal(cfg, CROSSBOW_GRAPPLE, "hookSpeed", 2.5, 0.5, 5.0, "Speed of the flying hook, in blocks per tick. It flies straight, without gravity.");
+        GRAPPLE_PULL_SPEED = decimal(cfg, CROSSBOW_GRAPPLE, "pullSpeed", 0.8, 0.1, 3.0, "Speed at which the hook pulls the player, in blocks per tick (sprinting is about 0.28).");
+        GRAPPLE_RELEASE_DISTANCE = decimal(cfg, CROSSBOW_GRAPPLE, "releaseDistance", 1.5, 0.5, 4.0, "The hook lets go when the player's body is this close to the anchor, in blocks.");
+        GRAPPLE_MAX_PULL_TICKS = integer(cfg, CROSSBOW_GRAPPLE, "maxPullTicks", 60, 10, 200, "Longest pull; the hook lets go after it (for example when the player is stuck under a ledge). On a server with allow-flight=false keep it under 80, or a long upward pull can kick the player for flying.");
+        GRAPPLE_COOLDOWN_TICKS = integer(cfg, CROSSBOW_GRAPPLE, "cooldownTicks", 20, 0, 200, "Wait after firing the hook before the crossbow can fire or reload again.");
+        GRAPPLE_CHARGES = integer(cfg, CROSSBOW_GRAPPLE, "chargesPerShot", 1, 0, 24, "Bolts from the magazine a hook shot takes. 0 makes it free; more than a full magazine counts as a full magazine.");
+        GRAPPLE_NO_FALL_DAMAGE = bool(cfg, CROSSBOW_GRAPPLE, "noFallDamage", true, "The pull never causes fall damage: the fall distance is reset while pulling and when the hook lets go. A fall after letting go counts from there.");
     }
 
     private static void readPistonBoots(Configuration cfg)
@@ -577,6 +598,7 @@ public class ConfigHandler
     {
         KEY_OPEN_BACKPACK = integer(cfg, KEYS, "openBackpack", Keyboard.KEY_B, 0, 255, "Default key that opens the worn backpack, copter pack or jetpack (48 = B).", true);
         KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and toggles the copter pack or jetpack (49 = N). Sneak + toggle changes the copter mode.", true);
+        KEY_CROSSBOW_MODE = integer(cfg, KEYS, "crossbowMode", Keyboard.KEY_V, 0, 255, "Default key that changes the firing mode of the held Clockwork Crossbow (47 = V).", true);
         TOOL_CYCLE_ENABLED = bool(cfg, TOOL_CYCLE, "enabled", true, "Swap the held tool with the backpack's tool slots, and change the hose mode, from the keyboard or mouse wheel. False turns both off, so the wheel always scrolls the hotbar.");
         TOOL_CYCLE_MODE = ToolCycleInput.Mode.parse(choice(cfg, TOOL_CYCLE, "mode", "both", ToolCycleInput.Mode.NAMES,
                 "wheel: hold the modifier key and turn the mouse wheel. keys: only the next and previous tool keys. both: either one."));

@@ -133,4 +133,40 @@ class CrossbowLogicTest {
         assertTrue(CrossbowLogic.shouldWarnEmpty(121, 100, 20));
         assertTrue(CrossbowLogic.shouldWarnEmpty(50, 100, 20));
     }
+
+    @Test
+    void aShotThatCostsSeveralBoltsNeedsThemAll() {
+        assertEquals(Action.FIRE, CrossbowLogic.decide(2, 2, CAP, 100, 0, MAX_WAIT, false, false));
+        assertEquals(Action.DRY, CrossbowLogic.decide(1, 2, CAP, 100, 0, MAX_WAIT, false, false));
+        assertEquals(Action.RELOAD, CrossbowLogic.decide(1, 2, CAP, 100, 0, MAX_WAIT, false, true));
+    }
+
+    @Test
+    void aFreeShotFiresWithAnEmptyMagazine() {
+        assertEquals(Action.FIRE, CrossbowLogic.decide(0, 0, CAP, 100, 0, MAX_WAIT, false, false));
+    }
+
+    @Test
+    void shotCostStaysBetweenZeroAndAFullMagazine() {
+        assertEquals(0, CrossbowLogic.shotCost(-3, CAP));
+        assertEquals(1, CrossbowLogic.shotCost(1, CAP));
+        assertEquals(CAP, CrossbowLogic.shotCost(24, CAP));
+        assertEquals(Action.FIRE, CrossbowLogic.decide(CAP, CrossbowLogic.shotCost(24, CAP), CAP, 100, 0, MAX_WAIT, false, false));
+    }
+
+    @Test
+    void unknownOrDisabledModesReadAsRepeating() {
+        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.effectiveMode(CrossbowLogic.MODE_GRAPPLE, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(CrossbowLogic.MODE_GRAPPLE, false));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(-1, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(99, true));
+    }
+
+    @Test
+    void theModeKeyCyclesThroughTheEnabledModesOnly() {
+        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.nextMode(CrossbowLogic.MODE_REPEATING, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.nextMode(CrossbowLogic.MODE_GRAPPLE, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.nextMode(CrossbowLogic.MODE_REPEATING, false));
+        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.nextMode(42, true));
+    }
 }

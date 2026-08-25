@@ -2,10 +2,13 @@ package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.common.CrossbowLogic;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityBolt;
+import com.darkona.adventurebackpack.entity.EntityGrapple;
 import com.darkona.adventurebackpack.init.ModItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -41,6 +44,10 @@ public class ItemCrossbow extends ItemAB
     public static final String TAG_LAST_DRY = "LastDry";
     /** int: bolts fired, against crossbow.durability. */
     public static final String TAG_WEAR = "Wear";
+    /** int: firing mode, one of the {@link CrossbowLogic} modes (0 = repeating). Read it with {@link #getMode}. */
+    public static final String TAG_MODE = "Mode";
+    /** int: entity id of the grappling hook this crossbow fired last (server only; a stale id is harmless). */
+    public static final String TAG_GRAPPLE = "Grapple";
 
     private static final int EMPTY_MESSAGE_QUIET_TICKS = 20;
 
@@ -89,18 +96,35 @@ public class ItemCrossbow extends ItemAB
         if (world.isRemote || !ConfigHandler.CROSSBOW_ENABLED) return stack;
         NBTTagCompound tag = tag(stack);
         if (tag.hasKey(LEGACY_TAG_AMMO_TYPE)) tag.removeTag(LEGACY_TAG_AMMO_TYPE);
+        int mode = CrossbowLogic.effectiveMode(tag.getInteger(TAG_MODE), ConfigHandler.GRAPPLE_ENABLED);
+        if (mode == CrossbowLogic.MODE_GRAPPLE)
+        {
+            // A second click retracts the hook that is out.
+            EntityGrapple hook = EntityGrapple.find(world, tag.getInteger(TAG_GRAPPLE), player);
+            if (hook != null)
+            {
+                hook.release();
+                return stack;
+            }
+        }
         int capacity = ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE;
         int ammo = CrossbowLogic.clampAmmo(tag.getInteger(TAG_AMMO), capacity);
+        int cost = CrossbowLogic.shotCost(mode == CrossbowLogic.MODE_GRAPPLE ? ConfigHandler.GRAPPLE_CHARGES : 1, capacity);
         long now = world.getTotalWorldTime();
         boolean sneaking = player.isSneaking();
         boolean creative = player.capabilities.isCreativeMode;
-        int slot = sneaking || ammo == 0 ? findCartridge(player) : -1;
-        int maxWait = Math.max(ConfigHandler.CROSSBOW_SHOT_DELAY_TICKS, ConfigHandler.CROSSBOW_RELOAD_TICKS);
+        int slot = sneaking || ammo < cost ? findCartridge(player) : -1;
 
-        switch (CrossbowLogic.decide(ammo, capacity, now, tag.getLong(TAG_READY_AT), maxWait, sneaking, slot >= 0 || creative))
+        switch (CrossbowLogic.decide(ammo, cost, capacity, now, tag.getLong(TAG_READY_AT), maxWait(), sneaking, slot >= 0 || creative))
         {
             case FIRE:
-                fire(stack, tag, world, player, ammo, now, creative);
+                if (mode == CrossbowLogic.MODE_GRAPPLE)
+                {
+                    fireGrapple(stack, tag, world, player, ammo, cost, now, creative);
+                } else
+                {
+                    fireBolt(stack, tag, world, player, ammo, now, creative);
+                }
                 break;
             case RELOAD:
                 reload(tag, world, player, slot, ammo, capacity, now, creative);
@@ -112,6 +136,12 @@ public class ItemCrossbow extends ItemAB
                 break;
         }
         return stack;
+    }
+
+    /** Longest pause any action can set; a {@code ReadyAt} further away is stale (the stack came from another world). */
+    private static int maxWait()
+    {
+        return Math.max(Math.max(ConfigHandler.CROSSBOW_SHOT_DELAY_TICKS, ConfigHandler.CROSSBOW_RELOAD_TICKS), ConfigHandler.GRAPPLE_COOLDOWN_TICKS);
     }
 
     private static NBTTagCompound tag(ItemStack stack)
@@ -131,7 +161,7 @@ public class ItemCrossbow extends ItemAB
         return -1;
     }
 
-    private static void fire(ItemStack stack, NBTTagCompound tag, World world, EntityPlayer player, int ammo, long now, boolean creative)
+    private static void fireBolt(ItemStack stack, NBTTagCompound tag, World world, EntityPlayer player, int ammo, long now, boolean creative)
     {
         float speed = ConfigHandler.CROSSBOW_BOLT_VELOCITY;
         EntityBolt bolt = new EntityBolt(world, player, speed);
@@ -139,10 +169,26 @@ public class ItemCrossbow extends ItemAB
         bolt.canBePickedUp = creative ? 2 : (ConfigHandler.CROSSBOW_BOLTS_RECOVERABLE ? 1 : 0);
         world.spawnEntityInWorld(bolt);
         world.playSoundAtEntity(player, "adventurebackpack:crossbowshot", 0.5F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
+        spend(stack, tag, player, ammo, 1, now, ConfigHandler.CROSSBOW_SHOT_DELAY_TICKS, creative);
+    }
 
-        tag.setInteger(TAG_AMMO, ammo - 1);
+    /** Fires the grappling hook; it costs {@code crossbow.grapple.chargesPerShot} bolts and starts the cooldown. */
+    private static void fireGrapple(ItemStack stack, NBTTagCompound tag, World world, EntityPlayer player, int ammo, int cost, long now, boolean creative)
+    {
+        EntityGrapple hook = new EntityGrapple(world, player);
+        world.spawnEntityInWorld(hook);
+        tag.setInteger(TAG_GRAPPLE, hook.getEntityId());
+        world.playSoundAtEntity(player, "adventurebackpack:crossbowshot", 0.5F, 0.6F);
+        world.playSoundAtEntity(player, "random.bow", 0.4F, 0.5F);
+        spend(stack, tag, player, ammo, cost, now, ConfigHandler.GRAPPLE_COOLDOWN_TICKS, creative);
+    }
+
+    /** Takes {@code cost} bolts from the magazine, starts the pause and wears the crossbow (one shot of wear). */
+    private static void spend(ItemStack stack, NBTTagCompound tag, EntityPlayer player, int ammo, int cost, long now, int pause, boolean creative)
+    {
+        tag.setInteger(TAG_AMMO, ammo - cost);
         tag.setLong(TAG_LAST_SHOT, now);
-        tag.setLong(TAG_READY_AT, now + ConfigHandler.CROSSBOW_SHOT_DELAY_TICKS);
+        tag.setLong(TAG_READY_AT, now + pause);
 
         if (ConfigHandler.CROSSBOW_DURABILITY > 0 && !creative)
         {
@@ -195,6 +241,57 @@ public class ItemCrossbow extends ItemAB
         tag.setLong(TAG_LAST_DRY, now);
     }
 
+    /**
+     * Mode key (server side, from {@code CrossbowPacket}): moves the held crossbow to its next enabled mode. Leaving
+     * the grappling mode lets go of a hook that is out.
+     */
+    public static void cycleMode(EntityPlayer player)
+    {
+        ItemStack stack = player.getHeldItem();
+        if (!ConfigHandler.CROSSBOW_ENABLED || stack == null || stack.getItem() != ModItems.cwxbow) return;
+        NBTTagCompound tag = tag(stack);
+        int mode = CrossbowLogic.nextMode(tag.getInteger(TAG_MODE), ConfigHandler.GRAPPLE_ENABLED);
+        if (mode == tag.getInteger(TAG_MODE)) return;
+        if (mode != CrossbowLogic.MODE_GRAPPLE) releaseGrapple(player);
+        tag.setInteger(TAG_MODE, mode);
+        player.worldObj.playSoundAtEntity(player, "random.click", 0.5F, 1.2F);
+    }
+
+    /** Jump while hanging (server side, from {@code CrossbowPacket}): lets go of the held crossbow's hook. */
+    public static void releaseGrapple(EntityPlayer player)
+    {
+        ItemStack stack = player.getHeldItem();
+        if (stack == null || stack.getItem() != ModItems.cwxbow || !stack.hasTagCompound()) return;
+        EntityGrapple hook = EntityGrapple.find(player.worldObj, stack.getTagCompound().getInteger(TAG_GRAPPLE), player);
+        if (hook != null) hook.release();
+    }
+
+    /** The mode the crossbow fires in: the stored one, or repeating when it is unknown or switched off. */
+    public static int getMode(ItemStack stack)
+    {
+        int stored = stack != null && stack.hasTagCompound() ? stack.getTagCompound().getInteger(TAG_MODE) : CrossbowLogic.MODE_REPEATING;
+        return CrossbowLogic.effectiveMode(stored, ConfigHandler.GRAPPLE_ENABLED);
+    }
+
+    /** Lang key of a mode's name. */
+    public static String modeKey(int mode)
+    {
+        return MODE_KEYS[CrossbowLogic.effectiveMode(mode, true)];
+    }
+
+    private static final String[] MODE_KEYS = {"adventurebackpack:crossbow.mode.repeating", "adventurebackpack:crossbow.mode.grapple"};
+    private static final String[] CONTROLS_KEYS = {"adventurebackpack:tooltip.crossbow.controls", "adventurebackpack:tooltip.crossbow.controls.grapple"};
+
+    /** "Clockwork Crossbow (Grappling Hook)": the mode shows in the name, also in the hotbar name popup. */
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
+    {
+        int mode = getMode(stack);
+        String name = super.getItemStackDisplayName(stack);
+        if (mode == CrossbowLogic.MODE_REPEATING) return name;
+        return StatCollector.translateToLocalFormatted("adventurebackpack:crossbow.nameWithMode", name, StatCollector.translateToLocal(modeKey(mode)));
+    }
+
     /** For the renderer: true for a few ticks after a shot. */
     public static boolean isRecoiling(ItemStack stack, long worldTime)
     {
@@ -212,8 +309,10 @@ public class ItemCrossbow extends ItemAB
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced)
     {
+        int mode = getMode(stack);
         tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.crossbow.loaded", getAmmo(stack), ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE));
-        tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.crossbow.controls"));
+        tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.crossbow.mode", StatCollector.translateToLocal(modeKey(mode)), GameSettings.getKeyDisplayString(Keybindings.crossbowMode.getKeyCode())));
+        tooltip.add(StatCollector.translateToLocal(CONTROLS_KEYS[mode]));
     }
 
     @Override

@@ -53,6 +53,7 @@ keys.adventureBackpack.switchHoseTank=Toggle Action Key
 keys.adventureBackpack.toolModifier=Tool Cycle Modifier (none = sneak)
 keys.adventureBackpack.nextTool=Next Backpack Tool
 keys.adventureBackpack.previousTool=Previous Backpack Tool
+keys.adventureBackpack.crossbowMode=Crossbow Mode
 
 ## Fluids
 fluid.melonJuice=Melon Juice
@@ -76,6 +77,11 @@ adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: out of bolts. Craft a Bolt Cartridge.
 adventurebackpack:tooltip.crossbow.loaded=Bolts: %1$s/%2$s
 adventurebackpack:tooltip.crossbow.controls=Hold right click to fire. Sneak + right click to change the cartridge.
+adventurebackpack:tooltip.crossbow.controls.grapple=Right click: fire the hook, or retract it. It pulls you to the block it catches. Sneak or jump to let go.
+adventurebackpack:tooltip.crossbow.mode=Mode: %1$s (%2$s to change)
+adventurebackpack:crossbow.mode.repeating=Repeating
+adventurebackpack:crossbow.mode.grapple=Grappling Hook
+adventurebackpack:crossbow.nameWithMode=%1$s (%2$s)
 adventurebackpack:tooltip.cartridge.bolts=Bolts: %1$s/%2$s
 
 ## Baubles Expanded back slot

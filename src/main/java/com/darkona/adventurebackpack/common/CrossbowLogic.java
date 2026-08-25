@@ -21,15 +21,28 @@ public final class CrossbowLogic
         NONE
     }
 
+    /** Firing modes, stored in the crossbow NBT. Unknown values (edited NBT, a later version) read as repeating. */
+    public static final int MODE_REPEATING = 0;
+    public static final int MODE_GRAPPLE = 1;
+    public static final int MODES = 2;
+
     /** Ticks after a shot during which the model shows the released string. */
     public static final int RECOIL_TICKS = 4;
 
     private CrossbowLogic() {}
 
+    /** Same as {@link #decide(int, int, int, long, long, int, boolean, boolean)} for a shot that costs one bolt. */
+    public static Action decide(int ammo, int capacity, long now, long readyAt, int maxWait, boolean sneaking, boolean hasCartridge)
+    {
+        return decide(ammo, 1, capacity, now, readyAt, maxWait, sneaking, hasCartridge);
+    }
+
     /**
      * Decides what a right click does.
      *
      * @param ammo         bolts in the magazine
+     * @param cost         bolts one shot takes (1 for a bolt, the configured charges for the grappling hook); 0 fires
+     *                     even with an empty magazine, and a cost above {@code capacity} counts as a full magazine
      * @param capacity     bolts in a full magazine
      * @param now          current world tick
      * @param readyAt      world tick from which the crossbow can act again
@@ -38,12 +51,50 @@ public final class CrossbowLogic
      * @param sneaking     the player sneaks (manual cartridge swap)
      * @param hasCartridge a cartridge is in the inventory, or the player is in creative mode
      */
-    public static Action decide(int ammo, int capacity, long now, long readyAt, int maxWait, boolean sneaking, boolean hasCartridge)
+    public static Action decide(int ammo, int cost, int capacity, long now, long readyAt, int maxWait, boolean sneaking, boolean hasCartridge)
     {
         if (isWaiting(now, readyAt, maxWait)) return Action.WAIT;
         if (sneaking) return ammo < capacity && hasCartridge ? Action.RELOAD : Action.NONE;
-        if (ammo > 0) return Action.FIRE;
+        if (ammo >= shotCost(cost, capacity)) return Action.FIRE;
         return hasCartridge ? Action.RELOAD : Action.DRY;
+    }
+
+    /** Bolts a shot really takes: never negative and never more than a full magazine, so it can always fire. */
+    public static int shotCost(int cost, int capacity)
+    {
+        return cost < 0 ? 0 : (cost > capacity ? capacity : cost);
+    }
+
+    /** A stored mode, or repeating when it is unknown or its switch is off. */
+    public static int effectiveMode(int stored, boolean grappleEnabled)
+    {
+        return isModeEnabled(stored, grappleEnabled) ? stored : MODE_REPEATING;
+    }
+
+    /** True for a known mode whose switch is on. Repeating is always on. */
+    public static boolean isModeEnabled(int mode, boolean grappleEnabled)
+    {
+        switch (mode)
+        {
+            case MODE_REPEATING:
+                return true;
+            case MODE_GRAPPLE:
+                return grappleEnabled;
+            default:
+                return false;
+        }
+    }
+
+    /** The mode after {@code current} in the cycle, skipping the modes that are switched off. */
+    public static int nextMode(int current, boolean grappleEnabled)
+    {
+        int mode = effectiveMode(current, grappleEnabled);
+        for (int i = 0; i < MODES; i++)
+        {
+            mode = (mode + 1) % MODES;
+            if (isModeEnabled(mode, grappleEnabled)) return mode;
+        }
+        return MODE_REPEATING;
     }
 
     /** True while the pause after a shot or a reload runs. A pause longer than {@code maxWait} is stale and ignored. */

@@ -18,6 +18,8 @@ public class Keybindings
     public static KeyBinding toolModifier;
     public static KeyBinding nextTool;
     public static KeyBinding previousTool;
+    /** Changes the firing mode of the held crossbow. */
+    public static KeyBinding crossbowMode;
 
     /** Builds the key bindings with the default keys from the config; called once, after the config is read. */
     public static void init()
@@ -27,6 +29,7 @@ public class Keybindings
         toolModifier = new KeyBinding(Names.keys.TOOL_MODIFIER, ConfigHandler.KEY_TOOL_MODIFIER, Names.keys.CATEGORY);
         nextTool = new KeyBinding(Names.keys.NEXT_TOOL, ConfigHandler.KEY_NEXT_TOOL, Names.keys.CATEGORY);
         previousTool = new KeyBinding(Names.keys.PREVIOUS_TOOL, ConfigHandler.KEY_PREVIOUS_TOOL, Names.keys.CATEGORY);
+        crossbowMode = new KeyBinding(Names.keys.CROSSBOW_MODE, ConfigHandler.KEY_CROSSBOW_MODE, Names.keys.CATEGORY);
     }
 
     /** True while the tool-cycle modifier is held: the bound key, or sneaking when it is not bound. */

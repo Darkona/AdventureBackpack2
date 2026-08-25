@@ -17,6 +17,7 @@ public final class Names
         public static final String TOOL_MODIFIER = "keys.adventureBackpack.toolModifier";
         public static final String NEXT_TOOL = "keys.adventureBackpack.nextTool";
         public static final String PREVIOUS_TOOL = "keys.adventureBackpack.previousTool";
+        public static final String CROSSBOW_MODE = "keys.adventureBackpack.crossbowMode";
     }
 
 }
