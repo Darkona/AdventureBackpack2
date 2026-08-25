@@ -77,10 +77,12 @@ adventurebackpack:messages.jetpack.off=Jetpack de Vapor: Apagado.
 adventurebackpack:messages.crossbow.outofammo=Ballesta de Relojería: sin virotes. Fabrica un Cartucho de Virotes.
 adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
 adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Agáchate + clic derecho para cambiar el cartucho.
-adventurebackpack:tooltip.crossbow.controls.grapple=Clic derecho: dispara el garfio o lo recoge. Te arrastra hasta el bloque donde se engancha. Agáchate o salta para soltarte.
+adventurebackpack:tooltip.crossbow.controls.grapple=Clic derecho: dispara el garfio. Te arrastra hasta el bloque donde se engancha. Agáchate o salta para soltarte.
+adventurebackpack:tooltip.crossbow.controls.sniper=Agáchate y quédate quieto para desplegar el bípode y apuntar con zoom. Clic derecho: un virote fuerte y recto. Al moverte se pliega.
 adventurebackpack:tooltip.crossbow.mode=Modo: %1$s (%2$s para cambiar)
 adventurebackpack:crossbow.mode.repeating=Repetición
 adventurebackpack:crossbow.mode.grapple=Garfio
+adventurebackpack:crossbow.mode.sniper=Francotirador
 adventurebackpack:crossbow.nameWithMode=%1$s (%2$s)
 adventurebackpack:tooltip.cartridge.bolts=Virotes: %1$s/%2$s
 

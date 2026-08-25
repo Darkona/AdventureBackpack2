@@ -156,17 +156,40 @@ class CrossbowLogicTest {
 
     @Test
     void unknownOrDisabledModesReadAsRepeating() {
-        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.effectiveMode(CrossbowLogic.MODE_GRAPPLE, true));
-        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(CrossbowLogic.MODE_GRAPPLE, false));
-        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(-1, true));
-        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(99, true));
+        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.effectiveMode(CrossbowLogic.MODE_GRAPPLE, true, true));
+        assertEquals(CrossbowLogic.MODE_SNIPER, CrossbowLogic.effectiveMode(CrossbowLogic.MODE_SNIPER, true, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(CrossbowLogic.MODE_GRAPPLE, false, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(CrossbowLogic.MODE_SNIPER, true, false));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(-1, true, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.effectiveMode(99, true, true));
     }
 
     @Test
     void theModeKeyCyclesThroughTheEnabledModesOnly() {
-        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.nextMode(CrossbowLogic.MODE_REPEATING, true));
-        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.nextMode(CrossbowLogic.MODE_GRAPPLE, true));
-        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.nextMode(CrossbowLogic.MODE_REPEATING, false));
-        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.nextMode(42, true));
+        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.nextMode(CrossbowLogic.MODE_REPEATING, true, true));
+        assertEquals(CrossbowLogic.MODE_SNIPER, CrossbowLogic.nextMode(CrossbowLogic.MODE_GRAPPLE, true, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.nextMode(CrossbowLogic.MODE_SNIPER, true, true));
+        assertEquals(CrossbowLogic.MODE_SNIPER, CrossbowLogic.nextMode(CrossbowLogic.MODE_REPEATING, false, true));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.nextMode(CrossbowLogic.MODE_GRAPPLE, true, false));
+        assertEquals(CrossbowLogic.MODE_REPEATING, CrossbowLogic.nextMode(CrossbowLogic.MODE_REPEATING, false, false));
+        assertEquals(CrossbowLogic.MODE_GRAPPLE, CrossbowLogic.nextMode(42, true, true));
+    }
+
+    @Test
+    void theBipodIsDownOnlySneakingStillOnTheGround() {
+        assertTrue(CrossbowLogic.bipodDeployed(true, true, false, 0, 0, 0.02));
+        assertTrue(CrossbowLogic.bipodDeployed(true, true, false, 0.01, -0.01, 0.02));
+        assertFalse(CrossbowLogic.bipodDeployed(false, true, false, 0, 0, 0.02));
+        assertFalse(CrossbowLogic.bipodDeployed(true, false, false, 0, 0, 0.02));
+        assertFalse(CrossbowLogic.bipodDeployed(true, true, true, 0, 0, 0.02));
+        // Sneak walking (about 0.065 blocks per tick) folds it.
+        assertFalse(CrossbowLogic.bipodDeployed(true, true, false, 0.065, 0, 0.02));
+    }
+
+    @Test
+    void withTheBipodDownSneakAndClickFires() {
+        // ItemCrossbow passes sneaking = false while the bipod is down.
+        assertEquals(Action.FIRE, CrossbowLogic.decide(3, 1, CAP, 100, 0, MAX_WAIT, false, true));
+        assertEquals(Action.RELOAD, CrossbowLogic.decide(3, 1, CAP, 100, 0, MAX_WAIT, true, true));
     }
 }

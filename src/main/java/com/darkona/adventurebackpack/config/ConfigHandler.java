@@ -42,6 +42,7 @@ public class ConfigHandler
     public static final String INFLATABLEBOAT = ROOT + ".inflatableboat";
     public static final String CROSSBOW = ROOT + ".crossbow";
     public static final String CROSSBOW_GRAPPLE = CROSSBOW + ".grapple";
+    public static final String CROSSBOW_SNIPER = CROSSBOW + ".sniper";
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
     public static final String RENDER = ROOT + ".render";
     public static final String KEYS = ROOT + ".keys";
@@ -240,6 +241,12 @@ public class ConfigHandler
     public static int GRAPPLE_COOLDOWN_TICKS = 20;
     public static int GRAPPLE_CHARGES = 1;
     public static boolean GRAPPLE_NO_FALL_DAMAGE = true;
+    public static boolean SNIPER_ENABLED = true;
+    public static double SNIPER_DAMAGE = 12.0;
+    public static float SNIPER_VELOCITY = 5.0f;
+    public static int SNIPER_SHOT_DELAY_TICKS = 30;
+    public static double SNIPER_STILL_TOLERANCE = 0.02;
+    public static float SNIPER_ZOOM = 0.35f;
 
     // ---------------------------------------------------------------- piston boots
     public static float PISTONBOOTS_STEP_HEIGHT = 1.001f;
@@ -337,7 +344,8 @@ public class ConfigHandler
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
-        cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak, jump or right click again to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
+        cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
+        cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the cartridge (an empty magazine still reloads by itself).");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
         cfg.setCategoryComment(RENDER, "Client only: how the mod draws things. The server ignores this category.");
         cfg.setCategoryComment(KEYS, "Client only: default keys, as LWJGL key codes (B = 48, N = 49, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
@@ -576,6 +584,12 @@ public class ConfigHandler
         GRAPPLE_COOLDOWN_TICKS = integer(cfg, CROSSBOW_GRAPPLE, "cooldownTicks", 20, 0, 200, "Wait after firing the hook before the crossbow can fire or reload again.");
         GRAPPLE_CHARGES = integer(cfg, CROSSBOW_GRAPPLE, "chargesPerShot", 1, 0, 24, "Bolts from the magazine a hook shot takes. 0 makes it free; more than a full magazine counts as a full magazine.");
         GRAPPLE_NO_FALL_DAMAGE = bool(cfg, CROSSBOW_GRAPPLE, "noFallDamage", true, "The pull never causes fall damage: the fall distance is reset while pulling and when the hook lets go. A fall after letting go counts from there.");
+        SNIPER_ENABLED = bool(cfg, CROSSBOW_SNIPER, "enabled", true, "The sniper mode. When false the mode is skipped and a crossbow left in it shoots normal bolts.");
+        SNIPER_DAMAGE = decimal(cfg, CROSSBOW_SNIPER, "boltDamage", 12.0, 0.0, 100.0, "Damage of a sniper bolt as it leaves the crossbow, in half hearts. It drops a little with distance as the bolt slows down.");
+        SNIPER_VELOCITY = (float) decimal(cfg, CROSSBOW_SNIPER, "boltVelocity", 5.0, 0.5, 8.0, "Speed of a sniper bolt in blocks per tick. Faster bolts fly flatter and further.");
+        SNIPER_SHOT_DELAY_TICKS = integer(cfg, CROSSBOW_SNIPER, "shotDelayTicks", 30, 4, 200, "Pause after a sniper shot. A held right click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4.");
+        SNIPER_STILL_TOLERANCE = decimal(cfg, CROSSBOW_SNIPER, "stillTolerance", 0.02, 0.001, 0.2, "Horizontal movement in blocks per tick under which the player counts as still (sneak walking is about 0.065).");
+        SNIPER_ZOOM = (float) decimal(cfg, CROSSBOW_SNIPER, "zoom", 0.35, 0.1, 1.0, "Client only: field of view multiplier while the bipod is down. 1 = no zoom, 0.35 = about three times closer.");
     }
 
     private static void readPistonBoots(Configuration cfg)

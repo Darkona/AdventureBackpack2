@@ -24,7 +24,8 @@ public final class CrossbowLogic
     /** Firing modes, stored in the crossbow NBT. Unknown values (edited NBT, a later version) read as repeating. */
     public static final int MODE_REPEATING = 0;
     public static final int MODE_GRAPPLE = 1;
-    public static final int MODES = 2;
+    public static final int MODE_SNIPER = 2;
+    public static final int MODES = 3;
 
     /** Ticks after a shot during which the model shows the released string. */
     public static final int RECOIL_TICKS = 4;
@@ -66,13 +67,13 @@ public final class CrossbowLogic
     }
 
     /** A stored mode, or repeating when it is unknown or its switch is off. */
-    public static int effectiveMode(int stored, boolean grappleEnabled)
+    public static int effectiveMode(int stored, boolean grappleEnabled, boolean sniperEnabled)
     {
-        return isModeEnabled(stored, grappleEnabled) ? stored : MODE_REPEATING;
+        return isModeEnabled(stored, grappleEnabled, sniperEnabled) ? stored : MODE_REPEATING;
     }
 
     /** True for a known mode whose switch is on. Repeating is always on. */
-    public static boolean isModeEnabled(int mode, boolean grappleEnabled)
+    public static boolean isModeEnabled(int mode, boolean grappleEnabled, boolean sniperEnabled)
     {
         switch (mode)
         {
@@ -80,21 +81,35 @@ public final class CrossbowLogic
                 return true;
             case MODE_GRAPPLE:
                 return grappleEnabled;
+            case MODE_SNIPER:
+                return sniperEnabled;
             default:
                 return false;
         }
     }
 
     /** The mode after {@code current} in the cycle, skipping the modes that are switched off. */
-    public static int nextMode(int current, boolean grappleEnabled)
+    public static int nextMode(int current, boolean grappleEnabled, boolean sniperEnabled)
     {
-        int mode = effectiveMode(current, grappleEnabled);
+        int mode = effectiveMode(current, grappleEnabled, sniperEnabled);
         for (int i = 0; i < MODES; i++)
         {
             mode = (mode + 1) % MODES;
-            if (isModeEnabled(mode, grappleEnabled)) return mode;
+            if (isModeEnabled(mode, grappleEnabled, sniperEnabled)) return mode;
         }
         return MODE_REPEATING;
+    }
+
+    /**
+     * The sniper bipod is down while the player sneaks, stands on the ground, rides nothing and moved less than
+     * {@code tolerance} blocks horizontally in the last tick. Moving, jumping or standing up folds it.
+     *
+     * @param dx movement along X in the last tick ({@code posX - prevPosX}); the same on server and client
+     * @param dz movement along Z in the last tick
+     */
+    public static boolean bipodDeployed(boolean sneaking, boolean onGround, boolean riding, double dx, double dz, double tolerance)
+    {
+        return sneaking && onGround && !riding && dx * dx + dz * dz <= tolerance * tolerance;
     }
 
     /** True while the pause after a shot or a reload runs. A pause longer than {@code maxWait} is stale and ignored. */

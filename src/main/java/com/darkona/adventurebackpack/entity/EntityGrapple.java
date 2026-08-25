@@ -20,7 +20,7 @@ import net.minecraft.world.World;
  * The grappling hook of the Clockwork Crossbow. It flies straight from the shooter's eyes, catches the first solid
  * block it meets within {@code crossbow.grapple.maxDistance}, and then pulls its owner towards that point.
  * <p>
- * The server decides everything: where the hook catches, when it lets go (sneak, arrival, timeout, jump request,
+ * The server decides everything: where the hook catches, when it lets go (sneak, arrival, timeout, jump request, mode change,
  * crossbow out of the hand, owner gone) and it resets the owner's fall distance. A player's movement is computed by
  * his own client in 1.7.10, so the owner's client applies the pull to its own player with the speed the server sent
  * in the spawn data; there is no packet per tick and no teleport. The state (flying or hooked, and the anchor) reaches

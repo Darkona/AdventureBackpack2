@@ -18,6 +18,8 @@ public class CrossbowRenderState
     public int ammo;
     public long lastShot;
     public long lastReload;
+    /** Stored firing mode (raw: {@code ItemCrossbow.effectiveMode} applies the config switches). */
+    public int mode;
 
     /** Refreshes the fields when {@code stack} is not the object read last time. */
     public void update(ItemStack stack)
@@ -30,10 +32,12 @@ public class CrossbowRenderState
             ammo = 0;
             lastShot = 0;
             lastReload = 0;
+            mode = 0;
             return;
         }
         ammo = tag.getInteger(ItemCrossbow.TAG_AMMO);
         lastShot = tag.getLong(ItemCrossbow.TAG_LAST_SHOT);
         lastReload = tag.getLong(ItemCrossbow.TAG_LAST_RELOAD);
+        mode = tag.getInteger(ItemCrossbow.TAG_MODE);
     }
 }
