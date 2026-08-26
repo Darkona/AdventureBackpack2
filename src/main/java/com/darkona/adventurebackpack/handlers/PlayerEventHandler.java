@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.DeathRoute;
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.common.SpiderTaming;
 import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
@@ -29,12 +30,14 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemNameTag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -96,6 +99,18 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
+            // Spiders saved before a restart (or a crash that skipped the logout) are not tamed any more
+            SpiderTaming.releaseAll(event.player.getUniqueID());
+        }
+    }
+
+    /** Tamed spiders go free when their owner leaves; each one turns back into a normal spider on its next check. */
+    @SubscribeEvent
+    public void playerLogsOut(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        if (event.player instanceof EntityPlayerMP)
+        {
+            SpiderTaming.releaseAll(event.player.getUniqueID());
         }
     }
 
@@ -105,6 +120,7 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
+            SpiderTaming.releaseAll(event.player.getUniqueID());
         }
     }
 
@@ -185,6 +201,7 @@ public class PlayerEventHandler
             EntityPlayer player = (EntityPlayer) event.entity;
             if (!player.worldObj.isRemote)
             {
+                SpiderTaming.releaseAll(player.getUniqueID());
                 BackpackProperty props = BackpackProperty.get(player);
                 if (props.isForcedCampFire())
                 {
@@ -332,16 +349,11 @@ public class PlayerEventHandler
         EntityPlayer player = event.entityPlayer;
         if (!event.entityPlayer.worldObj.isRemote)
         {
-            if (Utils.notNullAndInstanceOf(event.target, EntitySpider.class))
+            // Only the plain vanilla spider: a cave spider or another mod's spider would lose what makes it different
+            if (event.target != null && event.target.getClass() == EntitySpider.class && tameSpider(player, (EntitySpider) event.target))
             {
-                if (Wearing.isWearingTheRightBackpack(player, "Spider"))
-                {
-                    EntityFriendlySpider pet = new EntityFriendlySpider(event.target.worldObj);
-                    pet.setLocationAndAngles(event.target.posX, event.target.posY, event.target.posZ, event.target.rotationYaw, event.target.rotationPitch);
-                    event.target.setDead();
-                    event.entityPlayer.worldObj.spawnEntityInWorld(pet);
-                    event.entityPlayer.mountEntity(pet);
-                }
+                event.setCanceled(true);
+                return;
             }
             if (Utils.notNullAndInstanceOf(event.target, EntityHorse.class))
             {
@@ -364,6 +376,54 @@ public class PlayerEventHandler
             }
         }
         event.setResult(Event.Result.ALLOW);
+    }
+
+    /**
+     * Wearing the Spider Backpack, right click with the tame item (a spider eye by default) tries to tame the spider,
+     * like a wolf with a bone: one item is used up per try and the try works with abilities.spider.tameChance.
+     * Server only. Returns true when the click was a taming try, so nothing else handles it.
+     */
+    private static boolean tameSpider(EntityPlayer player, EntitySpider spider)
+    {
+        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.SPIDER_ENABLED || spider.isDead || spider.riddenByEntity != null) return false;
+        ItemStack held = player.getCurrentEquippedItem();
+        if (held == null || held.getItem() == null) return false;
+        Object tameItem = Item.itemRegistry.getObject(ConfigHandler.SPIDER_TAME_ITEM);
+        if (tameItem == null || held.getItem() != tameItem) return false;
+        if (!Wearing.isWearingTheRightBackpack(player, "Spider")) return false;
+
+        if (!SpiderTaming.canTameMore(SpiderTaming.count(player.getUniqueID()), ConfigHandler.SPIDER_MAX_TAMED))
+        {
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.spider.limit", ConfigHandler.SPIDER_MAX_TAMED));
+            return true;
+        }
+        if (!player.capabilities.isCreativeMode)
+        {
+            if (--held.stackSize <= 0)
+            {
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+            }
+        }
+        WorldServer world = (WorldServer) spider.worldObj;
+        double y = spider.posY + spider.height;
+        if (!SpiderTaming.rollTames(spider.getRNG().nextFloat(), ConfigHandler.SPIDER_TAME_CHANCE))
+        {
+            world.func_147487_a("smoke", spider.posX, y, spider.posZ, 7, 0.5, 0.3, 0.5, 0.02);
+            return true;
+        }
+        EntityFriendlySpider pet = new EntityFriendlySpider(world);
+        pet.setLocationAndAngles(spider.posX, spider.posY, spider.posZ, spider.rotationYaw, spider.rotationPitch);
+        pet.setHealth(Math.min(spider.getHealth(), pet.getMaxHealth()));
+        if (spider.hasCustomNameTag())
+        {
+            pet.setCustomNameTag(spider.getCustomNameTag());
+        }
+        pet.setOwner(player.getUniqueID());
+        spider.setDead();
+        world.spawnEntityInWorld(pet);
+        SpiderTaming.add(player.getUniqueID(), pet.getUniqueID());
+        world.func_147487_a("heart", pet.posX, y, pet.posZ, 7, 0.5, 0.3, 0.5, 0.02);
+        return true;
     }
 
     @SubscribeEvent

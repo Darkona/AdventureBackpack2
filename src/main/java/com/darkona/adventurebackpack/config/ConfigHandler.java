@@ -176,6 +176,14 @@ public class ConfigHandler
     public static boolean SKELETON_ENABLED = true;
     public static boolean IRONGOLEM_ENABLED = true;
 
+    public static boolean SPIDER_ENABLED = true;
+    public static String SPIDER_TAME_ITEM = "minecraft:spider_eye";
+    public static double SPIDER_TAME_CHANCE = 0.33;
+    public static int SPIDER_MAX_TAMED = 2;
+    public static double SPIDER_FOLLOW_START_DISTANCE = 6.0;
+    public static double SPIDER_FOLLOW_STOP_DISTANCE = 3.0;
+    public static int SPIDER_TELEPORT_DISTANCE = 24;
+
     // ---------------------------------------------------------------- hose
     public static int HOSE_TRANSFER_AMOUNT = 1000;
     public static int HOSE_DRINK_AMOUNT = 1000;
@@ -324,7 +332,7 @@ public class ConfigHandler
         cfg.setCategoryComment(ENABLED, "One switch per system. A disabled system stays registered (worlds and servers still load it) but it is hidden, has no recipe and does nothing.");
         cfg.setCategoryComment(BACKPACK, "The Adventure Backpack itself, worn or placed.");
         cfg.setCategoryComment(ABILITIES, "Special abilities of the backpacks while they are worn (or placed, for Cactus and Melon). Each backpack has its own switch. Ticks: 20 per second. Abilities run on the server and on the client, so use the same values on both.");
-        String[] abilities = {"bat", "squid", "pigman", "dragon", "cactus", "melon", "pig", "slime", "chicken", "creeper", "cow", "mooshroom", "wolf", "ocelot", "rainbow", "sunflower", "skeleton", "irongolem"};
+        String[] abilities = {"bat", "squid", "pigman", "dragon", "cactus", "melon", "pig", "slime", "chicken", "creeper", "cow", "mooshroom", "wolf", "ocelot", "rainbow", "sunflower", "skeleton", "irongolem", "spider"};
         for (String a : abilities)
         {
             cfg.getCategory(ABILITIES + "." + a);
@@ -487,6 +495,15 @@ public class ConfigHandler
 
         c = ABILITIES + ".irongolem";
         IRONGOLEM_ENABLED = bool(cfg, c, "enabled", true, "Iron Golem Backpack: no fall damage.");
+
+        c = ABILITIES + ".spider";
+        SPIDER_ENABLED = bool(cfg, c, "enabled", true, "Spider Backpack: tame spiders and ride them. Wearing it, right click a spider with the tame item to try to tame it (like taming a wolf). A tamed spider follows its owner and only its owner rides it, both only while the owner wears the Spider Backpack. It is released (back to a normal spider) when its owner dies, logs out or changes dimension, or sneaks and right clicks it. When false, tamed spiders neither follow nor carry anyone, and no new spider can be tamed.");
+        SPIDER_TAME_ITEM = text(cfg, c, "tameItem", "minecraft:spider_eye", "Item used to tame a spider, as modid:name. One is used up per try (not in creative).");
+        SPIDER_TAME_CHANCE = decimal(cfg, c, "tameChance", 0.33, 0.0, 1.0, "Chance that one try tames the spider (1 = always, the wolf is about 0.33).");
+        SPIDER_MAX_TAMED = integer(cfg, c, "maxTamed", 2, 0, 16, "Tamed spiders a player may have at once. 0 turns taming off.");
+        SPIDER_FOLLOW_START_DISTANCE = decimal(cfg, c, "followStartDistance", 6.0, 2.0, 32.0, "A tamed spider starts walking to its owner when it is farther than this, in blocks.");
+        SPIDER_FOLLOW_STOP_DISTANCE = decimal(cfg, c, "followStopDistance", 3.0, 1.0, 32.0, "It stops when it is this close to its owner, in blocks.");
+        SPIDER_TELEPORT_DISTANCE = integer(cfg, c, "teleportDistance", 24, 0, 128, "When it cannot walk to its owner and is farther than this, it jumps next to the owner like a wolf. 0 = never.");
     }
 
     private static void readHose(Configuration cfg)
@@ -625,6 +642,11 @@ public class ConfigHandler
         {
             JETPACK_STEAM_PER_TICK = JETPACK_STEAM_CAPACITY;
         }
+        if (SPIDER_FOLLOW_STOP_DISTANCE >= SPIDER_FOLLOW_START_DISTANCE)
+        {
+            // otherwise the spider would start and stop following in the same tick
+            SPIDER_FOLLOW_STOP_DISTANCE = Math.max(1.0, SPIDER_FOLLOW_START_DISTANCE - 1.0);
+        }
     }
 
     // ---------------------------------------------------------------- helpers
@@ -644,6 +666,12 @@ public class ConfigHandler
     {
         order(category, key);
         return cfg.getBoolean(key, category, def, comment);
+    }
+
+    private static String text(Configuration cfg, String category, String key, String def, String comment)
+    {
+        order(category, key);
+        return cfg.getString(key, category, def, comment).trim();
     }
 
     private static String choice(Configuration cfg, String category, String key, String def, String[] valid, String comment)

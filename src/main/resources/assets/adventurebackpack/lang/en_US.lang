@@ -70,6 +70,7 @@ adventurebackpack:messages.already.impossibru=You aren't wearing any backpacks.
 adventurebackpack:messages.death.placed=%1$s was placed at %2$s, %3$s, %4$s (dimension %5$s).
 adventurebackpack:messages.death.dropped=%1$s dropped where you died: %2$s, %3$s, %4$s (dimension %5$s).
 adventurebackpack:messages.death.grave=%1$s went into your grave near %2$s, %3$s, %4$s (dimension %5$s).
+adventurebackpack:messages.spider.limit=You already have %1$s tamed spiders. Sneak and right click one of them to let it go.
 adventurebackpack:messages.copterpack.hover=CopterPack: Hover Mode.
 adventurebackpack:messages.copterpack.normal=CopterPack: Normal Mode.
 adventurebackpack:messages.copterpack.outoffuel=CopterPack: Out of fuel.
