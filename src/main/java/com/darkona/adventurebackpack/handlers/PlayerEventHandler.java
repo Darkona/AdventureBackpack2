@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.DeathRoute;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.common.SpiderTaming;
@@ -23,6 +24,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntitySpider;
@@ -44,6 +46,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
@@ -376,6 +379,18 @@ public class PlayerEventHandler
             }
         }
         event.setResult(Event.Result.ALLOW);
+    }
+
+    /** A Blaze Backpack wearer's punch sets the target on fire. Only direct melee hits ("player" damage), not arrows. */
+    @SubscribeEvent
+    public void blazePunch(LivingHurtEvent event)
+    {
+        if (event.entityLiving.worldObj.isRemote || !"player".equals(event.source.damageType)) return;
+        Entity attacker = event.source.getEntity();
+        if (attacker instanceof EntityPlayer && event.source.getSourceOfDamage() == attacker)
+        {
+            BackpackAbilities.blazePunch((EntityPlayer) attacker, event.entityLiving);
+        }
     }
 
     /**

@@ -184,6 +184,12 @@ public class ConfigHandler
     public static double SPIDER_FOLLOW_STOP_DISTANCE = 3.0;
     public static int SPIDER_TELEPORT_DISTANCE = 24;
 
+    public static boolean BLAZE_ENABLED = true;
+    public static boolean BLAZE_FIRE_IMMUNITY = true;
+    public static int BLAZE_FIRE_RESISTANCE_TICKS = 5000;
+    public static int BLAZE_PUNCH_FIRE_SECONDS = 4;
+    public static boolean BLAZE_PUNCH_WITH_NON_WEAPONS = true;
+
     // ---------------------------------------------------------------- hose
     public static int HOSE_TRANSFER_AMOUNT = 1000;
     public static int HOSE_DRINK_AMOUNT = 1000;
@@ -332,7 +338,7 @@ public class ConfigHandler
         cfg.setCategoryComment(ENABLED, "One switch per system. A disabled system stays registered (worlds and servers still load it) but it is hidden, has no recipe and does nothing.");
         cfg.setCategoryComment(BACKPACK, "The Adventure Backpack itself, worn or placed.");
         cfg.setCategoryComment(ABILITIES, "Special abilities of the backpacks while they are worn (or placed, for Cactus and Melon). Each backpack has its own switch. Ticks: 20 per second. Abilities run on the server and on the client, so use the same values on both.");
-        String[] abilities = {"bat", "squid", "pigman", "dragon", "cactus", "melon", "pig", "slime", "chicken", "creeper", "cow", "mooshroom", "wolf", "ocelot", "rainbow", "sunflower", "skeleton", "irongolem", "spider"};
+        String[] abilities = {"bat", "squid", "pigman", "dragon", "cactus", "melon", "pig", "slime", "chicken", "creeper", "cow", "mooshroom", "wolf", "ocelot", "rainbow", "sunflower", "skeleton", "irongolem", "spider", "blaze"};
         for (String a : abilities)
         {
             cfg.getCategory(ABILITIES + "." + a);
@@ -504,6 +510,13 @@ public class ConfigHandler
         SPIDER_FOLLOW_START_DISTANCE = decimal(cfg, c, "followStartDistance", 6.0, 2.0, 32.0, "A tamed spider starts walking to its owner when it is farther than this, in blocks.");
         SPIDER_FOLLOW_STOP_DISTANCE = decimal(cfg, c, "followStopDistance", 3.0, 1.0, 32.0, "It stops when it is this close to its owner, in blocks.");
         SPIDER_TELEPORT_DISTANCE = integer(cfg, c, "teleportDistance", 24, 0, 128, "When it cannot walk to its owner and is farther than this, it jumps next to the owner like a wolf. 0 = never.");
+
+        c = ABILITIES + ".blaze";
+        BLAZE_ENABLED = bool(cfg, c, "enabled", true, "Blaze Backpack: fire immunity and burning punches.");
+        BLAZE_FIRE_IMMUNITY = bool(cfg, c, "fireImmunity", true, "The wearer does not burn in fire or lava, like a magma cube (fire resistance, taken away when the backpack comes off).");
+        BLAZE_FIRE_RESISTANCE_TICKS = integer(cfg, c, "fireResistanceTicks", 5000, 100, 1000000, "Length of the fire resistance effect it gives; it is renewed before it runs out (abilities.effectRefreshTicks).");
+        BLAZE_PUNCH_FIRE_SECONDS = integer(cfg, c, "punchFireSeconds", 4, 0, 60, "Seconds a punched mob or player burns. 0 turns the burning punch off.");
+        BLAZE_PUNCH_WITH_NON_WEAPONS = bool(cfg, c, "punchWithNonWeapons", true, "Hitting with an item that is not a weapon (blocks, food, sticks...) also counts as a punch. When false only the empty hand burns. Swords, tools, bows and items that add attack damage are weapons.");
     }
 
     private static void readHose(Configuration cfg)
