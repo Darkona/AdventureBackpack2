@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.handlers;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.DeathRoute;
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.common.SleepingBagSpawn;
 import com.darkona.adventurebackpack.common.SpiderTaming;
 import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -114,6 +115,7 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             SpiderTaming.releaseAll(event.player.getUniqueID());
+            SleepingBagSpawn.restoreNow(event.player);
         }
     }
 
@@ -473,6 +475,7 @@ public class PlayerEventHandler
     public void tickPlayer(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.START && event.player != null) ItemPistonBoots.tickUnworn(event.player);
+        if (event.phase == TickEvent.Phase.END && event.side.isServer() && event.player != null) SleepingBagSpawn.restoreWhenAwake(event.player);
         if (event.player != null && !event.player.isDead && Wearing.isWearingWearable(event.player))
         {
             if(event.phase == TickEvent.Phase.START)

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import cpw.mods.fml.relauncher.Side;
@@ -24,6 +25,9 @@ import java.util.List;
  */
 public class ItemComponent extends ItemAB
 {
+    /** Damage values of the components (one more than their index in {@code names}). */
+    public static final int SLEEPING_BAG = 1;
+
     private HashMap<String, IIcon> componentIcons = new HashMap<String, IIcon>();
     private String[] names = {
             "sleepingBag",
@@ -95,10 +99,21 @@ public class ItemComponent extends ItemAB
         }
     }
 
+    /**
+     * The Sleeping Bag goes on the ground like a bed, on top of the clicked block (enabled.sleepingBag and
+     * sleepingbag.placeable). The bag works without a backpack and gives the item back when broken or rolled up.
+     */
     @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int meta, float f1, float f2, float f3)
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        return false;
+        if (stack.getItemDamage() != SLEEPING_BAG || side != 1) return false;
+        if (!ConfigHandler.SLEEPINGBAG_ENABLED || !ConfigHandler.SLEEPINGBAG_PLACEABLE) return false;
+        if (world.isRemote) return true;
+        if (BlockSleepingBag.placeOnItsOwn(world, player, stack, x, y + 1, z) && !player.capabilities.isCreativeMode)
+        {
+            --stack.stackSize;
+        }
+        return true;
     }
 
 

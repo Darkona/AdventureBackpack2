@@ -122,6 +122,16 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return false;
     }
 
+    /**
+     * True when the foot of a sleeping bag at these coordinates is (or was last) this backpack's own. The position is
+     * kept after the bag is folded, so a bag broken by hand is still known as the backpack's when its drops are
+     * computed, and drops nothing.
+     */
+    public boolean ownsSleepingBagAt(int footX, int footY, int footZ)
+    {
+        return sbx == footX && sby == footY && sbz == footZ;
+    }
+
     public void setSleepingBagDeployed(boolean state)
     {
         this.sleepingBagDeployed = state;

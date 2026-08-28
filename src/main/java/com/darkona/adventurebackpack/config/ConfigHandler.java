@@ -43,6 +43,7 @@ public class ConfigHandler
     public static final String CROSSBOW = ROOT + ".crossbow";
     public static final String CROSSBOW_ELEMENTAL = CROSSBOW + ".elemental";
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
+    public static final String SLEEPINGBAG = ROOT + ".sleepingbag";
     public static final String RENDER = ROOT + ".render";
     public static final String KEYS = ROOT + ".keys";
     public static final String TOOL_CYCLE = KEYS + ".toolcycle";
@@ -236,6 +237,10 @@ public class ConfigHandler
     // ---------------------------------------------------------------- inflatable boat
     public static double BOAT_MAX_SPEED = 0.35;
 
+    // ---------------------------------------------------------------- sleeping bag
+    public static boolean SLEEPINGBAG_PLACEABLE = true;
+    public static boolean SLEEPINGBAG_SETS_SPAWN = true;
+
     // ---------------------------------------------------------------- crossbow
     public static int CROSSBOW_SHOTS_PER_MAGAZINE = 6;
     public static int CROSSBOW_SHOT_DELAY_TICKS = 4;
@@ -316,6 +321,7 @@ public class ConfigHandler
         readInflatableBoat(cfg);
         readCrossbow(cfg);
         readPistonBoots(cfg);
+        readSleepingBag(cfg);
         readRender(cfg);
         readKeys(cfg);
         readWorldgenRecipesTweaks(cfg);
@@ -350,6 +356,7 @@ public class ConfigHandler
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_ELEMENTAL, "Blazing, Freezing, Poison and Stunning Bolt Cartridges. Blazing bolts burn and set the target on fire for 5 seconds, like a Flame bow. The other effects are potion effects; an amplifier is the effect level minus one (0 = level I).");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
+        cfg.setCategoryComment(SLEEPINGBAG, "The sleeping bag, deployed from a placed backpack or placed on its own.");
         cfg.setCategoryComment(RENDER, "Client only: how the mod draws things. The server ignores this category.");
         cfg.setCategoryComment(KEYS, "Client only: default keys, as LWJGL key codes (B = 48, N = 49, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
         cfg.setCategoryComment(WORLDGEN, "Backpacks found in the world.");
@@ -388,7 +395,7 @@ public class ConfigHandler
         STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack.");
         INFLATABLEBOAT_ENABLED = bool(cfg, ENABLED, "inflatableBoat", true, "The Inflatable Boat and the Motorized Inflatable Boat.");
         CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow and its Bolt Cartridges.");
-        SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "Deploying the sleeping bag from a placed backpack.");
+        SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up.");
         PISTONBOOTS_ENABLED = bool(cfg, ENABLED, "pistonBoots", true, "The Piston Boots: step assist, sprint speed and fall protection.");
     }
 
@@ -598,6 +605,12 @@ public class ConfigHandler
         CROSSBOW_POISON_AMPLIFIER = integer(cfg, CROSSBOW_ELEMENTAL, "poisonAmplifier", 0, 0, 4, "Poison level minus one of a Poison bolt (0 = Poison I).");
         CROSSBOW_STUNNING_TICKS = integer(cfg, CROSSBOW_ELEMENTAL, "stunningTicks", 30, 1, 1200, "Length of the stun of a Stunning bolt: Slowness, and Nausea on players.");
         CROSSBOW_STUNNING_AMPLIFIER = integer(cfg, CROSSBOW_ELEMENTAL, "stunningAmplifier", 4, 0, 6, "Slowness level minus one of a Stunning bolt (4 = Slowness V, almost still).");
+    }
+
+    private static void readSleepingBag(Configuration cfg)
+    {
+        SLEEPINGBAG_PLACEABLE = bool(cfg, SLEEPINGBAG, "placeable", true, "Right click the top of a block with the Sleeping Bag item to lay it on the ground as a bed, without a backpack. Breaking it gives the item back; sneak + right click rolls it up into the inventory.");
+        SLEEPINGBAG_SETS_SPAWN = bool(cfg, SLEEPINGBAG, "setsSpawn", true, "Sleeping in a sleeping bag (placed on its own or from a backpack) moves the player's spawn point there, like a bed. When false the player keeps the spawn point they had.");
     }
 
     private static void readPistonBoots(Configuration cfg)
