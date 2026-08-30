@@ -78,6 +78,16 @@ public final class AbilityEffects
         return amplifier == ownAmplifier && ticksLeft < SHORT_EFFECT_REFRESH_BELOW;
     }
 
+    /**
+     * True when the Squid gives its water breathing and night vision: in water, or anywhere when
+     * abilities.squid.worksOnLand is on (#151, merfolk mods that let the player live in the air like in water).
+     * On land the effects use the same short refresh, so they still go away soon after the backpack comes off.
+     */
+    public static boolean squidActive(boolean inWater, boolean worksOnLand)
+    {
+        return inWater || worksOnLand;
+    }
+
     /** True for the Squid's own water breathing: only its -5 marker, never a potion's. */
     public static boolean isSquidWaterBreathing(int amplifier)
     {

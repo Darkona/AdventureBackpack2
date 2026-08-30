@@ -58,4 +58,12 @@ class ShortAbilityEffectsTest {
         assertFalse(AbilityEffects.isSlimeSpeed(0, 20));
         assertFalse(AbilityEffects.isSlimeSpeed(2, 20));
     }
+
+    @Test
+    void squidWorksInWaterAndOnLandOnlyWhenAsked() {
+        assertTrue(AbilityEffects.squidActive(true, false));
+        assertFalse(AbilityEffects.squidActive(false, false));
+        assertTrue(AbilityEffects.squidActive(false, true), "worksOnLand gives the effects out of water (#151)");
+        assertTrue(AbilityEffects.squidActive(true, true));
+    }
 }

@@ -250,7 +250,7 @@ public class BackpackAbilities
     {
         // The server owns the effects and syncs them; the client would only add a local copy the server overwrites
         if (world.isRemote) return;
-        if (player.isInWater())
+        if (AbilityEffects.squidActive(player.isInWater(), ConfigHandler.SQUID_WORKS_ON_LAND))
         {
             PotionEffect breathing = player.getActivePotionEffect(Potion.waterBreathing);
             if (AbilityEffects.needsShortRefresh(breathing != null,

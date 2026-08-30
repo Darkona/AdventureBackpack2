@@ -104,6 +104,7 @@ public class ConfigHandler
     public static int BAT_NIGHT_VISION_REFRESH_BELOW = NightVisionRefresh.REFRESH_BELOW;
 
     public static boolean SQUID_ENABLED = true;
+    public static boolean SQUID_WORKS_ON_LAND = false;
 
     public static boolean PIGMAN_ENABLED = true;
     public static int PIGMAN_FIRE_RESISTANCE_TICKS = 5000;
@@ -409,6 +410,7 @@ public class ConfigHandler
 
         c = ABILITIES + ".squid";
         SQUID_ENABLED = bool(cfg, c, "enabled", true, "Squid Backpack: water breathing and night vision while in water.");
+        SQUID_WORKS_ON_LAND = bool(cfg, c, "worksOnLand", false, "Give the water breathing and the night vision out of water too, for mods that make the player breathe water (merfolk). Both are taken away when the backpack comes off or this is turned off.");
 
         c = ABILITIES + ".pigman";
         PIGMAN_ENABLED = bool(cfg, c, "enabled", true, "Pigman Backpack: fire resistance.");
