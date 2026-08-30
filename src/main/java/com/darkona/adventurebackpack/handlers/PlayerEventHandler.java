@@ -402,7 +402,8 @@ public class PlayerEventHandler
      */
     private static boolean tameSpider(EntityPlayer player, EntitySpider spider)
     {
-        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.SPIDER_ENABLED || spider.isDead || spider.riddenByEntity != null) return false;
+        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.SPIDER_ENABLED || ConfigHandler.SPIDER_MAX_TAMED <= 0) return false;
+        if (spider.isDead || spider.riddenByEntity != null) return false;
         ItemStack held = player.getCurrentEquippedItem();
         if (held == null || held.getItem() == null) return false;
         Object tameItem = Item.itemRegistry.getObject(ConfigHandler.SPIDER_TAME_ITEM);
