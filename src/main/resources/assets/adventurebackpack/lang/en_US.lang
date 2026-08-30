@@ -11,6 +11,7 @@ item.adventurebackpack:copterBlades.name=Copter Blades
 item.adventurebackpack:hydroBlades.name=Hydro Blades
 item.adventurebackpack:inflatableBoat.name=Inflatable Boat
 item.adventurebackpack:inflatableBoatMotorized.name=Inflatable Boat (Motorized)
+item.adventurebackpack:inflatableChamber.name=Inflatable Chamber
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Clockwork Crossbow

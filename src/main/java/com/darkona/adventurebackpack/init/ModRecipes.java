@@ -1,9 +1,12 @@
 package com.darkona.adventurebackpack.init;
 
+import com.darkona.adventurebackpack.common.BoatRecipeRules;
 import com.darkona.adventurebackpack.common.CrossbowLogic;
+import com.darkona.adventurebackpack.compat.tech.TechParts;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.init.recipes.BackpackUpgradeRecipe;
+import com.darkona.adventurebackpack.item.ItemComponent;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -14,8 +17,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * Created on 20/10/2014
@@ -192,8 +197,83 @@ public class ModRecipes
 
     }
 
+    private static ItemStack component(int damage, int amount)
+    {
+        return new ItemStack(ModItems.component, amount, damage);
+    }
+
+    /**
+     * The Inflatable Boat, its Inflatable Chambers, the Hydro Blades and the motorized boat (recipes.boat). In postInit,
+     * so the Ore Dictionary and the other mods' items are complete; the items are always registered, only the
+     * recipes depend on the mode and on what the loaded mods provide.
+     */
+    private static void boatRecipes()
+    {
+        BoatRecipeRules.Mode mode = ConfigHandler.BOAT_RECIPE_MODE;
+        List<String> rubbers = TechParts.presentOres(ConfigHandler.BOAT_RUBBER);
+        List<Object> motors = TechParts.find(ConfigHandler.BOAT_MOTORS);
+
+        // Inflatable Chamber: leather sealed with slime, or rubber from a technical mod
+        if (BoatRecipeRules.vanillaRecipe(mode, !rubbers.isEmpty()))
+        {
+            GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.INFLATABLE_CHAMBER, 1),
+                    "LSL",
+                    'L', Items.leather,
+                    'S', Items.slime_ball));
+        }
+        if (BoatRecipeRules.technicalRecipe(mode, !rubbers.isEmpty()))
+        {
+            for (String rubber : rubbers)
+            {
+                GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.INFLATABLE_CHAMBER, 2),
+                        "RRR",
+                        'R', rubber));
+            }
+        }
+
+        // Hydro Blades: a small iron propeller
+        GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.HYDRO_BLADES, 1),
+                "I I",
+                " S ",
+                "I I",
+                'I', "ingotIron",
+                'S', "stickWood"));
+
+        // Inflatable Boat: five chambers, a rope around them and the Hose Nozzle as the valve
+        GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.INFLATABLE_BOAT, 1),
+                "SNS",
+                "C C",
+                "CCC",
+                'S', Items.string,
+                'N', component(ItemComponent.HOSE_NOZZLE, 1),
+                'C', component(ItemComponent.INFLATABLE_CHAMBER, 1)));
+
+        // Motorized boat: an outboard engine (piston and furnace, or another mod's electric motor) and Hydro Blades
+        if (BoatRecipeRules.vanillaRecipe(mode, !motors.isEmpty()))
+        {
+            GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.MOTORIZED_BOAT, 1),
+                    " P ",
+                    "BFH",
+                    'P', Blocks.piston,
+                    'F', Blocks.furnace,
+                    'B', component(ItemComponent.INFLATABLE_BOAT, 1),
+                    'H', component(ItemComponent.HYDRO_BLADES, 1)));
+        }
+        if (BoatRecipeRules.technicalRecipe(mode, !motors.isEmpty()))
+        {
+            for (Object motor : motors)
+            {
+                GameRegistry.addRecipe(new ShapelessOreRecipe(component(ItemComponent.MOTORIZED_BOAT, 1),
+                        component(ItemComponent.INFLATABLE_BOAT, 1), motor, component(ItemComponent.HYDRO_BLADES, 1)));
+            }
+        }
+        LogHelper.info("Inflatable boat recipes: mode " + mode + ", rubber " + rubbers + ", " + motors.size() + " electric motor(s) found.");
+    }
+
     public static void conditionalInit()
     {
+        if (ConfigHandler.INFLATABLEBOAT_ENABLED) boatRecipes();
+
         if(ConfigHandler.SADDLE_RECIPE)
         {
             GameRegistry.addRecipe(new ItemStack(Items.saddle),

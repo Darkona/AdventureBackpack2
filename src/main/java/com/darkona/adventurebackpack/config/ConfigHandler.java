@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.config;
 
 import com.darkona.adventurebackpack.common.AbilityEffects;
+import com.darkona.adventurebackpack.common.BoatRecipeRules;
 import com.darkona.adventurebackpack.common.NightVisionRefresh;
 import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.reference.ModInfo;
@@ -49,6 +50,7 @@ public class ConfigHandler
     public static final String TOOL_CYCLE = KEYS + ".toolcycle";
     public static final String WORLDGEN = ROOT + ".worldgen";
     public static final String RECIPES = ROOT + ".recipes";
+    public static final String RECIPES_BOAT = RECIPES + ".boat";
     public static final String TWEAKS = ROOT + ".tweaks";
     public static final String COMPAT = ROOT + ".compat";
     public static final String COMPAT_GRAVES = COMPAT + ".graves";
@@ -284,6 +286,11 @@ public class ConfigHandler
     public static boolean BONUS_CHEST_ALLOWED = false;
     public static boolean PIGMAN_ALLOWED = false;
     public static boolean SADDLE_RECIPE = true;
+    public static BoatRecipeRules.Mode BOAT_RECIPE_MODE = BoatRecipeRules.Mode.AUTO;
+    public static final String[] BOAT_RUBBER_DEFAULT = {"itemRubber", "plateRubber", "ingotRubber"};
+    public static String[] BOAT_RUBBER = BOAT_RUBBER_DEFAULT;
+    public static final String[] BOAT_MOTORS_DEFAULT = {"ic2:elemotor", "item:gregtech:gt.metaitem.01:32600", "ore:craftingElectricMotor", "stack:ThermalExpansion:powerCoilGold"};
+    public static String[] BOAT_MOTORS = BOAT_MOTORS_DEFAULT;
     public static boolean FIX_LEAD = true;
     public static boolean HORSES_FOLLOW_OWNER = true;
 
@@ -361,6 +368,8 @@ public class ConfigHandler
         cfg.setCategoryComment(KEYS, "Client only: default keys, as LWJGL key codes (B = 48, N = 49, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
         cfg.setCategoryComment(WORLDGEN, "Backpacks found in the world.");
         cfg.setCategoryComment(RECIPES, "Extra recipes.");
+        cfg.setCategoryComment(RECIPES_BOAT, "Recipes of the Inflatable Boat (only when enabled.inflatableBoat is on). Vanilla: Inflatable Chambers (leather, slime ball, leather), five of them with string and a Hose Nozzle as the valve make the boat; a piston, a furnace and Hydro Blades make it a motorized boat. With technical mods, rubber makes the chambers (three rubber, two chambers) and an electric motor plus Hydro Blades makes the motorized boat. The recipes are read once at startup: needs a restart.");
+        cfg.getCategory(RECIPES_BOAT).setRequiresMcRestart(true);
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
         cfg.setCategoryComment(COMPAT, "Integrations with other mods. Each one only acts when its mod is loaded; nothing here is a hard dependency.");
         cfg.setCategoryComment(COMPAT_GRAVES, "Grave mods (OpenBlocks graves, GraveStone). When one of them is loaded and makes a grave, the worn backpack (or copter pack, or jetpack) goes into the grave instead of being placed as a block. Without a grave mod, backpack.placeOnDeath decides.");
@@ -647,6 +656,12 @@ public class ConfigHandler
         BONUS_CHEST_ALLOWED = bool(cfg, WORLDGEN, "bonusChestBackpack", false, "Put a Standard Adventure Backpack in the bonus chest.");
         PIGMAN_ALLOWED = bool(cfg, WORLDGEN, "pigmanBackpacks", false, "Let Pigman Backpacks appear in dungeon loot and villager trades.");
         SADDLE_RECIPE = bool(cfg, RECIPES, "saddle", true, "Add a crafting recipe for the saddle.");
+        BOAT_RECIPE_MODE = BoatRecipeRules.Mode.parse(choice(cfg, RECIPES_BOAT, "mode", "auto", BoatRecipeRules.Mode.NAMES,
+                "vanilla: only the vanilla recipes. auto: the vanilla recipes, plus a rubber or motor variant when a loaded mod provides rubber or an electric motor. technical: the rubber or motor variant replaces the vanilla recipe of each part a loaded mod provides; a part no loaded mod provides keeps its vanilla recipe. Needs a restart."));
+        order(RECIPES_BOAT, "rubber");
+        BOAT_RUBBER = cfg.getStringList("rubber", RECIPES_BOAT, BOAT_RUBBER_DEFAULT, "Ore Dictionary names of rubber (IC2 itemRubber, GregTech plateRubber and ingotRubber...). Each one some loaded mod provides gets its own chamber recipe. Needs a restart.");
+        order(RECIPES_BOAT, "motors");
+        BOAT_MOTORS = cfg.getStringList("motors", RECIPES_BOAT, BOAT_MOTORS_DEFAULT, "Electric motors for the motorized boat, each one found gets its own recipe. Entries: ic2:<IC2 item name> (IC2 API, elemotor is the Electric Motor), item:<modid>:<item name>[:<damage>] (gregtech:gt.metaitem.01:32600 is GregTech's LV Motor), ore:<Ore Dictionary name>, stack:<modid>:<registered stack name> (Thermal Expansion's powerCoilGold is the Redstone Reception Coil). Needs a restart.");
         FIX_LEAD = bool(cfg, TWEAKS, "fixVanillaLead", true, "Mobs on a lead held by a player take no fall damage unless they fall fast.");
         HORSES_FOLLOW_OWNER = bool(cfg, TWEAKS, "namedHorsesFollowOwner", true, "Tamed horses with a name tag follow their owner.");
     }

@@ -11,6 +11,7 @@ item.adventurebackpack:copterBlades.name=Aspas de Cóptero
 item.adventurebackpack:hydroBlades.name=Hélice Acuática
 item.adventurebackpack:inflatableBoat.name=Bote Inflable
 item.adventurebackpack:inflatableBoatMotorized.name=Bote Inflable (Motorizado)
+item.adventurebackpack:inflatableChamber.name=Cámara Inflable
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Ballesta de Relojería

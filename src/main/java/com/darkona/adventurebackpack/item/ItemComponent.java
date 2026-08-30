@@ -27,6 +27,11 @@ public class ItemComponent extends ItemAB
 {
     /** Damage values of the components (one more than their index in {@code names}). */
     public static final int SLEEPING_BAG = 1;
+    public static final int HOSE_NOZZLE = 3;
+    public static final int INFLATABLE_BOAT = 7;
+    public static final int MOTORIZED_BOAT = 8;
+    public static final int HYDRO_BLADES = 9;
+    public static final int INFLATABLE_CHAMBER = 10;
 
     private HashMap<String, IIcon> componentIcons = new HashMap<String, IIcon>();
     private String[] names = {
@@ -39,7 +44,7 @@ public class ItemComponent extends ItemAB
             "inflatableBoat",
             "inflatableBoatMotorized",
             "hydroBlades",
-
+            "inflatableChamber",
     };
 
 
@@ -94,7 +99,7 @@ public class ItemComponent extends ItemAB
     {
         for (int i = 1; i <= names.length; i++)
         {
-            if ((i == 7 || i == 8) && !ConfigHandler.INFLATABLEBOAT_ENABLED) continue;
+            if (i >= INFLATABLE_BOAT && i <= INFLATABLE_CHAMBER && !ConfigHandler.INFLATABLEBOAT_ENABLED) continue;
             list.add(new ItemStack(this, 1, i));
         }
     }
@@ -215,8 +220,8 @@ public class ItemComponent extends ItemAB
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (!ConfigHandler.INFLATABLEBOAT_ENABLED) return stack;
-        if(stack.getItemDamage() == 7)return placeBoat(stack,world,player,false);
-        if(stack.getItemDamage() == 8)return placeBoat(stack,world,player,true);
+        if (stack.getItemDamage() == INFLATABLE_BOAT) return placeBoat(stack, world, player, false);
+        if (stack.getItemDamage() == MOTORIZED_BOAT) return placeBoat(stack, world, player, true);
         return stack;
     }
 }
