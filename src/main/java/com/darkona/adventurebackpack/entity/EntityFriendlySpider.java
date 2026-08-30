@@ -1,29 +1,48 @@
 package com.darkona.adventurebackpack.entity;
 
+import com.darkona.adventurebackpack.common.SpiderTaming;
+import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.ai.EntityAISpiderFollowOwner;
+import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.UUID;
 
 /**
+ * A spider tamed by a player who wears the Spider Backpack: it follows its owner and only its owner can ride it, and
+ * only while wearing that backpack. It never attacks.
+ * <p>
+ * Whether it is still tamed is decided by {@link SpiderTaming}, which lists the spiders of each online owner. A spider
+ * that is not listed (its owner died, logged out or changed dimension, the server restarted, or it was saved by an
+ * older version without an owner) turns back into a normal {@link EntitySpider} on its next check, which then
+ * despawns or attacks by the usual rules.
+ * <p>
  * Created on 11/01/2015
  *
  * @author Darkona
  */
 public class EntityFriendlySpider extends EntityCreature
 {
+    /** Ticks between two checks that the owner still owns this spider. */
+    private static final int OWNER_CHECK_TICKS = 20;
 
     private int jumpTicks;
+    /** Owner's player UUID; null for a spider saved by an older version, which is released on its first check. */
+    private UUID ownerId;
     private final EntityAIControlledByPlayer aiControlledByPlayer;
 
     @Override
@@ -46,6 +65,7 @@ public class EntityFriendlySpider extends EntityCreature
         this.setSize(1.4F, 0.9F);
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiControlledByPlayer = new EntityAIControlledByPlayer(this, 0.3F));
+        this.tasks.addTask(5, new EntityAISpiderFollowOwner(this, 2.0D));
         this.tasks.addTask(6, new EntityAIWander(this, 0.7D));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -155,11 +175,97 @@ public class EntityFriendlySpider extends EntityCreature
         return false;
     }
 
-    /** A spider tamed with the Spider backpack is a mount: it must not vanish when the player walks away. */
+    /**
+     * A tamed spider stays while its owner is around; when the owner leaves it is released (turned back into a
+     * normal spider), so it never piles up in the world.
+     */
     @Override
     protected boolean canDespawn()
     {
-        return false;
+        return ownerId == null;
+    }
+
+    // ---------------------------------------------------------------- owner
+
+    public void setOwner(UUID owner)
+    {
+        this.ownerId = owner;
+    }
+
+    public UUID getOwnerId()
+    {
+        return ownerId;
+    }
+
+    public boolean isOwnedBy(EntityPlayer player)
+    {
+        return ownerId != null && player != null && ownerId.equals(player.getUniqueID());
+    }
+
+    /** The owner when they are in this world, or null. Looks the player up by UUID: call it on a timer, not per frame. */
+    public EntityPlayer getOwnerPlayer()
+    {
+        return ownerId == null ? null : worldObj.func_152378_a(ownerId);
+    }
+
+    /** True while the owner is here and wears the Spider Backpack: the only time the spider follows or carries them. */
+    public static boolean isFriendOf(EntityPlayer owner)
+    {
+        return owner != null && !owner.isDead && ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.SPIDER_ENABLED
+                && Wearing.isWearingTheRightBackpack(owner, "Spider");
+    }
+
+    /**
+     * Turns this spider back into a normal one, in place, keeping its health and name. Server only. A named spider
+     * then stays like any named mob; an unnamed one despawns by the vanilla rules.
+     */
+    public void release()
+    {
+        if (worldObj.isRemote || isDead) return;
+        SpiderTaming.forget(ownerId, getUniqueID());
+        if (riddenByEntity != null)
+        {
+            riddenByEntity.mountEntity(null);
+        }
+        EntitySpider wild = new EntitySpider(worldObj);
+        wild.setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
+        wild.setHealth(Math.min(getHealth(), wild.getMaxHealth()));
+        if (hasCustomNameTag())
+        {
+            wild.setCustomNameTag(getCustomNameTag());
+        }
+        setDead();
+        worldObj.spawnEntityInWorld(wild);
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound compound)
+    {
+        super.writeEntityToNBT(compound);
+        if (ownerId != null)
+        {
+            compound.setLong("OwnerUUIDMost", ownerId.getMostSignificantBits());
+            compound.setLong("OwnerUUIDLeast", ownerId.getLeastSignificantBits());
+        }
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound compound)
+    {
+        super.readEntityFromNBT(compound);
+        ownerId = compound.hasKey("OwnerUUIDMost") && compound.hasKey("OwnerUUIDLeast")
+                ? new UUID(compound.getLong("OwnerUUIDMost"), compound.getLong("OwnerUUIDLeast"))
+                : null;
+    }
+
+    @Override
+    public void onDeath(DamageSource source)
+    {
+        super.onDeath(source);
+        if (!worldObj.isRemote)
+        {
+            SpiderTaming.forget(ownerId, getUniqueID());
+        }
     }
 
     @Override
@@ -211,16 +317,18 @@ public class EntityFriendlySpider extends EntityCreature
     @Override
     protected boolean interact(EntityPlayer player) {
 
-        try
+        if (this.worldObj.isRemote || this.riddenByEntity != null || !isOwnedBy(player)) return false;
+        if (player.isSneaking())
         {
-            if (!this.worldObj.isRemote && Wearing.isWearingTheRightBackpack(player, "Spider"))
-            {
-                player.mountEntity(this);
-                return true;
-            }
-        } catch (Exception oops)
+            // The owner lets it go: it turns back into a normal spider and frees a place for another one
+            release();
+            return true;
+        }
+        // Only the owner rides it, and only while wearing the Spider Backpack
+        if (isFriendOf(player))
         {
-            return false;
+            player.mountEntity(this);
+            return true;
         }
         return false;
     }
@@ -230,20 +338,10 @@ public class EntityFriendlySpider extends EntityCreature
         return true;
     }
 
+    /** A tamed spider hunts nobody. */
     @Override
     protected Entity findPlayerToAttack() {
-        if (this.riddenByEntity != null)
-            return null;
-        float f = this.getBrightness(1.0F);
-
-        if (f < 0.5F)
-        {
-            double d0 = 16.0D;
-            return this.worldObj.getClosestVulnerablePlayerToEntity(this, d0);
-        } else
-        {
-            return null;
-        }
+        return null;
     }
 
     @Override
@@ -294,6 +392,11 @@ public class EntityFriendlySpider extends EntityCreature
         if (!this.worldObj.isRemote)
         {
             this.setBesideClimbableBlock(this.isCollidedHorizontally);
+            if (!this.isDead && TickThrottle.every(this.worldObj.getTotalWorldTime(), this.getEntityId(), OWNER_CHECK_TICKS)
+                    && !SpiderTaming.isTamed(ownerId, getUniqueID()))
+            {
+                release();
+            }
         }
     }
 

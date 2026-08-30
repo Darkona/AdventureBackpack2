@@ -92,4 +92,13 @@ public final class AbilityEffects
     {
         return amplifier == SLIME_SPEED_AMPLIFIER && ticksLeft <= SHORT_EFFECT_TICKS;
     }
+
+    /**
+     * True when a Blaze Backpack hit counts as a punch that sets the target on fire: always with an empty hand, and
+     * with an item that is not a weapon when {@code nonWeaponsCount} (abilities.blaze.punchWithNonWeapons).
+     */
+    public static boolean blazePunchIgnites(boolean handEmpty, boolean heldIsWeapon, boolean nonWeaponsCount)
+    {
+        return handEmpty || (nonWeaponsCount && !heldIsWeapon);
+    }
 }

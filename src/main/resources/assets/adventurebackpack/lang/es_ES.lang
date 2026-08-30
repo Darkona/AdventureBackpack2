@@ -11,6 +11,7 @@ item.adventurebackpack:copterBlades.name=Aspas de Cóptero
 item.adventurebackpack:hydroBlades.name=Hélice Acuática
 item.adventurebackpack:inflatableBoat.name=Bote Inflable
 item.adventurebackpack:inflatableBoatMotorized.name=Bote Inflable (Motorizado)
+item.adventurebackpack:inflatableChamber.name=Cámara Inflable
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Ballesta de Relojería
@@ -67,6 +68,7 @@ adventurebackpack:messages.already.impossibru=No llevas ninguna mochila puesta.
 adventurebackpack:messages.death.placed=%1$s se colocó en %2$s, %3$s, %4$s (dimensión %5$s).
 adventurebackpack:messages.death.dropped=%1$s cayó donde moriste: %2$s, %3$s, %4$s (dimensión %5$s).
 adventurebackpack:messages.death.grave=%1$s está en tu tumba, cerca de %2$s, %3$s, %4$s (dimensión %5$s).
+adventurebackpack:messages.spider.limit=Ya tienes %1$s arañas domadas. Agáchate y haz clic derecho sobre una para soltarla.
 adventurebackpack:messages.copterpack.hover=Mochilacóptero: Modo Suspendido.
 adventurebackpack:messages.copterpack.normal=Mochilacóptero: Modo Normal.
 adventurebackpack:messages.copterpack.outoffuel=Mochilacóptero: Sin combustible.

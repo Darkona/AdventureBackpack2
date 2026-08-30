@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import cpw.mods.fml.relauncher.Side;
@@ -24,6 +25,14 @@ import java.util.List;
  */
 public class ItemComponent extends ItemAB
 {
+    /** Damage values of the components (one more than their index in {@code names}). */
+    public static final int SLEEPING_BAG = 1;
+    public static final int HOSE_NOZZLE = 3;
+    public static final int INFLATABLE_BOAT = 7;
+    public static final int MOTORIZED_BOAT = 8;
+    public static final int HYDRO_BLADES = 9;
+    public static final int INFLATABLE_CHAMBER = 10;
+
     private HashMap<String, IIcon> componentIcons = new HashMap<String, IIcon>();
     private String[] names = {
             "sleepingBag",
@@ -35,7 +44,7 @@ public class ItemComponent extends ItemAB
             "inflatableBoat",
             "inflatableBoatMotorized",
             "hydroBlades",
-
+            "inflatableChamber",
     };
 
 
@@ -90,15 +99,26 @@ public class ItemComponent extends ItemAB
     {
         for (int i = 1; i <= names.length; i++)
         {
-            if ((i == 7 || i == 8) && !ConfigHandler.INFLATABLEBOAT_ENABLED) continue;
+            if (i >= INFLATABLE_BOAT && i <= INFLATABLE_CHAMBER && !ConfigHandler.INFLATABLEBOAT_ENABLED) continue;
             list.add(new ItemStack(this, 1, i));
         }
     }
 
+    /**
+     * The Sleeping Bag goes on the ground like a bed, on top of the clicked block (enabled.sleepingBag and
+     * sleepingbag.placeable). The bag works without a backpack and gives the item back when broken or rolled up.
+     */
     @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int meta, float f1, float f2, float f3)
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        return false;
+        if (stack.getItemDamage() != SLEEPING_BAG || side != 1) return false;
+        if (!ConfigHandler.SLEEPINGBAG_ENABLED || !ConfigHandler.SLEEPINGBAG_PLACEABLE) return false;
+        if (world.isRemote) return true;
+        if (BlockSleepingBag.placeOnItsOwn(world, player, stack, x, y + 1, z) && !player.capabilities.isCreativeMode)
+        {
+            --stack.stackSize;
+        }
+        return true;
     }
 
 
@@ -200,8 +220,8 @@ public class ItemComponent extends ItemAB
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (!ConfigHandler.INFLATABLEBOAT_ENABLED) return stack;
-        if(stack.getItemDamage() == 7)return placeBoat(stack,world,player,false);
-        if(stack.getItemDamage() == 8)return placeBoat(stack,world,player,true);
+        if (stack.getItemDamage() == INFLATABLE_BOAT) return placeBoat(stack, world, player, false);
+        if (stack.getItemDamage() == MOTORIZED_BOAT) return placeBoat(stack, world, player, true);
         return stack;
     }
 }

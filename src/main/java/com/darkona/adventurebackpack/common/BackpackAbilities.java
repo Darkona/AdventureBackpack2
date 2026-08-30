@@ -12,14 +12,20 @@ import com.darkona.adventurebackpack.util.BackpackUtils;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.util.Utils;
+import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -169,10 +175,10 @@ public class BackpackAbilities
      * These are the colorNames of the backpacks that have abilities when being worn.
      */
     private static String[] validWearingBackpacks = {
-            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom"};
+            "Bat", "Squid", "Pigman", "Cactus", "Cow", "Pig", "Dragon", "Slime", "Chicken", "Wolf", "Ocelot", "Creeper", "Rainbow", "Melon", "Sunflower","Mooshroom", "Blaze"};
 
     private static String[] validRemovalBackpacks = {
-            "Bat", "Squid", "Pigman", "Dragon", "Rainbow", "Slime"
+            "Bat", "Squid", "Pigman", "Dragon", "Rainbow", "Slime", "Blaze"
     };
     /**
      * These are the colorNames of the backpacks that have abilities while being blocks. Note that not all the
@@ -273,10 +279,11 @@ public class BackpackAbilities
 
     public void itemPigman(EntityPlayer player, World world, ItemStack backpack)
     {
-        if (ConfigHandler.PIGMAN_ENABLED) giveFireResistance(player);
+        if (ConfigHandler.PIGMAN_ENABLED) giveFireResistance(player, ConfigHandler.PIGMAN_FIRE_RESISTANCE_TICKS);
     }
 
-    private void giveFireResistance(EntityPlayer player)
+    /** Fire resistance with the -5 marker, renewed before it runs out; the backpack's removal takes it away. */
+    private void giveFireResistance(EntityPlayer player, int ticks)
     {
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.fireResistance.id)) {
@@ -285,7 +292,7 @@ public class BackpackAbilities
         // Refreshed before it runs out: letting it expire leaves a tick without it, and lava hurts in that tick (#105)
         if (potion == null || AbilityEffects.needsRefresh(potion.getDuration()))
         {
-            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, ConfigHandler.PIGMAN_FIRE_RESISTANCE_TICKS, -5));
+            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, ticks, -5));
         }
     }
 
@@ -451,7 +458,7 @@ public class BackpackAbilities
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
         if (!ConfigHandler.DRAGON_ENABLED) return;
-        giveFireResistance(player);
+        giveFireResistance(player, ConfigHandler.PIGMAN_FIRE_RESISTANCE_TICKS);
         giveWaterBreathing(player, world, backpack);
         PotionEffect potion = null;
         if (player.isPotionActive(Potion.regeneration.id)) {
@@ -625,9 +632,9 @@ public class BackpackAbilities
     }
 
     /**
-     * The Blaze Backpack will make you inmune to fire and lava and burning and heat and... not really. You're supposed
-     * to die a fiery death if you are not careful, but this backpack will protect you against those burning fire
-     * elemental inhabitants of the Nether. Any blast of fire directed your way will be stopped, deflected or whatever.
+     * The Blaze Backpack: the wearer does not burn, like a magma cube (fire resistance with the -5 marker, renewed
+     * before it runs out and taken away by the removal when the backpack comes off), and a bare-handed punch sets
+     * the target on fire ({@link #blazePunch}).
      *
      * @param player
      * @param world
@@ -635,7 +642,37 @@ public class BackpackAbilities
      */
     public void itemBlaze(EntityPlayer player, World world, ItemStack backpack)
     {
+        if (ConfigHandler.BLAZE_ENABLED && ConfigHandler.BLAZE_FIRE_IMMUNITY) giveFireResistance(player, ConfigHandler.BLAZE_FIRE_RESISTANCE_TICKS);
+    }
 
+    /**
+     * Called when a player's melee hit hurts a mob (server, once per hit): with the Blaze Backpack on and a punch
+     * (empty hand, or any item that is not a weapon when abilities.blaze.punchWithNonWeapons is on) the target
+     * burns for abilities.blaze.punchFireSeconds.
+     */
+    public static void blazePunch(EntityPlayer player, Entity target)
+    {
+        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.BLAZE_ENABLED || ConfigHandler.BLAZE_PUNCH_FIRE_SECONDS <= 0) return;
+        if (target == null || target.isImmuneToFire()) return;
+        ItemStack held = player.getCurrentEquippedItem();
+        boolean empty = held == null || held.getItem() == null;
+        if (!AbilityEffects.blazePunchIgnites(empty, !empty && isWeapon(held), ConfigHandler.BLAZE_PUNCH_WITH_NON_WEAPONS)) return;
+        if (!Wearing.isWearingTheRightBackpack(player, "Blaze")) return;
+        target.setFire(ConfigHandler.BLAZE_PUNCH_FIRE_SECONDS);
+    }
+
+    /** Swords, tools, bows and anything that adds attack damage (most modded weapons) count as weapons. */
+    private static boolean isWeapon(ItemStack stack)
+    {
+        Item item = stack.getItem();
+        if (item instanceof ItemSword || item instanceof ItemTool || item instanceof ItemBow) return true;
+        try
+        {
+            return stack.getAttributeModifiers().containsKey(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
+        } catch (RuntimeException foreignItem)
+        {
+            return false;
+        }
     }
 
     /**

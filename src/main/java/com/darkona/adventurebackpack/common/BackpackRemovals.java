@@ -62,6 +62,13 @@ public class BackpackRemovals
             }
         }
     }
+
+    /** The Blaze gives the same marked fire resistance as the Pigman. */
+    public void itemBlaze(EntityPlayer player, World world, ItemStack backpack)
+    {
+        itemPigman(player, world, backpack);
+    }
+
     public void itemDragon(EntityPlayer player, World world, ItemStack backpack)
     {
         itemBat(player, world, backpack);

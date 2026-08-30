@@ -1,6 +1,11 @@
 package com.darkona.adventurebackpack.block;
 
+import com.darkona.adventurebackpack.common.SleepingBagRules;
+import com.darkona.adventurebackpack.common.SleepingBagSpawn;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModBlocks;
+import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.item.ItemComponent;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
@@ -16,6 +21,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Direction;
@@ -26,6 +33,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -115,6 +123,13 @@ public class BlockSleepingBag extends BlockDirectional
         {
             int meta = world.getBlockMetadata(x, y, z);
 
+            if (player.isSneaking() && ownerBackpack(world, x, y, z, meta) == null)
+            {
+                // Sneak + right click rolls up a bag of its own into the inventory; a backpack's bag is folded from its GUI
+                pickUp(world, x, y, z, meta, player);
+                return true;
+            }
+
             if (!isBlockHeadOfBed(meta))
             {
                 int dir = getDirection(meta);
@@ -165,6 +180,11 @@ public class BlockSleepingBag extends BlockDirectional
                 if (enumstatus == EntityPlayer.EnumStatus.OK)
                 {
                     setBedOccupied(world, x, y, z, true);
+                    if (!ConfigHandler.SLEEPINGBAG_SETS_SPAWN)
+                    {
+                        // Vanilla moves the spawn here on waking up; the old one is put back afterwards
+                        SleepingBagSpawn.remember(player);
+                    }
                     //This is so the wake up event can detect it. It fires before the player wakes up.
                     //and the bed location isn't set until then, normally.
                     player.setSpawnChunk(new ChunkCoordinates(x,y,z),true,player.dimension);
@@ -210,6 +230,103 @@ public class BlockSleepingBag extends BlockDirectional
                 return true;
             }
         }
+    }
+
+    /**
+     * Forge only clears the occupied bit of the vanilla bed on waking up; this clears it for the sleeping bag too, so
+     * an empty bag does not look taken.
+     */
+    @Override
+    public void setBedOccupied(IBlockAccess world, int x, int y, int z, EntityPlayer player, boolean occupied)
+    {
+        if (world instanceof World)
+        {
+            setBedOccupied((World) world, x, y, z, occupied);
+        }
+    }
+
+    /** The backpack whose deployed bag this is, or null for a bag placed on its own. */
+    public static TileAdventureBackpack ownerBackpack(IBlockAccess world, int x, int y, int z, int meta)
+    {
+        int footX = SleepingBagRules.footX(x, meta);
+        int footZ = SleepingBagRules.footZ(z, meta);
+        TileEntity te = world.getTileEntity(SleepingBagRules.backpackX(footX, meta), y, SleepingBagRules.backpackZ(footZ, meta));
+        if (te instanceof TileAdventureBackpack && ((TileAdventureBackpack) te).ownsSleepingBagAt(footX, y, footZ))
+        {
+            return (TileAdventureBackpack) te;
+        }
+        return null;
+    }
+
+    /** A bag of its own drops the Sleeping Bag item from its foot; a backpack's bag drops nothing. */
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune)
+    {
+        ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+        if (SleepingBagRules.dropsItem(meta, ownerBackpack(world, x, y, z, meta) != null))
+        {
+            drops.add(sleepingBagItem());
+        }
+        return drops;
+    }
+
+    public static ItemStack sleepingBagItem()
+    {
+        return new ItemStack(ModItems.component, 1, ItemComponent.SLEEPING_BAG);
+    }
+
+    /** Rolls up a bag of its own straight into the player's inventory (or at their feet when it is full). */
+    private void pickUp(World world, int x, int y, int z, int meta, EntityPlayer player)
+    {
+        int footX = SleepingBagRules.footX(x, meta);
+        int footZ = SleepingBagRules.footZ(z, meta);
+        int headX = footX + SleepingBagRules.headDx(meta);
+        int headZ = footZ + SleepingBagRules.headDz(meta);
+        if (world.getBlock(headX, y, headZ) == this && isBedOccupied(world.getBlockMetadata(headX, y, headZ)))
+        {
+            for (Object o : world.playerEntities)
+            {
+                EntityPlayer sleeper = (EntityPlayer) o;
+                if (sleeper.isPlayerSleeping() && sleeper.playerLocation != null && sleeper.playerLocation.posX == headX
+                        && sleeper.playerLocation.posY == y && sleeper.playerLocation.posZ == headZ)
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.occupied"));
+                    return;
+                }
+            }
+        }
+        // Foot first: a head without its foot just vanishes, while a foot without its head drops the item (a dupe here)
+        if (world.getBlock(footX, y, footZ) == this) world.setBlockToAir(footX, y, footZ);
+        if (world.getBlock(headX, y, headZ) == this) world.setBlockToAir(headX, y, headZ);
+        world.playSoundEffect(footX + 0.5, y + 0.5, footZ + 0.5, Block.soundTypeCloth.func_150496_b(), 0.5F, 1.0F);
+        ItemStack bag = sleepingBagItem();
+        if (!player.inventory.addItemStackToInventory(bag))
+        {
+            player.dropPlayerItemWithRandomChoice(bag, false);
+        }
+        player.inventoryContainer.detectAndSendChanges();
+    }
+
+    /**
+     * Places a bag of its own (the Sleeping Bag item) like a bed: the foot on the clicked block, the head away from
+     * the player. Server side. Returns false when there is no room, no solid floor, or a backpack would take the bag
+     * as its own (it would then fold into that backpack instead of dropping the item).
+     */
+    public static boolean placeOnItsOwn(World world, EntityPlayer player, ItemStack stack, int x, int y, int z)
+    {
+        int dir = SleepingBagRules.directionFromYaw(player.rotationYaw);
+        int headX = x + SleepingBagRules.headDx(dir);
+        int headZ = z + SleepingBagRules.headDz(dir);
+        if (!player.canPlayerEdit(x, y, z, 1, stack) || !player.canPlayerEdit(headX, y, headZ, 1, stack)) return false;
+        if (!world.isAirBlock(x, y, z) || !world.isAirBlock(headX, y, headZ)) return false;
+        if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z) || !World.doesBlockHaveSolidTopSurface(world, headX, y - 1, headZ)) return false;
+        if (ownerBackpack(world, x, y, z, dir) != null) return false;
+        BlockSleepingBag bag = ModBlocks.blockSleepingBag;
+        world.setBlock(x, y, z, bag, dir, 3);
+        if (world.getBlock(x, y, z) != bag) return false;
+        world.setBlock(headX, y, headZ, bag, dir | 8, 3);
+        world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, Block.soundTypeCloth.func_150496_b(), 0.5F, 1.0F);
+        return true;
     }
 
     public static void setBedOccupied(World world, int x, int y, int z, boolean flag)
@@ -327,30 +444,12 @@ public class BlockSleepingBag extends BlockDirectional
     @Override
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
     {
-        //LogHelper.info("onBlockDestroyedByPlayer() : BlockSleepingBag");
-        int direction = getDirection(meta);
-        int tileZ = z;
-        int tileX = x;
-        switch (meta)
+        // The backpack that deployed this bag (from either half, occupied or not) learns that it is folded again.
+        // Its stored position is kept, so the drops computed after this still see the bag as the backpack's.
+        TileAdventureBackpack owner = ownerBackpack(world, x, y, z, meta);
+        if (owner != null)
         {
-            case 0:
-                tileZ--;
-                break;
-            case 1:
-                tileX++;
-                break;
-            case 2:
-                tileZ++;
-                break;
-            case 3:
-                tileX--;
-                break;
-        }
-        //LogHelper.info("onBlockDestroyedByPlayer() Looking for tile entity in x=" +tileX+" y="+y+" z="+tileZ+" while breaking the block in x= "+x+" y="+y+" z="+z);
-        if (world.getTileEntity(tileX, y, tileZ) != null && world.getTileEntity(tileX, y, tileZ) instanceof TileAdventureBackpack)
-        {
-            // LogHelper.info("onBlockDestroyedByPlayer() Found the tile entity in x=" +tileX+" y="+y+" z="+z+" while breaking the block in x= "+x+" y="+y+" z="+z+" ...removing.");
-            ((TileAdventureBackpack) world.getTileEntity(tileX, y, tileZ)).setSleepingBagDeployed(false);
+            owner.setSleepingBagDeployed(false);
         }
     }
 
