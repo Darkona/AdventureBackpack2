@@ -46,4 +46,14 @@ class PistonStepTest {
         assertFalse(PistonStep.isBootsSpeed(0, 3600));
         assertFalse(PistonStep.isBootsSpeed(1, 10));
     }
+
+    @Test
+    void onlyWhileSprintingDecidesWhenTheBootsStepUp() {
+        assertTrue(PistonStep.stepping(true, true, true));
+        assertFalse(PistonStep.stepping(true, false, true), "walking does not climb with onlyWhileSprinting (#126)");
+        assertTrue(PistonStep.stepping(true, false, false), "without it the boots step up at any pace");
+        assertTrue(PistonStep.stepping(true, true, false));
+        assertFalse(PistonStep.stepping(false, true, true), "enabled.pistonBoots off");
+        assertFalse(PistonStep.stepping(false, false, false));
+    }
 }

@@ -252,6 +252,7 @@ public class ConfigHandler
     // ---------------------------------------------------------------- piston boots
     public static float PISTONBOOTS_STEP_HEIGHT = 1.001f;
     public static boolean PISTONBOOTS_SPRINT_SPEED = true;
+    public static boolean PISTONBOOTS_ONLY_WHILE_SPRINTING = true;
     public static int PISTONBOOTS_SAFE_FALL_DISTANCE = 8;
 
     // ---------------------------------------------------------------- render (client)
@@ -596,7 +597,8 @@ public class ConfigHandler
 
     private static void readPistonBoots(Configuration cfg)
     {
-        PISTONBOOTS_STEP_HEIGHT = (float) decimal(cfg, PISTONBOOTS, "stepHeight", 1.001, 0.5, 3.0, "Step height while sprinting (vanilla is 0.5).");
+        PISTONBOOTS_ONLY_WHILE_SPRINTING = bool(cfg, PISTONBOOTS, "onlyWhileSprinting", true, "Step up full blocks only while sprinting, so walking up to a block does not climb it. False steps up at any pace while the boots are on. The sprint speed is only given while sprinting either way.");
+        PISTONBOOTS_STEP_HEIGHT = (float) decimal(cfg, PISTONBOOTS, "stepHeight", 1.001, 0.5, 3.0, "Step height while the boots step up (vanilla is 0.5).");
         PISTONBOOTS_SPRINT_SPEED = bool(cfg, PISTONBOOTS, "sprintSpeed", true, "Give Speed I while sprinting.");
         PISTONBOOTS_SAFE_FALL_DISTANCE = integer(cfg, PISTONBOOTS, "safeFallDistance", 8, 0, 256, "Falls shorter than this many blocks do no damage. 0 turns it off.");
     }
