@@ -81,7 +81,7 @@ public class ServerActions
     {
         if (held == null) return false;
         return SlotTool.isValidTool(held)
-                || (held.getItem() == Items.bow && "Skeleton".equals(BackpackNames.getBackpackColorName(backpack)));
+                || (held.getItem() == Items.bow && "Skeleton".equals(BackpackNames.getBackpackColorName(backpack)) && !SlotTool.isBlacklisted(held));
     }
 
     public static boolean isHotbarSlot(int slot)

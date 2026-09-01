@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.config;
 
 import com.darkona.adventurebackpack.common.AbilityEffects;
 import com.darkona.adventurebackpack.common.NightVisionRefresh;
+import com.darkona.adventurebackpack.common.ToolCycleFilter;
 import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
@@ -50,6 +51,7 @@ public class ConfigHandler
     public static final String WORLDGEN = ROOT + ".worldgen";
     public static final String RECIPES = ROOT + ".recipes";
     public static final String TWEAKS = ROOT + ".tweaks";
+    public static final String TWEAKS_TOOL_CYCLE = TWEAKS + ".toolcycle";
     public static final String COMPAT = ROOT + ".compat";
     public static final String COMPAT_GRAVES = COMPAT + ".graves";
     public static final String COMPAT_BAUBLES = COMPAT + ".baubles";
@@ -279,6 +281,8 @@ public class ConfigHandler
     public static boolean SADDLE_RECIPE = true;
     public static boolean FIX_LEAD = true;
     public static boolean HORSES_FOLLOW_OWNER = true;
+    public static ToolCycleFilter.Mode TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.NONE;
+    public static ToolCycleFilter TOOL_CYCLE_FILTER = ToolCycleFilter.EMPTY;
 
     // ---------------------------------------------------------------- compat (each bridge only acts when its mod is loaded)
     public static boolean COMPAT_GRAVES_ENABLED = true;
@@ -354,6 +358,7 @@ public class ConfigHandler
         cfg.setCategoryComment(WORLDGEN, "Backpacks found in the world.");
         cfg.setCategoryComment(RECIPES, "Extra recipes.");
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
+        cfg.setCategoryComment(TWEAKS_TOOL_CYCLE, "The backpack's two tool slots: which items they take, by hand and with the tool cycle (keys.toolcycle). The server checks the same list.");
         cfg.setCategoryComment(COMPAT, "Integrations with other mods. Each one only acts when its mod is loaded; nothing here is a hard dependency.");
         cfg.setCategoryComment(COMPAT_GRAVES, "Grave mods (OpenBlocks graves, GraveStone). When one of them is loaded and makes a grave, the worn backpack (or copter pack, or jetpack) goes into the grave instead of being placed as a block. Without a grave mod, backpack.placeOnDeath decides.");
         cfg.setCategoryComment(COMPAT_BAUBLES, "Baubles and Baubles Expanded. The Adventure Backpack can be worn in a bauble slot and then works as if worn the usual way (abilities, open key, hose, model on the back). Baubles Expanded gets a new back slot; the original Baubles uses the belt slot. Only one backpack is worn at a time. The default open key (B) is the same as the Baubles inventory key: change one of them in Options > Controls.");
@@ -633,6 +638,11 @@ public class ConfigHandler
         SADDLE_RECIPE = bool(cfg, RECIPES, "saddle", true, "Add a crafting recipe for the saddle.");
         FIX_LEAD = bool(cfg, TWEAKS, "fixVanillaLead", true, "Mobs on a lead held by a player take no fall damage unless they fall fast.");
         HORSES_FOLLOW_OWNER = bool(cfg, TWEAKS, "namedHorsesFollowOwner", true, "Tamed horses with a name tag follow their owner.");
+        TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.parse(choice(cfg, TWEAKS_TOOL_CYCLE, "mode", "none", ToolCycleFilter.Mode.NAMES,
+                "Which items may go into the backpack's two tool slots, by hand or with the tool cycle. none: the built-in rules (vanilla tools, shears, hoes, fishing rods, flint and steel, and tools of Tinkers' Construct, BuildCraft, IndustrialCraft and Thermal Expansion). whitelist: only the items on the list. blacklist: the built-in rules minus the items on the list. Stackable items, hoses and backpacks never go in. Set it the same on server and clients."));
+        order(TWEAKS_TOOL_CYCLE, "list");
+        TOOL_CYCLE_FILTER = ToolCycleFilter.parse(cfg.getStringList("list", TWEAKS_TOOL_CYCLE, new String[0],
+                "Items for the whitelist or blacklist mode, one per line, as registry names: modid:name (minecraft:shears, TConstruct:pickaxe; the names /give takes), or modid:* for every item of a mod. A name without a mod id means minecraft:. Case does not matter. A blacklisted bow also stops the Skeleton Backpack from cycling it."));
     }
 
     private static void readCompat(Configuration cfg)

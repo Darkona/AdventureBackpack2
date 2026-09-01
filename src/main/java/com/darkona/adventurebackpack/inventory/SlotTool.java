@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.common.ToolCycleFilter;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import net.minecraft.inventory.IInventory;
@@ -24,9 +26,36 @@ public class SlotTool extends SlotAdventureBackpack
         return isValidTool(stack);
     }
 
+    /**
+     * True when the stack may go into the backpack's tool slots, by hand or by cycling. Never a stackable item, a hose
+     * or a backpack; past that, tweaks.toolcycle decides between the built-in rules and the config list (#49).
+     */
     public static boolean isValidTool(ItemStack stack)
     {
+        if (stack == null || stack.getItem() == null || stack.getMaxStackSize() != 1) return false;
+        Item item = stack.getItem();
+        if (item instanceof ItemHose || item instanceof ItemAdventureBackpack) return false;
+        ToolCycleFilter.Mode mode = ConfigHandler.TOOL_CYCLE_LIST_MODE;
+        if (mode == ToolCycleFilter.Mode.NONE) return isBuiltInTool(stack);
+        boolean listed = isListed(item);
+        return ToolCycleFilter.allows(mode, listed, mode == ToolCycleFilter.Mode.BLACKLIST && !listed && isBuiltInTool(stack));
+    }
 
+    /** True when the item is on the tweaks.toolcycle.list (whatever the mode). */
+    public static boolean isListed(Item item)
+    {
+        return ConfigHandler.TOOL_CYCLE_FILTER.listed(Item.itemRegistry.getNameForObject(item));
+    }
+
+    /** True when the item is blacklisted: the Skeleton's bow obeys the blacklist too. */
+    public static boolean isBlacklisted(ItemStack stack)
+    {
+        return stack != null && stack.getItem() != null && ConfigHandler.TOOL_CYCLE_LIST_MODE == ToolCycleFilter.Mode.BLACKLIST && isListed(stack.getItem());
+    }
+
+    /** The original rules: vanilla tools, known tool names, and tools of a few mods. */
+    private static boolean isBuiltInTool(ItemStack stack)
+    {
         boolean valid = false;
 
         String[] validToolNames = {
