@@ -20,6 +20,8 @@ public class Keybindings
     public static KeyBinding previousTool;
     /** Changes the firing mode of the held crossbow. */
     public static KeyBinding crossbowMode;
+    /** Turns the worn backpack's abilities off and on (#57). */
+    public static KeyBinding toggleAbilities;
 
     /** Builds the key bindings with the default keys from the config; called once, after the config is read. */
     public static void init()
@@ -30,6 +32,7 @@ public class Keybindings
         nextTool = new KeyBinding(Names.keys.NEXT_TOOL, ConfigHandler.KEY_NEXT_TOOL, Names.keys.CATEGORY);
         previousTool = new KeyBinding(Names.keys.PREVIOUS_TOOL, ConfigHandler.KEY_PREVIOUS_TOOL, Names.keys.CATEGORY);
         crossbowMode = new KeyBinding(Names.keys.CROSSBOW_MODE, ConfigHandler.KEY_CROSSBOW_MODE, Names.keys.CATEGORY);
+        toggleAbilities = new KeyBinding(Names.keys.TOGGLE_ABILITIES, ConfigHandler.KEY_TOGGLE_ABILITIES, Names.keys.CATEGORY);
     }
 
     /** True while the tool-cycle modifier is held: the bound key, or sneaking when it is not bound. */

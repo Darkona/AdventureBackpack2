@@ -49,6 +49,7 @@ public class KeybindHandler
         int toolDirection = ToolCycleInput.keyDirection(ConfigHandler.TOOL_CYCLE_ENABLED, ConfigHandler.TOOL_CYCLE_MODE,
                 Keybindings.nextTool.isPressed(), Keybindings.previousTool.isPressed());
         boolean crossbowMode = Keybindings.crossbowMode.isPressed();
+        boolean toggleAbilities = Keybindings.toggleAbilities.isPressed();
         Key keypressed = getPressedKeyBinding();
 
         if(player != null)
@@ -62,6 +63,12 @@ public class KeybindHandler
             {
                 // The server checks the held item and changes the mode; the new name shows when the stack syncs.
                 ModNetwork.net.sendToServer(new CrossbowPacket.Message(CrossbowPacket.CYCLE_MODE));
+            }
+
+            if (toggleAbilities && mc.inGameHasFocus)
+            {
+                // A request: the server flips the switch, syncs it back and says the result in chat.
+                ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.ABILITIES_TOGGLE, ""));
             }
 
             if (keypressed == Key.INVENTORY_KEY)

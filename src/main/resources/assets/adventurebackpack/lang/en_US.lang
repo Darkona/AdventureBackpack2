@@ -54,6 +54,7 @@ keys.adventureBackpack.toolModifier=Tool Cycle Modifier (none = sneak)
 keys.adventureBackpack.nextTool=Next Backpack Tool
 keys.adventureBackpack.previousTool=Previous Backpack Tool
 keys.adventureBackpack.crossbowMode=Crossbow Mode
+keys.adventureBackpack.toggleAbilities=Backpack Abilities On/Off
 
 ## Fluids
 fluid.melonJuice=Melon Juice
@@ -75,6 +76,9 @@ adventurebackpack:messages.copterpack.off=CopterPack: Off.
 adventurebackpack:messages.jetpack.on=Steam Jetpack: On.
 adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: out of bolts. Craft a Bolt Cartridge.
+adventurebackpack:messages.abilities.off=Backpack abilities: Off.
+adventurebackpack:messages.abilities.on=Backpack abilities: On.
+adventurebackpack:messages.abilities.disabled=Backpack abilities are turned off in the server config.
 adventurebackpack:tooltip.crossbow.loaded=Bolts: %1$s/%2$s
 adventurebackpack:tooltip.crossbow.controls=Hold right click to fire. Sneak + right click to change the cartridge.
 adventurebackpack:tooltip.crossbow.controls.grapple=Right click: fire the hook. It pulls you to the block it catches. Sneak or jump to let go.

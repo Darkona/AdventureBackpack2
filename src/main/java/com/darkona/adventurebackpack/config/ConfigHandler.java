@@ -100,6 +100,7 @@ public class ConfigHandler
 
     // ---------------------------------------------------------------- abilities
     public static int ABILITY_EFFECT_REFRESH_TICKS = AbilityEffects.EFFECT_REFRESH_TICKS;
+    public static boolean ABILITY_TOGGLE_MESSAGE = true;
 
     public static boolean BAT_ENABLED = true;
     public static int BAT_NIGHT_VISION_TICKS = NightVisionRefresh.DURATION;
@@ -268,6 +269,7 @@ public class ConfigHandler
     public static int KEY_OPEN_BACKPACK = Keyboard.KEY_B;
     public static int KEY_TOGGLE = Keyboard.KEY_N;
     public static int KEY_CROSSBOW_MODE = Keyboard.KEY_V;
+    public static int KEY_TOGGLE_ABILITIES = 0;
     public static boolean TOOL_CYCLE_ENABLED = true;
     public static ToolCycleInput.Mode TOOL_CYCLE_MODE = ToolCycleInput.Mode.BOTH;
     public static boolean TOOL_CYCLE_INVERT_WHEEL = false;
@@ -408,6 +410,7 @@ public class ConfigHandler
     private static void readAbilities(Configuration cfg)
     {
         ABILITY_EFFECT_REFRESH_TICKS = integer(cfg, ABILITIES, "effectRefreshTicks", AbilityEffects.EFFECT_REFRESH_TICKS, 2, 200, "Ticks left on a long potion effect (fire resistance, Dragon effects) under which the ability renews it.");
+        ABILITY_TOGGLE_MESSAGE = bool(cfg, ABILITIES, "toggleMessage", true, "Tell the player in chat when the abilities key (keys.toggleAbilities) turns the worn backpack's abilities off or on. Each player's choice is kept with the player; enabled.abilities false keeps them off for everyone.");
 
         String c = ABILITIES + ".bat";
         BAT_ENABLED = bool(cfg, c, "enabled", true, "Bat Backpack: night vision.");
@@ -622,6 +625,7 @@ public class ConfigHandler
         KEY_OPEN_BACKPACK = integer(cfg, KEYS, "openBackpack", Keyboard.KEY_B, 0, 255, "Default key that opens the worn backpack, copter pack or jetpack (48 = B).", true);
         KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and toggles the copter pack or jetpack (49 = N). Sneak + toggle changes the copter mode.", true);
         KEY_CROSSBOW_MODE = integer(cfg, KEYS, "crossbowMode", Keyboard.KEY_V, 0, 255, "Default key that changes the firing mode of the held Clockwork Crossbow (47 = V).", true);
+        KEY_TOGGLE_ABILITIES = integer(cfg, KEYS, "toggleAbilities", 0, 0, 255, "Default key that turns the abilities of the worn backpack off and on, for this player only (night vision, water breathing, fire resistance, milk...). 0 = not bound: pick one in Options > Controls.", true);
         TOOL_CYCLE_ENABLED = bool(cfg, TOOL_CYCLE, "enabled", true, "Swap the held tool with the backpack's tool slots, and change the hose mode, from the keyboard or mouse wheel. False turns both off, so the wheel always scrolls the hotbar.");
         TOOL_CYCLE_MODE = ToolCycleInput.Mode.parse(choice(cfg, TOOL_CYCLE, "mode", "both", ToolCycleInput.Mode.NAMES,
                 "wheel: hold the modifier key and turn the mouse wheel. keys: only the next and previous tool keys. both: either one."));

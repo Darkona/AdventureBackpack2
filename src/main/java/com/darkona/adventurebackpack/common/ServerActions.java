@@ -11,6 +11,7 @@ import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.RelayGuard;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.network.WearableModePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
 import com.darkona.adventurebackpack.reference.BackpackNames;
@@ -73,6 +74,41 @@ public class ServerActions
         {
             LogHelper.debug("Exception trying to cycle tools.");
             oops.printStackTrace();
+        }
+    }
+
+    /**
+     * Server: the player pressed the abilities key (#57). Flips the player's switch unless enabled.abilities is off,
+     * takes the worn backpack's own effects away when it goes off, and syncs the flag (one packet per change).
+     */
+    public static void toggleAbilities(EntityPlayer player)
+    {
+        BackpackProperty props = BackpackProperty.get(player);
+        if (props == null) return;
+        int result = AbilityToggle.toggle(ConfigHandler.BACKPACK_ABILITIES, props.isAbilitiesOff());
+        if (result != AbilityToggle.GLOBALLY_DISABLED)
+        {
+            props.setAbilitiesOff(result == AbilityToggle.TURNED_OFF);
+            ItemStack backpack = Wearing.getWearingBackpack(player);
+            if (result == AbilityToggle.TURNED_OFF && backpack != null
+                    && BackpackAbilities.hasRemoval(BackpackNames.getBackpackColorName(backpack)))
+            {
+                BackpackAbilities.backpackAbilities.executeRemoval(player, player.worldObj, backpack);
+            }
+            BackpackProperty.syncToNearIfChanged(player);
+        }
+        if (!ConfigHandler.ABILITY_TOGGLE_MESSAGE) return;
+        switch (result)
+        {
+            case AbilityToggle.TURNED_OFF:
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.abilities.off"));
+                break;
+            case AbilityToggle.TURNED_ON:
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.abilities.on"));
+                break;
+            default:
+                player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.abilities.disabled"));
+                break;
         }
     }
 

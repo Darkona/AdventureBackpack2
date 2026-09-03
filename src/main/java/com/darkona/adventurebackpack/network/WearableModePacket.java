@@ -19,6 +19,8 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
     public static byte COPTER_ON_OFF = 0;
     public static byte COPTER_TOGGLE = 1;
     public static byte JETPACK_ON_OFF = 2;
+    /** The abilities key (#57): the server flips the player's switch. */
+    public static final byte ABILITIES_TOGGLE = 3;
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
@@ -33,6 +35,9 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
 
                 if(message.type == JETPACK_ON_OFF)
                     ServerActions.toggleSteamJetpack(player,Wearing.getWearingSteam(player),message.type);
+
+                if (message.type == ABILITIES_TOGGLE)
+                    ServerActions.toggleAbilities(player);
             }
 
         }

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.common.AbilityToggle;
 import com.darkona.adventurebackpack.common.DeathRoute;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.compat.graves.GraveCompat;
@@ -168,7 +169,7 @@ public class PlayerEventHandler
                 {
                     event.setCanceled(true);
                 }
-                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.IRONGOLEM_ENABLED)
+                if(Wearing.isWearingTheRightBackpack((EntityPlayer)event.entityLiving,"IronGolem") && ConfigHandler.IRONGOLEM_ENABLED && AbilityToggle.isActive((EntityPlayer) event.entityLiving))
                 {
                     event.setCanceled(true);
                 }
