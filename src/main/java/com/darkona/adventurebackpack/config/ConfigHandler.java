@@ -45,6 +45,8 @@ public class ConfigHandler
     public static final String CROSSBOW_GRAPPLE = CROSSBOW + ".grapple";
     public static final String CROSSBOW_SNIPER = CROSSBOW + ".sniper";
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
+    public static final String CAMPFIRE = ROOT + ".campfire";
+    public static final String CAMPFIRE_COOKING = CAMPFIRE + ".cooking";
     public static final String RENDER = ROOT + ".render";
     public static final String KEYS = ROOT + ".keys";
     public static final String TOOL_CYCLE = KEYS + ".toolcycle";
@@ -90,6 +92,7 @@ public class ConfigHandler
     public static boolean CROSSBOW_ENABLED = true;
     public static boolean SLEEPINGBAG_ENABLED = true;
     public static boolean PISTONBOOTS_ENABLED = true;
+    public static boolean CAMPFIRE_ENABLED = true;
 
     // ---------------------------------------------------------------- backpack
     public static boolean BACKPACK_DEATH_PLACE = true;
@@ -258,6 +261,13 @@ public class ConfigHandler
     public static boolean PISTONBOOTS_ONLY_WHILE_SPRINTING = true;
     public static int PISTONBOOTS_SAFE_FALL_DISTANCE = 8;
 
+    // ---------------------------------------------------------------- campfire
+    public static boolean CAMPFIRE_COOKING_ENABLED = true;
+    public static int CAMPFIRE_TICKS_PER_ITEM = 200;
+    public static boolean CAMPFIRE_ONLY_FOOD = true;
+    public static int CAMPFIRE_MAX_PER_USE = 8;
+    public static double CAMPFIRE_RETURN_RANGE = 4.0;
+
     // ---------------------------------------------------------------- render (client)
     public static boolean RENDER_BACKPACK_ON_PLAYER = true;
     public static int GUI_TANK_RENDER = 3;
@@ -320,6 +330,7 @@ public class ConfigHandler
         readInflatableBoat(cfg);
         readCrossbow(cfg);
         readPistonBoots(cfg);
+        readCampfire(cfg);
         readRender(cfg);
         readKeys(cfg);
         readWorldgenRecipesTweaks(cfg);
@@ -355,6 +366,8 @@ public class ConfigHandler
         cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
         cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the cartridge (an empty magazine still reloads by itself).");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
+        cfg.setCategoryComment(CAMPFIRE, "The Campfire: a respawn point for the sleeping bag, and a fire to cook on.");
+        cfg.setCategoryComment(CAMPFIRE_COOKING, "Right click the campfire with raw food to cook it. The campfire holds one kind of item at a time and cooks it one by one; the cooked items go into the inventory of the player who put them there when that player is close, or pop out on top of the campfire. No fuel. Breaking the campfire drops what is still raw. Ticks: 20 per second.");
         cfg.setCategoryComment(RENDER, "Client only: how the mod draws things. The server ignores this category.");
         cfg.setCategoryComment(KEYS, "Client only: default keys, as LWJGL key codes (B = 48, N = 49, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
         cfg.setCategoryComment(WORLDGEN, "Backpacks found in the world.");
@@ -396,6 +409,7 @@ public class ConfigHandler
         CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow and its Bolt Cartridges.");
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "Deploying the sleeping bag from a placed backpack.");
         PISTONBOOTS_ENABLED = bool(cfg, ENABLED, "pistonBoots", true, "The Piston Boots: step assist, sprint speed and fall protection.");
+        CAMPFIRE_ENABLED = bool(cfg, ENABLED, "campfire", true, "Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way.");
     }
 
     private static void readBackpack(Configuration cfg)
@@ -609,6 +623,15 @@ public class ConfigHandler
         PISTONBOOTS_STEP_HEIGHT = (float) decimal(cfg, PISTONBOOTS, "stepHeight", 1.001, 0.5, 3.0, "Step height while the boots step up (vanilla is 0.5).");
         PISTONBOOTS_SPRINT_SPEED = bool(cfg, PISTONBOOTS, "sprintSpeed", true, "Give Speed I while sprinting.");
         PISTONBOOTS_SAFE_FALL_DISTANCE = integer(cfg, PISTONBOOTS, "safeFallDistance", 8, 0, 256, "Falls shorter than this many blocks do no damage. 0 turns it off.");
+    }
+
+    private static void readCampfire(Configuration cfg)
+    {
+        CAMPFIRE_COOKING_ENABLED = bool(cfg, CAMPFIRE_COOKING, "enabled", true, "Cook items by right clicking the campfire with them.");
+        CAMPFIRE_TICKS_PER_ITEM = integer(cfg, CAMPFIRE_COOKING, "ticksPerItem", 200, 1, 12000, "Time to cook one item (the furnace takes 200).");
+        CAMPFIRE_ONLY_FOOD = bool(cfg, CAMPFIRE_COOKING, "onlyFood", true, "Only cook items whose furnace result is food. False takes any furnace recipe (ores, sand, logs...).");
+        CAMPFIRE_MAX_PER_USE = integer(cfg, CAMPFIRE_COOKING, "maxPerUse", 8, 1, 64, "Most items the campfire holds at once; a right click puts on as many as fit, the rest stays in the hand.");
+        CAMPFIRE_RETURN_RANGE = decimal(cfg, CAMPFIRE_COOKING, "returnRange", 4.0, 0.0, 16.0, "Distance in blocks within which the cooked items go straight into the inventory of the player who put them on the fire. Farther away, or with 0, they pop out on top of the campfire.");
     }
 
     private static void readRender(Configuration cfg)
