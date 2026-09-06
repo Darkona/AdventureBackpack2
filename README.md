@@ -8,12 +8,12 @@ The backpack goes on your back, not in an armor slot. Press B and you get 39 sto
 
 ## What you get
 
-- **76 backpacks.** Black wool, cactus, a Creeper head, a Dragon Egg: surround a Standard backpack with the right items and you get a new look, and for 19 of them an ability. The Bat sees in the dark, the Pigman resists fire, the Cow makes milk from wheat, the Chicken lays eggs, the Wolf calms angry wolves, the Rainbow runs fast, with a song, after a golden apple.
+- **76 backpacks.** Black wool, cactus, a Creeper head, a Dragon Egg: surround a Standard backpack with the right items and you get a new look, and for 20 of them an ability. The Bat sees in the dark, the Pigman resists fire, the Cow makes milk from wheat, the Chicken lays eggs, the Wolf calms angry wolves, the Spider tames spiders you can ride, the Blaze sets what you punch on fire, the Rainbow runs fast, with a song, after a golden apple.
 - **Fluids.** Two tanks of 4000 mB per backpack, and a hose to suck, spill and drink. Milk clears your effects, melon juice speeds up your mining, mushroom stew feeds you.
-- **Clockwork Crossbow.** A repeating crossbow with a six bolt magazine. Hold right click to empty it, reload from Bolt Cartridges, and use Blazing, Freezing, Poison and Stunning cartridges for effects.
+- **Clockwork Crossbow.** A repeating crossbow with a six bolt magazine: hold right click to empty it, and reload from Bolt Cartridges. A key switches it to a grappling hook that pulls you to a block, or to a sniper mode with a bipod and a zoom.
 - **Steam Jetpack and Copter Pack.** The jetpack boils water with a furnace fuel and thrusts you up. The copter pack burns BuildCraft fuel to glide, climb and hover. Flying costs: a full tank gives a minute or two.
-- **Camp.** Deploy a sleeping bag from a placed backpack, put a campfire next to it, and you respawn there.
-- **Gear.** Piston Boots, a Machete and an Adventurer's Fedora.
+- **Camp.** Deploy a sleeping bag from a placed backpack, or lay it on the ground on its own, put a campfire next to it, and you respawn there. Cook raw food on the campfire.
+- **Gear.** Piston Boots, a Machete, an Adventurer's Fedora and a craftable Inflatable Boat.
 
 ## Compatibility
 
@@ -21,6 +21,7 @@ Everything below is optional.
 
 - **BuildCraft:** the Copter Pack works only with it, and uses its fuel.
 - **Railcraft:** steam for the jetpack, and a better recipe. Without a steam mod the backpack adds its own.
+- **IndustrialCraft 2, GregTech and Thermal Expansion:** rubber and electric motors give extra recipes for the Inflatable Boat.
 - **Baubles and Baubles Expanded:** wear the backpack in a bauble slot. Baubles Expanded gets a Back slot.
 - **OpenBlocks and GraveStone:** the backpack goes into your grave when you die.
 - **Smart Moving:** a setting hides the worn backpack when it clashes.

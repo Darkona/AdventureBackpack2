@@ -1,5 +1,44 @@
 # Changelog
 
+## 1.1.0 (unreleased)
+
+For Minecraft 1.7.10 with Forge.
+
+The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders become pets you tame, the Blaze backpack gets its ability, the sleeping bag and the Inflatable Boat can be crafted and used on their own, and the campfire cooks. Numbers in brackets are issues in the GitHub repository.
+
+### Added
+
+- **Crossbow modes.** A key, V by default, changes the mode of the crossbow in your hand: repetition, grappling hook and sniper. See [Crossbow](Crossbow).
+- **Grappling hook.** Right click shoots a hook that catches the first solid block within 32 blocks and pulls you to it. You let go by sneaking or jumping, and you take no fall damage from the pull. Settings: `crossbow.grapple`.
+- **Sniper mode.** Sneak and stand still on the ground to put a bipod down and zoom in; right click fires one strong, straight bolt. Settings: `crossbow.sniper`.
+- **Taming spiders.** With the Spider backpack on, right click a spider with a spider eye to try to tame it. A tame spider follows you and only you ride it, while you wear the backpack. Settings: `abilities.spider`. See [Backpacks](Backpacks#taming-spiders).
+- **Blaze backpack ability.** You do not burn in fire or lava, and your punches set what you hit on fire. Settings: `abilities.blaze`.
+- **Sleeping Bag on its own.** Right click the top of a block with the Sleeping Bag item to lay it on the ground as a bed, with no backpack. Break it or sneak and right click it to get the item back. Settings: `sleepingbag`. See [Gear](Gear#campfire-and-sleeping-bag).
+- **Craftable Inflatable Boat.** New parts: Inflatable Chamber and a recipe for the Hydro Blades. Rubber and electric motors from IndustrialCraft 2, GregTech and Thermal Expansion give extra recipes. Settings: `recipes.boat`. See [Gear](Gear#inflatable-boat).
+- **Cooking on the campfire.** Right click the campfire with raw food to cook it. Settings: `campfire.cooking`. See [Gear](Gear#cooking-on-the-campfire).
+- **Abilities key.** A key, not bound by default, turns the abilities of the backpack you wear off and on, only for you (#57). Setting: `abilities.toggleMessage`. See [Controls](Controls#the-abilities-key).
+- **Tool slot list.** A whitelist or a blacklist decides which items go in the tool slots of the backpack and into the tool swap (#49). Settings: `tweaks.toolcycle`.
+- **Squid backpack on land.** `abilities.squid.worksOnLand` gives the Squid water breathing and night vision out of water too, for mods that make the player breathe water (#151).
+- **Piston Boots at any pace.** `pistonboots.onlyWhileSprinting` set to false makes the boots step up blocks while walking (#126).
+- The config file has 188 keys now. See [Configuration](Configuration).
+
+### Changed
+
+- **Spiders are not friends on their own any more.** In 1.0.0 a spider you right clicked with the Spider backpack on became a spider to ride. Now you tame it with a spider eye, you can have two, and they go free when you die, log out or change dimension. Friendly spiders saved by 1.0.0 have no owner and turn back into normal spiders.
+- **Blaze backpack.** It had no ability before.
+- **Sleeping Bag.** The item can be placed on its own, and sleeping in a bag can be set not to move your spawn point (`sleepingbag.setsSpawn`).
+- **Inflatable Boat.** It was only in the creative tab. The two boats, the Inflatable Chamber and the Hydro Blades now have crafting recipes.
+- **Bolt Cartridge.** There is a single kind of cartridge with six bolts, made of arrows, an iron ingot and sticks.
+
+### Removed
+
+- **Elemental bolts.** The Blazing, Freezing, Poison and Stunning cartridges and bolts are gone, with their recipes and the `crossbow.elemental` settings, which leave the file on the first start. Cartridges and crossbows loaded with them work as normal ones.
+
+### Fixed
+
+- Tamed spiders no longer pile up in the world. They never despawned and had no owner.
+- The sleeping bag no longer stays marked as occupied after you wake up.
+
 ## 1.0.0 (2026-10-15)
 
 For Minecraft 1.7.10 with Forge.
