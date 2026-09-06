@@ -5,11 +5,14 @@ import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
@@ -126,7 +129,68 @@ public class BlockCampFire extends BlockContainer
             //world.spawnParticle("flame", posX+Math.sin(i/4), posY, posZ+Math.cos(i/4), 0.0D, 0.0D, 0.0D);
             world.spawnParticle("flame", rndX, rndY + 0.16, rndZ, 0.0D, 0.0D, 0.0D);
         }
+        TileEntity te = world.getTileEntity(posX, posY, posZ);
+        if (te instanceof TileCampfire && ((TileCampfire) te).isCooking())
+        {
+            // Something on the fire: more smoke and a sizzle now and then (client only, from the synced flag).
+            for (int i = 0; i < 3; i++)
+            {
+                world.spawnParticle("smoke", posX + 0.35 + rnd.nextFloat() * 0.3, posY + 0.3, posZ + 0.35 + rnd.nextFloat() * 0.3, 0.0D, 0.04D, 0.0D);
+            }
+            if (rnd.nextInt(3) == 0)
+            {
+                world.playSound(posX + 0.5, posY + 0.5, posZ + 0.5, "random.fizz", 0.15F, 1.8F + rnd.nextFloat() * 0.2F, false);
+            }
+        }
 
+    }
+
+    /**
+     * Right click with a raw item puts it on the fire (campfire.cooking). Anything that cannot cook here falls through
+     * to the item's own use (eating, placing a block). The client only predicts that the click is taken, so it does not
+     * start eating; the server does the work.
+     */
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    {
+        ItemStack held = player.getCurrentEquippedItem();
+        if (TileCampfire.cookResult(held) == null) return false;
+        if (world.isRemote) return true;
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (!(te instanceof TileCampfire)) return true;
+        int taken = ((TileCampfire) te).insert(held, player, world.getTotalWorldTime());
+        if (taken <= 0)
+        {
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.campfire.busy"));
+            return true;
+        }
+        if (!player.capabilities.isCreativeMode)
+        {
+            held.stackSize -= taken;
+            if (held.stackSize <= 0) player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+        }
+        world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "fire.ignite", 0.6F, 1.2F);
+        return true;
+    }
+
+    /** Scheduled when an item on the fire is due (random ticks land here too and only reschedule). */
+    @Override
+    public void updateTick(World world, int x, int y, int z, Random random)
+    {
+        if (world.isRemote) return;
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TileCampfire) ((TileCampfire) te).onBlockUpdate(world.getTotalWorldTime());
+    }
+
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    {
+        if (!world.isRemote)
+        {
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof TileCampfire) ((TileCampfire) te).dropContents();
+        }
+        super.breakBlock(world, x, y, z, block, meta);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.common.AbilityToggle;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
@@ -288,8 +289,9 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
 
-        if (!ConfigHandler.BACKPACK_ABILITIES) return;
         if (world == null || player == null || stack == null) return;
+        // enabled.abilities and the player's own switch (#57)
+        if (!AbilityToggle.isActive(player)) return;
 
         if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
         {
@@ -313,7 +315,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
     /** The Creeper Backpack explodes when its wearer dies, wherever the backpack goes afterwards. */
     public static void deathEffects(World world, EntityPlayer player, ItemStack stack)
     {
-        if (ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.CREEPER_DEATH_EXPLOSION && "Creeper".equals(BackpackNames.getBackpackColorName(stack)))
+        if (AbilityToggle.isActive(player) && ConfigHandler.CREEPER_DEATH_EXPLOSION && "Creeper".equals(BackpackNames.getBackpackColorName(stack)))
         {
             world.createExplosion(player, player.posX, player.posY, player.posZ, ConfigHandler.CREEPER_DEATH_EXPLOSION_POWER, false);
         }

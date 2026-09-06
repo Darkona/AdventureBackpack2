@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.config;
 import com.darkona.adventurebackpack.common.AbilityEffects;
 import com.darkona.adventurebackpack.common.BoatRecipeRules;
 import com.darkona.adventurebackpack.common.NightVisionRefresh;
+import com.darkona.adventurebackpack.common.ToolCycleFilter;
 import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
@@ -46,6 +47,8 @@ public class ConfigHandler
     public static final String CROSSBOW_SNIPER = CROSSBOW + ".sniper";
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
     public static final String SLEEPINGBAG = ROOT + ".sleepingbag";
+    public static final String CAMPFIRE = ROOT + ".campfire";
+    public static final String CAMPFIRE_COOKING = CAMPFIRE + ".cooking";
     public static final String RENDER = ROOT + ".render";
     public static final String KEYS = ROOT + ".keys";
     public static final String TOOL_CYCLE = KEYS + ".toolcycle";
@@ -53,6 +56,7 @@ public class ConfigHandler
     public static final String RECIPES = ROOT + ".recipes";
     public static final String RECIPES_BOAT = RECIPES + ".boat";
     public static final String TWEAKS = ROOT + ".tweaks";
+    public static final String TWEAKS_TOOL_CYCLE = TWEAKS + ".toolcycle";
     public static final String COMPAT = ROOT + ".compat";
     public static final String COMPAT_GRAVES = COMPAT + ".graves";
     public static final String COMPAT_BAUBLES = COMPAT + ".baubles";
@@ -91,6 +95,7 @@ public class ConfigHandler
     public static boolean CROSSBOW_ENABLED = true;
     public static boolean SLEEPINGBAG_ENABLED = true;
     public static boolean PISTONBOOTS_ENABLED = true;
+    public static boolean CAMPFIRE_ENABLED = true;
 
     // ---------------------------------------------------------------- backpack
     public static boolean BACKPACK_DEATH_PLACE = true;
@@ -101,12 +106,14 @@ public class ConfigHandler
 
     // ---------------------------------------------------------------- abilities
     public static int ABILITY_EFFECT_REFRESH_TICKS = AbilityEffects.EFFECT_REFRESH_TICKS;
+    public static boolean ABILITY_TOGGLE_MESSAGE = true;
 
     public static boolean BAT_ENABLED = true;
     public static int BAT_NIGHT_VISION_TICKS = NightVisionRefresh.DURATION;
     public static int BAT_NIGHT_VISION_REFRESH_BELOW = NightVisionRefresh.REFRESH_BELOW;
 
     public static boolean SQUID_ENABLED = true;
+    public static boolean SQUID_WORKS_ON_LAND = false;
 
     public static boolean PIGMAN_ENABLED = true;
     public static int PIGMAN_FIRE_RESISTANCE_TICKS = 5000;
@@ -272,7 +279,15 @@ public class ConfigHandler
     // ---------------------------------------------------------------- piston boots
     public static float PISTONBOOTS_STEP_HEIGHT = 1.001f;
     public static boolean PISTONBOOTS_SPRINT_SPEED = true;
+    public static boolean PISTONBOOTS_ONLY_WHILE_SPRINTING = true;
     public static int PISTONBOOTS_SAFE_FALL_DISTANCE = 8;
+
+    // ---------------------------------------------------------------- campfire
+    public static boolean CAMPFIRE_COOKING_ENABLED = true;
+    public static int CAMPFIRE_TICKS_PER_ITEM = 200;
+    public static boolean CAMPFIRE_ONLY_FOOD = true;
+    public static int CAMPFIRE_MAX_PER_USE = 8;
+    public static double CAMPFIRE_RETURN_RANGE = 4.0;
 
     // ---------------------------------------------------------------- render (client)
     public static boolean RENDER_BACKPACK_ON_PLAYER = true;
@@ -285,6 +300,7 @@ public class ConfigHandler
     public static int KEY_OPEN_BACKPACK = Keyboard.KEY_B;
     public static int KEY_TOGGLE = Keyboard.KEY_N;
     public static int KEY_CROSSBOW_MODE = Keyboard.KEY_V;
+    public static int KEY_TOGGLE_ABILITIES = 0;
     public static boolean TOOL_CYCLE_ENABLED = true;
     public static ToolCycleInput.Mode TOOL_CYCLE_MODE = ToolCycleInput.Mode.BOTH;
     public static boolean TOOL_CYCLE_INVERT_WHEEL = false;
@@ -303,6 +319,8 @@ public class ConfigHandler
     public static String[] BOAT_MOTORS = BOAT_MOTORS_DEFAULT;
     public static boolean FIX_LEAD = true;
     public static boolean HORSES_FOLLOW_OWNER = true;
+    public static ToolCycleFilter.Mode TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.NONE;
+    public static ToolCycleFilter TOOL_CYCLE_FILTER = ToolCycleFilter.EMPTY;
 
     // ---------------------------------------------------------------- compat (each bridge only acts when its mod is loaded)
     public static boolean COMPAT_GRAVES_ENABLED = true;
@@ -339,6 +357,7 @@ public class ConfigHandler
         readCrossbow(cfg);
         readPistonBoots(cfg);
         readSleepingBag(cfg);
+        readCampfire(cfg);
         readRender(cfg);
         readKeys(cfg);
         readWorldgenRecipesTweaks(cfg);
@@ -375,6 +394,8 @@ public class ConfigHandler
         cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the cartridge (an empty magazine still reloads by itself).");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
         cfg.setCategoryComment(SLEEPINGBAG, "The sleeping bag, deployed from a placed backpack or placed on its own.");
+        cfg.setCategoryComment(CAMPFIRE, "The Campfire: a respawn point for the sleeping bag, and a fire to cook on.");
+        cfg.setCategoryComment(CAMPFIRE_COOKING, "Right click the campfire with raw food to cook it. The campfire holds one kind of item at a time and cooks it one by one; the cooked items go into the inventory of the player who put them there when that player is close, or pop out on top of the campfire. No fuel. Breaking the campfire drops what is still raw. Ticks: 20 per second.");
         cfg.setCategoryComment(RENDER, "Client only: how the mod draws things. The server ignores this category.");
         cfg.setCategoryComment(KEYS, "Client only: default keys, as LWJGL key codes (B = 48, N = 49, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
         cfg.setCategoryComment(WORLDGEN, "Backpacks found in the world.");
@@ -382,6 +403,7 @@ public class ConfigHandler
         cfg.setCategoryComment(RECIPES_BOAT, "Recipes of the Inflatable Boat (only when enabled.inflatableBoat is on). Vanilla: Inflatable Chambers (leather, slime ball, leather), five of them with string and a Hose Nozzle as the valve make the boat; a piston, a furnace and Hydro Blades make it a motorized boat. With technical mods, rubber makes the chambers (three rubber, two chambers) and an electric motor plus Hydro Blades makes the motorized boat. The recipes are read once at startup: needs a restart.");
         cfg.getCategory(RECIPES_BOAT).setRequiresMcRestart(true);
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
+        cfg.setCategoryComment(TWEAKS_TOOL_CYCLE, "The backpack's two tool slots: which items they take, by hand and with the tool cycle (keys.toolcycle). The server checks the same list.");
         cfg.setCategoryComment(COMPAT, "Integrations with other mods. Each one only acts when its mod is loaded; nothing here is a hard dependency.");
         cfg.setCategoryComment(COMPAT_GRAVES, "Grave mods (OpenBlocks graves, GraveStone). When one of them is loaded and makes a grave, the worn backpack (or copter pack, or jetpack) goes into the grave instead of being placed as a block. Without a grave mod, backpack.placeOnDeath decides.");
         cfg.setCategoryComment(COMPAT_BAUBLES, "Baubles and Baubles Expanded. The Adventure Backpack can be worn in a bauble slot and then works as if worn the usual way (abilities, open key, hose, model on the back). Baubles Expanded gets a new back slot; the original Baubles uses the belt slot. Only one backpack is worn at a time. The default open key (B) is the same as the Baubles inventory key: change one of them in Options > Controls.");
@@ -417,6 +439,7 @@ public class ConfigHandler
         CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow and its Bolt Cartridges.");
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up.");
         PISTONBOOTS_ENABLED = bool(cfg, ENABLED, "pistonBoots", true, "The Piston Boots: step assist, sprint speed and fall protection.");
+        CAMPFIRE_ENABLED = bool(cfg, ENABLED, "campfire", true, "Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way.");
     }
 
     private static void readBackpack(Configuration cfg)
@@ -431,6 +454,7 @@ public class ConfigHandler
     private static void readAbilities(Configuration cfg)
     {
         ABILITY_EFFECT_REFRESH_TICKS = integer(cfg, ABILITIES, "effectRefreshTicks", AbilityEffects.EFFECT_REFRESH_TICKS, 2, 200, "Ticks left on a long potion effect (fire resistance, Dragon effects) under which the ability renews it.");
+        ABILITY_TOGGLE_MESSAGE = bool(cfg, ABILITIES, "toggleMessage", true, "Tell the player in chat when the abilities key (keys.toggleAbilities) turns the worn backpack's abilities off or on. Each player's choice is kept with the player; enabled.abilities false keeps them off for everyone.");
 
         String c = ABILITIES + ".bat";
         BAT_ENABLED = bool(cfg, c, "enabled", true, "Bat Backpack: night vision.");
@@ -439,6 +463,7 @@ public class ConfigHandler
 
         c = ABILITIES + ".squid";
         SQUID_ENABLED = bool(cfg, c, "enabled", true, "Squid Backpack: water breathing and night vision while in water.");
+        SQUID_WORKS_ON_LAND = bool(cfg, c, "worksOnLand", false, "Give the water breathing and the night vision out of water too, for mods that make the player breathe water (merfolk). Both are taken away when the backpack comes off or this is turned off.");
 
         c = ABILITIES + ".pigman";
         PIGMAN_ENABLED = bool(cfg, c, "enabled", true, "Pigman Backpack: fire resistance.");
@@ -646,9 +671,19 @@ public class ConfigHandler
 
     private static void readPistonBoots(Configuration cfg)
     {
-        PISTONBOOTS_STEP_HEIGHT = (float) decimal(cfg, PISTONBOOTS, "stepHeight", 1.001, 0.5, 3.0, "Step height while sprinting (vanilla is 0.5).");
+        PISTONBOOTS_ONLY_WHILE_SPRINTING = bool(cfg, PISTONBOOTS, "onlyWhileSprinting", true, "Step up full blocks only while sprinting, so walking up to a block does not climb it. False steps up at any pace while the boots are on. The sprint speed is only given while sprinting either way.");
+        PISTONBOOTS_STEP_HEIGHT = (float) decimal(cfg, PISTONBOOTS, "stepHeight", 1.001, 0.5, 3.0, "Step height while the boots step up (vanilla is 0.5).");
         PISTONBOOTS_SPRINT_SPEED = bool(cfg, PISTONBOOTS, "sprintSpeed", true, "Give Speed I while sprinting.");
         PISTONBOOTS_SAFE_FALL_DISTANCE = integer(cfg, PISTONBOOTS, "safeFallDistance", 8, 0, 256, "Falls shorter than this many blocks do no damage. 0 turns it off.");
+    }
+
+    private static void readCampfire(Configuration cfg)
+    {
+        CAMPFIRE_COOKING_ENABLED = bool(cfg, CAMPFIRE_COOKING, "enabled", true, "Cook items by right clicking the campfire with them.");
+        CAMPFIRE_TICKS_PER_ITEM = integer(cfg, CAMPFIRE_COOKING, "ticksPerItem", 200, 1, 12000, "Time to cook one item (the furnace takes 200).");
+        CAMPFIRE_ONLY_FOOD = bool(cfg, CAMPFIRE_COOKING, "onlyFood", true, "Only cook items whose furnace result is food. False takes any furnace recipe (ores, sand, logs...).");
+        CAMPFIRE_MAX_PER_USE = integer(cfg, CAMPFIRE_COOKING, "maxPerUse", 8, 1, 64, "Most items the campfire holds at once; a right click puts on as many as fit, the rest stays in the hand.");
+        CAMPFIRE_RETURN_RANGE = decimal(cfg, CAMPFIRE_COOKING, "returnRange", 4.0, 0.0, 16.0, "Distance in blocks within which the cooked items go straight into the inventory of the player who put them on the fire. Farther away, or with 0, they pop out on top of the campfire.");
     }
 
     private static void readRender(Configuration cfg)
@@ -665,6 +700,7 @@ public class ConfigHandler
         KEY_OPEN_BACKPACK = integer(cfg, KEYS, "openBackpack", Keyboard.KEY_B, 0, 255, "Default key that opens the worn backpack, copter pack or jetpack (48 = B).", true);
         KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and toggles the copter pack or jetpack (49 = N). Sneak + toggle changes the copter mode.", true);
         KEY_CROSSBOW_MODE = integer(cfg, KEYS, "crossbowMode", Keyboard.KEY_V, 0, 255, "Default key that changes the firing mode of the held Clockwork Crossbow (47 = V).", true);
+        KEY_TOGGLE_ABILITIES = integer(cfg, KEYS, "toggleAbilities", 0, 0, 255, "Default key that turns the abilities of the worn backpack off and on, for this player only (night vision, water breathing, fire resistance, milk...). 0 = not bound: pick one in Options > Controls.", true);
         TOOL_CYCLE_ENABLED = bool(cfg, TOOL_CYCLE, "enabled", true, "Swap the held tool with the backpack's tool slots, and change the hose mode, from the keyboard or mouse wheel. False turns both off, so the wheel always scrolls the hotbar.");
         TOOL_CYCLE_MODE = ToolCycleInput.Mode.parse(choice(cfg, TOOL_CYCLE, "mode", "both", ToolCycleInput.Mode.NAMES,
                 "wheel: hold the modifier key and turn the mouse wheel. keys: only the next and previous tool keys. both: either one."));
@@ -687,6 +723,11 @@ public class ConfigHandler
         BOAT_MOTORS = cfg.getStringList("motors", RECIPES_BOAT, BOAT_MOTORS_DEFAULT, "Electric motors for the motorized boat, each one found gets its own recipe. Entries: ic2:<IC2 item name> (IC2 API, elemotor is the Electric Motor), item:<modid>:<item name>[:<damage>] (gregtech:gt.metaitem.01:32600 is GregTech's LV Motor), ore:<Ore Dictionary name>, stack:<modid>:<registered stack name> (Thermal Expansion's powerCoilGold is the Redstone Reception Coil). Needs a restart.");
         FIX_LEAD = bool(cfg, TWEAKS, "fixVanillaLead", true, "Mobs on a lead held by a player take no fall damage unless they fall fast.");
         HORSES_FOLLOW_OWNER = bool(cfg, TWEAKS, "namedHorsesFollowOwner", true, "Tamed horses with a name tag follow their owner.");
+        TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.parse(choice(cfg, TWEAKS_TOOL_CYCLE, "mode", "none", ToolCycleFilter.Mode.NAMES,
+                "Which items may go into the backpack's two tool slots, by hand or with the tool cycle. none: the built-in rules (vanilla tools, shears, hoes, fishing rods, flint and steel, and tools of Tinkers' Construct, BuildCraft, IndustrialCraft and Thermal Expansion). whitelist: only the items on the list. blacklist: the built-in rules minus the items on the list. Stackable items, hoses and backpacks never go in. Set it the same on server and clients."));
+        order(TWEAKS_TOOL_CYCLE, "list");
+        TOOL_CYCLE_FILTER = ToolCycleFilter.parse(cfg.getStringList("list", TWEAKS_TOOL_CYCLE, new String[0],
+                "Items for the whitelist or blacklist mode, one per line, as registry names: modid:name (minecraft:shears, TConstruct:pickaxe; the names /give takes), or modid:* for every item of a mod. A name without a mod id means minecraft:. Case does not matter. A blacklisted bow also stops the Skeleton Backpack from cycling it."));
     }
 
     private static void readCompat(Configuration cfg)

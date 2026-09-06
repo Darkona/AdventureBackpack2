@@ -22,13 +22,22 @@ public final class PistonStep
 
     /**
      * @param wearing  the boots are on the feet
-     * @param boosting the boots are enabled and the player sprints
+     * @param boosting the boots raise the step height now ({@link #stepping})
      * @param applied  the boots changed the step height and have not put it back yet
      */
     public static int action(boolean wearing, boolean boosting, boolean applied)
     {
         if (wearing && boosting) return APPLY;
         return applied ? RESTORE : NONE;
+    }
+
+    /**
+     * True when the boots raise the step height this tick: they are enabled and the player sprints, or
+     * pistonboots.onlyWhileSprinting is off and they step up at any pace (#126).
+     */
+    public static boolean stepping(boolean enabled, boolean sprinting, boolean onlyWhileSprinting)
+    {
+        return enabled && (sprinting || !onlyWhileSprinting);
     }
 
     /** True when the sprint Speed must be (re)applied: absent, or our own one about to end. */

@@ -18,6 +18,7 @@ public final class Names
         public static final String NEXT_TOOL = "keys.adventureBackpack.nextTool";
         public static final String PREVIOUS_TOOL = "keys.adventureBackpack.previousTool";
         public static final String CROSSBOW_MODE = "keys.adventureBackpack.crossbowMode";
+        public static final String TOGGLE_ABILITIES = "keys.adventureBackpack.toggleAbilities";
     }
 
 }

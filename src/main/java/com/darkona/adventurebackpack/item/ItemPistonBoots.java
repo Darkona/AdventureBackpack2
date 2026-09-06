@@ -43,13 +43,14 @@ public class ItemPistonBoots extends ArmorAB
     {
         BackpackProperty prop = BackpackProperty.get(player);
         if (prop == null) return;
-        boolean boosting = ConfigHandler.PISTONBOOTS_ENABLED && player.isSprinting();
+        boolean sprinting = player.isSprinting();
+        boolean boosting = PistonStep.stepping(ConfigHandler.PISTONBOOTS_ENABLED, sprinting, ConfigHandler.PISTONBOOTS_ONLY_WHILE_SPRINTING);
         switch (PistonStep.action(wearing, boosting, prop.isPistonStepApplied()))
         {
             case PistonStep.APPLY:
                 prop.setPistonStepApplied(true);
                 player.stepHeight = ConfigHandler.PISTONBOOTS_STEP_HEIGHT;
-                if (ConfigHandler.PISTONBOOTS_SPRINT_SPEED && !player.worldObj.isRemote)
+                if (sprinting && ConfigHandler.PISTONBOOTS_SPRINT_SPEED && !player.worldObj.isRemote)
                 {
                     // Renewed shortly before it ends instead of a 1-tick effect (and a packet) every tick.
                     PotionEffect speed = player.getActivePotionEffect(Potion.moveSpeed);

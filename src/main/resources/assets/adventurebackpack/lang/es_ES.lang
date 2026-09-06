@@ -55,6 +55,7 @@ keys.adventureBackpack.toolModifier=Modificador para cambiar herramienta (ningun
 keys.adventureBackpack.nextTool=Herramienta siguiente de la mochila
 keys.adventureBackpack.previousTool=Herramienta anterior de la mochila
 keys.adventureBackpack.crossbowMode=Modo de la ballesta
+keys.adventureBackpack.toggleAbilities=Activar/desactivar habilidades de la mochila
 
 ## Fluids
 fluid.melonJuice=Jugo de Sandía
@@ -77,6 +78,10 @@ adventurebackpack:messages.copterpack.off=Mochilacóptero: Apagado.
 adventurebackpack:messages.jetpack.on=Jetpack de Vapor: Encendido.
 adventurebackpack:messages.jetpack.off=Jetpack de Vapor: Apagado.
 adventurebackpack:messages.crossbow.outofammo=Ballesta de Relojería: sin virotes. Fabrica un Cartucho de Virotes.
+adventurebackpack:messages.abilities.off=Habilidades de la mochila: desactivadas.
+adventurebackpack:messages.abilities.on=Habilidades de la mochila: activadas.
+adventurebackpack:messages.abilities.disabled=Las habilidades de las mochilas están desactivadas en la configuración del servidor.
+adventurebackpack:messages.campfire.busy=La fogata está llena o cocinando otra cosa. Espera a que termine.
 adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
 adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Agáchate + clic derecho para cambiar el cartucho.
 adventurebackpack:tooltip.crossbow.controls.grapple=Clic derecho: dispara el garfio. Te arrastra hasta el bloque donde se engancha. Agáchate o salta para soltarte.

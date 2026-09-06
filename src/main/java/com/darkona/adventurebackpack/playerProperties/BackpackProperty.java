@@ -27,6 +27,8 @@ public class BackpackProperty implements IExtendedEntityProperties
     private ChunkCoordinates campFire = null;
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
+    /** The player switched the worn backpack's abilities off with the key (#57). Saved, synced, decided by the server. */
+    private boolean abilitiesOff = false;
     private int dimension = 0;
     /**
      * Server, memory only: what the last sync sent, compared every tick without building NBT. The wearable is a
@@ -38,6 +40,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     private ChunkCoordinates sentCampFire = null;
     private int sentDimension = 0;
     private boolean sentForceCampFire = false;
+    private boolean sentAbilitiesOff = false;
     /** Server, memory only: world time of the last particle or sound packet of this player relayed to others (RelayGuard). */
     private long lastRelayTick = Long.MIN_VALUE / 2;
     /**
@@ -100,12 +103,13 @@ public class BackpackProperty implements IExtendedEntityProperties
         props.sentCampFire = props.campFire == null ? null : new ChunkCoordinates(props.campFire);
         props.sentDimension = props.dimension;
         props.sentForceCampFire = props.forceCampFire;
+        props.sentAbilitiesOff = props.abilitiesOff;
         syncToNear(player);
     }
 
     private boolean sameAsSent()
     {
-        return sentOnce && forceCampFire == sentForceCampFire && dimension == sentDimension
+        return sentOnce && forceCampFire == sentForceCampFire && abilitiesOff == sentAbilitiesOff && dimension == sentDimension
                 && (campFire == null ? sentCampFire == null : campFire.equals(sentCampFire))
                 && ItemStack.areItemStacksEqual(wearable, sentWearable);
     }
@@ -190,6 +194,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
         }
         compound.setBoolean("forceCampFire",forceCampFire);
+        if (abilitiesOff) compound.setBoolean("abilitiesOff", true);
     }
 
     /**
@@ -209,6 +214,7 @@ public class BackpackProperty implements IExtendedEntityProperties
             setCampFire(compound.hasKey("campFireX") ? new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")) : null);
             dimension = compound.getInteger("campFireDim");
             forceCampFire = compound.getBoolean("forceCampFire");
+            abilitiesOff = compound.getBoolean("abilitiesOff");
         }
     }
 
@@ -290,6 +296,16 @@ public class BackpackProperty implements IExtendedEntityProperties
     public int getDimension()
     {
         return dimension;
+    }
+
+    public boolean isAbilitiesOff()
+    {
+        return abilitiesOff;
+    }
+
+    public void setAbilitiesOff(boolean off)
+    {
+        abilitiesOff = off;
     }
 
     public boolean isForcedCampFire()

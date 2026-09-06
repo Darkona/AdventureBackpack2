@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.common.AbilityToggle;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -44,7 +45,7 @@ public class GeneralEventHandler
     public void eatGoldenApple(PlayerUseItemEvent.Finish event)
     {
         EntityPlayer player = event.entityPlayer;
-        if (ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.RAINBOW_ENABLED)
+        if (ConfigHandler.RAINBOW_ENABLED && AbilityToggle.isActive(player))
         {
             if (event.item.getItem() instanceof ItemAppleGold &&
                     //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
@@ -83,7 +84,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectBow(ArrowNockEvent event)
     {
-        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.SKELETON_ENABLED) return;
+        if (!ConfigHandler.SKELETON_ENABLED || !AbilityToggle.isActive(event.entityPlayer)) return;
         if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
@@ -98,7 +99,7 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void detectArrow(ArrowLooseEvent event)
     {
-        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.SKELETON_ENABLED) return;
+        if (!ConfigHandler.SKELETON_ENABLED || !AbilityToggle.isActive(event.entityPlayer)) return;
         if (Wearing.isWearingTheRightBackpack(event.entityPlayer, "Skeleton"))
         {
             InventoryBackpack backpack = new InventoryBackpack(Wearing.getWearingBackpack(event.entityPlayer));
