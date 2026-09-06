@@ -1,6 +1,6 @@
 # Configuration
 
-Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 150 keys.
+Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 188 keys.
 
 You can also edit the file from the game: in the Mods list, select Adventure Backpack and press Config. Changes made in the file need a restart of the game. Keys marked "Needs a restart" are read when items, blocks or keys are created, so they need one even with the config screen.
 
@@ -17,9 +17,9 @@ The file is a tree under `adventurebackpack`. First comes `enabled`, with one sw
 ## Contents
 
 - [Systems](#systems-enabled), [Backpack](#backpack-backpack), [Abilities](#abilities-abilities), [Hose](#hose-hose), [Copter pack](#copter-pack-copterpack), [Steam jetpack](#steam-jetpack-steamjetpack), [Inflatable boat](#inflatable-boat-inflatableboat)
-- [Crossbow](#clockwork-crossbow-crossbow), [Elemental cartridges](#elemental-cartridges-crossbowelemental), [Piston boots](#piston-boots-pistonboots)
-- [Display](#display-render), [Keys](#keys-keys), [Tool swapping](#tool-swapping-keystoolcycle)
-- [Backpacks in the world](#backpacks-in-the-world-worldgen), [Extra recipes](#extra-recipes-recipes), [Small tweaks](#small-tweaks-tweaks), [Grave mods](#grave-mods-compatgraves), [Baubles](#baubles-compatbaubles)
+- [Crossbow](#clockwork-crossbow-crossbow), [Grappling hook](#grappling-hook-crossbowgrapple), [Sniper mode](#sniper-mode-crossbowsniper), [Piston boots](#piston-boots-pistonboots), [Campfire](#campfire-cooking-campfirecooking), [Sleeping bag](#sleeping-bag-sleepingbag)
+- [Display](#display-render), [Keys](#keys-keys), [Tool swapping keys](#tool-swapping-keys-keystoolcycle)
+- [Backpacks in the world](#backpacks-in-the-world-worldgen), [Extra recipes](#extra-recipes-recipes), [Small tweaks](#small-tweaks-tweaks), [Tool slots](#tool-slots-tweakstoolcycle), [Grave mods](#grave-mods-compatgraves), [Baubles](#baubles-compatbaubles)
 - [Earlier flight values](#flight-values-before-100)
 
 ## Systems (`enabled`)
@@ -34,8 +34,9 @@ One switch per system. A disabled system stays registered, so worlds and servers
 | `enabled.steamJetpack` | boolean | `true` |  | The Steam Jetpack. |
 | `enabled.inflatableBoat` | boolean | `true` |  | The Inflatable Boat and the Motorized Inflatable Boat. |
 | `enabled.crossbow` | boolean | `true` |  | The Clockwork Crossbow and its Bolt Cartridges. |
-| `enabled.sleepingBag` | boolean | `true` |  | Deploying the sleeping bag from a placed backpack. |
+| `enabled.sleepingBag` | boolean | `true` |  | The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up. |
 | `enabled.pistonBoots` | boolean | `true` |  | The Piston Boots: step assist, sprint speed and fall protection. |
+| `enabled.campfire` | boolean | `true` |  | Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way. |
 
 ## Backpack (`backpack`)
 
@@ -58,6 +59,7 @@ Special effects of the backpacks while they are worn (the Cactus and Melon also 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `abilities.effectRefreshTicks` | int | `40` | 2 to 200 | Ticks left on a long potion effect (fire resistance, Dragon effects) under which the ability renews it. |
+| `abilities.toggleMessage` | boolean | `true` |  | Tell the player in chat when the abilities key (keys.toggleAbilities) turns the worn backpack's abilities off or on. Each player's choice is kept with the player; enabled.abilities false keeps them off for everyone. |
 
 ### Bat backpack (`abilities.bat`)
 
@@ -72,6 +74,7 @@ Special effects of the backpacks while they are worn (the Cactus and Melon also 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `abilities.squid.enabled` | boolean | `true` |  | Squid Backpack: water breathing and night vision while in water. |
+| `abilities.squid.worksOnLand` | boolean | `false` |  | Give the water breathing and the night vision out of water too, for mods that make the player breathe water (merfolk). Both are taken away when the backpack comes off or this is turned off. |
 
 ### Pigman backpack (`abilities.pigman`)
 
@@ -210,6 +213,30 @@ Special effects of the backpacks while they are worn (the Cactus and Melon also 
 |---|---|---|---|---|
 | `abilities.irongolem.enabled` | boolean | `true` |  | Iron Golem Backpack: no fall damage. |
 
+### Spider backpack (`abilities.spider`)
+
+Taming works with the Spider Backpack on. Tamed spiders are kept in memory and released when their owner dies, logs out or changes dimension.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `abilities.spider.enabled` | boolean | `true` |  | Spider Backpack: tame spiders and ride them. Wearing it, right click a spider with the tame item to try to tame it (like taming a wolf). A tamed spider follows its owner and only its owner rides it, both only while the owner wears the Spider Backpack. It is released (back to a normal spider) when its owner dies, logs out or changes dimension, or sneaks and right clicks it. When false, tamed spiders neither follow nor carry anyone, and no new spider can be tamed. |
+| `abilities.spider.tameItem` | string | `minecraft:spider_eye` |  | Item used to tame a spider, as modid:name. One is used up per try (not in creative). |
+| `abilities.spider.tameChance` | double | `0.33` | 0.0 to 1.0 | Chance that one try tames the spider (1 = always, the wolf is about 0.33). |
+| `abilities.spider.maxTamed` | int | `2` | 0 to 16 | Tamed spiders a player may have at once. 0 turns taming off. |
+| `abilities.spider.followStartDistance` | double | `6.0` | 2.0 to 32.0 | A tamed spider starts walking to its owner when it is farther than this, in blocks. |
+| `abilities.spider.followStopDistance` | double | `3.0` | 1.0 to 32.0 | It stops when it is this close to its owner, in blocks. |
+| `abilities.spider.teleportDistance` | int | `24` | 0 to 128 | When it cannot walk to its owner and is farther than this, it jumps next to the owner like a wolf. 0 = never. |
+
+### Blaze backpack (`abilities.blaze`)
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `abilities.blaze.enabled` | boolean | `true` |  | Blaze Backpack: fire immunity and burning punches. |
+| `abilities.blaze.fireImmunity` | boolean | `true` |  | The wearer does not burn in fire or lava, like a magma cube (fire resistance, taken away when the backpack comes off). |
+| `abilities.blaze.fireResistanceTicks` | int | `5000` | 100 to 1000000 | Length of the fire resistance effect it gives; it is renewed before it runs out (abilities.effectRefreshTicks). |
+| `abilities.blaze.punchFireSeconds` | int | `4` | 0 to 60 | Seconds a punched mob or player burns. 0 turns the burning punch off. |
+| `abilities.blaze.punchWithNonWeapons` | boolean | `true` |  | Hitting with an item that is not a weapon (blocks, food, sticks...) also counts as a punch. When false only the empty hand burns. Swords, tools, bows and items that add attack damage are weapons. |
+
 ## Hose (`hose`)
 
 Amounts are in millibuckets (1000 is one bucket).
@@ -275,7 +302,7 @@ The boiler needs a fluid called steam: another mod's, or the backpack's own (see
 
 ## Clockwork crossbow (`crossbow`)
 
-A repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in your inventory, hotbar first. Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. Ticks are 20 per second.
+A repeating crossbow fed with Bolt Cartridges. The key `keys.crossbowMode` changes its mode; the other two modes have their own sections below. In repetition mode, hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in your inventory, hotbar first. Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. Ticks are 20 per second.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
@@ -288,27 +315,62 @@ A repeating crossbow fed with Bolt Cartridges. Hold right click to fire the maga
 | `crossbow.boltsRecoverable` | boolean | `false` |  | Bolts stuck in a block can be picked up as arrows. Off by default: a cartridge is spent ammunition. |
 | `crossbow.durability` | int | `0` | 0 to 100000 | Bolts the crossbow fires before it breaks. 0 means it never breaks. |
 
-## Elemental cartridges (`crossbow.elemental`)
+## Grappling hook (`crossbow.grapple`)
 
-Blazing, Freezing, Poison and Stunning Bolt Cartridges. Blazing bolts set the target on fire for 5 seconds, like a Flame bow. The other three give potion effects; an amplifier is the effect level minus one (0 is level I).
+The second mode of the crossbow: right click shoots a hook that catches a block and pulls the player to it. Speeds are in blocks per tick (20 ticks a second).
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `crossbow.elemental.enabled` | boolean | `true` |  | Elemental cartridges: their recipes, their place in the creative tab and their effects. When false they still load, and fire plain bolts. |
-| `crossbow.elemental.freezingTicks` | int | `60` | 1 to 1200 | Length of the Slowness a Freezing bolt gives. |
-| `crossbow.elemental.freezingAmplifier` | int | `2` | 0 to 6 | Slowness level minus one of a Freezing bolt (2 = Slowness III). |
-| `crossbow.elemental.poisonTicks` | int | `100` | 1 to 1200 | Length of the Poison a Poison bolt gives. |
-| `crossbow.elemental.poisonAmplifier` | int | `0` | 0 to 4 | Poison level minus one of a Poison bolt (0 = Poison I). |
-| `crossbow.elemental.stunningTicks` | int | `30` | 1 to 1200 | Length of the stun of a Stunning bolt: Slowness, and Nausea on players. |
-| `crossbow.elemental.stunningAmplifier` | int | `4` | 0 to 6 | Slowness level minus one of a Stunning bolt (4 = Slowness V, almost still). |
+| `crossbow.grapple.enabled` | boolean | `true` |  | The grappling hook mode. When false the mode is skipped and a crossbow left in it shoots bolts. |
+| `crossbow.grapple.maxDistance` | double | `32.0` | 4.0 to 64.0 | Range of the hook in blocks. A hook that reaches it without catching comes back. |
+| `crossbow.grapple.hookSpeed` | double | `2.5` | 0.5 to 5.0 | Speed of the flying hook, in blocks per tick. It flies straight, without gravity. |
+| `crossbow.grapple.pullSpeed` | double | `0.8` | 0.1 to 3.0 | Speed at which the hook pulls the player, in blocks per tick (sprinting is about 0.28). |
+| `crossbow.grapple.releaseDistance` | double | `1.5` | 0.5 to 4.0 | The hook lets go when the player's body is this close to the anchor, in blocks. |
+| `crossbow.grapple.maxPullTicks` | int | `60` | 10 to 200 | Longest pull; the hook lets go after it. On a server with allow-flight=false keep it under 80, or a long upward pull can kick the player for flying. |
+| `crossbow.grapple.cooldownTicks` | int | `20` | 0 to 200 | Wait after firing the hook before the crossbow can fire or reload again. |
+| `crossbow.grapple.chargesPerShot` | int | `1` | 0 to 24 | Bolts from the magazine a hook shot takes. 0 makes it free; more than a full magazine counts as a full magazine. |
+| `crossbow.grapple.noFallDamage` | boolean | `true` |  | The pull never causes fall damage: the fall distance is reset while pulling and when the hook lets go. A fall after letting go counts from there. |
+
+## Sniper mode (`crossbow.sniper`)
+
+The third mode: with the bipod down (sneaking, standing still on the ground) the crossbow fires one strong, straight bolt. With the bipod folded it fires normal bolts.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `crossbow.sniper.enabled` | boolean | `true` |  | The sniper mode. When false the mode is skipped and a crossbow left in it shoots normal bolts. |
+| `crossbow.sniper.boltDamage` | double | `12.0` | 0.0 to 100.0 | Damage of a sniper bolt as it leaves the crossbow, in half hearts. It drops a little with distance as the bolt slows down. |
+| `crossbow.sniper.boltVelocity` | double | `5.0` | 0.5 to 8.0 | Speed of a sniper bolt in blocks per tick. Faster bolts fly flatter and further. |
+| `crossbow.sniper.shotDelayTicks` | int | `30` | 4 to 200 | Pause after a sniper shot. A held right click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4. |
+| `crossbow.sniper.stillTolerance` | double | `0.02` | 0.001 to 0.2 | Horizontal movement in blocks per tick under which the player counts as still (sneak walking is about 0.065). |
+| `crossbow.sniper.zoom` | double | `0.35` | 0.1 to 1.0 | Client only: field of view multiplier while the bipod is down. 1 = no zoom, 0.35 = about three times closer. |
 
 ## Piston boots (`pistonboots`)
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `pistonboots.stepHeight` | double | `1.001` | 0.5 to 3.0 | Step height while sprinting (vanilla is 0.5). |
+| `pistonboots.onlyWhileSprinting` | boolean | `true` |  | Step up full blocks only while sprinting, so walking up to a block does not climb it. False steps up at any pace while the boots are on. The sprint speed is only given while sprinting either way. |
+| `pistonboots.stepHeight` | double | `1.001` | 0.5 to 3.0 | Step height while the boots step up (vanilla is 0.5). |
 | `pistonboots.sprintSpeed` | boolean | `true` |  | Give Speed I while sprinting. |
 | `pistonboots.safeFallDistance` | int | `8` | 0 to 256 | Falls shorter than this many blocks do no damage. 0 turns it off. |
+
+## Campfire cooking (`campfire.cooking`)
+
+Right click the campfire with a raw item to cook it. The campfire block, its recipe and its use as a respawn point do not depend on these keys; `enabled.campfire` only turns the cooking on or off. Ticks are 20 per second.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `campfire.cooking.enabled` | boolean | `true` |  | Cook items by right clicking the campfire with them. |
+| `campfire.cooking.ticksPerItem` | int | `200` | 1 to 12000 | Time to cook one item (the furnace takes 200). |
+| `campfire.cooking.onlyFood` | boolean | `true` |  | Only cook items whose furnace result is food. False takes any furnace recipe (ores, sand, logs...). |
+| `campfire.cooking.maxPerUse` | int | `8` | 1 to 64 | Most items the campfire holds at once; a right click puts on as many as fit, the rest stays in the hand. |
+| `campfire.cooking.returnRange` | double | `4.0` | 0.0 to 16.0 | Distance in blocks within which the cooked items go straight into the inventory of the player who put them on the fire. Farther away, or with 0, they pop out on top of the campfire. |
+
+## Sleeping bag (`sleepingbag`)
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `sleepingbag.placeable` | boolean | `true` |  | Right click the top of a block with the Sleeping Bag item to lay it on the ground as a bed, without a backpack. Breaking it gives the item back; sneak + right click rolls it up into the inventory. |
+| `sleepingbag.setsSpawn` | boolean | `true` |  | Sleeping in a sleeping bag (placed on its own or from a backpack) moves the player's spawn point there, like a bed. When false the player keeps the spawn point they had. |
 
 ## Display (`render`)
 
@@ -330,8 +392,10 @@ Client only. Default keys, as LWJGL key codes (B is 48, N is 49; see the LWJGL K
 |---|---|---|---|---|
 | `keys.openBackpack` | int | `48` | 0 to 255 | Default key that opens the worn backpack, copter pack or jetpack (48 is B). Once you change the key in Options > Controls, Minecraft keeps your choice. Needs a restart. |
 | `keys.toggle` | int | `49` | 0 to 255 | Default key that switches the hose tank and toggles the copter pack or jetpack (49 is N). Sneak + this key turns the copter pack or jetpack on and off. Needs a restart. |
+| `keys.crossbowMode` | int | `47` | 0 to 255 | Default key that changes the firing mode of the held Clockwork Crossbow (47 = V). Needs a restart. |
+| `keys.toggleAbilities` | int | `0` | 0 to 255 | Default key that turns the abilities of the worn backpack off and on, for this player only (night vision, water breathing, fire resistance, milk...). 0 = not bound: pick one in Options > Controls. Needs a restart. |
 
-## Tool swapping (`keys.toolcycle`)
+## Tool swapping keys (`keys.toolcycle`)
 
 Client only. Swapping the held tool with the backpack's tool slots, and changing the hose mode. The keys themselves are changed in Options > Controls.
 
@@ -353,9 +417,14 @@ Client only. Swapping the held tool with the backpack's tool slots, and changing
 
 ## Extra recipes (`recipes`)
 
+The saddle recipe, and the recipes of the Inflatable Boat, which change with the mods that are loaded. The list entries of the boat are read once when the game starts, after every mod has registered its items. See [Gear](Gear#inflatable-boat).
+
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `recipes.saddle` | boolean | `true` |  | Add a crafting recipe for the saddle. |
+| `recipes.boat.mode` | string | `auto` | auto, vanilla, technical | vanilla: only the vanilla recipes. auto: the vanilla recipes, plus a rubber or motor variant when a loaded mod provides rubber or an electric motor. technical: the rubber or motor variant replaces the vanilla recipe of each part a loaded mod provides; a part no loaded mod provides keeps its vanilla recipe. Needs a restart. |
+| `recipes.boat.rubber` | string list | `itemRubber, plateRubber, ingotRubber` |  | Ore Dictionary names of rubber (IC2 itemRubber, GregTech plateRubber and ingotRubber...). Each one some loaded mod provides gets its own chamber recipe (three rubber, two chambers). Needs a restart. |
+| `recipes.boat.motors` | string list | `ic2:elemotor, item:gregtech:gt.metaitem.01:32600, ore:craftingElectricMotor, stack:ThermalExpansion:powerCoilGold` |  | Electric motors for the motorized boat, each one found gets its own recipe (boat + motor + Hydro Blades). Entries: ic2:&lt;IC2 item name&gt; (IC2 API), item:&lt;modid&gt;:&lt;item name&gt;[:&lt;damage&gt;], ore:&lt;Ore Dictionary name&gt;, stack:&lt;modid&gt;:&lt;registered stack name&gt;. Needs a restart. |
 
 ## Small tweaks (`tweaks`)
 
@@ -365,6 +434,15 @@ Fixes and behaviours that are not tied to one item.
 |---|---|---|---|---|
 | `tweaks.fixVanillaLead` | boolean | `true` |  | Mobs on a lead held by a player take no fall damage unless they fall fast. |
 | `tweaks.namedHorsesFollowOwner` | boolean | `true` |  | Tamed horses with a name tag follow their owner. |
+
+## Tool slots (`tweaks.toolcycle`)
+
+Which items may go into the two tool slots of the backpack, by hand or with the tool swap. Set it the same on the server and on every client.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `tweaks.toolcycle.mode` | string | `none` | none, whitelist, blacklist | Which items may go into the backpack's two tool slots, by hand or with the tool cycle. none: the built-in rules (vanilla tools, shears, hoes, fishing rods, flint and steel, and tools of Tinkers' Construct, BuildCraft, IndustrialCraft and Thermal Expansion). whitelist: only the items on the list. blacklist: the built-in rules minus the items on the list. Stackable items, hoses and backpacks never go in. Set it the same on server and clients. |
+| `tweaks.toolcycle.list` | string list | empty |  | Items for the whitelist or blacklist mode, one per line, as registry names: modid:name (minecraft:shears, TConstruct:pickaxe; the names /give takes), or modid:* for every item of a mod. A name without a mod id means minecraft:. Case does not matter. A blacklisted bow also stops the Skeleton Backpack from cycling it. |
 
 ## Grave mods (`compat.graves`)
 
@@ -425,6 +503,8 @@ Flying costs more in 1.0.0. These are the earlier values, for a pack that wants 
 | `FixVanillaLead` | `tweaks.fixVanillaLead` |
 
 The old single-shot crossbow keys `crossbow.arrowVelocity` and `crossbow.arrowDamage` are removed from the file and not moved. Use `crossbow.boltVelocity` and `crossbow.boltDamage`. `crossbow.reloadTicks` now means the time to load a cartridge.
+
+The section `crossbow.elemental` of 1.0.0 (`enabled`, `freezingTicks`, `freezingAmplifier`, `poisonTicks`, `poisonAmplifier`, `stunningTicks`, `stunningAmplifier`) is removed from the file and not moved: the elemental bolts no longer exist. Cartridges and loaded crossbows from 1.0.0 that held them load as normal ones.
 
 ## Not in the file
 
