@@ -9,6 +9,7 @@ Adventure Backpack runs alone on Minecraft 1.7.10 with Forge. Every other mod he
 | Baubles or Baubles Expanded | Wear the backpack in a bauble slot |
 | OpenBlocks or GraveStone | The backpack goes into your grave |
 | Smart Moving | A setting to hide the worn backpack |
+| IndustrialCraft 2, GregTech, Thermal Expansion | Rubber and electric motors give more recipes for the Inflatable Boat |
 
 ## BuildCraft
 
@@ -50,6 +51,12 @@ If no grave is made, the backpack is placed as a block where you died, or droppe
 
 Turn this off with `compat.graves.enabled`. See [FAQ](FAQ#what-happens-when-i-die).
 
+## Rubber and electric motors
+
+The Inflatable Boat can be crafted with vanilla items alone. When a loaded mod provides rubber, a second recipe makes Inflatable Chambers from it. When a loaded mod provides an electric motor, a second recipe makes the Motorized Inflatable Boat from an Inflatable Boat, Hydro Blades and the motor.
+
+By default the mod looks for rubber named `itemRubber`, `plateRubber` and `ingotRubber`, and for the IndustrialCraft 2 Electric Motor, the GregTech LV Motor, anything named `craftingElectricMotor` and the Thermal Expansion Redstone Reception Coil. If a mod does not have one of them, that recipe does not exist, and nothing else changes. Both lists can be changed, and the mod parts can replace the vanilla recipes. See [Configuration](Configuration#extra-recipes-recipes) and [Gear](Gear#inflatable-boat).
+
 ## Smart Moving and other render mods
 
 The worn backpack is drawn on the player model. Mods that change the player model or its back, like Smart Moving, can draw over each other. If that happens set `render.backpackOnPlayer` to false on the client. Your own backpack still works, only the drawing is off.
@@ -60,7 +67,7 @@ Capes, vanilla or from OptiFine, are hidden only while you wear a backpack, copt
 
 - Tanks and machines of other mods: the hose sucks from and spills into any block that exposes a fluid tank through Forge's fluid interface.
 - Fluid containers from other mods go in the bucket slots of the backpack tanks, if the mod registers them with Forge as fluid containers.
-- Tools from other mods fit in the tool slots when their name says what they are: wrench, hammer, axe, shovel, grafter, scoop, crowbar, mattock or drill.
+- Tools from other mods fit in the tool slots when their name says what they are: wrench, hammer, axe, shovel, grafter, scoop, crowbar, mattock or drill. A whitelist or a blacklist in the config can add or remove items: see [Configuration](Configuration#tool-slots-tweakstoolcycle).
 - If another mod already registers milk, melon juice, mushroom stew or steam, the backpack uses that fluid, so the fluid is the same in both.
 
 ## See also

@@ -1,6 +1,6 @@
 # Backpacks
 
-The Adventure Backpack is worn on your back and placed as a block when you want to leave it. There are 76 types. They share the same storage; the type changes the look and, for 19 of them, adds an ability.
+The Adventure Backpack is worn on your back and placed as a block when you want to leave it. There are 76 types. They share the same storage; the type changes the look and, for 20 of them, adds an ability.
 
 | | |
 |---|---|
@@ -76,9 +76,30 @@ You can wear one backpack, copter pack or jetpack at a time. They share the same
 | Sunflower | Feeds you in daylight, a drumstick every two minutes. | Sunflowers |
 | Skeleton | Bows take their arrows from the backpack. A bow can go in the tool slots. | Bones, Skeleton skull, bow, arrows |
 | Iron Golem | No fall damage. | Not craftable. Found in village blacksmith chests. |
-| Spider | Right click a spider to turn it into a spider you ride. Press jump to make it jump. | Spider eyes, string, ladders |
+| Spider | Tame spiders with a spider eye and ride them. See [Taming spiders](#taming-spiders). | Spider eyes, string, ladders |
+| Blaze | You do not burn in fire or lava, and what you punch catches fire for 4 seconds. | Blaze rods, fire charge, blaze powder, lava bucket |
+
+You can turn the abilities of the backpack you wear off and on with a key of your own, without taking the backpack off. The key is not bound by default. See [Controls](Controls#the-abilities-key).
 
 The Cactus and Melon timings, the Cow and Mooshroom amounts and every other number above are in [Configuration](Configuration#abilities-abilities).
+
+### Taming spiders
+
+With the Spider backpack on, right click a spider with a spider eye. The eye is used up on every try, and a try works about one time in three, like taming a wolf. On a failure you see smoke, on a success hearts: the spider is tame.
+
+- A tame spider follows you, and only you can ride it. Right click it to get on and press jump to make it jump.
+- If it is far away and cannot walk to you, it jumps next to you, like a wolf.
+- It follows and carries you only while you wear the Spider backpack. Without it, the spider stays where it is and nobody rides it.
+- You can have two tame spiders at a time. A chat message tells you when you are at the limit.
+- Sneak and right click a tame spider to let it go. It turns back into a normal spider, and you can tame another one.
+- The spiders go free by themselves when you die, log out or change dimension. Spiders nobody tamed are normal spiders: they never become friends on their own and they despawn as usual.
+- Only the plain spider can be tamed. Cave spiders and spiders from other mods cannot.
+
+> Screenshot: a player with the Spider backpack on, riding a tame spider. File: images/backpacks-5.png
+
+### Blaze backpack
+
+The Blaze backpack gives you the fire resistance of a magma cube: fire and lava do not burn you. Your punches set what you hit on fire for 4 seconds, mobs and players alike. A punch is an empty hand or an item that is not a weapon, like a block, food or a stick. Swords, tools and bows do not set things on fire.
 
 ### Placed backpacks
 
@@ -97,7 +118,6 @@ These have no ability. They are craftable from the Standard backpack.
 | Backpack | Made with |
 |---|---|
 | Black, Blue, Brown, Cyan, Gray, Green, Light Blue, Light Gray, Lime, Magenta, Orange, Pink, Purple, Red, White, Yellow | Wool of that colour |
-| Blaze | Blaze rods, fire charge, blaze powder, lava bucket |
 | Bookshelf | Bookshelves, books |
 | Brown Mushroom | Brown mushrooms |
 | Cake | Eggs, cake, wheat, sugar, milk bucket |

@@ -11,8 +11,19 @@ Every key, button and mouse action of the mod. The keys are listed in Options > 
 | Tool Cycle Modifier (none = sneak) | Sneak (Left Shift) | Hold it while turning the mouse wheel to swap tools. |
 | Next Backpack Tool | not bound | Swaps to the next tool. |
 | Previous Backpack Tool | not bound | Swaps to the previous tool. |
+| Crossbow Mode | V | Changes the mode of the Clockwork Crossbow in your hand: repetition, grappling hook, sniper. |
+| Backpack Abilities On/Off | not bound | Turns the abilities of the backpack you wear off and on. |
 
 The defaults come from the config file (see `keys` in [Configuration](Configuration#keys-keys)). They are applied the first time. Once you change a key in the game, Minecraft keeps your choice.
+
+## The abilities key
+
+The Backpack Abilities On/Off key is not bound by default: pick a key for it in Options > Controls. Press it and the abilities of the backpack you wear switch off, press it again and they switch on. A chat message tells you which one happened.
+
+- It is yours alone. Other players keep theirs, and the choice is kept when you log out.
+- Turning them off takes away effects the backpack gave you, like night vision or fire resistance. The backpack keeps working as a backpack.
+- If abilities are turned off in the server config, the key only tells you so.
+- The chat message can be turned off with `abilities.toggleMessage`.
 
 ## The toggle key
 
@@ -35,9 +46,17 @@ The defaults come from the config file (see `keys` in [Configuration](Configurat
 | Jump, wearing the copter pack with the engine on | Climbs |
 | Sneak, wearing the copter pack with the engine on | Descends |
 | Jump, wearing the jetpack on | Thrust |
-| Jump, riding a spider from the Spider backpack | The spider jumps |
-| Right click, crossbow in hand | Fires, or loads a cartridge if the magazine is empty. Hold it to fire the whole magazine. |
-| Sneak and right click, crossbow in hand | Swaps the cartridge |
+| Right click a spider, Spider backpack on, spider eye in hand | Tries to tame it |
+| Right click your tame spider | Gets on it. It carries you only while you wear the Spider backpack. |
+| Jump, riding a spider | The spider jumps |
+| Sneak and right click your tame spider | Lets it go |
+| Right click, crossbow in hand | Fires, or loads a cartridge if the magazine is empty. Hold it to fire the whole magazine. In grappling hook mode it shoots the hook. In sniper mode, with the bipod down, it fires the strong bolt. |
+| Sneak and right click, crossbow in hand | Swaps the cartridge. In sniper mode, with the bipod down, it fires. |
+| Sneak and stand still, crossbow in sniper mode | Puts the bipod down and zooms in |
+| Sneak or jump, hanging on the hook | Lets go of the hook |
+| Right click the top of a block, Sleeping Bag in hand | Lays the bag on the ground as a bed |
+| Sneak and right click a bag you laid yourself | Rolls it up into your inventory |
+| Right click a campfire, raw food in hand | Puts the food on the fire to cook |
 | Right click, hose in hand | Does what its mode says: suck, spill or drink |
 
 ## Swapping tools
@@ -49,6 +68,8 @@ With a backpack on, the tool in your hand can trade places with the two tool slo
 
 What counts as a tool: pickaxes, axes, shovels, hoes, shears, fishing rods, flint and steel, and tools from other mods like wrenches, hammers, scoops, grafters, crowbars, mattocks and drills. Swords, bows and buckets do not. With the Skeleton backpack, a bow does count.
 
+A modpack or a server can change this with a list: only the items on it, or every tool except the ones on it. The list applies to the tool slots and to the swap. See [Configuration](Configuration#tool-slots-tweakstoolcycle).
+
 With a hose in your hand the same wheel or keys change the hose mode instead: suck, spill, drink. If you hold something else, the wheel scrolls your hotbar as usual.
 
 If the mouse wheel clashes with another mod, change the mode with `keys.toolcycle.mode`: `wheel`, `keys` or `both` (the default). `keys.toolcycle.invertWheel` reverses the direction, and `keys.toolcycle.enabled` turns the whole thing off.
@@ -59,4 +80,4 @@ B is also the default key for the Baubles inventory. If you use Baubles, change 
 
 ## See also
 
-[Backpacks](Backpacks), [Fluids and Hose](Fluids-and-Hose), [Jetpack and Copter Pack](Jetpack-and-Copter-Pack), [Crossbow](Crossbow)
+[Backpacks](Backpacks), [Fluids and Hose](Fluids-and-Hose), [Jetpack and Copter Pack](Jetpack-and-Copter-Pack), [Crossbow](Crossbow), [Gear](Gear)

@@ -34,9 +34,39 @@ No. The storage slots refuse backpacks.
 
 Place a backpack, open it and press the sleeping bag button. The bag unrolls beside the backpack if the ground is free. Right click the bag to sleep. Press the button again to roll it up.
 
+You can also lay a bag on the ground without a backpack: hold the Sleeping Bag item and right click the top of a block. Sneak and right click the bag to roll it up into your inventory.
+
 Put a Campfire within 8 blocks of the bag before you sleep, and if you die you respawn at that campfire. See [Gear](Gear#campfire-and-sleeping-bag).
 
-The sleeping bag button does nothing if `enabled.sleepingBag` is off.
+The sleeping bag button and the Sleeping Bag item do nothing if `enabled.sleepingBag` is off.
+
+## Can I cook on the campfire?
+
+Yes. Right click the campfire with raw food in your hand. It cooks in ten seconds per item, and the result comes to your inventory if you are within 4 blocks. See [Gear](Gear#cooking-on-the-campfire).
+
+## How do I tame a spider?
+
+Wear the Spider backpack and right click a spider with a spider eye. It works about one time in three, and each try uses an eye. A tame spider follows you, and only you can ride it, while you wear the backpack. You can have two at a time. Sneak and right click one to let it go. See [Backpacks](Backpacks#taming-spiders).
+
+## Why does my tame spider stand still?
+
+It follows and carries you only while you wear the Spider backpack. Put it on again and it follows. When you die, log out or change dimension, your tame spiders go free and become normal spiders.
+
+## How do I turn the abilities off?
+
+Bind the Backpack Abilities On/Off key in Options > Controls, which has no default key, and press it. It turns off the abilities of the backpack you wear, only for you. Press it again to turn them on. See [Controls](Controls#the-abilities-key).
+
+## How do I change the crossbow mode?
+
+Hold the crossbow and press V. The modes go repetition, grappling hook, sniper. The mode shows in the name of the crossbow. See [Crossbow](Crossbow).
+
+## Why does my crossbow in sniper mode fire normal bolts?
+
+The bipod is folded. Sneak and stand still on the ground to put it down. With the bipod down the view zooms and one click fires the strong bolt.
+
+## Can I craft the Inflatable Boat?
+
+Yes. It is made from Inflatable Chambers, a Hose Nozzle and string, and the Motorized one adds Hydro Blades and an engine. See [Gear](Gear#inflatable-boat).
 
 ## How do the tanks work?
 
