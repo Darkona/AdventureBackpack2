@@ -68,6 +68,13 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         fuelTank = new FluidTank(6000);
     }
 
+    /** Fuel tank of the outboard motor (6000 mB); the Fuel Station fills it while the player rides the boat. */
+    public FluidTank getFuelTank()
+    {
+        if (fuelTank == null) fuelTank = new FluidTank(6000);
+        return fuelTank;
+    }
+
     public boolean isInflated()
     {
         return inflated;

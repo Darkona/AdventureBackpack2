@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.config;
 
+import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
@@ -24,6 +25,8 @@ public final class FeatureVisibility
         hideUnless(ModItems.cwxbow, ConfigHandler.CROSSBOW_ENABLED);
         hideUnless(ModItems.boltCartridge, ConfigHandler.CROSSBOW_ENABLED);
         hideUnless(ModItems.pistonBoots, ConfigHandler.PISTONBOOTS_ENABLED);
+        // the station's item takes its creative tab from the block
+        if (!ConfigHandler.FUELSTATION_ENABLED) ModBlocks.blockFuelStation.setCreativeTab(null);
     }
 
     private static void hideUnless(Item item, boolean enabled)

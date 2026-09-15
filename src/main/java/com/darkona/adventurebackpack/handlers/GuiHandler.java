@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileFuelStation;
+import com.darkona.adventurebackpack.client.gui.GuiFuelStation;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
 import com.darkona.adventurebackpack.client.gui.GuiSteamJetpack;
@@ -17,6 +19,8 @@ import net.minecraft.world.World;
  */
 public class GuiHandler implements IGuiHandler
 {
+    /** Ids 7 to 11 are kept for the Scuba Gear, the Flamethrower Pack and the Air Compressor. */
+    public static final byte FUEL_STATION = 12;
     public static final byte JETPACK_WEARING = 6;
     public static final byte JETPACK_HOLDING = 5;
     public static final byte COPTER_WEARING = 4;
@@ -77,6 +81,12 @@ public class GuiHandler implements IGuiHandler
                     return new ContainerJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
                 }
                 break;
+            case FUEL_STATION:
+                if (world.getTileEntity(x, y, z) instanceof TileFuelStation)
+                {
+                    return new ContainerFuelStation(player, (TileFuelStation) world.getTileEntity(x, y, z));
+                }
+                break;
             default:
                 player.closeScreen();
                 break;
@@ -131,6 +141,12 @@ public class GuiHandler implements IGuiHandler
                 if (Wearing.isWearingSteam(player))
                 {
                     return new GuiSteamJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
+                }
+                break;
+            case FUEL_STATION:
+                if (world.getTileEntity(x, y, z) instanceof TileFuelStation)
+                {
+                    return new GuiFuelStation(player, (TileFuelStation) world.getTileEntity(x, y, z));
                 }
                 break;
             default:
