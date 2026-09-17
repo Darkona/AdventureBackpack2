@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.block.BlockStation;
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
+import com.darkona.adventurebackpack.common.StationTransfer;
 import com.darkona.adventurebackpack.common.Flight;
 import com.darkona.adventurebackpack.common.FlightCost;
 import com.darkona.adventurebackpack.client.ClientActions;
@@ -29,6 +31,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
@@ -37,7 +40,7 @@ import java.util.List;
  *
  * @author Darkona
  */
-public class ItemCopterPack extends ItemAB implements IBackWearableItem
+public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPack
 {
 
     public ItemCopterPack()
@@ -56,6 +59,31 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem
     public static boolean isUsable()
     {
         return ConfigHandler.COPTERPACK_ENABLED && ConfigHandler.IS_BUILDCRAFT;
+    }
+
+    @Override
+    public int fillFuel(ItemStack pack, FluidStack offered, boolean doFill)
+    {
+        if (!isUsable() || pack == null || !GeneralReference.isValidFuel(offered)) return 0;
+        InventoryCopterPack inv = new InventoryCopterPack(pack);
+        FluidStack stored = inv.getFuelTank().getFluid();
+        int amount = StationTransfer.amount(offered.amount, inv.getFuelTank().getFluidAmount(), inv.getFuelTank().getCapacity(), true,
+                StationTransfer.sameOrEmpty(stored == null ? null : stored.getFluid().getName(), offered.getFluid().getName()));
+        if (amount > 0 && doFill)
+        {
+            FluidStack moved = offered.copy();
+            moved.amount = amount;
+            inv.getFuelTank().fill(moved, true);
+            inv.dirtyTanks();
+        }
+        return amount;
+    }
+
+    /** Sneak + right click on a Fuel Station with the pack in hand reaches the station, which fills the pack. */
+    @Override
+    public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
+    {
+        return world.getBlock(x, y, z) instanceof BlockStation;
     }
 
     public static byte OFF_MODE = 0;

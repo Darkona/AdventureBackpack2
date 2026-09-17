@@ -257,9 +257,46 @@ public class ModRecipes
         LogHelper.info("Inflatable boat recipes: mode " + mode + ", rubber " + rubbers + ", " + motors.size() + " electric motor(s) found.");
     }
 
+    /**
+     * The Fuel Station (recipes.fuelstation): iron ingots, glass panes, a Hose Nozzle and a Backpack Tank, or metal plates
+     * of a technical mod in place of the ingots. In postInit, so the Ore Dictionary is complete.
+     */
+    private static void fuelStationRecipes()
+    {
+        BoatRecipeRules.Mode mode = ConfigHandler.FUELSTATION_RECIPE_MODE;
+        List<String> plates = TechParts.presentOres(ConfigHandler.FUELSTATION_PLATES);
+        if (BoatRecipeRules.vanillaRecipe(mode, !plates.isEmpty()))
+        {
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.blockFuelStation),
+                    "IHI",
+                    "GTG",
+                    "III",
+                    'I', "ingotIron",
+                    'H', component(ItemComponent.HOSE_NOZZLE, 1),
+                    'G', "paneGlass",
+                    'T', component(ItemComponent.BACKPACK_TANK, 1)));
+        }
+        if (BoatRecipeRules.technicalRecipe(mode, !plates.isEmpty()))
+        {
+            for (String plate : plates)
+            {
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.blockFuelStation),
+                        "PHP",
+                        "GTG",
+                        "PPP",
+                        'P', plate,
+                        'H', component(ItemComponent.HOSE_NOZZLE, 1),
+                        'G', "paneGlass",
+                        'T', component(ItemComponent.BACKPACK_TANK, 1)));
+            }
+        }
+        LogHelper.info("Fuel Station recipes: mode " + mode + ", plates " + plates + ".");
+    }
+
     public static void conditionalInit()
     {
         if (ConfigHandler.INFLATABLEBOAT_ENABLED) boatRecipes();
+        if (ConfigHandler.FUELSTATION_ENABLED) fuelStationRecipes();
 
         if(ConfigHandler.SADDLE_RECIPE)
         {

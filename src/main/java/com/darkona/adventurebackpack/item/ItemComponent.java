@@ -27,6 +27,7 @@ public class ItemComponent extends ItemAB
 {
     /** Damage values of the components (one more than their index in {@code names}). */
     public static final int SLEEPING_BAG = 1;
+    public static final int BACKPACK_TANK = 2;
     public static final int HOSE_NOZZLE = 3;
     public static final int INFLATABLE_BOAT = 7;
     public static final int MOTORIZED_BOAT = 8;

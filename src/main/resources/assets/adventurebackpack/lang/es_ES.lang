@@ -42,6 +42,7 @@ item.adventurebackpack:pistonBoots.name=Botas Pistón
 ## Blocks
 block.adventurebackpack:AdventureBackpack.name=Mochila de Aventura Base
 block.adventurebackpack:CampFire.name=Fogata
+tile.adventurebackpack:blockFuelStation.name=Estación de combustible
 block.adventurebackpack:SleepingBag.name=Bolsa de dormir
 
 ## CreativeTab
@@ -82,6 +83,14 @@ adventurebackpack:messages.abilities.off=Habilidades de la mochila: desactivadas
 adventurebackpack:messages.abilities.on=Habilidades de la mochila: activadas.
 adventurebackpack:messages.abilities.disabled=Las habilidades de las mochilas están desactivadas en la configuración del servidor.
 adventurebackpack:messages.campfire.busy=La fogata está llena o cocinando otra cosa. Espera a que termine.
+adventurebackpack:messages.fuelstation.filled=Estación de combustible: cargados %1$s mB de %2$s.
+adventurebackpack:messages.fuelstation.empty=Estación de combustible: el tanque está vacío.
+adventurebackpack:messages.fuelstation.wrongfuel=Estación de combustible: ese tanque está lleno, tiene otro combustible o no quema este.
+adventurebackpack:messages.fuelstation.disabled=La estación de combustible está desactivada en la configuración del servidor.
+container.adventurebackpack:fuelStation=Estación de combustible
+adventurebackpack:gui.fuelstation.empty=Vacío
+adventurebackpack:gui.fuelstation.cost=Consumo: x%1$s
+adventurebackpack:tooltip.station.tank=%1$s mB de %2$s
 adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
 adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Agáchate + clic derecho para cambiar el cartucho.
 adventurebackpack:tooltip.crossbow.controls.grapple=Clic derecho: dispara el garfio. Te arrastra hasta el bloque donde se engancha. Agáchate o salta para soltarte.

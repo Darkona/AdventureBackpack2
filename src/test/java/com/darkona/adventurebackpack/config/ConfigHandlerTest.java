@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.config;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,6 +17,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import com.darkona.adventurebackpack.common.BoatRecipeRules;
+import com.darkona.adventurebackpack.common.FuelRules;
 
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -146,6 +150,74 @@ class ConfigHandlerTest
         assertEquals(4, ConfigHandler.DRAGON_STRENGTH_AMPLIFIER);
         assertEquals(5.0, ConfigHandler.CREEPER_SCARE_RANGE, 1e-9);
         assertEquals(1, ConfigHandler.HOSE_TRANSFER_AMOUNT);
+    }
+
+    @Test
+    void fuelAndFuelStationDefaults() throws IOException
+    {
+        Configuration cfg = load("fuels.cfg", null);
+        assertTrue(ConfigHandler.FUELSTATION_ENABLED);
+        assertEquals(16000, ConfigHandler.FUELSTATION_TANK_CAPACITY);
+        assertArrayEquals(FuelRules.DEFAULTS, ConfigHandler.FUELS);
+        assertEquals(BoatRecipeRules.Mode.AUTO, ConfigHandler.FUELSTATION_RECIPE_MODE);
+        assertTrue(cfg.getCategory(ConfigHandler.FUELS_CATEGORY).containsKey("list"));
+        assertTrue(cfg.getCategory(ConfigHandler.FUELSTATION).containsKey("tankCapacity"));
+        assertTrue(cfg.getCategory(ConfigHandler.ENABLED).containsKey("fuelStation"));
+        assertFalse(cfg.getCategory(ConfigHandler.COPTERPACK).containsKey("fuels"), "the old key is gone");
+        assertTrue(cfg.getCategory(ConfigHandler.FUELS_CATEGORY).get("list").requiresMcRestart());
+    }
+
+    private static String oldCopterFuels(String... entries)
+    {
+        StringBuilder b = new StringBuilder(ConfigHandler.ROOT + " {\n    copterpack {\n        S:fuels <\n");
+        for (String e : entries) b.append("            ").append(e).append("\n");
+        return b.append("         >\n    }\n}\n").toString();
+    }
+
+    @Test
+    void untouchedCopterFuelsMoveAsTheNewDefault() throws IOException
+    {
+        Configuration cfg = load("fuels-untouched.cfg", oldCopterFuels(FuelRules.OLD_COPTER_DEFAULTS));
+        String text = new String(Files.readAllBytes(new File(home, "fuels-untouched.cfg").toPath()), StandardCharsets.UTF_8);
+
+        assertArrayEquals(FuelRules.DEFAULTS, ConfigHandler.FUELS);
+        assertFalse(cfg.getCategory(ConfigHandler.COPTERPACK).containsKey("fuels"));
+        assertTrue(text.contains("biomass=1.5"));
+        assertFalse(text.contains("S:fuels <"));
+    }
+
+    @Test
+    void changedCopterFuelsMoveWithTheirValue() throws IOException
+    {
+        Configuration cfg = load("fuels-changed.cfg", oldCopterFuels("oil=3.0", "lava=4.0"));
+        String text = new String(Files.readAllBytes(new File(home, "fuels-changed.cfg").toPath()), StandardCharsets.UTF_8);
+
+        assertArrayEquals(new String[]{"oil=3.0", "lava=4.0"}, ConfigHandler.FUELS);
+        assertFalse(cfg.getCategory(ConfigHandler.COPTERPACK).containsKey("fuels"));
+        assertTrue(text.contains("S:list <"));
+
+        // a second launch reads the moved value back
+        load("fuels-changed.cfg", null);
+        assertArrayEquals(new String[]{"oil=3.0", "lava=4.0"}, ConfigHandler.FUELS);
+    }
+
+    @Test
+    void anExistingFuelListWinsOverAnOldCopterKey() throws IOException
+    {
+        String both = ConfigHandler.ROOT + " {\n"
+                + "    copterpack {\n        S:fuels <\n            oil=9.0\n         >\n    }\n"
+                + "    fuels {\n        S:list <\n            fuel=2.0\n         >\n    }\n"
+                + "}\n";
+        Configuration cfg = load("fuels-both.cfg", both);
+        assertArrayEquals(new String[]{"fuel=2.0"}, ConfigHandler.FUELS);
+        assertFalse(cfg.getCategory(ConfigHandler.COPTERPACK).containsKey("fuels"));
+    }
+
+    @Test
+    void fuelStationTankIsClamped() throws IOException
+    {
+        load("station-clamp.cfg", ConfigHandler.ROOT + " {\n    fuelstation {\n        I:tankCapacity=5\n    }\n}\n");
+        assertEquals(1000, ConfigHandler.FUELSTATION_TANK_CAPACITY);
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.config;
 
 import com.darkona.adventurebackpack.common.AbilityEffects;
 import com.darkona.adventurebackpack.common.BoatRecipeRules;
+import com.darkona.adventurebackpack.common.FuelRules;
 import com.darkona.adventurebackpack.common.NightVisionRefresh;
 import com.darkona.adventurebackpack.common.ToolCycleFilter;
 import com.darkona.adventurebackpack.common.ToolCycleInput;
@@ -42,6 +43,8 @@ public class ConfigHandler
     public static final String COPTERPACK = ROOT + ".copterpack";
     public static final String STEAMJETPACK = ROOT + ".steamjetpack";
     public static final String INFLATABLEBOAT = ROOT + ".inflatableboat";
+    public static final String FUELS_CATEGORY = ROOT + ".fuels";
+    public static final String FUELSTATION = ROOT + ".fuelstation";
     public static final String CROSSBOW = ROOT + ".crossbow";
     public static final String CROSSBOW_GRAPPLE = CROSSBOW + ".grapple";
     public static final String CROSSBOW_SNIPER = CROSSBOW + ".sniper";
@@ -55,6 +58,7 @@ public class ConfigHandler
     public static final String WORLDGEN = ROOT + ".worldgen";
     public static final String RECIPES = ROOT + ".recipes";
     public static final String RECIPES_BOAT = RECIPES + ".boat";
+    public static final String RECIPES_FUELSTATION = RECIPES + ".fuelstation";
     public static final String TWEAKS = ROOT + ".tweaks";
     public static final String TWEAKS_TOOL_CYCLE = TWEAKS + ".toolcycle";
     public static final String COMPAT = ROOT + ".compat";
@@ -96,6 +100,7 @@ public class ConfigHandler
     public static boolean SLEEPINGBAG_ENABLED = true;
     public static boolean PISTONBOOTS_ENABLED = true;
     public static boolean CAMPFIRE_ENABLED = true;
+    public static boolean FUELSTATION_ENABLED = true;
 
     // ---------------------------------------------------------------- backpack
     public static boolean BACKPACK_DEATH_PLACE = true;
@@ -215,8 +220,6 @@ public class ConfigHandler
     public static int COPTER_HOVER_EXTRA_FUEL = 2;
     public static int COPTER_CLIMB_EXTRA_FUEL = 2;
     public static int COPTER_START_FUEL = 100;
-    public static final String[] COPTER_FUELS_DEFAULT = {"fuel=1.0", "oil=1.5", "bioethanol=1.2", "biofuel=1.0", "creosote=1.8", "coal=0.8"};
-    public static String[] COPTER_FUELS = COPTER_FUELS_DEFAULT;
     public static double COPTER_LIFT_SPEED = 0.15;
     public static double COPTER_DESCEND_SPEED = 0.3;
     public static double COPTER_GLIDE_FACTOR = 0.6;
@@ -246,6 +249,10 @@ public class ConfigHandler
 
     // ---------------------------------------------------------------- inflatable boat
     public static double BOAT_MAX_SPEED = 0.35;
+
+    // ---------------------------------------------------------------- fuels and fuel station
+    public static String[] FUELS = FuelRules.DEFAULTS;
+    public static int FUELSTATION_TANK_CAPACITY = 16000;
 
     // ---------------------------------------------------------------- sleeping bag
     public static boolean SLEEPINGBAG_PLACEABLE = true;
@@ -317,6 +324,9 @@ public class ConfigHandler
     public static String[] BOAT_RUBBER = BOAT_RUBBER_DEFAULT;
     public static final String[] BOAT_MOTORS_DEFAULT = {"ic2:elemotor", "item:gregtech:gt.metaitem.01:32600", "ore:craftingElectricMotor", "stack:ThermalExpansion:powerCoilGold"};
     public static String[] BOAT_MOTORS = BOAT_MOTORS_DEFAULT;
+    public static BoatRecipeRules.Mode FUELSTATION_RECIPE_MODE = BoatRecipeRules.Mode.AUTO;
+    public static final String[] FUELSTATION_PLATES_DEFAULT = {"plateSteel", "plateIron"};
+    public static String[] FUELSTATION_PLATES = FUELSTATION_PLATES_DEFAULT;
     public static boolean FIX_LEAD = true;
     public static boolean HORSES_FOLLOW_OWNER = true;
     public static ToolCycleFilter.Mode TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.NONE;
@@ -354,6 +364,8 @@ public class ConfigHandler
         readCopterPack(cfg);
         readSteamJetpack(cfg);
         readInflatableBoat(cfg);
+        readFuels(cfg);
+        readFuelStation(cfg);
         readCrossbow(cfg);
         readPistonBoots(cfg);
         readSleepingBag(cfg);
@@ -389,6 +401,8 @@ public class ConfigHandler
         cfg.setCategoryComment(COPTERPACK, "The Copter Pack (works only with BuildCraft loaded). Speeds in blocks per tick.");
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
+        cfg.setCategoryComment(FUELS_CATEGORY, "Liquid fuels, one list for everything that burns them (the Copter Pack, the Fuel Station and what it fills). A fuel is known by the fluid name the mod that adds it registers, so no fuel mod is needed: BuildCraft oil and fuel, Forestry bioethanol and biomass, Railcraft creosote, Thermal Foundation coal, GregTech fuel (diesel), bioethanol and creosote.");
+        cfg.setCategoryComment(FUELSTATION, "The Fuel Station: a block with a fuel tank that fills the Copter Pack (in its slot, worn or held), the tank of the motorized boat the player rides, and buckets, cans or cells. Pipes of any mod fill it from any side. It does no work on its own between actions.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
         cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the cartridge (an empty magazine still reloads by itself).");
@@ -402,6 +416,8 @@ public class ConfigHandler
         cfg.setCategoryComment(RECIPES, "Extra recipes.");
         cfg.setCategoryComment(RECIPES_BOAT, "Recipes of the Inflatable Boat (only when enabled.inflatableBoat is on). Vanilla: Inflatable Chambers (leather, slime ball, leather), five of them with string and a Hose Nozzle as the valve make the boat; a piston, a furnace and Hydro Blades make it a motorized boat. With technical mods, rubber makes the chambers (three rubber, two chambers) and an electric motor plus Hydro Blades makes the motorized boat. The recipes are read once at startup: needs a restart.");
         cfg.getCategory(RECIPES_BOAT).setRequiresMcRestart(true);
+        cfg.setCategoryComment(RECIPES_FUELSTATION, "Recipe of the Fuel Station (only when enabled.fuelStation is on). Vanilla: iron ingots, glass panes, a Hose Nozzle and a Backpack Tank. With technical mods, metal plates take the place of the iron ingots. Read once at startup: needs a restart.");
+        cfg.getCategory(RECIPES_FUELSTATION).setRequiresMcRestart(true);
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
         cfg.setCategoryComment(TWEAKS_TOOL_CYCLE, "The backpack's two tool slots: which items they take, by hand and with the tool cycle (keys.toolcycle). The server checks the same list.");
         cfg.setCategoryComment(COMPAT, "Integrations with other mods. Each one only acts when its mod is loaded; nothing here is a hard dependency.");
@@ -440,6 +456,7 @@ public class ConfigHandler
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up.");
         PISTONBOOTS_ENABLED = bool(cfg, ENABLED, "pistonBoots", true, "The Piston Boots: step assist, sprint speed and fall protection.");
         CAMPFIRE_ENABLED = bool(cfg, ENABLED, "campfire", true, "Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way.");
+        FUELSTATION_ENABLED = bool(cfg, ENABLED, "fuelStation", true, "The Fuel Station block. When false it has no recipe, is hidden from the creative tab, and a placed one neither takes nor gives fuel (it can still be broken, and keeps its fuel).");
     }
 
     private static void readBackpack(Configuration cfg)
@@ -584,13 +601,10 @@ public class ConfigHandler
         ALLOW_COPTER_SOUND = bool(cfg, COPTERPACK, "sound", true, "Play the rotor sound (client only; other players may still hear theirs).");
         COPTER_TANK_CAPACITY = integer(cfg, COPTERPACK, "tankCapacity", 6000, 1000, 64000, "Fuel tank capacity in millibuckets. Use the same value on server and clients.", true);
         COPTER_FUEL_INTERVAL_TICKS = integer(cfg, COPTERPACK, "fuelIntervalTicks", 3, 1, 200, "Fuel is taken once every this many ticks: the cost of all those ticks at once.");
-        COPTER_FUEL_PER_TICK = integer(cfg, COPTERPACK, "fuelPerTick", 2, 0, 100, "Millibuckets of fuel per tick while the engine runs, before the fuel's own multiplier (oil 1.5, fuel 1.0, creosote 1.8...). With the defaults a full tank lasts about 2.5 minutes of gliding, 75 seconds of hovering and 50 seconds of climbing while hovering.");
+        COPTER_FUEL_PER_TICK = integer(cfg, COPTERPACK, "fuelPerTick", 2, 0, 100, "Millibuckets of fuel per tick while the engine runs, before the fuel's own multiplier in fuels.list (oil 1.5, fuel 1.0, creosote 1.8...). With the defaults a full tank lasts about 2.5 minutes of gliding, 75 seconds of hovering and 50 seconds of climbing while hovering.");
         COPTER_HOVER_EXTRA_FUEL = integer(cfg, COPTERPACK, "hoverExtraFuel", 2, 0, 100, "Extra fuel per tick while hovering (not while sinking with sneak).");
         COPTER_CLIMB_EXTRA_FUEL = integer(cfg, COPTERPACK, "climbExtraFuel", 2, 0, 100, "Extra fuel per tick while climbing (jump held).");
         COPTER_START_FUEL = integer(cfg, COPTERPACK, "startFuel", 100, 0, 64000, "Fuel the engine takes when it is turned on. It does not start with less in the tank. 0 turns it off.");
-        order(COPTERPACK, "fuels");
-        COPTER_FUELS = cfg.getStringList("fuels", COPTERPACK, COPTER_FUELS_DEFAULT, "Fluids the copter pack burns, as name=multiplier: the fuel cost is multiplied by it (higher burns faster). Fluid names as registered by the mods (BuildCraft fuel and oil, Railcraft creosote...). Needs a restart.");
-        cfg.getCategory(COPTERPACK).get("fuels").setRequiresMcRestart(true);
         COPTER_LIFT_SPEED = decimal(cfg, COPTERPACK, "liftSpeed", 0.15, 0.01, 2.0, "Climbing speed.");
         COPTER_DESCEND_SPEED = decimal(cfg, COPTERPACK, "descendSpeed", 0.3, 0.01, 2.0, "Descending speed while sneaking.");
         COPTER_GLIDE_FACTOR = decimal(cfg, COPTERPACK, "glideFactor", 0.6, 0.0, 1.0, "Falling speed is multiplied by this every tick in normal mode (lower = slower fall).");
@@ -625,6 +639,31 @@ public class ConfigHandler
     private static void readInflatableBoat(Configuration cfg)
     {
         BOAT_MAX_SPEED = decimal(cfg, INFLATABLEBOAT, "maxSpeed", 0.35, 0.07, 2.0, "Top speed in blocks per tick (the vanilla boat uses 0.35).");
+    }
+
+    private static void readFuels(Configuration cfg)
+    {
+        migrateFuels(cfg);
+        order(FUELS_CATEGORY, "list");
+        FUELS = cfg.getStringList("list", FUELS_CATEGORY, FuelRules.DEFAULTS, "Liquid fuels as fluidName=multiplier. The fuel cost of each user (copterpack.fuelPerTick...) is multiplied by it: higher burns faster. Only these fluids go into fuel tanks. Use the fluid names the mods register (see the category comment); add lava=4.0, for example, to burn lava. Moved here from copterpack.fuels, keeping its value. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(FUELS_CATEGORY).get("list").setRequiresMcRestart(true);
+    }
+
+    /** Moves the old copterpack.fuels value into fuels.list (see FuelRules.migrate) and drops the old key. */
+    static void migrateFuels(Configuration cfg)
+    {
+        ConfigCategory copter = cfg.getCategory(COPTERPACK);
+        if (!copter.containsKey("fuels")) return;
+        Property old = copter.remove("fuels");
+        ConfigCategory fuels = cfg.getCategory(FUELS_CATEGORY);
+        if (fuels.containsKey("list")) return;
+        String[] moved = FuelRules.migrate(old.isList() ? old.getStringList() : new String[]{old.getString()});
+        if (moved != null) cfg.get(FUELS_CATEGORY, "list", FuelRules.DEFAULTS).set(moved);
+    }
+
+    private static void readFuelStation(Configuration cfg)
+    {
+        FUELSTATION_TANK_CAPACITY = integer(cfg, FUELSTATION, "tankCapacity", 16000, 1000, 64000, "Capacity of the station's tank in millibuckets. Use the same value on server and clients. Lowering it does not delete fuel already stored above the new limit.", true);
     }
 
     private static void readCrossbow(Configuration cfg)
@@ -721,6 +760,10 @@ public class ConfigHandler
         BOAT_RUBBER = cfg.getStringList("rubber", RECIPES_BOAT, BOAT_RUBBER_DEFAULT, "Ore Dictionary names of rubber (IC2 itemRubber, GregTech plateRubber and ingotRubber...). Each one some loaded mod provides gets its own chamber recipe. Needs a restart.");
         order(RECIPES_BOAT, "motors");
         BOAT_MOTORS = cfg.getStringList("motors", RECIPES_BOAT, BOAT_MOTORS_DEFAULT, "Electric motors for the motorized boat, each one found gets its own recipe. Entries: ic2:<IC2 item name> (IC2 API, elemotor is the Electric Motor), item:<modid>:<item name>[:<damage>] (gregtech:gt.metaitem.01:32600 is GregTech's LV Motor), ore:<Ore Dictionary name>, stack:<modid>:<registered stack name> (Thermal Expansion's powerCoilGold is the Redstone Reception Coil). Needs a restart.");
+        FUELSTATION_RECIPE_MODE = BoatRecipeRules.Mode.parse(choice(cfg, RECIPES_FUELSTATION, "mode", "auto", BoatRecipeRules.Mode.NAMES,
+                "vanilla: only the iron ingot recipe. auto: the iron ingot recipe, plus one with plates for each plate a loaded mod provides. technical: the plate recipes replace the iron ingot one when a loaded mod provides a plate; without plates the iron ingot recipe stays. Needs a restart."));
+        order(RECIPES_FUELSTATION, "plates");
+        FUELSTATION_PLATES = cfg.getStringList("plates", RECIPES_FUELSTATION, FUELSTATION_PLATES_DEFAULT, "Ore Dictionary names of the metal plates for the technical recipe (GregTech, IC2, Thermal Foundation, Railcraft plateSteel and plateIron...). Each one some loaded mod provides gets its own recipe. Needs a restart.");
         FIX_LEAD = bool(cfg, TWEAKS, "fixVanillaLead", true, "Mobs on a lead held by a player take no fall damage unless they fall fast.");
         HORSES_FOLLOW_OWNER = bool(cfg, TWEAKS, "namedHorsesFollowOwner", true, "Tamed horses with a name tag follow their owner.");
         TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.parse(choice(cfg, TWEAKS_TOOL_CYCLE, "mode", "none", ToolCycleFilter.Mode.NAMES,

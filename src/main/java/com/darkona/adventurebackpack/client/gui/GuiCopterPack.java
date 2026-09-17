@@ -93,7 +93,8 @@ public class GuiCopterPack extends GuiWithTanks
 
         if(fuel.getFluid()!=null)
         {
-            Float f = GeneralReference.liquidFuels.get(name);
+            // the multiplier is keyed by the registered fluid name, not by the capitalized name shown above
+            Float f = GeneralReference.liquidFuels.get(fuel.getFluid().getFluid().getName());
             String conLev = (f != null) ? f.toString() : "0";
             if(conLev != null && !conLev.isEmpty())
                 fontRendererObj.drawString("Consumption: " + conLev , 1 + offsetX, 40 + offsetY, 0x373737, false);
