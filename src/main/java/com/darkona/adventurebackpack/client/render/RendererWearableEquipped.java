@@ -40,6 +40,16 @@ public class RendererWearableEquipped extends RendererLivingEntity
 
     public void render(Entity entity, double x, double y, double z, float rotX, float rotY, float rotZ, float yaw, float pitch)
     {
+        render(entity, x, y, z, rotX, rotY, rotZ, yaw, pitch, 0.0F, 0.0F);
+    }
+
+    /**
+     * {@code headX} and {@code headY} are the head angles of the player's own model, copied to the wearable's
+     * {@code bipedHead} so a part hung from the head (the Scuba Gear's mask) follows the look. Models that only use
+     * the body ignore them.
+     */
+    public void render(Entity entity, double x, double y, double z, float rotX, float rotY, float rotZ, float yaw, float pitch, float headX, float headY)
+    {
         try
         {
             if (!Wearing.isWearingWearable((EntityPlayer) entity)) return;
@@ -50,6 +60,8 @@ public class RendererWearableEquipped extends RendererLivingEntity
             modelBipedMain.bipedBody.rotateAngleX = rotX;
             modelBipedMain.bipedBody.rotateAngleY = rotY;
             modelBipedMain.bipedBody.rotateAngleZ = rotZ;
+            modelBipedMain.bipedHead.rotateAngleX = headX;
+            modelBipedMain.bipedHead.rotateAngleY = headY;
             GL11.glColor3f(1.0F, 1.0F, 1.0F);
             GL11.glPushMatrix();
             try

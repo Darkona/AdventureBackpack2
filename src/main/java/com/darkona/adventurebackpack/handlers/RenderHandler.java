@@ -41,7 +41,8 @@ public class RenderHandler
         GL11.glPushMatrix();
         try
         {
-            ClientProxy.rendererWearableEquipped.render(player, x, y, z, rotationX, rotationY, rotationZ, pitch, yaw);
+            ClientProxy.rendererWearableEquipped.render(player, x, y, z, rotationX, rotationY, rotationZ, pitch, yaw,
+                    event.renderer.modelBipedMain.bipedHead.rotateAngleX, event.renderer.modelBipedMain.bipedHead.rotateAngleY);
         } finally
         {
             GL11.glPopMatrix();

@@ -1,6 +1,9 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.block.TileAirCompressor;
+import com.darkona.adventurebackpack.client.gui.GuiAirCompressor;
+import com.darkona.adventurebackpack.client.gui.GuiScubaGear;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
 import com.darkona.adventurebackpack.client.gui.GuiSteamJetpack;
@@ -17,6 +20,10 @@ import net.minecraft.world.World;
  */
 public class GuiHandler implements IGuiHandler
 {
+    /** 9 and 10 are kept for the Flamethrower Pack, 12 for the Fuel Station (notes/diseno-equipo-espalda.md). */
+    public static final byte AIR_COMPRESSOR = 11;
+    public static final byte SCUBA_WEARING = 8;
+    public static final byte SCUBA_HOLDING = 7;
     public static final byte JETPACK_WEARING = 6;
     public static final byte JETPACK_HOLDING = 5;
     public static final byte COPTER_WEARING = 4;
@@ -77,6 +84,24 @@ public class GuiHandler implements IGuiHandler
                     return new ContainerJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
                 }
                 break;
+            case SCUBA_HOLDING:
+                if (Wearing.isHoldingScuba(player))
+                {
+                    return new ContainerScubaGear(player, new InventoryScubaGear(Wearing.getHoldingScuba(player)), false);
+                }
+                break;
+            case SCUBA_WEARING:
+                if (Wearing.isWearingScuba(player))
+                {
+                    return new ContainerScubaGear(player, new InventoryScubaGear(Wearing.getWearingScuba(player)), true);
+                }
+                break;
+            case AIR_COMPRESSOR:
+                if (world.getTileEntity(x, y, z) instanceof TileAirCompressor)
+                {
+                    return new ContainerAirCompressor(player.inventory, (TileAirCompressor) world.getTileEntity(x, y, z));
+                }
+                break;
             default:
                 player.closeScreen();
                 break;
@@ -131,6 +156,24 @@ public class GuiHandler implements IGuiHandler
                 if (Wearing.isWearingSteam(player))
                 {
                     return new GuiSteamJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
+                }
+                break;
+            case SCUBA_HOLDING:
+                if (Wearing.isHoldingScuba(player))
+                {
+                    return new GuiScubaGear(player, new InventoryScubaGear(Wearing.getHoldingScuba(player)), false);
+                }
+                break;
+            case SCUBA_WEARING:
+                if (Wearing.isWearingScuba(player))
+                {
+                    return new GuiScubaGear(player, new InventoryScubaGear(Wearing.getWearingScuba(player)), true);
+                }
+                break;
+            case AIR_COMPRESSOR:
+                if (world.getTileEntity(x, y, z) instanceof TileAirCompressor)
+                {
+                    return new GuiAirCompressor(player.inventory, (TileAirCompressor) world.getTileEntity(x, y, z));
                 }
                 break;
             default:

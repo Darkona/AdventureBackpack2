@@ -12,6 +12,8 @@ item.adventurebackpack:hydroBlades.name=Hydro Blades
 item.adventurebackpack:inflatableBoat.name=Inflatable Boat
 item.adventurebackpack:inflatableBoatMotorized.name=Inflatable Boat (Motorized)
 item.adventurebackpack:inflatableChamber.name=Inflatable Chamber
+item.adventurebackpack:airTank.name=Air Tank
+item.adventurebackpack:divingMask.name=Diving Mask
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Clockwork Crossbow
@@ -33,6 +35,7 @@ item.adventurebackpack:hoseUseless.name=Hose: Useless / No Backpack
 item.adventurebackpack:adventureBackpack.name=Adventure Backpack
 item.adventurebackpack:copterPack.name=Copter Pack
 item.adventurebackpack:steamJetpack.name=Steam Jetpack
+item.adventurebackpack:scubaGear.name=Scuba Gear
 
 ## Armor
 item.adventurebackpack:adventureSuit.name=Adventurer's Suit
@@ -42,6 +45,7 @@ item.adventurebackpack:pistonBoots.name=Piston Boots
 ## Blocks
 block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Block
 block.adventurebackpack:CampFire.name=Campfire
+tile.adventurebackpack:blockAirCompressor.name=Air Compressor
 block.adventurebackpack:SleepingBag.name=Sleeping Bag
 
 ## CreativeTab
@@ -62,6 +66,7 @@ fluid.melonJuice=Melon Juice
 fluid.milk=Milk
 fluid.mushroomstew=Mushroom Stew
 fluid.steam=Steam
+fluid.air=Air
 
 ## Messages
 adventurebackpack:messages.already.equipped=You are already equipping a backpack.
@@ -77,6 +82,14 @@ adventurebackpack:messages.copterpack.cantwater=CopterPack: Can't function in wa
 adventurebackpack:messages.copterpack.off=CopterPack: Off.
 adventurebackpack:messages.jetpack.on=Steam Jetpack: On.
 adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
+adventurebackpack:messages.scuba.lowair=Scuba Gear: the air is running low.
+adventurebackpack:messages.scuba.empty=Scuba Gear: out of air. Swim up!
+adventurebackpack:messages.compressor.noair=The Air Compressor needs open air above it.
+adventurebackpack:messages.compressor.empty=The Air Compressor has no air.
+adventurebackpack:messages.compressor.filled=Scuba Gear: %1$s mB of air added.
+adventurebackpack:gui.scuba.air=Air: %1$s / %2$s mB
+container.adventurebackpack:scubaGear=Scuba Gear
+container.adventurebackpack:airCompressor=Air Compressor
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: out of bolts. Craft a Bolt Cartridge.
 adventurebackpack:messages.abilities.off=Backpack abilities: Off.
 adventurebackpack:messages.abilities.on=Backpack abilities: On.

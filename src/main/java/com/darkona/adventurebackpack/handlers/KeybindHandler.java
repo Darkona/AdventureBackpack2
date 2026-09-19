@@ -88,6 +88,10 @@ public class KeybindHandler
                     {
                         ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
                     }
+                    if (Wearing.isWearingScuba(player))
+                    {
+                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.SCUBA_GUI, GUIPacket.FROM_KEYBIND));
+                    }
                 }
             }
 

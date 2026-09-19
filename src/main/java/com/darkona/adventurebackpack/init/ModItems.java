@@ -23,6 +23,7 @@ public class ModItems
     public static final ItemCrossbow cwxbow = new ItemCrossbow();
     public static final ItemBoltCartridge boltCartridge = new ItemBoltCartridge();
     public static final ItemSteamJetpack steamJetpack = new ItemSteamJetpack();
+    public static final ItemScubaGear scubaGear = new ItemScubaGear();
 
     public static void init()
     {
@@ -40,6 +41,8 @@ public class ModItems
         GameRegistry.registerItem(boltCartridge, "boltCartridge");
         // Always registered; it only works with BuildCraft (ItemCopterPack.isUsable)
         GameRegistry.registerItem(copterPack, "copterPack");
+        // Always registered; hidden and inert with enabled.scuba off or without any breathable fluid
+        GameRegistry.registerItem(scubaGear, "scubaGear");
 
     }
 }

@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.compat.tech.TechParts;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.init.recipes.BackpackUpgradeRecipe;
+import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.item.ItemComponent;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
@@ -257,9 +258,74 @@ public class ModRecipes
         LogHelper.info("Inflatable boat recipes: mode " + mode + ", rubber " + rubbers + ", " + motors.size() + " electric motor(s) found.");
     }
 
+    /**
+     * The Scuba Gear, its Air Tank and Diving Mask, and the Air Compressor (enabled.scuba, and only when some
+     * breathable fluid exists). The mask takes rubber instead of leather like the boat's chambers (recipes.boat.mode
+     * and recipes.boat.rubber).
+     */
+    private static void scubaRecipes()
+    {
+        BoatRecipeRules.Mode mode = ConfigHandler.BOAT_RECIPE_MODE;
+        List<String> rubbers = TechParts.presentOres(ConfigHandler.BOAT_RUBBER);
+
+        // Air Tank: an iron bottle with the Hose Nozzle as its valve
+        GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.AIR_TANK, 1),
+                "IHI",
+                "I I",
+                "III",
+                'I', "ingotIron",
+                'H', component(ItemComponent.HOSE_NOZZLE, 1)));
+
+        // Diving Mask: a glass visor in leather (or rubber) with the Hose Nozzle as the regulator
+        if (BoatRecipeRules.vanillaRecipe(mode, !rubbers.isEmpty()))
+        {
+            GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.DIVING_MASK, 1),
+                    "LLL",
+                    "LGL",
+                    " H ",
+                    'L', Items.leather,
+                    'G', "paneGlass",
+                    'H', component(ItemComponent.HOSE_NOZZLE, 1)));
+        }
+        if (BoatRecipeRules.technicalRecipe(mode, !rubbers.isEmpty()))
+        {
+            for (String rubber : rubbers)
+            {
+                GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.DIVING_MASK, 1),
+                        "RRR",
+                        "RGR",
+                        " H ",
+                        'R', rubber,
+                        'G', "paneGlass",
+                        'H', component(ItemComponent.HOSE_NOZZLE, 1)));
+            }
+        }
+
+        // Scuba Gear: the mask, two air tanks on a harness
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.scubaGear),
+                " M ",
+                "ASA",
+                " L ",
+                'M', component(ItemComponent.DIVING_MASK, 1),
+                'A', component(ItemComponent.AIR_TANK, 1),
+                'S', Items.string,
+                'L', Items.leather));
+
+        // Air Compressor: a piston pump driven by a furnace, pushing into a Backpack Tank
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.blockAirCompressor),
+                "IPI",
+                "ITI",
+                "IFI",
+                'I', "ingotIron",
+                'P', Blocks.piston,
+                'T', component(2, 1),
+                'F', Blocks.furnace));
+    }
+
     public static void conditionalInit()
     {
         if (ConfigHandler.INFLATABLEBOAT_ENABLED) boatRecipes();
+        if (AirContainers.usable()) scubaRecipes();
 
         if(ConfigHandler.SADDLE_RECIPE)
         {

@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.inventory.AirContainers;
+
 import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
@@ -32,6 +34,8 @@ public class ItemComponent extends ItemAB
     public static final int MOTORIZED_BOAT = 8;
     public static final int HYDRO_BLADES = 9;
     public static final int INFLATABLE_CHAMBER = 10;
+    public static final int AIR_TANK = 11;
+    public static final int DIVING_MASK = 12;
 
     private HashMap<String, IIcon> componentIcons = new HashMap<String, IIcon>();
     private String[] names = {
@@ -45,6 +49,8 @@ public class ItemComponent extends ItemAB
             "inflatableBoatMotorized",
             "hydroBlades",
             "inflatableChamber",
+            "airTank",
+            "divingMask",
     };
 
 
@@ -100,6 +106,7 @@ public class ItemComponent extends ItemAB
         for (int i = 1; i <= names.length; i++)
         {
             if (i >= INFLATABLE_BOAT && i <= INFLATABLE_CHAMBER && !ConfigHandler.INFLATABLEBOAT_ENABLED) continue;
+            if (i >= AIR_TANK && i <= DIVING_MASK && !AirContainers.usable()) continue;
             list.add(new ItemStack(this, 1, i));
         }
     }

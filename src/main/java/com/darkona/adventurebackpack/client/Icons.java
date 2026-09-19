@@ -17,4 +17,5 @@ public class Icons
     public static IIcon mushRoomStewStill;
     public static IIcon mushRoomStewFlowing;
     public static IIcon steamStill;
+    public static IIcon airStill;
 }

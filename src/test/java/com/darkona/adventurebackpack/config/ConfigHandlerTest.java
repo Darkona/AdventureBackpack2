@@ -177,4 +177,24 @@ class ConfigHandlerTest
             assertTrue(found, m[0] + " -> " + m[1] + "." + m[2]);
         }
     }
+
+    @Test
+    void scubaKeysLiveInTheirOwnBranchWithDefaults() throws IOException
+    {
+        Configuration cfg = load("scuba.cfg", null);
+        assertTrue(cfg.getCategory(ConfigHandler.ENABLED).containsKey("scuba"));
+        assertTrue(cfg.getCategory(ConfigHandler.SCUBA).containsKey("airPerSecond"));
+        assertTrue(cfg.getCategory(ConfigHandler.SCUBA_COMPRESSOR).containsKey("handPumpAmount"));
+        assertNotNull(cfg.getCategory(ConfigHandler.SCUBA_COMPRESSOR).getComment());
+        assertTrue(cfg.getCategory(ConfigHandler.SCUBA).get("ownAirFluid").requiresMcRestart());
+        assertTrue(ConfigHandler.SCUBA_ENABLED);
+        assertEquals(3000, ConfigHandler.SCUBA_TANK_CAPACITY);
+        assertEquals(10, ConfigHandler.SCUBA_AIR_PER_SECOND);
+        assertEquals(600, ConfigHandler.SCUBA_LOW_AIR_WARNING);
+        assertEquals(16000, ConfigHandler.COMPRESSOR_TANK_CAPACITY);
+        assertEquals(10, ConfigHandler.RENDER_SCUBA_BUBBLE_TICKS);
+        assertEquals("air", ConfigHandler.SCUBA_BREATHABLE_FLUIDS[0]);
+        assertEquals("oxygen", ConfigHandler.SCUBA_BREATHABLE_FLUIDS[1]);
+        assertEquals("ic2:airCell=1000>ic2:cell", ConfigHandler.SCUBA_AIR_ITEMS[0]);
+    }
 }

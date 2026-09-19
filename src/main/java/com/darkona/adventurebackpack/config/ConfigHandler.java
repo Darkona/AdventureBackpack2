@@ -41,6 +41,8 @@ public class ConfigHandler
     public static final String HOSE = ROOT + ".hose";
     public static final String COPTERPACK = ROOT + ".copterpack";
     public static final String STEAMJETPACK = ROOT + ".steamjetpack";
+    public static final String SCUBA = ROOT + ".scuba";
+    public static final String SCUBA_COMPRESSOR = SCUBA + ".compressor";
     public static final String INFLATABLEBOAT = ROOT + ".inflatableboat";
     public static final String CROSSBOW = ROOT + ".crossbow";
     public static final String CROSSBOW_GRAPPLE = CROSSBOW + ".grapple";
@@ -91,6 +93,7 @@ public class ConfigHandler
     public static boolean HOSE_ENABLED = true;
     public static boolean COPTERPACK_ENABLED = true;
     public static boolean STEAMJETPACK_ENABLED = true;
+    public static boolean SCUBA_ENABLED = true;
     public static boolean INFLATABLEBOAT_ENABLED = true;
     public static boolean CROSSBOW_ENABLED = true;
     public static boolean SLEEPINGBAG_ENABLED = true;
@@ -244,6 +247,25 @@ public class ConfigHandler
     public static float JETPACK_AIR_CONTROL = 0.02f;
     public static int JETPACK_MAX_ALTITUDE = 90;
 
+    // ---------------------------------------------------------------- scuba gear and air compressor
+    public static final String[] SCUBA_BREATHABLE_DEFAULT = {"air", "oxygen"};
+    public static final String[] SCUBA_AIR_ITEMS_DEFAULT = {"ic2:airCell=1000>ic2:cell"};
+    public static int SCUBA_TANK_CAPACITY = 3000;
+    public static int SCUBA_AIR_PER_SECOND = 10;
+    public static int SCUBA_AIR_INTERVAL_TICKS = 20;
+    public static int SCUBA_LOW_AIR_WARNING = 600;
+    public static boolean SCUBA_WARNING_SOUND = true;
+    public static String[] SCUBA_BREATHABLE_FLUIDS = SCUBA_BREATHABLE_DEFAULT;
+    public static boolean SCUBA_OWN_AIR = true;
+    public static String[] SCUBA_AIR_ITEMS = SCUBA_AIR_ITEMS_DEFAULT;
+    public static int COMPRESSOR_TANK_CAPACITY = 16000;
+    public static int COMPRESSOR_HAND_PUMP_AMOUNT = 100;
+    public static int COMPRESSOR_HAND_PUMP_COOLDOWN_TICKS = 4;
+    public static int COMPRESSOR_AIR_PER_FUEL_TICK = 10;
+    public static int COMPRESSOR_FILL_PER_TICK = 50;
+    public static int COMPRESSOR_INTERVAL_TICKS = 10;
+    public static boolean COMPRESSOR_NEEDS_OPEN_AIR = true;
+
     // ---------------------------------------------------------------- inflatable boat
     public static double BOAT_MAX_SPEED = 0.35;
 
@@ -295,6 +317,7 @@ public class ConfigHandler
     public static boolean HOVERING_TEXT_TANKS = false;
     public static boolean STATUS_OVERLAY = true;
     public static boolean TANKS_OVERLAY = true;
+    public static int RENDER_SCUBA_BUBBLE_TICKS = 10;
 
     // ---------------------------------------------------------------- keys (client, defaults only)
     public static int KEY_OPEN_BACKPACK = Keyboard.KEY_B;
@@ -353,6 +376,7 @@ public class ConfigHandler
         readHose(cfg);
         readCopterPack(cfg);
         readSteamJetpack(cfg);
+        readScuba(cfg);
         readInflatableBoat(cfg);
         readCrossbow(cfg);
         readPistonBoots(cfg);
@@ -388,6 +412,8 @@ public class ConfigHandler
         cfg.setCategoryComment(HOSE, "The Backpack Hose: suck, spill and drink from the worn backpack's tanks. Amounts in millibuckets (1000 = one bucket).");
         cfg.setCategoryComment(COPTERPACK, "The Copter Pack (works only with BuildCraft loaded). Speeds in blocks per tick.");
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
+        cfg.setCategoryComment(SCUBA, "The Scuba Gear: two air tanks on the back and a diving mask, worn in the back slot like the jetpack. While the head is under water it keeps the air bar full and spends the air of its tanks (left tank first). Air is the 'air' fluid (GregTech's when present, its own otherwise, see ownAirFluid) or any other fluid of breathableFluids. Ticks: 20 per second; amounts in millibuckets.");
+        cfg.setCategoryComment(SCUBA_COMPRESSOR, "The Air Compressor block: fills the Scuba Gear in its slot, air cells and other air containers. It makes air with a hand pump (right click with an empty hand) and with a furnace that burns any furnace fuel, and takes air or oxygen from pipes of other mods. No electricity.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
@@ -439,6 +465,7 @@ public class ConfigHandler
         CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow and its Bolt Cartridges.");
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up.");
         PISTONBOOTS_ENABLED = bool(cfg, ENABLED, "pistonBoots", true, "The Piston Boots: step assist, sprint speed and fall protection.");
+        SCUBA_ENABLED = bool(cfg, ENABLED, "scuba", true, "The Scuba Gear, its Air Tanks and Diving Mask, and the Air Compressor.");
         CAMPFIRE_ENABLED = bool(cfg, ENABLED, "campfire", true, "Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way.");
     }
 
@@ -622,6 +649,30 @@ public class ConfigHandler
         JETPACK_MAX_ALTITUDE = integer(cfg, STEAMJETPACK, "maxAltitude", 90, 1, 255, "Height above which thrust fades out: thrust holds the wearer at about maxRiseSpeed x 100 blocks higher.");
     }
 
+    private static void readScuba(Configuration cfg)
+    {
+        SCUBA_TANK_CAPACITY = integer(cfg, SCUBA, "tankCapacity", 3000, 500, 64000, "Capacity of each of the two air tanks, in millibuckets. Use the same value on server and clients.", true);
+        SCUBA_AIR_PER_SECOND = integer(cfg, SCUBA, "airPerSecond", 10, 0, 1000, "Millibuckets of air spent per second while it keeps the wearer breathing. With the defaults two full tanks last 10 minutes under water. 0 makes the air free.");
+        SCUBA_AIR_INTERVAL_TICKS = integer(cfg, SCUBA, "airIntervalTicks", 20, 1, 200, "The air is taken once every this many ticks: the cost of all those ticks at once.");
+        SCUBA_LOW_AIR_WARNING = integer(cfg, SCUBA, "lowAirWarning", 600, 0, 64000, "When the air left goes below this many millibuckets the wearer gets a chat warning, once per dive (600 is one minute with the defaults). 0 turns the warning off.");
+        SCUBA_WARNING_SOUND = bool(cfg, SCUBA, "warningSound", true, "Play a click with the low air warning.");
+        order(SCUBA, "breathableFluids");
+        SCUBA_BREATHABLE_FLUIDS = cfg.getStringList("breathableFluids", SCUBA, SCUBA_BREATHABLE_DEFAULT, "Fluids the tanks and the compressor take, by registered name (air of GregTech or Adventure Backpack, oxygen of GregTech, Galacticraft or Mekanism...). When the 'air' fluid exists every one of them is stored as air. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(SCUBA).get("breathableFluids").setRequiresMcRestart(true);
+        SCUBA_OWN_AIR = bool(cfg, SCUBA, "ownAirFluid", true, "When no other mod (GregTech) registers an 'air' fluid, register Adventure Backpack's own so the hand pump and the furnace of the compressor can make air. When another mod has air, that one is used. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(SCUBA).get("ownAirFluid").setRequiresMcRestart(true);
+        order(SCUBA, "airItems");
+        SCUBA_AIR_ITEMS = cfg.getStringList("airItems", SCUBA, SCUBA_AIR_ITEMS_DEFAULT, "Items that hold air without being fluid containers (IC2's Compressed Air Cell), for the container slots of the Scuba Gear and the compressor. One per line: <item>=<millibuckets>, optionally followed by ><empty item> for the item it leaves and that the compressor fills again. Items as in recipes.boat.motors: ic2:<IC2 item name>, item:<modid>:<item name>[:<damage>], ore:<Ore Dictionary name>, stack:<modid>:<registered stack name>. GregTech's air cells are fluid containers and need no entry. Needs a restart.");
+        cfg.getCategory(SCUBA).get("airItems").setRequiresMcRestart(true);
+        COMPRESSOR_TANK_CAPACITY = integer(cfg, SCUBA_COMPRESSOR, "tankCapacity", 16000, 1000, 64000, "Capacity of the compressor's air tank, in millibuckets. Use the same value on server and clients.", true);
+        COMPRESSOR_HAND_PUMP_AMOUNT = integer(cfg, SCUBA_COMPRESSOR, "handPumpAmount", 100, 0, 16000, "Millibuckets of air one right click with an empty hand pumps in (60 clicks fill a Scuba Gear with the defaults). 0 turns the hand pump off.");
+        COMPRESSOR_HAND_PUMP_COOLDOWN_TICKS = integer(cfg, SCUBA_COMPRESSOR, "handPumpCooldownTicks", 4, 0, 200, "Ticks between two strokes of the hand pump.");
+        COMPRESSOR_AIR_PER_FUEL_TICK = integer(cfg, SCUBA_COMPRESSOR, "airPerFuelTick", 10, 0, 1000, "Millibuckets of air the furnace makes per tick of burning fuel: one coal (1600 ticks) makes 16000 with the defaults. 0 turns the furnace off.");
+        COMPRESSOR_FILL_PER_TICK = integer(cfg, SCUBA_COMPRESSOR, "fillPerTick", 50, 1, 64000, "Millibuckets per tick moved into the Scuba Gear in the compressor's slot (an empty gear fills in 6 seconds with the defaults).");
+        COMPRESSOR_INTERVAL_TICKS = integer(cfg, SCUBA_COMPRESSOR, "intervalTicks", 10, 1, 200, "The compressor works once every this many ticks, doing the work of all those ticks at once.");
+        COMPRESSOR_NEEDS_OPEN_AIR = bool(cfg, SCUBA_COMPRESSOR, "needsOpenAir", true, "The hand pump and the furnace make air only when the block above the compressor is air, so it is not an air source buried or under water. Air from pipes is taken anyway.");
+    }
+
     private static void readInflatableBoat(Configuration cfg)
     {
         BOAT_MAX_SPEED = decimal(cfg, INFLATABLEBOAT, "maxSpeed", 0.35, 0.07, 2.0, "Top speed in blocks per tick (the vanilla boat uses 0.35).");
@@ -692,6 +743,7 @@ public class ConfigHandler
         GUI_TANK_RENDER = integer(cfg, RENDER, "tankRenderType", 3, 1, 3, "How fluids are drawn in the backpack GUI tanks: 1, 2 or 3.");
         HOVERING_TEXT_TANKS = bool(cfg, RENDER, "tankHoverText", false, "Show the tank contents as hovering text instead of under the tanks.");
         STATUS_OVERLAY = bool(cfg, RENDER, "statusOverlay", true, "Show the player's potion effects on screen.");
+        RENDER_SCUBA_BUBBLE_TICKS = integer(cfg, RENDER, "scubaBubbleTicks", 10, 1, 200, "Ticks between two puffs of bubbles from the mask of a player breathing from the Scuba Gear.");
         TANKS_OVERLAY = bool(cfg, RENDER, "wearableOverlay", true, "Show the overlays of the worn backpack, copter pack or jetpack on screen.");
     }
 
