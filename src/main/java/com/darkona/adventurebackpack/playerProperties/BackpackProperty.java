@@ -363,4 +363,32 @@ public class BackpackProperty implements IExtendedEntityProperties
     {
         this.pistonStepApplied = applied;
     }
+
+    /**
+     * Not saved: whether the worn Scuba Gear had air at its last beat (ItemScubaGear). Between beats the tick only
+     * reads this boolean, never the stack's tag. Set on equip and on every beat, cleared on unequip.
+     */
+    private boolean scubaHasAir = false;
+    /** Not saved: the vanilla air bar went down since the last beat of the Scuba Gear, so the beat pays for air. */
+    private boolean scubaAirDropped = false;
+
+    public boolean isScubaHasAir()
+    {
+        return scubaHasAir;
+    }
+
+    public void setScubaHasAir(boolean hasAir)
+    {
+        this.scubaHasAir = hasAir;
+    }
+
+    public boolean isScubaAirDropped()
+    {
+        return scubaAirDropped;
+    }
+
+    public void setScubaAirDropped(boolean dropped)
+    {
+        this.scubaAirDropped = dropped;
+    }
 }

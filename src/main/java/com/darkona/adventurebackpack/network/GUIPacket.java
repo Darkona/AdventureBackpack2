@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -28,6 +29,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
     public static final byte BACKPACK_GUI = 1;
     public static final byte COPTER_GUI = 2;
     public static final byte JETPACK_GUI = 3;
+    public static final byte SCUBA_GUI = 4;
 
     @Override
     public IMessage onMessage(GUImessage message, MessageContext ctx)
@@ -79,6 +81,19 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.JETPACK_HOLDING, world, playerX, playerY, playerZ);
                             return null;
                         }
+                    }
+                }
+                if (message.type == SCUBA_GUI && AirContainers.usable())
+                {
+                    if (message.from == FROM_KEYBIND && Wearing.isWearingScuba(player))
+                    {
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.SCUBA_WEARING, world, playerX, playerY, playerZ);
+                        return null;
+                    }
+                    if (message.from == FROM_HOLDING && Wearing.isHoldingScuba(player))
+                    {
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.SCUBA_HOLDING, world, playerX, playerY, playerZ);
+                        return null;
                     }
                 }
                 if (message.type == BACKPACK_GUI)

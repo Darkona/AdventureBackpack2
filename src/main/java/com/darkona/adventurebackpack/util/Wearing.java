@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.util;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
+import com.darkona.adventurebackpack.inventory.InventoryScubaGear;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.item.*;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
@@ -70,6 +71,26 @@ public class Wearing
         return isHoldingCopter(player) ?  player.inventory.getCurrentItem() : null;
     }
 
+
+    public static boolean isWearingScuba(EntityPlayer player)
+    {
+        return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemScubaGear;
+    }
+
+    public static ItemStack getWearingScuba(EntityPlayer player)
+    {
+        return isWearingScuba(player) ? BackpackProperty.get(player).getWearable() : null;
+    }
+
+    public static boolean isHoldingScuba(EntityPlayer player)
+    {
+        return player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemScubaGear;
+    }
+
+    public static ItemStack getHoldingScuba(EntityPlayer player)
+    {
+        return isHoldingScuba(player) ? player.inventory.getCurrentItem() : null;
+    }
 
     public static boolean isWearingBoots(EntityPlayer player)
     {
@@ -150,6 +171,7 @@ public class Wearing
         if(wearable.getItem() instanceof ItemAdventureBackpack)return new InventoryBackpack(wearable);
         if (wearable.getItem() instanceof ItemSteamJetpack) return new InventorySteamJetpack(wearable);
         if (wearable.getItem() instanceof ItemCopterPack) return new InventoryCopterPack(wearable);
+        if (wearable.getItem() instanceof ItemScubaGear) return new InventoryScubaGear(wearable);
         return null;
     }
 }

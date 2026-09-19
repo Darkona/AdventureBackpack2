@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.config;
 
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModFluids;
+import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import net.minecraft.item.Item;
@@ -27,6 +28,9 @@ public final class FeatureVisibility
         hideUnless(ModItems.pistonBoots, ConfigHandler.PISTONBOOTS_ENABLED);
         // the station's item takes its creative tab from the block
         if (!ConfigHandler.FUELSTATION_ENABLED) ModBlocks.blockFuelStation.setCreativeTab(null);
+        // Without any breathable fluid (no GregTech air and ownAirFluid off, no oxygen) the gear cannot work
+        hideUnless(ModItems.scubaGear, AirContainers.usable());
+        if (!AirContainers.usable()) ModBlocks.blockAirCompressor.setCreativeTab(null);
     }
 
     private static void hideUnless(Item item, boolean enabled)

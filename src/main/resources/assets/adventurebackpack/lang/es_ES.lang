@@ -12,6 +12,8 @@ item.adventurebackpack:hydroBlades.name=Hélice Acuática
 item.adventurebackpack:inflatableBoat.name=Bote Inflable
 item.adventurebackpack:inflatableBoatMotorized.name=Bote Inflable (Motorizado)
 item.adventurebackpack:inflatableChamber.name=Cámara Inflable
+item.adventurebackpack:airTank.name=Tanque de Aire
+item.adventurebackpack:divingMask.name=Máscara de Buceo
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Ballesta de Relojería
@@ -33,6 +35,7 @@ item.adventurebackpack:hoseUseless.name=Manguera: Inútil / Sin Mochila
 item.adventurebackpack:adventureBackpack.name=Mochila de Aventura
 item.adventurebackpack:copterPack.name=Mochilacóptero
 item.adventurebackpack:steamJetpack.name=Jetpack de Vapor
+item.adventurebackpack:scubaGear.name=Equipo de Buceo
 
 ## Armor
 item.adventurebackpack:adventureSuit.name=Traje de Aventurero
@@ -43,6 +46,7 @@ item.adventurebackpack:pistonBoots.name=Botas Pistón
 block.adventurebackpack:AdventureBackpack.name=Mochila de Aventura Base
 block.adventurebackpack:CampFire.name=Fogata
 tile.adventurebackpack:blockFuelStation.name=Estación de combustible
+tile.adventurebackpack:blockAirCompressor.name=Compresor de Aire
 block.adventurebackpack:SleepingBag.name=Bolsa de dormir
 
 ## CreativeTab
@@ -63,6 +67,7 @@ fluid.melonJuice=Jugo de Sandía
 fluid.milk=Leche
 fluid.mushroomstew=Sopa de Champiñones
 fluid.steam=Vapor
+fluid.air=Aire
 
 ## Messages
 adventurebackpack:messages.already.equipped=Ya llevas una mochila puesta.
@@ -78,6 +83,14 @@ adventurebackpack:messages.copterpack.cantwater=Mochilacóptero: No funciona en 
 adventurebackpack:messages.copterpack.off=Mochilacóptero: Apagado.
 adventurebackpack:messages.jetpack.on=Jetpack de Vapor: Encendido.
 adventurebackpack:messages.jetpack.off=Jetpack de Vapor: Apagado.
+adventurebackpack:messages.scuba.lowair=Equipo de Buceo: queda poco aire.
+adventurebackpack:messages.scuba.empty=Equipo de Buceo: sin aire. ¡Sube ya!
+adventurebackpack:messages.compressor.noair=El Compresor de Aire necesita aire libre encima.
+adventurebackpack:messages.compressor.empty=El Compresor de Aire no tiene aire.
+adventurebackpack:messages.compressor.filled=Equipo de Buceo: %1$s mB de aire cargados.
+adventurebackpack:gui.scuba.air=Aire: %1$s / %2$s mB
+container.adventurebackpack:scubaGear=Equipo de Buceo
+container.adventurebackpack:airCompressor=Compresor de Aire
 adventurebackpack:messages.crossbow.outofammo=Ballesta de Relojería: sin virotes. Fabrica un Cartucho de Virotes.
 adventurebackpack:messages.abilities.off=Habilidades de la mochila: desactivadas.
 adventurebackpack:messages.abilities.on=Habilidades de la mochila: activadas.

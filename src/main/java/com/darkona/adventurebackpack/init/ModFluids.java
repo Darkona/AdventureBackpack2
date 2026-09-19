@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.init;
 
+import com.darkona.adventurebackpack.fluids.FluidAir;
 import com.darkona.adventurebackpack.fluids.FluidMelonJuice;
 import com.darkona.adventurebackpack.fluids.FluidMilk;
 import com.darkona.adventurebackpack.fluids.FluidMushroomStew;
@@ -57,6 +58,23 @@ public class ModFluids
             LogHelper.info("No other mod registers steam: using Adventure Backpack's own for the Steam Jetpack.");
         }
         steam = FluidRegistry.getFluid("steam");
+    }
+
+    /** The "air" the Scuba Gear breathes: GregTech's, ours, or null when there is none (see registerAirIfMissing). */
+    public static Fluid air;
+
+    /**
+     * Called in postInit like registerSteamIfMissing: GregTech registers "air" (its Air Cells hold 2000 mB of it)
+     * and then that one is used; otherwise Adventure Backpack's own, unless scuba.ownAirFluid is off.
+     */
+    public static void registerAirIfMissing()
+    {
+        if (!FluidRegistry.isFluidRegistered("air") && ConfigHandler.SCUBA_OWN_AIR)
+        {
+            FluidRegistry.registerFluid(new FluidAir());
+            LogHelper.info("No other mod registers air: using Adventure Backpack's own for the Scuba Gear.");
+        }
+        air = FluidRegistry.getFluid("air");
     }
 
     /** Registers our fluid, or returns the fluid another mod already registered under that name. */

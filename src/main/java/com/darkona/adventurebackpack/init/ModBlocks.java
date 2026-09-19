@@ -14,6 +14,7 @@ public class ModBlocks
     public static BlockSleepingBag blockSleepingBag = new BlockSleepingBag();
     public static BlockCampFire blockCampFire = new BlockCampFire();
     public static BlockFuelStation blockFuelStation = new BlockFuelStation();
+    public static BlockAirCompressor blockAirCompressor = new BlockAirCompressor();
 
     public static void init()
     {
@@ -22,10 +23,13 @@ public class ModBlocks
         GameRegistry.registerBlock(blockCampFire, "blockCampFire");
         // Always registered; enabled.fuelStation only hides it, drops its recipe and makes a placed one inert.
         GameRegistry.registerBlock(blockFuelStation, ItemBlockStation.class, "blockFuelStation");
+        // Always registered; hidden, without recipe and inert with enabled.scuba off
+        GameRegistry.registerBlock(blockAirCompressor, "blockAirCompressor");
 
         GameRegistry.registerTileEntity(TileCampfire.class, "tileCampFire");
         GameRegistry.registerTileEntity(TileAdventureBackpack.class, "adventureBackpackTileEntity");
         GameRegistry.registerTileEntity(TileFuelStation.class, "tileFuelStation");
+        GameRegistry.registerTileEntity(TileAirCompressor.class, "tileAirCompressor");
     }
 
 }
