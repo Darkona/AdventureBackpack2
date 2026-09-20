@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -95,5 +98,15 @@ class FuelRulesTest {
         String[] fromDefault = FuelRules.migrate(FuelRules.OLD_COPTER_DEFAULTS);
         fromDefault[0] = "changed";
         assertEquals("fuel=1.0", FuelRules.DEFAULTS[0]);
+    }
+
+    @Test
+    void anyLoadedFuelModMakesTheFuelUsersWork() {
+        Map<String, Float> fuels = FuelRules.parse(FuelRules.DEFAULTS);
+        assertFalse(FuelRules.anyRegistered(fuels.keySet(), new HashSet<String>(Arrays.asList("water", "lava"))), "no fuel mod");
+        assertTrue(FuelRules.anyRegistered(fuels.keySet(), new HashSet<String>(Arrays.asList("water", "lava", "creosote"))), "Railcraft alone");
+        assertTrue(FuelRules.anyRegistered(fuels.keySet(), new HashSet<String>(Arrays.asList("water", "bioethanol"))), "Forestry alone");
+        assertFalse(FuelRules.anyRegistered(Collections.<String>emptySet(), new HashSet<String>(Arrays.asList("fuel"))), "an empty list");
+        assertFalse(FuelRules.anyRegistered(null, null));
     }
 }

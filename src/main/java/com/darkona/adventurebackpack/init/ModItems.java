@@ -38,7 +38,7 @@ public class ModItems
         // Always registered: it boils another mod's steam or its own (ModFluids.registerSteamIfMissing)
         GameRegistry.registerItem(steamJetpack, "steamJetpack");
         GameRegistry.registerItem(boltCartridge, "boltCartridge");
-        // Always registered; it only works with BuildCraft (ItemCopterPack.isUsable)
+        // Always registered; it only works when a loaded mod adds a fuel of fuels.list (ItemCopterPack.isUsable)
         GameRegistry.registerItem(copterPack, "copterPack");
 
     }

@@ -1,12 +1,14 @@
 package com.darkona.adventurebackpack.common;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * The one list of liquid fuels (fuels.list), as pure functions: every fuel user (Copter Pack, Fuel Station, and later
- * the boat motor and the flamethrower) reads the same names and cost multipliers. A fuel is known by its registered
+ * The one list of liquid fuels (fuels.list), as pure functions: every fuel user (Copter Pack, Fuel Station, boat motor, and later
+ * the flamethrower) reads the same names and cost multipliers. A fuel is known by its registered
  * fluid name, never by a class of the mod that adds it, so no fuel mod is a dependency: BuildCraft {@code oil} and
  * {@code fuel}, Forestry {@code bioethanol} and {@code biomass}, Railcraft {@code creosote}, Thermal Foundation and
  * Railcraft {@code coal}, GregTech {@code fuel} (diesel) and {@code bioethanol}.
@@ -52,6 +54,20 @@ public final class FuelRules
     public static boolean accepts(Map<String, Float> fuels, String fluidName)
     {
         return fluidName != null && fuels.containsKey(fluidName);
+    }
+
+    /**
+     * True when at least one fuel of the list is a registered fluid: the fuel users (the Copter Pack) work with
+     * whichever fuel mod is loaded, and are inert with none.
+     */
+    public static boolean anyRegistered(Collection<String> fuelNames, Set<String> registeredFluids)
+    {
+        if (fuelNames == null || registeredFluids == null) return false;
+        for (String name : fuelNames)
+        {
+            if (name != null && registeredFluids.contains(name)) return true;
+        }
+        return false;
     }
 
     /** Cost multiplier of a fuel: 1 for a name that is not on the list (it is never burnt anyway). */

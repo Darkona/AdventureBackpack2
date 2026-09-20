@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.client.gui;
 import codechicken.lib.render.TextureUtils;
 import com.darkona.adventurebackpack.common.Constants;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.ModInfo;
@@ -192,6 +193,32 @@ public class GuiOverlay extends Gui
                 GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                 GL11.glDisable(GL11.GL_BLEND);
             }
+            if (player.ridingEntity instanceof EntityInflatableBoat && ((EntityInflatableBoat) player.ridingEntity).isMotorized())
+            {
+                drawBoatFuel((EntityInflatableBoat) player.ridingEntity, Wearing.isWearingWearable(player));
+            }
+        }
+    }
+
+    /** Fuel tank of the motorized boat the player rides, left of the worn pack's tanks (read from the DataWatcher). */
+    private void drawBoatFuel(EntityInflatableBoat boat, boolean wearing)
+    {
+        int textureHeight = 23;
+        int textureWidth = 10;
+        int xPos = screenWidth - textureWidth - 4 - (wearing ? textureWidth * 3 + 4 : 0);
+        int yPos = screenHeight - textureHeight - 2;
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        try
+        {
+            mc.renderEngine.bindTexture(OVERLAY_TEXTURE);
+            drawTexturedModalRect(xPos, yPos, 10, 0, textureWidth, textureHeight);
+            drawTank(boat.getDisplayFuelTank(), xPos + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
+        } finally
+        {
+            GL11.glDisable(GL11.GL_BLEND);
         }
     }
 

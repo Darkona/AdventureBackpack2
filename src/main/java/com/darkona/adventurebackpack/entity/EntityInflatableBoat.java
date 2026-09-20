@@ -1,8 +1,11 @@
 package com.darkona.adventurebackpack.entity;
 
+import com.darkona.adventurebackpack.common.BoatMotor;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
+import com.darkona.adventurebackpack.item.ItemComponent;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -17,9 +20,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import java.util.List;
@@ -31,7 +38,21 @@ import java.util.List;
  */
 public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 {
+    /** DataWatcher ids, after EntityBoat's 17-19: fuel in mB, fuel fluid id (-1 empty), flags (BoatMotor). */
+    private static final int DW_FUEL = 20;
+    private static final int DW_FUEL_FLUID = 21;
+    private static final int DW_FLAGS = 22;
+    /** Key of the fuel tank in the entity NBT and in the NBT of the boat item. */
+    public static final String TAG_FUEL_TANK = "FuelTank";
+
     private FluidTank fuelTank;
+    private FluidTank[] tanks;
+    /** Server: last fuel values written to the DataWatcher. Client: the values the display tank mirrors. */
+    private int syncedFuel = -1;
+    private int syncedFluid = -2;
+    /** Server: ticks the motor has run (fuel is paid every few of them) and ticks in a row out of the water. */
+    private int runTicks;
+    private int dryTicks;
     private boolean isBoatEmpty;
     private double speedMultiplier;
     private int boatPosRotationIncrements;
@@ -49,9 +70,16 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     private boolean inflated = false;
     public float inflation = 0.25f;
 
+    /** True for the motorized boat, on the server and on the clients (DataWatcher). */
     public boolean isMotorized()
     {
-        return motorized;
+        return BoatMotor.isMotorized(dataWatcher.getWatchableObjectByte(DW_FLAGS));
+    }
+
+    /** True while the outboard motor runs, on the server and on the clients (DataWatcher, set by the server). */
+    public boolean isMotorRunning()
+    {
+        return BoatMotor.isRunning(dataWatcher.getWatchableObjectByte(DW_FLAGS));
     }
 
     private boolean motorized;
@@ -65,14 +93,176 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     {
         super(world, posX, posY, posZ);
         setMotorized(motorized);
-        fuelTank = new FluidTank(6000);
     }
 
-    /** Fuel tank of the outboard motor (6000 mB); the Fuel Station fills it while the player rides the boat. */
+    @Override
+    protected void entityInit()
+    {
+        super.entityInit();
+        dataWatcher.addObject(DW_FUEL, 0);
+        dataWatcher.addObject(DW_FUEL_FLUID, -1);
+        dataWatcher.addObject(DW_FLAGS, (byte) 0);
+    }
+
+    /**
+     * Fuel tank of the outboard motor (inflatableboat.motor.tankCapacity); the Fuel Station fills it while the player
+     * rides the boat. On a client it holds only what {@link #getDisplayFuelTank()} copied from the DataWatcher.
+     */
     public FluidTank getFuelTank()
     {
-        if (fuelTank == null) fuelTank = new FluidTank(6000);
+        if (fuelTank == null)
+        {
+            fuelTank = new FluidTank(ConfigHandler.BOAT_MOTOR_TANK_CAPACITY);
+            tanks = new FluidTank[]{fuelTank};
+        }
         return fuelTank;
+    }
+
+    /**
+     * Client: the fuel tank as the server last sent it (amount and fluid from the DataWatcher). Rebuilt only when
+     * those numbers change, so the HUD can read it on every frame.
+     */
+    @SideOnly(Side.CLIENT)
+    public FluidTank getDisplayFuelTank()
+    {
+        FluidTank tank = getFuelTank();
+        int amount = dataWatcher.getWatchableObjectInt(DW_FUEL);
+        int fluidId = dataWatcher.getWatchableObjectInt(DW_FUEL_FLUID);
+        if (amount != syncedFuel || fluidId != syncedFluid)
+        {
+            syncedFuel = amount;
+            syncedFluid = fluidId;
+            Fluid fluid = fluidId < 0 || amount <= 0 ? null : FluidRegistry.getFluid(fluidId);
+            tank.setFluid(fluid == null ? null : new FluidStack(fluid, amount));
+        }
+        return tank;
+    }
+
+    /** Server: writes the tank to the DataWatcher when it changed since the last time (it sends only changes). */
+    private void syncFuelWatcher()
+    {
+        FluidStack fuel = getFuelTank().getFluid();
+        int amount = fuel == null ? 0 : fuel.amount;
+        int fluidId = fuel == null || fuel.getFluid() == null ? -1 : fuel.getFluid().getID();
+        if (amount != syncedFuel)
+        {
+            syncedFuel = amount;
+            dataWatcher.updateObject(DW_FUEL, amount);
+        }
+        if (fluidId != syncedFluid)
+        {
+            syncedFluid = fluidId;
+            dataWatcher.updateObject(DW_FUEL_FLUID, fluidId);
+        }
+    }
+
+    /** True when the tank holds some fuel that is on fuels.list. */
+    private boolean hasFuel()
+    {
+        FluidStack fuel = getFuelTank().getFluid();
+        return fuel != null && BoatMotor.hasFuel(fuel.amount, GeneralReference.isValidFuel(fuel.getFluid()));
+    }
+
+    private void setMotorRunning(boolean running)
+    {
+        byte flags = BoatMotor.flags(motorized, running);
+        if (flags != dataWatcher.getWatchableObjectByte(DW_FLAGS)) dataWatcher.updateObject(DW_FLAGS, flags);
+    }
+
+    /**
+     * Server, on the pilot's motor key (inflatableboat.motor.mode toggle): turns the motor on or off. It starts only
+     * with fuel and on water. Anyone but the pilot, or the hold mode, is ignored.
+     */
+    public void toggleMotor(EntityPlayer player)
+    {
+        if (worldObj.isRemote || !motorized || player == null || riddenByEntity != player) return;
+        if (ConfigHandler.BOAT_MOTOR_MODE != BoatMotor.Mode.TOGGLE) return;
+        boolean was = isMotorRunning();
+        boolean fuel = hasFuel();
+        boolean now = BoatMotor.toggled(was, ConfigHandler.BOAT_MOTOR_ENABLED, fuel, dryTicks == 0);
+        setMotorRunning(now);
+        String message;
+        if (now) message = "on";
+        else if (was) message = "off";
+        else if (!ConfigHandler.BOAT_MOTOR_ENABLED) message = "disabled";
+        else if (!fuel) message = "outoffuel";
+        else message = "nowater";
+        player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.boat.motor." + message));
+    }
+
+    /**
+     * Server, every tick of a motorized boat: keeps the DataWatcher fuel up to date while someone rides it (the Fuel
+     * Station fills it then), decides whether the motor runs, and burns its fuel. With no pilot and the motor off it
+     * returns after counting the ticks out of the water.
+     */
+    private void updateMotor(boolean onWater)
+    {
+        dryTicks = onWater ? 0 : Math.min(dryTicks + 1, Short.MAX_VALUE);
+        if (riddenByEntity != null) syncFuelWatcher();
+        boolean was = isMotorRunning();
+        BoatMotor.Mode mode = ConfigHandler.BOAT_MOTOR_MODE;
+        if (!was && (riddenByEntity == null || mode != BoatMotor.Mode.HOLD)) return;
+
+        EntityLivingBase pilot = riddenByEntity instanceof EntityLivingBase && !riddenByEntity.isDead ? (EntityLivingBase) riddenByEntity : null;
+        boolean fuel = hasFuel();
+        boolean run = BoatMotor.running(was, mode, ConfigHandler.BOAT_MOTOR_ENABLED, pilot != null, fuel, dryTicks,
+                ConfigHandler.BOAT_MOTOR_OUT_OF_WATER_TICKS, pilot == null ? 0 : pilot.moveForward);
+        if (run)
+        {
+            runTicks = runTicks == Integer.MAX_VALUE ? 1 : runTicks + 1;
+            if (BoatMotor.fuelDue(runTicks, ConfigHandler.BOAT_MOTOR_FUEL_INTERVAL))
+            {
+                FluidStack stored = getFuelTank().getFluid();
+                int cost = BoatMotor.fuelCost(ConfigHandler.BOAT_MOTOR_FUEL_PER_TICK, ConfigHandler.BOAT_MOTOR_FUEL_INTERVAL,
+                        GeneralReference.fuelMultiplier(stored.getFluid()));
+                if (cost > 0)
+                {
+                    getFuelTank().drain(cost, true);
+                    syncFuelWatcher();
+                }
+            }
+        }
+        if (run != was)
+        {
+            setMotorRunning(run);
+            if (was && !fuel && pilot instanceof EntityPlayer)
+            {
+                ((EntityPlayer) pilot).addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.boat.motor.outoffuel"));
+            }
+        }
+    }
+
+    /** Client: smoke from the stern while the motor runs (render.boatSmokeTicks). Called only when isRemote. */
+    private void motorSmoke()
+    {
+        int every = ConfigHandler.RENDER_BOAT_SMOKE_TICKS;
+        if (every <= 0 || ticksExisted % every != 0 || !isMotorRunning()) return;
+        double yaw = rotationYaw * Math.PI / 180.0D;
+        worldObj.spawnParticle("smoke", posX + Math.cos(yaw) * 0.9D, posY + 0.6D, posZ + Math.sin(yaw) * 0.9D, 0.0D, 0.03D, 0.0D);
+    }
+
+    /** Saves the fuel tank into the NBT of the boat item, so picking the boat up keeps its fuel. */
+    public static void saveFuelToItem(FluidTank tank, ItemStack stack)
+    {
+        if (tank == null || tank.getFluidAmount() <= 0 || stack == null) return;
+        NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
+        tag.setTag(TAG_FUEL_TANK, tank.writeToNBT(new NBTTagCompound()));
+        stack.setTagCompound(tag);
+    }
+
+    /** Server: fills the tank from saved NBT (the entity's or the item's), dropping what is above the capacity. */
+    public void loadFuel(NBTTagCompound tankTag)
+    {
+        FluidTank tank = getFuelTank();
+        tank.setFluid(null);
+        if (tankTag != null) tank.readFromNBT(tankTag);
+        FluidStack fuel = tank.getFluid();
+        if (fuel != null)
+        {
+            fuel.amount = BoatMotor.restoredAmount(fuel.amount, tank.getCapacity());
+            if (fuel.amount <= 0 || fuel.getFluid() == null) tank.setFluid(null);
+        }
+        if (worldObj != null && !worldObj.isRemote) syncFuelWatcher();
     }
 
     public boolean isInflated()
@@ -124,6 +314,14 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
             {
                 d0 += 1.0D / (double) b0;
             }
+        }
+
+        if (!this.worldObj.isRemote)
+        {
+            if (this.motorized) updateMotor(d0 > 0.0D);
+        } else
+        {
+            motorSmoke();
         }
 
         double horizontalMotion = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -207,31 +405,37 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
                 this.motionY += 0.007000000216066837D;
             }
 
+            // Without a running motor these are the plain boat's numbers: inflatableboat.maxSpeed and 35
+            boolean motorRunning = this.isMotorRunning();
+            double topSpeed = BoatMotor.maxSpeed(motorRunning, ConfigHandler.BOAT_MAX_SPEED, ConfigHandler.BOAT_MOTOR_MAX_SPEED);
+            double accelerationDivisor = BoatMotor.accelerationDivisor(motorRunning, ConfigHandler.BOAT_MOTOR_ACCELERATION);
+
             if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityLivingBase)
             {
                 EntityLivingBase entitylivingbase = (EntityLivingBase) this.riddenByEntity;
+                double forward = BoatMotor.forwardInput(motorRunning, entitylivingbase.moveForward);
                 float f = this.riddenByEntity.rotationYaw + -entitylivingbase.moveStrafing * 90.0F;
-                this.motionX += -Math.sin((double) (f * (float) Math.PI / 180.0F)) * this.speedMultiplier * (double) entitylivingbase.moveForward * 0.05000000074505806D;
-                this.motionZ += Math.cos((double) (f * (float) Math.PI / 180.0F)) * this.speedMultiplier * (double) entitylivingbase.moveForward * 0.05000000074505806D;
+                this.motionX += -Math.sin((double) (f * (float) Math.PI / 180.0F)) * this.speedMultiplier * forward * 0.05000000074505806D;
+                this.motionZ += Math.cos((double) (f * (float) Math.PI / 180.0F)) * this.speedMultiplier * forward * 0.05000000074505806D;
             }
 
             d2 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 
-            if (d2 > ConfigHandler.BOAT_MAX_SPEED)
+            if (d2 > topSpeed)
             {
-                d4 = ConfigHandler.BOAT_MAX_SPEED / d2;
+                d4 = topSpeed / d2;
                 this.motionX *= d4;
                 this.motionZ *= d4;
-                d2 = ConfigHandler.BOAT_MAX_SPEED;
+                d2 = topSpeed;
             }
 
-            if (d2 > horizontalMotion && this.speedMultiplier < ConfigHandler.BOAT_MAX_SPEED)
+            if (d2 > horizontalMotion && this.speedMultiplier < topSpeed)
             {
-                this.speedMultiplier += (ConfigHandler.BOAT_MAX_SPEED - this.speedMultiplier) / 35.0D;
+                this.speedMultiplier += (topSpeed - this.speedMultiplier) / accelerationDivisor;
 
-                if (this.speedMultiplier > ConfigHandler.BOAT_MAX_SPEED)
+                if (this.speedMultiplier > topSpeed)
                 {
-                    this.speedMultiplier = ConfigHandler.BOAT_MAX_SPEED;
+                    this.speedMultiplier = topSpeed;
                 }
             } else
             {
@@ -373,7 +577,10 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 
                 if (!flag)
                 {
-                    this.entityDropItem(new ItemStack(ModItems.component, 1, motorized ? 8:7), 0.0f);
+                    ItemStack boat = new ItemStack(ModItems.component, 1, motorized ? ItemComponent.MOTORIZED_BOAT : ItemComponent.INFLATABLE_BOAT);
+                    // the fuel goes with the boat item, and comes back when the boat is placed again
+                    if (motorized) saveFuelToItem(getFuelTank(), boat);
+                    this.entityDropItem(boat, 0.0f);
                 }
 
                 this.setDead();
@@ -416,6 +623,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         compound.setFloat("Inflation",inflation);
         compound.setBoolean("Motorized",motorized);
         compound.setBoolean("Inflated",inflated);
+        if (motorized) compound.setTag(TAG_FUEL_TANK, getFuelTank().writeToNBT(new NBTTagCompound()));
     }
 
     @Override
@@ -426,7 +634,11 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         }
         if(compound.hasKey("Motorized"))
         {
-            motorized = compound.getBoolean("Motorized");
+            setMotorized(compound.getBoolean("Motorized"));
+        }
+        if (compound.hasKey(TAG_FUEL_TANK))
+        {
+            loadFuel(compound.getCompoundTag(TAG_FUEL_TANK));
         }
         if (compound.hasKey("Inflated"))
         {
@@ -437,6 +649,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     public void setMotorized(boolean motorized)
     {
         this.motorized = motorized;
+        dataWatcher.updateObject(DW_FLAGS, BoatMotor.flags(motorized, false));
     }
 
     @Override
@@ -457,10 +670,12 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 
     }
 
+    /** The motor's fuel tank. */
     @Override
     public FluidTank[] getTanksArray()
     {
-        return new FluidTank[0];
+        getFuelTank();
+        return tanks;
     }
 
     @Override

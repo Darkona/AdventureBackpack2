@@ -53,12 +53,12 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
 
     /**
      * The copter pack is always registered (so worlds and servers keep their ids whatever mods are installed), but it
-     * only works when it is enabled in the config and BuildCraft is loaded: its fuels come from BuildCraft. This class
-     * does not touch any BuildCraft class, so it loads fine without the mod.
+     * only works when it is enabled in the config and some loaded mod registers a fluid of fuels.list (BuildCraft,
+     * Forestry, Railcraft, GregTech...). No fuel mod is a dependency: with none of them it is inert.
      */
     public static boolean isUsable()
     {
-        return ConfigHandler.COPTERPACK_ENABLED && ConfigHandler.IS_BUILDCRAFT;
+        return ConfigHandler.COPTERPACK_ENABLED && GeneralReference.fuelRegistered;
     }
 
     @Override
