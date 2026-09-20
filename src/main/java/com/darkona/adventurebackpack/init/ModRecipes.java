@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.init.recipes.BackpackUpgradeRecipe;
 import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.item.ItemComponent;
+import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -375,7 +376,8 @@ public class ModRecipes
             );
         }
 
-        if(ConfigHandler.IS_BUILDCRAFT)
+        // The copter parts and pack need some liquid fuel of fuels.list from a loaded mod, whichever it is
+        if (ItemCopterPack.isUsable())
         {
             //Copter Engine
             GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
@@ -400,7 +402,7 @@ public class ModRecipes
             );
 
             //Copter Pack
-            if (ConfigHandler.COPTERPACK_ENABLED) GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.copterPack),
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.copterPack),
                     "WBW",
                     "TEI",
                     "CDI",

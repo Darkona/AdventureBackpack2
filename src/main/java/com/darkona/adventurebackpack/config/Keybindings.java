@@ -22,6 +22,8 @@ public class Keybindings
     public static KeyBinding crossbowMode;
     /** Turns the worn backpack's abilities off and on (#57). */
     public static KeyBinding toggleAbilities;
+    /** Turns the motor of the ridden motorized boat on and off (inflatableboat.motor.mode toggle). */
+    public static KeyBinding boatMotorToggle;
 
     /** Builds the key bindings with the default keys from the config; called once, after the config is read. */
     public static void init()
@@ -33,6 +35,7 @@ public class Keybindings
         previousTool = new KeyBinding(Names.keys.PREVIOUS_TOOL, ConfigHandler.KEY_PREVIOUS_TOOL, Names.keys.CATEGORY);
         crossbowMode = new KeyBinding(Names.keys.CROSSBOW_MODE, ConfigHandler.KEY_CROSSBOW_MODE, Names.keys.CATEGORY);
         toggleAbilities = new KeyBinding(Names.keys.TOGGLE_ABILITIES, ConfigHandler.KEY_TOGGLE_ABILITIES, Names.keys.CATEGORY);
+        boatMotorToggle = new KeyBinding(Names.keys.BOAT_MOTOR_TOGGLE, ConfigHandler.KEY_BOAT_MOTOR_TOGGLE, Names.keys.CATEGORY);
     }
 
     /** True while the tool-cycle modifier is held: the bound key, or sneaking when it is not bound. */

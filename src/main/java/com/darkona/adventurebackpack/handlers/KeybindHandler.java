@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
+import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.network.*;
@@ -50,6 +51,7 @@ public class KeybindHandler
                 Keybindings.nextTool.isPressed(), Keybindings.previousTool.isPressed());
         boolean crossbowMode = Keybindings.crossbowMode.isPressed();
         boolean toggleAbilities = Keybindings.toggleAbilities.isPressed();
+        boolean boatMotor = Keybindings.boatMotorToggle.isPressed();
         Key keypressed = getPressedKeyBinding();
 
         if(player != null)
@@ -69,6 +71,14 @@ public class KeybindHandler
             {
                 // A request: the server flips the switch, syncs it back and says the result in chat.
                 ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.ABILITIES_TOGGLE, ""));
+            }
+
+            if (boatMotor && mc.inGameHasFocus && player.ridingEntity instanceof EntityInflatableBoat
+                    && ((EntityInflatableBoat) player.ridingEntity).isMotorized())
+            {
+                // A request, one per press: the server checks the pilot and the fuel, and the boat's DataWatcher
+                // brings the new state back to every client
+                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.BOAT_MOTOR_TOGGLE));
             }
 
             if (keypressed == Key.INVENTORY_KEY)

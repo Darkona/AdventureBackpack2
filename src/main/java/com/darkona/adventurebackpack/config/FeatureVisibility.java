@@ -4,7 +4,6 @@ import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.item.ItemCopterPack;
 import net.minecraft.item.Item;
 
 /**
@@ -19,8 +18,8 @@ public final class FeatureVisibility
     public static void hideDisabledItems()
     {
         hideUnless(ModItems.hose, ConfigHandler.HOSE_ENABLED);
-        // Without BuildCraft (its fuels) the copter pack is inert, like a disabled one
-        hideUnless(ModItems.copterPack, ItemCopterPack.isUsable());
+        // Without any fuel mod the copter pack stays visible but inert (ItemCopterPack.isUsable)
+        hideUnless(ModItems.copterPack, ConfigHandler.COPTERPACK_ENABLED);
         // Without any steam fluid (no other mod and ownSteamFluid off) the jetpack cannot work
         hideUnless(ModItems.steamJetpack, ConfigHandler.STEAMJETPACK_ENABLED && ModFluids.steam != null);
         hideUnless(ModItems.cwxbow, ConfigHandler.CROSSBOW_ENABLED);

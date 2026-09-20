@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import com.darkona.adventurebackpack.common.BoatMotor;
 import com.darkona.adventurebackpack.common.BoatRecipeRules;
 import com.darkona.adventurebackpack.common.FuelRules;
 
@@ -165,6 +166,25 @@ class ConfigHandlerTest
         assertTrue(cfg.getCategory(ConfigHandler.ENABLED).containsKey("fuelStation"));
         assertFalse(cfg.getCategory(ConfigHandler.COPTERPACK).containsKey("fuels"), "the old key is gone");
         assertTrue(cfg.getCategory(ConfigHandler.FUELS_CATEGORY).get("list").requiresMcRestart());
+    }
+
+    @Test
+    void boatMotorDefaults() throws IOException
+    {
+        Configuration cfg = load("boatmotor.cfg", null);
+        assertTrue(ConfigHandler.BOAT_MOTOR_ENABLED);
+        assertEquals(BoatMotor.Mode.TOGGLE, ConfigHandler.BOAT_MOTOR_MODE);
+        assertEquals(0.6, ConfigHandler.BOAT_MOTOR_MAX_SPEED, 1e-9);
+        assertEquals(2.0, ConfigHandler.BOAT_MOTOR_ACCELERATION, 1e-9);
+        assertEquals(1, ConfigHandler.BOAT_MOTOR_FUEL_PER_TICK);
+        assertEquals(10, ConfigHandler.BOAT_MOTOR_FUEL_INTERVAL);
+        assertEquals(6000, ConfigHandler.BOAT_MOTOR_TANK_CAPACITY);
+        assertEquals(10, ConfigHandler.BOAT_MOTOR_OUT_OF_WATER_TICKS);
+        assertEquals(8, ConfigHandler.RENDER_BOAT_SMOKE_TICKS);
+        assertEquals(0, ConfigHandler.KEY_BOAT_MOTOR_TOGGLE);
+        assertEquals("enabled", cfg.getCategory(ConfigHandler.INFLATABLEBOAT_MOTOR).getOrderedValues().get(0).getName());
+        assertTrue(cfg.getCategory(ConfigHandler.INFLATABLEBOAT_MOTOR).get("tankCapacity").requiresMcRestart());
+        assertTrue(cfg.getCategory(ConfigHandler.KEYS).containsKey("boatMotorToggle"));
     }
 
     private static String oldCopterFuels(String... entries)

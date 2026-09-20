@@ -3,11 +3,14 @@ package com.darkona.adventurebackpack.item;
 import com.darkona.adventurebackpack.inventory.AirContainers;
 
 import com.darkona.adventurebackpack.block.BlockSleepingBag;
+import com.darkona.adventurebackpack.common.BoatMotor;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.HashMap;
 import java.util.List;
@@ -130,6 +134,38 @@ public class ItemComponent extends ItemAB
     }
 
 
+    /** Motorized boat: the fuel it carries and how its motor is driven. */
+    @Override
+    @SideOnly(Side.CLIENT)
+    @SuppressWarnings("unchecked")
+    public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced)
+    {
+        if (stack.getItemDamage() != MOTORIZED_BOAT || !ConfigHandler.INFLATABLEBOAT_ENABLED) return;
+        FluidStack fuel = null;
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(EntityInflatableBoat.TAG_FUEL_TANK))
+        {
+            fuel = FluidStack.loadFluidStackFromNBT(stack.getTagCompound().getCompoundTag(EntityInflatableBoat.TAG_FUEL_TANK));
+        }
+        if (fuel != null && fuel.amount > 0)
+        {
+            tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.boat.fuel", fuel.amount, fuel.getLocalizedName()));
+        } else
+        {
+            tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.boat.nofuel"));
+        }
+        if (!ConfigHandler.BOAT_MOTOR_ENABLED) return;
+        if (ConfigHandler.BOAT_MOTOR_MODE == BoatMotor.Mode.HOLD)
+        {
+            tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.boat.motor.hold"));
+        } else if (Keybindings.boatMotorToggle.getKeyCode() == 0)
+        {
+            tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.boat.motor.unbound"));
+        } else
+        {
+            tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.boat.motor.toggle", GameSettings.getKeyDisplayString(Keybindings.boatMotorToggle.getKeyCode())));
+        }
+    }
+
     private ItemStack placeBoat(ItemStack stack, World world, EntityPlayer player, boolean motorized)
     {
         float f = 1.0F;
@@ -193,6 +229,11 @@ public class ItemComponent extends ItemAB
                     }
 
                     EntityInflatableBoat inflatableBoat = new EntityInflatableBoat(world, i + 0.5, j + 1.0, k + 0.5, motorized);
+                    // the fuel saved in the item when the boat was picked up goes back into its tank
+                    if (motorized && stack.hasTagCompound() && stack.getTagCompound().hasKey(EntityInflatableBoat.TAG_FUEL_TANK))
+                    {
+                        inflatableBoat.loadFuel(stack.getTagCompound().getCompoundTag(EntityInflatableBoat.TAG_FUEL_TANK));
+                    }
 
                     inflatableBoat.rotationYaw = (float) (((MathHelper.floor_double((double) (player.rotationYaw * 4.0 / 360.0) + 0.5D) & 3) - 1) * 90);
                     if (!world.getCollidingBoundingBoxes(inflatableBoat, inflatableBoat.boundingBox.expand(-0.1, -0.1, -0.1)).isEmpty())

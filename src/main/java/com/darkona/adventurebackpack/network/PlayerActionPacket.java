@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.network;
 import com.darkona.adventurebackpack.common.FlightCost;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
+import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -10,6 +11,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * Created by Darkona on 12/10/2014.
@@ -21,6 +23,8 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
     public static final byte JETPACK_NOT_IN_USE = 2;
     public static final byte COPTER_CLIMBING = 3;
     public static final byte COPTER_NOT_CLIMBING = 4;
+    /** The boat motor key: the server turns the motor of the boat the sender pilots on or off. */
+    public static final byte BOAT_MOTOR_TOGGLE = 5;
 
     @Override
     public IMessage onMessage(ActionMessage message, MessageContext ctx)
@@ -56,6 +60,15 @@ public class PlayerActionPacket implements IMessageHandler<PlayerActionPacket.Ac
                 // Read by ItemCopterPack to charge the climb; memory only, sent by the client on each change
                 BackpackProperty props = BackpackProperty.get(ctx.getServerHandler().playerEntity);
                 if (props != null) props.setCopterClimbing(message.type == COPTER_CLIMBING);
+            }
+
+            if (message.type == BOAT_MOTOR_TOGGLE)
+            {
+                EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+                if (player != null && player.ridingEntity instanceof EntityInflatableBoat)
+                {
+                    ((EntityInflatableBoat) player.ridingEntity).toggleMotor(player);
+                }
             }
 
         }

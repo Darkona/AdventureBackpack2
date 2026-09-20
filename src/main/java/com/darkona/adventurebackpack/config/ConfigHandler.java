@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.config;
 
 import com.darkona.adventurebackpack.common.AbilityEffects;
+import com.darkona.adventurebackpack.common.BoatMotor;
 import com.darkona.adventurebackpack.common.BoatRecipeRules;
 import com.darkona.adventurebackpack.common.FuelRules;
 import com.darkona.adventurebackpack.common.NightVisionRefresh;
@@ -45,6 +46,7 @@ public class ConfigHandler
     public static final String SCUBA = ROOT + ".scuba";
     public static final String SCUBA_COMPRESSOR = SCUBA + ".compressor";
     public static final String INFLATABLEBOAT = ROOT + ".inflatableboat";
+    public static final String INFLATABLEBOAT_MOTOR = INFLATABLEBOAT + ".motor";
     public static final String FUELS_CATEGORY = ROOT + ".fuels";
     public static final String FUELSTATION = ROOT + ".fuelstation";
     public static final String CROSSBOW = ROOT + ".crossbow";
@@ -271,6 +273,14 @@ public class ConfigHandler
 
     // ---------------------------------------------------------------- inflatable boat
     public static double BOAT_MAX_SPEED = 0.35;
+    public static boolean BOAT_MOTOR_ENABLED = true;
+    public static BoatMotor.Mode BOAT_MOTOR_MODE = BoatMotor.Mode.TOGGLE;
+    public static double BOAT_MOTOR_MAX_SPEED = 0.6;
+    public static double BOAT_MOTOR_ACCELERATION = 2.0;
+    public static int BOAT_MOTOR_FUEL_PER_TICK = 1;
+    public static int BOAT_MOTOR_FUEL_INTERVAL = 10;
+    public static int BOAT_MOTOR_TANK_CAPACITY = 6000;
+    public static int BOAT_MOTOR_OUT_OF_WATER_TICKS = 10;
 
     // ---------------------------------------------------------------- fuels and fuel station
     public static String[] FUELS = FuelRules.DEFAULTS;
@@ -321,6 +331,7 @@ public class ConfigHandler
     // ---------------------------------------------------------------- render (client)
     public static boolean RENDER_BACKPACK_ON_PLAYER = true;
     public static int GUI_TANK_RENDER = 3;
+    public static int RENDER_BOAT_SMOKE_TICKS = 8;
     public static boolean HOVERING_TEXT_TANKS = false;
     public static boolean STATUS_OVERLAY = true;
     public static boolean TANKS_OVERLAY = true;
@@ -331,6 +342,7 @@ public class ConfigHandler
     public static int KEY_TOGGLE = Keyboard.KEY_N;
     public static int KEY_CROSSBOW_MODE = Keyboard.KEY_V;
     public static int KEY_TOGGLE_ABILITIES = 0;
+    public static int KEY_BOAT_MOTOR_TOGGLE = 0;
     public static boolean TOOL_CYCLE_ENABLED = true;
     public static ToolCycleInput.Mode TOOL_CYCLE_MODE = ToolCycleInput.Mode.BOTH;
     public static boolean TOOL_CYCLE_INVERT_WHEEL = false;
@@ -422,12 +434,13 @@ public class ConfigHandler
             cfg.getCategory(ABILITIES + "." + a);
         }
         cfg.setCategoryComment(HOSE, "The Backpack Hose: suck, spill and drink from the worn backpack's tanks. Amounts in millibuckets (1000 = one bucket).");
-        cfg.setCategoryComment(COPTERPACK, "The Copter Pack (works only with BuildCraft loaded). Speeds in blocks per tick.");
+        cfg.setCategoryComment(COPTERPACK, "The Copter Pack. It burns the liquid fuels of fuels.list, so it works with any mod that adds one of them (BuildCraft, Forestry, Railcraft, GregTech...). Speeds in blocks per tick.");
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(SCUBA, "The Scuba Gear: two air tanks on the back and a diving mask, worn in the back slot like the jetpack. While the head is under water it keeps the air bar full and spends the air of its tanks (left tank first). Air is the 'air' fluid (GregTech's when present, its own otherwise, see ownAirFluid) or any other fluid of breathableFluids. Ticks: 20 per second; amounts in millibuckets.");
         cfg.setCategoryComment(SCUBA_COMPRESSOR, "The Air Compressor block: fills the Scuba Gear in its slot, air cells and other air containers. It makes air with a hand pump (right click with an empty hand) and with a furnace that burns any furnace fuel, and takes air or oxygen from pipes of other mods. No electricity.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
-        cfg.setCategoryComment(FUELS_CATEGORY, "Liquid fuels, one list for everything that burns them (the Copter Pack, the Fuel Station and what it fills). A fuel is known by the fluid name the mod that adds it registers, so no fuel mod is needed: BuildCraft oil and fuel, Forestry bioethanol and biomass, Railcraft creosote, Thermal Foundation coal, GregTech fuel (diesel), bioethanol and creosote.");
+        cfg.setCategoryComment(INFLATABLEBOAT_MOTOR, "The outboard motor of the Motorized Inflatable Boat. It burns a liquid fuel from fuels.list, put in its tank at the Fuel Station (right click the station while riding the boat). With the defaults the boat goes almost twice as fast and a full tank lasts about 5 minutes of running. Without fuel, or with the motor off, the boat moves like the plain one. Picking the boat up keeps its fuel in the item. Speeds in blocks per tick; ticks: 20 per second.");
+        cfg.setCategoryComment(FUELS_CATEGORY, "Liquid fuels, one list for everything that burns them (the Copter Pack, the motor of the Motorized Inflatable Boat, the Fuel Station and what it fills). A fuel is known by the fluid name the mod that adds it registers, so no fuel mod is needed: BuildCraft oil and fuel, Forestry bioethanol and biomass, Railcraft creosote, Thermal Foundation coal, GregTech fuel (diesel), bioethanol and creosote.");
         cfg.setCategoryComment(FUELSTATION, "The Fuel Station: a block with a fuel tank that fills the Copter Pack (in its slot, worn or held), the tank of the motorized boat the player rides, and buckets, cans or cells. Pipes of any mod fill it from any side. It does no work on its own between actions.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
@@ -475,7 +488,7 @@ public class ConfigHandler
     {
         BACKPACK_ABILITIES = bool(cfg, ENABLED, "abilities", true, "Backpack abilities. When false every backpack is only cosmetic (the lightning transformation still works). Set it the same on server and clients.");
         HOSE_ENABLED = bool(cfg, ENABLED, "hose", true, "The Backpack Hose.");
-        COPTERPACK_ENABLED = bool(cfg, ENABLED, "copterPack", true, "The Copter Pack. It is always registered, but it only works (and shows in the creative tab) when BuildCraft is loaded.");
+        COPTERPACK_ENABLED = bool(cfg, ENABLED, "copterPack", true, "The Copter Pack. It works when some loaded mod adds a fluid of fuels.list (BuildCraft, Forestry, Railcraft, GregTech...); with none of them it stays in the creative tab but cannot be crafted and does nothing.");
         STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack.");
         INFLATABLEBOAT_ENABLED = bool(cfg, ENABLED, "inflatableBoat", true, "The Inflatable Boat and the Motorized Inflatable Boat.");
         CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow and its Bolt Cartridges.");
@@ -689,7 +702,16 @@ public class ConfigHandler
 
     private static void readInflatableBoat(Configuration cfg)
     {
-        BOAT_MAX_SPEED = decimal(cfg, INFLATABLEBOAT, "maxSpeed", 0.35, 0.07, 2.0, "Top speed in blocks per tick (the vanilla boat uses 0.35).");
+        BOAT_MAX_SPEED = decimal(cfg, INFLATABLEBOAT, "maxSpeed", 0.35, 0.07, 2.0, "Top speed in blocks per tick (the vanilla boat uses 0.35). The motorized boat without fuel, or with its motor off, uses it too.");
+        BOAT_MOTOR_ENABLED = bool(cfg, INFLATABLEBOAT_MOTOR, "enabled", true, "The motor of the Motorized Inflatable Boat. False: the motor is only a look, and the boat moves like the plain one.");
+        BOAT_MOTOR_MODE = BoatMotor.Mode.parse(choice(cfg, INFLATABLEBOAT_MOTOR, "mode", "toggle", BoatMotor.Mode.NAMES,
+                "toggle: the motor key (keys.boatMotorToggle, set it in Options > Controls) turns the motor on and off, and the boat goes ahead on its own while the pilot steers; holding back still brakes. hold: the motor pushes while the pilot holds the forward key. Either way it stops without fuel, when the pilot gets off and out of the water. Read on the server."));
+        BOAT_MOTOR_MAX_SPEED = decimal(cfg, INFLATABLEBOAT_MOTOR, "maxSpeed", 0.6, 0.05, 2.0, "Top speed while the motor runs, in blocks per tick (0.6 = 12 blocks per second; the boat without motor uses inflatableboat.maxSpeed). Use the same value on server and clients.");
+        BOAT_MOTOR_ACCELERATION = decimal(cfg, INFLATABLEBOAT_MOTOR, "acceleration", 2.0, 1.0, 10.0, "How much faster than the plain boat the boat speeds up while the motor runs: 1.0 = as fast as the plain boat, 2.0 = twice as fast. Use the same value on server and clients.");
+        BOAT_MOTOR_FUEL_PER_TICK = integer(cfg, INFLATABLEBOAT_MOTOR, "fuelPerTick", 1, 0, 100, "Millibuckets of fuel per tick while the motor runs, before the fuel's own multiplier (fuels.list). With the defaults a full tank of fuel lasts 5 minutes. 0 makes the motor free (it still needs some fuel in the tank).");
+        BOAT_MOTOR_FUEL_INTERVAL = integer(cfg, INFLATABLEBOAT_MOTOR, "fuelIntervalTicks", 10, 1, 200, "Fuel is taken once every this many ticks of running: the cost of all those ticks at once.");
+        BOAT_MOTOR_TANK_CAPACITY = integer(cfg, INFLATABLEBOAT_MOTOR, "tankCapacity", 6000, 1000, 64000, "Capacity of the motor's fuel tank in millibuckets. Use the same value on server and clients. Lowering it drops the fuel above the new limit when a boat is loaded or placed.", true);
+        BOAT_MOTOR_OUT_OF_WATER_TICKS = integer(cfg, INFLATABLEBOAT_MOTOR, "outOfWaterTicks", 10, 1, 200, "The motor stops after the boat has been out of the water for this many ticks in a row (on land, or in the air over a wave or a drop).");
     }
 
     private static void readFuels(Configuration cfg)
@@ -783,15 +805,17 @@ public class ConfigHandler
         HOVERING_TEXT_TANKS = bool(cfg, RENDER, "tankHoverText", false, "Show the tank contents as hovering text instead of under the tanks.");
         STATUS_OVERLAY = bool(cfg, RENDER, "statusOverlay", true, "Show the player's potion effects on screen.");
         RENDER_SCUBA_BUBBLE_TICKS = integer(cfg, RENDER, "scubaBubbleTicks", 10, 1, 200, "Ticks between two puffs of bubbles from the mask of a player breathing from the Scuba Gear.");
-        TANKS_OVERLAY = bool(cfg, RENDER, "wearableOverlay", true, "Show the overlays of the worn backpack, copter pack or jetpack on screen.");
+        TANKS_OVERLAY = bool(cfg, RENDER, "wearableOverlay", true, "Show the overlays of the worn backpack, copter pack or jetpack on screen, and the fuel tank of the motorized boat the player rides.");
+        RENDER_BOAT_SMOKE_TICKS = integer(cfg, RENDER, "boatSmokeTicks", 8, 0, 200, "The running motor of the motorized boat puffs smoke once every this many ticks. 0 = no smoke.");
     }
 
     private static void readKeys(Configuration cfg)
     {
         KEY_OPEN_BACKPACK = integer(cfg, KEYS, "openBackpack", Keyboard.KEY_B, 0, 255, "Default key that opens the worn backpack, copter pack or jetpack (48 = B).", true);
-        KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and toggles the copter pack or jetpack (49 = N). Sneak + toggle changes the copter mode.", true);
+        KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and drives the worn copter pack or jetpack (49 = N). With the copter pack, the key changes its mode (normal or hover) and Sneak + the key turns it on or off; with the jetpack, Sneak + the key turns it on or off.", true);
         KEY_CROSSBOW_MODE = integer(cfg, KEYS, "crossbowMode", Keyboard.KEY_V, 0, 255, "Default key that changes the firing mode of the held Clockwork Crossbow (47 = V).", true);
         KEY_TOGGLE_ABILITIES = integer(cfg, KEYS, "toggleAbilities", 0, 0, 255, "Default key that turns the abilities of the worn backpack off and on, for this player only (night vision, water breathing, fire resistance, milk...). 0 = not bound: pick one in Options > Controls.", true);
+        KEY_BOAT_MOTOR_TOGGLE = integer(cfg, KEYS, "boatMotorToggle", 0, 0, 255, "Default key that turns the motor of the Motorized Inflatable Boat on and off while riding it (inflatableboat.motor.mode toggle). 0 = not bound: pick one in Options > Controls.", true);
         TOOL_CYCLE_ENABLED = bool(cfg, TOOL_CYCLE, "enabled", true, "Swap the held tool with the backpack's tool slots, and change the hose mode, from the keyboard or mouse wheel. False turns both off, so the wheel always scrolls the hotbar.");
         TOOL_CYCLE_MODE = ToolCycleInput.Mode.parse(choice(cfg, TOOL_CYCLE, "mode", "both", ToolCycleInput.Mode.NAMES,
                 "wheel: hold the modifier key and turn the mouse wheel. keys: only the next and previous tool keys. both: either one."));

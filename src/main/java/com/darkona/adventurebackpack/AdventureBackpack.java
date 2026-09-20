@@ -13,6 +13,7 @@ import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.handlers.PlayerEventHandler;
 import com.darkona.adventurebackpack.init.*;
 import com.darkona.adventurebackpack.proxy.IProxy;
+import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Utils;
@@ -138,6 +139,8 @@ public class AdventureBackpack
             LogHelper.info("Twilight Forest is present. Acting accordingly");
         }
 
+        // Before the recipes and the creative tab: the copter works with any loaded fuel mod
+        GeneralReference.findRegisteredFuels();
         ModFluids.registerSteamIfMissing();
         ModFluids.registerAirIfMissing();
         AirContainers.init();
