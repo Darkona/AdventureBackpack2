@@ -14,6 +14,7 @@ item.adventurebackpack:inflatableBoatMotorized.name=Inflatable Boat (Motorized)
 item.adventurebackpack:inflatableChamber.name=Inflatable Chamber
 item.adventurebackpack:airTank.name=Air Tank
 item.adventurebackpack:divingMask.name=Diving Mask
+item.adventurebackpack:pyroMask.name=Pyro Mask
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Clockwork Crossbow
@@ -36,6 +37,8 @@ item.adventurebackpack:adventureBackpack.name=Adventure Backpack
 item.adventurebackpack:copterPack.name=Copter Pack
 item.adventurebackpack:steamJetpack.name=Steam Jetpack
 item.adventurebackpack:scubaGear.name=Scuba Gear
+item.adventurebackpack:flamethrowerPack.name=Flamethrower Pack
+item.adventurebackpack:flamethrower.name=Flamethrower
 
 ## Armor
 item.adventurebackpack:adventureSuit.name=Adventurer's Suit
@@ -86,10 +89,16 @@ adventurebackpack:messages.jetpack.on=Steam Jetpack: On.
 adventurebackpack:messages.jetpack.off=Steam Jetpack: Off.
 adventurebackpack:messages.scuba.lowair=Scuba Gear: the air is running low.
 adventurebackpack:messages.scuba.empty=Scuba Gear: out of air. Swim up!
+adventurebackpack:messages.flamethrower.on=Flamethrower Pack: pilot lit.
+adventurebackpack:messages.flamethrower.off=Flamethrower Pack: pilot out.
+adventurebackpack:messages.flamethrower.nofuel=Flamethrower Pack: out of fuel.
 adventurebackpack:messages.compressor.noair=The Air Compressor needs open air above it.
 adventurebackpack:messages.compressor.empty=The Air Compressor has no air.
 adventurebackpack:messages.compressor.filled=Scuba Gear: %1$s mB of air added.
 adventurebackpack:gui.scuba.air=Air: %1$s / %2$s mB
+adventurebackpack:gui.flamethrower.fuel=Fuel: %1$s/%2$s mB
+adventurebackpack:gui.flamethrower.lit=Pilot: lit
+adventurebackpack:gui.flamethrower.out=Pilot: out
 container.adventurebackpack:scubaGear=Scuba Gear
 container.adventurebackpack:airCompressor=Air Compressor
 adventurebackpack:messages.boat.motor.on=Boat motor: On.
@@ -97,6 +106,9 @@ adventurebackpack:messages.boat.motor.off=Boat motor: Off.
 adventurebackpack:messages.boat.motor.outoffuel=Boat motor: Out of fuel. Fill it at a Fuel Station while riding the boat.
 adventurebackpack:messages.boat.motor.nowater=Boat motor: The boat must be on water.
 adventurebackpack:messages.boat.motor.disabled=The boat motor is turned off in the server config.
+container.adventurebackpack:flamethrowerPack=Flamethrower Pack
+death.attack.flamethrower=%1$s was burned to a crisp by %2$s
+death.attack.flamethrower.item=%1$s was burned to a crisp by %2$s using %3$s
 adventurebackpack:messages.crossbow.outofammo=Clockwork Crossbow: out of bolts. Craft a Bolt Cartridge.
 adventurebackpack:messages.abilities.off=Backpack abilities: Off.
 adventurebackpack:messages.abilities.on=Backpack abilities: On.

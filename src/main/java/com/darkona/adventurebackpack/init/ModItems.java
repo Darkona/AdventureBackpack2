@@ -24,6 +24,8 @@ public class ModItems
     public static final ItemBoltCartridge boltCartridge = new ItemBoltCartridge();
     public static final ItemSteamJetpack steamJetpack = new ItemSteamJetpack();
     public static final ItemScubaGear scubaGear = new ItemScubaGear();
+    public static final ItemFlamethrowerPack flamethrowerPack = new ItemFlamethrowerPack();
+    public static final ItemFlamethrower flamethrower = new ItemFlamethrower();
 
     public static void init()
     {
@@ -43,6 +45,9 @@ public class ModItems
         GameRegistry.registerItem(copterPack, "copterPack");
         // Always registered; hidden and inert with enabled.scuba off or without any breathable fluid
         GameRegistry.registerItem(scubaGear, "scubaGear");
+        // Always registered; hidden and inert with enabled.flamethrower off or without any fuel of fuels.list
+        GameRegistry.registerItem(flamethrowerPack, "flamethrowerPack");
+        GameRegistry.registerItem(flamethrower, "flamethrower");
 
     }
 }
