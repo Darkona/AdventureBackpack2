@@ -21,6 +21,8 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
     public static byte JETPACK_ON_OFF = 2;
     /** The abilities key (#57): the server flips the player's switch. */
     public static final byte ABILITIES_TOGGLE = 3;
+    /** Sneak + the toggle key with the Flamethrower Pack worn: the server lights or puts out its pilot. */
+    public static final byte FLAMETHROWER_ON_OFF = 5;
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
@@ -38,6 +40,9 @@ public class WearableModePacket implements IMessageHandler<WearableModePacket.Me
 
                 if (message.type == ABILITIES_TOGGLE)
                     ServerActions.toggleAbilities(player);
+
+                if (message.type == FLAMETHROWER_ON_OFF)
+                    ServerActions.toggleFlamethrower(player);
             }
 
         }

@@ -92,6 +92,10 @@ public class KeybindHandler
                     {
                         ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.SCUBA_GUI, GUIPacket.FROM_KEYBIND));
                     }
+                    if (Wearing.isWearingFlamethrowerPack(player))
+                    {
+                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.FLAMETHROWER_GUI, GUIPacket.FROM_KEYBIND));
+                    }
                 }
             }
 
@@ -121,6 +125,11 @@ public class KeybindHandler
                         ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.JETPACK_ON_OFF, ""));
                         ServerActions.toggleSteamJetpack(player, Wearing.getWearingSteam(player), WearableModePacket.JETPACK_ON_OFF);
                     }
+                }
+                if (Wearing.isWearingFlamethrowerPack(player) && player.isSneaking())
+                {
+                    // the server owns the pilot: it answers in chat and the worn stack syncs back
+                    ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.FLAMETHROWER_ON_OFF, ""));
                 }
             }
 

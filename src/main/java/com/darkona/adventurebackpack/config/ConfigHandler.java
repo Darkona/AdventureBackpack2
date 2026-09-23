@@ -44,6 +44,7 @@ public class ConfigHandler
     public static final String STEAMJETPACK = ROOT + ".steamjetpack";
     public static final String SCUBA = ROOT + ".scuba";
     public static final String SCUBA_COMPRESSOR = SCUBA + ".compressor";
+    public static final String FLAMETHROWER = ROOT + ".flamethrower";
     public static final String INFLATABLEBOAT = ROOT + ".inflatableboat";
     public static final String FUELS_CATEGORY = ROOT + ".fuels";
     public static final String FUELSTATION = ROOT + ".fuelstation";
@@ -61,6 +62,7 @@ public class ConfigHandler
     public static final String RECIPES = ROOT + ".recipes";
     public static final String RECIPES_BOAT = RECIPES + ".boat";
     public static final String RECIPES_FUELSTATION = RECIPES + ".fuelstation";
+    public static final String RECIPES_FLAMETHROWER = RECIPES + ".flamethrower";
     public static final String TWEAKS = ROOT + ".tweaks";
     public static final String TWEAKS_TOOL_CYCLE = TWEAKS + ".toolcycle";
     public static final String COMPAT = ROOT + ".compat";
@@ -98,6 +100,7 @@ public class ConfigHandler
     public static boolean COPTERPACK_ENABLED = true;
     public static boolean STEAMJETPACK_ENABLED = true;
     public static boolean SCUBA_ENABLED = true;
+    public static boolean FLAMETHROWER_ENABLED = true;
     public static boolean INFLATABLEBOAT_ENABLED = true;
     public static boolean CROSSBOW_ENABLED = true;
     public static boolean SLEEPINGBAG_ENABLED = true;
@@ -269,6 +272,19 @@ public class ConfigHandler
     public static int COMPRESSOR_INTERVAL_TICKS = 10;
     public static boolean COMPRESSOR_NEEDS_OPEN_AIR = true;
 
+    // ---------------------------------------------------------------- flamethrower
+    public static int FLAMETHROWER_TANK_CAPACITY = 4000;
+    public static int FLAMETHROWER_FUEL_PER_BURST = 50;
+    public static int FLAMETHROWER_FIRE_INTERVAL_TICKS = 4;
+    public static double FLAMETHROWER_RANGE = 6.0;
+    public static double FLAMETHROWER_CONE_DEGREES = 25.0;
+    public static double FLAMETHROWER_DAMAGE = 2.0;
+    public static int FLAMETHROWER_FIRE_SECONDS = 5;
+    public static boolean FLAMETHROWER_PVP = false;
+    public static boolean FLAMETHROWER_IGNITES_BLOCKS = false;
+    public static int FLAMETHROWER_PILOT_FUEL_PER_MINUTE = 0;
+    public static boolean FLAMETHROWER_SOUND = true;
+
     // ---------------------------------------------------------------- inflatable boat
     public static double BOAT_MAX_SPEED = 0.35;
 
@@ -325,6 +341,7 @@ public class ConfigHandler
     public static boolean STATUS_OVERLAY = true;
     public static boolean TANKS_OVERLAY = true;
     public static int RENDER_SCUBA_BUBBLE_TICKS = 10;
+    public static int RENDER_FLAMETHROWER_PARTICLES = 6;
 
     // ---------------------------------------------------------------- keys (client, defaults only)
     public static int KEY_OPEN_BACKPACK = Keyboard.KEY_B;
@@ -350,6 +367,9 @@ public class ConfigHandler
     public static BoatRecipeRules.Mode FUELSTATION_RECIPE_MODE = BoatRecipeRules.Mode.AUTO;
     public static final String[] FUELSTATION_PLATES_DEFAULT = {"plateSteel", "plateIron"};
     public static String[] FUELSTATION_PLATES = FUELSTATION_PLATES_DEFAULT;
+    public static BoatRecipeRules.Mode FLAMETHROWER_RECIPE_MODE = BoatRecipeRules.Mode.AUTO;
+    public static final String[] FLAMETHROWER_PLATES_DEFAULT = {"plateSteel", "plateIron"};
+    public static String[] FLAMETHROWER_PLATES = FLAMETHROWER_PLATES_DEFAULT;
     public static boolean FIX_LEAD = true;
     public static boolean HORSES_FOLLOW_OWNER = true;
     public static ToolCycleFilter.Mode TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.NONE;
@@ -387,6 +407,7 @@ public class ConfigHandler
         readCopterPack(cfg);
         readSteamJetpack(cfg);
         readScuba(cfg);
+        readFlamethrower(cfg);
         readInflatableBoat(cfg);
         readFuels(cfg);
         readFuelStation(cfg);
@@ -426,9 +447,10 @@ public class ConfigHandler
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(SCUBA, "The Scuba Gear: two air tanks on the back and a diving mask, worn in the back slot like the jetpack. While the head is under water it keeps the air bar full and spends the air of its tanks (left tank first). Air is the 'air' fluid (GregTech's when present, its own otherwise, see ownAirFluid) or any other fluid of breathableFluids. Ticks: 20 per second; amounts in millibuckets.");
         cfg.setCategoryComment(SCUBA_COMPRESSOR, "The Air Compressor block: fills the Scuba Gear in its slot, air cells and other air containers. It makes air with a hand pump (right click with an empty hand) and with a furnace that burns any furnace fuel, and takes air or oxygen from pipes of other mods. No electricity.");
+        cfg.setCategoryComment(FLAMETHROWER, "The Flamethrower: the Flamethrower Pack (two fuel tanks and a pyro mask, worn in the back slot like the jetpack) and the Flamethrower nozzle held in hand. Sneak + the toggle key (keys.toggle) lights or puts out the pack's pilot; while it is lit, holding right click with the nozzle fires bursts of flame in a cone that set mobs on fire. The tanks take the fuels of fuels.list (the Fuel Station fills them). The wearer is never hurt. Ticks: 20 per second; amounts in millibuckets.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
         cfg.setCategoryComment(FUELS_CATEGORY, "Liquid fuels, one list for everything that burns them (the Copter Pack, the Fuel Station and what it fills). A fuel is known by the fluid name the mod that adds it registers, so no fuel mod is needed: BuildCraft oil and fuel, Forestry bioethanol and biomass, Railcraft creosote, Thermal Foundation coal, GregTech fuel (diesel), bioethanol and creosote.");
-        cfg.setCategoryComment(FUELSTATION, "The Fuel Station: a block with a fuel tank that fills the Copter Pack (in its slot, worn or held), the tank of the motorized boat the player rides, and buckets, cans or cells. Pipes of any mod fill it from any side. It does no work on its own between actions.");
+        cfg.setCategoryComment(FUELSTATION, "The Fuel Station: a block with a fuel tank that fills the Copter Pack and the Flamethrower Pack (in its slot, worn or held), the tank of the motorized boat the player rides, and buckets, cans or cells. Pipes of any mod fill it from any side. It does no work on its own between actions.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
         cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the cartridge (an empty magazine still reloads by itself).");
@@ -444,6 +466,8 @@ public class ConfigHandler
         cfg.getCategory(RECIPES_BOAT).setRequiresMcRestart(true);
         cfg.setCategoryComment(RECIPES_FUELSTATION, "Recipe of the Fuel Station (only when enabled.fuelStation is on). Vanilla: iron ingots, glass panes, a Hose Nozzle and a Backpack Tank. With technical mods, metal plates take the place of the iron ingots. Read once at startup: needs a restart.");
         cfg.getCategory(RECIPES_FUELSTATION).setRequiresMcRestart(true);
+        cfg.setCategoryComment(RECIPES_FLAMETHROWER, "Recipes of the Flamethrower Pack and the Flamethrower nozzle (only when enabled.flamethrower is on). Vanilla: iron ingots, leather, a Pyro Mask, two Backpack Tanks and flint and steel for the pilot. With technical mods, metal plates take the place of the iron ingots, and the Pyro Mask takes rubber instead of leather like the Inflatable Chamber (recipes.boat.mode and recipes.boat.rubber). Read once at startup: needs a restart.");
+        cfg.getCategory(RECIPES_FLAMETHROWER).setRequiresMcRestart(true);
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
         cfg.setCategoryComment(TWEAKS_TOOL_CYCLE, "The backpack's two tool slots: which items they take, by hand and with the tool cycle (keys.toolcycle). The server checks the same list.");
         cfg.setCategoryComment(COMPAT, "Integrations with other mods. Each one only acts when its mod is loaded; nothing here is a hard dependency.");
@@ -482,6 +506,7 @@ public class ConfigHandler
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up.");
         PISTONBOOTS_ENABLED = bool(cfg, ENABLED, "pistonBoots", true, "The Piston Boots: step assist, sprint speed and fall protection.");
         SCUBA_ENABLED = bool(cfg, ENABLED, "scuba", true, "The Scuba Gear, its Air Tanks and Diving Mask, and the Air Compressor.");
+        FLAMETHROWER_ENABLED = bool(cfg, ENABLED, "flamethrower", true, "The Flamethrower Pack, the Flamethrower nozzle and the Pyro Mask. When false they have no recipe, are hidden from the creative tab, and the nozzle does not fire. Set it the same on server and clients.");
         CAMPFIRE_ENABLED = bool(cfg, ENABLED, "campfire", true, "Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way.");
         FUELSTATION_ENABLED = bool(cfg, ENABLED, "fuelStation", true, "The Fuel Station block. When false it has no recipe, is hidden from the creative tab, and a placed one neither takes nor gives fuel (it can still be broken, and keeps its fuel).");
     }
@@ -687,6 +712,21 @@ public class ConfigHandler
         COMPRESSOR_NEEDS_OPEN_AIR = bool(cfg, SCUBA_COMPRESSOR, "needsOpenAir", true, "The hand pump and the furnace make air only when the block above the compressor is air, so it is not an air source buried or under water. Air from pipes is taken anyway.");
     }
 
+    private static void readFlamethrower(Configuration cfg)
+    {
+        FLAMETHROWER_TANK_CAPACITY = integer(cfg, FLAMETHROWER, "tankCapacity", 4000, 500, 64000, "Capacity of each of the two fuel tanks of the pack, in millibuckets. Use the same value on server and clients.", true);
+        FLAMETHROWER_FUEL_PER_BURST = integer(cfg, FLAMETHROWER, "fuelPerBurst", 50, 0, 10000, "Millibuckets of fuel one burst burns, times the fuel's multiplier in fuels.list (oil 1.5 makes it 75). With the defaults two full tanks of fuel make 160 bursts, 32 seconds of continuous fire. 0 makes the fuel free.");
+        FLAMETHROWER_FIRE_INTERVAL_TICKS = integer(cfg, FLAMETHROWER, "fireIntervalTicks", 4, 1, 40, "Cooldown between two bursts while right click is held, in ticks. Each burst burns fuelPerBurst and deals its damage once.");
+        FLAMETHROWER_RANGE = decimal(cfg, FLAMETHROWER, "range", 6.0, 1.0, 16.0, "Reach of the flame in blocks, from the wearer's eyes.");
+        FLAMETHROWER_CONE_DEGREES = decimal(cfg, FLAMETHROWER, "coneDegrees", 25.0, 5.0, 90.0, "Opening of the cone of flame in degrees, around the direction the wearer looks.");
+        FLAMETHROWER_DAMAGE = decimal(cfg, FLAMETHROWER, "damage", 2.0, 0.0, 40.0, "Fire damage of one burst to each target in the cone (2 is one heart). Vanilla's half second of invulnerability after a hit means not every burst lands. Fire-immune mobs take none.");
+        FLAMETHROWER_FIRE_SECONDS = integer(cfg, FLAMETHROWER, "fireSeconds", 5, 0, 60, "Seconds every target in the cone keeps burning after a burst. 0 does not set targets on fire.");
+        FLAMETHROWER_PVP = bool(cfg, FLAMETHROWER, "pvp", false, "Let the flame hurt and burn other players. Even when true, the server's pvp setting and scoreboard teams still apply. Animals the wearer owns are never hurt.");
+        FLAMETHROWER_IGNITES_BLOCKS = bool(cfg, FLAMETHROWER, "ignitesBlocks", false, "Let each burst set fire to the side of the block it hits, like flint and steel. The fire is vanilla fire, so it spreads and burns as usual. It respects spawn protection, adventure mode and protection mods that cancel block placing.");
+        FLAMETHROWER_PILOT_FUEL_PER_MINUTE = integer(cfg, FLAMETHROWER, "pilotFuelPerMinute", 0, 0, 6000, "Millibuckets of fuel the lit pilot burns per minute while the pack is worn, times the fuel's multiplier. 0 (the default) makes the pilot free.");
+        FLAMETHROWER_SOUND = bool(cfg, FLAMETHROWER, "sound", true, "Play the vanilla ignite sound when the pilot is lit (the server sends it) and the vanilla fire sound while the nozzle fires (each client plays it). Set it the same on server and clients.");
+    }
+
     private static void readInflatableBoat(Configuration cfg)
     {
         BOAT_MAX_SPEED = decimal(cfg, INFLATABLEBOAT, "maxSpeed", 0.35, 0.07, 2.0, "Top speed in blocks per tick (the vanilla boat uses 0.35).");
@@ -783,6 +823,7 @@ public class ConfigHandler
         HOVERING_TEXT_TANKS = bool(cfg, RENDER, "tankHoverText", false, "Show the tank contents as hovering text instead of under the tanks.");
         STATUS_OVERLAY = bool(cfg, RENDER, "statusOverlay", true, "Show the player's potion effects on screen.");
         RENDER_SCUBA_BUBBLE_TICKS = integer(cfg, RENDER, "scubaBubbleTicks", 10, 1, 200, "Ticks between two puffs of bubbles from the mask of a player breathing from the Scuba Gear.");
+        RENDER_FLAMETHROWER_PARTICLES = integer(cfg, RENDER, "flamethrowerParticles", 6, 0, 30, "Flame particles drawn along the cone for each burst of a Flamethrower (smoke comes with every second burst). 0 draws none.");
         TANKS_OVERLAY = bool(cfg, RENDER, "wearableOverlay", true, "Show the overlays of the worn backpack, copter pack or jetpack on screen.");
     }
 
@@ -816,6 +857,10 @@ public class ConfigHandler
                 "vanilla: only the iron ingot recipe. auto: the iron ingot recipe, plus one with plates for each plate a loaded mod provides. technical: the plate recipes replace the iron ingot one when a loaded mod provides a plate; without plates the iron ingot recipe stays. Needs a restart."));
         order(RECIPES_FUELSTATION, "plates");
         FUELSTATION_PLATES = cfg.getStringList("plates", RECIPES_FUELSTATION, FUELSTATION_PLATES_DEFAULT, "Ore Dictionary names of the metal plates for the technical recipe (GregTech, IC2, Thermal Foundation, Railcraft plateSteel and plateIron...). Each one some loaded mod provides gets its own recipe. Needs a restart.");
+        FLAMETHROWER_RECIPE_MODE = BoatRecipeRules.Mode.parse(choice(cfg, RECIPES_FLAMETHROWER, "mode", "auto", BoatRecipeRules.Mode.NAMES,
+                "vanilla: only the iron ingot recipes. auto: the iron ingot recipes, plus ones with plates for each plate a loaded mod provides. technical: the plate recipes replace the iron ingot ones when a loaded mod provides a plate; without plates the iron ingot recipes stay. Needs a restart."));
+        order(RECIPES_FLAMETHROWER, "plates");
+        FLAMETHROWER_PLATES = cfg.getStringList("plates", RECIPES_FLAMETHROWER, FLAMETHROWER_PLATES_DEFAULT, "Ore Dictionary names of the metal plates for the technical recipes of the pack and the nozzle (GregTech, IC2, Thermal Foundation, Railcraft plateSteel and plateIron...). Each one some loaded mod provides gets its own recipe. Needs a restart.");
         FIX_LEAD = bool(cfg, TWEAKS, "fixVanillaLead", true, "Mobs on a lead held by a player take no fall damage unless they fall fast.");
         HORSES_FOLLOW_OWNER = bool(cfg, TWEAKS, "namedHorsesFollowOwner", true, "Tamed horses with a name tag follow their owner.");
         TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.parse(choice(cfg, TWEAKS_TOOL_CYCLE, "mode", "none", ToolCycleFilter.Mode.NAMES,

@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.item.ItemFlamethrowerPack;
 import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
 import com.darkona.adventurebackpack.util.Wearing;
@@ -30,6 +31,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
     public static final byte COPTER_GUI = 2;
     public static final byte JETPACK_GUI = 3;
     public static final byte SCUBA_GUI = 4;
+    public static final byte FLAMETHROWER_GUI = 5;
 
     @Override
     public IMessage onMessage(GUImessage message, MessageContext ctx)
@@ -93,6 +95,19 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                     if (message.from == FROM_HOLDING && Wearing.isHoldingScuba(player))
                     {
                         FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.SCUBA_HOLDING, world, playerX, playerY, playerZ);
+                        return null;
+                    }
+                }
+                if (message.type == FLAMETHROWER_GUI && ItemFlamethrowerPack.isUsable())
+                {
+                    if (message.from == FROM_KEYBIND && Wearing.isWearingFlamethrowerPack(player))
+                    {
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.FLAMETHROWER_WEARING, world, playerX, playerY, playerZ);
+                        return null;
+                    }
+                    if (message.from == FROM_HOLDING && Wearing.isHoldingFlamethrowerPack(player))
+                    {
+                        FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.FLAMETHROWER_HOLDING, world, playerX, playerY, playerZ);
                         return null;
                     }
                 }

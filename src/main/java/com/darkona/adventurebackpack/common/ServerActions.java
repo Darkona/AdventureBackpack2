@@ -3,6 +3,8 @@ package com.darkona.adventurebackpack.common;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
+import com.darkona.adventurebackpack.inventory.InventoryFlamethrowerPack;
+import com.darkona.adventurebackpack.item.ItemFlamethrowerPack;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
@@ -81,6 +83,33 @@ public class ServerActions
      * Server: the player pressed the abilities key (#57). Flips the player's switch unless enabled.abilities is off,
      * takes the worn backpack's own effects away when it goes off, and syncs the flag (one packet per change).
      */
+    /**
+     * Sneak + the toggle key with the Flamethrower Pack worn (WearableModePacket.FLAMETHROWER_ON_OFF): lights or puts
+     * out its pilot. Server only; the worn stack syncs back to the wearer and the players near.
+     */
+    public static void toggleFlamethrower(EntityPlayer player)
+    {
+        if (player == null || player.worldObj.isRemote || !ItemFlamethrowerPack.isUsable()) return;
+        ItemStack pack = Wearing.getWearingFlamethrowerPack(player);
+        if (pack == null) return;
+        InventoryFlamethrowerPack inv = new InventoryFlamethrowerPack(pack);
+        if (inv.isOn())
+        {
+            inv.setOn(false);
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.flamethrower.off"));
+        } else if (inv.getFuel() <= 0 && ConfigHandler.FLAMETHROWER_FUEL_PER_BURST > 0)
+        {
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.flamethrower.nofuel"));
+            return;
+        } else
+        {
+            inv.setOn(true);
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.flamethrower.on"));
+            if (ConfigHandler.FLAMETHROWER_SOUND) player.worldObj.playSoundAtEntity(player, "fire.ignite", 1.0F, 1.0F);
+        }
+        inv.markDirty();
+    }
+
     public static void toggleAbilities(EntityPlayer player)
     {
         BackpackProperty props = BackpackProperty.get(player);

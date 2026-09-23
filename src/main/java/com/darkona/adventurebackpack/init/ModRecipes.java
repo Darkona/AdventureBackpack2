@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.init.recipes.BackpackUpgradeRecipe;
 import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.item.ItemComponent;
+import com.darkona.adventurebackpack.item.ItemFlamethrowerPack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -358,11 +359,84 @@ public class ModRecipes
                 'F', Blocks.furnace));
     }
 
+    /**
+     * The Pyro Mask, the Flamethrower Pack and the Flamethrower nozzle (enabled.flamethrower, and only when some fuel
+     * of fuels.list exists). Metal plates of a technical mod take the place of the iron ingots (recipes.flamethrower),
+     * and the mask takes rubber instead of leather like the Diving Mask (recipes.boat.mode and recipes.boat.rubber).
+     */
+    private static void flamethrowerRecipes()
+    {
+        BoatRecipeRules.Mode rubberMode = ConfigHandler.BOAT_RECIPE_MODE;
+        List<String> rubbers = TechParts.presentOres(ConfigHandler.BOAT_RUBBER);
+        BoatRecipeRules.Mode plateMode = ConfigHandler.FLAMETHROWER_RECIPE_MODE;
+        List<String> plates = TechParts.presentOres(ConfigHandler.FLAMETHROWER_PLATES);
+
+        // Pyro Mask: a glass visor in a leather (or rubber) hood with an iron frame
+        if (BoatRecipeRules.vanillaRecipe(rubberMode, !rubbers.isEmpty()))
+        {
+            GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.PYRO_MASK, 1),
+                    "ILI",
+                    "LGL",
+                    "III",
+                    'I', "ingotIron",
+                    'L', Items.leather,
+                    'G', "paneGlass"));
+        }
+        if (BoatRecipeRules.technicalRecipe(rubberMode, !rubbers.isEmpty()))
+        {
+            for (String rubber : rubbers)
+            {
+                GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.PYRO_MASK, 1),
+                        "IRI",
+                        "RGR",
+                        "III",
+                        'I', "ingotIron",
+                        'R', rubber,
+                        'G', "paneGlass"));
+            }
+        }
+
+        // Flamethrower Pack: the mask, two Backpack Tanks on a leather harness, flint and steel as the pilot
+        // Flamethrower: an iron (or plate) barrel with the Hose Nozzle, flint and steel at the tip
+        if (BoatRecipeRules.vanillaRecipe(plateMode, !plates.isEmpty()))
+        {
+            addFlamethrowerRecipes("ingotIron");
+        }
+        if (BoatRecipeRules.technicalRecipe(plateMode, !plates.isEmpty()))
+        {
+            for (String plate : plates)
+            {
+                addFlamethrowerRecipes(plate);
+            }
+        }
+        LogHelper.info("Flamethrower recipes: mode " + plateMode + ", plates " + plates + ", rubber " + rubbers + ".");
+    }
+
+    private static void addFlamethrowerRecipes(String metal)
+    {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.flamethrowerPack),
+                " M ",
+                "TLT",
+                "IFI",
+                'M', component(ItemComponent.PYRO_MASK, 1),
+                'T', component(ItemComponent.BACKPACK_TANK, 1),
+                'L', Items.leather,
+                'I', metal,
+                'F', Items.flint_and_steel));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.flamethrower),
+                "IIH",
+                "  F",
+                'I', metal,
+                'H', component(ItemComponent.HOSE_NOZZLE, 1),
+                'F', Items.flint_and_steel));
+    }
+
     public static void conditionalInit()
     {
         if (ConfigHandler.INFLATABLEBOAT_ENABLED) boatRecipes();
         if (ConfigHandler.FUELSTATION_ENABLED) fuelStationRecipes();
         if (AirContainers.usable()) scubaRecipes();
+        if (ItemFlamethrowerPack.isUsable()) flamethrowerRecipes();
 
         if(ConfigHandler.SADDLE_RECIPE)
         {

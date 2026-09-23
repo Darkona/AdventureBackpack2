@@ -14,6 +14,7 @@ item.adventurebackpack:inflatableBoatMotorized.name=Bote Inflable (Motorizado)
 item.adventurebackpack:inflatableChamber.name=Cámara Inflable
 item.adventurebackpack:airTank.name=Tanque de Aire
 item.adventurebackpack:divingMask.name=Máscara de Buceo
+item.adventurebackpack:pyroMask.name=Máscara Ignífuga
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Ballesta de Relojería
@@ -36,6 +37,8 @@ item.adventurebackpack:adventureBackpack.name=Mochila de Aventura
 item.adventurebackpack:copterPack.name=Mochilacóptero
 item.adventurebackpack:steamJetpack.name=Jetpack de Vapor
 item.adventurebackpack:scubaGear.name=Equipo de Buceo
+item.adventurebackpack:flamethrowerPack.name=Mochila Lanzallamas
+item.adventurebackpack:flamethrower.name=Lanzallamas
 
 ## Armor
 item.adventurebackpack:adventureSuit.name=Traje de Aventurero
@@ -85,12 +88,21 @@ adventurebackpack:messages.jetpack.on=Jetpack de Vapor: Encendido.
 adventurebackpack:messages.jetpack.off=Jetpack de Vapor: Apagado.
 adventurebackpack:messages.scuba.lowair=Equipo de Buceo: queda poco aire.
 adventurebackpack:messages.scuba.empty=Equipo de Buceo: sin aire. ¡Sube ya!
+adventurebackpack:messages.flamethrower.on=Mochila Lanzallamas: piloto encendido.
+adventurebackpack:messages.flamethrower.off=Mochila Lanzallamas: piloto apagado.
+adventurebackpack:messages.flamethrower.nofuel=Mochila Lanzallamas: sin combustible.
 adventurebackpack:messages.compressor.noair=El Compresor de Aire necesita aire libre encima.
 adventurebackpack:messages.compressor.empty=El Compresor de Aire no tiene aire.
 adventurebackpack:messages.compressor.filled=Equipo de Buceo: %1$s mB de aire cargados.
 adventurebackpack:gui.scuba.air=Aire: %1$s / %2$s mB
+adventurebackpack:gui.flamethrower.fuel=Combustible: %1$s/%2$s mB
+adventurebackpack:gui.flamethrower.lit=Piloto: encendido
+adventurebackpack:gui.flamethrower.out=Piloto: apagado
 container.adventurebackpack:scubaGear=Equipo de Buceo
 container.adventurebackpack:airCompressor=Compresor de Aire
+container.adventurebackpack:flamethrowerPack=Mochila Lanzallamas
+death.attack.flamethrower=%1$s acabó carbonizado por %2$s
+death.attack.flamethrower.item=%1$s acabó carbonizado por %2$s con %3$s
 adventurebackpack:messages.crossbow.outofammo=Ballesta de Relojería: sin virotes. Fabrica un Cartucho de Virotes.
 adventurebackpack:messages.abilities.off=Habilidades de la mochila: desactivadas.
 adventurebackpack:messages.abilities.on=Habilidades de la mochila: activadas.

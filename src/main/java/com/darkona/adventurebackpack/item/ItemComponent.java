@@ -37,6 +37,7 @@ public class ItemComponent extends ItemAB
     public static final int INFLATABLE_CHAMBER = 10;
     public static final int AIR_TANK = 11;
     public static final int DIVING_MASK = 12;
+    public static final int PYRO_MASK = 13;
 
     private HashMap<String, IIcon> componentIcons = new HashMap<String, IIcon>();
     private String[] names = {
@@ -52,6 +53,7 @@ public class ItemComponent extends ItemAB
             "inflatableChamber",
             "airTank",
             "divingMask",
+            "pyroMask",
     };
 
 
@@ -108,6 +110,7 @@ public class ItemComponent extends ItemAB
         {
             if (i >= INFLATABLE_BOAT && i <= INFLATABLE_CHAMBER && !ConfigHandler.INFLATABLEBOAT_ENABLED) continue;
             if (i >= AIR_TANK && i <= DIVING_MASK && !AirContainers.usable()) continue;
+            if (i == PYRO_MASK && !ItemFlamethrowerPack.isUsable()) continue;
             list.add(new ItemStack(this, 1, i));
         }
     }

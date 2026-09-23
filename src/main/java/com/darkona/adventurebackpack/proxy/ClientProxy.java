@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.client.gui.GuiOverlay;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.client.models.ModelScubaGear;
+import com.darkona.adventurebackpack.client.models.ModelFlamethrowerPack;
 import com.darkona.adventurebackpack.client.models.ModelSteamJetpack;
 import com.darkona.adventurebackpack.client.render.*;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -53,6 +54,7 @@ public class ClientProxy implements IProxy
     public static ModelBackpackArmor modelAdventureBackpack = new ModelBackpackArmor();
     public static ModelCopterPack modelCopterPack = new ModelCopterPack();
     public static ModelScubaGear modelScubaGear = new ModelScubaGear();
+    public static ModelFlamethrowerPack modelFlamethrowerPack = new ModelFlamethrowerPack();
 
 
     public void init()

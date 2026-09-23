@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.init.ModFluids;
 import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.item.ItemFlamethrowerPack;
 import net.minecraft.item.Item;
 
 /**
@@ -31,6 +32,9 @@ public final class FeatureVisibility
         // Without any breathable fluid (no GregTech air and ownAirFluid off, no oxygen) the gear cannot work
         hideUnless(ModItems.scubaGear, AirContainers.usable());
         if (!AirContainers.usable()) ModBlocks.blockAirCompressor.setCreativeTab(null);
+        // Without any fuel of fuels.list the Flamethrower cannot be filled
+        hideUnless(ModItems.flamethrowerPack, ItemFlamethrowerPack.isUsable());
+        hideUnless(ModItems.flamethrower, ItemFlamethrowerPack.isUsable());
     }
 
     private static void hideUnless(Item item, boolean enabled)

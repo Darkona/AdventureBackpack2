@@ -6,6 +6,7 @@ import com.darkona.adventurebackpack.client.gui.GuiFuelStation;
 import com.darkona.adventurebackpack.block.TileAirCompressor;
 import com.darkona.adventurebackpack.client.gui.GuiAirCompressor;
 import com.darkona.adventurebackpack.client.gui.GuiScubaGear;
+import com.darkona.adventurebackpack.client.gui.GuiFlamethrowerPack;
 import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
 import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
 import com.darkona.adventurebackpack.client.gui.GuiSteamJetpack;
@@ -22,8 +23,9 @@ import net.minecraft.world.World;
  */
 public class GuiHandler implements IGuiHandler
 {
-    /** 9 and 10 are kept for the Flamethrower Pack. */
     public static final byte AIR_COMPRESSOR = 11;
+    public static final byte FLAMETHROWER_WEARING = 10;
+    public static final byte FLAMETHROWER_HOLDING = 9;
     public static final byte SCUBA_WEARING = 8;
     public static final byte SCUBA_HOLDING = 7;
     public static final byte FUEL_STATION = 12;
@@ -105,6 +107,18 @@ public class GuiHandler implements IGuiHandler
                     return new ContainerScubaGear(player, new InventoryScubaGear(Wearing.getWearingScuba(player)), true);
                 }
                 break;
+            case FLAMETHROWER_HOLDING:
+                if (Wearing.isHoldingFlamethrowerPack(player))
+                {
+                    return new ContainerFlamethrowerPack(player, new InventoryFlamethrowerPack(Wearing.getHoldingFlamethrowerPack(player)), false);
+                }
+                break;
+            case FLAMETHROWER_WEARING:
+                if (Wearing.isWearingFlamethrowerPack(player))
+                {
+                    return new ContainerFlamethrowerPack(player, new InventoryFlamethrowerPack(Wearing.getWearingFlamethrowerPack(player)), true);
+                }
+                break;
             case AIR_COMPRESSOR:
                 if (world.getTileEntity(x, y, z) instanceof TileAirCompressor)
                 {
@@ -183,6 +197,18 @@ public class GuiHandler implements IGuiHandler
                 if (Wearing.isWearingScuba(player))
                 {
                     return new GuiScubaGear(player, new InventoryScubaGear(Wearing.getWearingScuba(player)), true);
+                }
+                break;
+            case FLAMETHROWER_HOLDING:
+                if (Wearing.isHoldingFlamethrowerPack(player))
+                {
+                    return new GuiFlamethrowerPack(player, new InventoryFlamethrowerPack(Wearing.getHoldingFlamethrowerPack(player)), false);
+                }
+                break;
+            case FLAMETHROWER_WEARING:
+                if (Wearing.isWearingFlamethrowerPack(player))
+                {
+                    return new GuiFlamethrowerPack(player, new InventoryFlamethrowerPack(Wearing.getWearingFlamethrowerPack(player)), true);
                 }
                 break;
             case AIR_COMPRESSOR:

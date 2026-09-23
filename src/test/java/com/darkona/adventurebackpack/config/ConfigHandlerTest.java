@@ -269,4 +269,34 @@ class ConfigHandlerTest
         assertEquals("oxygen", ConfigHandler.SCUBA_BREATHABLE_FLUIDS[1]);
         assertEquals("ic2:airCell=1000>ic2:cell", ConfigHandler.SCUBA_AIR_ITEMS[0]);
     }
+
+    @Test
+    void flamethrowerKeysLiveInTheirOwnBranchWithSafeDefaults() throws IOException
+    {
+        Configuration cfg = load("flamethrower.cfg", null);
+        assertTrue(cfg.getCategory(ConfigHandler.ENABLED).containsKey("flamethrower"));
+        for (String key : new String[]{"tankCapacity", "fuelPerBurst", "fireIntervalTicks", "range", "coneDegrees", "damage",
+                "fireSeconds", "pvp", "ignitesBlocks", "pilotFuelPerMinute", "sound"})
+        {
+            assertTrue(cfg.getCategory(ConfigHandler.FLAMETHROWER).containsKey(key), key);
+            assertNotNull(cfg.getCategory(ConfigHandler.FLAMETHROWER).get(key).comment, key);
+        }
+        assertNotNull(cfg.getCategory(ConfigHandler.FLAMETHROWER).getComment());
+        assertTrue(cfg.getCategory(ConfigHandler.RENDER).containsKey("flamethrowerParticles"));
+        assertTrue(cfg.getCategory(ConfigHandler.RECIPES_FLAMETHROWER).containsKey("mode"));
+        assertTrue(cfg.getCategory(ConfigHandler.RECIPES_FLAMETHROWER).containsKey("plates"));
+        assertTrue(cfg.getCategory(ConfigHandler.FLAMETHROWER).get("tankCapacity").requiresMcRestart());
+        assertTrue(ConfigHandler.FLAMETHROWER_ENABLED);
+        assertFalse(ConfigHandler.FLAMETHROWER_PVP);
+        assertFalse(ConfigHandler.FLAMETHROWER_IGNITES_BLOCKS);
+        assertEquals(4000, ConfigHandler.FLAMETHROWER_TANK_CAPACITY);
+        assertEquals(50, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
+        assertEquals(4, ConfigHandler.FLAMETHROWER_FIRE_INTERVAL_TICKS);
+        assertEquals(6.0, ConfigHandler.FLAMETHROWER_RANGE, 1e-9);
+        assertEquals(25.0, ConfigHandler.FLAMETHROWER_CONE_DEGREES, 1e-9);
+        assertEquals(2.0, ConfigHandler.FLAMETHROWER_DAMAGE, 1e-9);
+        assertEquals(5, ConfigHandler.FLAMETHROWER_FIRE_SECONDS);
+        assertEquals(0, ConfigHandler.FLAMETHROWER_PILOT_FUEL_PER_MINUTE);
+        assertEquals(6, ConfigHandler.RENDER_FLAMETHROWER_PARTICLES);
+    }
 }

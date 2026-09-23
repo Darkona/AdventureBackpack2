@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack;
 
 import com.darkona.adventurebackpack.inventory.AirContainers;
+import com.darkona.adventurebackpack.item.ItemFlamethrowerPack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.compat.baubles.BackpackBauble;
 import com.darkona.adventurebackpack.compat.graves.GraveCompat;
@@ -141,6 +142,7 @@ public class AdventureBackpack
         ModFluids.registerSteamIfMissing();
         ModFluids.registerAirIfMissing();
         AirContainers.init();
+        ItemFlamethrowerPack.detectFuels();
         ConditionalFluidEffect.init();
         ModRecipes.conditionalInit();
         FeatureVisibility.hideDisabledItems();

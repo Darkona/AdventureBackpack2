@@ -3,6 +3,7 @@ package com.darkona.adventurebackpack.util;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
+import com.darkona.adventurebackpack.inventory.InventoryFlamethrowerPack;
 import com.darkona.adventurebackpack.inventory.InventoryScubaGear;
 import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
 import com.darkona.adventurebackpack.item.*;
@@ -92,6 +93,26 @@ public class Wearing
         return isHoldingScuba(player) ? player.inventory.getCurrentItem() : null;
     }
 
+    public static boolean isWearingFlamethrowerPack(EntityPlayer player)
+    {
+        return BackpackProperty.get(player).getWearable() != null && BackpackProperty.get(player).getWearable().getItem() instanceof ItemFlamethrowerPack;
+    }
+
+    public static ItemStack getWearingFlamethrowerPack(EntityPlayer player)
+    {
+        return isWearingFlamethrowerPack(player) ? BackpackProperty.get(player).getWearable() : null;
+    }
+
+    public static boolean isHoldingFlamethrowerPack(EntityPlayer player)
+    {
+        return player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrowerPack;
+    }
+
+    public static ItemStack getHoldingFlamethrowerPack(EntityPlayer player)
+    {
+        return isHoldingFlamethrowerPack(player) ? player.inventory.getCurrentItem() : null;
+    }
+
     public static boolean isWearingBoots(EntityPlayer player)
     {
         return player.inventory.armorInventory[0] != null && player.inventory.armorInventory[0].getItem() instanceof ItemPistonBoots;
@@ -172,6 +193,7 @@ public class Wearing
         if (wearable.getItem() instanceof ItemSteamJetpack) return new InventorySteamJetpack(wearable);
         if (wearable.getItem() instanceof ItemCopterPack) return new InventoryCopterPack(wearable);
         if (wearable.getItem() instanceof ItemScubaGear) return new InventoryScubaGear(wearable);
+        if (wearable.getItem() instanceof ItemFlamethrowerPack) return new InventoryFlamethrowerPack(wearable);
         return null;
     }
 }
