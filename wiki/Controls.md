@@ -6,13 +6,14 @@ Every key, button and mouse action of the mod. The keys are listed in Options > 
 
 | Key (as listed in Controls) | Default | Does |
 |---|---|---|
-| Open Inventory Key | B | Opens the window of the backpack, copter pack or jetpack you wear. Pressing it again closes the window. |
+| Open Inventory Key | B | Opens the window of the backpack, copter pack, jetpack, scuba gear or flamethrower pack you wear. Pressing it again closes the window. |
 | Toggle Action Key | N | Depends on what you hold and wear. See the table below. |
 | Tool Cycle Modifier (none = sneak) | Sneak (Left Shift) | Hold it while turning the mouse wheel to swap tools. |
 | Next Backpack Tool | not bound | Swaps to the next tool. |
 | Previous Backpack Tool | not bound | Swaps to the previous tool. |
 | Crossbow Mode | V | Changes the mode of the Clockwork Crossbow in your hand: repetition, grappling hook, sniper. |
 | Backpack Abilities On/Off | not bound | Turns the abilities of the backpack you wear off and on. |
+| Boat Motor On/Off | not bound | Turns the outboard motor of the Motorized Inflatable Boat you ride on and off (in the default toggle mode). See [Gear](Gear#motorized-inflatable-boat). |
 
 The defaults come from the config file (see `keys` in [Configuration](Configuration#keys-keys)). They are applied the first time. Once you change a key in the game, Minecraft keeps your choice.
 
@@ -32,6 +33,7 @@ The Backpack Abilities On/Off key is not bound by default: pick a key for it in 
 | A Backpack Hose in the hand | Switches between the left and the right tank | |
 | A Copter Pack | Switches between normal mode and hover | Starts and stops the engine |
 | A Steam Jetpack | Nothing | Turns the jetpack on and off |
+| A Flamethrower Pack | Nothing | Lights and puts out the pilot |
 
 ## Other controls
 
@@ -46,6 +48,15 @@ The Backpack Abilities On/Off key is not bound by default: pick a key for it in 
 | Jump, wearing the copter pack with the engine on | Climbs |
 | Sneak, wearing the copter pack with the engine on | Descends |
 | Jump, wearing the jetpack on | Thrust |
+| Right click, scuba gear or flamethrower pack in hand | Opens its window. It has the Equip button. |
+| Hold right click, Flamethrower in hand, wearing the lit pack | Fires flame in a cone. See [Flamethrower](Flamethrower). |
+| Right click, empty hand, on an Air Compressor | Pumps air in by hand. See [Scuba Gear](Scuba-Gear#air-compressor). |
+| Sneak and right click, empty hand, on an Air Compressor | Fills the Scuba Gear you wear |
+| Sneak and right click, Scuba Gear in hand, on an Air Compressor | Fills the gear in your hand |
+| Right click a Fuel Station | Opens its window. See [Fuel Station](Fuel-Station). |
+| Sneak and right click a Fuel Station, flamethrower pack or copter pack in hand or worn | Fills the pack |
+| Right click a Fuel Station, riding the Motorized Inflatable Boat | Fills the boat's tank |
+| Boat Motor On/Off key, riding the Motorized Inflatable Boat | Turns the motor on and off |
 | Right click a spider, Spider backpack on, spider eye in hand | Tries to tame it |
 | Right click your tame spider | Gets on it. It carries you only while you wear the Spider backpack. |
 | Jump, riding a spider | The spider jumps |
@@ -80,4 +91,4 @@ B is also the default key for the Baubles inventory. If you use Baubles, change 
 
 ## See also
 
-[Backpacks](Backpacks), [Fluids and Hose](Fluids-and-Hose), [Jetpack and Copter Pack](Jetpack-and-Copter-Pack), [Crossbow](Crossbow), [Gear](Gear)
+[Backpacks](Backpacks), [Fluids and Hose](Fluids-and-Hose), [Jetpack and Copter Pack](Jetpack-and-Copter-Pack), [Crossbow](Crossbow), [Scuba Gear](Scuba-Gear), [Flamethrower](Flamethrower), [Fuel Station](Fuel-Station), [Gear](Gear)

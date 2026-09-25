@@ -1,6 +1,6 @@
 # Jetpack and Copter Pack
 
-Two ways to fly. The Steam Jetpack boils water and thrusts up while you hold jump. The Copter Pack burns fuel to turn a rotor, and lets you glide, climb and hover. Both are worn on your back, in the same place as a backpack, so you wear one of the three at a time.
+Two ways to fly. The Steam Jetpack boils water and thrusts up while you hold jump. The Copter Pack burns fuel to turn a rotor, and lets you glide, climb and hover. Both are worn on your back, in the same place as a backpack, the Scuba Gear and the Flamethrower Pack, so you wear one of them at a time.
 
 Flying is meant to cost. With the default settings a full tank gives about one to two minutes of flight, so you plan the trip and carry fuel or water.
 
@@ -62,10 +62,10 @@ While you thrust the boiler loses heat. With the fire lit it keeps up; without f
 |---|---|
 | Type | Wearable item |
 | Stack size | 1 |
-| Obtained by | Crafting, with BuildCraft loaded |
-| Config section | `copterpack`, `enabled.copterPack` |
+| Obtained by | Crafting, with a mod that brings a fuel |
+| Config section | `copterpack`, `enabled.copterPack`, `fuels` |
 
-The Copter Pack only works when BuildCraft is installed. Without it the item is registered but has no recipe, is not in the creative tab and does nothing, so worlds stay compatible.
+The Copter Pack burns liquid fuel, and it does not need a particular mod: any loaded mod that brings a fuel of the [fuel list](Fluids-and-Hose#fuels) will do. BuildCraft fuel and oil, Forestry bioethanol and biomass, Railcraft creosote and GregTech diesel are some. With none of them the item is registered, in the creative tab, but has no recipe and does nothing, so worlds stay compatible.
 
 ### Crafting
 
@@ -77,18 +77,9 @@ The pack is made from two components, Copter Blades and a Two-Cylinder Diesel En
 
 ### Fuel
 
-Open the copter window with B and put fuel in its tank with a bucket. Each fuel burns at its own rate:
+Open the copter window with B and put fuel in its tank with a bucket or a can, or fill it at a [Fuel Station](Fuel-Station): put the pack in the station's slot, or sneak and right click the station with the pack in your hand or on your back. The tank holds 6000 mB of one fuel at a time.
 
-| Fuel | Burn rate |
-|---|---|
-| Fuel (BuildCraft) | 1.0 |
-| Oil (BuildCraft) | 1.5 |
-| Creosote (Railcraft) | 1.8 |
-| Bioethanol | 1.2 |
-| Biofuel | 1.0 |
-| Coal | 0.8 |
-
-A higher number empties the tank faster. The list is in `copterpack.fuels` and a modpack can add fluids.
+Each fuel burns at its own rate: oil 1.5 times as fast as fuel, creosote 1.8 times, coal 0.8 times. The table is in [Fluids and Hose](Fluids-and-Hose#fuels), and the times below are for fuel, which is 1.0. A modpack can add fluids to the list.
 
 ### Flying
 
@@ -125,7 +116,7 @@ The engine stops in water. If the tank runs dry on the ground it switches off. I
 
 ## Dying while you fly
 
-The copter pack and the jetpack always drop where you died. With a grave mod they go into the grave. See [FAQ](FAQ#what-happens-when-i-die).
+The copter pack and the jetpack always drop where you died, like the Scuba Gear and the Flamethrower Pack. With a grave mod they go into the grave. See [FAQ](FAQ#what-happens-when-i-die).
 
 ## Tips
 
@@ -135,4 +126,4 @@ The copter pack and the jetpack always drop where you died. With a grave mod the
 
 ## See also
 
-[Fluids and Hose](Fluids-and-Hose), [Compatibility](Compatibility), [Controls](Controls)
+[Fluids and Hose](Fluids-and-Hose), [Fuel Station](Fuel-Station), [Compatibility](Compatibility), [Controls](Controls)

@@ -48,7 +48,7 @@ Crafting the Dragon backpack gives you the Dragon Egg back, so it is not used up
 - Break a placed backpack to get the item back with everything inside. Break it while sneaking and it goes straight onto your back.
 - Right click a placed backpack to open it. Its window has a button to deploy the sleeping bag.
 
-You can wear one backpack, copter pack or jetpack at a time. They share the same place on your back. For more questions see the [FAQ](FAQ).
+You can wear one backpack, copter pack, jetpack, scuba gear or flamethrower pack at a time. They share the same place on your back. For more questions see the [FAQ](FAQ).
 
 ## The types
 
