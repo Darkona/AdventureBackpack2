@@ -728,7 +728,7 @@ public class ConfigHandler
     private static void readFlamethrower(Configuration cfg)
     {
         FLAMETHROWER_TANK_CAPACITY = integer(cfg, FLAMETHROWER, "tankCapacity", 4000, 500, 64000, "Capacity of each of the two fuel tanks of the pack, in millibuckets. Use the same value on server and clients.", true);
-        FLAMETHROWER_FUEL_PER_BURST = integer(cfg, FLAMETHROWER, "fuelPerBurst", 50, 0, 10000, "Millibuckets of fuel one burst burns, times the fuel's multiplier in fuels.list (oil 1.5 makes it 75). With the defaults two full tanks of fuel make 160 bursts, 32 seconds of continuous fire. 0 makes the fuel free.");
+        FLAMETHROWER_FUEL_PER_BURST = integer(cfg, FLAMETHROWER, "fuelPerBurst", 20, 0, 10000, "Millibuckets of fuel one burst burns, times the fuel's multiplier in fuels.list (oil 1.5 makes it 30). With the defaults two full tanks of fuel make 400 bursts, 80 seconds of continuous fire. 0 makes the fuel free.");
         FLAMETHROWER_FIRE_INTERVAL_TICKS = integer(cfg, FLAMETHROWER, "fireIntervalTicks", 4, 1, 40, "Cooldown between two bursts while right click is held, in ticks. Each burst burns fuelPerBurst and deals its damage once.");
         FLAMETHROWER_RANGE = decimal(cfg, FLAMETHROWER, "range", 6.0, 1.0, 16.0, "Reach of the flame in blocks, from the wearer's eyes.");
         FLAMETHROWER_CONE_DEGREES = decimal(cfg, FLAMETHROWER, "coneDegrees", 25.0, 5.0, 90.0, "Opening of the cone of flame in degrees, around the direction the wearer looks.");
@@ -853,7 +853,7 @@ public class ConfigHandler
     private static void readKeys(Configuration cfg)
     {
         KEY_OPEN_BACKPACK = integer(cfg, KEYS, "openBackpack", Keyboard.KEY_B, 0, 255, "Default key that opens the worn backpack, copter pack or jetpack (48 = B).", true);
-        KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and drives the worn copter pack or jetpack (49 = N). With the copter pack, the key changes its mode (normal or hover) and Sneak + the key turns it on or off; with the jetpack, Sneak + the key turns it on or off.", true);
+        KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and drives the worn copter pack or jetpack (49 = N). With the copter pack, the key changes its mode (normal or hover) and Sneak + the key turns it on or off; with the jetpack, Sneak + the key turns it on or off; Sneak + N lights the Flamethrower Pack.", true);
         KEY_CROSSBOW_MODE = integer(cfg, KEYS, "crossbowMode", Keyboard.KEY_V, 0, 255, "Default key that changes the firing mode of the held Clockwork Crossbow (47 = V).", true);
         KEY_TOGGLE_ABILITIES = integer(cfg, KEYS, "toggleAbilities", 0, 0, 255, "Default key that turns the abilities of the worn backpack off and on, for this player only (night vision, water breathing, fire resistance, milk...). 0 = not bound: pick one in Options > Controls.", true);
         KEY_BOAT_MOTOR_TOGGLE = integer(cfg, KEYS, "boatMotorToggle", 0, 0, 255, "Default key that turns the motor of the Motorized Inflatable Boat on and off while riding it (inflatableboat.motor.mode toggle). 0 = not bound: pick one in Options > Controls.", true);

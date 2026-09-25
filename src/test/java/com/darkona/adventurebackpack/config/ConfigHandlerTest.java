@@ -310,7 +310,7 @@ class ConfigHandlerTest
         assertFalse(ConfigHandler.FLAMETHROWER_PVP);
         assertFalse(ConfigHandler.FLAMETHROWER_IGNITES_BLOCKS);
         assertEquals(4000, ConfigHandler.FLAMETHROWER_TANK_CAPACITY);
-        assertEquals(50, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
+        assertEquals(20, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
         assertEquals(4, ConfigHandler.FLAMETHROWER_FIRE_INTERVAL_TICKS);
         assertEquals(6.0, ConfigHandler.FLAMETHROWER_RANGE, 1e-9);
         assertEquals(25.0, ConfigHandler.FLAMETHROWER_CONE_DEGREES, 1e-9);
