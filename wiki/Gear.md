@@ -1,6 +1,6 @@
 # Gear
 
-The smaller items of the mod: boots, a machete, a hat, the campfire and sleeping bag that make a camp, and the inflatable boat. The backpacks, the hose, the crossbow and the flying packs have their own pages.
+The smaller items of the mod: boots, a machete, a hat, the campfire and sleeping bag that make a camp, and the inflatable boat with its outboard motor. The backpacks, the hose, the crossbow, the flying packs, the [Scuba Gear](Scuba-Gear), the [Flamethrower](Flamethrower) and the [Fuel Station](Fuel-Station) have their own pages.
 
 ## Piston Boots
 
@@ -112,8 +112,47 @@ With only vanilla items, a chamber is made of leather and a slimeball, and the m
 
 A pack can choose between the vanilla recipes only, both, or the mod parts replacing the vanilla ones, and change the lists. See [Configuration](Configuration#extra-recipes-recipes).
 
-Right click on water to put a boat down. Its top speed is the same as the vanilla boat by default and can be raised in [Configuration](Configuration#inflatable-boat-inflatableboat).
+Right click on water to put a boat down. Its top speed is the same as the vanilla boat by default and can be raised in [Configuration](Configuration#inflatable-boat-inflatableboat). Break the boat to pick it up again; you get the item back, with the fuel of its motor if it has any.
+
+### Motorized Inflatable Boat
+
+The Motorized Inflatable Boat has an outboard motor that burns fuel and makes it faster. Without fuel, or with the motor off, it moves like the plain boat.
+
+> Screenshot: a player riding the Motorized Inflatable Boat on a lake, smoke behind the motor and the fuel tank in the overlay. File: images/gear-10.png
+
+| | Plain boat | Motor on |
+|---|---|---|
+| Top speed | 7 blocks per second | 12 blocks per second |
+| Speeds up | like the vanilla boat | twice as fast |
+
+**Starting the motor**
+
+1. Fill the tank at a [Fuel Station](Fuel-Station): sit in the boat and right click the station. The tank holds 6000 mB.
+2. Bind the Boat Motor On/Off key in Options > Controls. It has no default key.
+3. Sit in the boat on water and press the key. A message in chat says the motor is on.
+4. Steer with the move keys. The boat goes ahead by itself; holding back still brakes.
+5. Press the key again to stop.
+
+The motor does not start without fuel, or when the boat is not on water; the message says which. The tank shows on screen while you ride.
+
+If you prefer, `inflatableboat.motor.mode` can be changed to `hold`. The motor then pushes only while you hold the forward key, and there is no key to bind.
+
+**Fuel**
+
+The motor burns the fuels of the [fuel list](Fluids-and-Hose#fuels). With fuel a full tank of 6000 mB lasts about 5 minutes of running. Oil burns faster: about 3 minutes 20 seconds. The tank takes one fuel at a time.
+
+The motor stops by itself:
+
+- when the fuel runs out
+- when the pilot gets off
+- when the boat has been out of the water for half a second, on land or in the air over a wave
+
+The fuel goes with the item when you pick the boat up, and is in the tank again when you put the boat down.
+
+> Screenshot: Options > Controls with the Boat Motor On/Off key bound, next to the chat message "Boat motor: On.". File: images/gear-11.png
+
+The speed, the acceleration, the fuel per tick, the tank size and the mode are in [Configuration](Configuration#boat-motor-inflatableboatmotor).
 
 ## See also
 
-[Backpacks](Backpacks), [Configuration](Configuration)
+[Backpacks](Backpacks), [Scuba Gear](Scuba-Gear), [Flamethrower](Flamethrower), [Fuel Station](Fuel-Station), [Configuration](Configuration)

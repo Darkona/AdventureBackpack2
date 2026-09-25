@@ -24,7 +24,7 @@ It works with any container that Forge knows as a fluid container, including the
 
 Four backpacks make their own fluid: the Cactus makes water, the Melon makes melon juice, the Cow makes milk and the Mooshroom makes mushroom stew. See [Backpacks](Backpacks#with-an-ability).
 
-The mod adds three fluids of its own, Milk, Melon Juice and Mushroom Stew, plus Steam for the jetpack. If another mod already has a fluid with the same name, that one is used. The Melon Juice Bottle is the container for melon juice: craft it from a melon slice and a water bottle. A bowl of mushroom stew and a bucket of milk work as containers too. Each holds 1000 mB.
+The mod adds three fluids of its own, Milk, Melon Juice and Mushroom Stew, plus Steam for the jetpack and Air for the scuba gear. If another mod already has a fluid with the same name, that one is used. The Melon Juice Bottle is the container for melon juice: craft it from a melon slice and a water bottle. A bowl of mushroom stew and a bucket of milk work as containers too. Each holds 1000 mB.
 
 ## The Backpack Hose
 
@@ -77,6 +77,30 @@ See [Controls](Controls) for the details and how to change the keys.
 - The window shows what each tank holds. With `render.tankHoverText` on, it shows as hovering text instead of under the tank.
 - The hose does not fit in the tool slots of the backpack. Keep it in your hotbar.
 
+## Air
+
+The [Scuba Gear](Scuba-Gear) breathes a fluid called air. If another mod already registers air, like GregTech, that one is used. If not, Adventure Backpack adds its own, so the gear works alone. Turn that off with `scuba.ownAirFluid`; the gear then has no recipe unless some other mod brings air or oxygen.
+
+The tanks of the gear and the Air Compressor take the fluids of `scuba.breathableFluids`: air and oxygen by default. When the air fluid exists, oxygen from another mod is stored as air, so a tank never holds two fluids. Air cells and cans that Forge knows as fluid containers work in the container slots, and the IndustrialCraft 2 Compressed Air Cell too.
+
+## Fuels
+
+The Copter Pack, the Flamethrower Pack, the motor of the Motorized Inflatable Boat and the [Fuel Station](Fuel-Station) all burn liquid fuel from one list. A fuel is known by the name of its fluid, so any mod that registers a fluid with one of these names brings a fuel. The number is how fast it burns: the cost of everything that uses fuel is multiplied by it, so a higher number empties the tank faster.
+
+| Fluid | Burn rate | Brought by |
+|---|---|---|
+| `fuel` | 1.0 | BuildCraft, Railcraft, GregTech (diesel) |
+| `oil` | 1.5 | BuildCraft |
+| `bioethanol` | 1.2 | Forestry, Railcraft, GregTech |
+| `biofuel` | 1.0 | Railcraft |
+| `creosote` | 1.8 | Railcraft, GregTech |
+| `coal` | 0.8 | Thermal Foundation, Railcraft |
+| `biomass` | 1.5 | Forestry |
+
+No mod is needed on its own: with any one of them loaded, everything that burns fuel works. With none, the Copter Pack and the Flamethrower Pack have no recipe and do nothing, and the Fuel Station takes nothing.
+
+Tanks hold one fuel at a time. The list, and the rates, are in `fuels.list`; a modpack can add fluids to it or take them out. See [Configuration](Configuration#fuels-fuels).
+
 ## See also
 
-[Backpacks](Backpacks), [Controls](Controls), [Configuration](Configuration)
+[Backpacks](Backpacks), [Scuba Gear](Scuba-Gear), [Fuel Station](Fuel-Station), [Controls](Controls), [Configuration](Configuration)
