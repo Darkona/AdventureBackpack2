@@ -4,7 +4,7 @@
 
 For Minecraft 1.7.10 with Forge.
 
-The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders become pets you tame, the Blaze backpack gets its ability, the sleeping bag and the Inflatable Boat can be crafted and used on their own, and the campfire cooks. Numbers in brackets are issues in the GitHub repository.
+The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders become pets you tame, the Blaze backpack gets its ability, the sleeping bag and the Inflatable Boat can be crafted and used on their own, and the campfire cooks. There is dive equipment, a flamethrower, a fuel station and an outboard motor for the boat, and the Copter Pack no longer needs BuildCraft. Numbers in brackets are issues in the GitHub repository.
 
 ### Added
 
@@ -20,7 +20,13 @@ The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders
 - **Tool slot list.** A whitelist or a blacklist decides which items go in the tool slots of the backpack and into the tool swap (#49). Settings: `tweaks.toolcycle`.
 - **Squid backpack on land.** `abilities.squid.worksOnLand` gives the Squid water breathing and night vision out of water too, for mods that make the player breathe water (#151).
 - **Piston Boots at any pace.** `pistonboots.onlyWhileSprinting` set to false makes the boots step up blocks while walking (#126).
-- The config file has 188 keys now. See [Configuration](Configuration).
+- **Scuba Gear.** Two air tanks of 3000 mB and a diving mask, worn on your back. Under water they keep your air bar full and spend 10 mB of air per second, so full tanks last 10 minutes. You get a warning at 600 mB. Press B to open its window. Settings: `scuba`, `enabled.scuba`. See [Scuba Gear](Scuba-Gear).
+- **Air Compressor.** A block that fills the Scuba Gear in its slot, or the one you wear or hold with Sneak and right click. It makes air with a hand pump (right click, empty hand) or by burning any furnace fuel, needs open air above it, and takes air or oxygen from pipes, GregTech Air Cells and the IndustrialCraft 2 Compressed Air Cell. Settings: `scuba.compressor`. See [Scuba Gear](Scuba-Gear#air-compressor).
+- **Flamethrower.** The Flamethrower Pack goes on your back with two fuel tanks of 4000 mB and a pyro mask. Sneak + N lights the pilot, and holding right click with the Flamethrower nozzle throws flame in a cone of 6 blocks and 25 degrees: 2.0 damage and 5 seconds of fire per burst, 20 mB of fuel per burst. It does not hurt players or light blocks unless a server allows it. Settings: `flamethrower`, `enabled.flamethrower`. See [Flamethrower](Flamethrower).
+- **Fuel Station.** A block with a tank of 16000 mB that takes the fuels of the fuel list from buckets, cans, cells and pipes. It fills the Flamethrower Pack and the Copter Pack in its slot, or worn or held with Sneak and right click, and the Motorized Inflatable Boat with a right click while you ride it. Hoppers move the containers and comparators read the tank. Settings: `fuelstation`, `enabled.fuelStation`. See [Fuel Station](Fuel-Station).
+- **Boat motor.** The Motorized Inflatable Boat gets an outboard motor with a tank of 6000 mB, about 5 minutes of running. It turns on and off with a key, Boat Motor On/Off, not bound by default, and the boat goes up to 12 blocks per second and speeds up twice as fast. It stops without fuel, without a pilot and out of the water, and the fuel stays in the boat when you pick it up. Settings: `inflatableboat.motor`, `keys.boatMotorToggle`. See [Gear](Gear#motorized-inflatable-boat).
+- **Air and fuel from other mods.** Fuels and air are found by fluid name, so BuildCraft, Forestry, Railcraft, Thermal Foundation, GregTech, Galacticraft and Mekanism work without being needed. Settings: `fuels.list`, `scuba.breathableFluids`, `scuba.airItems`. See [Compatibility](Compatibility).
+- The config file has 234 keys now. See [Configuration](Configuration).
 
 ### Changed
 
@@ -29,6 +35,11 @@ The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders
 - **Sleeping Bag.** The item can be placed on its own, and sleeping in a bag can be set not to move your spawn point (`sleepingbag.setsSpawn`).
 - **Inflatable Boat.** It was only in the creative tab. The two boats, the Inflatable Chamber and the Hydro Blades now have crafting recipes.
 - **Bolt Cartridge.** There is a single kind of cartridge with six bolts, made of arrows, an iron ingot and sticks.
+- **Copter Pack without BuildCraft.** It burns any fuel of the new list, not only BuildCraft's, and works with Forestry, Railcraft, Thermal Foundation or GregTech fuels. With no fuel mod it has no recipe and does nothing, as before.
+- **Fuel list.** The setting `copterpack.fuels` is now `fuels.list`, shared by the Copter Pack, the Flamethrower, the boat motor and the Fuel Station. The value moves on the first start: a list you never changed gets the new default, which adds Forestry biomass, and one you changed stays. See [Fluids and Hose](Fluids-and-Hose#fuels).
+- **Motorized Inflatable Boat.** Its motor was only a look; it now runs on fuel. The boat is the same as the plain one when the motor is off or out of fuel.
+- **One thing on your back.** The Scuba Gear and the Flamethrower Pack take the same place as the backpack, the Copter Pack and the Jetpack. They drop where you die and go into a grave, like the jetpack.
+- **Screen overlay.** `render.wearableOverlay` also shows the tanks of the new packs, and the fuel tank of the motorized boat you ride.
 
 ### Removed
 

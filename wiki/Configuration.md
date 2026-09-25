@@ -1,6 +1,6 @@
 # Configuration
 
-Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 188 keys.
+Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 234 keys.
 
 You can also edit the file from the game: in the Mods list, select Adventure Backpack and press Config. Changes made in the file need a restart of the game. Keys marked "Needs a restart" are read when items, blocks or keys are created, so they need one even with the config screen.
 
@@ -16,7 +16,9 @@ The file is a tree under `adventurebackpack`. First comes `enabled`, with one sw
 
 ## Contents
 
-- [Systems](#systems-enabled), [Backpack](#backpack-backpack), [Abilities](#abilities-abilities), [Hose](#hose-hose), [Copter pack](#copter-pack-copterpack), [Steam jetpack](#steam-jetpack-steamjetpack), [Inflatable boat](#inflatable-boat-inflatableboat)
+- [Systems](#systems-enabled), [Backpack](#backpack-backpack), [Abilities](#abilities-abilities), [Hose](#hose-hose), [Copter pack](#copter-pack-copterpack), [Steam jetpack](#steam-jetpack-steamjetpack)
+- [Scuba gear](#scuba-gear-scuba), [Air compressor](#air-compressor-scubacompressor), [Flamethrower](#flamethrower-flamethrower), [Fuels](#fuels-fuels), [Fuel station](#fuel-station-fuelstation)
+- [Inflatable boat](#inflatable-boat-inflatableboat), [Boat motor](#boat-motor-inflatableboatmotor)
 - [Crossbow](#clockwork-crossbow-crossbow), [Grappling hook](#grappling-hook-crossbowgrapple), [Sniper mode](#sniper-mode-crossbowsniper), [Piston boots](#piston-boots-pistonboots), [Campfire](#campfire-cooking-campfirecooking), [Sleeping bag](#sleeping-bag-sleepingbag)
 - [Display](#display-render), [Keys](#keys-keys), [Tool swapping keys](#tool-swapping-keys-keystoolcycle)
 - [Backpacks in the world](#backpacks-in-the-world-worldgen), [Extra recipes](#extra-recipes-recipes), [Small tweaks](#small-tweaks-tweaks), [Tool slots](#tool-slots-tweakstoolcycle), [Grave mods](#grave-mods-compatgraves), [Baubles](#baubles-compatbaubles)
@@ -30,13 +32,16 @@ One switch per system. A disabled system stays registered, so worlds and servers
 |---|---|---|---|---|
 | `enabled.abilities` | boolean | `true` |  | Backpack abilities. When false every backpack is only cosmetic (the lightning transformation still works). Set it the same on server and clients. |
 | `enabled.hose` | boolean | `true` |  | The Backpack Hose. |
-| `enabled.copterPack` | boolean | `true` |  | The Copter Pack. It is always registered, but it only works (and shows in the creative tab) when BuildCraft is loaded. |
+| `enabled.copterPack` | boolean | `true` |  | The Copter Pack. It works when some loaded mod adds a fluid of fuels.list (BuildCraft, Forestry, Railcraft, GregTech...); with none of them it stays in the creative tab but cannot be crafted and does nothing. |
 | `enabled.steamJetpack` | boolean | `true` |  | The Steam Jetpack. |
+| `enabled.scuba` | boolean | `true` |  | The Scuba Gear, its Air Tanks and Diving Mask, and the Air Compressor. |
 | `enabled.inflatableBoat` | boolean | `true` |  | The Inflatable Boat and the Motorized Inflatable Boat. |
 | `enabled.crossbow` | boolean | `true` |  | The Clockwork Crossbow and its Bolt Cartridges. |
 | `enabled.sleepingBag` | boolean | `true` |  | The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up. |
 | `enabled.pistonBoots` | boolean | `true` |  | The Piston Boots: step assist, sprint speed and fall protection. |
 | `enabled.campfire` | boolean | `true` |  | Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way. |
+| `enabled.fuelStation` | boolean | `true` |  | The Fuel Station block. When false it has no recipe, is hidden from the creative tab, and a placed one neither takes nor gives fuel (it can still be broken, and keeps its fuel). |
+| `enabled.flamethrower` | boolean | `true` |  | The Flamethrower Pack, the Flamethrower nozzle and the Pyro Mask. When false they have no recipe, are hidden from the creative tab, and the nozzle does not fire. Set it the same on server and clients. |
 
 ## Backpack (`backpack`)
 
@@ -250,14 +255,14 @@ Amounts are in millibuckets (1000 is one bucket).
 
 ## Copter pack (`copterpack`)
 
-Works only with BuildCraft loaded. Speeds are in blocks per tick. The defaults make flying expensive: a full tank gives roughly one to two and a half minutes of flight.
+It burns the fuels of [`fuels.list`](#fuels-fuels), so it works with any mod that adds one of them (BuildCraft, Forestry, Railcraft, GregTech...). Speeds are in blocks per tick. The defaults make flying expensive: a full tank gives roughly one to two and a half minutes of flight.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `copterpack.sound` | boolean | `true` |  | Play the rotor sound (client only; other players may still hear theirs). |
 | `copterpack.tankCapacity` | int | `6000` | 1000 to 64000 | Fuel tank capacity in millibuckets. Use the same value on server and clients. Needs a restart. |
 | `copterpack.fuelIntervalTicks` | int | `3` | 1 to 200 | Fuel is taken once every this many ticks: the cost of all those ticks at once. |
-| `copterpack.fuelPerTick` | int | `2` | 0 to 100 | Millibuckets of fuel per tick while the engine runs, before the fuel's own multiplier. With the defaults a full tank lasts about 2.5 minutes of gliding, 75 seconds of hovering and 50 seconds of climbing while hovering. |
+| `copterpack.fuelPerTick` | int | `2` | 0 to 100 | Millibuckets of fuel per tick while the engine runs, before the fuel's own multiplier in `fuels.list` (oil 1.5, fuel 1.0, creosote 1.8...). With the defaults a full tank lasts about 2.5 minutes of gliding, 75 seconds of hovering and 50 seconds of climbing while hovering. |
 | `copterpack.hoverExtraFuel` | int | `2` | 0 to 100 | Extra fuel per tick while hovering (not while sinking with sneak). |
 | `copterpack.climbExtraFuel` | int | `2` | 0 to 100 | Extra fuel per tick while climbing (jump held). |
 | `copterpack.startFuel` | int | `100` | 0 to 64000 | Fuel the engine takes when it is turned on. It does not start with less in the tank. 0 turns it off. |
@@ -268,7 +273,6 @@ Works only with BuildCraft loaded. Speeds are in blocks per tick. The defaults m
 | `copterpack.maxAltitude` | int | `90` | 1 to 255 | Height above which lift fades out. Climbing stops about liftSpeed x 100 blocks higher; hover mode keeps any height you already reached. |
 | `copterpack.itemPushRange` | double | `4.0` | 0.0 to 16.0 | Distance in blocks at which the rotor blows dropped items away. 0 turns it off. |
 | `copterpack.itemPushIntervalTicks` | int | `2` | 1 to 20 | The rotor looks for dropped items to blow away once every this many ticks. |
-| `copterpack.fuels` | string list | `fuel=1.0, oil=1.5, bioethanol=1.2, biofuel=1.0, creosote=1.8, coal=0.8` |  | Fluids the copter pack burns, as name=multiplier: the fuel cost is multiplied by it (higher burns faster). Fluid names as registered by the mods (BuildCraft fuel and oil, Railcraft creosote...). Needs a restart. |
 
 ## Steam jetpack (`steamjetpack`)
 
@@ -294,11 +298,92 @@ The boiler needs a fluid called steam: another mod's, or the backpack's own (see
 | `steamjetpack.airControl` | double | `0.02` | 0.0 to 0.5 | Horizontal acceleration while thrusting. |
 | `steamjetpack.maxAltitude` | int | `90` | 1 to 255 | Height above which thrust fades out. Thrust holds you at about maxRiseSpeed x 100 blocks higher. |
 
-## Inflatable boat (`inflatableboat`)
+## Scuba gear (`scuba`)
+
+The [Scuba Gear](Scuba-Gear): two air tanks and a diving mask worn on the back. Amounts are in millibuckets (1000 is one bucket), time in ticks (20 per second). Use the same values on the server and on every client for the keys that say so.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `inflatableboat.maxSpeed` | double | `0.35` | 0.07 to 2.0 | Top speed in blocks per tick (the vanilla boat uses 0.35). |
+| `scuba.tankCapacity` | int | `3000` | 500 to 64000 | Capacity of each of the two air tanks, in millibuckets. Use the same value on server and clients. Needs a restart. |
+| `scuba.airPerSecond` | int | `10` | 0 to 1000 | Millibuckets of air spent per second while it keeps the wearer breathing. With the defaults two full tanks last 10 minutes under water. 0 makes the air free. |
+| `scuba.airIntervalTicks` | int | `20` | 1 to 200 | The air is taken once every this many ticks: the cost of all those ticks at once. |
+| `scuba.lowAirWarning` | int | `600` | 0 to 64000 | When the air left goes below this many millibuckets the wearer gets a chat warning, once per dive (600 is one minute with the defaults). 0 turns the warning off. |
+| `scuba.warningSound` | boolean | `true` |  | Play a click with the low air warning. |
+| `scuba.breathableFluids` | string list | `air, oxygen` |  | Fluids the tanks and the compressor take, by registered name (air of GregTech or Adventure Backpack, oxygen of GregTech, Galacticraft or Mekanism...). When the 'air' fluid exists every one of them is stored as air. Set it the same on server and clients. Needs a restart. |
+| `scuba.ownAirFluid` | boolean | `true` |  | When no other mod (GregTech) registers an 'air' fluid, register Adventure Backpack's own so the hand pump and the furnace of the compressor can make air. When another mod has air, that one is used. Set it the same on server and clients. Needs a restart. |
+| `scuba.airItems` | string list | `ic2:airCell=1000>ic2:cell` |  | Items that hold air without being fluid containers (IC2's Compressed Air Cell), for the container slots of the Scuba Gear and the compressor. One per line: &lt;item&gt;=&lt;millibuckets&gt;, optionally followed by &gt;&lt;empty item&gt; for the item it leaves and that the compressor fills again. Items as in recipes.boat.motors: ic2:&lt;IC2 item name&gt;, item:&lt;modid&gt;:&lt;item name&gt;[:&lt;damage&gt;], ore:&lt;Ore Dictionary name&gt;, stack:&lt;modid&gt;:&lt;registered stack name&gt;. GregTech's air cells are fluid containers and need no entry. Needs a restart. |
+
+## Air compressor (`scuba.compressor`)
+
+The Air Compressor block, which fills the Scuba Gear. It is switched by `enabled.scuba`.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `scuba.compressor.tankCapacity` | int | `16000` | 1000 to 64000 | Capacity of the compressor's air tank, in millibuckets. Use the same value on server and clients. Needs a restart. |
+| `scuba.compressor.handPumpAmount` | int | `100` | 0 to 16000 | Millibuckets of air one right click with an empty hand pumps in (60 clicks fill a Scuba Gear with the defaults). 0 turns the hand pump off. |
+| `scuba.compressor.handPumpCooldownTicks` | int | `4` | 0 to 200 | Ticks between two strokes of the hand pump. |
+| `scuba.compressor.airPerFuelTick` | int | `10` | 0 to 1000 | Millibuckets of air the furnace makes per tick of burning fuel: one coal (1600 ticks) makes 16000 with the defaults. 0 turns the furnace off. |
+| `scuba.compressor.fillPerTick` | int | `50` | 1 to 64000 | Millibuckets per tick moved into the Scuba Gear in the compressor's slot (an empty gear fills in 6 seconds with the defaults). |
+| `scuba.compressor.intervalTicks` | int | `10` | 1 to 200 | The compressor works once every this many ticks, doing the work of all those ticks at once. |
+| `scuba.compressor.needsOpenAir` | boolean | `true` |  | The hand pump and the furnace make air only when the block above the compressor is air, so it is not an air source buried or under water. Air from pipes is taken anyway. |
+
+## Flamethrower (`flamethrower`)
+
+The [Flamethrower](Flamethrower): the Flamethrower Pack worn on the back and the nozzle held in hand. Amounts are in millibuckets, time in ticks (20 per second), ranges in blocks.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `flamethrower.tankCapacity` | int | `4000` | 500 to 64000 | Capacity of each of the two fuel tanks of the pack, in millibuckets. Use the same value on server and clients. Needs a restart. |
+| `flamethrower.fuelPerBurst` | int | `20` | 0 to 10000 | Millibuckets of fuel one burst burns, times the fuel's multiplier in fuels.list (oil 1.5 makes it 30). With the defaults two full tanks of fuel make 400 bursts, 80 seconds of continuous fire. 0 makes the fuel free. |
+| `flamethrower.fireIntervalTicks` | int | `4` | 1 to 40 | Cooldown between two bursts while right click is held, in ticks. Each burst burns fuelPerBurst and deals its damage once. |
+| `flamethrower.range` | double | `6.0` | 1.0 to 16.0 | Reach of the flame in blocks, from the wearer's eyes. |
+| `flamethrower.coneDegrees` | double | `25.0` | 5.0 to 90.0 | Opening of the cone of flame in degrees, around the direction the wearer looks. |
+| `flamethrower.damage` | double | `2.0` | 0.0 to 40.0 | Fire damage of one burst to each target in the cone (2 is one heart). Vanilla's half second of invulnerability after a hit means not every burst lands. Fire-immune mobs take none. |
+| `flamethrower.fireSeconds` | int | `5` | 0 to 60 | Seconds every target in the cone keeps burning after a burst. 0 does not set targets on fire. |
+| `flamethrower.pvp` | boolean | `false` |  | Let the flame hurt and burn other players. Even when true, the server's pvp setting and scoreboard teams still apply. Animals the wearer owns are never hurt. |
+| `flamethrower.ignitesBlocks` | boolean | `false` |  | Let each burst set fire to the side of the block it hits, like flint and steel. The fire is vanilla fire, so it spreads and burns as usual. It respects spawn protection, adventure mode and protection mods that cancel block placing. |
+| `flamethrower.pilotFuelPerMinute` | int | `0` | 0 to 6000 | Millibuckets of fuel the lit pilot burns per minute while the pack is worn, times the fuel's multiplier. 0 (the default) makes the pilot free. |
+| `flamethrower.sound` | boolean | `true` |  | Play the vanilla ignite sound when the pilot is lit (the server sends it) and the vanilla fire sound while the nozzle fires (each client plays it). Set it the same on server and clients. |
+
+## Fuels (`fuels`)
+
+One list of liquid fuels for everything that burns them: the Copter Pack, the Flamethrower Pack, the boat motor and the Fuel Station. See [Fluids and Hose](Fluids-and-Hose#fuels).
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `fuels.list` | string list | `fuel=1.0, oil=1.5, bioethanol=1.2, biofuel=1.0, creosote=1.8, coal=0.8, biomass=1.5` |  | Liquid fuels as fluidName=multiplier. The fuel cost of each user (`copterpack.fuelPerTick`...) is multiplied by it: higher burns faster. Only these fluids go into fuel tanks. Use the fluid names the mods register (BuildCraft `oil` and `fuel`, Forestry `bioethanol` and `biomass`, Railcraft `creosote`, Thermal Foundation `coal`, GregTech `fuel` (diesel), `bioethanol` and `creosote`); add `lava=4.0`, for example, to burn lava. Moved here from `copterpack.fuels`, keeping its value. Set it the same on server and clients. Needs a restart. |
+
+## Fuel station (`fuelstation`)
+
+The [Fuel Station](Fuel-Station). The block is switched by `enabled.fuelStation`.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `fuelstation.tankCapacity` | int | `16000` | 1000 to 64000 | Capacity of the station's tank in millibuckets. Use the same value on server and clients. Lowering it does not delete fuel already stored above the new limit. Needs a restart. |
+
+
+## Inflatable boat (`inflatableboat`)
+
+The plain boat. The motor of the motorized one has its own section below.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `inflatableboat.maxSpeed` | double | `0.35` | 0.07 to 2.0 | Top speed in blocks per tick (the vanilla boat uses 0.35). The motorized boat without fuel, or with its motor off, uses it too. |
+
+### Boat motor (`inflatableboat.motor`)
+
+The outboard motor of the Motorized Inflatable Boat. It burns the fuels of `fuels.list`. Speeds are in blocks per tick. See [Gear](Gear#motorized-inflatable-boat).
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `inflatableboat.motor.enabled` | boolean | `true` |  | The motor of the Motorized Inflatable Boat. False: the motor is only a look, and the boat moves like the plain one. |
+| `inflatableboat.motor.mode` | string | `toggle` | toggle, hold | toggle: the motor key (keys.boatMotorToggle, set it in Options &gt; Controls) turns the motor on and off, and the boat goes ahead on its own while the pilot steers; holding back still brakes. hold: the motor pushes while the pilot holds the forward key. Either way it stops without fuel, when the pilot gets off and out of the water. Read on the server. |
+| `inflatableboat.motor.maxSpeed` | double | `0.6` | 0.05 to 2.0 | Top speed while the motor runs, in blocks per tick (0.6 = 12 blocks per second; the boat without motor uses inflatableboat.maxSpeed). Use the same value on server and clients. |
+| `inflatableboat.motor.acceleration` | double | `2.0` | 1.0 to 10.0 | How much faster than the plain boat the boat speeds up while the motor runs: 1.0 = as fast as the plain boat, 2.0 = twice as fast. Use the same value on server and clients. |
+| `inflatableboat.motor.fuelPerTick` | int | `1` | 0 to 100 | Millibuckets of fuel per tick while the motor runs, before the fuel's own multiplier (fuels.list). With the defaults a full tank of fuel lasts 5 minutes. 0 makes the motor free (it still needs some fuel in the tank). |
+| `inflatableboat.motor.fuelIntervalTicks` | int | `10` | 1 to 200 | Fuel is taken once every this many ticks of running: the cost of all those ticks at once. |
+| `inflatableboat.motor.tankCapacity` | int | `6000` | 1000 to 64000 | Capacity of the motor's fuel tank in millibuckets. Use the same value on server and clients. Lowering it drops the fuel above the new limit when a boat is loaded or placed. Needs a restart. |
+| `inflatableboat.motor.outOfWaterTicks` | int | `10` | 1 to 200 | The motor stops after the boat has been out of the water for this many ticks in a row (on land, or in the air over a wave or a drop). |
 
 ## Clockwork crossbow (`crossbow`)
 
@@ -326,7 +411,7 @@ The second mode of the crossbow: right click shoots a hook that catches a block 
 | `crossbow.grapple.hookSpeed` | double | `2.5` | 0.5 to 5.0 | Speed of the flying hook, in blocks per tick. It flies straight, without gravity. |
 | `crossbow.grapple.pullSpeed` | double | `0.8` | 0.1 to 3.0 | Speed at which the hook pulls the player, in blocks per tick (sprinting is about 0.28). |
 | `crossbow.grapple.releaseDistance` | double | `1.5` | 0.5 to 4.0 | The hook lets go when the player's body is this close to the anchor, in blocks. |
-| `crossbow.grapple.maxPullTicks` | int | `60` | 10 to 200 | Longest pull; the hook lets go after it. On a server with allow-flight=false keep it under 80, or a long upward pull can kick the player for flying. |
+| `crossbow.grapple.maxPullTicks` | int | `60` | 10 to 200 | Longest pull; the hook lets go after it (for example when the player is stuck under a ledge). On a server with allow-flight=false keep it under 80, or a long upward pull can kick the player for flying. |
 | `crossbow.grapple.cooldownTicks` | int | `20` | 0 to 200 | Wait after firing the hook before the crossbow can fire or reload again. |
 | `crossbow.grapple.chargesPerShot` | int | `1` | 0 to 24 | Bolts from the magazine a hook shot takes. 0 makes it free; more than a full magazine counts as a full magazine. |
 | `crossbow.grapple.noFallDamage` | boolean | `true` |  | The pull never causes fall damage: the fall distance is reset while pulling and when the hook lets go. A fall after letting go counts from there. |
@@ -382,7 +467,10 @@ Client only: how the mod draws things. The server ignores this section.
 | `render.tankRenderType` | int | `3` | 1 to 3 | How fluids are drawn in the tanks of the backpack window: style 1, 2 or 3. |
 | `render.tankHoverText` | boolean | `false` |  | Show the tank contents as hovering text instead of under the tanks. |
 | `render.statusOverlay` | boolean | `true` |  | Show the player's potion effects on screen. |
-| `render.wearableOverlay` | boolean | `true` |  | Show the overlays of the worn backpack, copter pack or jetpack on screen. |
+| `render.scubaBubbleTicks` | int | `10` | 1 to 200 | Ticks between two puffs of bubbles from the mask of a player breathing from the Scuba Gear. |
+| `render.flamethrowerParticles` | int | `6` | 0 to 30 | Flame particles drawn along the cone for each burst of a Flamethrower (smoke comes with every second burst). 0 draws none. |
+| `render.wearableOverlay` | boolean | `true` |  | Show the overlays of the worn backpack, copter pack or jetpack on screen, and the fuel tank of the motorized boat the player rides. |
+| `render.boatSmokeTicks` | int | `8` | 0 to 200 | The running motor of the motorized boat puffs smoke once every this many ticks. 0 = no smoke. |
 
 ## Keys (`keys`)
 
@@ -390,10 +478,11 @@ Client only. Default keys, as LWJGL key codes (B is 48, N is 49; see the LWJGL K
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `keys.openBackpack` | int | `48` | 0 to 255 | Default key that opens the worn backpack, copter pack or jetpack (48 is B). Once you change the key in Options > Controls, Minecraft keeps your choice. Needs a restart. |
-| `keys.toggle` | int | `49` | 0 to 255 | Default key that switches the hose tank and toggles the copter pack or jetpack (49 is N). Sneak + this key turns the copter pack or jetpack on and off. Needs a restart. |
+| `keys.openBackpack` | int | `48` | 0 to 255 | Default key that opens the worn backpack, copter pack or jetpack (48 = B). Needs a restart. |
+| `keys.toggle` | int | `49` | 0 to 255 | Default key that switches the hose tank and drives the worn copter pack or jetpack (49 = N). With the copter pack, the key changes its mode (normal or hover) and Sneak + the key turns it on or off; with the jetpack, Sneak + the key turns it on or off; Sneak + N lights the Flamethrower Pack. Needs a restart. |
 | `keys.crossbowMode` | int | `47` | 0 to 255 | Default key that changes the firing mode of the held Clockwork Crossbow (47 = V). Needs a restart. |
 | `keys.toggleAbilities` | int | `0` | 0 to 255 | Default key that turns the abilities of the worn backpack off and on, for this player only (night vision, water breathing, fire resistance, milk...). 0 = not bound: pick one in Options > Controls. Needs a restart. |
+| `keys.boatMotorToggle` | int | `0` | 0 to 255 | Default key that turns the motor of the Motorized Inflatable Boat on and off while riding it (inflatableboat.motor.mode toggle). 0 = not bound: pick one in Options &gt; Controls. Needs a restart. |
 
 ## Tool swapping keys (`keys.toolcycle`)
 
@@ -417,14 +506,18 @@ Client only. Swapping the held tool with the backpack's tool slots, and changing
 
 ## Extra recipes (`recipes`)
 
-The saddle recipe, and the recipes of the Inflatable Boat, which change with the mods that are loaded. The list entries of the boat are read once when the game starts, after every mod has registered its items. See [Gear](Gear#inflatable-boat).
+The saddle recipe, and the recipes that change with the mods that are loaded: the Inflatable Boat, the Fuel Station, the Flamethrower Pack and the Flamethrower. The Diving Mask and the Pyro Mask follow the rubber setting of the boat, `recipes.boat.mode` and `recipes.boat.rubber`. The list entries are read once when the game starts, after every mod has registered its items. See [Gear](Gear#inflatable-boat), [Scuba Gear](Scuba-Gear), [Flamethrower](Flamethrower) and [Fuel Station](Fuel-Station).
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `recipes.saddle` | boolean | `true` |  | Add a crafting recipe for the saddle. |
-| `recipes.boat.mode` | string | `auto` | auto, vanilla, technical | vanilla: only the vanilla recipes. auto: the vanilla recipes, plus a rubber or motor variant when a loaded mod provides rubber or an electric motor. technical: the rubber or motor variant replaces the vanilla recipe of each part a loaded mod provides; a part no loaded mod provides keeps its vanilla recipe. Needs a restart. |
+| `recipes.boat.mode` | string | `auto` |  | vanilla: only the vanilla recipes. auto: the vanilla recipes, plus a rubber or motor variant when a loaded mod provides rubber or an electric motor. technical: the rubber or motor variant replaces the vanilla recipe of each part a loaded mod provides; a part no loaded mod provides keeps its vanilla recipe. Values: auto, vanilla, technical. Needs a restart. |
 | `recipes.boat.rubber` | string list | `itemRubber, plateRubber, ingotRubber` |  | Ore Dictionary names of rubber (IC2 itemRubber, GregTech plateRubber and ingotRubber...). Each one some loaded mod provides gets its own chamber recipe (three rubber, two chambers). Needs a restart. |
 | `recipes.boat.motors` | string list | `ic2:elemotor, item:gregtech:gt.metaitem.01:32600, ore:craftingElectricMotor, stack:ThermalExpansion:powerCoilGold` |  | Electric motors for the motorized boat, each one found gets its own recipe (boat + motor + Hydro Blades). Entries: ic2:&lt;IC2 item name&gt; (IC2 API), item:&lt;modid&gt;:&lt;item name&gt;[:&lt;damage&gt;], ore:&lt;Ore Dictionary name&gt;, stack:&lt;modid&gt;:&lt;registered stack name&gt;. Needs a restart. |
+| `recipes.fuelstation.mode` | string | `auto` |  | vanilla: only the iron ingot recipe. auto: the iron ingot recipe, plus one with plates for each plate a loaded mod provides. technical: the plate recipes replace the iron ingot one when a loaded mod provides a plate; without plates the iron ingot recipe stays. Values: auto, vanilla, technical. Needs a restart. |
+| `recipes.fuelstation.plates` | string list | `plateSteel, plateIron` |  | Ore Dictionary names of the metal plates for the technical recipe (GregTech, IC2, Thermal Foundation, Railcraft plateSteel and plateIron...). Each one some loaded mod provides gets its own recipe. Needs a restart. |
+| `recipes.flamethrower.mode` | string | `auto` |  | vanilla: only the iron ingot recipes. auto: the iron ingot recipes, plus ones with plates for each plate a loaded mod provides. technical: the plate recipes replace the iron ingot ones when a loaded mod provides a plate; without plates the iron ingot recipes stay. Values: auto, vanilla, technical. Needs a restart. |
+| `recipes.flamethrower.plates` | string list | `plateSteel, plateIron` |  | Ore Dictionary names of the metal plates for the technical recipes of the pack and the nozzle (GregTech, IC2, Thermal Foundation, Railcraft plateSteel and plateIron...). Each one some loaded mod provides gets its own recipe. Needs a restart. |
 
 ## Small tweaks (`tweaks`)
 
@@ -450,7 +543,7 @@ Acts only when OpenBlocks or GraveStone is loaded.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `compat.graves.enabled` | boolean | `true` |  | Send the worn backpack, copter pack or jetpack to the grave of OpenBlocks or GraveStone when one of them is loaded. When false, `backpack.placeOnDeath` decides as if no grave mod were there. |
+| `compat.graves.enabled` | boolean | `true` |  | Send the worn wearable to the grave of OpenBlocks or GraveStone when one of them is loaded. When false, backpack.placeOnDeath decides as if no grave mod were there. |
 
 ## Baubles (`compat.baubles`)
 
@@ -502,13 +595,15 @@ Flying costs more in 1.0.0. These are the earlier values, for a pack that wants 
 | `SaddleRecipe` | `recipes.saddle` |
 | `FixVanillaLead` | `tweaks.fixVanillaLead` |
 
+The copter pack list `copterpack.fuels` is now `fuels.list`, for every fuel user. The first time the game starts with the new version the value moves: a list you never changed becomes the new default, which adds `biomass=1.5`, and a list you changed is kept as it was.
+
 The old single-shot crossbow keys `crossbow.arrowVelocity` and `crossbow.arrowDamage` are removed from the file and not moved. Use `crossbow.boltVelocity` and `crossbow.boltDamage`. `crossbow.reloadTicks` now means the time to load a cartridge.
 
 The section `crossbow.elemental` of 1.0.0 (`enabled`, `freezingTicks`, `freezingAmplifier`, `poisonTicks`, `poisonAmplifier`, `stunningTicks`, `stunningAmplifier`) is removed from the file and not moved: the elemental bolts no longer exist. Cartridges and loaded crossbows from 1.0.0 that held them load as normal ones.
 
 ## Not in the file
 
-These are fixed on purpose: how much a backpack holds and how its slots are laid out (changing it would break saved backpacks), the boiler heat curve of the jetpack beyond its boiling point, the physics of the Inflatable Boat other than its top speed, the push strength of the copter rotor, the death placement search (12 blocks around, 6 up and down) and the reach of the sleeping bag button (8 blocks).
+These are fixed on purpose: how much a backpack holds and how its slots are laid out (changing it would break saved backpacks), the boiler heat curve of the jetpack beyond its boiling point, the physics of the Inflatable Boat other than its top speed and its motor, the push strength of the copter rotor, the death placement search (12 blocks around, 6 up and down) and the reach of the sleeping bag button (8 blocks).
 
 ## See also
 

@@ -11,17 +11,21 @@ The backpack goes on your back, not in an armor slot. Press B and you get 39 sto
 - **76 backpacks.** Black wool, cactus, a Creeper head, a Dragon Egg: surround a Standard backpack with the right items and you get a new look, and for 20 of them an ability. The Bat sees in the dark, the Pigman resists fire, the Cow makes milk from wheat, the Chicken lays eggs, the Wolf calms angry wolves, the Spider tames spiders you can ride, the Blaze sets what you punch on fire, the Rainbow runs fast, with a song, after a golden apple.
 - **Fluids.** Two tanks of 4000 mB per backpack, and a hose to suck, spill and drink. Milk clears your effects, melon juice speeds up your mining, mushroom stew feeds you.
 - **Clockwork Crossbow.** A repeating crossbow with a six bolt magazine: hold right click to empty it, and reload from Bolt Cartridges. A key switches it to a grappling hook that pulls you to a block, or to a sniper mode with a bipod and a zoom.
-- **Steam Jetpack and Copter Pack.** The jetpack boils water with a furnace fuel and thrusts you up. The copter pack burns BuildCraft fuel to glide, climb and hover. Flying costs: a full tank gives a minute or two.
+- **Steam Jetpack and Copter Pack.** The jetpack boils water with a furnace fuel and thrusts you up. The copter pack burns liquid fuel to glide, climb and hover. Flying costs: a full tank gives a minute or two.
+- **Scuba Gear.** Two air tanks and a diving mask on your back keep your air bar full under water for ten minutes. An Air Compressor fills them, with a hand pump or any furnace fuel.
+- **Flamethrower.** A pack with two fuel tanks and a nozzle in your hand that throws flame in a cone, six blocks long.
+- **Fuel Station.** A block with a 16000 mB tank that fills the flamethrower, the Copter Pack and the motor of the Motorized Inflatable Boat.
 - **Camp.** Deploy a sleeping bag from a placed backpack, or lay it on the ground on its own, put a campfire next to it, and you respawn there. Cook raw food on the campfire.
-- **Gear.** Piston Boots, a Machete, an Adventurer's Fedora and a craftable Inflatable Boat.
+- **Gear.** Piston Boots, a Machete, an Adventurer's Fedora and a craftable Inflatable Boat, with an outboard motor in its motorized version.
 
 ## Compatibility
 
 Everything below is optional.
 
-- **BuildCraft:** the Copter Pack works only with it, and uses its fuel.
+- **BuildCraft, Forestry, Railcraft, Thermal Foundation and GregTech:** their liquid fuels run the Copter Pack, the Flamethrower, the boat motor and the Fuel Station, and any other mod's fuel can be added in the config. Without one of them those have no recipe.
+- **GregTech, Galacticraft, Mekanism and IndustrialCraft 2:** their air, oxygen and Compressed Air Cells fill the Scuba Gear. Without them the mod adds its own air.
 - **Railcraft:** steam for the jetpack, and a better recipe. Without a steam mod the backpack adds its own.
-- **IndustrialCraft 2, GregTech and Thermal Expansion:** rubber and electric motors give extra recipes for the Inflatable Boat.
+- **IndustrialCraft 2, GregTech and Thermal Expansion:** rubber, metal plates and electric motors give extra recipes for the Inflatable Boat, the masks, the Fuel Station and the Flamethrower.
 - **Baubles and Baubles Expanded:** wear the backpack in a bauble slot. Baubles Expanded gets a Back slot.
 - **OpenBlocks and GraveStone:** the backpack goes into your grave when you die.
 - **Smart Moving:** a setting hides the worn backpack when it clashes.
@@ -39,9 +43,13 @@ The current version is 1.0.0. Install it on the server and on every client.
 The [wiki](https://github.com/Darkona/AdventureBackpack2/wiki) has a page for each part of the mod:
 
 - [Backpacks](https://github.com/Darkona/AdventureBackpack2/wiki/Backpacks): every type, its ability and how to get it
-- [Fluids and Hose](https://github.com/Darkona/AdventureBackpack2/wiki/Fluids-and-Hose)
+- [Fluids and Hose](https://github.com/Darkona/AdventureBackpack2/wiki/Fluids-and-Hose): tanks, the hose, air and the fuel list
 - [Crossbow](https://github.com/Darkona/AdventureBackpack2/wiki/Crossbow)
 - [Jetpack and Copter Pack](https://github.com/Darkona/AdventureBackpack2/wiki/Jetpack-and-Copter-Pack)
+- [Scuba Gear](https://github.com/Darkona/AdventureBackpack2/wiki/Scuba-Gear): the dive equipment and the Air Compressor
+- [Flamethrower](https://github.com/Darkona/AdventureBackpack2/wiki/Flamethrower)
+- [Fuel Station](https://github.com/Darkona/AdventureBackpack2/wiki/Fuel-Station)
+- [Gear](https://github.com/Darkona/AdventureBackpack2/wiki/Gear): boots, machete, fedora, campfire, sleeping bag and the boat with its motor
 - [Controls](https://github.com/Darkona/AdventureBackpack2/wiki/Controls)
 - [Configuration](https://github.com/Darkona/AdventureBackpack2/wiki/Configuration): every setting, for modpack makers and servers
 - [Compatibility](https://github.com/Darkona/AdventureBackpack2/wiki/Compatibility)
