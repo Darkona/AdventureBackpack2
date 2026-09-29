@@ -214,7 +214,8 @@ public class GuiOverlay extends Gui
         try
         {
             mc.renderEngine.bindTexture(OVERLAY_TEXTURE);
-            drawTexturedModalRect(xPos, yPos, 10, 0, textureWidth, textureHeight);
+            // the brass frame of the overlay sheet (u 20) tells the boat's tank from the worn pack's
+            drawTexturedModalRect(xPos, yPos, 20, 0, textureWidth, textureHeight);
             drawTank(boat.getDisplayFuelTank(), xPos + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
         } finally
         {
