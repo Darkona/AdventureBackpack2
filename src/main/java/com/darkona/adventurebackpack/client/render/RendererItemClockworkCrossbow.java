@@ -1,14 +1,17 @@
 package com.darkona.adventurebackpack.client.render;
 
+import com.darkona.adventurebackpack.client.GrappleClient;
 import com.darkona.adventurebackpack.client.models.ModelClockworkCrossbow;
 import com.darkona.adventurebackpack.common.CrossbowAnimation;
 import com.darkona.adventurebackpack.common.CrossbowLogic;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.item.ItemCrossbow;
 import com.darkona.adventurebackpack.util.Resources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -38,6 +41,10 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
     private final ModelClockworkCrossbow model = new ModelClockworkCrossbow();
     private final ResourceLocation texture = Resources.modelTextures("clockworkCrossbow");
     private final CrossbowRenderState state = new CrossbowRenderState();
+    /** Bipod of the local player's crossbow: where it started moving from, towards what, and when (world ticks). */
+    private float bipodFrom;
+    private boolean bipodTarget;
+    private long bipodSince = -1L;
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -64,6 +71,23 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
         float recoil = CrossbowAnimation.recoil(sinceShot);
         int capacity = ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE;
         int ammo = CrossbowLogic.clampAmmo(state.ammo, capacity);
+        int mode = ItemCrossbow.effectiveMode(state.mode);
+        EntityPlayer holder = (type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+                && data.length > 1 && data[1] instanceof EntityPlayer ? (EntityPlayer) data[1] : null;
+        float bipod = 0F;
+        boolean hookLoaded = true;
+        if (holder != null)
+        {
+            boolean deployed = mode == CrossbowLogic.MODE_SNIPER && ItemCrossbow.isBipodDeployed(holder);
+            if (holder == mc.thePlayer)
+            {
+                bipod = localBipodPose(deployed, now, partialTicks);
+                hookLoaded = !GrappleClient.hasLocalHook();
+            } else
+            {
+                bipod = deployed ? 1F : 0F;
+            }
+        }
 
         mc.renderEngine.bindTexture(texture);
         GL11.glPushMatrix();
@@ -87,12 +111,32 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                 default:
                     return;
             }
-            model.render(MODEL_SCALE, ammo, capacity, sinceShot, reload);
+            model.render(MODEL_SCALE, ammo, capacity, sinceShot, reload, mode, bipod, hookLoaded);
         } finally
         {
             GL11.glColor4f(1F, 1F, 1F, 1F);
             GL11.glPopMatrix();
         }
+    }
+
+    /**
+     * The local player's bipod folds and unfolds over {@link CrossbowAnimation#BIPOD_TICKS}: when the target changes
+     * the current pose becomes the start of the next move. Other players' bipods snap (one field set per renderer).
+     */
+    private float localBipodPose(boolean deployed, long now, float pt)
+    {
+        if (bipodSince < 0L)
+        {
+            bipodFrom = deployed ? 1F : 0F;
+            bipodTarget = deployed;
+            bipodSince = now;
+        } else if (deployed != bipodTarget)
+        {
+            bipodFrom = CrossbowAnimation.bipodPose(bipodFrom, bipodTarget, now - bipodSince + pt);
+            bipodTarget = deployed;
+            bipodSince = now;
+        }
+        return CrossbowAnimation.bipodPose(bipodFrom, bipodTarget, now - bipodSince + pt);
     }
 
     /**

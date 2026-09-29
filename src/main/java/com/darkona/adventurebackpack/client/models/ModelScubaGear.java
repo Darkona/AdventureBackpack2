@@ -5,10 +5,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 
 /**
- * Placeholder model of the Scuba Gear (the art pass replaces the boxes and UVs): two air tanks with valves on a back
- * plate, hung from an empty anchor that copies the body's rotation, and the diving mask hung from an anchor that
- * copies the head's rotation, so the mask follows the look (RendererWearableEquipped passes the head angles).
- * Texture: models/scubaGear.png, 64x64 (tanks in the top half, mask in the bottom half).
+ * The Scuba Gear: two polished steel air tanks with a yellow band, brass manifold and valves, strapped to a
+ * back plate by a leather harness; the air hose climbs over the right shoulder to the regulator of the diving mask
+ * (rubber strap, glass visor), which is drawn on the head.
+ * <p>
+ * Geometry, UV layout and texture (models/scubaGear.png, 64x64) are generated together by
+ * {@code notes/art-1.1/wearables.py}; the constructor body is its output. The parts hang from two empty anchors:
+ * {@code back} copies the body's rotation and {@code face} the head's (RendererWearableEquipped passes the head
+ * angles), so the mask follows the look. Nothing is allocated or read per frame (performance contract, tier 4).
  */
 public class ModelScubaGear extends ModelWearable
 {
@@ -19,35 +23,80 @@ public class ModelScubaGear extends ModelWearable
     {
         textureWidth = 64;
         textureHeight = 64;
-
         back = new ModelRenderer(this, 0, 0);
         face = new ModelRenderer(this, 0, 0);
-
-        ModelRenderer plate = new ModelRenderer(this, 0, 13);
-        plate.addBox(-4.0F, 1.0F, 2.0F, 8, 6, 1);
-        ModelRenderer tankLeft = new ModelRenderer(this, 0, 0);
-        tankLeft.addBox(-3.5F, 1.0F, 3.0F, 3, 10, 3);
-        ModelRenderer tankRight = new ModelRenderer(this, 12, 0);
-        tankRight.addBox(0.5F, 1.0F, 3.0F, 3, 10, 3);
-        ModelRenderer valveLeft = new ModelRenderer(this, 24, 0);
-        valveLeft.addBox(-2.5F, 0.0F, 4.0F, 1, 1, 1);
-        ModelRenderer valveRight = new ModelRenderer(this, 24, 2);
-        valveRight.addBox(1.5F, 0.0F, 4.0F, 1, 1, 1);
-        back.addChild(plate);
-        back.addChild(tankLeft);
-        back.addChild(tankRight);
-        back.addChild(valveLeft);
-        back.addChild(valveRight);
-
-        ModelRenderer visor = new ModelRenderer(this, 0, 32);
-        visor.addBox(-4.0F, -6.0F, -5.0F, 8, 4, 1, 0.1F);
-        ModelRenderer strap = new ModelRenderer(this, 0, 38);
-        strap.addBox(-4.0F, -5.5F, -4.0F, 8, 2, 8, 0.15F);
-        ModelRenderer regulator = new ModelRenderer(this, 20, 32);
-        regulator.addBox(-1.0F, -2.5F, -5.5F, 2, 2, 1);
+        ModelRenderer backPlate = new ModelRenderer(this, 12, 10);
+        backPlate.addBox(-4.0F, 0.5F, 2.0F, 8, 8, 1, 0.0F);
+        ModelRenderer strapTopL = new ModelRenderer(this, 36, 10);
+        strapTopL.addBox(-3.5F, -0.5F, -2.5F, 2, 1, 6, 0.0F);
+        ModelRenderer strapTopR = new ModelRenderer(this, 36, 10);
+        strapTopR.addBox(1.5F, -0.5F, -2.5F, 2, 1, 6, 0.0F);
+        ModelRenderer strapFrontL = new ModelRenderer(this, 30, 10);
+        strapFrontL.addBox(-3.5F, 0.5F, -2.5F, 2, 7, 1, 0.0F);
+        ModelRenderer strapFrontR = new ModelRenderer(this, 30, 10);
+        strapFrontR.addBox(1.5F, 0.5F, -2.5F, 2, 7, 1, 0.0F);
+        ModelRenderer buckle = new ModelRenderer(this, 56, 13);
+        buckle.addBox(-1.5F, 3.5F, -2.5F, 3, 1, 1, 0.0F);
+        ModelRenderer tankL = new ModelRenderer(this, 0, 0);
+        tankL.addBox(-3.5F, 0.5F, 3.0F, 3, 10, 3, 0.0F);
+        ModelRenderer tankR = new ModelRenderer(this, 0, 0);
+        tankR.addBox(0.5F, 0.5F, 3.0F, 3, 10, 3, 0.0F);
+        ModelRenderer capTopL = new ModelRenderer(this, 56, 10);
+        capTopL.addBox(-3.0F, -0.5F, 3.5F, 2, 1, 2, 0.0F);
+        ModelRenderer capTopR = new ModelRenderer(this, 56, 10);
+        capTopR.addBox(1.0F, -0.5F, 3.5F, 2, 1, 2, 0.0F);
+        ModelRenderer capBotL = new ModelRenderer(this, 56, 10);
+        capBotL.addBox(-3.0F, 10.5F, 3.5F, 2, 1, 2, 0.0F);
+        ModelRenderer capBotR = new ModelRenderer(this, 56, 10);
+        capBotR.addBox(1.0F, 10.5F, 3.5F, 2, 1, 2, 0.0F);
+        ModelRenderer bandTop = new ModelRenderer(this, 36, 17);
+        bandTop.addBox(-4.0F, 2.5F, 2.5F, 8, 1, 4, 0.0F);
+        ModelRenderer bandBot = new ModelRenderer(this, 36, 17);
+        bandBot.addBox(-4.0F, 7.5F, 2.5F, 8, 1, 4, 0.0F);
+        ModelRenderer manifold = new ModelRenderer(this, 52, 15);
+        manifold.addBox(-2.5F, -1.5F, 4.0F, 5, 1, 1, 0.0F);
+        ModelRenderer valveL = new ModelRenderer(this, 8, 13);
+        valveL.addBox(-2.5F, -2.5F, 4.0F, 1, 1, 1, 0.0F);
+        ModelRenderer valveR = new ModelRenderer(this, 8, 13);
+        valveR.addBox(1.5F, -2.5F, 4.0F, 1, 1, 1, 0.0F);
+        ModelRenderer hoseUp = new ModelRenderer(this, 52, 10);
+        hoseUp.addBox(1.5F, -5.5F, 4.5F, 1, 4, 1, 0.0F);
+        ModelRenderer visor = new ModelRenderer(this, 0, 19);
+        visor.addBox(-4.0F, -6.0F, -5.0F, 8, 4, 1, 0.2F);
+        ModelRenderer strap = new ModelRenderer(this, 12, 0);
+        strap.addBox(-4.0F, -5.5F, -4.0F, 8, 2, 8, 0.6F);
+        ModelRenderer regulator = new ModelRenderer(this, 0, 13);
+        regulator.addBox(-1.5F, -2.5F, -5.5F, 3, 2, 1, 0.0F);
+        ModelRenderer hoseSide = new ModelRenderer(this, 44, 0);
+        hoseSide.addBox(4.0F, -3.5F, -5.0F, 1, 1, 9, 0.0F);
+        ModelRenderer hoseFront = new ModelRenderer(this, 0, 16);
+        hoseFront.addBox(1.5F, -3.5F, -5.5F, 3, 1, 1, 0.0F);
+        ModelRenderer hoseBack = new ModelRenderer(this, 0, 16);
+        hoseBack.addBox(2.0F, -3.5F, 4.0F, 3, 1, 1, 0.0F);
+        back.addChild(backPlate);
+        back.addChild(strapTopL);
+        back.addChild(strapTopR);
+        back.addChild(strapFrontL);
+        back.addChild(strapFrontR);
+        back.addChild(buckle);
+        back.addChild(tankL);
+        back.addChild(tankR);
+        back.addChild(capTopL);
+        back.addChild(capTopR);
+        back.addChild(capBotL);
+        back.addChild(capBotR);
+        back.addChild(bandTop);
+        back.addChild(bandBot);
+        back.addChild(manifold);
+        back.addChild(valveL);
+        back.addChild(valveR);
+        back.addChild(hoseUp);
         face.addChild(visor);
         face.addChild(strap);
         face.addChild(regulator);
+        face.addChild(hoseSide);
+        face.addChild(hoseFront);
+        face.addChild(hoseBack);
     }
 
     @Override

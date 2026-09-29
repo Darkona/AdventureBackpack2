@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.client.models;
 
 import com.darkona.adventurebackpack.common.CrossbowAnimation;
+import com.darkona.adventurebackpack.common.CrossbowLogic;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
@@ -14,9 +15,12 @@ import org.lwjgl.opengl.GL11;
  * it, and the string on the rail. Units are sixteenths of a block, +Y up, -Z forward (muzzle), +X the shooter's
  * right; the item renderer turns this frame into each render type's frame.
  * <p>
- * Geometry, UV layout and texture are generated together by {@code notes/crossbow-art.py} (Javier's copy of the
- * script); the constructor body is its output. Only the drum, gear, key, bolts, strings and cartridge move; every
- * angle comes from {@link CrossbowAnimation} so the frame-by-frame work is arithmetic (performance contract, tier 4).
+ * Geometry, UV layout and texture are generated together by {@code notes/art-1.1/crossbow.py} (Javier's copy of the
+ * script); the constructor body is its output. 1.1 adds the grappling hook resting in the muzzle (grapple mode: it
+ * takes the place of the bolt in the firing chamber) and the bipod under the tiller (sniper mode: folded back along
+ * the tiller, or hanging down and splayed while the shooter is crouched and still). Only the drum, gear, key, bolts,
+ * strings, cartridge, hook and legs move; every angle comes from {@link CrossbowAnimation} so the frame-by-frame
+ * work is arithmetic (performance contract, tier 4).
  */
 @SideOnly(Side.CLIENT)
 public class ModelClockworkCrossbow extends ModelBase
@@ -70,6 +74,19 @@ public class ModelClockworkCrossbow extends ModelBase
     public ModelRenderer armL3;
     public ModelRenderer string;
     public ModelRenderer cartridge;
+    public ModelRenderer hook;
+    public ModelRenderer hookEye;
+    public ModelRenderer hookShank;
+    public ModelRenderer hookTooth0;
+    public ModelRenderer hookBarb0;
+    public ModelRenderer hookTooth1;
+    public ModelRenderer hookBarb1;
+    public ModelRenderer hookTooth2;
+    public ModelRenderer hookBarb2;
+    public ModelRenderer hookTooth3;
+    public ModelRenderer hookBarb3;
+    public ModelRenderer legR;
+    public ModelRenderer legL;
 
     private final ModelRenderer[] chambers = new ModelRenderer[CrossbowAnimation.CHAMBERS];
     /** Scratch for {@link CrossbowAnimation#stringTransform}: angle, axis X, axis Z, length. */
@@ -80,169 +97,196 @@ public class ModelClockworkCrossbow extends ModelBase
         this.textureWidth = 64;
         this.textureHeight = 64;
         body = new ModelRenderer(this, 0, 0);
-        body.setRotationPoint(0F, 1.5F, 0F);
-        body.addBox(-2F, -10F, -1.5F, 4, 24, 3, 0.0F);
-        setRotateAngle(body, -1.570796F, 0.0F, 0.0F);
+        body.setRotationPoint(0.0F, 1.5F, 0.0F);
+        body.addBox(-2.0F, -10.0F, -1.5F, 4, 24, 3, 0.0F);
+        setRotateAngle(body, -1.5708F, 0.0F, 0.0F);
         stock = new ModelRenderer(this, 20, 0);
-        stock.setRotationPoint(0F, 1.5F, 9F);
-        stock.addBox(-2F, 0F, -2F, 4, 10, 4, 0.0F);
-        setRotateAngle(stock, 1.780236F, 0.0F, 0.0F);
-        buttPlate = new ModelRenderer(this, 14, 46);
-        buttPlate.setRotationPoint(0F, 0F, 0F);
-        buttPlate.addBox(-2F, 10F, -2.5F, 4, 1, 5, 0.0F);
-        grip = new ModelRenderer(this, 30, 27);
-        grip.setRotationPoint(0F, 0F, 6F);
-        grip.addBox(-1.5F, -7F, -1.5F, 3, 7, 3, 0.0F);
-        setRotateAngle(grip, -0.349066F, 0.0F, 0.0F);
-        foregrip = new ModelRenderer(this, 0, 38);
-        foregrip.setRotationPoint(0F, 0F, -8F);
-        foregrip.addBox(-1.5F, -5F, -1.5F, 3, 5, 3, 0.0F);
-        setRotateAngle(foregrip, -0.174533F, 0.0F, 0.0F);
-        trigger = new ModelRenderer(this, 14, 53);
-        trigger.setRotationPoint(0F, 0F, 3.5F);
-        trigger.addBox(-0.5F, -3F, -0.5F, 1, 3, 1, 0.0F);
-        setRotateAngle(trigger, 0.349066F, 0.0F, 0.0F);
-        guard = new ModelRenderer(this, 46, 38);
-        guard.setRotationPoint(0F, 0F, 1F);
-        guard.addBox(-0.5F, -4.5F, 0F, 1, 1, 6, 0.0F);
-        guardPost = new ModelRenderer(this, 32, 46);
-        guardPost.setRotationPoint(0F, 0F, 1F);
-        guardPost.addBox(-0.5F, -4.5F, 0F, 1, 5, 1, 0.0F);
+        stock.setRotationPoint(0.0F, 1.5F, 9.0F);
+        stock.addBox(-2.0F, 0.0F, -2.0F, 4, 10, 4, 0.0F);
+        setRotateAngle(stock, 1.7802F, 0.0F, 0.0F);
+        buttPlate = new ModelRenderer(this, 0, 35);
+        buttPlate.addBox(-2.0F, 10.0F, -2.5F, 4, 1, 5, 0.0F);
+        grip = new ModelRenderer(this, 44, 12);
+        grip.setRotationPoint(0.0F, 0.0F, 6.0F);
+        grip.addBox(-1.5F, -7.0F, -1.5F, 3, 7, 3, 0.0F);
+        setRotateAngle(grip, -0.3491F, 0.0F, 0.0F);
+        foregrip = new ModelRenderer(this, 0, 27);
+        foregrip.setRotationPoint(0.0F, 0.0F, -8.0F);
+        foregrip.addBox(-1.5F, -5.0F, -1.5F, 3, 5, 3, 0.0F);
+        setRotateAngle(foregrip, -0.1745F, 0.0F, 0.0F);
+        trigger = new ModelRenderer(this, 36, 13);
+        trigger.setRotationPoint(0.0F, 0.0F, 3.5F);
+        trigger.addBox(-0.5F, -3.0F, -0.5F, 1, 3, 1, 0.0F);
+        setRotateAngle(trigger, 0.3491F, 0.0F, 0.0F);
+        guard = new ModelRenderer(this, 40, 31);
+        guard.setRotationPoint(0.0F, 0.0F, 1.0F);
+        guard.addBox(-0.5F, -4.5F, 0.0F, 1, 1, 6, 0.0F);
+        guardPost = new ModelRenderer(this, 54, 31);
+        guardPost.setRotationPoint(0.0F, 0.0F, 1.0F);
+        guardPost.addBox(-0.5F, -4.5F, 0.0F, 1, 5, 1, 0.0F);
         rail = new ModelRenderer(this, 14, 0);
-        rail.setRotationPoint(0F, 3.5F, 0F);
-        rail.addBox(-1F, -3F, -0.5F, 2, 16, 1, 0.0F);
-        setRotateAngle(rail, -1.570796F, 0.0F, 0.0F);
-        receiver = new ModelRenderer(this, 42, 27);
-        receiver.setRotationPoint(0F, 0F, 0F);
-        receiver.addBox(-2.5F, 3F, 2F, 5, 4, 5, 0.0F);
-        bracket = new ModelRenderer(this, 28, 38);
-        bracket.setRotationPoint(0F, 0F, 0F);
-        bracket.addBox(-3F, 0F, -15F, 6, 4, 3, 0.0F);
-        sight = new ModelRenderer(this, 24, 53);
-        sight.setRotationPoint(0F, 0F, 0F);
-        sight.addBox(-0.5F, 4F, -14.5F, 1, 2, 1, 0.0F);
-        yokeR = new ModelRenderer(this, 22, 38);
-        yokeR.setRotationPoint(0F, 0F, 0F);
-        yokeR.addBox(3.5F, 2F, -7F, 1, 6, 2, 0.0F);
-        yokeL = new ModelRenderer(this, 22, 38);
-        yokeL.setRotationPoint(0F, 0F, 0F);
-        yokeL.addBox(-4.5F, 2F, -7F, 1, 6, 2, 0.0F);
+        rail.setRotationPoint(0.0F, 3.5F, 0.0F);
+        rail.addBox(-1.0F, -3.0F, -0.5F, 2, 16, 1, 0.0F);
+        setRotateAngle(rail, -1.5708F, 0.0F, 0.0F);
+        receiver = new ModelRenderer(this, 44, 22);
+        receiver.addBox(-2.5F, 3.0F, 2.0F, 5, 4, 5, 0.0F);
+        bracket = new ModelRenderer(this, 22, 27);
+        bracket.addBox(-3.0F, 0.0F, -15.0F, 6, 4, 3, 0.0F);
+        sight = new ModelRenderer(this, 36, 34);
+        sight.addBox(-0.5F, 4.0F, -14.5F, 1, 2, 1, 0.0F);
+        yokeR = new ModelRenderer(this, 56, 12);
+        yokeR.addBox(3.5F, 2.0F, -7.0F, 1, 6, 2, 0.0F);
+        yokeL = new ModelRenderer(this, 56, 12);
+        yokeL.addBox(-4.5F, 2.0F, -7.0F, 1, 6, 2, 0.0F);
         gear = new ModelRenderer(this, 0, 0);
-        gear.setRotationPoint(2.5F, 5F, 4.5F);
-        gearA = new ModelRenderer(this, 12, 38);
-        gearA.setRotationPoint(0F, 0F, 0F);
-        gearA.addBox(0F, -2F, -2F, 1, 4, 4, 0.0F);
-        gearB = new ModelRenderer(this, 12, 38);
-        gearB.setRotationPoint(0F, 0F, 0F);
-        gearB.addBox(0F, -2F, -2F, 1, 4, 4, 0.0F);
-        setRotateAngle(gearB, 0.785398F, 0.0F, 0.0F);
-        gearHub = new ModelRenderer(this, 54, 53);
-        gearHub.setRotationPoint(0F, 0F, 0F);
-        gearHub.addBox(1F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+        gear.setRotationPoint(2.5F, 5.0F, 4.5F);
+        gearA = new ModelRenderer(this, 12, 27);
+        gearA.addBox(0.0F, -2.0F, -2.0F, 1, 4, 4, 0.0F);
+        gearB = new ModelRenderer(this, 12, 27);
+        gearB.addBox(0.0F, -2.0F, -2.0F, 1, 4, 4, 0.0F);
+        setRotateAngle(gearB, 0.7854F, 0.0F, 0.0F);
+        gearHub = new ModelRenderer(this, 28, 41);
+        gearHub.addBox(1.0F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
         key = new ModelRenderer(this, 0, 0);
-        key.setRotationPoint(-2.5F, 5F, 4.5F);
-        keyStem = new ModelRenderer(this, 42, 53);
-        keyStem.setRotationPoint(0F, 0F, 0F);
-        keyStem.addBox(-2F, -0.5F, -0.5F, 2, 1, 1, 0.0F);
-        keyBow = new ModelRenderer(this, 42, 46);
-        keyBow.setRotationPoint(0F, 0F, 0F);
-        keyBow.addBox(-3F, -2F, -0.5F, 1, 4, 1, 0.0F);
+        key.setRotationPoint(-2.5F, 5.0F, 4.5F);
+        keyStem = new ModelRenderer(this, 58, 36);
+        keyStem.addBox(-2.0F, -0.5F, -0.5F, 2, 1, 1, 0.0F);
+        keyBow = new ModelRenderer(this, 18, 35);
+        keyBow.addBox(-3.0F, -2.0F, -0.5F, 1, 4, 1, 0.0F);
         drum = new ModelRenderer(this, 0, 0);
-        drum.setRotationPoint(0F, 8F, -6F);
+        drum.setRotationPoint(0.0F, 8.0F, -6.0F);
         chamber0 = new ModelRenderer(this, 40, 0);
-        chamber0.setRotationPoint(0F, 0F, 0F);
-        chamber0.addBox(-1F, -3.5F, -5F, 2, 2, 10, 0.0F);
+        chamber0.addBox(-1.0F, -3.5F, -5.0F, 2, 2, 10, 0.0F);
         chamber1 = new ModelRenderer(this, 40, 0);
-        chamber1.setRotationPoint(0F, 0F, 0F);
-        chamber1.addBox(-1F, -3.5F, -5F, 2, 2, 10, 0.0F);
-        setRotateAngle(chamber1, 0.0F, 0.0F, 1.047198F);
+        chamber1.addBox(-1.0F, -3.5F, -5.0F, 2, 2, 10, 0.0F);
+        setRotateAngle(chamber1, 0.0F, 0.0F, 1.0472F);
         chamber2 = new ModelRenderer(this, 40, 0);
-        chamber2.setRotationPoint(0F, 0F, 0F);
-        chamber2.addBox(-1F, -3.5F, -5F, 2, 2, 10, 0.0F);
-        setRotateAngle(chamber2, 0.0F, 0.0F, 2.094395F);
+        chamber2.addBox(-1.0F, -3.5F, -5.0F, 2, 2, 10, 0.0F);
+        setRotateAngle(chamber2, 0.0F, 0.0F, 2.0944F);
         chamber3 = new ModelRenderer(this, 40, 0);
-        chamber3.setRotationPoint(0F, 0F, 0F);
-        chamber3.addBox(-1F, -3.5F, -5F, 2, 2, 10, 0.0F);
-        setRotateAngle(chamber3, 0.0F, 0.0F, 3.141593F);
+        chamber3.addBox(-1.0F, -3.5F, -5.0F, 2, 2, 10, 0.0F);
+        setRotateAngle(chamber3, 0.0F, 0.0F, 3.1416F);
         chamber4 = new ModelRenderer(this, 40, 0);
-        chamber4.setRotationPoint(0F, 0F, 0F);
-        chamber4.addBox(-1F, -3.5F, -5F, 2, 2, 10, 0.0F);
-        setRotateAngle(chamber4, 0.0F, 0.0F, 4.18879F);
+        chamber4.addBox(-1.0F, -3.5F, -5.0F, 2, 2, 10, 0.0F);
+        setRotateAngle(chamber4, 0.0F, 0.0F, 4.1888F);
         chamber5 = new ModelRenderer(this, 40, 0);
-        chamber5.setRotationPoint(0F, 0F, 0F);
-        chamber5.addBox(-1F, -3.5F, -5F, 2, 2, 10, 0.0F);
-        setRotateAngle(chamber5, 0.0F, 0.0F, 5.235988F);
-        plateF0 = new ModelRenderer(this, 0, 46);
-        plateF0.setRotationPoint(0F, 0F, -5.5F);
-        plateF0.addBox(-3F, -3F, -0.5F, 6, 6, 1, 0.0F);
-        plateB0 = new ModelRenderer(this, 0, 46);
-        plateB0.setRotationPoint(0F, 0F, 5.5F);
-        plateB0.addBox(-3F, -3F, -0.5F, 6, 6, 1, 0.0F);
-        plateF1 = new ModelRenderer(this, 0, 46);
-        plateF1.setRotationPoint(0F, 0F, -5.5F);
-        plateF1.addBox(-3F, -3F, -0.5F, 6, 6, 1, 0.0F);
-        setRotateAngle(plateF1, 0.0F, 0.0F, 0.523599F);
-        plateB1 = new ModelRenderer(this, 0, 46);
-        plateB1.setRotationPoint(0F, 0F, 5.5F);
-        plateB1.addBox(-3F, -3F, -0.5F, 6, 6, 1, 0.0F);
-        setRotateAngle(plateB1, 0.0F, 0.0F, 0.523599F);
-        plateF2 = new ModelRenderer(this, 0, 46);
-        plateF2.setRotationPoint(0F, 0F, -5.5F);
-        plateF2.addBox(-3F, -3F, -0.5F, 6, 6, 1, 0.0F);
-        setRotateAngle(plateF2, 0.0F, 0.0F, 1.047198F);
-        plateB2 = new ModelRenderer(this, 0, 46);
-        plateB2.setRotationPoint(0F, 0F, 5.5F);
-        plateB2.addBox(-3F, -3F, -0.5F, 6, 6, 1, 0.0F);
-        setRotateAngle(plateB2, 0.0F, 0.0F, 1.047198F);
-        spindle = new ModelRenderer(this, 18, 53);
-        spindle.setRotationPoint(0F, 0F, 0F);
+        chamber5.addBox(-1.0F, -3.5F, -5.0F, 2, 2, 10, 0.0F);
+        setRotateAngle(chamber5, 0.0F, 0.0F, 5.236F);
+        plateF0 = new ModelRenderer(this, 22, 34);
+        plateF0.setRotationPoint(0.0F, 0.0F, -5.5F);
+        plateF0.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        plateB0 = new ModelRenderer(this, 22, 34);
+        plateB0.setRotationPoint(0.0F, 0.0F, 5.5F);
+        plateB0.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        plateF1 = new ModelRenderer(this, 22, 34);
+        plateF1.setRotationPoint(0.0F, 0.0F, -5.5F);
+        plateF1.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        setRotateAngle(plateF1, 0.0F, 0.0F, 0.5236F);
+        plateB1 = new ModelRenderer(this, 22, 34);
+        plateB1.setRotationPoint(0.0F, 0.0F, 5.5F);
+        plateB1.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        setRotateAngle(plateB1, 0.0F, 0.0F, 0.5236F);
+        plateF2 = new ModelRenderer(this, 22, 34);
+        plateF2.setRotationPoint(0.0F, 0.0F, -5.5F);
+        plateF2.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        setRotateAngle(plateF2, 0.0F, 0.0F, 1.0472F);
+        plateB2 = new ModelRenderer(this, 22, 34);
+        plateB2.setRotationPoint(0.0F, 0.0F, 5.5F);
+        plateB2.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        setRotateAngle(plateB2, 0.0F, 0.0F, 1.0472F);
+        spindle = new ModelRenderer(this, 22, 41);
         spindle.addBox(-0.5F, -0.5F, -7.5F, 1, 1, 2, 0.0F);
         bolt = new ModelRenderer(this, 36, 0);
-        bolt.setRotationPoint(0F, -2.5F, 0F);
+        bolt.setRotationPoint(0.0F, -2.5F, 0.0F);
         bolt.addBox(-0.5F, -5.5F, -0.5F, 1, 12, 1, 0.0F);
-        setRotateAngle(bolt, -1.570796F, 0.0F, 0.0F);
-        boltTip = new ModelRenderer(this, 28, 53);
-        boltTip.setRotationPoint(0F, -2.5F, 0F);
+        setRotateAngle(bolt, -1.5708F, 0.0F, 0.0F);
+        boltTip = new ModelRenderer(this, 32, 14);
+        boltTip.setRotationPoint(0.0F, -2.5F, 0.0F);
         boltTip.addBox(-0.5F, 6.5F, -0.5F, 1, 2, 1, 0.0F);
-        setRotateAngle(boltTip, -1.570796F, 0.0F, 0.0F);
-        fletchV = new ModelRenderer(this, 36, 46);
-        fletchV.setRotationPoint(0F, -2.5F, 0F);
-        fletchV.addBox(0F, -7F, -1.5F, 0, 2, 3, 0.0F);
-        setRotateAngle(fletchV, -1.570796F, 0.0F, 0.0F);
-        fletchH = new ModelRenderer(this, 48, 53);
-        fletchH.setRotationPoint(0F, -2.5F, 0F);
-        fletchH.addBox(-1.5F, -7F, 0F, 3, 2, 0, 0.0F);
-        setRotateAngle(fletchH, -1.570796F, 0.0F, 0.0F);
-        armR1 = new ModelRenderer(this, 46, 46);
-        armR1.setRotationPoint(2F, 1.5F, -12.5F);
-        armR1.addBox(0F, -1F, -1F, 6, 2, 2, 0.0F);
-        setRotateAngle(armR1, 0.0F, -0.261799F, 0.0F);
-        armR2 = new ModelRenderer(this, 0, 53);
-        armR2.setRotationPoint(6F, 0F, 0F);
-        armR2.addBox(0F, -1F, -1F, 5, 2, 2, 0.0F);
-        setRotateAngle(armR2, 0.0F, -0.349066F, 0.0F);
-        armR3 = new ModelRenderer(this, 32, 53);
-        armR3.setRotationPoint(5F, 0F, 0F);
-        armR3.addBox(0F, -0.5F, -0.5F, 4, 1, 1, 0.0F);
-        setRotateAngle(armR3, 0.0F, -0.349066F, 0.0F);
-        armL1 = new ModelRenderer(this, 46, 46);
-        armL1.setRotationPoint(-2F, 1.5F, -12.5F);
-        armL1.addBox(-6F, -1F, -1F, 6, 2, 2, 0.0F);
-        setRotateAngle(armL1, 0.0F, 0.261799F, 0.0F);
-        armL2 = new ModelRenderer(this, 0, 53);
-        armL2.setRotationPoint(-6F, 0F, 0F);
-        armL2.addBox(-5F, -1F, -1F, 5, 2, 2, 0.0F);
-        setRotateAngle(armL2, 0.0F, 0.349066F, 0.0F);
-        armL3 = new ModelRenderer(this, 32, 53);
-        armL3.setRotationPoint(-5F, 0F, 0F);
-        armL3.addBox(-4F, -0.5F, -0.5F, 4, 1, 1, 0.0F);
-        setRotateAngle(armL3, 0.0F, 0.349066F, 0.0F);
-        string = new ModelRenderer(this, 0, 27);
-        string.setRotationPoint(0F, 0F, 0F);
-        string.addBox(-0.5F, 0F, -0.5F, 1, 10, 1, 0.0F);
-        cartridge = new ModelRenderer(this, 4, 27);
-        cartridge.setRotationPoint(0F, 12F, -6F);
-        cartridge.addBox(-2.5F, -1F, -4F, 5, 2, 8, 0.0F);
+        setRotateAngle(boltTip, -1.5708F, 0.0F, 0.0F);
+        fletchV = new ModelRenderer(this, 58, 31);
+        fletchV.setRotationPoint(0.0F, -2.5F, 0.0F);
+        fletchV.addBox(0.0F, -7.0F, -1.5F, 0, 2, 3, 0.0F);
+        setRotateAngle(fletchV, -1.5708F, 0.0F, 0.0F);
+        fletchH = new ModelRenderer(this, 56, 20);
+        fletchH.setRotationPoint(0.0F, -2.5F, 0.0F);
+        fletchH.addBox(-1.5F, -7.0F, 0.0F, 3, 2, 0, 0.0F);
+        setRotateAngle(fletchH, -1.5708F, 0.0F, 0.0F);
+        armR1 = new ModelRenderer(this, 48, 38);
+        armR1.setRotationPoint(2.0F, 1.5F, -12.5F);
+        armR1.addBox(0.0F, -1.0F, -1.0F, 6, 2, 2, 0.0F);
+        setRotateAngle(armR1, 0.0F, -0.2618F, 0.0F);
+        armR2 = new ModelRenderer(this, 0, 41);
+        armR2.setRotationPoint(6.0F, 0.0F, 0.0F);
+        armR2.addBox(0.0F, -1.0F, -1.0F, 5, 2, 2, 0.0F);
+        setRotateAngle(armR2, 0.0F, -0.3491F, 0.0F);
+        armR3 = new ModelRenderer(this, 48, 42);
+        armR3.setRotationPoint(5.0F, 0.0F, 0.0F);
+        armR3.addBox(0.0F, -0.5F, -0.5F, 4, 1, 1, 0.0F);
+        setRotateAngle(armR3, 0.0F, -0.3491F, 0.0F);
+        armL1 = new ModelRenderer(this, 48, 38);
+        armL1.setRotationPoint(-2.0F, 1.5F, -12.5F);
+        armL1.addBox(-6.0F, -1.0F, -1.0F, 6, 2, 2, 0.0F);
+        setRotateAngle(armL1, 0.0F, 0.2618F, 0.0F);
+        armL2 = new ModelRenderer(this, 0, 41);
+        armL2.setRotationPoint(-6.0F, 0.0F, 0.0F);
+        armL2.addBox(-5.0F, -1.0F, -1.0F, 5, 2, 2, 0.0F);
+        setRotateAngle(armL2, 0.0F, 0.3491F, 0.0F);
+        armL3 = new ModelRenderer(this, 48, 42);
+        armL3.setRotationPoint(-5.0F, 0.0F, 0.0F);
+        armL3.addBox(-4.0F, -0.5F, -0.5F, 4, 1, 1, 0.0F);
+        setRotateAngle(armL3, 0.0F, 0.3491F, 0.0F);
+        string = new ModelRenderer(this, 40, 12);
+        string.addBox(-0.5F, 0.0F, -0.5F, 1, 10, 1, 0.0F);
+        cartridge = new ModelRenderer(this, 14, 17);
+        cartridge.setRotationPoint(0.0F, 12.0F, -6.0F);
+        cartridge.addBox(-2.5F, -1.0F, -4.0F, 5, 2, 8, 0.0F);
+        hook = new ModelRenderer(this, 0, 0);
+        hook.setRotationPoint(0.0F, 5.5F, -9.0F);
+        hookEye = new ModelRenderer(this, 26, 14);
+        hookEye.addBox(-1.0F, -1.0F, -0.5F, 2, 2, 1, 0.0F);
+        hookShank = new ModelRenderer(this, 36, 38);
+        hookShank.addBox(-0.5F, -0.5F, -5.5F, 1, 1, 5, 0.0F);
+        hookTooth0 = new ModelRenderer(this, 14, 41);
+        hookTooth0.setRotationPoint(0.0F, 0.0F, -5.5F);
+        hookTooth0.addBox(-0.5F, -0.5F, -3.0F, 1, 1, 3, 0.0F);
+        setRotateAngle(hookTooth0, 0.6981F, 0.0F, 0.0F);
+        hookBarb0 = new ModelRenderer(this, 20, 14);
+        hookBarb0.setRotationPoint(0.0F, 0.0F, -3.0F);
+        hookBarb0.addBox(-0.5F, -0.5F, -2.0F, 1, 1, 2, 0.0F);
+        setRotateAngle(hookBarb0, 0.9599F, 0.0F, 0.0F);
+        hookTooth1 = new ModelRenderer(this, 14, 41);
+        hookTooth1.setRotationPoint(0.0F, 0.0F, -5.5F);
+        hookTooth1.addBox(-0.5F, -0.5F, -3.0F, 1, 1, 3, 0.0F);
+        setRotateAngle(hookTooth1, -0.6981F, 0.0F, 0.0F);
+        hookBarb1 = new ModelRenderer(this, 20, 14);
+        hookBarb1.setRotationPoint(0.0F, 0.0F, -3.0F);
+        hookBarb1.addBox(-0.5F, -0.5F, -2.0F, 1, 1, 2, 0.0F);
+        setRotateAngle(hookBarb1, -0.9599F, 0.0F, 0.0F);
+        hookTooth2 = new ModelRenderer(this, 14, 41);
+        hookTooth2.setRotationPoint(0.0F, 0.0F, -5.5F);
+        hookTooth2.addBox(-0.5F, -0.5F, -3.0F, 1, 1, 3, 0.0F);
+        setRotateAngle(hookTooth2, 0.0F, -0.6981F, 0.0F);
+        hookBarb2 = new ModelRenderer(this, 20, 14);
+        hookBarb2.setRotationPoint(0.0F, 0.0F, -3.0F);
+        hookBarb2.addBox(-0.5F, -0.5F, -2.0F, 1, 1, 2, 0.0F);
+        setRotateAngle(hookBarb2, 0.0F, -0.9599F, 0.0F);
+        hookTooth3 = new ModelRenderer(this, 14, 41);
+        hookTooth3.setRotationPoint(0.0F, 0.0F, -5.5F);
+        hookTooth3.addBox(-0.5F, -0.5F, -3.0F, 1, 1, 3, 0.0F);
+        setRotateAngle(hookTooth3, 0.0F, 0.6981F, 0.0F);
+        hookBarb3 = new ModelRenderer(this, 20, 14);
+        hookBarb3.setRotationPoint(0.0F, 0.0F, -3.0F);
+        hookBarb3.addBox(-0.5F, -0.5F, -2.0F, 1, 1, 2, 0.0F);
+        setRotateAngle(hookBarb3, 0.0F, 0.9599F, 0.0F);
+        legR = new ModelRenderer(this, 40, 23);
+        legR.setRotationPoint(2.5F, 0.5F, -11.0F);
+        legR.addBox(-0.5F, -6.0F, -0.5F, 1, 6, 1, 0.0F);
+        setRotateAngle(legR, -1.5708F, 0.0F, 0.0F);
+        legL = new ModelRenderer(this, 40, 23);
+        legL.setRotationPoint(-2.5F, 0.5F, -11.0F);
+        legL.addBox(-0.5F, -6.0F, -0.5F, 1, 6, 1, 0.0F);
+        setRotateAngle(legL, -1.5708F, 0.0F, 0.0F);
         stock.addChild(buttPlate);
         gear.addChild(gearA);
         gear.addChild(gearB);
@@ -266,6 +310,16 @@ public class ModelClockworkCrossbow extends ModelBase
         armR2.addChild(armR3);
         armL1.addChild(armL2);
         armL2.addChild(armL3);
+        hook.addChild(hookEye);
+        hook.addChild(hookShank);
+        hook.addChild(hookTooth0);
+        hookTooth0.addChild(hookBarb0);
+        hook.addChild(hookTooth1);
+        hookTooth1.addChild(hookBarb1);
+        hook.addChild(hookTooth2);
+        hookTooth2.addChild(hookBarb2);
+        hook.addChild(hookTooth3);
+        hookTooth3.addChild(hookBarb3);
         chambers[0] = chamber0;
         chambers[1] = chamber1;
         chambers[2] = chamber2;
@@ -274,11 +328,11 @@ public class ModelClockworkCrossbow extends ModelBase
         chambers[5] = chamber5;
     }
 
-    /** Static pose: full drum, cocked string. Used by nothing in the mod; kept for ModelBase callers. */
+    /** Static pose: full drum, cocked string, repeating mode. Used by nothing in the mod; kept for ModelBase callers. */
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-        render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, CrossbowAnimation.NEVER, -1F);
+        render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, CrossbowAnimation.NEVER, -1F, CrossbowLogic.MODE_REPEATING, 0F, false);
     }
 
     /**
@@ -289,13 +343,18 @@ public class ModelClockworkCrossbow extends ModelBase
      * @param capacity       bolts in a full magazine
      * @param sinceShot      ticks since the last shot with the partial tick, or {@link CrossbowAnimation#NEVER}
      * @param reloadProgress 0..1 while a reload runs, else -1
+     * @param mode           effective firing mode ({@link CrossbowLogic#MODE_REPEATING}, {@code MODE_GRAPPLE}, {@code MODE_SNIPER})
+     * @param bipodPose      0 = legs folded along the tiller, 1 = legs down (only drawn in sniper mode)
+     * @param hookLoaded     in grapple mode, whether the hook is still in the muzzle (false while it flies or hangs)
      */
-    public void render(float scale, int ammo, int capacity, float sinceShot, float reloadProgress)
+    public void render(float scale, int ammo, int capacity, float sinceShot, float reloadProgress, int mode, float bipodPose, boolean hookLoaded)
     {
         float drumDegrees = CrossbowAnimation.drumDegrees(ammo, capacity, sinceShot, reloadProgress);
         drum.rotateAngleZ = drumDegrees * DEG;
         gear.rotateAngleX = drumDegrees * 2F * DEG;
         key.rotateAngleX = -drumDegrees * 2F * DEG;
+        boolean hook = mode == CrossbowLogic.MODE_GRAPPLE && hookLoaded;
+        int hiddenChamber = hook ? CrossbowAnimation.firingChamber(ammo, capacity) : -1;
 
         body.render(scale);
         stock.render(scale);
@@ -315,10 +374,23 @@ public class ModelClockworkCrossbow extends ModelBase
         armR1.render(scale);
         armL1.render(scale);
         drum.render(scale);
+        if (hook)
+        {
+            this.hook.render(scale);
+        }
+        if (mode == CrossbowLogic.MODE_SNIPER)
+        {
+            legR.rotateAngleX = CrossbowAnimation.legAngleX(bipodPose) * DEG;
+            legL.rotateAngleX = legR.rotateAngleX;
+            legR.rotateAngleZ = CrossbowAnimation.legAngleZ(bipodPose, true) * DEG;
+            legL.rotateAngleZ = CrossbowAnimation.legAngleZ(bipodPose, false) * DEG;
+            legR.render(scale);
+            legL.render(scale);
+        }
 
         if (CrossbowAnimation.boltsVisible(reloadProgress))
         {
-            renderBolts(scale, ammo, capacity);
+            renderBolts(scale, ammo, capacity, hiddenChamber);
         }
 
         float nockZ = CrossbowAnimation.stringZ(sinceShot);
@@ -339,8 +411,11 @@ public class ModelClockworkCrossbow extends ModelBase
         }
     }
 
-    /** One bolt per loaded chamber, drawn inside the drum and chamber transforms; the fletching is tinted. */
-    private void renderBolts(float scale, int ammo, int capacity)
+    /**
+     * One bolt per loaded chamber, drawn inside the drum and chamber transforms; the fletching is tinted. The
+     * chamber {@code hiddenChamber} (the firing one while the hook sits in the muzzle) shows no bolt.
+     */
+    private void renderBolts(float scale, int ammo, int capacity, int hiddenChamber)
     {
         int color = CrossbowAnimation.FLETCH_COLOR;
         float red = (color >> 16 & 0xFF) / 255F;
@@ -348,7 +423,7 @@ public class ModelClockworkCrossbow extends ModelBase
         float blue = (color & 0xFF) / 255F;
         for (int chamber = 0; chamber < CrossbowAnimation.CHAMBERS; chamber++)
         {
-            if (!CrossbowAnimation.chamberLoaded(chamber, ammo, capacity)) continue;
+            if (chamber == hiddenChamber || !CrossbowAnimation.chamberLoaded(chamber, ammo, capacity)) continue;
             GL11.glPushMatrix();
             try
             {

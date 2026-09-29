@@ -48,11 +48,10 @@ public class BlockAirCompressor extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register)
     {
-        // placeholders from vanilla until the mod's own textures exist
-        front = register.registerIcon("furnace_front_off");
-        side = register.registerIcon("furnace_side");
-        top = register.registerIcon("piston_top_normal");
-        bottom = register.registerIcon("furnace_top");
+        front = register.registerIcon(ModInfo.MOD_ID + ":airCompressor_front");
+        side = register.registerIcon(ModInfo.MOD_ID + ":airCompressor_side");
+        top = register.registerIcon(ModInfo.MOD_ID + ":airCompressor_top");
+        bottom = top;
         Icons.airStill = register.registerIcon(ModInfo.MOD_ID + ":fluid.air");
     }
 

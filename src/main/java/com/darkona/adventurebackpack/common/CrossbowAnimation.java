@@ -82,6 +82,48 @@ public final class CrossbowAnimation
         return index < visible;
     }
 
+    /** The chamber in the firing position: in grapple mode the hook in the muzzle takes the place of its bolt. */
+    public static int firingChamber(int ammo, int capacity)
+    {
+        return shotsFired(ammo, capacity) % CHAMBERS;
+    }
+
+    /** Bipod hinge: folded (pose 0) the legs lie back along the tiller, this many degrees around X. */
+    public static final float LEG_FOLDED_X = -90F;
+    /** Bipod hinge: deployed (pose 1) each leg splays this many degrees outward around Z. */
+    public static final float LEG_SPLAY = 15F;
+    /** Ticks a bipod takes to fold or unfold. */
+    public static final float BIPOD_TICKS = 6F;
+
+    /** Angle around X of both legs for a pose in 0..1 (0 folded, 1 down). */
+    public static float legAngleX(float pose)
+    {
+        return LEG_FOLDED_X * (1F - clamp01(pose));
+    }
+
+    /** Angle around Z of one leg for a pose in 0..1: the right leg opens to +X, the left one to -X. */
+    public static float legAngleZ(float pose, boolean right)
+    {
+        return (right ? LEG_SPLAY : -LEG_SPLAY) * clamp01(pose);
+    }
+
+    /**
+     * Pose of the bipod {@code elapsed} ticks after it started moving from {@code from} towards down
+     * ({@code deployed}) or folded: linear over {@link #BIPOD_TICKS}, then held at the target.
+     */
+    public static float bipodPose(float from, boolean deployed, float elapsed)
+    {
+        float target = deployed ? 1F : 0F;
+        if (elapsed <= 0F) return clamp01(from);
+        if (elapsed >= BIPOD_TICKS) return target;
+        return clamp01(from) + (target - clamp01(from)) * (elapsed / BIPOD_TICKS);
+    }
+
+    private static float clamp01(float value)
+    {
+        return value < 0F ? 0F : (value > 1F ? 1F : value);
+    }
+
     /** Bolts fired from the current magazine, never negative. */
     public static int shotsFired(int ammo, int capacity)
     {
