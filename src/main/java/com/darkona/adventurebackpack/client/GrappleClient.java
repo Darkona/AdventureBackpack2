@@ -38,6 +38,18 @@ public final class GrappleClient
         owner.fallDistance = 0F;
     }
 
+    /** A hook of the local player exists in the client world (flying or hooked): the crossbow's muzzle is empty. */
+    public static boolean hasLocalHook()
+    {
+        return localHookId >= 0;
+    }
+
+    /** Called by a grapple on the client while it flies; remembers it when it belongs to the local player. */
+    public static void track(EntityGrapple hook, EntityPlayer owner)
+    {
+        if (owner == Minecraft.getMinecraft().thePlayer) localHookId = hook.getEntityId();
+    }
+
     /** The hook left the client world. */
     public static void forget(EntityGrapple hook)
     {

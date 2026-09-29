@@ -139,4 +139,36 @@ class CrossbowAnimationTest {
         CrossbowAnimation.stringTransform(CrossbowAnimation.TIP_X, CrossbowAnimation.TIP_Y, CrossbowAnimation.TIP_Z, 0, CrossbowAnimation.STRING_Y, CrossbowAnimation.STRING_Z_COCKED, out);
         assertTrue(out[3] > CrossbowAnimation.TIP_X && out[3] < CrossbowAnimation.TIP_X + 3F);
     }
+
+    @Test
+    void firingChamberFollowsTheShots() {
+        assertEquals(0, CrossbowAnimation.firingChamber(6, CAP));
+        assertEquals(1, CrossbowAnimation.firingChamber(5, CAP));
+        assertEquals(5, CrossbowAnimation.firingChamber(1, CAP));
+        assertEquals(0, CrossbowAnimation.firingChamber(0, CAP));
+        assertEquals(0, CrossbowAnimation.firingChamber(9, CAP));
+    }
+
+    @Test
+    void bipodLegsLieBackWhenFoldedAndHangSplayedWhenDown() {
+        assertEquals(CrossbowAnimation.LEG_FOLDED_X, CrossbowAnimation.legAngleX(0F), EPS);
+        assertEquals(0F, CrossbowAnimation.legAngleX(1F), EPS);
+        assertEquals(CrossbowAnimation.LEG_FOLDED_X / 2F, CrossbowAnimation.legAngleX(0.5F), EPS);
+        assertEquals(0F, CrossbowAnimation.legAngleZ(0F, true), EPS);
+        assertEquals(CrossbowAnimation.LEG_SPLAY, CrossbowAnimation.legAngleZ(1F, true), EPS);
+        assertEquals(-CrossbowAnimation.LEG_SPLAY, CrossbowAnimation.legAngleZ(1F, false), EPS);
+        assertEquals(0F, CrossbowAnimation.legAngleX(2F), EPS);
+        assertEquals(CrossbowAnimation.LEG_FOLDED_X, CrossbowAnimation.legAngleX(-1F), EPS);
+    }
+
+    @Test
+    void bipodPoseMovesLinearlyToItsTargetAndHolds() {
+        assertEquals(0F, CrossbowAnimation.bipodPose(0F, true, 0F), EPS);
+        assertEquals(0.5F, CrossbowAnimation.bipodPose(0F, true, CrossbowAnimation.BIPOD_TICKS / 2F), EPS);
+        assertEquals(1F, CrossbowAnimation.bipodPose(0F, true, CrossbowAnimation.BIPOD_TICKS), EPS);
+        assertEquals(1F, CrossbowAnimation.bipodPose(0F, true, 1000F), EPS);
+        assertEquals(0.75F, CrossbowAnimation.bipodPose(1F, false, CrossbowAnimation.BIPOD_TICKS / 4F), EPS);
+        assertEquals(0F, CrossbowAnimation.bipodPose(0.3F, false, CrossbowAnimation.BIPOD_TICKS), EPS);
+        assertEquals(0.3F, CrossbowAnimation.bipodPose(0.3F, false, -5F), EPS);
+    }
 }

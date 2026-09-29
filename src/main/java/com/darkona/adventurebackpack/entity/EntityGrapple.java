@@ -242,6 +242,7 @@ public class EntityGrapple extends Entity implements IEntityAdditionalSpawnData
         } else
         {
             setPosition(posX + motionX, posY + motionY, posZ + motionZ);
+            if (owner != null) GrappleClient.track(this, owner);
         }
     }
 
