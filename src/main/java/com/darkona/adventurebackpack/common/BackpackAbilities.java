@@ -652,7 +652,7 @@ public class BackpackAbilities
      */
     public static void blazePunch(EntityPlayer player, Entity target)
     {
-        if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.BLAZE_ENABLED || ConfigHandler.BLAZE_PUNCH_FIRE_SECONDS <= 0) return;
+        if (!ConfigHandler.BLAZE_ENABLED || ConfigHandler.BLAZE_PUNCH_FIRE_SECONDS <= 0 || !AbilityToggle.isActive(player)) return;
         if (target == null || target.isImmuneToFire()) return;
         ItemStack held = player.getCurrentEquippedItem();
         boolean empty = held == null || held.getItem() == null;
