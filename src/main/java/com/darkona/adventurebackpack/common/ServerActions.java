@@ -80,10 +80,6 @@ public class ServerActions
     }
 
     /**
-     * Server: the player pressed the abilities key (#57). Flips the player's switch unless enabled.abilities is off,
-     * takes the worn backpack's own effects away when it goes off, and syncs the flag (one packet per change).
-     */
-    /**
      * Sneak + the toggle key with the Flamethrower Pack worn (WearableModePacket.FLAMETHROWER_ON_OFF): lights or puts
      * out its pilot. Server only; the worn stack syncs back to the wearer and the players near.
      */
@@ -110,6 +106,10 @@ public class ServerActions
         inv.markDirty();
     }
 
+    /**
+     * Server: the player pressed the abilities key (#57). Flips the player's switch unless enabled.abilities is off,
+     * takes the worn backpack's own effects away when it goes off, and syncs the flag (one packet per change).
+     */
     public static void toggleAbilities(EntityPlayer player)
     {
         BackpackProperty props = BackpackProperty.get(player);
