@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import com.darkona.adventurebackpack.block.TileAirCompressor;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.ContainerAirCompressor;
@@ -10,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /** GUI of the Air Compressor: its air tank, the fire of the furnace, the container slots and the Scuba Gear slot. */
+@SideOnly(Side.CLIENT)
 public class GuiAirCompressor extends GuiWithTanks
 {
     private static final ResourceLocation texture = Resources.guiTextures("guiAirCompressor");

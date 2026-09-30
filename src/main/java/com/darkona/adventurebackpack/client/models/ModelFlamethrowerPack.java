@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.client.models;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -14,6 +16,7 @@ import net.minecraft.item.ItemStack;
  * {@code back} copies the body's rotation and {@code face} the head's (RendererWearableEquipped passes the head
  * angles), so the mask follows the look. Nothing is allocated or read per frame (performance contract, tier 4).
  */
+@SideOnly(Side.CLIENT)
 public class ModelFlamethrowerPack extends ModelWearable
 {
     private final ModelRenderer back;

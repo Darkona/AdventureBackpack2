@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -21,6 +23,7 @@ import org.lwjgl.opengl.GL11;
  * GUI of the Flamethrower Pack: its two fuel tanks, the fuel container slots and the equip or unequip button. It reads the
  * stack's tag only when the stack it shows is replaced by a synced one, never on every frame.
  */
+@SideOnly(Side.CLIENT)
 public class GuiFlamethrowerPack extends GuiWithTanks
 {
     private static final ResourceLocation texture = Resources.guiTextures("guiFlamethrowerPack");
