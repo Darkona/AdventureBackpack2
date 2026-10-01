@@ -1,40 +1,142 @@
 # Items
-item.adventurebackpack:machete.name=Machete
+
+## Component Items For Crafting
 item.adventurebackpack:backpackComponent.name=Peça da Mochila
 item.adventurebackpack:sleepingBag.name=Saco de Dormir
 item.adventurebackpack:backpackTank.name=Tanque da Mochila
-item.adventurebackpack:macheteHandle=Cabo de Machete
+item.adventurebackpack:macheteHandle.name=Cabo de Machete
 item.adventurebackpack:hoseHead.name=Boca da Mangueira
-item.adventurebackpack:adventureBackpack.name=Mochila do Aventureiro
-item.adventurebackpack:backpackHose.name=Mangueira da Mochila
-item.adventurebackpack:adventureSuit.name=Traje do Aventureiro
-item.adventurebackpack:adventureHat.name=Fedora do Aventureiro
-item.adventurebackpack:pistonBoots.name=Botas de Pistão
-item.adventurebackpack:melonJuiceBottle.name=Garrafa de Suco de Melancia
+item.adventurebackpack:copterEngine.name=Motor Diesel de Dois Cilindros
+item.adventurebackpack:copterBlades.name=Pás de Helicóptero
+item.adventurebackpack:hydroBlades.name=Pás Hidrodinâmicas
+item.adventurebackpack:inflatableBoat.name=Bote Inflável
+item.adventurebackpack:inflatableBoatMotorized.name=Bote Inflável (Motorizado)
+item.adventurebackpack:inflatableChamber.name=Câmara Inflável
+item.adventurebackpack:airTank.name=Tanque de Ar
+item.adventurebackpack:divingMask.name=Máscara de Mergulho
+item.adventurebackpack:pyroMask.name=Máscara Pyro
 
+## Tools and consumables
+item.adventurebackpack:clockworkCrossbow.name=Besta Mecânica
+item.adventurebackpack:boltCartridge.name=Cartucho de Virotes
+item.adventurebackpack:melonJuiceBottle.name=Garrafa de Suco de Melancia
+item.adventurebackpack:machete.name=Machete
+
+item.adventurebackpack:backpackHose.name=Mangueira da Mochila
 item.adventurebackpack:hose_leftTank_suck.name=Mangueira: Tanque Esquerdo / Modo Sugar
 item.adventurebackpack:hose_leftTank_spill.name=Mangueira: Tanque Esquerdo / Modo Expelir
 item.adventurebackpack:hose_leftTank_drink.name=Mangueira: Tanque Esquerdo / Modo Beber
 
-
 item.adventurebackpack:hose_rightTank_suck.name=Mangueira: Tanque Direito / Modo Sugar
 item.adventurebackpack:hose_rightTank_spill.name=Mangueira: Tanque Direito / Modo Expelir
 item.adventurebackpack:hose_rightTank_drink.name=Mangueira: Tanque Direito / Modo Beber
-
 item.adventurebackpack:hoseUseless.name=Mangueira: Inútil / Sem Mochila
-item.adventurebackpack:copterPack.name=Mochilacóptero
-#Blocks
-block.adventurebackpack:AdventureBackpack.name=Base Para Mochila do Aventureiro
 
-#CreativeTab
+## Wearables
+item.adventurebackpack:adventureBackpack.name=Mochila do Aventureiro
+item.adventurebackpack:copterPack.name=Mochilacóptero
+item.adventurebackpack:steamJetpack.name=Jetpack a Vapor
+item.adventurebackpack:scubaGear.name=Equipamento de Mergulho
+item.adventurebackpack:flamethrowerPack.name=Mochila Lança-chamas
+item.adventurebackpack:flamethrower.name=Lança-chamas
+
+## Armor
+item.adventurebackpack:adventureSuit.name=Traje do Aventureiro
+item.adventurebackpack:adventureHat.name=Fedora do Aventureiro
+item.adventurebackpack:pistonBoots.name=Botas de Pistão
+
+## Blocks
+block.adventurebackpack:AdventureBackpack.name=Base Para Mochila do Aventureiro
+block.adventurebackpack:CampFire.name=Fogueira
+tile.adventurebackpack:blockFuelStation.name=Posto de Combustível
+tile.adventurebackpack:blockAirCompressor.name=Compressor de Ar
+block.adventurebackpack:SleepingBag.name=Saco de Dormir
+
+## CreativeTab
 itemGroup.adventurebackpack=Mochila do Aventureiro
 
-#Keybindings
+## Keybindings
 keys.adventureBackpack.category=Mochila do Aventureiro
 keys.adventureBackpack.openBackpackInventory=Abrir Conteúdo da Mochila
-keys.adventureBackpack.switchHoseTank=Trocar a Mangueira do Tanque
+keys.adventureBackpack.switchHoseTank=Alternar a Tecla de Ação
+keys.adventureBackpack.toolModifier=Modificador de Troca de Ferramenta (nenhum = agachar)
+keys.adventureBackpack.nextTool=Próxima Ferramenta da Mochila
+keys.adventureBackpack.previousTool=Ferramenta Anterior da Mochila
+keys.adventureBackpack.crossbowMode=Modo da Besta
+keys.adventureBackpack.toggleAbilities=Habilidades da Mochila Ligadas/Desligadas
+keys.adventureBackpack.boatMotorToggle=Motor do Barco Ligado/Desligado
 
-#Fluids
+## Fluids
 fluid.melonJuice=Suco de Melancia
 fluid.milk=Leite
 fluid.mushroomstew=Sopa de Cogumelos
+fluid.steam=Vapor
+fluid.air=Ar
+
+## Messages
+adventurebackpack:messages.already.equipped=Você já está equipando uma mochila.
+adventurebackpack:messages.already.impossibru=Você não está usando nenhuma mochila.
+adventurebackpack:messages.death.placed=%1$s foi colocado em %2$s, %3$s, %4$s (dimensão %5$s).
+adventurebackpack:messages.death.dropped=%1$s caiu onde você morreu: %2$s, %3$s, %4$s (dimensão %5$s).
+adventurebackpack:messages.death.grave=%1$s foi para a sua sepultura perto de %2$s, %3$s, %4$s (dimensão %5$s).
+adventurebackpack:messages.spider.limit=Você já tem %1$s aranhas domesticadas. Agache e clique com o botão direito em uma delas para soltá-la.
+adventurebackpack:messages.copterpack.hover=Mochilacóptero: Modo Pairar.
+adventurebackpack:messages.copterpack.normal=Mochilacóptero: Modo Normal.
+adventurebackpack:messages.copterpack.outoffuel=Mochilacóptero: Sem combustível.
+adventurebackpack:messages.copterpack.cantwater=Mochilacóptero: Não funciona na água.
+adventurebackpack:messages.copterpack.off=Mochilacóptero: Desligado.
+adventurebackpack:messages.jetpack.on=Jetpack a Vapor: Ligado.
+adventurebackpack:messages.jetpack.off=Jetpack a Vapor: Desligado.
+adventurebackpack:messages.scuba.lowair=Equipamento de Mergulho: o ar está acabando.
+adventurebackpack:messages.scuba.empty=Equipamento de Mergulho: sem ar. Suba!
+adventurebackpack:messages.flamethrower.on=Mochila Lança-chamas: piloto aceso.
+adventurebackpack:messages.flamethrower.off=Mochila Lança-chamas: piloto apagado.
+adventurebackpack:messages.flamethrower.nofuel=Mochila Lança-chamas: sem combustível.
+adventurebackpack:messages.compressor.noair=O Compressor de Ar precisa de céu aberto logo acima dele.
+adventurebackpack:messages.compressor.empty=O Compressor de Ar não tem ar.
+adventurebackpack:messages.compressor.filled=Equipamento de Mergulho: %1$s mB de ar adicionados.
+adventurebackpack:gui.scuba.air=Ar: %1$s / %2$s mB
+adventurebackpack:gui.flamethrower.fuel=Combustível: %1$s/%2$s mB
+adventurebackpack:gui.flamethrower.lit=Piloto: aceso
+adventurebackpack:gui.flamethrower.out=Piloto: apagado
+container.adventurebackpack:scubaGear=Equipamento de Mergulho
+container.adventurebackpack:airCompressor=Compressor de Ar
+adventurebackpack:messages.boat.motor.on=Motor do barco: Ligado.
+adventurebackpack:messages.boat.motor.off=Motor do barco: Desligado.
+adventurebackpack:messages.boat.motor.outoffuel=Motor do barco: sem combustível. Abasteça-o num Posto de Combustível enquanto estiver no barco.
+adventurebackpack:messages.boat.motor.nowater=Motor do barco: o barco precisa estar na água.
+adventurebackpack:messages.boat.motor.disabled=O motor do barco está desligado na configuração do servidor.
+container.adventurebackpack:flamethrowerPack=Mochila Lança-chamas
+death.attack.flamethrower=%1$s foi carbonizado por %2$s
+death.attack.flamethrower.item=%1$s foi carbonizado por %2$s usando %3$s
+adventurebackpack:messages.crossbow.outofammo=Besta Mecânica: sem virotes. Crie um Cartucho de Virotes.
+adventurebackpack:messages.abilities.off=Habilidades da mochila: Desligadas.
+adventurebackpack:messages.abilities.on=Habilidades da mochila: Ligadas.
+adventurebackpack:messages.abilities.disabled=As habilidades da mochila estão desligadas na configuração do servidor.
+adventurebackpack:messages.campfire.busy=A fogueira está cheia ou cozinhando outra coisa. Espere terminar.
+adventurebackpack:messages.fuelstation.filled=Posto de Combustível: %1$s mB de %2$s abastecidos.
+adventurebackpack:messages.fuelstation.empty=Posto de Combustível: o tanque está vazio.
+adventurebackpack:messages.fuelstation.wrongfuel=Posto de Combustível: esse tanque está cheio, tem outro combustível ou não queima este.
+adventurebackpack:messages.fuelstation.disabled=O Posto de Combustível está desligado na configuração do servidor.
+container.adventurebackpack:fuelStation=Posto de Combustível
+adventurebackpack:gui.fuelstation.empty=Vazio
+adventurebackpack:gui.fuelstation.cost=Taxa de queima: x%1$s
+adventurebackpack:tooltip.station.tank=%1$s mB de %2$s
+adventurebackpack:tooltip.boat.fuel=Combustível: %1$s mB de %2$s
+adventurebackpack:tooltip.boat.nofuel=Combustível: vazio. Ande de barco e clique com o botão direito num Posto de Combustível para abastecer.
+adventurebackpack:tooltip.boat.motor.toggle=Motor ligado/desligado: %1$s
+adventurebackpack:tooltip.boat.motor.unbound=Motor ligado/desligado: defina a tecla do Motor do Barco em Opções > Controles.
+adventurebackpack:tooltip.boat.motor.hold=Segure para frente para acionar o motor.
+adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
+adventurebackpack:tooltip.crossbow.controls=Segure o botão direito para atirar. Agachar + botão direito para trocar o cartucho.
+adventurebackpack:tooltip.crossbow.controls.grapple=Botão direito: dispara o gancho. Ele puxa você até o bloco que segurar. Agache ou pule para soltar.
+adventurebackpack:tooltip.crossbow.controls.sniper=Agache e fique parado para apoiar o bipé e dar zoom. Botão direito: um tiro forte e reto. Movimentar-se recolhe o bipé.
+adventurebackpack:tooltip.crossbow.mode=Modo: %1$s (%2$s para trocar)
+adventurebackpack:crossbow.mode.repeating=Repetição
+adventurebackpack:crossbow.mode.grapple=Gancho de Arremesso
+adventurebackpack:crossbow.mode.sniper=Atirador de Elite
+adventurebackpack:crossbow.nameWithMode=%1$s (%2$s)
+adventurebackpack:tooltip.cartridge.bolts=Virotes: %1$s/%2$s
+
+## Baubles Expanded back slot
+slot.back=§aCostas§7
