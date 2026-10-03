@@ -18,6 +18,10 @@ public class GuiAirCompressor extends GuiWithTanks
     private static final ResourceLocation texture = Resources.guiTextures("guiAirCompressor");
     private static final GuiTank airTank = new GuiTank(8, 8, 72, 16, ConfigHandler.GUI_TANK_RENDER);
 
+    /** Where the labels start, clear of the pipe, and the last column they may use, inside the border. */
+    private static final int LABEL_X = 65;
+    private static final int LABEL_RIGHT = 169;
+
     private final TileAirCompressor tile;
     private int shownAir = -1;
     private String airLabel = "";
@@ -59,7 +63,13 @@ public class GuiAirCompressor extends GuiWithTanks
             drawTexturedModalRect(78, 48 + 12 - flame, 176, 12 - flame, 14, flame + 1);
         }
         airTank.draw(this, tile.getTank());
-        fontRendererObj.drawString(title, 52, 6, 0x373737, false);
-        fontRendererObj.drawString(airLabel, 52, 16, 0x373737, false);
+        // Right of the vertical pipe (x 59..62) and above the gear slot (y 33); a long label moves left, at most to 52
+        fontRendererObj.drawString(title, labelX(title), 6, 0x373737, false);
+        fontRendererObj.drawString(airLabel, labelX(airLabel), 16, 0x373737, false);
+    }
+
+    private int labelX(String text)
+    {
+        return Math.max(52, Math.min(LABEL_X, LABEL_RIGHT - fontRendererObj.getStringWidth(text)));
     }
 }
