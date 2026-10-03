@@ -140,3 +140,7 @@ adventurebackpack:tooltip.cartridge.bolts=Bolts: %1$s/%2$s
 
 ## Baubles Expanded back slot
 slot.back=§aBack§7
+entity.adventurebackpack.inflatableBoat.name=Inflatable Boat
+entity.adventurebackpack.rideableSpider.name=Tamed Spider
+entity.adventurebackpack.crossbowBolt.name=Crossbow Bolt
+entity.adventurebackpack.crossbowGrapple.name=Grappling Hook

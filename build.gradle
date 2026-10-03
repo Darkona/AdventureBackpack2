@@ -73,3 +73,18 @@ tasks.withType(Test).configureEach {
     useJUnitPlatform()
     testLogging { events 'failed' ; exceptionFormat 'short' }
 }
+
+// Development only, off unless -Pgolemdrive is given: puts the GolemDrive 1.7.10 dev jar on the runClient classpath
+// for headless visual checks (screenshots, GUIs, camera). It is runtimeOnly, so it never goes into the mod jar,
+// the release build ignores it and nothing needs it at runtime. -Pgolemdrive=PATH picks the jar; a bare -Pgolemdrive
+// uses libs/golemdrive-dev.jar (libs/ is not tracked).
+if (project.hasProperty('golemdrive')) {
+    def golemdriveJar = project.property('golemdrive') ? file(project.property('golemdrive')) : file('libs/golemdrive-dev.jar')
+    dependencies {
+        runtimeOnly files(golemdriveJar)
+    }
+    minecraft {
+        // GolemDrive's input coremod: in dev runs FML finds it only through this property
+        extraRunJvmArguments.add('-Dfml.coreMods.load=com.darkona.golemdrive.mc.input.InputPlugin')
+    }
+}

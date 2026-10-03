@@ -140,3 +140,7 @@ adventurebackpack:tooltip.cartridge.bolts=Virotes: %1$s/%2$s
 
 ## Baubles Expanded back slot
 slot.back=§aEspalda§7
+entity.adventurebackpack.inflatableBoat.name=Bote Inflable
+entity.adventurebackpack.rideableSpider.name=Araña Domada
+entity.adventurebackpack.crossbowBolt.name=Virote
+entity.adventurebackpack.crossbowGrapple.name=Garfio
