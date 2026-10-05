@@ -2,6 +2,7 @@ package com.darkona.adventurebackpack.item;
 
 import com.darkona.adventurebackpack.common.CrossbowLogic;
 import com.darkona.adventurebackpack.common.GrappleLogic;
+import com.darkona.adventurebackpack.common.MagazineLogic;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityBolt;
@@ -21,7 +22,9 @@ import net.minecraft.world.World;
 import java.util.List;
 
 /**
- * The Clockwork Crossbow: a repeating crossbow with a magazine fed by {@link ItemBoltCartridge}.
+ * The Clockwork Crossbow: a repeating crossbow that fires from a reusable Crossbow Magazine ({@link ItemBoltCartridge}).
+ * The magazine stays in the crossbow ({@value #TAG_MAGAZINE}) while its charges ({@value #TAG_AMMO}) are fired; a
+ * reload puts in the first loaded magazine of the inventory and gives the old one back, never destroying it.
  * <p>
  * Every action is a right click handled on the server (Tier 2). Holding right click repeats it every 4 ticks, so a
  * held click fires the magazine one bolt after another with {@code crossbow.shotDelayTicks} between bolts. The item
@@ -35,11 +38,15 @@ public class ItemCrossbow extends ItemAB
     public static final String TAG_AMMO = "Ammo";
     /** int: type of the loaded bolts in 1.0 (elemental bolts, removed); dropped from old stacks on the next click. */
     static final String LEGACY_TAG_AMMO_TYPE = "AmmoType";
+    /** byte (boolean): a magazine is in the crossbow. Old crossbows have none: see {@link MagazineLogic#hasMagazine}. */
+    public static final String TAG_MAGAZINE = "Magazine";
+    /** string: registry name of the ammunition in the inserted magazine (damage multiplier, and what the magazine gives back). */
+    public static final String TAG_AMMO_ITEM = "AmmoItem";
     /** long: world tick from which the crossbow can fire or reload again. */
     public static final String TAG_READY_AT = "ReadyAt";
     /** long: world tick of the last shot (recoil animation). */
     public static final String TAG_LAST_SHOT = "LastShot";
-    /** long: world tick when the last cartridge went in (reload animation; it lasts crossbow.reloadTicks). */
+    /** long: world tick when the last magazine went in (reload animation; it lasts crossbow.reloadTicks). */
     public static final String TAG_LAST_RELOAD = "LastReload";
     /** long: world tick of the last dry click (limits the out-of-ammo message). */
     public static final String TAG_LAST_DRY = "LastDry";
@@ -111,7 +118,8 @@ public class ItemCrossbow extends ItemAB
         // With the bipod down sneaking is part of the aim, so sneak + click fires instead of swapping the cartridge.
         boolean sneaking = player.isSneaking() && !deployed;
         boolean creative = player.capabilities.isCreativeMode;
-        int slot = sneaking || ammo < cost ? findCartridge(player) : -1;
+        int slot = sneaking || ammo < cost ? ItemBoltCartridge.findLoaded(player) : -1;
+        boolean magazine = MagazineLogic.hasMagazine(tag.hasKey(TAG_MAGAZINE), tag.getBoolean(TAG_MAGAZINE), ammo);
 
         switch (CrossbowLogic.decide(ammo, cost, capacity, now, tag.getLong(TAG_READY_AT), maxWait(), sneaking, slot >= 0 || creative))
         {
@@ -128,10 +136,10 @@ public class ItemCrossbow extends ItemAB
                 }
                 break;
             case RELOAD:
-                reload(tag, world, player, slot, ammo, capacity, now, creative);
+                reload(tag, world, player, slot, ammo, magazine, capacity, now, creative);
                 break;
             case DRY:
-                dryFire(tag, world, player, now);
+                dryFire(tag, world, player, ammo, magazine, now);
                 break;
             default:
                 break;
@@ -152,22 +160,11 @@ public class ItemCrossbow extends ItemAB
         return stack.getTagCompound();
     }
 
-    /** First cartridge in the inventory, hotbar first, or -1. */
-    private static int findCartridge(EntityPlayer player)
-    {
-        ItemStack[] inventory = player.inventory.mainInventory;
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (inventory[i] != null && inventory[i].getItem() == ModItems.boltCartridge) return i;
-        }
-        return -1;
-    }
-
     private static void fireBolt(ItemStack stack, NBTTagCompound tag, World world, EntityPlayer player, int ammo, long now, boolean creative)
     {
         float speed = ConfigHandler.CROSSBOW_BOLT_VELOCITY;
         EntityBolt bolt = new EntityBolt(world, player, speed);
-        bolt.setDamage(CrossbowLogic.damageFactor(ConfigHandler.CROSSBOW_BOLT_DAMAGE, speed));
+        bolt.setDamage(CrossbowLogic.damageFactor(ConfigHandler.CROSSBOW_BOLT_DAMAGE * ammoMultiplier(tag), speed));
         bolt.canBePickedUp = creative ? 2 : (ConfigHandler.CROSSBOW_BOLTS_RECOVERABLE ? 1 : 0);
         world.spawnEntityInWorld(bolt);
         world.playSoundAtEntity(player, "adventurebackpack:crossbowshot", 0.5F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
@@ -185,11 +182,17 @@ public class ItemCrossbow extends ItemAB
         double[] look = new double[3];
         GrappleLogic.look(player.rotationYaw, player.rotationPitch, look);
         bolt.setThrowableHeading(look[0], look[1], look[2], speed, 0F);
-        bolt.setDamage(CrossbowLogic.damageFactor(ConfigHandler.SNIPER_DAMAGE, speed));
+        bolt.setDamage(CrossbowLogic.damageFactor(ConfigHandler.SNIPER_DAMAGE * ammoMultiplier(tag), speed));
         bolt.canBePickedUp = creative ? 2 : (ConfigHandler.CROSSBOW_BOLTS_RECOVERABLE ? 1 : 0);
         world.spawnEntityInWorld(bolt);
         world.playSoundAtEntity(player, "adventurebackpack:crossbowshot", 0.8F, 0.7F);
         spend(stack, tag, player, ammo, 1, now, ConfigHandler.SNIPER_SHOT_DELAY_TICKS, creative);
+    }
+
+    /** Crossbow Bolts hit harder than arrows (crossbow.ammo.boltDamageMultiplier). */
+    private static double ammoMultiplier(NBTTagCompound tag)
+    {
+        return MagazineLogic.damageMultiplier(tag.getString(TAG_AMMO_ITEM), ConfigHandler.CROSSBOW_BOLT_DAMAGE_MULTIPLIER);
     }
 
     /** True while the player's bipod is down; the same rule as the client zoom, with the movement of the last tick. */
@@ -225,42 +228,56 @@ public class ItemCrossbow extends ItemAB
             {
                 player.renderBrokenItemStack(stack);
                 stack.stackSize--;
+                // The magazine is not part of the crossbow: it comes back with the charges it has left.
+                if (MagazineLogic.hasMagazine(tag.hasKey(TAG_MAGAZINE), tag.getBoolean(TAG_MAGAZINE), ammo))
+                {
+                    ItemBoltCartridge.giveBack(player, ItemBoltCartridge.create(ammo - cost, tag.getString(TAG_AMMO_ITEM)));
+                }
             }
         }
     }
 
     /**
-     * Loads the cartridge in {@code slot} (in creative without one, a full magazine). A partly used magazine goes
-     * back to the player as a partly used cartridge.
+     * Puts in the loaded magazine in {@code slot} and gives the inserted one back with the charges it has left (empty
+     * magazines too: they are reused). In creative nothing moves and the crossbow is filled.
      */
-    private static void reload(NBTTagCompound tag, World world, EntityPlayer player, int slot, int ammo, int capacity, long now, boolean creative)
+    private static void reload(NBTTagCompound tag, World world, EntityPlayer player, int slot, int ammo, boolean magazine, int capacity, long now, boolean creative)
     {
-        ItemStack cartridge = slot >= 0 ? player.inventory.mainInventory[slot] : null;
-        int charges = cartridge != null ? ItemBoltCartridge.getCharges(cartridge, capacity) : capacity;
-
-        if (cartridge != null && !creative)
+        ItemStack loaded = slot >= 0 ? player.inventory.mainInventory[slot] : null;
+        int charges;
+        String type;
+        if (creative)
         {
+            charges = capacity;
+            type = loaded != null ? ItemBoltCartridge.getAmmo(loaded) : MagazineLogic.ammoType(tag.getString(TAG_AMMO_ITEM));
+        } else
+        {
+            charges = ItemBoltCartridge.getCharges(loaded, capacity);
+            type = ItemBoltCartridge.getAmmo(loaded);
             player.inventory.decrStackSize(slot, 1);
-        }
-        if (ammo > 0 && !creative)
-        {
-            ItemStack ejected = ItemBoltCartridge.create(ammo, capacity);
-            if (!player.inventory.addItemStackToInventory(ejected))
-            {
-                player.dropPlayerItemWithRandomChoice(ejected, false);
-            }
+            if (magazine) ItemBoltCartridge.giveBack(player, ItemBoltCartridge.create(ammo, tag.getString(TAG_AMMO_ITEM)));
+            tag.setBoolean(TAG_MAGAZINE, true);
         }
 
         tag.setInteger(TAG_AMMO, CrossbowLogic.clampAmmo(charges, capacity));
+        tag.setString(TAG_AMMO_ITEM, type);
         tag.setLong(TAG_LAST_RELOAD, now);
         tag.setLong(TAG_READY_AT, now + ConfigHandler.CROSSBOW_RELOAD_TICKS);
         world.playSoundAtEntity(player, "random.click", 0.6F, 0.8F);
         world.playSoundAtEntity(player, "tile.piston.in", 0.3F, 1.6F);
     }
 
-    private static void dryFire(NBTTagCompound tag, World world, EntityPlayer player, long now)
+    /** Click, give back an empty magazine so it can be loaded again, and tell the player (once a second at most). */
+    private static void dryFire(NBTTagCompound tag, World world, EntityPlayer player, int ammo, boolean magazine, long now)
     {
         world.playSoundAtEntity(player, "random.click", 0.4F, 1.4F);
+        if (MagazineLogic.ejectOnDry(ammo, magazine) && !player.capabilities.isCreativeMode)
+        {
+            ItemBoltCartridge.giveBack(player, ItemBoltCartridge.create(0, null));
+            tag.setBoolean(TAG_MAGAZINE, false);
+            tag.setInteger(TAG_AMMO, 0);
+            tag.removeTag(TAG_AMMO_ITEM);
+        }
         if (CrossbowLogic.shouldWarnEmpty(now, tag.getLong(TAG_LAST_DRY), EMPTY_MESSAGE_QUIET_TICKS))
         {
             player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.crossbow.outofammo"));

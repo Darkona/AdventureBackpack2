@@ -291,6 +291,36 @@ class ConfigHandlerTest
     }
 
     @Test
+    void magazineAndAmmoKeysLiveInTheCrossbowBranchWithDefaults() throws IOException
+    {
+        Configuration cfg = load("magazine.cfg", null);
+        assertFalse(cfg.getCategory(ConfigHandler.CROSSBOW).containsKey("shotsPerMagazine"));
+        assertNotNull(cfg.getCategory(ConfigHandler.CROSSBOW_MAGAZINE).getComment());
+        assertNotNull(cfg.getCategory(ConfigHandler.CROSSBOW_AMMO).getComment());
+        assertEquals(6, ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE);
+        assertEquals(4, ConfigHandler.MAGAZINE_LOAD_TICKS);
+        assertTrue(ConfigHandler.MAGAZINE_RELOAD_RECIPE);
+        assertTrue(ConfigHandler.MAGAZINE_LEGACY_RECIPE);
+        assertTrue(cfg.getCategory(ConfigHandler.CROSSBOW_MAGAZINE).get("reloadRecipe").requiresMcRestart());
+        assertArrayEquals(new String[]{"adventurebackpack:bolt", "minecraft:arrow"}, ConfigHandler.CROSSBOW_AMMO_LIST);
+        assertEquals(1.5, ConfigHandler.CROSSBOW_BOLT_DAMAGE_MULTIPLIER, 1e-9);
+    }
+
+    @Test
+    void oldShotsPerMagazineMovesToTheMagazineCapacity() throws IOException
+    {
+        String old = "adventurebackpack {\n"
+                + "    crossbow {\n"
+                + "        I:shotsPerMagazine=9\n"
+                + "    }\n"
+                + "}\n";
+        Configuration cfg = load("oldmagazine.cfg", old);
+        assertEquals(9, ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE);
+        assertFalse(cfg.getCategory(ConfigHandler.CROSSBOW).containsKey("shotsPerMagazine"));
+        assertEquals(9, cfg.getCategory(ConfigHandler.CROSSBOW_MAGAZINE).get("capacity").getInt());
+    }
+
+    @Test
     void flamethrowerKeysLiveInTheirOwnBranchWithSafeDefaults() throws IOException
     {
         Configuration cfg = load("flamethrower.cfg", null);

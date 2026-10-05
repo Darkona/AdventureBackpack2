@@ -22,6 +22,7 @@ public class ModItems
     public static final ItemCopterPack copterPack = new ItemCopterPack();
     public static final ItemCrossbow cwxbow = new ItemCrossbow();
     public static final ItemBoltCartridge boltCartridge = new ItemBoltCartridge();
+    public static final ItemCrossbowBolt bolt = new ItemCrossbowBolt();
     public static final ItemSteamJetpack steamJetpack = new ItemSteamJetpack();
     public static final ItemScubaGear scubaGear = new ItemScubaGear();
     public static final ItemFlamethrowerPack flamethrowerPack = new ItemFlamethrowerPack();
@@ -40,7 +41,9 @@ public class ModItems
         GameRegistry.registerItem(cwxbow, "clockworkCrossbow");
         // Always registered: it boils another mod's steam or its own (ModFluids.registerSteamIfMissing)
         GameRegistry.registerItem(steamJetpack, "steamJetpack");
+        // The Crossbow Magazine keeps the 1.0 Bolt Cartridge id so old worlds keep their cartridges
         GameRegistry.registerItem(boltCartridge, "boltCartridge");
+        GameRegistry.registerItem(bolt, "bolt");
         // Always registered; it only works when a loaded mod adds a fuel of fuels.list (ItemCopterPack.isUsable)
         GameRegistry.registerItem(copterPack, "copterPack");
         // Always registered; hidden and inert with enabled.scuba off or without any breathable fluid

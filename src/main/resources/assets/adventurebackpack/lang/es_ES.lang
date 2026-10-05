@@ -18,7 +18,8 @@ item.adventurebackpack:pyroMask.name=Máscara Ignífuga
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Ballesta de Relojería
-item.adventurebackpack:boltCartridge.name=Cartucho de Virotes
+item.adventurebackpack:boltCartridge.name=Cargador de Ballesta
+item.adventurebackpack:bolt.name=Virote de Ballesta
 item.adventurebackpack:melonJuiceBottle.name=Botella de Jugo de Sandía
 item.adventurebackpack:machete.name=Machete
 
@@ -109,7 +110,9 @@ adventurebackpack:messages.boat.motor.disabled=El motor del bote está desactiva
 container.adventurebackpack:flamethrowerPack=Mochila Lanzallamas
 death.attack.flamethrower=%1$s acabó carbonizado por %2$s
 death.attack.flamethrower.item=%1$s acabó carbonizado por %2$s con %3$s
-adventurebackpack:messages.crossbow.outofammo=Ballesta de Relojería: sin virotes. Fabrica un Cartucho de Virotes.
+adventurebackpack:messages.crossbow.outofammo=Ballesta de Relojería: no hay cargador cargado. Haz clic derecho con un Cargador de Ballesta para cargarlo con flechas o virotes.
+adventurebackpack:messages.magazine.noammo=Cargador de Ballesta: no tienes munición en el inventario (flechas o Virotes de Ballesta).
+adventurebackpack:messages.magazine.noammo.kind=Cargador de Ballesta: lleva %s y no te quedan más.
 adventurebackpack:messages.abilities.off=Habilidades de la mochila: desactivadas.
 adventurebackpack:messages.abilities.on=Habilidades de la mochila: activadas.
 adventurebackpack:messages.abilities.disabled=Las habilidades de las mochilas están desactivadas en la configuración del servidor.
@@ -128,7 +131,7 @@ adventurebackpack:tooltip.boat.motor.toggle=Encender/apagar el motor: %1$s
 adventurebackpack:tooltip.boat.motor.unbound=Encender/apagar el motor: asigna la tecla del motor del bote en Opciones > Controles.
 adventurebackpack:tooltip.boat.motor.hold=Mantén pulsado avanzar para usar el motor.
 adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
-adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Agáchate + clic derecho para cambiar el cartucho.
+adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Un cargador vacío se cambia por uno cargado del inventario y vuelve vacío. Agáchate + clic derecho para cambiar el cargador.
 adventurebackpack:tooltip.crossbow.controls.grapple=Clic derecho: dispara el garfio. Te arrastra hasta el bloque donde se engancha. Agáchate o salta para soltarte.
 adventurebackpack:tooltip.crossbow.controls.sniper=Agáchate y quédate quieto para desplegar el bípode y apuntar con zoom. Clic derecho: un virote fuerte y recto. Al moverte se pliega.
 adventurebackpack:tooltip.crossbow.mode=Modo: %1$s (%2$s para cambiar)
@@ -136,7 +139,9 @@ adventurebackpack:crossbow.mode.repeating=Repetición
 adventurebackpack:crossbow.mode.grapple=Garfio
 adventurebackpack:crossbow.mode.sniper=Francotirador
 adventurebackpack:crossbow.nameWithMode=%1$s (%2$s)
-adventurebackpack:tooltip.cartridge.bolts=Virotes: %1$s/%2$s
+adventurebackpack:tooltip.magazine.charges=Cargas: %1$s/%2$s
+adventurebackpack:tooltip.magazine.ammo=Cargado con: %s
+adventurebackpack:tooltip.magazine.load=Mantén clic derecho para cargarlo con munición del inventario.
 
 ## Baubles Expanded back slot
 slot.back=§aEspalda§7

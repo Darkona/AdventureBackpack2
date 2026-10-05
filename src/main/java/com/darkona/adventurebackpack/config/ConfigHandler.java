@@ -53,6 +53,8 @@ public class ConfigHandler
     public static final String CROSSBOW = ROOT + ".crossbow";
     public static final String CROSSBOW_GRAPPLE = CROSSBOW + ".grapple";
     public static final String CROSSBOW_SNIPER = CROSSBOW + ".sniper";
+    public static final String CROSSBOW_MAGAZINE = CROSSBOW + ".magazine";
+    public static final String CROSSBOW_AMMO = CROSSBOW + ".ammo";
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
     public static final String SLEEPINGBAG = ROOT + ".sleepingbag";
     public static final String CAMPFIRE = ROOT + ".campfire";
@@ -307,7 +309,14 @@ public class ConfigHandler
     public static boolean SLEEPINGBAG_SETS_SPAWN = true;
 
     // ---------------------------------------------------------------- crossbow
+    /** Charges of a full Crossbow Magazine (key crossbow.magazine.capacity; the field keeps its old name for the renderer). */
     public static int CROSSBOW_SHOTS_PER_MAGAZINE = 6;
+    public static int MAGAZINE_LOAD_TICKS = 4;
+    public static boolean MAGAZINE_RELOAD_RECIPE = true;
+    public static boolean MAGAZINE_LEGACY_RECIPE = true;
+    public static final String[] CROSSBOW_AMMO_DEFAULT = {"adventurebackpack:bolt", "minecraft:arrow"};
+    public static String[] CROSSBOW_AMMO_LIST = CROSSBOW_AMMO_DEFAULT;
+    public static double CROSSBOW_BOLT_DAMAGE_MULTIPLIER = 1.5;
     public static int CROSSBOW_SHOT_DELAY_TICKS = 4;
     public static int CROSSBOW_RELOAD_TICKS = 30;
     public static float CROSSBOW_BOLT_VELOCITY = 3.0f;
@@ -464,9 +473,11 @@ public class ConfigHandler
         cfg.setCategoryComment(INFLATABLEBOAT_MOTOR, "The outboard motor of the Motorized Inflatable Boat. It burns a liquid fuel from fuels.list, put in its tank at the Fuel Station (right click the station while riding the boat). With the defaults the boat goes almost twice as fast and a full tank lasts about 5 minutes of running. Without fuel, or with the motor off, the boat moves like the plain one. Picking the boat up keeps its fuel in the item. Speeds in blocks per tick; ticks: 20 per second.");
         cfg.setCategoryComment(FUELS_CATEGORY, "Liquid fuels, one list for everything that burns them (the Copter Pack, the Flamethrower Pack, the motor of the Motorized Inflatable Boat, the Fuel Station and what it fills). A fuel is known by the fluid name the mod that adds it registers, so no fuel mod is needed: BuildCraft oil and fuel, Forestry bioethanol and biomass, Railcraft creosote, Thermal Foundation coal, GregTech fuel (diesel), bioethanol and creosote.");
         cfg.setCategoryComment(FUELSTATION, "The Fuel Station: a block with a fuel tank that fills the Copter Pack and the Flamethrower Pack (in its slot, worn or held), the tank of the motorized boat the player rides, and buckets, cans or cells. Pipes of any mod fill it from any side. It does no work on its own between actions.");
-        cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with Bolt Cartridges. Hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in the inventory (hotbar first). Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
+        cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with reusable Crossbow Magazines. Hold right click to fire the magazine one bolt after another; when it is empty the next click puts in the first loaded magazine of the inventory (hotbar first) and the empty one comes back to the inventory (or drops at the feet when the inventory is full). Sneak + right click swaps a partly used magazine, which comes back with the charges it has left. Without a loaded magazine a click gives back the empty one. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
-        cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the cartridge (an empty magazine still reloads by itself).");
+        cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the magazine (an empty magazine still reloads by itself).");
+        cfg.setCategoryComment(CROSSBOW_MAGAZINE, "The Crossbow Magazine (the old Bolt Cartridge): a reusable magazine. Right click it (hold the click) to load it with ammunition of crossbow.ammo.list from the inventory, one charge per click sound, until it is full. A magazine holds one kind of ammunition; an empty one takes any. Old cartridges without a charge count load as full magazines of arrows. Ticks: 20 per second.");
+        cfg.setCategoryComment(CROSSBOW_AMMO, "What the Crossbow Magazine is loaded with. Bolts fired from a magazine of Crossbow Bolts hit harder than those from a magazine of arrows.");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
         cfg.setCategoryComment(SLEEPINGBAG, "The sleeping bag, deployed from a placed backpack or placed on its own.");
         cfg.setCategoryComment(CAMPFIRE, "The Campfire: a respawn point for the sleeping bag, and a fire to cook on.");
@@ -515,7 +526,7 @@ public class ConfigHandler
         COPTERPACK_ENABLED = bool(cfg, ENABLED, "copterPack", true, "The Copter Pack. It works when some loaded mod adds a fluid of fuels.list (BuildCraft, Forestry, Railcraft, GregTech...); with none of them it stays in the creative tab but cannot be crafted and does nothing.");
         STEAMJETPACK_ENABLED = bool(cfg, ENABLED, "steamJetpack", true, "The Steam Jetpack.");
         INFLATABLEBOAT_ENABLED = bool(cfg, ENABLED, "inflatableBoat", true, "The Inflatable Boat and the Motorized Inflatable Boat.");
-        CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow and its Bolt Cartridges.");
+        CROSSBOW_ENABLED = bool(cfg, ENABLED, "crossbow", true, "The Clockwork Crossbow, its Crossbow Magazines and the Crossbow Bolts.");
         SLEEPINGBAG_ENABLED = bool(cfg, ENABLED, "sleepingBag", true, "The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up.");
         PISTONBOOTS_ENABLED = bool(cfg, ENABLED, "pistonBoots", true, "The Piston Boots: step assist, sprint speed and fall protection.");
         SCUBA_ENABLED = bool(cfg, ENABLED, "scuba", true, "The Scuba Gear, its Air Tanks and Diving Mask, and the Air Compressor.");
@@ -779,6 +790,16 @@ public class ConfigHandler
         FUELSTATION_TANK_CAPACITY = integer(cfg, FUELSTATION, "tankCapacity", 16000, 1000, 64000, "Capacity of the station's tank in millibuckets. Use the same value on server and clients. Lowering it does not delete fuel already stored above the new limit.", true);
     }
 
+    /** Moves the old crossbow.shotsPerMagazine value into crossbow.magazine.capacity and drops the old key. */
+    static void migrateMagazineCapacity(Configuration cfg)
+    {
+        ConfigCategory crossbow = cfg.getCategory(CROSSBOW);
+        if (!crossbow.containsKey("shotsPerMagazine")) return;
+        Property old = crossbow.remove("shotsPerMagazine");
+        ConfigCategory magazine = cfg.getCategory(CROSSBOW_MAGAZINE);
+        if (!magazine.containsKey("capacity")) cfg.get(CROSSBOW_MAGAZINE, "capacity", old.getInt(6));
+    }
+
     private static void readCrossbow(Configuration cfg)
     {
         ConfigCategory crossbow = cfg.getCategory(CROSSBOW);
@@ -790,13 +811,13 @@ public class ConfigHandler
         // The elemental bolts were removed in 1.1: drop their category from older files.
         String elemental = CROSSBOW + ".elemental";
         if (cfg.hasCategory(elemental)) cfg.removeCategory(cfg.getCategory(elemental));
-        CROSSBOW_SHOTS_PER_MAGAZINE = integer(cfg, CROSSBOW, "shotsPerMagazine", 6, 1, 24, "Bolts in a full magazine, and in a full Bolt Cartridge (the recipe still takes 6 arrows).");
+        migrateMagazineCapacity(cfg);
         CROSSBOW_SHOT_DELAY_TICKS = integer(cfg, CROSSBOW, "shotDelayTicks", 4, 1, 40, "Pause between two bolts. Minecraft repeats a held right click every 4 ticks, so the real pause while holding is this value rounded up to a multiple of 4 (4 = 5 bolts a second, 5 to 8 = 2.5 a second).");
-        CROSSBOW_RELOAD_TICKS = integer(cfg, CROSSBOW, "reloadTicks", 30, 0, 200, "Time to load a cartridge, during which the crossbow does not fire.");
+        CROSSBOW_RELOAD_TICKS = integer(cfg, CROSSBOW, "reloadTicks", 30, 0, 200, "Time to put a magazine into the crossbow, during which the crossbow does not fire.");
         CROSSBOW_BOLT_VELOCITY = (float) decimal(cfg, CROSSBOW, "boltVelocity", 3.0, 0.5, 6.0, "Bolt speed in blocks per tick when it leaves the crossbow (a fully drawn bow shoots at 3). Faster bolts fly flatter and further.");
-        CROSSBOW_BOLT_DAMAGE = decimal(cfg, CROSSBOW, "boltDamage", 4.0, 0.0, 100.0, "Damage of a bolt as it leaves the crossbow, in half hearts (a fully drawn bow does 6 to 10). It drops a little with distance as the bolt slows down.");
+        CROSSBOW_BOLT_DAMAGE = decimal(cfg, CROSSBOW, "boltDamage", 4.0, 0.0, 100.0, "Damage of a bolt fired from a magazine of arrows as it leaves the crossbow, in half hearts (a fully drawn bow does 6 to 10). Crossbow Bolts multiply it by crossbow.ammo.boltDamageMultiplier. It drops a little with distance as the bolt slows down.");
         CROSSBOW_IGNORE_HURT_COOLDOWN = bool(cfg, CROSSBOW, "ignoreHurtCooldown", true, "Bolts ignore the short invulnerability a mob gets after a hit, so every bolt of a burst lands. When false about half of a fast burst bounces off the same target.");
-        CROSSBOW_BOLTS_RECOVERABLE = bool(cfg, CROSSBOW, "boltsRecoverable", false, "Bolts stuck in a block can be picked up as arrows. Off by default: a cartridge is spent ammunition.");
+        CROSSBOW_BOLTS_RECOVERABLE = bool(cfg, CROSSBOW, "boltsRecoverable", false, "Bolts stuck in a block can be picked up as arrows. Off by default: a charge of the magazine is spent ammunition.");
         CROSSBOW_DURABILITY = integer(cfg, CROSSBOW, "durability", 0, 0, 100000, "Bolts the crossbow fires before it breaks. 0 means it never breaks.");
         GRAPPLE_ENABLED = bool(cfg, CROSSBOW_GRAPPLE, "enabled", true, "The grappling hook mode. When false the mode is skipped and a crossbow left in it shoots bolts.");
         GRAPPLE_MAX_DISTANCE = decimal(cfg, CROSSBOW_GRAPPLE, "maxDistance", 32.0, 4.0, 64.0, "Range of the hook in blocks. A hook that reaches it without catching comes back.");
@@ -807,6 +828,15 @@ public class ConfigHandler
         GRAPPLE_COOLDOWN_TICKS = integer(cfg, CROSSBOW_GRAPPLE, "cooldownTicks", 20, 0, 200, "Wait after firing the hook before the crossbow can fire or reload again.");
         GRAPPLE_CHARGES = integer(cfg, CROSSBOW_GRAPPLE, "chargesPerShot", 1, 0, 24, "Bolts from the magazine a hook shot takes. 0 makes it free; more than a full magazine counts as a full magazine.");
         GRAPPLE_NO_FALL_DAMAGE = bool(cfg, CROSSBOW_GRAPPLE, "noFallDamage", true, "The pull never causes fall damage: the fall distance is reset while pulling and when the hook lets go. A fall after letting go counts from there.");
+        CROSSBOW_SHOTS_PER_MAGAZINE = integer(cfg, CROSSBOW_MAGAZINE, "capacity", 6, 1, 24, "Charges a full Crossbow Magazine holds, and bolts the crossbow fires from it. Old cartridges without a charge count hold 6 (the 6 arrows they were made of), never more than this.");
+        MAGAZINE_LOAD_TICKS = integer(cfg, CROSSBOW_MAGAZINE, "loadTicksPerCharge", 4, 0, 100, "Pause between two charges while loading a magazine with a held right click. A held click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4. 0 loads the whole magazine with one click.");
+        MAGAZINE_RELOAD_RECIPE = bool(cfg, CROSSBOW_MAGAZINE, "reloadRecipe", true, "Shapeless recipe: a magazine and up to its free room of ammunition of one kind (the kind it already holds) make the magazine loaded with them. Needs a restart.");
+        cfg.getCategory(CROSSBOW_MAGAZINE).get("reloadRecipe").setRequiresMcRestart(true);
+        MAGAZINE_LEGACY_RECIPE = bool(cfg, CROSSBOW_MAGAZINE, "legacyRecipe", true, "Keep the 1.0 Bolt Cartridge recipe (6 arrows, an iron ingot and 2 sticks): it makes a magazine already loaded with 6 arrows. The empty magazine has its own recipe (an iron ingot, 2 sticks and a string). Needs a restart.");
+        cfg.getCategory(CROSSBOW_MAGAZINE).get("legacyRecipe").setRequiresMcRestart(true);
+        order(CROSSBOW_AMMO, "list");
+        CROSSBOW_AMMO_LIST = cfg.getStringList("list", CROSSBOW_AMMO, CROSSBOW_AMMO_DEFAULT, "Items a magazine can be loaded with, as modid:itemName (any damage value). When a magazine is empty the first ammunition found in the inventory (hotbar first) decides its kind. Names no loaded mod registers are ignored. Set it the same on server and clients.");
+        CROSSBOW_BOLT_DAMAGE_MULTIPLIER = decimal(cfg, CROSSBOW_AMMO, "boltDamageMultiplier", 1.5, 0.1, 10.0, "Damage of bolts fired from a magazine of Crossbow Bolts (adventurebackpack:bolt), as a multiple of crossbow.boltDamage and crossbow.sniper.boltDamage. Other ammunition does the base damage.");
         SNIPER_ENABLED = bool(cfg, CROSSBOW_SNIPER, "enabled", true, "The sniper mode. When false the mode is skipped and a crossbow left in it shoots normal bolts.");
         SNIPER_DAMAGE = decimal(cfg, CROSSBOW_SNIPER, "boltDamage", 12.0, 0.0, 100.0, "Damage of a sniper bolt as it leaves the crossbow, in half hearts. It drops a little with distance as the bolt slows down.");
         SNIPER_VELOCITY = (float) decimal(cfg, CROSSBOW_SNIPER, "boltVelocity", 5.0, 0.5, 8.0, "Speed of a sniper bolt in blocks per tick. Faster bolts fly flatter and further.");

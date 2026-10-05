@@ -106,20 +106,6 @@ class CrossbowLogicTest {
     }
 
     @Test
-    void untaggedCartridgeIsFull() {
-        assertEquals(CAP, CrossbowLogic.cartridgeCharges(false, 0, CAP));
-        assertEquals(2, CrossbowLogic.cartridgeCharges(true, 2, CAP));
-        assertEquals(1, CrossbowLogic.cartridgeCharges(true, 0, CAP));
-        assertEquals(CAP, CrossbowLogic.cartridgeCharges(true, 20, CAP));
-    }
-
-    @Test
-    void ejectedFullCartridgeHasNoTag() {
-        assertEquals(-1, CrossbowLogic.ejectedCharges(CAP, CAP));
-        assertEquals(3, CrossbowLogic.ejectedCharges(3, CAP));
-    }
-
-    @Test
     void zeroDurabilityNeverBreaks() {
         assertFalse(CrossbowLogic.breaks(1000000, 0));
         assertFalse(CrossbowLogic.breaks(9, 10));
