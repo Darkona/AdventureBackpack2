@@ -1,7 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
 /**
- * Pure decisions of the Clockwork Crossbow and its Bolt Cartridges. No game classes here, so the unit tests run
+ * Pure decisions of the Clockwork Crossbow (the magazine itself is {@link MagazineLogic}). No game classes here, so the unit tests run
  * without Minecraft. Times are world ticks ({@code World.getTotalWorldTime()}), never wall-clock time.
  */
 public final class CrossbowLogic
@@ -11,13 +11,13 @@ public final class CrossbowLogic
     {
         /** Shoot one bolt from the magazine. */
         FIRE,
-        /** Load a cartridge (the magazine is empty, or the player sneaks to swap it). */
+        /** Put in a loaded magazine (the inserted one is empty, or the player sneaks to swap it); the old one comes back. */
         RELOAD,
-        /** Empty magazine and no cartridge: click and tell the player. */
+        /** Empty magazine and no loaded one: click, give back the empty magazine and tell the player. */
         DRY,
         /** Still in the pause after a shot or a reload. */
         WAIT,
-        /** Nothing to do (sneak with a full magazine or without a cartridge). */
+        /** Nothing to do (sneak with a full magazine or without a loaded one). */
         NONE
     }
 
@@ -33,9 +33,9 @@ public final class CrossbowLogic
     private CrossbowLogic() {}
 
     /** Same as {@link #decide(int, int, int, long, long, int, boolean, boolean)} for a shot that costs one bolt. */
-    public static Action decide(int ammo, int capacity, long now, long readyAt, int maxWait, boolean sneaking, boolean hasCartridge)
+    public static Action decide(int ammo, int capacity, long now, long readyAt, int maxWait, boolean sneaking, boolean hasLoaded)
     {
-        return decide(ammo, 1, capacity, now, readyAt, maxWait, sneaking, hasCartridge);
+        return decide(ammo, 1, capacity, now, readyAt, maxWait, sneaking, hasLoaded);
     }
 
     /**
@@ -49,15 +49,15 @@ public final class CrossbowLogic
      * @param readyAt      world tick from which the crossbow can act again
      * @param maxWait      longest pause the config allows; a {@code readyAt} further away than this is stale
      *                     (the item came from another world) and is ignored
-     * @param sneaking     the player sneaks (manual cartridge swap)
-     * @param hasCartridge a cartridge is in the inventory, or the player is in creative mode
+     * @param sneaking     the player sneaks (manual magazine swap)
+     * @param hasLoaded    a loaded magazine is in the inventory, or the player is in creative mode
      */
-    public static Action decide(int ammo, int cost, int capacity, long now, long readyAt, int maxWait, boolean sneaking, boolean hasCartridge)
+    public static Action decide(int ammo, int cost, int capacity, long now, long readyAt, int maxWait, boolean sneaking, boolean hasLoaded)
     {
         if (isWaiting(now, readyAt, maxWait)) return Action.WAIT;
-        if (sneaking) return ammo < capacity && hasCartridge ? Action.RELOAD : Action.NONE;
+        if (sneaking) return ammo < capacity && hasLoaded ? Action.RELOAD : Action.NONE;
         if (ammo >= shotCost(cost, capacity)) return Action.FIRE;
-        return hasCartridge ? Action.RELOAD : Action.DRY;
+        return hasLoaded ? Action.RELOAD : Action.DRY;
     }
 
     /** Bolts a shot really takes: never negative and never more than a full magazine, so it can always fire. */
@@ -139,26 +139,10 @@ public final class CrossbowLogic
 
     private static final double DAMAGE_MARGIN = 0.01;
 
-    /** Bolts loaded from a cartridge with {@code charges} left: never more than the magazine holds, never negative. */
+    /** Bolts loaded from a magazine with {@code charges} left: never more than the magazine holds, never negative. */
     public static int clampAmmo(int ammo, int capacity)
     {
         return ammo < 0 ? 0 : (ammo > capacity ? capacity : ammo);
-    }
-
-    /** Charges of a cartridge: a stack without the tag is full; a tagged one has between 1 and {@code capacity}. */
-    public static int cartridgeCharges(boolean hasTag, int storedCharges, int capacity)
-    {
-        if (!hasTag) return capacity;
-        return storedCharges < 1 ? 1 : (storedCharges > capacity ? capacity : storedCharges);
-    }
-
-    /**
-     * Charges to write on a cartridge ejected with {@code ammo} bolts in it, or -1 when it is full and gets no tag
-     * (so it stacks with crafted cartridges). Callers only eject when {@code ammo > 0}.
-     */
-    public static int ejectedCharges(int ammo, int capacity)
-    {
-        return ammo >= capacity ? -1 : ammo;
     }
 
     /** True when the shot that brought the wear to {@code wear} breaks the crossbow. 0 durability never breaks. */

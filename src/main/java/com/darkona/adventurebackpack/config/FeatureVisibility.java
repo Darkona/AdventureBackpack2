@@ -25,6 +25,7 @@ public final class FeatureVisibility
         hideUnless(ModItems.steamJetpack, ConfigHandler.STEAMJETPACK_ENABLED && ModFluids.steam != null);
         hideUnless(ModItems.cwxbow, ConfigHandler.CROSSBOW_ENABLED);
         hideUnless(ModItems.boltCartridge, ConfigHandler.CROSSBOW_ENABLED);
+        hideUnless(ModItems.bolt, ConfigHandler.CROSSBOW_ENABLED);
         hideUnless(ModItems.pistonBoots, ConfigHandler.PISTONBOOTS_ENABLED);
         // the station's item takes its creative tab from the block
         if (!ConfigHandler.FUELSTATION_ENABLED) ModBlocks.blockFuelStation.setCreativeTab(null);

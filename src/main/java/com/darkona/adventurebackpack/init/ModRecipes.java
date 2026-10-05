@@ -5,6 +5,9 @@ import com.darkona.adventurebackpack.compat.tech.TechParts;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.recipes.BackpackRecipesList;
 import com.darkona.adventurebackpack.init.recipes.BackpackUpgradeRecipe;
+import com.darkona.adventurebackpack.init.recipes.CrossbowReloadRecipe;
+import com.darkona.adventurebackpack.common.MagazineLogic;
+import com.darkona.adventurebackpack.item.ItemBoltCartridge;
 import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.item.ItemComponent;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
@@ -31,7 +34,11 @@ import java.util.List;
  */
 public class ModRecipes
 {
-    /** The Clockwork Crossbow, built around a clock, and its Bolt Cartridges: 6 arrows and an iron ingot each. */
+    /**
+     * The Clockwork Crossbow, built around a clock; the empty Crossbow Magazine (an iron ingot, 2 sticks and a string
+     * as the spring); the 1.0 cartridge recipe, which now makes a magazine loaded with its 6 arrows; the reload recipe;
+     * and the Crossbow Bolt (iron ingot, stick and feather make 4).
+     */
     private static void crossbowRecipes()
     {
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.cwxbow),
@@ -44,13 +51,36 @@ public class ModRecipes
                 'C', Items.clock,
                 'P', "plankWood"
         ));
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.boltCartridge),
-                "AAA",
+        GameRegistry.addRecipe(new ShapedOreRecipe(ItemBoltCartridge.create(0, null),
+                " T ",
                 "XIX",
-                "AAA",
-                'A', Items.arrow,
+                'T', Items.string,
                 'X', "stickWood",
                 'I', "ingotIron"
+        ));
+        if (ConfigHandler.MAGAZINE_LEGACY_RECIPE)
+        {
+            GameRegistry.addRecipe(new ShapedOreRecipe(ItemBoltCartridge.create(MagazineLogic.LEGACY_CHARGES, MagazineLogic.LEGACY_AMMO),
+                    "AAA",
+                    "XIX",
+                    "AAA",
+                    'A', Items.arrow,
+                    'X', "stickWood",
+                    'I', "ingotIron"
+            ));
+        }
+        if (ConfigHandler.MAGAZINE_RELOAD_RECIPE)
+        {
+            GameRegistry.addRecipe(new CrossbowReloadRecipe());
+            RecipeSorter.register(ModInfo.MOD_ID + ":crossbowReload", CrossbowReloadRecipe.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
+        }
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.bolt, 4),
+                "I",
+                "X",
+                "F",
+                'I', "ingotIron",
+                'X', "stickWood",
+                'F', Items.feather
         ));
     }
 
