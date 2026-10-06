@@ -1,11 +1,14 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.client.render.CrossbowHoldPose;
 import com.darkona.adventurebackpack.client.render.CrossbowRenderState;
 import com.darkona.adventurebackpack.client.render.RendererItemClockworkCrossbow;
+import com.darkona.adventurebackpack.common.CrossbowAnimation;
 import com.darkona.adventurebackpack.common.CrossbowLogic;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.item.ItemCrossbow;
 import com.darkona.adventurebackpack.init.ModItems;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +25,8 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
  * <p>
  * The crossbow is never "in use" ({@code EnumAction.none}), so vanilla never raises the arms by itself; this sets
  * {@code aimedBow} on the three biped models of {@link RenderPlayer} before it renders, exactly as vanilla does for
- * a drawn bow, and vanilla clears the flags after rendering. It only touches a plain {@code RenderPlayer}: a mod
+ * a drawn bow, and vanilla clears the flags after rendering; {@link CrossbowHoldPose} then turns the arms into a
+ * two-handed hold, between this Pre and the Post. It only touches a plain {@code RenderPlayer}: a mod
  * that renders players with its own class (RenderPlayerAPI, Smart Moving, Mo' Bends) keeps its own arms, and any
  * failure inside a foreign renderer is swallowed so the player still renders. No allocation per frame.
  */
@@ -58,23 +62,55 @@ public class CrossbowRenderHandler
         if (ItemCrossbow.isBipodDeployed(player)) event.newfov *= ConfigHandler.SNIPER_ZOOM;
     }
 
-    @SubscribeEvent
+    /** Mode and last shot of the stack being drawn, read from NBT only when the stack object changes. */
+    private final CrossbowRenderState poseState = new CrossbowRenderState();
+
+    /**
+     * Raises the arms of a player holding the crossbow: {@code aimedBow} on the three biped models as a fallback
+     * (vanilla's bow pose), then the two-handed hold of {@link CrossbowHoldPose} on top. Runs last so no other
+     * handler can cancel the render after the pose started; {@link #onRenderPlayerPost} ends it.
+     */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRenderPlayer(RenderPlayerEvent.Pre event)
     {
+        CrossbowHoldPose.end();
         try
         {
             RenderPlayer renderer = event.renderer;
             if (renderer == null || renderer.getClass() != RenderPlayer.class) return;
             EntityPlayer player = event.entityPlayer;
-            if (player == null || !isHoldingCrossbow(player.getHeldItem())) return;
+            ItemStack held = player != null ? player.getHeldItem() : null;
+            if (!isHoldingCrossbow(held)) return;
             if (renderer.modelBipedMain != null) renderer.modelBipedMain.aimedBow = true;
             if (renderer.modelArmorChestplate != null) renderer.modelArmorChestplate.aimedBow = true;
             if (renderer.modelArmor != null) renderer.modelArmor.aimedBow = true;
+            if (renderer != hookedRenderer)
+            {
+                CrossbowHoldPose.install(renderer.modelBipedMain);
+                CrossbowHoldPose.install(renderer.modelArmorChestplate);
+                CrossbowHoldPose.install(renderer.modelArmor);
+                hookedRenderer = renderer;
+            }
+            poseState.update(held);
+            float pt = event.partialRenderTick;
+            float recoil = CrossbowAnimation.recoil(CrossbowAnimation.sinceShot(player.worldObj.getTotalWorldTime(), pt, poseState.lastShot));
+            boolean steady = ItemCrossbow.effectiveMode(poseState.mode) == CrossbowLogic.MODE_SNIPER && ItemCrossbow.isBipodDeployed(player);
+            CrossbowHoldPose.begin(player, steady, recoil, player.ticksExisted + pt);
         } catch (Throwable ignored)
         {
             // A foreign player renderer without the vanilla models: leave its pose alone.
+            CrossbowHoldPose.end();
         }
     }
+
+    @SubscribeEvent
+    public void onRenderPlayerPost(RenderPlayerEvent.Post event)
+    {
+        CrossbowHoldPose.end();
+    }
+
+    /** The renderer whose models carry the pose hook. */
+    private RenderPlayer hookedRenderer;
 
     /** The pose follows the held item only: the crossbow is aimed whenever it is in the main hand. */
     public static boolean isHoldingCrossbow(ItemStack held)

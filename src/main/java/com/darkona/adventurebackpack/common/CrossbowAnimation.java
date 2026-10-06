@@ -119,6 +119,73 @@ public final class CrossbowAnimation
         return clamp01(from) + (target - clamp01(from)) * (elapsed / BIPOD_TICKS);
     }
 
+    /*
+     * Third person hold. Angles are radians in the ModelBiped convention (rotateAngleX/Y/Z, applied Z, Y, X; X
+     * negative raises the arm forward, Y negative turns the right arm in and positive turns the left arm in). The
+     * arms point along the look (head pitch and yaw), the right one turned in to hold the grip in front of the right
+     * side of the face and the left one reaching across to the side of the tiller; the left shoulder comes forward
+     * and the right one back, as in a rifle stance, so the left hand rides ahead of the right.
+     */
+
+    /** Indices of {@link #holdPose}'s output. */
+    public static final int POSE_RIGHT_X = 0, POSE_RIGHT_Y = 1, POSE_RIGHT_Z = 2;
+    public static final int POSE_LEFT_X = 3, POSE_LEFT_Y = 4, POSE_LEFT_Z = 5;
+    /** Shoulder pivot shifts in model pixels (Z negative = forward), added to the vanilla pivots. */
+    public static final int POSE_RIGHT_SHOULDER_Z = 6, POSE_LEFT_SHOULDER_Z = 7;
+    /**
+     * Weapon direction as head-style angles (X positive = muzzle down, Y = yaw relative to the body): the look plus
+     * sway and the kick of a shot. With the bipod the arms drop but the weapon stays on the look.
+     */
+    public static final int POSE_WEAPON_PITCH = 8, POSE_WEAPON_YAW = 9;
+    /** How far a shot pushes the weapon back into the shoulder, in model pixels. */
+    public static final int POSE_KICK_BACK = 10;
+    public static final int POSE_SIZE = 11;
+
+    /** Yaw of each arm off the look: the right hand comes in to the grip, the left one across to the tiller. */
+    public static final float HOLD_RIGHT_YAW = -0.3F;
+    public static final float HOLD_LEFT_YAW = 0.45F;
+    /** Both arms ride this much above the look (radians), so the weapon comes up towards the eyes. */
+    public static final float HOLD_RAISE = 0.2F;
+    /** Shoulder shifts: left forward, right back. */
+    public static final float HOLD_LEFT_SHOULDER_Z = -2.5F;
+    public static final float HOLD_RIGHT_SHOULDER_Z = 1F;
+    /** Sniper on the bipod: arms this much lower (radians) and no sway. */
+    public static final float SNIPER_LOWER = 0.25F;
+    /** Shot: the arms jump up this much (radians); the muzzle tips up this much more and the weapon slides back. */
+    public static final float KICK_ARMS = 0.18F;
+    public static final float KICK_PITCH = 0.12F;
+    public static final float KICK_BACK = 1.5F;
+    /** Idle sway of the held weapon (radians), like vanilla's arm bob. */
+    public static final float SWAY = 0.03F;
+
+    /**
+     * Arm angles of a shooter holding the crossbow up to aim. {@code headPitch} and {@code headYaw} are the model's
+     * head angles (radians, yaw relative to the body), {@code steady} is true for the sniper on its bipod (arms lower,
+     * no sway), {@code recoil} is {@link #recoil} (1 right after a shot) and {@code ageTicks} drives the sway. Writes
+     * {@link #POSE_SIZE} values into {@code out} (indices {@code POSE_*}); the caller passes the same array every
+     * frame.
+     */
+    public static void holdPose(float headPitch, float headYaw, boolean steady, float recoil, float ageTicks, float[] out)
+    {
+        float kick = clamp01(recoil);
+        float pitch = -HALF_PI - HOLD_RAISE + headPitch - kick * KICK_ARMS + (steady ? SNIPER_LOWER : 0F);
+        float swayZ = steady ? 0F : (float) Math.cos(ageTicks * 0.09F) * SWAY;
+        float swayX = steady ? 0F : (float) Math.sin(ageTicks * 0.067F) * SWAY;
+        out[POSE_RIGHT_X] = pitch + swayX;
+        out[POSE_RIGHT_Y] = headYaw + HOLD_RIGHT_YAW;
+        out[POSE_RIGHT_Z] = swayZ;
+        out[POSE_LEFT_X] = pitch + swayX;
+        out[POSE_LEFT_Y] = headYaw + HOLD_LEFT_YAW;
+        out[POSE_LEFT_Z] = swayZ;
+        out[POSE_RIGHT_SHOULDER_Z] = HOLD_RIGHT_SHOULDER_Z;
+        out[POSE_LEFT_SHOULDER_Z] = HOLD_LEFT_SHOULDER_Z;
+        out[POSE_WEAPON_PITCH] = headPitch + swayX - kick * (KICK_ARMS + KICK_PITCH);
+        out[POSE_WEAPON_YAW] = headYaw;
+        out[POSE_KICK_BACK] = kick * KICK_BACK;
+    }
+
+    private static final float HALF_PI = (float) (Math.PI / 2D);
+
     private static float clamp01(float value)
     {
         return value < 0F ? 0F : (value > 1F ? 1F : value);
