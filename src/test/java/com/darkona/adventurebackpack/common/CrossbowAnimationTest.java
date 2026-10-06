@@ -171,4 +171,73 @@ class CrossbowAnimationTest {
         assertEquals(0F, CrossbowAnimation.bipodPose(0.3F, false, CrossbowAnimation.BIPOD_TICKS), EPS);
         assertEquals(0.3F, CrossbowAnimation.bipodPose(0.3F, false, -5F), EPS);
     }
+
+    private static float[] hold(float pitch, float yaw, boolean steady, float recoil, float age) {
+        float[] out = new float[CrossbowAnimation.POSE_SIZE];
+        CrossbowAnimation.holdPose(pitch, yaw, steady, recoil, age, out);
+        return out;
+    }
+
+    @Test
+    void holdRaisesBothArmsAlongTheLookAndTheWeaponPointsWhereTheHeadLooks() {
+        float halfPi = (float) (Math.PI / 2D);
+        float[] level = hold(0F, 0F, false, 0F, 0F);
+        assertEquals(-halfPi - CrossbowAnimation.HOLD_RAISE, level[CrossbowAnimation.POSE_RIGHT_X], EPS);
+        assertEquals(level[CrossbowAnimation.POSE_RIGHT_X], level[CrossbowAnimation.POSE_LEFT_X], EPS);
+        assertEquals(0F, level[CrossbowAnimation.POSE_WEAPON_PITCH], EPS);
+        assertEquals(0F, level[CrossbowAnimation.POSE_KICK_BACK], EPS);
+
+        float[] down = hold(0.5F, 0.3F, false, 0F, 0F);
+        assertEquals(0.5F, down[CrossbowAnimation.POSE_RIGHT_X] - level[CrossbowAnimation.POSE_RIGHT_X], EPS);
+        assertEquals(0.5F, down[CrossbowAnimation.POSE_LEFT_X] - level[CrossbowAnimation.POSE_LEFT_X], EPS);
+        assertEquals(0.5F, down[CrossbowAnimation.POSE_WEAPON_PITCH], EPS);
+        assertEquals(0.3F, down[CrossbowAnimation.POSE_WEAPON_YAW], EPS);
+    }
+
+    @Test
+    void holdTurnsTheRightArmInToTheGripAndTheLeftArmAcrossToTheTiller() {
+        float[] pose = hold(0F, 0.4F, false, 0F, 0F);
+        assertEquals(0.4F + CrossbowAnimation.HOLD_RIGHT_YAW, pose[CrossbowAnimation.POSE_RIGHT_Y], EPS);
+        assertEquals(0.4F + CrossbowAnimation.HOLD_LEFT_YAW, pose[CrossbowAnimation.POSE_LEFT_Y], EPS);
+        assertTrue(CrossbowAnimation.HOLD_RIGHT_YAW < 0F, "right arm turns in (negative Y)");
+        assertTrue(CrossbowAnimation.HOLD_LEFT_YAW > 0F, "left arm turns in (positive Y)");
+        assertTrue(pose[CrossbowAnimation.POSE_LEFT_SHOULDER_Z] < 0F, "left shoulder comes forward");
+        assertTrue(pose[CrossbowAnimation.POSE_RIGHT_SHOULDER_Z] > 0F, "right shoulder goes back");
+    }
+
+    @Test
+    void sniperOnTheBipodHoldsLowerAndStillWithTheWeaponOnTheLook() {
+        float[] free = hold(0.2F, 0F, false, 0F, 0F);
+        for (float age = 0F; age < 200F; age += 7.3F) {
+            float[] steady = hold(0.2F, 0F, true, 0F, age);
+            assertEquals(-(float) (Math.PI / 2D) - CrossbowAnimation.HOLD_RAISE + 0.2F + CrossbowAnimation.SNIPER_LOWER,
+                    steady[CrossbowAnimation.POSE_RIGHT_X], EPS);
+            assertEquals(0F, steady[CrossbowAnimation.POSE_RIGHT_Z], EPS);
+            assertEquals(0F, steady[CrossbowAnimation.POSE_LEFT_Z], EPS);
+            assertEquals(0.2F, steady[CrossbowAnimation.POSE_WEAPON_PITCH], EPS);
+        }
+        assertTrue(free[CrossbowAnimation.POSE_RIGHT_X] < hold(0.2F, 0F, true, 0F, 0F)[CrossbowAnimation.POSE_RIGHT_X]);
+    }
+
+    @Test
+    void idleSwayIsSmall() {
+        for (float age = 0F; age < 500F; age += 3.7F) {
+            float[] pose = hold(0F, 0F, false, 0F, age);
+            assertTrue(Math.abs(pose[CrossbowAnimation.POSE_RIGHT_Z]) <= CrossbowAnimation.SWAY + EPS);
+            assertTrue(Math.abs(pose[CrossbowAnimation.POSE_WEAPON_PITCH]) <= CrossbowAnimation.SWAY + EPS);
+        }
+    }
+
+    @Test
+    void aShotKicksTheArmsAndMuzzleUpAndTheWeaponBackThenSettles() {
+        float[] rest = hold(0F, 0F, true, 0F, 0F);
+        float[] shot = hold(0F, 0F, true, 1F, 0F);
+        assertEquals(-CrossbowAnimation.KICK_ARMS, shot[CrossbowAnimation.POSE_RIGHT_X] - rest[CrossbowAnimation.POSE_RIGHT_X], EPS);
+        assertEquals(-(CrossbowAnimation.KICK_ARMS + CrossbowAnimation.KICK_PITCH), shot[CrossbowAnimation.POSE_WEAPON_PITCH], EPS);
+        assertEquals(CrossbowAnimation.KICK_BACK, shot[CrossbowAnimation.POSE_KICK_BACK], EPS);
+        float[] over = hold(0F, 0F, true, 3F, 0F);
+        assertEquals(CrossbowAnimation.KICK_BACK, over[CrossbowAnimation.POSE_KICK_BACK], EPS);
+        float[] half = hold(0F, 0F, true, 0.5F, 0F);
+        assertEquals(CrossbowAnimation.KICK_BACK / 2F, half[CrossbowAnimation.POSE_KICK_BACK], EPS);
+    }
 }

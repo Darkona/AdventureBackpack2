@@ -32,8 +32,11 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
 {
     /** One model unit in blocks. */
     private static final float MODEL_SCALE = 0.0625F;
-    /** The hand holds the grip 3.5 units under the model origin. */
+    /** The hand holds the grip 3.5 units under the model origin and 6 units behind it. */
     private static final float GRIP_CENTER = 3.5F;
+    private static final float GRIP_Z = 6F;
+    /** Size of the weapon in another entity's hand. */
+    private static final float THIRD_PERSON_SCALE = 0.5F;
 
     /** Partial tick of the frame being drawn, written by {@code CrossbowRenderHandler} at the start of each frame. */
     public static float partialTicks;
@@ -52,11 +55,15 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
         return type != ItemRenderType.FIRST_PERSON_MAP;
     }
 
-    /** The block helpers give a centred, lit frame for every type; the item is treated as a 3D block. */
+    /**
+     * The block helpers give a centred, lit frame for every type, except {@code BLOCK_3D} in the hand: with it
+     * {@code RenderPlayer} would take its block branch while {@code RenderBiped} (zombies) takes the full-3D one, so
+     * players and mobs would get different frames. Without it both use the full-3D branch ({@link #thirdPerson}).
+     */
     @Override
     public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
     {
-        return true;
+        return !(type == ItemRenderType.EQUIPPED && helper == ItemRendererHelper.BLOCK_3D);
     }
 
     @Override
@@ -100,7 +107,7 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                     firstPerson(recoil);
                     break;
                 case EQUIPPED:
-                    thirdPerson(recoil);
+                    thirdPerson(CrossbowHoldPose.isPosed(holder));
                     break;
                 case INVENTORY:
                     inventory();
@@ -155,20 +162,30 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
 
     /**
      * Frame on entry: the right arm's frame at the hand, scaled (0.625, -0.625, 0.625), turned -100 about X and 45
-     * about Y (the full-3D item branch of {@code RenderBiped}), shifted by the block helper. Undo all of it, mirror X
-     * once so the arm's reflection and this one cancel (back faces stay culled), then turn the weapon so its
-     * muzzle follows the arm and its top faces the front of the arm: with the aiming pose the arm points forward.
+     * about Y (the full-3D item branch shared by {@code RenderPlayer} and {@code RenderBiped}), shifted by the block
+     * helper. Undo all of it back to the arm's own frame (pixels: X left, Y down the arm, Z back), move to the middle
+     * of the hand and turn to the weapon's look frame: for a player posed by {@link CrossbowHoldPose} that is the
+     * look itself (the weapon points where the head looks whatever the arm's angle); for anything else, along the
+     * arm with the top towards the front of the arm. Then turn to the model's frame (+Y up, -Z muzzle, a half turn
+     * about Z, no mirror) and put the grip in the hand.
      */
-    private static void thirdPerson(float recoil)
+    private static void thirdPerson(boolean posed)
     {
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
         GL11.glRotatef(-45F, 0F, 1F, 0F);
         GL11.glRotatef(100F, 1F, 0F, 0F);
-        GL11.glScalef(-1F, 1F, 1F);
-        GL11.glRotatef(-90F, 1F, 0F, 0F);
-        GL11.glScalef(0.8F, 0.8F, 0.8F);
-        GL11.glTranslatef(0F, GRIP_CENTER * MODEL_SCALE, recoil * 2F * MODEL_SCALE);
-        GL11.glRotatef(recoil * 4F, 1F, 0F, 0F);
+        GL11.glScalef(1F / 0.625F, -1F / 0.625F, 1F / 0.625F);
+        GL11.glTranslatef(0F, -MODEL_SCALE, -MODEL_SCALE);
+        if (posed)
+        {
+            CrossbowHoldPose.armToWeapon(MODEL_SCALE);
+        } else
+        {
+            GL11.glRotatef(90F, 1F, 0F, 0F);
+        }
+        GL11.glRotatef(180F, 0F, 0F, 1F);
+        GL11.glScalef(THIRD_PERSON_SCALE, THIRD_PERSON_SCALE, THIRD_PERSON_SCALE);
+        GL11.glTranslatef(0F, GRIP_CENTER * MODEL_SCALE, -GRIP_Z * MODEL_SCALE);
     }
 
     /**
