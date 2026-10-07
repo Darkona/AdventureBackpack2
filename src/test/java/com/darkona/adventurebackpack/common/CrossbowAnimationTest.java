@@ -141,23 +141,29 @@ class CrossbowAnimationTest {
     }
 
     @Test
-    void newMagazineComesInFromTheLeftAndIsPushedIntoTheDrum() {
+    void newMagazineRisesFromTheLeftHandAndGoesInThroughTheSlot() {
         float[] pose = new float[CrossbowAnimation.MAG_SIZE];
         assertFalse(CrossbowAnimation.newMagazine(0F, pose));
         assertTrue(CrossbowAnimation.newMagazine(CrossbowAnimation.MAGAZINE_EJECTED_AT, pose));
         assertEquals(CrossbowAnimation.INSERT_FROM_X, pose[CrossbowAnimation.MAG_X], EPS);
         assertEquals(CrossbowAnimation.INSERT_FROM_Y, pose[CrossbowAnimation.MAG_Y], EPS);
         assertEquals(1F, pose[CrossbowAnimation.MAG_SCALE], EPS);
-        assertEquals(1F, pose[CrossbowAnimation.MAG_CLIPPED], EPS);
-        float mid = (CrossbowAnimation.MAGAZINE_EJECTED_AT + CrossbowAnimation.MAGAZINE_SEATS_AT) / 2F;
-        CrossbowAnimation.newMagazine(mid, pose);
-        assertEquals(0F, pose[CrossbowAnimation.MAG_X], EPS);
-        assertEquals(0F, pose[CrossbowAnimation.MAG_Y], EPS);
-        // never below the slot while it is beside it: only straight above the slot does it go in
-        for (float p = CrossbowAnimation.MAGAZINE_EJECTED_AT; p < mid; p += 0.01F) {
+        // beside the drum it is never cut by the slot plane; once cut it is straight over the slot and above it
+        boolean wasClipped = false;
+        for (float p = CrossbowAnimation.MAGAZINE_EJECTED_AT; p < CrossbowAnimation.MAGAZINE_SEATS_AT; p += 0.005F) {
             CrossbowAnimation.newMagazine(p, pose);
-            assertTrue(pose[CrossbowAnimation.MAG_Y] >= 0F);
+            boolean clipped = pose[CrossbowAnimation.MAG_CLIPPED] > 0F;
+            if (clipped && !wasClipped) {
+                assertEquals(CrossbowAnimation.INSERT_OVER_Y, pose[CrossbowAnimation.MAG_Y], 0.05F);
+            }
+            if (clipped) {
+                assertEquals(0F, pose[CrossbowAnimation.MAG_X], EPS);
+            } else {
+                assertFalse(wasClipped);
+            }
+            wasClipped = clipped;
         }
+        assertTrue(wasClipped);
         CrossbowAnimation.newMagazine(CrossbowAnimation.MAGAZINE_SEATS_AT - 1e-6F, pose);
         assertEquals(-CrossbowAnimation.MAGAZINE_HEIGHT_LOADED, pose[CrossbowAnimation.MAG_Y], 1e-3F);
         assertFalse(CrossbowAnimation.newMagazine(CrossbowAnimation.MAGAZINE_SEATS_AT, pose));
