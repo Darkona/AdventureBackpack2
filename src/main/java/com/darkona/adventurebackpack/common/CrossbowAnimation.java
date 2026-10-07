@@ -25,10 +25,41 @@ public final class CrossbowAnimation
     /** Length of the string box in the model; the renderer scales it to the real tip-to-latch distance. */
     public static final float STRING_BOX_LENGTH = 10F;
 
-    /** Part of the reload during which the cartridge is still dropping in and the drum shows no bolts. */
-    public static final float CARTRIDGE_SEATS_AT = 0.6F;
-    /** Height above its seat from which the cartridge drops, in model units. */
-    public static final float CARTRIDGE_DROP = 10F;
+    /**
+     * Reload, in parts of {@code crossbow.reloadTicks}: the spent magazine (if the reload took one out) pops up out of
+     * the slot on top of the drum and falls away to the right until {@link #MAGAZINE_EJECTED_AT}; the new one comes in
+     * from the left, sits on the slot and is pushed down into the drum until {@link #MAGAZINE_SEATS_AT}, when the
+     * drum shows its bolts again. Offsets are in model units from the magazine's seat (bottom on the drum top).
+     */
+    public static final float MAGAZINE_EJECTED_AT = 0.3F;
+    public static final float MAGAZINE_SEATS_AT = 0.65F;
+    /** Model Y of the slot: the top of the drum. Whatever of a magazine is below it is inside the drum (not drawn). */
+    public static final float SLOT_Y = 11F;
+    /** Height of the magazine above its bottom: the brass case alone, and with the bolts and fletching lying on it. */
+    public static final float MAGAZINE_HEIGHT_EMPTY = 2F;
+    public static final float MAGAZINE_HEIGHT_LOADED = 4F;
+    /** Where the new magazine starts: to the left of the slot and a little above it. */
+    public static final float INSERT_FROM_X = -7F;
+    public static final float INSERT_FROM_Y = 3F;
+    /** How far right the spent magazine flies, how much it rolls (degrees) and how low it falls before it is gone. */
+    public static final float EJECT_SIDE = 12F;
+    public static final float EJECT_ROLL = 70F;
+    public static final float EJECT_LOW_Y = -12F;
+    /** Part of the eject spent coming straight up out of the slot; the rest it flies off to the side. */
+    private static final float EJECT_CLEAR = 0.35F;
+    /** Part of the eject after which the spent magazine shrinks away. */
+    private static final float EJECT_FADE = 0.75F;
+    /** Part of the insert spent moving onto the slot; the rest it is pushed down into the drum. */
+    private static final float INSERT_SLIDE = 0.5F;
+
+    /** Indices of the magazine pose written by {@link #spentMagazine} and {@link #newMagazine}. */
+    public static final int MAG_X = 0;
+    public static final int MAG_Y = 1;
+    public static final int MAG_ROLL = 2;
+    public static final int MAG_SCALE = 3;
+    /** 1 while the magazine is in the slot column (cut at {@link #SLOT_Y}), 0 once it is clear of the crossbow. */
+    public static final int MAG_CLIPPED = 4;
+    public static final int MAG_SIZE = 5;
 
     /** Returned by {@link #sinceShot} when the stack never fired or its clock is from another world. */
     public static final float NEVER = 1.0E9F;
@@ -208,23 +239,67 @@ public final class CrossbowAnimation
         return progress >= 1F ? -1F : progress;
     }
 
-    /** The cartridge is drawn while it drops into the drum. */
-    public static boolean cartridgeVisible(float reloadProgress)
+    /**
+     * Pose of the spent magazine during a reload that took one out: it rises out of the slot, then flies off to the
+     * right, rolling and falling, and shrinks away. Writes {@link #MAG_SIZE} values into {@code out} (indices
+     * {@code MAG_*}) and returns false when it is not drawn (no reload, or past {@link #MAGAZINE_EJECTED_AT}).
+     */
+    public static boolean spentMagazine(float reloadProgress, float[] out)
     {
-        return reloadProgress >= 0F && reloadProgress < CARTRIDGE_SEATS_AT;
+        if (reloadProgress < 0F || reloadProgress >= MAGAZINE_EJECTED_AT) return false;
+        float t = reloadProgress / MAGAZINE_EJECTED_AT;
+        // y(t) = -h + a t - b t^2: from inside the drum, peaks just clear of the slot near EJECT_CLEAR, ends low.
+        float h = MAGAZINE_HEIGHT_EMPTY;
+        float clearTop = 1F;
+        float c2 = EJECT_CLEAR * EJECT_CLEAR;
+        float b = (h + clearTop - (h + EJECT_LOW_Y) * EJECT_CLEAR) / (EJECT_CLEAR - c2);
+        float a = h + EJECT_LOW_Y + b;
+        float side = t <= EJECT_CLEAR ? 0F : (t - EJECT_CLEAR) / (1F - EJECT_CLEAR);
+        out[MAG_X] = EJECT_SIDE * side;
+        out[MAG_Y] = -h + a * t - b * t * t;
+        out[MAG_ROLL] = -EJECT_ROLL * side;
+        out[MAG_SCALE] = t <= EJECT_FADE ? 1F : 1F - (t - EJECT_FADE) / (1F - EJECT_FADE);
+        out[MAG_CLIPPED] = side > 0F ? 0F : 1F;
+        return true;
     }
 
-    /** Height of the dropping cartridge above its seat, in model units. */
-    public static float cartridgeHeight(float reloadProgress)
+    /**
+     * Pose of the new magazine: from {@link #MAGAZINE_EJECTED_AT} it comes in from the left onto the slot, then it is
+     * pushed down into the drum and is gone at {@link #MAGAZINE_SEATS_AT}. Writes {@link #MAG_SIZE} values into
+     * {@code out} and returns false when it is not drawn.
+     */
+    public static boolean newMagazine(float reloadProgress, float[] out)
     {
-        if (!cartridgeVisible(reloadProgress)) return 0F;
-        return CARTRIDGE_DROP * (1F - reloadProgress / CARTRIDGE_SEATS_AT);
+        if (reloadProgress < MAGAZINE_EJECTED_AT || reloadProgress >= MAGAZINE_SEATS_AT) return false;
+        float u = (reloadProgress - MAGAZINE_EJECTED_AT) / (MAGAZINE_SEATS_AT - MAGAZINE_EJECTED_AT);
+        if (u < INSERT_SLIDE)
+        {
+            float k = u / INSERT_SLIDE;
+            float rest = (1F - k) * (1F - k); // eases out onto the slot
+            out[MAG_X] = INSERT_FROM_X * rest;
+            out[MAG_Y] = INSERT_FROM_Y * rest;
+        } else
+        {
+            float k = (u - INSERT_SLIDE) / (1F - INSERT_SLIDE);
+            out[MAG_X] = 0F;
+            out[MAG_Y] = -MAGAZINE_HEIGHT_LOADED * k * k; // pushed in, faster as it seats
+        }
+        out[MAG_ROLL] = 0F;
+        out[MAG_SCALE] = 1F;
+        out[MAG_CLIPPED] = 1F;
+        return true;
     }
 
-    /** The drum shows its bolts except while the new cartridge is still dropping in. */
+    /** The drum shows its bolts except from the start of a reload until the new magazine has gone in. */
     public static boolean boltsVisible(float reloadProgress)
     {
-        return !cartridgeVisible(reloadProgress);
+        return reloadProgress < 0F || reloadProgress >= MAGAZINE_SEATS_AT;
+    }
+
+    /** Bolts lying on the new magazine as it goes in: as many as it brings, at most three. */
+    public static int magazineBolts(int ammo)
+    {
+        return ammo < 0 ? 0 : (ammo > 3 ? 3 : ammo);
     }
 
     /**

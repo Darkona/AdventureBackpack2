@@ -7,7 +7,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+
+import java.nio.DoubleBuffer;
 
 /**
  * The Clockwork Crossbow: dark walnut tiller, stock and limbs, iron fittings, a brass six-chamber drum over the
@@ -19,13 +22,17 @@ import org.lwjgl.opengl.GL11;
  * script); the constructor body is its output. 1.1 adds the grappling hook resting in the muzzle (grapple mode: it
  * takes the place of the bolt in the firing chamber) and the bipod under the tiller (sniper mode: folded back along
  * the tiller, or hanging down and splayed while the shooter is crouched and still). Only the drum, gear, key, bolts,
- * strings, cartridge, hook and legs move; every angle comes from {@link CrossbowAnimation} so the frame-by-frame
+ * strings, magazine, hook and legs move; every angle comes from {@link CrossbowAnimation} so the frame-by-frame
  * work is arithmetic (performance contract, tier 4).
  */
 @SideOnly(Side.CLIENT)
 public class ModelClockworkCrossbow extends ModelBase
 {
     private static final float DEG = (float) Math.PI / 180F;
+    /** Keeps what is above the slot: y - SLOT_Y >= 0 in model units (scaled in {@link #renderMagazine}). */
+    private static final DoubleBuffer SLOT_PLANE = BufferUtils.createDoubleBuffer(4);
+    /** Model X of the bolts lying on the new magazine. */
+    private static final float[] MAGAZINE_BOLT_X = {0F, -1.5F, 1.5F};
 
     public ModelRenderer body;
     public ModelRenderer stock;
@@ -74,6 +81,8 @@ public class ModelClockworkCrossbow extends ModelBase
     public ModelRenderer armL3;
     public ModelRenderer string;
     public ModelRenderer cartridge;
+    /** Pose of the magazine being drawn ({@code CrossbowAnimation.MAG_*}), reused every frame. */
+    private final float[] magazinePose = new float[CrossbowAnimation.MAG_SIZE];
     public ModelRenderer hook;
     public ModelRenderer hookEye;
     public ModelRenderer hookShank;
@@ -332,7 +341,7 @@ public class ModelClockworkCrossbow extends ModelBase
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-        render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, CrossbowAnimation.NEVER, -1F, CrossbowLogic.MODE_REPEATING, 0F, false);
+        render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, CrossbowAnimation.NEVER, -1F, false, CrossbowLogic.MODE_REPEATING, 0F, false);
     }
 
     /**
@@ -343,11 +352,12 @@ public class ModelClockworkCrossbow extends ModelBase
      * @param capacity       bolts in a full magazine
      * @param sinceShot      ticks since the last shot with the partial tick, or {@link CrossbowAnimation#NEVER}
      * @param reloadProgress 0..1 while a reload runs, else -1
+     * @param swapped        the running reload took a magazine out (the spent one is drawn flying away)
      * @param mode           effective firing mode ({@link CrossbowLogic#MODE_REPEATING}, {@code MODE_GRAPPLE}, {@code MODE_SNIPER})
      * @param bipodPose      0 = legs folded along the tiller, 1 = legs down (only drawn in sniper mode)
      * @param hookLoaded     in grapple mode, whether the hook is still in the muzzle (false while it flies or hangs)
      */
-    public void render(float scale, int ammo, int capacity, float sinceShot, float reloadProgress, int mode, float bipodPose, boolean hookLoaded)
+    public void render(float scale, int ammo, int capacity, float sinceShot, float reloadProgress, boolean swapped, int mode, float bipodPose, boolean hookLoaded)
     {
         float drumDegrees = CrossbowAnimation.drumDegrees(ammo, capacity, sinceShot, reloadProgress);
         drum.rotateAngleZ = drumDegrees * DEG;
@@ -397,15 +407,71 @@ public class ModelClockworkCrossbow extends ModelBase
         renderString(scale, CrossbowAnimation.TIP_X, nockZ);
         renderString(scale, -CrossbowAnimation.TIP_X, nockZ);
 
-        if (CrossbowAnimation.cartridgeVisible(reloadProgress))
+        if (swapped && CrossbowAnimation.spentMagazine(reloadProgress, magazinePose))
+        {
+            renderMagazine(scale, 0);
+        }
+        if (CrossbowAnimation.newMagazine(reloadProgress, magazinePose))
+        {
+            renderMagazine(scale, CrossbowAnimation.magazineBolts(ammo));
+        }
+    }
+
+    /**
+     * The magazine (brass case, {@code bolts} bolts lying on it along the rail) at {@link #magazinePose}, an offset
+     * from its seat on the slot. While it is in the slot column a clip plane at {@link CrossbowAnimation#SLOT_Y} hides
+     * the part already inside the drum, so it goes in (or comes out) through the slot instead of popping.
+     */
+    private void renderMagazine(float scale, int bolts)
+    {
+        float[] pose = magazinePose;
+        boolean clipped = pose[CrossbowAnimation.MAG_CLIPPED] > 0F;
+        GL11.glPushMatrix();
+        try
+        {
+            if (clipped)
+            {
+                SLOT_PLANE.clear();
+                SLOT_PLANE.put(0D).put(1D).put(0D).put(-CrossbowAnimation.SLOT_Y * scale).flip();
+                GL11.glClipPlane(GL11.GL_CLIP_PLANE0, SLOT_PLANE);
+                GL11.glEnable(GL11.GL_CLIP_PLANE0);
+            }
+            float s = pose[CrossbowAnimation.MAG_SCALE];
+            GL11.glTranslatef((cartridge.rotationPointX + pose[CrossbowAnimation.MAG_X]) * scale,
+                    (cartridge.rotationPointY + pose[CrossbowAnimation.MAG_Y]) * scale, cartridge.rotationPointZ * scale);
+            GL11.glRotatef(pose[CrossbowAnimation.MAG_ROLL], 0F, 0F, 1F);
+            GL11.glScalef(s, s, s);
+            GL11.glTranslatef(-cartridge.rotationPointX * scale, -cartridge.rotationPointY * scale, -cartridge.rotationPointZ * scale);
+            cartridge.render(scale);
+            if (bolts > 0)
+            {
+                renderMagazineBolts(scale, bolts);
+            }
+        } finally
+        {
+            GL11.glDisable(GL11.GL_CLIP_PLANE0);
+            GL11.glPopMatrix();
+        }
+    }
+
+    /** Bolts lying on the case: bolt centre one unit over its top, tips to the muzzle, fletching tinted. */
+    private void renderMagazineBolts(float scale, int bolts)
+    {
+        int color = CrossbowAnimation.FLETCH_COLOR;
+        float y = cartridge.rotationPointY + 1.5F - bolt.rotationPointY;
+        for (int i = 0; i < bolts; i++)
         {
             GL11.glPushMatrix();
             try
             {
-                GL11.glTranslatef(0F, CrossbowAnimation.cartridgeHeight(reloadProgress) * scale, 0F);
-                cartridge.render(scale);
+                GL11.glTranslatef(MAGAZINE_BOLT_X[i] * scale, y * scale, cartridge.rotationPointZ * scale);
+                bolt.render(scale);
+                boltTip.render(scale);
+                GL11.glColor4f((color >> 16 & 0xFF) / 255F, (color >> 8 & 0xFF) / 255F, (color & 0xFF) / 255F, 1F);
+                fletchV.render(scale);
             } finally
             {
+                GL11.glColor4f(1F, 1F, 1F, 1F);
                 GL11.glPopMatrix();
             }
         }

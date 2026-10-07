@@ -48,6 +48,8 @@ public class ItemCrossbow extends ItemAB
     public static final String TAG_LAST_SHOT = "LastShot";
     /** long: world tick when the last magazine went in (reload animation; it lasts crossbow.reloadTicks). */
     public static final String TAG_LAST_RELOAD = "LastReload";
+    /** byte (boolean): the last reload took a magazine out (reload animation: the spent one flies out first). */
+    public static final String TAG_RELOAD_SWAP = "ReloadSwap";
     /** long: world tick of the last dry click (limits the out-of-ammo message). */
     public static final String TAG_LAST_DRY = "LastDry";
     /** int: bolts fired, against crossbow.durability. */
@@ -262,6 +264,7 @@ public class ItemCrossbow extends ItemAB
         tag.setInteger(TAG_AMMO, CrossbowLogic.clampAmmo(charges, capacity));
         tag.setString(TAG_AMMO_ITEM, type);
         tag.setLong(TAG_LAST_RELOAD, now);
+        tag.setBoolean(TAG_RELOAD_SWAP, magazine);
         tag.setLong(TAG_READY_AT, now + ConfigHandler.CROSSBOW_RELOAD_TICKS);
         world.playSoundAtEntity(player, "random.click", 0.6F, 0.8F);
         world.playSoundAtEntity(player, "tile.piston.in", 0.3F, 1.6F);

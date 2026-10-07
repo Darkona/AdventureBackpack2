@@ -113,16 +113,72 @@ class CrossbowAnimationTest {
     }
 
     @Test
-    void cartridgeDropsInThenTheBoltsAppear() {
-        assertFalse(CrossbowAnimation.cartridgeVisible(-1F));
+    void spentMagazineComesUpOutOfTheSlotThenFliesOffToTheRight() {
+        float[] pose = new float[CrossbowAnimation.MAG_SIZE];
+        assertFalse(CrossbowAnimation.spentMagazine(-1F, pose));
+        assertTrue(CrossbowAnimation.spentMagazine(0F, pose));
+        // starts inside the drum, in the slot column, full size
+        assertEquals(-CrossbowAnimation.MAGAZINE_HEIGHT_EMPTY, pose[CrossbowAnimation.MAG_Y], EPS);
+        assertEquals(0F, pose[CrossbowAnimation.MAG_X], EPS);
+        assertEquals(1F, pose[CrossbowAnimation.MAG_CLIPPED], EPS);
+        assertEquals(1F, pose[CrossbowAnimation.MAG_SCALE], EPS);
+        // a third of the way it is clear of the slot (bottom above it) and still straight above it
+        CrossbowAnimation.spentMagazine(CrossbowAnimation.MAGAZINE_EJECTED_AT * 0.34F, pose);
+        assertTrue(pose[CrossbowAnimation.MAG_Y] > 0F);
+        assertEquals(0F, pose[CrossbowAnimation.MAG_X], EPS);
+        // it leaves the slot column only once clear, so the clip plane never cuts it beside the drum
+        CrossbowAnimation.spentMagazine(CrossbowAnimation.MAGAZINE_EJECTED_AT * 0.36F, pose);
+        assertTrue(pose[CrossbowAnimation.MAG_X] > 0F);
+        assertTrue(pose[CrossbowAnimation.MAG_Y] > 0F);
+        assertEquals(0F, pose[CrossbowAnimation.MAG_CLIPPED], EPS);
+        // ends low on the right, rolled, shrunk to nothing
+        CrossbowAnimation.spentMagazine(CrossbowAnimation.MAGAZINE_EJECTED_AT - 1e-6F, pose);
+        assertEquals(CrossbowAnimation.EJECT_SIDE, pose[CrossbowAnimation.MAG_X], 1e-3F);
+        assertEquals(CrossbowAnimation.EJECT_LOW_Y, pose[CrossbowAnimation.MAG_Y], 1e-3F);
+        assertEquals(-CrossbowAnimation.EJECT_ROLL, pose[CrossbowAnimation.MAG_ROLL], 1e-3F);
+        assertEquals(0F, pose[CrossbowAnimation.MAG_SCALE], 1e-3F);
+        assertFalse(CrossbowAnimation.spentMagazine(CrossbowAnimation.MAGAZINE_EJECTED_AT, pose));
+    }
+
+    @Test
+    void newMagazineComesInFromTheLeftAndIsPushedIntoTheDrum() {
+        float[] pose = new float[CrossbowAnimation.MAG_SIZE];
+        assertFalse(CrossbowAnimation.newMagazine(0F, pose));
+        assertTrue(CrossbowAnimation.newMagazine(CrossbowAnimation.MAGAZINE_EJECTED_AT, pose));
+        assertEquals(CrossbowAnimation.INSERT_FROM_X, pose[CrossbowAnimation.MAG_X], EPS);
+        assertEquals(CrossbowAnimation.INSERT_FROM_Y, pose[CrossbowAnimation.MAG_Y], EPS);
+        assertEquals(1F, pose[CrossbowAnimation.MAG_SCALE], EPS);
+        assertEquals(1F, pose[CrossbowAnimation.MAG_CLIPPED], EPS);
+        float mid = (CrossbowAnimation.MAGAZINE_EJECTED_AT + CrossbowAnimation.MAGAZINE_SEATS_AT) / 2F;
+        CrossbowAnimation.newMagazine(mid, pose);
+        assertEquals(0F, pose[CrossbowAnimation.MAG_X], EPS);
+        assertEquals(0F, pose[CrossbowAnimation.MAG_Y], EPS);
+        // never below the slot while it is beside it: only straight above the slot does it go in
+        for (float p = CrossbowAnimation.MAGAZINE_EJECTED_AT; p < mid; p += 0.01F) {
+            CrossbowAnimation.newMagazine(p, pose);
+            assertTrue(pose[CrossbowAnimation.MAG_Y] >= 0F);
+        }
+        CrossbowAnimation.newMagazine(CrossbowAnimation.MAGAZINE_SEATS_AT - 1e-6F, pose);
+        assertEquals(-CrossbowAnimation.MAGAZINE_HEIGHT_LOADED, pose[CrossbowAnimation.MAG_Y], 1e-3F);
+        assertFalse(CrossbowAnimation.newMagazine(CrossbowAnimation.MAGAZINE_SEATS_AT, pose));
+        assertFalse(CrossbowAnimation.newMagazine(-1F, pose));
+    }
+
+    @Test
+    void drumShowsItsBoltsOnceTheNewMagazineIsIn() {
         assertTrue(CrossbowAnimation.boltsVisible(-1F));
-        assertTrue(CrossbowAnimation.cartridgeVisible(0F));
         assertFalse(CrossbowAnimation.boltsVisible(0F));
-        assertEquals(CrossbowAnimation.CARTRIDGE_DROP, CrossbowAnimation.cartridgeHeight(0F), EPS);
-        assertEquals(CrossbowAnimation.CARTRIDGE_DROP / 2F, CrossbowAnimation.cartridgeHeight(CrossbowAnimation.CARTRIDGE_SEATS_AT / 2F), EPS);
-        assertFalse(CrossbowAnimation.cartridgeVisible(CrossbowAnimation.CARTRIDGE_SEATS_AT));
+        assertFalse(CrossbowAnimation.boltsVisible(CrossbowAnimation.MAGAZINE_SEATS_AT - 0.01F));
+        assertTrue(CrossbowAnimation.boltsVisible(CrossbowAnimation.MAGAZINE_SEATS_AT));
         assertTrue(CrossbowAnimation.boltsVisible(0.9F));
-        assertEquals(0F, CrossbowAnimation.cartridgeHeight(0.9F), EPS);
+    }
+
+    @Test
+    void newMagazineCarriesAtMostThreeBolts() {
+        assertEquals(0, CrossbowAnimation.magazineBolts(0));
+        assertEquals(2, CrossbowAnimation.magazineBolts(2));
+        assertEquals(3, CrossbowAnimation.magazineBolts(24));
+        assertEquals(0, CrossbowAnimation.magazineBolts(-1));
     }
 
     @Test

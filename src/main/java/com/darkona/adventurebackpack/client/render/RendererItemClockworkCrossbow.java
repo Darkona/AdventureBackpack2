@@ -118,7 +118,7 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                 default:
                     return;
             }
-            model.render(MODEL_SCALE, ammo, capacity, sinceShot, reload, mode, bipod, hookLoaded);
+            model.render(MODEL_SCALE, ammo, capacity, sinceShot, reload, state.reloadSwap, mode, bipod, hookLoaded);
         } finally
         {
             GL11.glColor4f(1F, 1F, 1F, 1F);
