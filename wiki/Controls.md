@@ -61,8 +61,9 @@ The Backpack Abilities On/Off key is not bound by default: pick a key for it in 
 | Right click your tame spider | Gets on it. It carries you only while you wear the Spider backpack. |
 | Jump, riding a spider | The spider jumps |
 | Sneak and right click your tame spider | Lets it go |
-| Right click, crossbow in hand | Fires, or loads a cartridge if the magazine is empty. Hold it to fire the whole magazine. In grappling hook mode it shoots the hook. In sniper mode, with the bipod down, it fires the strong bolt. |
-| Sneak and right click, crossbow in hand | Swaps the cartridge. In sniper mode, with the bipod down, it fires. |
+| Right click, crossbow in hand | Fires, or puts in a loaded Crossbow Magazine if the crossbow is empty. Hold it to fire the whole magazine. In grappling hook mode it shoots the hook. In sniper mode, with the bipod down, it fires the strong bolt. |
+| Sneak and right click, crossbow in hand | Swaps the magazine for another loaded one; the first comes back with its charges left. In sniper mode, with the bipod down, it fires. |
+| Hold right click, Crossbow Magazine in hand | Loads the magazine with arrows or Crossbow Bolts from your inventory, one charge at a time. See [Crossbow](Crossbow#the-crossbow-magazine). |
 | Sneak and stand still, crossbow in sniper mode | Puts the bipod down and zooms in |
 | Sneak or jump, hanging on the hook | Lets go of the hook |
 | Right click the top of a block, Sleeping Bag in hand | Lays the bag on the ground as a bed |

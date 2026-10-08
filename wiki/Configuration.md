@@ -1,6 +1,6 @@
 # Configuration
 
-Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 234 keys.
+Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 239 keys.
 
 You can also edit the file from the game: in the Mods list, select Adventure Backpack and press Config. Changes made in the file need a restart of the game. Keys marked "Needs a restart" are read when items, blocks or keys are created, so they need one even with the config screen.
 
@@ -19,7 +19,7 @@ The file is a tree under `adventurebackpack`. First comes `enabled`, with one sw
 - [Systems](#systems-enabled), [Backpack](#backpack-backpack), [Abilities](#abilities-abilities), [Hose](#hose-hose), [Copter pack](#copter-pack-copterpack), [Steam jetpack](#steam-jetpack-steamjetpack)
 - [Scuba gear](#scuba-gear-scuba), [Air compressor](#air-compressor-scubacompressor), [Flamethrower](#flamethrower-flamethrower), [Fuels](#fuels-fuels), [Fuel station](#fuel-station-fuelstation)
 - [Inflatable boat](#inflatable-boat-inflatableboat), [Boat motor](#boat-motor-inflatableboatmotor)
-- [Crossbow](#clockwork-crossbow-crossbow), [Grappling hook](#grappling-hook-crossbowgrapple), [Sniper mode](#sniper-mode-crossbowsniper), [Piston boots](#piston-boots-pistonboots), [Campfire](#campfire-cooking-campfirecooking), [Sleeping bag](#sleeping-bag-sleepingbag)
+- [Crossbow](#clockwork-crossbow-crossbow), [Crossbow Magazine](#crossbow-magazine-crossbowmagazine), [Ammunition](#ammunition-crossbowammo), [Grappling hook](#grappling-hook-crossbowgrapple), [Sniper mode](#sniper-mode-crossbowsniper), [Piston boots](#piston-boots-pistonboots), [Campfire](#campfire-cooking-campfirecooking), [Sleeping bag](#sleeping-bag-sleepingbag)
 - [Display](#display-render), [Keys](#keys-keys), [Tool swapping keys](#tool-swapping-keys-keystoolcycle)
 - [Backpacks in the world](#backpacks-in-the-world-worldgen), [Extra recipes](#extra-recipes-recipes), [Small tweaks](#small-tweaks-tweaks), [Tool slots](#tool-slots-tweakstoolcycle), [Grave mods](#grave-mods-compatgraves), [Baubles](#baubles-compatbaubles)
 - [Earlier flight values](#flight-values-before-100)
@@ -36,7 +36,7 @@ One switch per system. A disabled system stays registered, so worlds and servers
 | `enabled.steamJetpack` | boolean | `true` |  | The Steam Jetpack. |
 | `enabled.scuba` | boolean | `true` |  | The Scuba Gear, its Air Tanks and Diving Mask, and the Air Compressor. |
 | `enabled.inflatableBoat` | boolean | `true` |  | The Inflatable Boat and the Motorized Inflatable Boat. |
-| `enabled.crossbow` | boolean | `true` |  | The Clockwork Crossbow and its Bolt Cartridges. |
+| `enabled.crossbow` | boolean | `true` |  | The Clockwork Crossbow, its Crossbow Magazines and the Crossbow Bolts. |
 | `enabled.sleepingBag` | boolean | `true` |  | The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up. |
 | `enabled.pistonBoots` | boolean | `true` |  | The Piston Boots: step assist, sprint speed and fall protection. |
 | `enabled.campfire` | boolean | `true` |  | Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way. |
@@ -387,18 +387,37 @@ The outboard motor of the Motorized Inflatable Boat. It burns the fuels of `fuel
 
 ## Clockwork crossbow (`crossbow`)
 
-A repeating crossbow fed with Bolt Cartridges. The key `keys.crossbowMode` changes its mode; the other two modes have their own sections below. In repetition mode, hold right click to fire the magazine one bolt after another; when it is empty the next click loads the first cartridge in your inventory, hotbar first. Sneak + right click swaps a partly used magazine, which comes back as a partly used cartridge. Ticks are 20 per second.
+A repeating crossbow fed with reusable Crossbow Magazines. The key `keys.crossbowMode` changes its mode; the other two modes have their own sections below. In repetition mode, hold right click to fire the magazine one bolt after another; when it is empty the next click puts in the first loaded magazine of your inventory, hotbar first, and the empty one comes back to the inventory, or drops at your feet when it is full. Sneak + right click swaps a partly used magazine, which comes back with the charges it has left. Ticks are 20 per second.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `crossbow.shotsPerMagazine` | int | `6` | 1 to 24 | Bolts in a full magazine, and in a full Bolt Cartridge (the recipe still takes 6 arrows). |
 | `crossbow.shotDelayTicks` | int | `4` | 1 to 40 | Pause between two bolts. Minecraft repeats a held right click every 4 ticks, so the real pause while holding is this value rounded up to a multiple of 4 (4 = 5 bolts a second, 5 to 8 = 2.5 a second). |
-| `crossbow.reloadTicks` | int | `30` | 0 to 200 | Time to load a cartridge, during which the crossbow does not fire. |
+| `crossbow.reloadTicks` | int | `30` | 0 to 200 | Time to put a magazine into the crossbow, during which the crossbow does not fire. |
 | `crossbow.boltVelocity` | double | `3.0` | 0.5 to 6.0 | Bolt speed in blocks per tick when it leaves the crossbow (a fully drawn bow shoots at 3). Faster bolts fly flatter and further. |
-| `crossbow.boltDamage` | double | `4.0` | 0.0 to 100.0 | Damage of a bolt as it leaves the crossbow, in half hearts (a fully drawn bow does 6 to 10). It drops a little with distance as the bolt slows down. |
+| `crossbow.boltDamage` | double | `4.0` | 0.0 to 100.0 | Damage of a bolt fired from a magazine of arrows as it leaves the crossbow, in half hearts (a fully drawn bow does 6 to 10). Crossbow Bolts multiply it by `crossbow.ammo.boltDamageMultiplier`. It drops a little with distance as the bolt slows down. |
 | `crossbow.ignoreHurtCooldown` | boolean | `true` |  | Bolts ignore the short invulnerability a mob gets after a hit, so every bolt of a burst lands. When false about half of a fast burst bounces off the same target. |
-| `crossbow.boltsRecoverable` | boolean | `false` |  | Bolts stuck in a block can be picked up as arrows. Off by default: a cartridge is spent ammunition. |
+| `crossbow.boltsRecoverable` | boolean | `false` |  | Bolts stuck in a block can be picked up as arrows. Off by default: a charge of the magazine is spent ammunition. |
 | `crossbow.durability` | int | `0` | 0 to 100000 | Bolts the crossbow fires before it breaks. 0 means it never breaks. |
+
+## Crossbow Magazine (`crossbow.magazine`)
+
+The Crossbow Magazine is the old Bolt Cartridge (it keeps its id), now reusable: you load it by hand with ammunition and the crossbow gives it back empty. Old cartridges without a charge count are read as full magazines of arrows.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `crossbow.magazine.capacity` | int | `6` | 1 to 24 | Charges a full Crossbow Magazine holds, and bolts the crossbow fires from it. Old cartridges without a charge count hold 6 (the 6 arrows they were made of), never more than this. Replaces `crossbow.shotsPerMagazine` (its value moves here on load). |
+| `crossbow.magazine.loadTicksPerCharge` | int | `4` | 0 to 100 | Pause between two charges while loading a magazine with a held right click (a held click repeats every 4 ticks). 0 loads the whole magazine with one click. |
+| `crossbow.magazine.reloadRecipe` | boolean | `true` |  | Shapeless recipe: a magazine and up to its free room of ammunition of one kind (the kind it already holds) make the magazine loaded with them. Needs a restart. |
+| `crossbow.magazine.legacyRecipe` | boolean | `true` |  | Keep the 1.0 Bolt Cartridge recipe (6 arrows, an iron ingot, 2 sticks): it makes a magazine already loaded with 6 arrows. The empty magazine has its own recipe (an iron ingot, 2 sticks and a string). Needs a restart. |
+
+## Ammunition (`crossbow.ammo`)
+
+What the Crossbow Magazine is loaded with. Bolts fired from a magazine of Crossbow Bolts hit harder than those from a magazine of arrows.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `crossbow.ammo.list` | string list | `adventurebackpack:bolt`, `minecraft:arrow` |  | Items a magazine can be loaded with, as modid:itemName (any damage value). An empty magazine takes the first ammunition found in the inventory (hotbar first); a loaded one only its own kind. Unknown names are ignored. Same on server and clients. |
+| `crossbow.ammo.boltDamageMultiplier` | double | `1.5` | 0.1 to 10.0 | Damage of bolts fired from a magazine of Crossbow Bolts, as a multiple of `crossbow.boltDamage` and `crossbow.sniper.boltDamage`. Other ammunition does the base damage. |
 
 ## Grappling hook (`crossbow.grapple`)
 
@@ -597,9 +616,11 @@ Flying costs more in 1.0.0. These are the earlier values, for a pack that wants 
 
 The copter pack list `copterpack.fuels` is now `fuels.list`, for every fuel user. The first time the game starts with the new version the value moves: a list you never changed becomes the new default, which adds `biomass=1.5`, and a list you changed is kept as it was.
 
-The old single-shot crossbow keys `crossbow.arrowVelocity` and `crossbow.arrowDamage` are removed from the file and not moved. Use `crossbow.boltVelocity` and `crossbow.boltDamage`. `crossbow.reloadTicks` now means the time to load a cartridge.
+The old single-shot crossbow keys `crossbow.arrowVelocity` and `crossbow.arrowDamage` are removed from the file and not moved. Use `crossbow.boltVelocity` and `crossbow.boltDamage`. `crossbow.reloadTicks` now means the time to put a magazine into the crossbow.
 
 The section `crossbow.elemental` of 1.0.0 (`enabled`, `freezingTicks`, `freezingAmplifier`, `poisonTicks`, `poisonAmplifier`, `stunningTicks`, `stunningAmplifier`) is removed from the file and not moved: the elemental bolts no longer exist. Cartridges and loaded crossbows from 1.0.0 that held them load as normal ones.
+
+`crossbow.shotsPerMagazine` is now `crossbow.magazine.capacity`. The value moves on the first start with the new version and the old key leaves the file.
 
 ## Not in the file
 
