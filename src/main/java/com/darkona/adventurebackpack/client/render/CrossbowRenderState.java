@@ -18,6 +18,8 @@ public class CrossbowRenderState
     public int ammo;
     public long lastShot;
     public long lastReload;
+    /** The last reload took a magazine out. */
+    public boolean reloadSwap;
     /** Stored firing mode (raw: {@code ItemCrossbow.effectiveMode} applies the config switches). */
     public int mode;
 
@@ -32,12 +34,14 @@ public class CrossbowRenderState
             ammo = 0;
             lastShot = 0;
             lastReload = 0;
+            reloadSwap = false;
             mode = 0;
             return;
         }
         ammo = tag.getInteger(ItemCrossbow.TAG_AMMO);
         lastShot = tag.getLong(ItemCrossbow.TAG_LAST_SHOT);
         lastReload = tag.getLong(ItemCrossbow.TAG_LAST_RELOAD);
+        reloadSwap = tag.getBoolean(ItemCrossbow.TAG_RELOAD_SWAP);
         mode = tag.getInteger(ItemCrossbow.TAG_MODE);
     }
 }
