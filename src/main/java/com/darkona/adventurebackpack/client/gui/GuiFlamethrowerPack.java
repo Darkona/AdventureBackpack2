@@ -37,9 +37,7 @@ public class GuiFlamethrowerPack extends GuiWithTanks
     private final EntityPlayer player;
     private ItemStack shown;
     private int shownFuel = -1;
-    private String fuelLabel = "";
     private int shownOn = -1;
-    private String pilotLabel = "";
 
     public GuiFlamethrowerPack(EntityPlayer player, InventoryFlamethrowerPack inventory, boolean wearing)
     {
@@ -62,16 +60,13 @@ public class GuiFlamethrowerPack extends GuiWithTanks
             inventory.setContainerStack(current);
         }
         int fuel = inventory.getFuel();
-        if (fuel != shownFuel)
+        int on = inventory.isOn() ? 1 : 0;
+        if (fuel != shownFuel || on != shownOn)
         {
             shownFuel = fuel;
-            fuelLabel = I18n.format("adventurebackpack:gui.flamethrower.fuel", fuel, inventory.getCapacity());
-        }
-        int on = inventory.isOn() ? 1 : 0;
-        if (on != shownOn)
-        {
             shownOn = on;
-            pilotLabel = on == 1 ? I18n.format("adventurebackpack:gui.flamethrower.lit") : I18n.format("adventurebackpack:gui.flamethrower.out");
+            setLabels(I18n.format("adventurebackpack:gui.flamethrower.fuel"), fuel + "/" + inventory.getCapacity(), "",
+                    I18n.format(on == 1 ? "adventurebackpack:gui.flamethrower.lit" : "adventurebackpack:gui.flamethrower.out"));
         }
     }
 
@@ -94,8 +89,7 @@ public class GuiFlamethrowerPack extends GuiWithTanks
         GL11.glDisable(GL11.GL_BLEND);
         leftTank.draw(this, inventory.getLeftTank());
         rightTank.draw(this, inventory.getRightTank());
-        fontRendererObj.drawString(fuelLabel, 52, 12, 0x373737, false);
-        fontRendererObj.drawString(pilotLabel, 52, 24, 0x373737, false);
+        drawLabels(10, 0x373737);
     }
 
     @Override
