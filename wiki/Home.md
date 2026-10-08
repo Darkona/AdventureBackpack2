@@ -12,7 +12,7 @@ Around the backpack the mod adds a hose to drink and move fluids, a crossbow wit
 
 - 76 backpacks. Most are craftable from a Standard backpack, and 20 of them do something while you wear them: night vision, fire resistance, milk from wheat, eggs, calm wolves, tame spiders to ride, burning punches, and so on.
 - Two tanks per backpack, filled with buckets or with the hose. The hose also lets you drink from the tank.
-- A Clockwork Crossbow loaded from Bolt Cartridges, with three modes: a magazine of six bolts with a held right click, a grappling hook that pulls you to a block, and a sniper shot with a bipod. A key changes the mode.
+- A Clockwork Crossbow loaded from reusable Crossbow Magazines, with three modes: a magazine of six bolts with a held right click, a grappling hook that pulls you to a block, and a sniper shot with a bipod. A key changes the mode.
 - A Steam Jetpack, powered by water and a furnace fuel, and a Copter Pack that burns liquid fuel from BuildCraft, Forestry, Railcraft or GregTech. Flying costs: a full tank gives a minute or two.
 - Scuba Gear with two air tanks and a diving mask: ten minutes under water, filled at an Air Compressor you pump by hand or run on any furnace fuel.
 - A Flamethrower: a pack on your back with two fuel tanks and a nozzle in your hand that throws flame in a cone. A Fuel Station fills it, the Copter Pack and the motor of the Motorized Inflatable Boat.
@@ -37,7 +37,7 @@ For players
 - [Flamethrower](Flamethrower): the pack, the nozzle and the pilot
 - [Fuel Station](Fuel-Station): the block that fills the packs and the boat
 - [Fluids and Hose](Fluids-and-Hose): tanks, buckets, the hose, what each fluid does when drunk, air and the fuel list
-- [Crossbow](Crossbow): the three modes of the crossbow and its cartridges
+- [Crossbow](Crossbow): the three modes of the crossbow, its magazines and its ammunition
 - [Jetpack and Copter Pack](Jetpack-and-Copter-Pack): the two flying packs
 - [Controls](Controls): keys, mouse wheel, tool swapping, the abilities key and the boat motor key
 - [FAQ](FAQ): equipping, placing, sleeping, dying

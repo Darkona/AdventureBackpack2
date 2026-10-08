@@ -60,6 +60,18 @@ Bind the Backpack Abilities On/Off key in Options > Controls, which has no defau
 
 Hold the crossbow and press V. The modes go repetition, grappling hook, sniper. The mode shows in the name of the crossbow. See [Crossbow](Crossbow).
 
+## How do I load the crossbow?
+
+Hold a Crossbow Magazine and hold right click: it takes arrows or Crossbow Bolts from your inventory, one charge at a time, until it holds six. Then hold the crossbow and right click: when it has no bolts left it takes the first loaded magazine of your inventory, hotbar first. Sneak and right click swaps the magazine before it is empty. See [Crossbow](Crossbow#the-crossbow-magazine).
+
+## Where did my empty Crossbow Magazine go?
+
+It comes back to your inventory when the crossbow takes a new one, or falls at your feet if the inventory is full. A magazine is not used up: load it again with arrows or Crossbow Bolts. If the crossbow has no loaded magazine to take, a click gives you back the empty one. See [Crossbow](Crossbow#loading-the-crossbow).
+
+## What do Bolt Cartridges from 1.0 do now?
+
+They are Crossbow Magazines loaded with six arrows. The Blazing, Freezing, Poison and Stunning ones from 1.0 load as normal ones. See [Crossbow](Crossbow#tips).
+
 ## Why does my crossbow in sniper mode fire normal bolts?
 
 The bipod is folded. Sneak and stand still on the ground to put it down. With the bipod down the view zooms and one click fires the strong bolt.

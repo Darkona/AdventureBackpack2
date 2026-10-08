@@ -4,11 +4,14 @@
 
 For Minecraft 1.7.10 with Forge.
 
-The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders become pets you tame, the Blaze backpack gets its ability, the sleeping bag and the Inflatable Boat can be crafted and used on their own, and the campfire cooks. There is dive equipment, a flamethrower, a fuel station and an outboard motor for the boat, and the Copter Pack no longer needs BuildCraft. Numbers in brackets are issues in the GitHub repository.
+The Clockwork Crossbow gets two new modes, reusable magazines and a new bolt, and loses its elemental bolts, spiders become pets you tame, the Blaze backpack gets its ability, the sleeping bag and the Inflatable Boat can be crafted and used on their own, and the campfire cooks. There is dive equipment, a flamethrower, a fuel station and an outboard motor for the boat, and the Copter Pack no longer needs BuildCraft. Numbers in brackets are issues in the GitHub repository.
 
 ### Added
 
 - **Crossbow modes.** A key, V by default, changes the mode of the crossbow in your hand: repetition, grappling hook and sniper. See [Crossbow](Crossbow).
+- **Crossbow Bolt.** New ammunition for the crossbow, made of an iron ingot, a stick and a feather, four at a time. A magazine loaded with Crossbow Bolts fires bolts that hit half as much again as arrows. Settings: `crossbow.ammo`. See [Crossbow](Crossbow#ammunition).
+- **Loading magazines by hand.** Hold right click with a Crossbow Magazine in your hand to load it with arrows or Crossbow Bolts from your inventory, one charge at a time. A shapeless recipe also fills a magazine in the crafting grid. Settings: `crossbow.magazine`. See [Crossbow](Crossbow#the-crossbow-magazine).
+- **Two-handed crossbow.** In third person the player holds the crossbow with both hands and aims along it, and the reload shows the spent magazine falling out to the right and the new one going in through the slot.
 - **Grappling hook.** Right click shoots a hook that catches the first solid block within 32 blocks and pulls you to it. You let go by sneaking or jumping, and you take no fall damage from the pull. Settings: `crossbow.grapple`.
 - **Sniper mode.** Sneak and stand still on the ground to put a bipod down and zoom in; right click fires one strong, straight bolt. Settings: `crossbow.sniper`.
 - **Taming spiders.** With the Spider backpack on, right click a spider with a spider eye to try to tame it. A tame spider follows you and only you ride it, while you wear the backpack. Settings: `abilities.spider`. See [Backpacks](Backpacks#taming-spiders).
@@ -26,7 +29,7 @@ The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders
 - **Fuel Station.** A block with a tank of 16000 mB that takes the fuels of the fuel list from buckets, cans, cells and pipes. It fills the Flamethrower Pack and the Copter Pack in its slot, or worn or held with Sneak and right click, and the Motorized Inflatable Boat with a right click while you ride it. Hoppers move the containers and comparators read the tank. Settings: `fuelstation`, `enabled.fuelStation`. See [Fuel Station](Fuel-Station).
 - **Boat motor.** The Motorized Inflatable Boat gets an outboard motor with a tank of 6000 mB, about 5 minutes of running. It turns on and off with a key, Boat Motor On/Off, not bound by default, and the boat goes up to 12 blocks per second and speeds up twice as fast. It stops without fuel, without a pilot and out of the water, and the fuel stays in the boat when you pick it up. Settings: `inflatableboat.motor`, `keys.boatMotorToggle`. See [Gear](Gear#motorized-inflatable-boat).
 - **Air and fuel from other mods.** Fuels and air are found by fluid name, so BuildCraft, Forestry, Railcraft, Thermal Foundation, GregTech, Galacticraft and Mekanism work without being needed. Settings: `fuels.list`, `scuba.breathableFluids`, `scuba.airItems`. See [Compatibility](Compatibility).
-- The config file has 234 keys now. See [Configuration](Configuration).
+- The config file has 239 keys now. See [Configuration](Configuration).
 
 ### Changed
 
@@ -34,7 +37,8 @@ The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders
 - **Blaze backpack.** It had no ability before.
 - **Sleeping Bag.** The item can be placed on its own, and sleeping in a bag can be set not to move your spawn point (`sleepingbag.setsSpawn`).
 - **Inflatable Boat.** It was only in the creative tab. The two boats, the Inflatable Chamber and the Hydro Blades now have crafting recipes.
-- **Bolt Cartridge.** There is a single kind of cartridge with six bolts, made of arrows, an iron ingot and sticks.
+- **Crossbow Magazine.** The Bolt Cartridge is now the Crossbow Magazine, and it is reusable. It starts empty, you load it with arrows or Crossbow Bolts, and when the crossbow takes a new magazine the spent one comes back to your inventory to be loaded again. Sneak and right click swaps a magazine before it is empty. The 1.0 recipe of six arrows, an iron ingot and two sticks makes a magazine loaded with six arrows, and the empty one is made of an iron ingot, two sticks and a string. Cartridges from 1.0 are full magazines of arrows, and crossbows loaded with them keep their bolts.
+- **Crossbow settings.** `crossbow.shotsPerMagazine` is now `crossbow.magazine.capacity`, and its value moves on the first start.
 - **Copter Pack without BuildCraft.** It burns any fuel of the new list, not only BuildCraft's, and works with Forestry, Railcraft, Thermal Foundation or GregTech fuels. With no fuel mod it has no recipe and does nothing, as before.
 - **Fuel list.** The setting `copterpack.fuels` is now `fuels.list`, shared by the Copter Pack, the Flamethrower, the boat motor and the Fuel Station. The value moves on the first start: a list you never changed gets the new default, which adds Forestry biomass, and one you changed stays. See [Fluids and Hose](Fluids-and-Hose#fuels).
 - **Motorized Inflatable Boat.** Its motor was only a look; it now runs on fuel. The boat is the same as the plain one when the motor is off or out of fuel.
@@ -49,6 +53,7 @@ The Clockwork Crossbow gets two new modes and loses its elemental bolts, spiders
 
 - Tamed spiders no longer pile up in the world. They never despawned and had no owner.
 - The sleeping bag no longer stays marked as occupied after you wake up.
+- The crossbow no longer looks crossed over the player in third person, and its reload no longer shows a block floating above the drum.
 
 ## 1.0.0 (2026-10-15)
 
