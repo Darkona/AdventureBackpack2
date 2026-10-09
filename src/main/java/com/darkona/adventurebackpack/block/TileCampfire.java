@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.common.CampfireCooking;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -18,8 +19,8 @@ import java.util.UUID;
 /**
  * The campfire's cooking state (see {@link CampfireCooking}): one virtual slot with the raw items on the fire, the
  * world time when the current one is done and who put them there. The tile never ticks; {@link BlockCampFire}
- * gets a scheduled block update when an item is due. Clients only learn whether something is cooking, when it
- * starts or stops, for the smoke and the sizzle.
+ * gets a scheduled block update when an item is due. Clients only learn what is cooking (item and damage), when it
+ * starts or stops, for the smoke, the sizzle and the item drawn over the fire.
  *
  * @author Darkona
  */
@@ -34,6 +35,8 @@ public class TileCampfire extends TileEntity
     private long ownerLeast;
     /** Client: something is cooking (from the description packet). */
     private boolean cookingClient;
+    /** Client: the item on the fire as an entity for RenderItem, built when the packet names a new item. */
+    private EntityItem displayItem;
 
     public TileCampfire()
     {
@@ -191,12 +194,26 @@ public class TileCampfire extends TileEntity
         ownerLeast = compound.getLong("ownerLeast");
     }
 
-    /** Clients only need to know whether something cooks. Sent on chunk load and when cooking starts or stops. */
+    /** Client: the item to draw over the fire while something cooks, or null. */
+    public EntityItem getDisplayItem()
+    {
+        return cookingClient ? displayItem : null;
+    }
+
+    /**
+     * Clients only need to know what cooks (item id and damage, not its tag). Sent on chunk load and when cooking
+     * starts or stops; more of the same item never changes it.
+     */
     @Override
     public Packet getDescriptionPacket()
     {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setBoolean("cooking", cooking != null);
+        if (cooking != null)
+        {
+            compound.setInteger("item", Item.getIdFromItem(cooking.getItem()));
+            compound.setInteger("damage", cooking.getItemDamage());
+        }
         return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, compound);
     }
 
@@ -205,5 +222,16 @@ public class TileCampfire extends TileEntity
     {
         NBTTagCompound compound = pkt.func_148857_g();
         cookingClient = compound != null && compound.getBoolean("cooking");
+        Item item = cookingClient ? Item.getItemById(compound.getInteger("item")) : null;
+        if (item == null)
+        {
+            displayItem = null;
+            return;
+        }
+        int damage = compound.getInteger("damage");
+        ItemStack shown = displayItem == null ? null : displayItem.getEntityItem();
+        if (shown != null && shown.getItem() == item && shown.getItemDamage() == damage) return;
+        displayItem = new EntityItem(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, new ItemStack(item, 1, damage));
+        displayItem.hoverStart = 0.0F;
     }
 }
