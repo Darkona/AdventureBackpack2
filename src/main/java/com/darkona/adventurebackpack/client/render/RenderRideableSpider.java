@@ -7,6 +7,7 @@ import net.minecraft.client.model.ModelSpider;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -59,6 +60,19 @@ public class RenderRideableSpider extends RenderLiving
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             return 1;
         }
+    }
+
+    /** The typed methods above are not overrides; these are, as in RenderSpider (without them the eyes never glow). */
+    @Override
+    protected float getDeathMaxRotation(EntityLivingBase entity)
+    {
+        return this.getDeathMaxRotation((EntityFriendlySpider) entity);
+    }
+
+    @Override
+    protected int shouldRenderPass(EntityLivingBase entity, int pass, float partialTicks)
+    {
+        return this.shouldRenderPass((EntityFriendlySpider) entity, pass, partialTicks);
     }
 
     /**
