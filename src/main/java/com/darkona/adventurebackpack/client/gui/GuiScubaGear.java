@@ -37,7 +37,6 @@ public class GuiScubaGear extends GuiWithTanks
     private final EntityPlayer player;
     private ItemStack shown;
     private int shownAir = -1;
-    private String airLabel = "";
 
     public GuiScubaGear(EntityPlayer player, InventoryScubaGear inventory, boolean wearing)
     {
@@ -63,7 +62,7 @@ public class GuiScubaGear extends GuiWithTanks
         if (air != shownAir)
         {
             shownAir = air;
-            airLabel = I18n.format("adventurebackpack:gui.scuba.air", air, inventory.getCapacity());
+            setLabels(I18n.format("adventurebackpack:gui.scuba.tanks"), air + "/" + inventory.getCapacity());
         }
     }
 
@@ -86,7 +85,7 @@ public class GuiScubaGear extends GuiWithTanks
         GL11.glDisable(GL11.GL_BLEND);
         leftTank.draw(this, inventory.getLeftTank());
         rightTank.draw(this, inventory.getRightTank());
-        fontRendererObj.drawString(airLabel, 52, 12, 0x373737, false);
+        drawLabels(10, 0x373737);
     }
 
     @Override
