@@ -299,6 +299,9 @@ public class ConfigHandler
     public static int BOAT_MOTOR_FUEL_INTERVAL = 10;
     public static int BOAT_MOTOR_TANK_CAPACITY = 6000;
     public static int BOAT_MOTOR_OUT_OF_WATER_TICKS = 10;
+    public static boolean BOAT_MOTOR_SOUND = true;
+    public static double BOAT_MOTOR_SOUND_VOLUME = 0.6;
+    public static boolean BOAT_MOTOR_MESSAGES = false;
 
     // ---------------------------------------------------------------- fuels and fuel station
     public static String[] FUELS = FuelRules.DEFAULTS;
@@ -763,6 +766,9 @@ public class ConfigHandler
         BOAT_MOTOR_FUEL_INTERVAL = integer(cfg, INFLATABLEBOAT_MOTOR, "fuelIntervalTicks", 10, 1, 200, "Fuel is taken once every this many ticks of running: the cost of all those ticks at once.");
         BOAT_MOTOR_TANK_CAPACITY = integer(cfg, INFLATABLEBOAT_MOTOR, "tankCapacity", 6000, 1000, 64000, "Capacity of the motor's fuel tank in millibuckets. Use the same value on server and clients. Lowering it drops the fuel above the new limit when a boat is loaded or placed.", true);
         BOAT_MOTOR_OUT_OF_WATER_TICKS = integer(cfg, INFLATABLEBOAT_MOTOR, "outOfWaterTicks", 10, 1, 200, "The motor stops after the boat has been out of the water for this many ticks in a row (on land, or in the air over a wave or a drop).");
+        BOAT_MOTOR_SOUND = bool(cfg, INFLATABLEBOAT_MOTOR, "sound", true, "Sound of the boat motor, on the client: a looping putt-putt while the motor runs, a cord pull when it starts and a cough when it stops. It replaces the chat messages as the motor's notice. False: the motor is silent.");
+        BOAT_MOTOR_SOUND_VOLUME = decimal(cfg, INFLATABLEBOAT_MOTOR, "soundVolume", 0.6, 0.0, 1.0, "Volume of the boat motor's sounds, from 0.0 (silent) to 1.0, on the client. The running loop is a little quieter at low speed and louder at full speed.");
+        BOAT_MOTOR_MESSAGES = bool(cfg, INFLATABLEBOAT_MOTOR, "messages", false, "Chat messages about the boat motor (on, off, out of fuel, not on water), read on the server. Off by default: the sound is the notice. Turn it on for players who cannot hear.");
     }
 
     private static void readFuels(Configuration cfg)

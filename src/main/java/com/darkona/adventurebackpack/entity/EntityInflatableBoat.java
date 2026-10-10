@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.entity;
 
+import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.common.BoatMotor;
+import com.darkona.adventurebackpack.common.BoatMotorSound;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.inventory.IInventoryTanks;
@@ -83,6 +85,8 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     }
 
     private boolean motorized;
+    /** Client: the running flag as motorSound() last saw it. */
+    private boolean soundRunning;
 
     public EntityInflatableBoat(World world)
     {
@@ -181,6 +185,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         boolean fuel = hasFuel();
         boolean now = BoatMotor.toggled(was, ConfigHandler.BOAT_MOTOR_ENABLED, fuel, dryTicks == 0);
         setMotorRunning(now);
+        if (!ConfigHandler.BOAT_MOTOR_MESSAGES) return;
         String message;
         if (now) message = "on";
         else if (was) message = "off";
@@ -225,11 +230,24 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         if (run != was)
         {
             setMotorRunning(run);
-            if (was && !fuel && pilot instanceof EntityPlayer)
+            if (was && !fuel && pilot instanceof EntityPlayer && ConfigHandler.BOAT_MOTOR_MESSAGES)
             {
                 ((EntityPlayer) pilot).addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.boat.motor.outoffuel"));
             }
         }
+    }
+
+    /**
+     * Client: reacts to the motor's running flag (DataWatcher) turning on or off (inflatableboat.motor.sound). One
+     * looping sound per start; the sound watches the boat and ends by itself, so a re-sync never doubles it.
+     */
+    private void motorSound()
+    {
+        boolean running = isMotorRunning();
+        if (running == soundRunning) return;
+        soundRunning = running;
+        BoatMotorSound.Change change = BoatMotorSound.change(ConfigHandler.BOAT_MOTOR_SOUND, !running, running);
+        if (change != BoatMotorSound.Change.NONE) ClientActions.boatMotorSound(this, change);
     }
 
     /** Client: smoke from the stern while the motor runs (render.boatSmokeTicks). Called only when isRemote. */
@@ -322,6 +340,7 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         } else
         {
             motorSmoke();
+            motorSound();
         }
 
         double horizontalMotion = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
