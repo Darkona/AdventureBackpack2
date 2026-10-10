@@ -180,6 +180,9 @@ class ConfigHandlerTest
         assertEquals(10, ConfigHandler.BOAT_MOTOR_FUEL_INTERVAL);
         assertEquals(6000, ConfigHandler.BOAT_MOTOR_TANK_CAPACITY);
         assertEquals(10, ConfigHandler.BOAT_MOTOR_OUT_OF_WATER_TICKS);
+        assertTrue(ConfigHandler.BOAT_MOTOR_SOUND);
+        assertEquals(0.6, ConfigHandler.BOAT_MOTOR_SOUND_VOLUME, 1e-9);
+        assertFalse(ConfigHandler.BOAT_MOTOR_MESSAGES, "the sound is the notice; chat messages are for players who cannot hear");
         assertEquals(8, ConfigHandler.RENDER_BOAT_SMOKE_TICKS);
         assertEquals(0, ConfigHandler.KEY_BOAT_MOTOR_TOGGLE);
         assertEquals("enabled", cfg.getCategory(ConfigHandler.INFLATABLEBOAT_MOTOR).getOrderedValues().get(0).getName());

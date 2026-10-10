@@ -1,9 +1,12 @@
 package com.darkona.adventurebackpack.client;
 
 import com.darkona.adventurebackpack.client.audio.*;
+import com.darkona.adventurebackpack.common.BoatMotorSound;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
 import com.darkona.adventurebackpack.network.messages.EntitySoundPacket;
+import com.darkona.adventurebackpack.reference.ModInfo;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -87,6 +90,28 @@ public class ClientActions
                     if (ConfigHandler.ALLOW_JETPACK_SOUNDS) snd.playSound(new LeakingBoilerSound(player));
                     break;
             }
+        }
+    }
+
+    /**
+     * The boat motor's sounds (inflatableboat.motor.sound), on the change of its running flag: START plays the cord pull
+     * once and begins the loop that follows the boat; STOP plays the cough once at the boat. Called only on the client.
+     */
+    @SideOnly(Side.CLIENT)
+    public static void boatMotorSound(EntityInflatableBoat boat, BoatMotorSound.Change change)
+    {
+        float volume = BoatMotorSound.master(ConfigHandler.BOAT_MOTOR_SOUND_VOLUME);
+        if (volume <= 0.0F) return;
+        if (change == BoatMotorSound.Change.START)
+        {
+            if (BoatMotorSound.pullAudible(boat.ticksExisted))
+            {
+                boat.worldObj.playSound(boat.posX, boat.posY, boat.posZ, ModInfo.MOD_ID + ":boatmotorstart", volume, 1.0F, false);
+            }
+            FMLClientHandler.instance().getClient().getSoundHandler().playSound(new BoatMotorLoopSound(boat));
+        } else if (change == BoatMotorSound.Change.STOP)
+        {
+            boat.worldObj.playSound(boat.posX, boat.posY, boat.posZ, ModInfo.MOD_ID + ":boatmotorstop", volume, 1.0F, false);
         }
     }
 

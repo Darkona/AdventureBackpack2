@@ -1,0 +1,25 @@
+Sound credits of Adventure Backpack
+===================================
+
+Boat motor sounds (assets/adventurebackpack/sounds/boatMotor*.ogg). All three are released under Creative Commons 0 (public domain dedication), so no attribution is required; they are listed here anyway. Each was cut, converted to mono Ogg Vorbis (44.1 kHz) and faded at its ends for this mod.
+
+boatMotorLoop.ogg
+  Title:   Slowboat Engine Reving
+  Author:  FillSoko
+  URL:     https://freesound.org/people/FillSoko/sounds/456083/
+  License: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/)
+  Use:     a 5 second stretch (30 s to 35.5 s of the original), joined end to start with a half second crossfade so it loops without a click.
+
+boatMotorStop.ogg
+  Title:   Lawnmower engine stop 0
+  Author:  piotrkier
+  URL:     https://freesound.org/people/piotrkier/sounds/700146/
+  License: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/)
+  Use:     the whole clip (1.5 s) with short fades.
+
+boatMotorStart.ogg
+  Title:   Lawnmower pulling cord 2
+  Author:  piotrkier
+  URL:     https://freesound.org/people/piotrkier/sounds/700142/
+  License: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/)
+  Use:     the whole clip (0.7 s) with short fades.
