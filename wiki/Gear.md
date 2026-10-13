@@ -129,13 +129,23 @@ The Motorized Inflatable Boat has an outboard motor that burns fuel and makes it
 
 1. Fill the tank at a [Fuel Station](Fuel-Station): sit in the boat and right click the station. The tank holds 6000 mB.
 2. Bind the Boat Motor On/Off key in Options > Controls. It has no default key.
-3. Sit in the boat on water and press the key. A message in chat says the motor is on.
-4. Steer with the move keys. The boat goes ahead by itself; holding back still brakes.
-5. Press the key again to stop.
+3. Sit in the boat on water and press the key. You hear the pull of a cord and the motor starts.
+4. Steer with the move keys. The boat goes ahead by itself while the motor runs; holding back still brakes.
+5. Press the key again to stop. The motor coughs and goes quiet.
 
-The motor does not start without fuel, or when the boat is not on water; the message says which. The tank shows on screen while you ride.
+The motor does not start without fuel, or when the boat is not on water. The tank shows on screen while you ride.
 
 If you prefer, `inflatableboat.motor.mode` can be changed to `hold`. The motor then pushes only while you hold the forward key, and there is no key to bind.
+
+**Sound**
+
+The motor is told by sound, not by chat. While it runs you hear a looping putt-putt that follows the boat, a little lower and quieter at a standstill and louder at full speed. It starts with the pull of a cord and ends with a cough. The same sounds play when the motor stops by itself, because the fuel ran out or the boat left the water.
+
+- `inflatableboat.motor.soundVolume` sets the volume, from 0.0 to 1.0.
+- `inflatableboat.motor.sound` set to false makes the motor silent.
+- `inflatableboat.motor.messages` brings back the chat messages (on, off, out of fuel, not on water), for players who cannot hear. It is off by default.
+
+The three sounds are public domain recordings from Freesound, credited in the file `CREDITS-sounds.txt` inside the mod.
 
 **Fuel**
 
@@ -149,9 +159,9 @@ The motor stops by itself:
 
 The fuel goes with the item when you pick the boat up, and is in the tank again when you put the boat down.
 
-> Screenshot: Options > Controls with the Boat Motor On/Off key bound, next to the chat message "Boat motor: On.". File: images/gear-11.png
+> Screenshot: Options > Controls with the Boat Motor On/Off key bound, and the boat on the water with the smoke behind the motor running. File: images/gear-11.png
 
-The speed, the acceleration, the fuel per tick, the tank size and the mode are in [Configuration](Configuration#boat-motor-inflatableboatmotor).
+The speed, the acceleration, the fuel per tick, the tank size, the mode and the sound are in [Configuration](Configuration#boat-motor-inflatableboatmotor).
 
 ## See also
 

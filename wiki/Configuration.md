@@ -1,6 +1,6 @@
 # Configuration
 
-Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 239 keys.
+Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 253 keys.
 
 You can also edit the file from the game: in the Mods list, select Adventure Backpack and press Config. Changes made in the file need a restart of the game. Keys marked "Needs a restart" are read when items, blocks or keys are created, so they need one even with the config screen.
 
@@ -220,17 +220,28 @@ Special effects of the backpacks while they are worn (the Cactus and Melon also 
 
 ### Spider backpack (`abilities.spider`)
 
-Taming works with the Spider Backpack on. Tamed spiders are kept in memory and released when their owner dies, logs out or changes dimension.
+Taming works with the Spider Backpack on. A tamed spider is kept for good, like a wolf: it does not despawn and it is not set free when its owner dies, logs out or changes dimension. The number of tame spiders of each player is saved with the world. See [Backpacks](Backpacks#taming-spiders).
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `abilities.spider.enabled` | boolean | `true` |  | Spider Backpack: tame spiders and ride them. Wearing it, right click a spider with the tame item to try to tame it (like taming a wolf). A tamed spider follows its owner and only its owner rides it, both only while the owner wears the Spider Backpack. It is released (back to a normal spider) when its owner dies, logs out or changes dimension, or sneaks and right clicks it. When false, tamed spiders neither follow nor carry anyone, and no new spider can be tamed. |
-| `abilities.spider.tameItem` | string | `minecraft:spider_eye` |  | Item used to tame a spider, as modid:name. One is used up per try (not in creative). |
+| `abilities.spider.enabled` | boolean | `true` |  | Spider Backpack: tame spiders and ride them. Wearing it, right click a spider with the tame item to try to tame it (like taming a wolf). A tamed spider is yours for good, like a wolf: it stays when you log out, die or change dimension, follows you (with or without the backpack) and climbs walls after you. Right click it to ride it while wearing the Spider Backpack; sneak and right click to make it sit or stand up; right click with the heal item to heal it; sneak and right click with the tame item to set it free. When false, no new spider can be tamed and nobody can ride one; tamed spiders keep following, sitting and healing. |
+| `abilities.spider.tameItem` | string | `minecraft:spider_eye` |  | Item used to tame a spider, as modid:name. One is used up per try (not in creative). Sneaking and right clicking your tamed spider with it sets the spider free. |
 | `abilities.spider.tameChance` | double | `0.33` | 0.0 to 1.0 | Chance that one try tames the spider (1 = always, the wolf is about 0.33). |
 | `abilities.spider.maxTamed` | int | `2` | 0 to 16 | Tamed spiders a player may have at once. 0 turns taming off. |
+| `abilities.spider.tamedHealth` | double | `20.0` | 1.0 to 100.0 | Max health of a tamed spider, in half hearts (a wild one has 16). Taming heals it to this. Applied again when a spider loads, so a change reaches existing spiders. |
+| `abilities.spider.healItem` | string | `minecraft:rotten_flesh` |  | Item that heals your tamed spider on right click, as modid:name. One is used up per heal (not in creative); nothing happens at full health. |
+| `abilities.spider.healAmount` | int | `4` | 1 to 40 | Health one heal item gives back, in half hearts. |
 | `abilities.spider.followStartDistance` | double | `6.0` | 2.0 to 32.0 | A tamed spider starts walking to its owner when it is farther than this, in blocks. |
 | `abilities.spider.followStopDistance` | double | `3.0` | 1.0 to 32.0 | It stops when it is this close to its owner, in blocks. |
 | `abilities.spider.teleportDistance` | int | `24` | 0 to 128 | When it cannot walk to its owner and is farther than this, it jumps next to the owner like a wolf. 0 = never. |
+| `abilities.spider.teleportStuckDistance` | int | `8` | 0 to 64 | When it gets no closer for twice stuckTicks and is at least this far from its owner, it jumps next to the owner. 0 = only when farther than teleportDistance. |
+| `abilities.spider.teleportCooldownTicks` | int | `100` | 20 to 1200 | Ticks between two jumps next to the owner. |
+| `abilities.spider.verifyLoadsChunks` | boolean | `true` |  | On login, and when the maxTamed limit blocks a tame, check that every spider counted for the player still exists, loading its chunk for a moment if needed. Counted spiders that are gone (removed by a world edit, for example) stop counting. When false, only spiders in loaded chunks are checked. |
+| `abilities.spider.smartClimb` | boolean | `true` |  | A tamed spider plans its way up walls and towers to an owner above, and down cliffs to an owner below, and only climbs when it needs to (it does not hang on trees or walls while wandering). When false it climbs any wall it touches, like a wild spider, and only walks and teleports to follow. |
+| `abilities.spider.climbMaxHeight` | int | `32` | 2 to 128 | Highest wall it climbs up or down to follow its owner, in blocks. |
+| `abilities.spider.safeDropHeight` | int | `3` | 0 to 8 | It walks off a ledge this high or lower instead of climbing down it. |
+| `abilities.spider.repathTicks` | int | `10` | 5 to 40 | Ticks between two path checks while it follows its owner. |
+| `abilities.spider.stuckTicks` | int | `60` | 20 to 400 | Ticks without getting closer before it tries another way up; after twice this it jumps next to its owner (see teleportStuckDistance) or rests a while. |
 
 ### Blaze backpack (`abilities.blaze`)
 
@@ -384,6 +395,9 @@ The outboard motor of the Motorized Inflatable Boat. It burns the fuels of `fuel
 | `inflatableboat.motor.fuelIntervalTicks` | int | `10` | 1 to 200 | Fuel is taken once every this many ticks of running: the cost of all those ticks at once. |
 | `inflatableboat.motor.tankCapacity` | int | `6000` | 1000 to 64000 | Capacity of the motor's fuel tank in millibuckets. Use the same value on server and clients. Lowering it drops the fuel above the new limit when a boat is loaded or placed. Needs a restart. |
 | `inflatableboat.motor.outOfWaterTicks` | int | `10` | 1 to 200 | The motor stops after the boat has been out of the water for this many ticks in a row (on land, or in the air over a wave or a drop). |
+| `inflatableboat.motor.sound` | boolean | `true` |  | Sound of the boat motor, on the client: a looping putt-putt while the motor runs, a cord pull when it starts and a cough when it stops. It replaces the chat messages as the motor's notice. False: the motor is silent. |
+| `inflatableboat.motor.soundVolume` | double | `0.6` | 0.0 to 1.0 | Volume of the boat motor's sounds, from 0.0 (silent) to 1.0, on the client. The running loop is a little quieter at low speed and louder at full speed. |
+| `inflatableboat.motor.messages` | boolean | `false` |  | Chat messages about the boat motor (on, off, out of fuel, not on water), read on the server. Off by default: the sound is the notice. Turn it on for players who cannot hear. |
 
 ## Clockwork crossbow (`crossbow`)
 
