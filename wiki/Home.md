@@ -10,7 +10,7 @@ Around the backpack the mod adds a hose to drink and move fluids, a crossbow wit
 
 ## What you get
 
-- 76 backpacks. Most are craftable from a Standard backpack, and 20 of them do something while you wear them: night vision, fire resistance, milk from wheat, eggs, calm wolves, tame spiders to ride, burning punches, and so on.
+- 76 backpacks. Most are craftable from a Standard backpack, and 20 of them do something while you wear them: night vision, fire resistance, milk from wheat, eggs, calm wolves, tame spiders that follow you up walls and carry you, burning punches, and so on.
 - Two tanks per backpack, filled with buckets or with the hose. The hose also lets you drink from the tank.
 - A Clockwork Crossbow loaded from reusable Crossbow Magazines, with three modes: a magazine of six bolts with a held right click, a grappling hook that pulls you to a block, and a sniper shot with a bipod. A key changes the mode.
 - A Steam Jetpack, powered by water and a furnace fuel, and a Copter Pack that burns liquid fuel from BuildCraft, Forestry, Railcraft or GregTech. Flying costs: a full tank gives a minute or two.

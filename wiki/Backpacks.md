@@ -76,7 +76,7 @@ You can wear one backpack, copter pack, jetpack, scuba gear or flamethrower pack
 | Sunflower | Feeds you in daylight, a drumstick every two minutes. | Sunflowers |
 | Skeleton | Bows take their arrows from the backpack. A bow can go in the tool slots. | Bones, Skeleton skull, bow, arrows |
 | Iron Golem | No fall damage. | Not craftable. Found in village blacksmith chests. |
-| Spider | Tame spiders with a spider eye and ride them. See [Taming spiders](#taming-spiders). | Spider eyes, string, ladders |
+| Spider | Tame spiders with a spider eye: they follow you for good, climb after you and carry you. See [Taming spiders](#taming-spiders). | Spider eyes, string, ladders |
 | Blaze | You do not burn in fire or lava, and what you punch catches fire for 4 seconds. | Blaze rods, fire charge, blaze powder, lava bucket |
 
 You can turn the abilities of the backpack you wear off and on with a key of your own, without taking the backpack off. The key is not bound by default. See [Controls](Controls#the-abilities-key).
@@ -85,17 +85,38 @@ The Cactus and Melon timings, the Cow and Mooshroom amounts and every other numb
 
 ### Taming spiders
 
-With the Spider backpack on, right click a spider with a spider eye. The eye is used up on every try, and a try works about one time in three, like taming a wolf. On a failure you see smoke, on a success hearts: the spider is tame.
+A tame spider is a pet like a tame wolf: it stays with you for good, follows you up walls and towers, and with the Spider backpack on you can ride it.
 
-- A tame spider follows you, and only you can ride it. Right click it to get on and press jump to make it jump.
-- If it is far away and cannot walk to you, it jumps next to you, like a wolf.
-- It follows and carries you only while you wear the Spider backpack. Without it, the spider stays where it is and nobody rides it.
-- You can have two tame spiders at a time. A chat message tells you when you are at the limit.
-- Sneak and right click a tame spider to let it go. It turns back into a normal spider, and you can tame another one.
-- The spiders go free by themselves when you die, log out or change dimension. Spiders nobody tamed are normal spiders: they never become friends on their own and they despawn as usual.
-- Only the plain spider can be tamed. Cave spiders and spiders from other mods cannot.
+To tame one, wear the Spider backpack and right click a wild spider with a spider eye. A try works one time in three, like taming a wolf, and every try uses up an eye. On a failure you see smoke, on a success hearts. A tame spider has more health than a wild one: 10 hearts instead of 8, and taming fills them.
 
-> Screenshot: a player with the Spider backpack on, riding a tame spider. File: images/backpacks-5.png
+> Screenshot: a player with the Spider backpack on, a spider eye in hand, and the hearts over the spider that has just been tamed. File: images/backpacks-5.png
+
+**What you do with it**
+
+All of these are a right click on your own tame spider. Other players' spiders do nothing for you.
+
+| You | Result |
+|---|---|
+| Right click, Spider backpack on | Gets on it. Press jump to make it jump. |
+| Sneak and right click, empty hand | Makes it sit down, or stand up again. A sitting spider lies flat with its legs stretched out and stays where it is. |
+| Right click, rotten flesh in hand | Heals it by 2 hearts and uses up the flesh. Nothing happens if it is not hurt. |
+| Sneak and right click, spider eye in hand | Sets it free. It turns back into a normal wild spider, and you can tame another one. |
+
+Sneaking and right clicking with something other than a spider eye also makes it sit or stand.
+
+> Screenshot: a tame spider lying flat on the ground, legs stretched out, with the owner next to it. File: images/backpacks-6.png
+
+**How it behaves**
+
+- It follows you. When you get far away it walks to you, and if it cannot reach you it jumps next to you, like a wolf.
+- It climbs. If you are on a tower, a roof or a ceiling, it goes up the wall to you, and it goes down a cliff to you if you are below. It only climbs when it needs to, so it does not hang on trees and walls while it wanders.
+- It stays. A tame spider does not despawn, and it is not set free when you log out, die or change dimension. A spider you leave in another dimension waits there, and does not follow you until you are back in the same one.
+- It does not fight for you. A tame spider never attacks, even when something hits you.
+- It counts against a limit. You can have two tame spiders at a time, saved with the world, and a chat message tells you when you are at the limit. A spider that dies or that you set free no longer counts.
+- Without the Spider backpack, your spiders still follow you, sit down and heal, but nobody can ride them. If you take the backpack off while riding, you get off.
+- Only the plain spider can be tamed. Cave spiders and spiders from other mods cannot. Spiders nobody tamed never become friends on their own and despawn as usual.
+
+The limit, the taming chance, the item you tame and heal with, their health, how far they follow, how high they climb and when they jump to you are all in [Configuration](Configuration#spider-backpack-abilitiesspider). `abilities.spider.smartClimb` set to false makes them climb any wall they touch, like a wild spider.
 
 ### Blaze backpack
 

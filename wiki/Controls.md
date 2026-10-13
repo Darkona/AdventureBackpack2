@@ -13,7 +13,7 @@ Every key, button and mouse action of the mod. The keys are listed in Options > 
 | Previous Backpack Tool | not bound | Swaps to the previous tool. |
 | Crossbow Mode | V | Changes the mode of the Clockwork Crossbow in your hand: repetition, grappling hook, sniper. |
 | Backpack Abilities On/Off | not bound | Turns the abilities of the backpack you wear off and on. |
-| Boat Motor On/Off | not bound | Turns the outboard motor of the Motorized Inflatable Boat you ride on and off (in the default toggle mode). See [Gear](Gear#motorized-inflatable-boat). |
+| Boat Motor On/Off | not bound | Turns the outboard motor of the Motorized Inflatable Boat you ride on and off, and with it the forward push of the boat (in the default toggle mode). The motor sounds while it runs. See [Gear](Gear#motorized-inflatable-boat). |
 
 The defaults come from the config file (see `keys` in [Configuration](Configuration#keys-keys)). They are applied the first time. Once you change a key in the game, Minecraft keeps your choice.
 
@@ -56,11 +56,13 @@ The Backpack Abilities On/Off key is not bound by default: pick a key for it in 
 | Right click a Fuel Station | Opens its window. See [Fuel Station](Fuel-Station). |
 | Sneak and right click a Fuel Station, flamethrower pack or copter pack in hand or worn | Fills the pack |
 | Right click a Fuel Station, riding the Motorized Inflatable Boat | Fills the boat's tank |
-| Boat Motor On/Off key, riding the Motorized Inflatable Boat | Turns the motor on and off |
-| Right click a spider, Spider backpack on, spider eye in hand | Tries to tame it |
-| Right click your tame spider | Gets on it. It carries you only while you wear the Spider backpack. |
+| Boat Motor On/Off key, riding the Motorized Inflatable Boat | Starts the motor, with the pull of a cord, and the boat goes ahead by itself. Press it again to stop it. |
+| Right click a wild spider, Spider backpack on, spider eye in hand | Tries to tame it. See [Taming spiders](Backpacks#taming-spiders). |
+| Right click your tame spider, Spider backpack on | Gets on it. Without the backpack, nobody can ride it. |
 | Jump, riding a spider | The spider jumps |
-| Sneak and right click your tame spider | Lets it go |
+| Sneak and right click your tame spider, empty hand | Makes it sit down, or stand up again |
+| Right click your tame spider, rotten flesh in hand | Heals it, if it is hurt |
+| Sneak and right click your tame spider, spider eye in hand | Sets it free |
 | Right click, crossbow in hand | Fires, or puts in a loaded Crossbow Magazine if the crossbow is empty. Hold it to fire the whole magazine. In grappling hook mode it shoots the hook. In sniper mode, with the bipod down, it fires the strong bolt. |
 | Sneak and right click, crossbow in hand | Swaps the magazine for another loaded one; the first comes back with its charges left. In sniper mode, with the bipod down, it fires. |
 | Hold right click, Crossbow Magazine in hand | Loads the magazine with arrows or Crossbow Bolts from your inventory, one charge at a time. See [Crossbow](Crossbow#the-crossbow-magazine). |

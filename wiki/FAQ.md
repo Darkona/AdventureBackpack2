@@ -46,11 +46,15 @@ Yes. Right click the campfire with raw food in your hand. It cooks in ten second
 
 ## How do I tame a spider?
 
-Wear the Spider backpack and right click a spider with a spider eye. It works about one time in three, and each try uses an eye. A tame spider follows you, and only you can ride it, while you wear the backpack. You can have two at a time. Sneak and right click one to let it go. See [Backpacks](Backpacks#taming-spiders).
+Wear the Spider backpack and right click a wild spider with a spider eye. It works one time in three, and each try uses an eye. A tame spider is yours for good: it follows you, climbs walls and towers after you, and you can ride it while you wear the backpack. You can have two at a time. See [Backpacks](Backpacks#taming-spiders).
 
-## Why does my tame spider stand still?
+## How do I ride, sit, heal or set free my tame spider?
 
-It follows and carries you only while you wear the Spider backpack. Put it on again and it follows. When you die, log out or change dimension, your tame spiders go free and become normal spiders.
+Right click it with the Spider backpack on to ride it. Sneak and right click it with an empty hand to make it sit down or stand up. Right click it with rotten flesh to heal it. Sneak and right click it with a spider eye to set it free. The table of gestures is in [Backpacks](Backpacks#taming-spiders), and the same list is in [Controls](Controls).
+
+## Why does my tame spider not follow me?
+
+It does not follow while it is sitting, or when you are in another dimension: it waits where you left it, because a tame spider is not set free when you die, log out or change dimension. Sneak and right click it with an empty hand to make it stand up. If it cannot reach you it climbs, and if it is stuck for a few seconds it jumps next to you. See [Configuration](Configuration#spider-backpack-abilitiesspider).
 
 ## How do I turn the abilities off?
 
@@ -129,7 +133,11 @@ By default it does not: `flamethrower.pvp` is off. It does not set blocks on fir
 
 ## How do I start the boat motor?
 
-Fill the tank at a Fuel Station: sit in the Motorized Inflatable Boat and right click the station. Bind the Boat Motor On/Off key in Options > Controls, which has no default key, and press it while you sit in the boat on water. The motor stops by itself when it runs out of fuel, when you get off, or when the boat leaves the water. See [Gear](Gear#motorized-inflatable-boat).
+Fill the tank at a Fuel Station: sit in the Motorized Inflatable Boat and right click the station. Bind the Boat Motor On/Off key in Options > Controls, which has no default key, and press it while you sit in the boat on water. The motor starts with the pull of a cord and the boat goes ahead by itself; press the key again to stop it. The motor stops by itself when it runs out of fuel, when you get off, or when the boat leaves the water. See [Gear](Gear#motorized-inflatable-boat).
+
+## Why does the boat motor make no sound, or no message?
+
+The motor is told by sound, not by chat: a looping putt-putt while it runs, a cord pull when it starts and a cough when it stops. If you hear nothing, check that `inflatableboat.motor.sound` is on and that `inflatableboat.motor.soundVolume` is not 0, and that the sound volume of the game is up. For players who cannot hear, `inflatableboat.motor.messages` brings back the chat messages. See [Configuration](Configuration#boat-motor-inflatableboatmotor).
 
 ## What fuel can I use?
 
