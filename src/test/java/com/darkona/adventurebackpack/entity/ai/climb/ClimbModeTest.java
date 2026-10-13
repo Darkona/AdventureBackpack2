@@ -58,6 +58,7 @@ class ClimbModeTest
     void lipEndsOnTopOrFails()
     {
         assertEquals(NONE, next(LIP, 70, true, false, 0.3, 0, 4));
+        assertEquals(LIP, next(LIP, 70, true, false, 1.7, 0, 4), "on the edge but not over the column yet");
         assertEquals(LIP, next(LIP, 70.2, false, false, 0.3, 0, 4));
         assertEquals(FAILED, next(LIP, 70.2, false, false, 0.3, 0, ClimbPlanner.LIP_TICKS + 1));
         assertEquals(FAILED, next(LIP, 68, false, false, 0.3, 0, 3), "fell back down");
@@ -85,9 +86,10 @@ class ClimbModeTest
     @Test
     void losingTheFaceHighUpJustFalls()
     {
-        assertEquals(DESCEND, next(DESCEND, 68, false, false, 4.0, 0, 15), "a few ticks of grace");
-        assertEquals(NONE, next(DESCEND, 68, false, false, 4.0, 0, 21));
-        assertEquals(DESCEND, next(DESCEND, 66, false, false, 4.0, 0, 21), "low enough to fall safely: keep going");
+        assertEquals(DESCEND, next(DESCEND, 69, false, false, 4.0, 0, 40), "just stepped off the edge: not yet beside the face");
+        assertEquals(NONE, next(DESCEND, 68, false, false, 4.0, 0, 40));
+        assertEquals(DESCEND, next(DESCEND, 68, false, true, 1.44, 0, 40), "holding on (touching or within reach)");
+        assertEquals(DESCEND, next(DESCEND, 66, false, false, 4.0, 0, 40), "low enough to fall safely: keep going");
     }
 
     @Test

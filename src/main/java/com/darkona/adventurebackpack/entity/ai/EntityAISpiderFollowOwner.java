@@ -104,6 +104,7 @@ public class EntityAISpiderFollowOwner extends EntityAIBase
         else
         {
             stuckTicks += PROGRESS_TICKS;
+            if (distSq > bestDistSq) bestDistSq = distSq; // the owner moved away (or up): measure from here
         }
         int level = SpiderFollowRules.stuckLevel(stuckTicks, ConfigHandler.SPIDER_STUCK_TICKS);
         if (level == SpiderFollowRules.STUCK_REPLAN)
@@ -120,7 +121,7 @@ public class EntityAISpiderFollowOwner extends EntityAIBase
             stuckTicks = 0;
             bestDistSq = spider.getDistanceSqToEntity(owner);
         }
-        else if (level >= SpiderFollowRules.STUCK_GIVE_UP)
+        else if (level >= SpiderFollowRules.STUCK_GIVE_UP && !nav.isClimbing())
         {
             // rest a while, then start over; continueExecuting turns false now
             retryAfter = spider.worldObj.getTotalWorldTime() + GIVE_UP_TICKS;

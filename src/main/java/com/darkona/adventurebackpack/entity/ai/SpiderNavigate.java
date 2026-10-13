@@ -43,6 +43,9 @@ public class SpiderNavigate extends PathNavigate
     private int ceilingTicks;
     private int timeLimit;
     private double speed;
+    private boolean clinging;
+    /** Within this squared distance of the face column's centre a descending spider holds on to it. */
+    private static final double CLING_DIST_SQ = 1.7 * 1.7;
 
     public SpiderNavigate(EntityFriendlySpider spider, World world)
     {
@@ -134,7 +137,7 @@ public class SpiderNavigate extends PathNavigate
     /** The follow task found no progress: avoid this column and plan again on the next repath. */
     public void abandonCurrentColumn()
     {
-        if (plan.mode != Mode.NONE)
+        if (plan.mode == Mode.APPROACH) // a move on the wall has its own time limits; letting go there would drop it
         {
             markBad(plan.columnKey());
             stopClimb();
@@ -150,6 +153,7 @@ public class SpiderNavigate extends PathNavigate
 
     private void stopClimb()
     {
+        clinging = false;
         plan.mode = Mode.NONE;
         ticksInMode = 0;
         ceilingTicks = 0;
@@ -178,13 +182,25 @@ public class SpiderNavigate extends PathNavigate
         else ceilingTicks = 0;
 
         Mode next = ClimbPlanner.nextMode(plan.mode, spider.posY, plan.startY, plan.topY, plan.bottomY,
-                ConfigHandler.SPIDER_SAFE_DROP_HEIGHT, spider.onGround, spider.isBesideClimbableBlock(), wallDistSq,
+                ConfigHandler.SPIDER_SAFE_DROP_HEIGHT, spider.onGround, spider.isBesideClimbableBlock() || clinging, wallDistSq,
                 ceilingTicks, ticksInMode, timeLimit);
         if (next != plan.mode)
         {
             if (next == Mode.FAILED)
             {
                 markBad(plan.columnKey());
+                if ((plan.mode == Mode.ASCEND || plan.mode == Mode.LIP) && !spider.onGround
+                        && spider.posY > plan.startY + ConfigHandler.SPIDER_SAFE_DROP_HEIGHT)
+                {
+                    // halfway up a wall that did not work: climb back down it instead of letting go
+                    plan.mode = Mode.DESCEND;
+                    plan.bottomY = plan.startY;
+                    plan.startY = MathHelper.floor_double(spider.posY) + 1;
+                    ticksInMode = 0;
+                    ceilingTicks = 0;
+                    timeLimit = ClimbPlanner.modeTimeLimit(plan.startY - plan.bottomY);
+                    return;
+                }
                 stopClimb();
                 return;
             }
@@ -203,32 +219,54 @@ public class SpiderNavigate extends PathNavigate
             }
         }
 
-        double edgeX = plan.approachX + 0.5 + 0.6 * (plan.approachX - plan.wallX);
-        double edgeZ = plan.approachZ + 0.5 + 0.6 * (plan.approachZ - plan.wallZ);
+        int dirX = plan.approachX - plan.wallX, dirZ = plan.approachZ - plan.wallZ;
+        clinging = false;
         switch (plan.mode)
         {
             case APPROACH:
                 spider.getMoveHelper().setMoveTo(plan.approachX + 0.5, plan.startY, plan.approachZ + 0.5, speed);
                 break;
             case ASCEND:
-            case LIP:
                 spider.getMoveHelper().setMoveTo(plan.wallX + 0.5, plan.topY, plan.wallZ + 0.5, speed);
                 break;
+            case LIP:
+                spider.getMoveHelper().setMoveTo(plan.wallX + 0.5, plan.topY, plan.wallZ + 0.5, speed);
+                // in the air the spider barely steers: carry it over the top onto the column
+                steerTowards(plan.wallX + 0.5, plan.wallZ + 0.5, 0.2);
+                break;
             case DROP:
-                spider.getMoveHelper().setMoveTo(edgeX, plan.bottomY, edgeZ, speed);
+                spider.getMoveHelper().setMoveTo(plan.approachX + 0.5 + 0.6 * dirX, plan.bottomY, plan.approachZ + 0.5 + 0.6 * dirZ, speed);
                 break;
             case DESCEND:
                 if (spider.onGround && spider.posY > plan.startY - 0.5)
                 {
-                    spider.getMoveHelper().setMoveTo(edgeX, plan.startY, edgeZ, speed); // walk off the edge
+                    // walk off the edge, just far enough to drop beside the face
+                    spider.getMoveHelper().setMoveTo(plan.approachX + 0.5 + 0.3 * dirX, plan.startY, plan.approachZ + 0.5 + 0.3 * dirZ, speed);
                 }
                 else
                 {
-                    spider.getMoveHelper().setMoveTo(plan.wallX + 0.5, plan.bottomY, plan.wallZ + 0.5, speed); // hug the face
+                    // hug the face on the way down; the spider slows its fall while within reach of it
+                    spider.getMoveHelper().setMoveTo(plan.wallX + 0.5, plan.bottomY, plan.wallZ + 0.5, speed);
+                    if (!spider.isBesideClimbableBlock()) steerTowards(plan.wallX + 0.5, plan.wallZ + 0.5, 0.1);
+                    clinging = !spider.onGround && wallDistSq <= CLING_DIST_SQ;
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    /** Sets the horizontal motion towards a point, proportional and capped (the move helper hardly steers in the air). */
+    private void steerTowards(double x, double z, double max)
+    {
+        double mx = (x - spider.posX) * 0.25, mz = (z - spider.posZ) * 0.25;
+        spider.motionX = mx > max ? max : mx < -max ? -max : mx;
+        spider.motionZ = mz > max ? max : mz < -max ? -max : mz;
+    }
+
+    /** Climbing down a face and within reach of it: the spider falls slowly and takes no fall damage. */
+    public boolean isClinging()
+    {
+        return clinging;
     }
 }

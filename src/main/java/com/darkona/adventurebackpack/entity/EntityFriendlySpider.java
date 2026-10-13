@@ -449,6 +449,42 @@ public class EntityFriendlySpider extends EntityCreature
         return !isDead;
     }
 
+    /** On a wall nobody pushes it off (its owner standing on top of a pillar would, again and again). */
+    @Override
+    public boolean canBePushed()
+    {
+        return !isClimbingWall() && super.canBePushed();
+    }
+
+    @Override
+    protected void collideWithNearbyEntities()
+    {
+        if (!isClimbingWall()) super.collideWithNearbyEntities();
+    }
+
+    private boolean isClimbingWall()
+    {
+        return spiderNav != null && spiderNav.isClimbing() && riddenByEntity == null;
+    }
+
+    /** Owner and spider never shove each other (the owner on a one block pillar would push it off). */
+    @Override
+    public void applyEntityCollision(Entity entity)
+    {
+        if (!isOwnerEntity(entity)) super.applyEntityCollision(entity);
+    }
+
+    @Override
+    protected void collideWithEntity(Entity entity)
+    {
+        if (!isOwnerEntity(entity)) super.collideWithEntity(entity);
+    }
+
+    private boolean isOwnerEntity(Entity entity)
+    {
+        return ownerId != null && entity instanceof EntityPlayer && ownerId.equals(entity.getUniqueID());
+    }
+
     @Override
     public boolean shouldRiderFaceForward(EntityPlayer player) {
         return true;
@@ -677,7 +713,7 @@ public class EntityFriendlySpider extends EntityCreature
             this.stepHeight = 0.5F;
             this.jumpMovementFactor = 0.02F;
             super.moveEntityWithHeading(strafe, forward);
-            if (spiderNav != null && spiderNav.isDescending() && isBesideClimbableBlock())
+            if (spiderNav != null && spiderNav.isDescending() && (isBesideClimbableBlock() || spiderNav.isClinging()))
             {
                 // climbing down a face: slow and without fall damage (vanilla has no controlled way down)
                 if (this.motionY < -0.15D) this.motionY = -0.15D;

@@ -207,7 +207,7 @@ public final class ClimbPlanner
                 if (onGround && !besideWall && ticksInMode > 20) return Mode.FAILED;
                 return Mode.ASCEND;
             case LIP:
-                if (onGround && posY >= topY - 0.1) return Mode.NONE;
+                if (onGround && posY >= topY - 0.1 && horizDistSqToWall <= 1.0) return Mode.NONE; // standing on the column, not beside it
                 if (posY < topY - 1.5 || ticksInMode > LIP_TICKS) return Mode.FAILED;
                 return Mode.LIP;
             case DROP:
@@ -218,7 +218,7 @@ public final class ClimbPlanner
                 if (onGround && posY <= bottomY + 0.5) return Mode.NONE;
                 if (onGround && posY < startY - 0.5) return Mode.NONE; // a ledge on the way: walk on from there
                 if (onGround && ticksInMode > 60) return Mode.FAILED; // never went over the edge
-                if (!onGround && !besideWall && ticksInMode > 20 && posY > bottomY + safeDrop) return Mode.NONE; // lost the face: it just falls
+                if (!onGround && !besideWall && posY < startY - 1.5 && posY > bottomY + safeDrop) return Mode.NONE; // lost the face below the edge: it just falls
                 return Mode.DESCEND;
             default:
                 return Mode.NONE;
