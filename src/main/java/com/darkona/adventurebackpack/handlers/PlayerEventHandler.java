@@ -5,6 +5,7 @@ import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.DeathRoute;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.common.SleepingBagSpawn;
+import com.darkona.adventurebackpack.common.SpiderCare;
 import com.darkona.adventurebackpack.common.SpiderTaming;
 import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -41,6 +42,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
+import java.util.UUID;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -104,18 +106,16 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
-            // Spiders saved before a restart (or a crash that skipped the logout) are not tamed any more
-            SpiderTaming.releaseAll(event.player.getUniqueID());
+            // Tamed spiders stay tamed like wolves; drop ledger entries of spiders that no longer exist
+            SpiderTaming.verify(event.player.worldObj, event.player.getUniqueID());
         }
     }
 
-    /** Tamed spiders go free when their owner leaves; each one turns back into a normal spider on its next check. */
     @SubscribeEvent
     public void playerLogsOut(PlayerEvent.PlayerLoggedOutEvent event)
     {
         if (event.player instanceof EntityPlayerMP)
         {
-            SpiderTaming.releaseAll(event.player.getUniqueID());
             SleepingBagSpawn.restoreNow(event.player);
         }
     }
@@ -126,7 +126,6 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
-            SpiderTaming.releaseAll(event.player.getUniqueID());
         }
     }
 
@@ -207,7 +206,6 @@ public class PlayerEventHandler
             EntityPlayer player = (EntityPlayer) event.entity;
             if (!player.worldObj.isRemote)
             {
-                SpiderTaming.releaseAll(player.getUniqueID());
                 BackpackProperty props = BackpackProperty.get(player);
                 if (props.isForcedCampFire())
                 {
@@ -411,7 +409,10 @@ public class PlayerEventHandler
         if (tameItem == null || held.getItem() != tameItem) return false;
         if (!Wearing.isWearingTheRightBackpack(player, "Spider")) return false;
 
-        if (!SpiderTaming.canTameMore(SpiderTaming.count(player.getUniqueID()), ConfigHandler.SPIDER_MAX_TAMED))
+        WorldServer world = (WorldServer) spider.worldObj;
+        UUID owner = player.getUniqueID();
+        if (!SpiderTaming.canTameMore(world, owner, ConfigHandler.SPIDER_MAX_TAMED)
+                && (SpiderTaming.verify(world, owner) == 0 || !SpiderTaming.canTameMore(world, owner, ConfigHandler.SPIDER_MAX_TAMED)))
         {
             player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.spider.limit", ConfigHandler.SPIDER_MAX_TAMED));
             return true;
@@ -423,7 +424,6 @@ public class PlayerEventHandler
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
             }
         }
-        WorldServer world = (WorldServer) spider.worldObj;
         double y = spider.posY + spider.height;
         if (!SpiderTaming.rollTames(spider.getRNG().nextFloat(), ConfigHandler.SPIDER_TAME_CHANCE))
         {
@@ -432,15 +432,16 @@ public class PlayerEventHandler
         }
         EntityFriendlySpider pet = new EntityFriendlySpider(world);
         pet.setLocationAndAngles(spider.posX, spider.posY, spider.posZ, spider.rotationYaw, spider.rotationPitch);
-        pet.setHealth(Math.min(spider.getHealth(), pet.getMaxHealth()));
+        pet.setHealth(SpiderCare.tamedHealth(pet.getMaxHealth())); // taming heals it to the tamed maximum
         if (spider.hasCustomNameTag())
         {
             pet.setCustomNameTag(spider.getCustomNameTag());
         }
-        pet.setOwner(player.getUniqueID());
+        pet.setOwner(owner);
         spider.setDead();
         world.spawnEntityInWorld(pet);
-        SpiderTaming.add(player.getUniqueID(), pet.getUniqueID());
+        SpiderTaming.add(world, owner, pet.getUniqueID(), world.provider.dimensionId,
+                MathHelper.floor_double(pet.posX) >> 4, MathHelper.floor_double(pet.posZ) >> 4);
         world.func_147487_a("heart", pet.posX, y, pet.posZ, 7, 0.5, 0.3, 0.5, 0.02);
         return true;
     }

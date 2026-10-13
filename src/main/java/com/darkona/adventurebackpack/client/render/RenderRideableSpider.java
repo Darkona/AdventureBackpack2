@@ -3,7 +3,7 @@ package com.darkona.adventurebackpack.client.render;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.model.ModelSpider;
+import com.darkona.adventurebackpack.client.models.ModelTamedSpider;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
@@ -19,8 +19,18 @@ public class RenderRideableSpider extends RenderLiving
 
     public RenderRideableSpider()
     {
-        super(new ModelSpider(), 1.0F);
-        this.setRenderPassModel(new ModelSpider());
+        super(new ModelTamedSpider(), 1.0F);
+        this.setRenderPassModel(new ModelTamedSpider());
+    }
+
+    /** A sitting spider is drawn squashed flat (the model lowers it and spreads its legs). */
+    @Override
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks)
+    {
+        if (entity instanceof EntityFriendlySpider && ((EntityFriendlySpider) entity).isSitting())
+        {
+            GL11.glScalef(1.1F, 0.6F, 1.1F);
+        }
     }
 
     protected float getDeathMaxRotation(EntityFriendlySpider p_77037_1_)
