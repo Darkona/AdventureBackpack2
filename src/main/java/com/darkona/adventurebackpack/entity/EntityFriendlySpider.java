@@ -1,8 +1,11 @@
 package com.darkona.adventurebackpack.entity;
 
+import com.darkona.adventurebackpack.common.SpiderCare;
 import com.darkona.adventurebackpack.common.SpiderTaming;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.ai.EntityAISpiderFollowOwner;
+import com.darkona.adventurebackpack.entity.ai.EntityAISpiderSit;
+import com.darkona.adventurebackpack.entity.ai.SpiderNavigate;
 import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.block.Block;
@@ -14,6 +17,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -23,13 +27,13 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 /**
- * A spider tamed by a player who wears the Spider Backpack: it follows its owner and only its owner can ride it, and
- * only while wearing that backpack. It never attacks.
+ * A spider tamed by a player who wears the Spider Backpack. It is theirs for good, like a wolf: it never despawns and
+ * stays tamed when the owner logs out, dies, changes dimension or the server restarts. It follows its owner (with or
+ * without the backpack), climbs walls and towers after them, sits when told, is healed with rotten flesh and never
+ * attacks. Only its owner rides it, and only while wearing the Spider Backpack. Gestures: {@link SpiderCare}.
  * <p>
- * Whether it is still tamed is decided by {@link SpiderTaming}, which lists the spiders of each online owner. A spider
- * that is not listed (its owner died, logged out or changed dimension, the server restarted, or it was saved by an
- * older version without an owner) turns back into a normal {@link EntitySpider} on its next check, which then
- * despawns or attacks by the usual rules.
+ * {@link SpiderTaming} counts each player's spiders for the limit; the spider writes itself back there every second.
+ * A spider saved by 1.0.0 (no owner) turns back into a normal {@link EntitySpider} on its first check.
  * <p>
  * Created on 11/01/2015
  *
@@ -37,13 +41,20 @@ import java.util.UUID;
  */
 public class EntityFriendlySpider extends EntityCreature
 {
-    /** Ticks between two checks that the owner still owns this spider. */
+    /** Ticks between two heartbeats (ledger, rider check). */
     private static final int OWNER_CHECK_TICKS = 20;
+    /** DataWatcher 16 bits: 1 = touching a wall, 2 = sitting. */
+    private static final int BIT_WALL = 1, BIT_SITTING = 2;
+    /** Ticks it keeps counting as "on the wall" after losing contact, so corners do not drop it halfway up. */
+    private static final int WALL_GRACE_TICKS = 5;
 
     private int jumpTicks;
     /** Owner's player UUID; null for a spider saved by an older version, which is released on its first check. */
     private UUID ownerId;
     private final EntityAIControlledByPlayer aiControlledByPlayer;
+    /** Created before the tasks; null only while EntityLiving's constructor runs. */
+    private final SpiderNavigate spiderNav;
+    private int wallGrace;
 
     @Override
     protected void entityInit() {
@@ -55,7 +66,7 @@ public class EntityFriendlySpider extends EntityCreature
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(ConfigHandler.SPIDER_TAMED_HEALTH);
         this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.15D);
         this.getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(40.0D);
     }
@@ -63,7 +74,9 @@ public class EntityFriendlySpider extends EntityCreature
     public EntityFriendlySpider(World world) {
         super(world);
         this.setSize(1.4F, 0.9F);
+        this.spiderNav = new SpiderNavigate(this, world);
         this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new EntityAISpiderSit(this));
         this.tasks.addTask(2, this.aiControlledByPlayer = new EntityAIControlledByPlayer(this, 0.3F));
         this.tasks.addTask(5, new EntityAISpiderFollowOwner(this, 2.0D));
         this.tasks.addTask(6, new EntityAIWander(this, 0.7D));
@@ -134,6 +147,7 @@ public class EntityFriendlySpider extends EntityCreature
         }
         else if (super.attackEntityFrom(damageSource, amount))
         {
+            setSitting(false);
             Entity entity = damageSource.getEntity();
 
             if (this.riddenByEntity != entity && this.ridingEntity != entity)
@@ -175,14 +189,32 @@ public class EntityFriendlySpider extends EntityCreature
         return false;
     }
 
-    /**
-     * A tamed spider stays while its owner is around; when the owner leaves it is released (turned back into a
-     * normal spider), so it never piles up in the world.
-     */
+    /** Kept like a wolf: a tamed spider never despawns (a 1.0.0 one without owner is released on its first check). */
     @Override
     protected boolean canDespawn()
     {
-        return ownerId == null;
+        return false;
+    }
+
+    // ---------------------------------------------------------------- navigation
+
+    @Override
+    public PathNavigate getNavigator()
+    {
+        return spiderNav != null ? spiderNav : super.getNavigator();
+    }
+
+    public SpiderNavigate navigator()
+    {
+        return spiderNav;
+    }
+
+    /** Runs right after the (idle) vanilla navigator and before the move helper, so this navigator drives the spider. */
+    @Override
+    protected void updateAITick()
+    {
+        super.updateAITick();
+        spiderNav.onUpdateNavigation();
     }
 
     // ---------------------------------------------------------------- owner
@@ -208,21 +240,21 @@ public class EntityFriendlySpider extends EntityCreature
         return ownerId == null ? null : worldObj.func_152378_a(ownerId);
     }
 
-    /** True while the owner is here and wears the Spider Backpack: the only time the spider follows or carries them. */
-    public static boolean isFriendOf(EntityPlayer owner)
+    /** True while the owner is here and wears the Spider Backpack with the ability on: the only time it carries them. */
+    public static boolean canRide(EntityPlayer owner)
     {
         return owner != null && !owner.isDead && ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.SPIDER_ENABLED
                 && Wearing.isWearingTheRightBackpack(owner, "Spider");
     }
 
     /**
-     * Turns this spider back into a normal one, in place, keeping its health and name. Server only. A named spider
-     * then stays like any named mob; an unnamed one despawns by the vanilla rules.
+     * Turns this spider back into a normal one, in place, keeping its health and name, and frees its place under the
+     * limit. Server only. A named spider then stays like any named mob; an unnamed one despawns by the vanilla rules.
      */
     public void release()
     {
         if (worldObj.isRemote || isDead) return;
-        SpiderTaming.forget(ownerId, getUniqueID());
+        if (ownerId != null) SpiderTaming.forget(worldObj, ownerId, getUniqueID());
         if (riddenByEntity != null)
         {
             riddenByEntity.mountEntity(null);
@@ -247,6 +279,7 @@ public class EntityFriendlySpider extends EntityCreature
             compound.setLong("OwnerUUIDMost", ownerId.getMostSignificantBits());
             compound.setLong("OwnerUUIDLeast", ownerId.getLeastSignificantBits());
         }
+        compound.setBoolean("Sitting", isSitting());
     }
 
     @Override
@@ -256,15 +289,35 @@ public class EntityFriendlySpider extends EntityCreature
         ownerId = compound.hasKey("OwnerUUIDMost") && compound.hasKey("OwnerUUIDLeast")
                 ? new UUID(compound.getLong("OwnerUUIDMost"), compound.getLong("OwnerUUIDLeast"))
                 : null;
+        setSitting(compound.getBoolean("Sitting"));
+        // saved attributes would keep an old maximum: apply the configured one, so a config change reaches every spider
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(ConfigHandler.SPIDER_TAMED_HEALTH);
+        setHealth(SpiderCare.clampLoadedHealth(getHealth(), getMaxHealth()));
     }
 
     @Override
     public void onDeath(DamageSource source)
     {
         super.onDeath(source);
-        if (!worldObj.isRemote)
+        if (!worldObj.isRemote && ownerId != null)
         {
-            SpiderTaming.forget(ownerId, getUniqueID());
+            SpiderTaming.forget(worldObj, ownerId, getUniqueID());
+        }
+    }
+
+    /**
+     * Removed from the world (killed by a command, removed by another mod, or the old copy when it changes dimension:
+     * the new copy writes itself back on its first heartbeat). Unloading a chunk does not call this, so a spider in an
+     * unloaded chunk keeps its place.
+     */
+    @Override
+    public void setDead()
+    {
+        boolean wasAlive = !isDead;
+        super.setDead();
+        if (wasAlive && worldObj != null && !worldObj.isRemote && ownerId != null)
+        {
+            SpiderTaming.forget(worldObj, ownerId, getUniqueID());
         }
     }
 
@@ -314,23 +367,70 @@ public class EntityFriendlySpider extends EntityCreature
         return false;
     }
 
+    /** Right click by a player; the gesture table is {@link SpiderCare#interactAction}. The server decides. */
     @Override
     protected boolean interact(EntityPlayer player) {
 
-        if (this.worldObj.isRemote || this.riddenByEntity != null || !isOwnedBy(player)) return false;
-        if (player.isSneaking())
+        if (this.worldObj.isRemote) return false;
+        ItemStack held = player.getCurrentEquippedItem();
+        SpiderCare.Action action = SpiderCare.interactAction(isOwnedBy(player), this.riddenByEntity != null,
+                player.isSneaking(), handOf(held), canRide(player), SpiderCare.canHeal(getHealth(), getMaxHealth()));
+        switch (action)
         {
-            // The owner lets it go: it turns back into a normal spider and frees a place for another one
-            release();
-            return true;
+            case RELEASE:
+                // The owner lets it go: it turns back into a normal spider and frees a place for another one
+                release();
+                return true;
+            case TOGGLE_SIT:
+                setSitting(!isSitting());
+                getNavigator().clearPathEntity();
+                setJumping(false);
+                return true;
+            case HEAL:
+                setHealth(SpiderCare.healedHealth(getHealth(), getMaxHealth(), ConfigHandler.SPIDER_HEAL_AMOUNT));
+                if (!player.capabilities.isCreativeMode && --held.stackSize <= 0)
+                {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                }
+                worldObj.setEntityState(this, (byte) 7);
+                playSound("random.eat", 0.6F, 0.9F + rand.nextFloat() * 0.2F);
+                return true;
+            case MOUNT:
+                setSitting(false);
+                getNavigator().clearPathEntity();
+                player.mountEntity(this);
+                return true;
+            default:
+                return false;
         }
-        // Only the owner rides it, and only while wearing the Spider Backpack
-        if (isFriendOf(player))
+    }
+
+    private static SpiderCare.Hand handOf(ItemStack held)
+    {
+        if (held == null || held.getItem() == null) return SpiderCare.Hand.EMPTY;
+        Item item = held.getItem();
+        if (item == Item.itemRegistry.getObject(ConfigHandler.SPIDER_TAME_ITEM)) return SpiderCare.Hand.TAME_ITEM;
+        if (item == Item.itemRegistry.getObject(ConfigHandler.SPIDER_HEAL_ITEM)) return SpiderCare.Hand.HEAL_ITEM;
+        return SpiderCare.Hand.OTHER;
+    }
+
+    /** Hearts over its head after a heal (entity state 7, as a tamed wolf). Client side. */
+    @Override
+    public void handleHealthUpdate(byte id)
+    {
+        if (id == 7)
         {
-            player.mountEntity(this);
-            return true;
+            for (int i = 0; i < 7; ++i)
+            {
+                worldObj.spawnParticle("heart", posX + (rand.nextFloat() * width * 2.0F) - width,
+                        posY + 0.5D + (rand.nextFloat() * height), posZ + (rand.nextFloat() * width * 2.0F) - width,
+                        rand.nextGaussian() * 0.02D, rand.nextGaussian() * 0.02D, rand.nextGaussian() * 0.02D);
+            }
         }
-        return false;
+        else
+        {
+            super.handleHealthUpdate(id);
+        }
     }
 
     @Override
@@ -355,27 +455,31 @@ public class EntityFriendlySpider extends EntityCreature
     }
     public boolean isBesideClimbableBlock()
     {
-        return (this.dataWatcher.getWatchableObjectByte(16) & 1) != 0;
+        return (this.dataWatcher.getWatchableObjectByte(16) & BIT_WALL) != 0;
     }
 
-    /**
-     * Updates the WatchableObject (Byte) created in entityInit(), setting it to 0x01 if par1 is true or 0x00 if it is
-     * false.
-     */
-    public void setBesideClimbableBlock(boolean p_70839_1_)
+    /** Touching a wall; synced through DataWatcher 16 (sent only when it changes). */
+    public void setBesideClimbableBlock(boolean beside)
     {
-        byte b0 = this.dataWatcher.getWatchableObjectByte(16);
+        setSpiderFlag(BIT_WALL, beside);
+    }
 
-        if (p_70839_1_)
-        {
-            b0 = (byte)(b0 | 1);
-        }
-        else
-        {
-            b0 &= -2;
-        }
+    public boolean isSitting()
+    {
+        return (this.dataWatcher.getWatchableObjectByte(16) & BIT_SITTING) != 0;
+    }
 
-        this.dataWatcher.updateObject(16, Byte.valueOf(b0));
+    /** Sitting; synced through DataWatcher 16 so the client draws the flat pose. */
+    public void setSitting(boolean sitting)
+    {
+        setSpiderFlag(BIT_SITTING, sitting);
+    }
+
+    private void setSpiderFlag(int mask, boolean on)
+    {
+        byte flags = this.dataWatcher.getWatchableObjectByte(16);
+        byte updated = SpiderCare.withBit(flags, mask, on);
+        if (updated != flags) this.dataWatcher.updateObject(16, Byte.valueOf(updated));
     }
 
     @Override
@@ -391,12 +495,32 @@ public class EntityFriendlySpider extends EntityCreature
         }
         if (!this.worldObj.isRemote)
         {
-            this.setBesideClimbableBlock(this.isCollidedHorizontally);
-            if (!this.isDead && TickThrottle.every(this.worldObj.getTotalWorldTime(), this.getEntityId(), OWNER_CHECK_TICKS)
-                    && !SpiderTaming.isTamed(ownerId, getUniqueID()))
+            if (this.isCollidedHorizontally) wallGrace = WALL_GRACE_TICKS;
+            else if (wallGrace > 0) wallGrace--;
+            this.setBesideClimbableBlock(this.isCollidedHorizontally || wallGrace > 0);
+            if (!this.isDead && TickThrottle.every(this.worldObj.getTotalWorldTime(), this.getEntityId(), OWNER_CHECK_TICKS))
             {
-                release();
+                heartbeat();
             }
+        }
+    }
+
+    /**
+     * Every second, server side: a 1.0.0 spider (no owner) goes free; a tamed one writes itself back to the ledger; a
+     * rider who took the Spider Backpack off gets off.
+     */
+    private void heartbeat()
+    {
+        if (ownerId == null)
+        {
+            release();
+            return;
+        }
+        SpiderTaming.touch(worldObj, ownerId, getUniqueID(), worldObj.provider.dimensionId,
+                MathHelper.floor_double(posX) >> 4, MathHelper.floor_double(posZ) >> 4);
+        if (riddenByEntity instanceof EntityPlayer && !canRide((EntityPlayer) riddenByEntity))
+        {
+            riddenByEntity.mountEntity(null);
         }
     }
 
@@ -553,6 +677,12 @@ public class EntityFriendlySpider extends EntityCreature
             this.stepHeight = 0.5F;
             this.jumpMovementFactor = 0.02F;
             super.moveEntityWithHeading(strafe, forward);
+            if (spiderNav != null && spiderNav.isDescending() && isBesideClimbableBlock())
+            {
+                // climbing down a face: slow and without fall damage (vanilla has no controlled way down)
+                if (this.motionY < -0.15D) this.motionY = -0.15D;
+                this.fallDistance = 0.0F;
+            }
         }
     }
 
@@ -611,12 +741,15 @@ public class EntityFriendlySpider extends EntityCreature
     }
 
     /**
-     * returns true if this entity is by a ladder, false otherwise
+     * Climbs like a wild spider (up whatever wall it touches) only when someone rides it or when its navigator climbs a
+     * planned wall. Wandering, sitting or following on flat ground it does not climb, so it no longer hangs on trees,
+     * leaves or walls. With abilities.spider.smartClimb off it climbs any wall it touches, as before.
      */
     @Override
     public boolean isOnLadder()
     {
-        return this.isBesideClimbableBlock();
+        if (!this.isBesideClimbableBlock()) return false;
+        return this.riddenByEntity != null || !ConfigHandler.SPIDER_SMART_CLIMB || (spiderNav != null && spiderNav.wantsLadder());
     }
 
     /**

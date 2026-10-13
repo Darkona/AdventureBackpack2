@@ -209,6 +209,17 @@ public class ConfigHandler
     public static double SPIDER_FOLLOW_START_DISTANCE = 6.0;
     public static double SPIDER_FOLLOW_STOP_DISTANCE = 3.0;
     public static int SPIDER_TELEPORT_DISTANCE = 24;
+    public static double SPIDER_TAMED_HEALTH = 20.0;
+    public static String SPIDER_HEAL_ITEM = "minecraft:rotten_flesh";
+    public static int SPIDER_HEAL_AMOUNT = 4;
+    public static boolean SPIDER_VERIFY_LOADS_CHUNKS = true;
+    public static boolean SPIDER_SMART_CLIMB = true;
+    public static int SPIDER_CLIMB_MAX_HEIGHT = 32;
+    public static int SPIDER_SAFE_DROP_HEIGHT = 3;
+    public static int SPIDER_REPATH_TICKS = 10;
+    public static int SPIDER_STUCK_TICKS = 60;
+    public static int SPIDER_TELEPORT_STUCK_DISTANCE = 8;
+    public static int SPIDER_TELEPORT_COOLDOWN_TICKS = 100;
 
     public static boolean BLAZE_ENABLED = true;
     public static boolean BLAZE_FIRE_IMMUNITY = true;
@@ -648,13 +659,24 @@ public class ConfigHandler
         IRONGOLEM_ENABLED = bool(cfg, c, "enabled", true, "Iron Golem Backpack: no fall damage.");
 
         c = ABILITIES + ".spider";
-        SPIDER_ENABLED = bool(cfg, c, "enabled", true, "Spider Backpack: tame spiders and ride them. Wearing it, right click a spider with the tame item to try to tame it (like taming a wolf). A tamed spider follows its owner and only its owner rides it, both only while the owner wears the Spider Backpack. It is released (back to a normal spider) when its owner dies, logs out or changes dimension, or sneaks and right clicks it. When false, tamed spiders neither follow nor carry anyone, and no new spider can be tamed.");
-        SPIDER_TAME_ITEM = text(cfg, c, "tameItem", "minecraft:spider_eye", "Item used to tame a spider, as modid:name. One is used up per try (not in creative).");
+        SPIDER_ENABLED = bool(cfg, c, "enabled", true, "Spider Backpack: tame spiders and ride them. Wearing it, right click a spider with the tame item to try to tame it (like taming a wolf). A tamed spider is yours for good, like a wolf: it stays when you log out, die or change dimension, follows you (with or without the backpack) and climbs walls after you. Right click it to ride it while wearing the Spider Backpack; sneak and right click to make it sit or stand up; right click with the heal item to heal it; sneak and right click with the tame item to set it free. When false, no new spider can be tamed and nobody can ride one; tamed spiders keep following, sitting and healing.");
+        SPIDER_TAME_ITEM = text(cfg, c, "tameItem", "minecraft:spider_eye", "Item used to tame a spider, as modid:name. One is used up per try (not in creative). Sneaking and right clicking your tamed spider with it sets the spider free.");
         SPIDER_TAME_CHANCE = decimal(cfg, c, "tameChance", 0.33, 0.0, 1.0, "Chance that one try tames the spider (1 = always, the wolf is about 0.33).");
         SPIDER_MAX_TAMED = integer(cfg, c, "maxTamed", 2, 0, 16, "Tamed spiders a player may have at once. 0 turns taming off.");
         SPIDER_FOLLOW_START_DISTANCE = decimal(cfg, c, "followStartDistance", 6.0, 2.0, 32.0, "A tamed spider starts walking to its owner when it is farther than this, in blocks.");
         SPIDER_FOLLOW_STOP_DISTANCE = decimal(cfg, c, "followStopDistance", 3.0, 1.0, 32.0, "It stops when it is this close to its owner, in blocks.");
         SPIDER_TELEPORT_DISTANCE = integer(cfg, c, "teleportDistance", 24, 0, 128, "When it cannot walk to its owner and is farther than this, it jumps next to the owner like a wolf. 0 = never.");
+        SPIDER_TELEPORT_STUCK_DISTANCE = integer(cfg, c, "teleportStuckDistance", 8, 0, 64, "When it gets no closer for twice stuckTicks and is at least this far from its owner, it jumps next to the owner. 0 = only when farther than teleportDistance.");
+        SPIDER_TELEPORT_COOLDOWN_TICKS = integer(cfg, c, "teleportCooldownTicks", 100, 20, 1200, "Ticks between two jumps next to the owner.");
+        SPIDER_TAMED_HEALTH = decimal(cfg, c, "tamedHealth", 20.0, 1.0, 100.0, "Max health of a tamed spider, in half hearts (a wild one has 16). Taming heals it to this. Applied again when a spider loads, so a change reaches existing spiders.");
+        SPIDER_HEAL_ITEM = text(cfg, c, "healItem", "minecraft:rotten_flesh", "Item that heals your tamed spider on right click, as modid:name. One is used up per heal (not in creative); nothing happens at full health.");
+        SPIDER_HEAL_AMOUNT = integer(cfg, c, "healAmount", 4, 1, 40, "Health one heal item gives back, in half hearts.");
+        SPIDER_VERIFY_LOADS_CHUNKS = bool(cfg, c, "verifyLoadsChunks", true, "On login, and when the maxTamed limit blocks a tame, check that every spider counted for the player still exists, loading its chunk for a moment if needed. Counted spiders that are gone (removed by a world edit, for example) stop counting. When false, only spiders in loaded chunks are checked.");
+        SPIDER_SMART_CLIMB = bool(cfg, c, "smartClimb", true, "A tamed spider plans its way up walls and towers to an owner above, and down cliffs to an owner below, and only climbs when it needs to (it does not hang on trees or walls while wandering). When false it climbs any wall it touches, like a wild spider, and only walks and teleports to follow.");
+        SPIDER_CLIMB_MAX_HEIGHT = integer(cfg, c, "climbMaxHeight", 32, 2, 128, "Highest wall it climbs up or down to follow its owner, in blocks.");
+        SPIDER_SAFE_DROP_HEIGHT = integer(cfg, c, "safeDropHeight", 3, 0, 8, "It walks off a ledge this high or lower instead of climbing down it.");
+        SPIDER_REPATH_TICKS = integer(cfg, c, "repathTicks", 10, 5, 40, "Ticks between two path checks while it follows its owner.");
+        SPIDER_STUCK_TICKS = integer(cfg, c, "stuckTicks", 60, 20, 400, "Ticks without getting closer before it tries another way up; after twice this it jumps next to its owner (see teleportStuckDistance) or rests a while.");
 
         c = ABILITIES + ".blaze";
         BLAZE_ENABLED = bool(cfg, c, "enabled", true, "Blaze Backpack: fire immunity and burning punches.");
@@ -945,6 +967,11 @@ public class ConfigHandler
         {
             // otherwise the spider would start and stop following in the same tick
             SPIDER_FOLLOW_STOP_DISTANCE = Math.max(1.0, SPIDER_FOLLOW_START_DISTANCE - 1.0);
+        }
+        if (SPIDER_TELEPORT_DISTANCE > 0 && SPIDER_TELEPORT_STUCK_DISTANCE >= SPIDER_TELEPORT_DISTANCE)
+        {
+            // a stuck spider should jump sooner than one that is just far behind
+            SPIDER_TELEPORT_STUCK_DISTANCE = SPIDER_TELEPORT_DISTANCE / 2;
         }
     }
 
