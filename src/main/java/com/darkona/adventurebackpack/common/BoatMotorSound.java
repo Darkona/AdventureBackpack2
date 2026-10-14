@@ -31,6 +31,20 @@ public final class BoatMotorSound
         return running ? Change.START : Change.STOP;
     }
 
+    /** The dry click of a failed start: vanilla random.click, quiet and low, so it does not sound like a shot. */
+    public static final String FAILED_START_SOUND = "random.click";
+    public static final float FAILED_START_VOLUME = 0.5F;
+    public static final float FAILED_START_PITCH = 0.5F;
+
+    /**
+     * True when the pilot's motor key did not start the motor (no fuel, out of the water or motor disabled): a dry click
+     * tells the pilot, with or without the chat messages. A key that stops a running motor plays the stop sound instead.
+     */
+    public static boolean failedStartClick(boolean soundEnabled, float masterVolume, boolean wasRunning, boolean running)
+    {
+        return soundEnabled && masterVolume > 0.0F && !wasRunning && !running;
+    }
+
     /** True when the one-shot cord pull plays on a start: not for a boat that was already running when it appeared. */
     public static boolean pullAudible(int ticksExisted)
     {

@@ -56,13 +56,21 @@ public class RendererCampFire extends TileEntitySpecialRenderer
     private static void renderFood(EntityItem food, double x, double y, double z, long time, float partialTicks)
     {
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.2F, (float) z + 0.5F);
-        GL11.glRotatef(((time % 360L) + partialTicks) * 2.0F, 0.0F, 1.0F, 0.0F);
-        GL11.glScalef(0.8F, 0.8F, 0.8F);
-        RenderItem.renderInFrame = true;
-        RenderManager.instance.renderEntityWithPosYaw(food, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
-        RenderItem.renderInFrame = false;
-        GL11.glPopMatrix();
+        try
+        {
+            GL11.glTranslatef((float) x + 0.5F, (float) y + 0.2F, (float) z + 0.5F);
+            GL11.glRotatef(((time % 360L) + partialTicks) * 2.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glScalef(0.8F, 0.8F, 0.8F);
+            RenderItem.renderInFrame = true;
+            RenderManager.instance.renderEntityWithPosYaw(food, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+        } catch (Throwable t)
+        {
+            // food from another mod failed to render: the campfire and the GL state stay as they were
+        } finally
+        {
+            RenderItem.renderInFrame = false;
+            GL11.glPopMatrix();
+        }
     }
 
 

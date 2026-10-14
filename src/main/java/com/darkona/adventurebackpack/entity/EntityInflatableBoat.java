@@ -17,10 +17,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
@@ -185,6 +187,13 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         boolean fuel = hasFuel();
         boolean now = BoatMotor.toggled(was, ConfigHandler.BOAT_MOTOR_ENABLED, fuel, dryTicks == 0);
         setMotorRunning(now);
+        float volume = BoatMotorSound.master(ConfigHandler.BOAT_MOTOR_SOUND_VOLUME);
+        if (player instanceof EntityPlayerMP && BoatMotorSound.failedStartClick(ConfigHandler.BOAT_MOTOR_SOUND, volume, was, now))
+        {
+            // only the pilot hears it: the motor did not start, so nothing changed for anyone else
+            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S29PacketSoundEffect(BoatMotorSound.FAILED_START_SOUND,
+                    posX, posY, posZ, volume * BoatMotorSound.FAILED_START_VOLUME, BoatMotorSound.FAILED_START_PITCH));
+        }
         if (!ConfigHandler.BOAT_MOTOR_MESSAGES) return;
         String message;
         if (now) message = "on";

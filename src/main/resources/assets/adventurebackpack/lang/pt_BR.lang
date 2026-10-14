@@ -18,7 +18,8 @@ item.adventurebackpack:pyroMask.name=Máscara Pyro
 
 ## Tools and consumables
 item.adventurebackpack:clockworkCrossbow.name=Besta Mecânica
-item.adventurebackpack:boltCartridge.name=Cartucho de Virotes
+item.adventurebackpack:boltCartridge.name=Carregador de Besta
+item.adventurebackpack:bolt.name=Virote de Besta
 item.adventurebackpack:melonJuiceBottle.name=Garrafa de Suco de Melancia
 item.adventurebackpack:machete.name=Machete
 
@@ -110,7 +111,9 @@ adventurebackpack:messages.boat.motor.disabled=O motor do barco está desligado 
 container.adventurebackpack:flamethrowerPack=Mochila Lança-chamas
 death.attack.flamethrower=%1$s foi carbonizado por %2$s
 death.attack.flamethrower.item=%1$s foi carbonizado por %2$s usando %3$s
-adventurebackpack:messages.crossbow.outofammo=Besta Mecânica: sem virotes. Crie um Cartucho de Virotes.
+adventurebackpack:messages.crossbow.outofammo=Besta Mecânica: nenhum carregador carregado. Clique com o botão direito num Carregador de Besta para carregá-lo com flechas ou Virotes de Besta.
+adventurebackpack:messages.magazine.noammo=Carregador de Besta: sem munição no inventário (flechas ou Virotes de Besta).
+adventurebackpack:messages.magazine.noammo.kind=Carregador de Besta: ele leva %s e você não tem mais.
 adventurebackpack:messages.abilities.off=Habilidades da mochila: Desligadas.
 adventurebackpack:messages.abilities.on=Habilidades da mochila: Ligadas.
 adventurebackpack:messages.abilities.disabled=As habilidades da mochila estão desligadas na configuração do servidor.
@@ -129,7 +132,7 @@ adventurebackpack:tooltip.boat.motor.toggle=Motor ligado/desligado: %1$s
 adventurebackpack:tooltip.boat.motor.unbound=Motor ligado/desligado: defina a tecla do Motor do Barco em Opções > Controles.
 adventurebackpack:tooltip.boat.motor.hold=Segure para frente para acionar o motor.
 adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
-adventurebackpack:tooltip.crossbow.controls=Segure o botão direito para atirar. Agachar + botão direito para trocar o cartucho.
+adventurebackpack:tooltip.crossbow.controls=Segure o botão direito para atirar. Um carregador vazio é trocado por um carregado do inventário e volta vazio. Agachar + botão direito para trocar o carregador.
 adventurebackpack:tooltip.crossbow.controls.grapple=Botão direito: dispara o gancho. Ele puxa você até o bloco que segurar. Agache ou pule para soltar.
 adventurebackpack:tooltip.crossbow.controls.sniper=Agache e fique parado para apoiar o bipé e dar zoom. Botão direito: um tiro forte e reto. Movimentar-se recolhe o bipé.
 adventurebackpack:tooltip.crossbow.mode=Modo: %1$s (%2$s para trocar)
@@ -137,7 +140,9 @@ adventurebackpack:crossbow.mode.repeating=Repetição
 adventurebackpack:crossbow.mode.grapple=Gancho de Arremesso
 adventurebackpack:crossbow.mode.sniper=Atirador de Elite
 adventurebackpack:crossbow.nameWithMode=%1$s (%2$s)
-adventurebackpack:tooltip.cartridge.bolts=Virotes: %1$s/%2$s
+adventurebackpack:tooltip.magazine.charges=Cargas: %1$s/%2$s
+adventurebackpack:tooltip.magazine.ammo=Carregado com: %s
+adventurebackpack:tooltip.magazine.load=Segure o botão direito para carregá-lo com munição do inventário.
 
 ## Baubles Expanded back slot
 slot.back=§aCostas§7
