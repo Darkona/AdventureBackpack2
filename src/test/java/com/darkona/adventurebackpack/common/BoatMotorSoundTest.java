@@ -90,4 +90,13 @@ class BoatMotorSoundTest {
         assertEquals(BoatMotorSound.STALE_LIMIT, stale);
         assertEquals(0, BoatMotorSound.nextStale(age, age + 1, stale));
     }
+
+    @Test
+    void aFailedStartClicksOnlyWhenTheMotorStaysOff() {
+        assertTrue(BoatMotorSound.failedStartClick(true, 0.6F, false, false), "no fuel or no water: click");
+        assertFalse(BoatMotorSound.failedStartClick(true, 0.6F, false, true), "it started: the cord pull plays instead");
+        assertFalse(BoatMotorSound.failedStartClick(true, 0.6F, true, false), "it stopped: the stop sound plays instead");
+        assertFalse(BoatMotorSound.failedStartClick(false, 0.6F, false, false), "motor sounds off");
+        assertFalse(BoatMotorSound.failedStartClick(true, 0.0F, false, false), "volume 0");
+    }
 }
