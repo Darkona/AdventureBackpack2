@@ -15,7 +15,7 @@ Flying is meant to cost. With the default settings a full tank gives about one t
 
 ### Crafting
 
-> Screenshot: the crafting table with the Steam Jetpack recipe made with a furnace and a cauldron. File: images/jetpack-1.png
+![Steam Jetpack recipe with a furnace and a cauldron](images/jetpack-1.png)
 
 > Screenshot: the crafting table with the Steam Jetpack recipe made with the Railcraft firebox and boiler tank. File: images/jetpack-2.png
 
@@ -33,7 +33,7 @@ Open the jetpack window with B while you wear it. It has a water tank with bucke
 4. Wait for the boiler to pass 100 degrees. Then water turns into steam, 1 mB of water for 4 of steam.
 5. Hold jump to thrust.
 
-> Screenshot: the jetpack window with water, a lit firebox, the boiler hot and the steam tank partly full. File: images/jetpack-3.png
+![Steam Jetpack window with water, the firebox lit, the boiler hot and steam in the tank](images/jetpack-3.png)
 
 Thrust costs 20 mB of steam per tick, and the first moment of each thrust costs 150 mB more. With the default tanks:
 
@@ -71,9 +71,9 @@ The Copter Pack burns liquid fuel, and it does not need a particular mod: any lo
 
 The pack is made from two components, Copter Blades and a Two-Cylinder Diesel Engine, plus a Backpack Tank, planks, green dye, a diamond and iron.
 
-> Screenshot: the crafting table with the Two-Cylinder Diesel Engine recipe and the Copter Blades recipe, side by side. File: images/copter-1.png
+![Two-Cylinder Diesel Engine and Copter Blades recipes](images/copter-1.png)
 
-> Screenshot: the crafting table with the Copter Pack recipe. File: images/copter-2.png
+![Copter Pack recipe](images/copter-2.png)
 
 ### Fuel
 

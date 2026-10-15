@@ -14,19 +14,19 @@ The Clockwork Crossbow is a repeating crossbow with three modes. In repetition m
 
 The crossbow is built around a clock, a bow, strings and iron. Any planks work.
 
-> Screenshot: the crafting table with the Clockwork Crossbow recipe. File: images/crossbow-1.png
+![Clockwork Crossbow recipe](images/crossbow-1.png)
 
 An empty Crossbow Magazine takes an iron ingot, two sticks and a string.
 
-> Screenshot: the crafting table with the empty Crossbow Magazine recipe. File: images/crossbow-2.png
+![Crossbow Magazine recipe](images/crossbow-2.png)
 
 A Crossbow Bolt takes an iron ingot, a stick and a feather, in a column, and makes four. It is ammunition for the magazine and does nothing on its own.
 
-> Screenshot: the crafting table with the Crossbow Bolt recipe. File: images/crossbow-3.png
+![Crossbow Bolt recipe](images/crossbow-3.png)
 
 Two recipes fill a magazine in the crafting grid, so you can make loaded magazines without loading them by hand. In the first, six arrows, an iron ingot and two sticks make a magazine already loaded with six arrows. The second is shapeless: a magazine and some ammunition of one kind, up to the room the magazine has left, make the magazine with those charges added. The magazine must be empty or hold the same kind. Both can be turned off in the configuration.
 
-> Screenshot: the crafting table with a magazine and three arrows, and the loaded magazine as the result. File: images/crossbow-4.png
+![A magazine and three arrows make a loaded magazine](images/crossbow-4.png)
 
 ## The Crossbow Magazine
 
@@ -36,7 +36,7 @@ To load it, hold the magazine in your hand and hold right click. One charge goes
 
 The tooltip of the magazine shows its charges, what it is loaded with, and a bar that fills as it empties. Empty magazines stack together, and loaded ones stack when they hold the same kind. If you hold a stack of several, one stays in your hand and the others go back to your inventory.
 
-> Screenshot: an empty and a loaded Crossbow Magazine in the inventory, with the tooltip of the loaded one. File: images/crossbow-5.png
+![Empty and loaded Crossbow Magazines, with the tooltip of the loaded one](images/crossbow-5.png)
 
 ## Loading the crossbow
 
@@ -70,7 +70,7 @@ Press the Crossbow Mode key (V by default) with the crossbow in your hand. The m
 
 A mode that a server has turned off is skipped. A crossbow left in a mode that is off fires in repetition mode.
 
-> Screenshot: the three tooltips of the crossbow, one for each mode. File: images/crossbow-8.png
+![Crossbow tooltips in repeating, grappling hook and sniper mode](images/crossbow-8.png)
 
 ## Repetition mode
 

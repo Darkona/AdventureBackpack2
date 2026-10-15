@@ -13,7 +13,7 @@ Diving equipment for your back: two air tanks and a diving mask that is drawn on
 
 ### Crafting
 
-> Screenshot: the crafting table with the Air Tank recipe, the Diving Mask recipe and the Scuba Gear recipe, side by side. File: images/scuba-1.png
+![Air Tank, Diving Mask and Scuba Gear recipes](images/scuba-1.png)
 
 The gear is made from a Diving Mask, two Air Tanks, string and leather. An Air Tank is an iron bottle with a Hose Nozzle as its valve. The Diving Mask is a glass pane in leather, with a Hose Nozzle as the regulator. If a loaded mod brings rubber, there is a second mask recipe with rubber instead of leather. See [Compatibility](Compatibility#rubber-electric-motors-and-metal-plates).
 
@@ -23,7 +23,7 @@ The recipes exist when some breathable fluid exists: the mod adds its own Air, o
 
 Hold the gear and right click in the air. The window opens, and the Equip button puts it on your back. Once you wear it, B opens the window and the button takes it off. The mask shows on your head and the tanks on your back.
 
-> Screenshot: the Scuba Gear window with the two air tanks half full and the air container slots. File: images/scuba-2.png
+![Scuba Gear window with the two air tanks half full](images/scuba-2.png)
 
 The window has the two tanks, shown as "Air: amount / capacity", and an input and an output slot for containers. A full container of air or oxygen puts its fluid in the tanks and comes out empty; an empty container is filled from the tanks. Items that hold air without being fluid containers, like the IndustrialCraft 2 Compressed Air Cell, work too. Each tank holds 3000 mB.
 
@@ -75,7 +75,7 @@ The gear drops where you died. With a grave mod it goes into the grave. See [FAQ
 
 The Air Compressor makes air with a hand pump or by burning a furnace fuel, keeps it in a tank of 16000 mB, and fills the Scuba Gear.
 
-> Screenshot: the crafting table with the Air Compressor recipe. File: images/scuba-4.png
+![Air Compressor recipe](images/scuba-4.png)
 
 It is made of iron, a piston, a Backpack Tank and a furnace.
 
@@ -98,7 +98,7 @@ The hand pump and the furnace need open air: the block above the compressor must
 
 The window has the air tank, the fuel slot with the flame, the gear slot, and an input and output slot for containers. Full air containers empty into the tank, and empty ones are filled from it. This works with GregTech Air Cells and with the IndustrialCraft 2 Compressed Air Cell.
 
-> Screenshot: the Air Compressor window with air in the tank, coal burning and a Scuba Gear in its slot. File: images/scuba-5.png
+![Air Compressor window with air in the tank, coal burning and a Scuba Gear in its slot](images/scuba-5.png)
 
 ### Tips
 

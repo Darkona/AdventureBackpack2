@@ -10,7 +10,7 @@ The smaller items of the mod: boots, a machete, a hat, the campfire and sleeping
 | Obtained by | Crafting |
 | Config section | `pistonboots`, `enabled.pistonBoots` |
 
-> Screenshot: the crafting table with the Piston Boots recipe. File: images/gear-1.png
+![Piston Boots recipe](images/gear-1.png)
 
 Wearing them you:
 
@@ -31,7 +31,7 @@ The step height, the speed, the fall distance and when the boots step up are in 
 | Obtained by | Crafting |
 | Config section | none |
 
-> Screenshot: the crafting table with the Machete Handle recipe, then the Machete recipe. File: images/gear-2.png
+![Machete Handle and Machete recipes](images/gear-2.png)
 
 The machete is made of two iron ingots and a Machete Handle, and the handle has its own recipe.
 
@@ -45,7 +45,7 @@ It cuts through plants fast: leaves, grass, flowers, cobwebs, pumpkins, melons, 
 | Obtained by | Crafting |
 | Config section | none |
 
-> Screenshot: the crafting table with the Adventurer's Fedora recipe. File: images/gear-3.png
+![Adventurer's Fedora recipe](images/gear-3.png)
 
 A hat. It gives 2 armor points, the same as an iron helmet, and has no other effect.
 
@@ -57,7 +57,7 @@ A hat. It gives 2 armor points, the same as an iron helmet, and has no other eff
 | Obtained by | Campfire: crafting. Sleeping Bag: crafting |
 | Config section | `enabled.sleepingBag`, `sleepingbag`, `enabled.campfire`, `campfire.cooking` |
 
-> Screenshot: the crafting table with the Campfire recipe, then the Sleeping Bag recipe. File: images/gear-4.png
+![Campfire and Sleeping Bag recipes](images/gear-4.png)
 
 ### Making a camp
 
@@ -101,9 +101,9 @@ The time, the number of items, the range and whether it cooks more than food are
 
 The Inflatable Boat is built from parts, and the parts have their own recipes: Inflatable Chambers, a Hose Nozzle as the valve, and string. The Motorized one adds an outboard engine and Hydro Blades.
 
-> Screenshot: the crafting table with the Inflatable Chamber recipe and the Inflatable Boat recipe, side by side. File: images/gear-8.png
+![Inflatable Chamber and Inflatable Boat recipes](images/gear-8.png)
 
-> Screenshot: the crafting table with the Hydro Blades recipe and the Motorized Inflatable Boat recipe, side by side. File: images/gear-9.png
+![Hydro Blades and Motorized Inflatable Boat recipes](images/gear-9.png)
 
 With only vanilla items, a chamber is made of leather and a slimeball, and the motor is a piston and a furnace. If another mod brings rubber or an electric motor, there are more recipes:
 
@@ -159,7 +159,7 @@ The motor stops by itself:
 
 The fuel goes with the item when you pick the boat up, and is in the tank again when you put the boat down.
 
-> Screenshot: Options > Controls with the Boat Motor On/Off key bound, and the boat on the water with the smoke behind the motor running. File: images/gear-11.png
+![Options > Controls with the Boat Motor On/Off key bound to M](images/gear-11.png)
 
 The speed, the acceleration, the fuel per tick, the tank size, the mode and the sound are in [Configuration](Configuration#boat-motor-inflatableboatmotor).
 
