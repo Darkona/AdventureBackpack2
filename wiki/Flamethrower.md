@@ -13,7 +13,7 @@ The pack burns the liquid fuels of the [fuel list](Fluids-and-Hose#fuels): Build
 
 ## Crafting
 
-> Screenshot: the crafting table with the Pyro Mask recipe, the Flamethrower Pack recipe and the Flamethrower recipe, side by side. File: images/flamethrower-1.png
+![Pyro Mask, Flamethrower Pack and Flamethrower recipes](images/flamethrower-1.png)
 
 - The Pyro Mask is a glass pane in leather, with an iron frame.
 - The Flamethrower Pack is the mask, two Backpack Tanks, leather, iron ingots and a flint and steel, which is the pilot.
@@ -28,7 +28,7 @@ With a mod that brings metal plates, such as steel, there are extra recipes with
 3. Light the pilot with Sneak + N. You get a message in chat. Press Sneak + N again to put it out.
 4. Hold the Flamethrower in your hand and hold right click.
 
-> Screenshot: the Flamethrower Pack window with fuel in both tanks, and the pilot shown as lit. File: images/flamethrower-2.png
+![Flamethrower Pack window with fuel in both tanks and the pilot lit](images/flamethrower-2.png)
 
 > Screenshot: a player with the Flamethrower Pack on and the nozzle in hand, firing at a group of zombies at night. File: images/flamethrower-3.png
 

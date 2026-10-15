@@ -13,9 +13,9 @@ The Adventure Backpack is worn on your back and placed as a block when you want 
 
 Every other backpack starts from the Standard one. The recipe uses leather, a gold ingot, a chest, two Backpack Tanks and a Sleeping Bag, and the last two are components you craft first.
 
-> Screenshot: the crafting table with the Standard Adventure Backpack recipe. File: images/backpacks-1.png
+![Standard Adventure Backpack recipe](images/backpacks-1.png)
 
-> Screenshot: the crafting table with the Backpack Tank recipe and the Sleeping Bag component recipe, side by side. File: images/backpacks-2.png
+![Backpack Tank and Sleeping Bag recipes](images/backpacks-2.png)
 
 Any gold ingot works, including ones from other mods.
 
@@ -28,13 +28,13 @@ Open the backpack with B while you wear it, or right click with it in your hand,
 - 2 tanks, 4000 mB each by default (see [Configuration](Configuration#backpack-backpack)). Each tank has its own pair of slots for buckets, bottles and other fluid containers. See [Fluids and Hose](Fluids-and-Hose).
 - A 3x3 crafting grid with its result slot.
 
-> Screenshot: the backpack window of a worn Standard backpack with a few items and one tank half full. File: images/backpacks-3.png
+![Window of a worn Standard backpack with a few items and water in one tank](images/backpacks-3.png)
 
 ## Turning it into another type
 
 Put a Standard backpack in the middle of the crafting grid and the type's items around it. The new backpack keeps the contents and the fluids of the old one. Only a Standard backpack works as the base.
 
-> Screenshot: the crafting table with a Standard backpack surrounded by black wool, and the Black backpack in the result slot. File: images/backpacks-4.png
+![Standard backpack surrounded by black wool makes the Black backpack](images/backpacks-4.png)
 
 The pattern depends on the type: the 16 colours, Pig, Egg, Leather and a few more use eight of one item around the backpack, the others use a mix. Look up the exact grid in your recipe viewer, or use the "Made with" column below to know what to collect.
 

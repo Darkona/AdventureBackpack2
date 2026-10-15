@@ -12,7 +12,7 @@ A block with a fuel tank. It fills the Flamethrower Pack, the Copter Pack and th
 
 ## Crafting
 
-> Screenshot: the crafting table with the Fuel Station recipe. File: images/fuelstation-2.png
+![Fuel Station recipe](images/fuelstation-2.png)
 
 It is made of iron ingots, glass panes, a Hose Nozzle and a Backpack Tank. With a mod that brings metal plates, such as steel, there is an extra recipe with plates in place of the iron ingots. See [Compatibility](Compatibility#rubber-electric-motors-and-metal-plates).
 
@@ -28,7 +28,7 @@ There are three ways to fill it:
 
 A redstone comparator next to the station reads how full the tank is, from 0 to 15.
 
-> Screenshot: the Fuel Station window with the tank half full, a bucket in the input slot, and a Flamethrower Pack in the pack slot. File: images/fuelstation-3.png
+![Fuel Station window with the tank half full of lava, a filled bucket and a Flamethrower Pack](images/fuelstation-3.png)
 
 If you break the station, its slots drop and the block keeps its fuel: the item you get shows how much in its tooltip, and the fuel is there again when you place it. A creative player breaking it gets the slots back and not the block.
 

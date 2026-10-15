@@ -20,7 +20,7 @@ Every tank has two container slots in the backpack window:
 
 It works with any container that Forge knows as a fluid container, including the ones from other mods.
 
-> Screenshot: the backpack window with a water bucket in a tank's input slot and the tank filling. File: images/fluids-1.png
+![Backpack window after a water bucket went through the left tank's input slot](images/fluids-1.png)
 
 Four backpacks make their own fluid: the Cactus makes water, the Melon makes melon juice, the Cow makes milk and the Mooshroom makes mushroom stew. See [Backpacks](Backpacks#with-an-ability).
 
@@ -28,11 +28,11 @@ The mod adds three fluids of its own, Milk, Melon Juice and Mushroom Stew, plus 
 
 ## The Backpack Hose
 
-> Screenshot: the crafting table with the Hose Nozzle recipe, then the Backpack Hose recipe. File: images/fluids-2.png
+![Hose Nozzle and Backpack Hose recipes](images/fluids-2.png)
 
 The hose works on the tanks of the backpack you wear. Without a worn backpack it is called "Hose: Useless / No Backpack" and does nothing. It has two settings: which tank it uses (left or right), and which mode.
 
-> Screenshot: the hose in the hotbar with its tooltip showing the tank, the mode and the fluid. File: images/fluids-3.png
+![Hose tooltip with its tank and mode](images/fluids-3.png)
 
 | Mode | Right click on... | What happens |
 |---|---|---|
