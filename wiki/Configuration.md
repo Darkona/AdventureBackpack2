@@ -415,14 +415,14 @@ A repeating crossbow fed with reusable Crossbow Magazines. The key `keys.crossbo
 
 ## Crossbow Magazine (`crossbow.magazine`)
 
-The Crossbow Magazine is the old Bolt Cartridge (it keeps its id), now reusable: you load it by hand with ammunition and the crossbow gives it back empty. Old cartridges without a charge count are read as full magazines of arrows.
+The Crossbow Magazine is reusable: you load it by hand with ammunition and the crossbow gives it back empty.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `crossbow.magazine.capacity` | int | `6` | 1 to 24 | Charges a full Crossbow Magazine holds, and bolts the crossbow fires from it. Old cartridges without a charge count hold 6 (the 6 arrows they were made of), never more than this. Replaces `crossbow.shotsPerMagazine` (its value moves here on load). |
+| `crossbow.magazine.capacity` | int | `6` | 1 to 24 | Charges a full Crossbow Magazine holds, and bolts the crossbow fires from it. |
 | `crossbow.magazine.loadTicksPerCharge` | int | `4` | 0 to 100 | Pause between two charges while loading a magazine with a held right click (a held click repeats every 4 ticks). 0 loads the whole magazine with one click. |
 | `crossbow.magazine.reloadRecipe` | boolean | `true` |  | Shapeless recipe: a magazine and up to its free room of ammunition of one kind (the kind it already holds) make the magazine loaded with them. Needs a restart. |
-| `crossbow.magazine.legacyRecipe` | boolean | `true` |  | Keep the 1.0 Bolt Cartridge recipe (6 arrows, an iron ingot, 2 sticks): it makes a magazine already loaded with 6 arrows. The empty magazine has its own recipe (an iron ingot, 2 sticks and a string). Needs a restart. |
+| `crossbow.magazine.legacyRecipe` | boolean | `true` |  | Keep the quick recipe (6 arrows, an iron ingot, 2 sticks): it makes a magazine already loaded with 6 arrows. The empty magazine has its own recipe (an iron ingot, 2 sticks and a string). Needs a restart. |
 
 ## Ammunition (`crossbow.ammo`)
 
@@ -627,14 +627,6 @@ Flying costs more in 1.0.0. These are the earlier values, for a pack that wants 
 | `PigmanBackpacks` | `worldgen.pigmanBackpacks` |
 | `SaddleRecipe` | `recipes.saddle` |
 | `FixVanillaLead` | `tweaks.fixVanillaLead` |
-
-The copter pack list `copterpack.fuels` is now `fuels.list`, for every fuel user. The first time the game starts with the new version the value moves: a list you never changed becomes the new default, which adds `biomass=1.5`, and a list you changed is kept as it was.
-
-The old single-shot crossbow keys `crossbow.arrowVelocity` and `crossbow.arrowDamage` are removed from the file and not moved. Use `crossbow.boltVelocity` and `crossbow.boltDamage`. `crossbow.reloadTicks` now means the time to put a magazine into the crossbow.
-
-The section `crossbow.elemental` of 1.0.0 (`enabled`, `freezingTicks`, `freezingAmplifier`, `poisonTicks`, `poisonAmplifier`, `stunningTicks`, `stunningAmplifier`) is removed from the file and not moved: the elemental bolts no longer exist. Cartridges and loaded crossbows from 1.0.0 that held them load as normal ones.
-
-`crossbow.shotsPerMagazine` is now `crossbow.magazine.capacity`. The value moves on the first start with the new version and the old key leaves the file.
 
 ## Not in the file
 

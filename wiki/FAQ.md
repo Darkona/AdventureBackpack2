@@ -72,10 +72,6 @@ Hold a Crossbow Magazine and hold right click: it takes arrows or Crossbow Bolts
 
 It comes back to your inventory when the crossbow takes a new one, or falls at your feet if the inventory is full. A magazine is not used up: load it again with arrows or Crossbow Bolts. If the crossbow has no loaded magazine to take, a click gives you back the empty one. See [Crossbow](Crossbow#loading-the-crossbow).
 
-## What do Bolt Cartridges from 1.0 do now?
-
-They are Crossbow Magazines loaded with six arrows. The Blazing, Freezing, Poison and Stunning ones from 1.0 load as normal ones. See [Crossbow](Crossbow#tips).
-
 ## Why does my crossbow in sniper mode fire normal bolts?
 
 The bipod is folded. Sneak and stand still on the ground to put it down. With the bipod down the view zooms and one click fires the strong bolt.

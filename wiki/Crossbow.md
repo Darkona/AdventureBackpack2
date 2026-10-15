@@ -24,7 +24,7 @@ A Crossbow Bolt takes an iron ingot, a stick and a feather, in a column, and mak
 
 > Screenshot: the crafting table with the Crossbow Bolt recipe. File: images/crossbow-3.png
 
-Two recipes fill a magazine in the crafting grid, so you can make loaded magazines without loading them by hand. The first is the Bolt Cartridge recipe of 1.0: six arrows, an iron ingot and two sticks make a magazine already loaded with six arrows. The second is shapeless: a magazine and some ammunition of one kind, up to the room the magazine has left, make the magazine with those charges added. The magazine must be empty or hold the same kind. Both can be turned off in the configuration.
+Two recipes fill a magazine in the crafting grid, so you can make loaded magazines without loading them by hand. In the first, six arrows, an iron ingot and two sticks make a magazine already loaded with six arrows. The second is shapeless: a magazine and some ammunition of one kind, up to the room the magazine has left, make the magazine with those charges added. The magazine must be empty or hold the same kind. Both can be turned off in the configuration.
 
 > Screenshot: the crafting table with a magazine and three arrows, and the loaded magazine as the result. File: images/crossbow-4.png
 
@@ -105,7 +105,6 @@ The bipod folds when you move, jump, stop sneaking or ride something. Walking wh
 - Keep magazines and ammunition in the hotbar. Both are looked up there first.
 - Carry two or three loaded magazines. A reload takes a second and a half, and a spent magazine is not lost.
 - The crossbow does not break by default. A server can set a number of shots after which it breaks. A magazine inside it comes back to your inventory when it breaks.
-- Crossbows and cartridges from 1.0 still work. An old Bolt Cartridge is now a Crossbow Magazine loaded with six arrows, and an old crossbow keeps the bolts it had. The elemental cartridges of 1.0 load as normal ones.
 
 ## Configuration
 
