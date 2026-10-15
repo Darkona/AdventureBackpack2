@@ -48,11 +48,11 @@ Without a loaded magazine you hear a click, get the message "no loaded magazine"
 
 The reload shows on the crossbow, in first and third person. The spent magazine comes out of the slot on top and falls to the right, and the new one rises from your left hand and goes in through the slot.
 
-> Screenshot: a player in third person reloading, with the spent magazine falling to the right of the crossbow. File: images/crossbow-6.png
+![Reloading in third person: the spent magazine comes out of the slot on top of the crossbow](images/crossbow-6.png)
 
 The tooltip of the crossbow shows how many bolts are left and the current mode. In third person the player holds the crossbow with both hands and aims along it.
 
-> Screenshot: a player seen from the side holding the crossbow in two hands. File: images/crossbow-7.png
+![A player holding the crossbow in two hands, seen from the side](images/crossbow-7.png)
 
 ## Ammunition
 
@@ -78,7 +78,7 @@ This is the default mode. Hold the right click and the crossbow fires a bolt eve
 
 A bolt flies as fast as a fully drawn bow, and every bolt of a burst hits, even against a mob that was just hurt.
 
-> Screenshot: a player firing the crossbow in third person, with bolts in the air. File: images/crossbow-9.png
+![A player firing the crossbow in third person, with a bolt in the air](images/crossbow-9.png)
 
 ## Grappling hook mode
 
@@ -90,7 +90,7 @@ Right click and the crossbow shoots a hook with a rope. The hook flies straight,
 - Each shot costs one charge from the magazine, and after it you wait a second before the crossbow can fire or reload again.
 - You take no fall damage from the pull, and a fall that starts when the hook lets go counts from there.
 
-> Screenshot: a player in the air, pulled by the hook towards the side of a cliff, with the rope drawn. File: images/crossbow-10.png
+![A player pulled by the grappling hook towards a cliff, with the rope drawn](images/crossbow-10.png)
 
 ## Sniper mode
 
@@ -98,7 +98,7 @@ Sneak and stand still on the ground to put the bipod down. The view zooms in abo
 
 The bipod folds when you move, jump, stop sneaking or ride something. Walking while sneaking is too fast for it. With the bipod folded, the sniper mode fires normal bolts, like repetition mode. With the bipod down, sneak + right click fires and does not swap the magazine. An empty magazine still reloads by itself.
 
-> Screenshot: a player lying behind the crossbow with the bipod down, zoomed in on a distant mob. File: images/crossbow-11.png
+![Sniper mode: crouched with the bipod down, and the zoomed view of a distant sheep](images/crossbow-11.png)
 
 ## Tips
 

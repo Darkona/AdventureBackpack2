@@ -42,7 +42,7 @@ While your head is under water and the tanks have air, the gear keeps your air b
 - When the air falls under 600 mB you get a message in chat and a click, once for each dive. When it runs out you get another message, and you have the normal air bar of Minecraft to swim up. The gear does not hurt you.
 - Bubbles rise from the mask while you breathe from the tanks, for you and for the players who see you.
 
-> Screenshot: a player under water with the Scuba Gear on, bubbles rising from the mask, and the air tanks in the overlay. File: images/scuba-3.png
+![A player under water with the Scuba Gear, bubbles rising from the mask and the air tanks in the corner](images/scuba-3.png)
 
 ### Filling the tanks
 

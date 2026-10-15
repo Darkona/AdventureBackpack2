@@ -8,7 +8,7 @@ A block with a fuel tank. It fills the Flamethrower Pack, the Copter Pack and th
 | Obtained by | Crafting |
 | Config section | `fuelstation`, `enabled.fuelStation`, `fuels`, `recipes.fuelstation` |
 
-> Screenshot: a Fuel Station placed next to a Motorized Inflatable Boat on the shore. File: images/fuelstation-1.png
+![A Fuel Station on the shore next to a Motorized Inflatable Boat](images/fuelstation-1.png)
 
 ## Crafting
 
@@ -44,7 +44,7 @@ Every transfer moves all that fits, at once.
 
 You get a message in chat with how much moved. The message says so when the station is empty, or when the pack or the boat is full or holds another fuel. A pack or boat that holds one fuel takes only that fuel.
 
-> Screenshot: a player on the Motorized Inflatable Boat next to the Fuel Station, with the chat message of the fuel moved. File: images/fuelstation-4.png
+![A player on the Motorized Inflatable Boat next to the Fuel Station, with the chat message of the fuel moved and the boat tank in the corner](images/fuelstation-4.png)
 
 The fuels burn at different rates; a Fuel Station does not change that. The rates are in [Fluids and Hose](Fluids-and-Hose#fuels).
 
