@@ -71,9 +71,9 @@ Then:
 1. Place a Campfire within 8 blocks of the bag.
 2. Right click the bag to sleep.
 
-> Screenshot: a placed backpack with the sleeping bag unrolled and a campfire next to it, at night. File: images/gear-5.png
+![A placed backpack with the sleeping bag unrolled and a campfire next to it, at night](images/gear-5.png)
 
-> Screenshot: a Sleeping Bag laid on the ground with no backpack, next to a campfire. File: images/gear-6.png
+![A Sleeping Bag laid on the ground with no backpack, next to a campfire](images/gear-6.png)
 
 After you wake up in a bag, if you die you respawn at the campfire you slept next to. If there is no campfire, you respawn at the bag, as with a bed. If you sleep in a normal bed, the usual bed rules come back.
 
@@ -85,7 +85,7 @@ The Sleeping Bag item is also one of the parts of the Standard backpack recipe.
 
 Right click the campfire with raw food in your hand and the food goes on the fire. It cooks in ten seconds, one item after another, and the result comes into your inventory if you stand within 4 blocks. If you are farther away, it pops out on top of the fire. The campfire takes up to 8 items of one kind at a time. The rest stays in your hand. It cooks what a furnace cooks into food: raw meat, fish and potatoes. Other recipes, like ores, are off by default.
 
-> Screenshot: a campfire with smoke rising and a player holding raw porkchop in front of it. File: images/gear-7.png
+![A campfire cooking beef, with smoke rising, and a player holding raw porkchop](images/gear-7.png)
 
 If the fire is full or busy with another item, you get a chat message. If you break the campfire, the raw items on it drop. The campfire does not need fuel.
 
@@ -118,7 +118,7 @@ Right click on water to put a boat down. Its top speed is the same as the vanill
 
 The Motorized Inflatable Boat has an outboard motor that burns fuel and makes it faster. Without fuel, or with the motor off, it moves like the plain boat.
 
-> Screenshot: a player riding the Motorized Inflatable Boat on a lake, smoke behind the motor and the fuel tank in the overlay. File: images/gear-10.png
+![A player riding the Motorized Inflatable Boat with the motor running and the fuel tank in the corner](images/gear-10.png)
 
 | | Plain boat | Motor on |
 |---|---|---|

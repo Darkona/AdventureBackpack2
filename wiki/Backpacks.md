@@ -89,7 +89,7 @@ A tame spider is a pet like a tame wolf: it stays with you for good, follows you
 
 To tame one, wear the Spider backpack and right click a wild spider with a spider eye. A try works one time in three, like taming a wolf, and every try uses up an eye. On a failure you see smoke, on a success hearts. A tame spider has more health than a wild one: 10 hearts instead of 8, and taming fills them.
 
-> Screenshot: a player with the Spider backpack on, a spider eye in hand, and the hearts over the spider that has just been tamed. File: images/backpacks-5.png
+![Hearts over a spider just tamed by a player with the Spider backpack and a spider eye](images/backpacks-5.png)
 
 **What you do with it**
 
@@ -104,7 +104,7 @@ All of these are a right click on your own tame spider. Other players' spiders d
 
 Sneaking and right clicking with something other than a spider eye also makes it sit or stand.
 
-> Screenshot: a tame spider lying flat on the ground, legs stretched out, with the owner next to it. File: images/backpacks-6.png
+![A tame spider sitting flat on the ground next to its owner](images/backpacks-6.png)
 
 **How it behaves**
 

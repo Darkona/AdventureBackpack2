@@ -89,7 +89,7 @@ Each fuel burns at its own rate: oil 1.5 times as fast as fuel, creosote 1.8 tim
 
 In normal mode you fall slowly, at 60 percent of the usual speed, and take no fall damage. In hover mode you stay at your height and move sideways; you still climb and descend with jump and sneak. The rotor blows dropped items away from you.
 
-> Screenshot: a player in the air with the copter pack running, seen from behind. File: images/copter-3.png
+![A player in the air with the Copter Pack running, seen from behind](images/copter-3.png)
 
 With the default settings and Fuel, a full tank (6000 mB) lasts:
 

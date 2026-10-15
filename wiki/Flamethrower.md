@@ -30,7 +30,7 @@ With a mod that brings metal plates, such as steel, there are extra recipes with
 
 ![Flamethrower Pack window with fuel in both tanks and the pilot lit](images/flamethrower-2.png)
 
-> Screenshot: a player with the Flamethrower Pack on and the nozzle in hand, firing at a group of zombies at night. File: images/flamethrower-3.png
+![A player with the Flamethrower Pack firing at zombies at night](images/flamethrower-3.png)
 
 The pilot goes out by itself when you take the pack off, when you die, and when the tanks run dry. The nozzle fires only with the pack on and lit.
 

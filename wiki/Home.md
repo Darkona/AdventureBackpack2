@@ -2,7 +2,7 @@
 
 A backpack you wear, with two fluid tanks, a crafting grid and 76 looks, many of them with an ability of their own. For Minecraft 1.7.10 with Forge.
 
-> Screenshot: a player wearing a backpack, seen from behind, standing in a field. File: images/home-1.png
+![A player wearing an Adventure Backpack in a field of flowers](images/home-1.png)
 
 The backpack goes on your back, not in an armor slot, so it does not take inventory space from your gear. Open it with B from anywhere: you get 39 storage slots, two tool slots, two tanks with bucket slots, and a 3x3 crafting grid. Craft it into another type and it keeps everything inside.
 
