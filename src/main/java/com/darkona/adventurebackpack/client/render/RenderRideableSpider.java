@@ -23,7 +23,6 @@ public class RenderRideableSpider extends RenderLiving
         this.setRenderPassModel(new ModelTamedSpider());
     }
 
-    /** A sitting spider is drawn squashed flat (the model lowers it and spreads its legs). */
     @Override
     protected void preRenderCallback(EntityLivingBase entity, float partialTicks)
     {
@@ -38,9 +37,6 @@ public class RenderRideableSpider extends RenderLiving
         return 180.0F;
     }
 
-    /**
-     * Queries whether should render the specified pass or not.
-     */
     protected int shouldRenderPass(EntityFriendlySpider p_77032_1_, int p_77032_2_, float p_77032_3_)
     {
         if (p_77032_2_ != 0)
@@ -72,7 +68,6 @@ public class RenderRideableSpider extends RenderLiving
         }
     }
 
-    /** The typed methods above are not overrides; these are, as in RenderSpider (without them the eyes never glow). */
     @Override
     protected float getDeathMaxRotation(EntityLivingBase entity)
     {
@@ -85,17 +80,11 @@ public class RenderRideableSpider extends RenderLiving
         return this.shouldRenderPass((EntityFriendlySpider) entity, pass, partialTicks);
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     protected ResourceLocation getEntityTexture(EntityFriendlySpider p_110775_1_)
     {
         return spiderTextures;
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     protected ResourceLocation getEntityTexture(Entity p_110775_1_)
     {
         return this.getEntityTexture((EntityFriendlySpider)p_110775_1_);

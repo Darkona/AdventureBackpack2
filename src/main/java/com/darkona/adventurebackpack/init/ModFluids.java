@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.init;
 
 import com.darkona.adventurebackpack.fluids.FluidAir;
+import com.darkona.adventurebackpack.fluids.FluidEthanol;
 import com.darkona.adventurebackpack.fluids.FluidMelonJuice;
 import com.darkona.adventurebackpack.fluids.FluidMilk;
 import com.darkona.adventurebackpack.fluids.FluidMushroomStew;
@@ -14,17 +15,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 
-/**
- * Created on 12/10/2014.
- *
- * @author Javier Darkona
- */
 public class ModFluids
 {
-    /**
-     * The fluid in use for each name: ours, or the one another mod registered first under the same name (Forge keeps
-     * only the first). A FluidStack of an unregistered Fluid throws, so code must use these fields, never "new".
-     */
     public static Fluid milk;
     public static Fluid melonJuice;
     public static Fluid mushroomStew;
@@ -43,13 +35,8 @@ public class ModFluids
         GeneralReference.init();
     }
 
-    /** The "steam" the jetpack boils: another mod's, ours, or null when there is none (see registerSteamIfMissing). */
     public static Fluid steam;
 
-    /**
-     * Called in postInit, once every mod had its chance to register "steam" (Railcraft, IC2...): only then is
-     * Adventure Backpack's own registered, so it never replaces theirs.
-     */
     public static void registerSteamIfMissing()
     {
         if (!FluidRegistry.isFluidRegistered("steam") && ConfigHandler.JETPACK_OWN_STEAM)
@@ -60,13 +47,8 @@ public class ModFluids
         steam = FluidRegistry.getFluid("steam");
     }
 
-    /** The "air" the Scuba Gear breathes: GregTech's, ours, or null when there is none (see registerAirIfMissing). */
     public static Fluid air;
 
-    /**
-     * Called in postInit like registerSteamIfMissing: GregTech registers "air" (its Air Cells hold 2000 mB of it)
-     * and then that one is used; otherwise Adventure Backpack's own, unless scuba.ownAirFluid is off.
-     */
     public static void registerAirIfMissing()
     {
         if (!FluidRegistry.isFluidRegistered("air") && ConfigHandler.SCUBA_OWN_AIR)
@@ -77,7 +59,24 @@ public class ModFluids
         air = FluidRegistry.getFluid("air");
     }
 
-    /** Registers our fluid, or returns the fluid another mod already registered under that name. */
+    public static Fluid ethanol;
+
+    public static void registerEthanolIfMissing()
+    {
+        if (!FluidRegistry.isFluidRegistered(FluidEthanol.NAME) && ConfigHandler.DISTILLERY_ENABLED && ConfigHandler.DISTILLERY_OWN_ETHANOL)
+        {
+            FluidRegistry.registerFluid(new FluidEthanol());
+            LogHelper.info("No other mod registers bioethanol: using Adventure Backpack's own for the Distillery.");
+        }
+        String wanted = ConfigHandler.DISTILLERY_OUTPUT_FLUID;
+        ethanol = FluidRegistry.getFluid(wanted);
+        if (ethanol == null && !FluidEthanol.NAME.equals(wanted))
+        {
+            LogHelper.warn("distillery.outputFluid '" + wanted + "' is not a registered fluid; the Distillery makes bioethanol.");
+            ethanol = FluidRegistry.getFluid(FluidEthanol.NAME);
+        }
+    }
+
     static Fluid registerOrReuse(Fluid ours)
     {
         if (FluidRegistry.registerFluid(ours)) return ours;
@@ -85,5 +84,4 @@ public class ModFluids
         LogHelper.info("Fluid '" + ours.getName() + "' is already registered by another mod; using that one.");
         return theirs != null ? theirs : ours;
     }
-
 }

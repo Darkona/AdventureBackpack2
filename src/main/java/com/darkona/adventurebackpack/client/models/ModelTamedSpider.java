@@ -7,19 +7,11 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelSpider;
 import net.minecraft.entity.Entity;
 
-/**
- * The vanilla spider model with a sitting pose: the tamed spider lies flat on the ground with its legs stretched out
- * to the sides. The renderer also squashes it ({@code RenderRideableSpider.preRenderCallback}). Only angles and pivots
- * change, nothing is allocated per frame.
- */
 @SideOnly(Side.CLIENT)
 public class ModelTamedSpider extends ModelSpider
 {
-    /** Pivot height of the vanilla parts (ModelSpider's b0). */
     private static final float STANDING_Y = 15.0F;
-    /** Lower pivot when sitting: the body rests on the ground. */
     private static final float SITTING_Y = 19.0F;
-    /** Legs almost flat, tips just touching the ground. */
     private static final float SITTING_LEG_DROP = 0.2F;
 
     @Override
@@ -46,7 +38,6 @@ public class ModelTamedSpider extends ModelSpider
         }
     }
 
-    /** {@code side} -1 for the left legs (they point to -X), 1 for the right ones. */
     private static void setLeg(ModelRenderer leg, float y, boolean sitting, int side)
     {
         leg.rotationPointY = y;

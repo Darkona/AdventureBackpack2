@@ -7,22 +7,6 @@ import net.minecraft.util.DamageSource;
 
 import java.lang.reflect.Field;
 
-/**
- * Finds the grave mods of 1.7.10 once, in postInit, without loading any of their classes when they are absent
- * and without a compile dependency on them.
- * <ul>
- * <li>OpenBlocks: its {@code PlayerDeathHandler} reads {@code PlayerDropsEvent.drops} at LOW priority and
- * places the grave one tick later on an air or replaceable block, so it never overwrites a placed backpack.
- * It is active when its grave block is registered (OpenBlocks can disable it).</li>
- * <li>GraveStone (NightKosh): {@code GSEventsHandler} takes {@code player.inventory} (main and armor) and the
- * slots of the mods it knows in {@code LivingDeathEvent} at HIGH priority. It does not read the drop list
- * and does not know the worn wearable, so the wearable goes into the main inventory first. Its switches are
- * static fields of {@code gravestone.config.GraveStoneConfig}, read here by reflection.</li>
- * <li>Corail Tombstone has no 1.7.10 version.</li>
- * </ul>
- *
- * @author Javier Darkona
- */
 public final class GraveCompat
 {
     private static boolean openBlocksGraves = false;
@@ -35,7 +19,6 @@ public final class GraveCompat
     {
     }
 
-    /** postInit: Tier 1. */
     public static void init()
     {
         openBlocksGraves = Loader.isModLoaded("OpenBlocks") && GameRegistry.findBlock("OpenBlocks", "grave") != null;
@@ -68,16 +51,11 @@ public final class GraveCompat
         }
     }
 
-    /** A grave mod that reads {@code PlayerDropsEvent.drops} is active. */
     public static boolean hasDropsGrave()
     {
         return openBlocksGraves;
     }
 
-    /**
-     * GraveStone is loaded and its own config will make a grave for this death. Tier 2 (once per death).
-     * The restricted areas of GraveStone are not checked: there the backpack drops with the inventory, it is not lost.
-     */
     public static boolean graveStoneMakesGrave(DamageSource source)
     {
         if (!graveStone) return false;

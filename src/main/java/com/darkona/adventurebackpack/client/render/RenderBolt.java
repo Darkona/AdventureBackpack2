@@ -7,11 +7,6 @@ import net.minecraft.client.renderer.entity.RenderArrow;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-/**
- * A crossbow bolt flies and sticks exactly like an arrow, so the vanilla arrow renderer draws it; only the texture
- * changes (iron head, short shaft). The texture follows the vanilla {@code arrow.png} layout; its location is built
- * once (performance contract, tier 4).
- */
 @SideOnly(Side.CLIENT)
 public class RenderBolt extends RenderArrow
 {

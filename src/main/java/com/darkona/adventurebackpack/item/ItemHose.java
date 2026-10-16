@@ -4,6 +4,8 @@ import com.darkona.adventurebackpack.CreativeTabAB;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.common.BucketRule;
 import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.RenderInfo;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModFluids;
@@ -32,12 +34,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
-/**
- * Created by Darkona on 12/10/2014.
- */
 public class ItemHose extends ItemAB
 {
-
     IIcon drinkIcon;
     IIcon spillIcon;
     IIcon suckIcon;
@@ -50,14 +48,11 @@ public class ItemHose extends ItemAB
         super();
         setMaxStackSize(1);
         setFull3D();
-        //.setCreativeTab(CreativeTabs.tabTools)
         setNoRepair();
         setUnlocalizedName("backpackHose");
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
     }
 
-
-    // ================================================ GETTERS  =====================================================//
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int pass)
@@ -137,8 +132,6 @@ public class ItemHose extends ItemAB
         return 0;
     }
 
-    // ================================================ SETTERS  =====================================================//
-    // ================================================= ICONS  ======================================================//
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister)
@@ -148,7 +141,6 @@ public class ItemHose extends ItemAB
         suckIcon = iconRegister.registerIcon(Resources.getIconString("hoseSuck"));
         itemIcon = iconRegister.registerIcon(Resources.getIconString("hoseLeft"));
     }
-    // ================================================ ACTIONS  =====================================================//
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int inv_slot, boolean isCurrent)
@@ -156,36 +148,35 @@ public class ItemHose extends ItemAB
         if (entity == null || !(entity instanceof EntityPlayer)) return;
 
         EntityPlayer player = (EntityPlayer) entity;
-        // The tank readout only feeds the HUD: refresh it every 5 ticks, not by reading the backpack NBT each tick.
-        if (player.ticksExisted % 5 != 0 && stack.hasTagCompound()) return;
+        if (!world.isRemote && player.ticksExisted % 5 != 0 && stack.hasTagCompound()) return;
         if (world.isRemote && player.getItemInUse() != null && player.getItemInUse().getItem().equals(this)) return;
 
-
-        NBTTagCompound nbt = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
+        boolean fresh = !stack.hasTagCompound();
+        NBTTagCompound nbt = fresh ? new NBTTagCompound() : stack.getTagCompound();
         ItemStack backpack = Wearing.getWearingBackpack(player);
         if (backpack != null)
         {
             if (nbt.getInteger("tank") == -1) nbt.setInteger("tank", 0);
             if (nbt.getInteger("mode") == -1) nbt.setInteger("mode", 0);
-            InventoryBackpack inv = new InventoryBackpack(backpack);
-            FluidTank tank = nbt.getInteger("tank") == 0 ? inv.getLeftTank() : inv.getRightTank();
-            if (tank != null && tank.getFluid() != null)
+            if (world.isRemote)
             {
-                nbt.setString("fluid", Utils.capitalize(tank.getFluid().getFluid().getName()));
-                nbt.setInteger("amount", tank.getFluidAmount());
-            } else
-            {
-                nbt.setInteger("amount", 0);
-                nbt.setString("fluid", "Empty");
+                RenderInfo info = RenderInfoCache.get(backpack);
+                FluidStack fluid = nbt.getInteger("tank") == 0 ? info.leftFluid : info.rightFluid;
+                if (fluid != null && fluid.getFluid() != null)
+                {
+                    HoseReadout.show(nbt, fluid.getFluid().getName(), true, fluid.amount);
+                } else
+                {
+                    HoseReadout.show(nbt, "Empty", false, 0);
+                }
             }
         } else
         {
-            nbt.setInteger("amount", 0);
-            nbt.setString("fluid", "None");
-            nbt.setInteger("mode", -1);
-            nbt.setInteger("tank", -1);
+            HoseReadout.show(nbt, "None", false, 0);
+            if (!nbt.hasKey("mode") || nbt.getInteger("mode") != -1) nbt.setInteger("mode", -1);
+            if (!nbt.hasKey("tank") || nbt.getInteger("tank") != -1) nbt.setInteger("tank", -1);
         }
-        stack.setTagCompound(nbt);
+        if (fresh) stack.setTagCompound(nbt);
     }
 
     @Override
@@ -218,7 +209,7 @@ public class ItemHose extends ItemAB
                 case HOSE_SPILL_MODE:
 
                     FluidStack offered = tank.drain(ConfigHandler.HOSE_TRANSFER_AMOUNT, false);
-                    if (offered == null) break; // another mod's handler may not accept a null stack
+                    if (offered == null) break;
                     accepted = exTank.fill(ForgeDirection.UNKNOWN, offered, false);
                     if (accepted > 0)
                     {
@@ -231,7 +222,6 @@ public class ItemHose extends ItemAB
             }
         }
         return false;
-
     }
 
     @Override
@@ -240,13 +230,6 @@ public class ItemHose extends ItemAB
         return false;
     }
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     *
-     * @param stack
-     * @param world
-     * @param player
-     */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
@@ -259,25 +242,21 @@ public class ItemHose extends ItemAB
         {
             switch (getHoseMode(stack))
             {
-                case HOSE_SUCK_MODE: // If it's in Suck Mode
+                case HOSE_SUCK_MODE:
 
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
-                        // Same checks as a vanilla bucket: spawn protection (canMineBlock) and edit rights
                         if (!world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ)
                                 || !player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, stack))
                         {
                             return stack;
                         }
-                        //TODO adjust for Adventure Mode
                         Fluid fluidBlock = FluidRegistry.lookupFluidForBlock(world.getBlock(mop.blockX, mop.blockY, mop.blockZ));
-                        // Only a source block (metadata 0) is a full bucket; flowing blocks must not create fluid.
                         if (fluidBlock != null && world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ) == 0)
                         {
                             FluidStack fluid = new FluidStack(fluidBlock, Constants.bucket);
                             if (tank.getFluid() == null || tank.getFluid().isFluidEqual(fluid))
                             {
-                                // The whole bucket must fit, or the block stays where it is (no fluid is lost)
                                 if (BucketRule.canTakeSource(tank.fill(fluid, false), Constants.bucket))
                                 {
                                     world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
@@ -289,7 +268,7 @@ public class ItemHose extends ItemAB
                     }
                     break;
 
-                case HOSE_SPILL_MODE: // If it's in Spill Mode
+                case HOSE_SPILL_MODE:
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                     {
                         int x = mop.blockX;
@@ -297,7 +276,6 @@ public class ItemHose extends ItemAB
                         int z = mop.blockZ;
                         if (world.getBlock(x, y, z).isBlockSolid(world, x, y, z, mop.sideHit))
                         {
-
                             switch (mop.sideHit)
                             {
                                 case 0:
@@ -320,12 +298,10 @@ public class ItemHose extends ItemAB
                                     break;
                             }
                         }
-                        // Same checks as a vanilla bucket, on the block that receives the fluid
                         if (!world.canMineBlock(player, x, y, z) || !player.canPlayerEdit(x, y, z, mop.sideHit, stack))
                         {
                             return stack;
                         }
-                        // A bucket's worth is needed, as for a vanilla bucket (also to evaporate it in the Nether)
                         if (tank.getFluidAmount() >= Constants.bucket)
                         {
                             FluidStack fluid = tank.getFluid();
@@ -339,7 +315,6 @@ public class ItemHose extends ItemAB
                                     {
                                         return stack;
                                     }
-                                /* IN HELL DIMENSION No, I won't let you put water in the nether. You freak*/
                                     if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER)
                                     {
                                         tank.drain(Constants.bucket, true);
@@ -351,7 +326,6 @@ public class ItemHose extends ItemAB
                                         }
                                     } else
                                     {
-                                    /* NOT IN HELL DIMENSION. */
                                         FluidStack drainedFluid = tank.drain(Constants.bucket, false);
                                         if (drainedFluid != null && drainedFluid.amount >= Constants.bucket)
                                         {
@@ -416,6 +390,7 @@ public class ItemHose extends ItemAB
     public ItemStack onEaten(ItemStack hose, World world, EntityPlayer player)
     {
         if (!ConfigHandler.HOSE_ENABLED || !Wearing.isWearingBackpack(player)) return hose;
+        if (world.isRemote) return hose;
         int mode = -1;
         int tank = -1;
         if (hose.stackTagCompound != null)
@@ -446,7 +421,6 @@ public class ItemHose extends ItemAB
         return true;
     }
 
-    // ================================================ BOOLEANS =====================================================//
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
     {
@@ -455,7 +429,6 @@ public class ItemHose extends ItemAB
         inventory.openInventory();
         if (entity instanceof EntityCow && !(entity instanceof EntityMooshroom))
         {
-
             FluidTank tank = getHoseTank(stack) == 0 ? inventory.getLeftTank() : inventory.getRightTank();
             tank.fill(new FluidStack(ModFluids.milk, ConfigHandler.HOSE_MILK_AMOUNT), true);
             inventory.dirtyTanks();
@@ -481,5 +454,4 @@ public class ItemHose extends ItemAB
     {
         return FluidRegistry.lookupFluidForBlock(block) != null;
     }
-
 }

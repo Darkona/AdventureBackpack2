@@ -1,6 +1,6 @@
 # Configuration
 
-Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 253 keys.
+Every setting of Adventure Backpack is in one file, `config/adventurebackpack.cfg`. The game writes it the first time it starts, with every key and its comment. This page lists all 271 keys.
 
 You can also edit the file from the game: in the Mods list, select Adventure Backpack and press Config. Changes made in the file need a restart of the game. Keys marked "Needs a restart" are read when items, blocks or keys are created, so they need one even with the config screen.
 
@@ -16,10 +16,10 @@ The file is a tree under `adventurebackpack`. First comes `enabled`, with one sw
 
 ## Contents
 
-- [Systems](#systems-enabled), [Backpack](#backpack-backpack), [Abilities](#abilities-abilities), [Hose](#hose-hose), [Copter pack](#copter-pack-copterpack), [Steam jetpack](#steam-jetpack-steamjetpack)
-- [Scuba gear](#scuba-gear-scuba), [Air compressor](#air-compressor-scubacompressor), [Flamethrower](#flamethrower-flamethrower), [Fuels](#fuels-fuels), [Fuel station](#fuel-station-fuelstation)
+- [Systems](#systems-enabled), [Backpack](#backpack-backpack), [Backpack types](#backpack-types-backpackscolour), [Abilities](#abilities-abilities), [Hose](#hose-hose), [Copter pack](#copter-pack-copterpack), [Steam jetpack](#steam-jetpack-steamjetpack)
+- [Scuba gear](#scuba-gear-scuba), [Air compressor](#air-compressor-scubacompressor), [Flamethrower](#flamethrower-flamethrower), [Fuels](#fuels-fuels), [Fuel station](#fuel-station-fuelstation), [Distillery](#distillery-distillery), [Placed gear](#placed-gear-placedgear)
 - [Inflatable boat](#inflatable-boat-inflatableboat), [Boat motor](#boat-motor-inflatableboatmotor)
-- [Crossbow](#clockwork-crossbow-crossbow), [Crossbow Magazine](#crossbow-magazine-crossbowmagazine), [Ammunition](#ammunition-crossbowammo), [Grappling hook](#grappling-hook-crossbowgrapple), [Sniper mode](#sniper-mode-crossbowsniper), [Piston boots](#piston-boots-pistonboots), [Campfire](#campfire-cooking-campfirecooking), [Sleeping bag](#sleeping-bag-sleepingbag)
+- [Crossbow](#clockwork-crossbow-crossbow), [Crossbow Magazine](#crossbow-magazine-crossbowmagazine), [Ammunition](#ammunition-crossbowammo), [Grappling hook](#grappling-hook-crossbowgrapple), [Sniper mode](#sniper-mode-crossbowsniper), [Gatling mode](#gatling-mode-crossbowquiver), [Piston boots](#piston-boots-pistonboots), [Campfire](#campfire-cooking-campfirecooking), [Sleeping bag](#sleeping-bag-sleepingbag)
 - [Display](#display-render), [Keys](#keys-keys), [Tool swapping keys](#tool-swapping-keys-keystoolcycle)
 - [Backpacks in the world](#backpacks-in-the-world-worldgen), [Extra recipes](#extra-recipes-recipes), [Small tweaks](#small-tweaks-tweaks), [Tool slots](#tool-slots-tweakstoolcycle), [Grave mods](#grave-mods-compatgraves), [Baubles](#baubles-compatbaubles)
 - [Earlier flight values](#flight-values-before-100)
@@ -40,7 +40,10 @@ One switch per system. A disabled system stays registered, so worlds and servers
 | `enabled.sleepingBag` | boolean | `true` |  | The sleeping bag: deploying it from a placed backpack, and placing the Sleeping Bag item on its own (sleepingbag.placeable). Bags already on the ground still work and can be picked up. |
 | `enabled.pistonBoots` | boolean | `true` |  | The Piston Boots: step assist, sprint speed and fall protection. |
 | `enabled.campfire` | boolean | `true` |  | Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way. |
+| `enabled.quiver` | boolean | `true` |  | The quiver of the Skeleton Backpack (`backpacks.skeleton.quiver`): it takes the place of the right tank, so that backpack has one tank and a few slots that only take arrows and crossbow bolts. When false the Skeleton Backpack has its two tanks again; arrows already in the quiver are kept in the backpack and come back when it is turned on. Set it the same on server and clients. |
 | `enabled.fuelStation` | boolean | `true` |  | The Fuel Station block. When false it has no recipe, is hidden from the creative tab, and a placed one neither takes nor gives fuel (it can still be broken, and keeps its fuel). |
+| `enabled.distillery` | boolean | `true` |  | The Distillery block, which makes ethanol for the fuel users. When false it has no recipe, is hidden from the creative tab, and a placed one does nothing: no batches, no push, no fluid in or out (it can still be broken and drops its items). Set it the same on server and clients. |
+| `enabled.placedGear` | boolean | `true` |  | Placing the Steam Jetpack, the Copter Pack, the Scuba Gear and the Flamethrower Pack on the ground as a block (see placedgear for each one). When false they cannot be placed; gear already placed does nothing (no window, no fluid in or out) but can still be picked up with everything it holds. Set it the same on server and clients. |
 | `enabled.flamethrower` | boolean | `true` |  | The Flamethrower Pack, the Flamethrower nozzle and the Pyro Mask. When false they have no recipe, are hidden from the creative tab, and the nozzle does not fire. Set it the same on server and clients. |
 
 ## Backpack (`backpack`)
@@ -54,6 +57,32 @@ The Adventure Backpack itself, worn or placed.
 | `backpack.blastResistance` | double | `2000.0` | 0.0 to 6000000.0 | Explosion resistance of a placed backpack. 2000 is obsidian, which survives TNT and creepers; 10 is stone. Needs a restart. |
 | `backpack.hardness` | double | `1.0` | 0.0 to 100.0 | How long a placed backpack takes to break by hand. Stone is 1.5. Needs a restart. |
 | `backpack.deathMessage` | boolean | `true` |  | On death, tell the player in chat where the worn backpack, copter pack or jetpack went (placed, dropped or in the grave) with its coordinates. |
+| `backpack.wornSyncIntervalTicks` | int | `4` | 1 to 20 | Worn gear (backpack, jetpack, copter pack...) that changes every tick, such as a boiling jetpack, a burning firebox or a Cow backpack filling a tank, tells its wearer and the players near about it at most once every this many ticks (20 per second). A single change is sent at once. 1 sends every tick. |
+
+## Backpack types (`backpacks.<colour>`)
+
+One category per backpack type, named after its colour in lower case: `backpacks.standard`, `backpacks.cow`, `backpacks.irongolem` and so on for all 81 types. Each one has the same three keys, with `enabled` first. `rows` and `columns` are the size of the storage grid of that backpack's window. The 3x3 crafting grid takes the bottom right corner of the grid, so a backpack has rows x columns - 9 storage slots: the default 6 rows of 8 columns give the classic 39. The tanks, the tool slots, the buttons and your inventory move with the grid, and the window background is drawn to fit.
+
+A backpack never loses slots. A backpack that already holds more slots than its type now gives keeps its size, so a smaller size only applies to new backpacks; a bigger size applies to every backpack of that type the next time it is opened. The size is read when a backpack is opened or loaded (no restart), but set it the same on the server and on every client: the window must have the same slots on both sides. An addon ability can also ask for a bigger window for its colour (see the [API](API) page).
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `backpacks.<colour>.enabled` | boolean | `true` |  | The backpack type. When false it has no crafting recipe and is hidden from the creative tab and NEI; backpacks of this type that already exist keep working. Needs a restart for the recipe. |
+| `backpacks.<colour>.rows` | int | `6` | 4 to 10 | Rows of the storage grid of this backpack's window. Set it the same on server and clients. |
+| `backpacks.<colour>.columns` | int | `8` | 8 to 12 | Columns of the storage grid of this backpack's window. Set it the same on server and clients. |
+
+For example, `backpacks.diamond.rows = 7` and `backpacks.diamond.columns = 9` give the Diamond Backpack 54 storage slots.
+
+### Skeleton quiver (`backpacks.skeleton.quiver`)
+
+The Skeleton Backpack carries a quiver in the place of its right tank, while `enabled.quiver` is on. Its slots only take the items of the list. Bows drawn by the wearer take their arrows from the backpack, quiver first (`abilities.skeleton`). The model shows a few arrows in the quiver when it holds some.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `backpacks.skeleton.quiver.slots` | int | `4` | 1 to 6 | Slots of the quiver, each holding one stack. They fill the column of the right tank, then the column of its bucket slots. Lowering it keeps the arrows of the slots that go away in the backpack (they come back when the slots do). Set it the same on server and clients. |
+| `backpacks.skeleton.quiver.items` | string list | `item:minecraft:arrow`, `item:adventurebackpack:bolt` |  | What the quiver slots take, one per line: `item:modid:name` (any damage value), `item:modid:name:meta` (that damage value only), `ore:name` (an Ore Dictionary name) or `modid:name`. The default is vanilla arrows and the Crossbow Bolts. Set it the same on server and clients. |
+
+A Skeleton Backpack saved before the quiver keeps its fluid: what fits moves from the right tank into the left one, and the rest stays sealed in the right tank. A sealed tank takes nothing more, the hose can still empty it, and it is back as a normal tank when `enabled.quiver` is turned off.
 
 ## Abilities (`abilities`)
 
@@ -64,7 +93,7 @@ Special effects of the backpacks while they are worn (the Cactus and Melon also 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `abilities.effectRefreshTicks` | int | `40` | 2 to 200 | Ticks left on a long potion effect (fire resistance, Dragon effects) under which the ability renews it. |
-| `abilities.toggleMessage` | boolean | `true` |  | Tell the player in chat when the abilities key (keys.toggleAbilities) turns the worn backpack's abilities off or on. Each player's choice is kept with the player; enabled.abilities false keeps them off for everyone. |
+| `abilities.toggleMessage` | boolean | `true` |  | Tell the player in chat when the Gear On/Off key (keys.ability) or the button in the backpack window turns the worn backpack's abilities off or on. Each player's choice is kept with the player; enabled.abilities false keeps them off for everyone. |
 
 ### Bat backpack (`abilities.bat`)
 
@@ -210,7 +239,8 @@ Special effects of the backpacks while they are worn (the Cactus and Melon also 
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `abilities.skeleton.enabled` | boolean | `true` |  | Skeleton Backpack: bows take arrows from the backpack. |
+| `abilities.skeleton.enabled` | boolean | `true` |  | Skeleton Backpack: bows take arrows from the backpack, quiver first, and arrows leave faster (`arrowSpeedBonus`). |
+| `abilities.skeleton.arrowSpeedBonus` | double | `0.3` | 0.0 to 2.0 | Extra speed of the arrows and Crossbow Bolts the wearer shoots, as a part of their normal speed (0.30 = 30 % faster). Arrows hurt in proportion to their speed, so they also hit about this much harder. 0 turns it off. |
 
 ### Iron Golem backpack (`abilities.irongolem`)
 
@@ -295,7 +325,7 @@ The boiler needs a fluid called steam: another mod's, or the backpack's own (see
 | `steamjetpack.ownSteamFluid` | boolean | `true` |  | When no other mod (Railcraft, IC2...) registers a 'steam' fluid, register Adventure Backpack's own so the jetpack boils water without them. When another mod has steam, that one is used. Set it the same on server and clients. Needs a restart. |
 | `steamjetpack.waterCapacity` | int | `6000` | 1000 to 64000 | Water tank capacity in millibuckets. Use the same value on server and clients. Needs a restart. |
 | `steamjetpack.steamCapacity` | int | `12000` | 1000 to 64000 | Steam tank capacity in millibuckets. Use the same value on server and clients. Needs a restart. |
-| `steamjetpack.steamPerTick` | int | `20` | 0 to 1000 | Steam spent per tick of thrust. With the defaults a full steam tank gives 30 seconds of thrust, and full water and steam tanks with a hot boiler about 90 seconds. |
+| `steamjetpack.steamPerTick` | int | `10` | 0 to 1000 | Steam spent per tick of thrust. With the defaults a full steam tank gives 60 seconds of thrust, and full water and steam tanks with a hot boiler about 3 minutes. |
 | `steamjetpack.ignitionSteam` | int | `150` | 0 to 64000 | Steam spent at once each time the thrust starts, so taking off costs more than keeping it going. 0 turns it off. |
 | `steamjetpack.thrustFuelBurn` | int | `3` | 1 to 20 | Ticks of firebox burn time used per tick of thrust (1 = as fast as idle). Coal burns 1600 ticks, so 3 makes one coal last about 27 seconds of thrust. |
 | `steamjetpack.thrustHeatLossTicks` | int | `10` | 0 to 1200 | While thrusting the boiler loses one degree every this many ticks, down to the ambient temperature. With the fire lit it still heats up; without fuel a long flight cools it below boiling. 0 turns it off. |
@@ -304,8 +334,9 @@ The boiler needs a fluid called steam: another mod's, or the backpack's own (see
 | `steamjetpack.waterIntake` | int | `2` | 0 to 1000 | Millibuckets of water taken per tick while the wearer is in water. |
 | `steamjetpack.steamPerWater` | int | `4` | 1 to 100 | Millibuckets of steam made from one millibucket of water. |
 | `steamjetpack.boilingTemperature` | int | `100` | 1 to 199 | Boiler temperature at which water turns into steam (the boiler tops out at 200). |
-| `steamjetpack.thrust` | double | `0.08` | 0.01 to 1.0 | Upward acceleration per tick. |
-| `steamjetpack.maxRiseSpeed` | double | `0.28` | 0.01 to 2.0 | Top climbing speed. |
+| `steamjetpack.thrust` | double | `0.14` | 0.01 to 1.0 | Upward speed added per tick of thrust. Gravity takes 0.08 each tick, so the jetpack climbs only with more than that: 0.08 just floats. 0.14 reaches the top climbing speed in about 6 ticks. Movement is decided by each client, so use the same value on server and clients. |
+| `steamjetpack.maxRiseSpeed` | double | `0.4` | 0.01 to 2.0 | Top climbing speed in blocks per tick (0.4 is 8 blocks a second). Needs thrust above 0.08 + maxRiseSpeed / 50 to be reached. |
+| `steamjetpack.fallBrake` | double | `2.0` | 1.0 to 10.0 | Thrust multiplier while the wearer is falling, so holding jump stops a fall at once. 1 turns it off. |
 | `steamjetpack.airControl` | double | `0.02` | 0.0 to 0.5 | Horizontal acceleration while thrusting. |
 | `steamjetpack.maxAltitude` | int | `90` | 1 to 255 | Height above which thrust fades out. Thrust holds you at about maxRiseSpeed x 100 blocks higher. |
 
@@ -372,6 +403,42 @@ The [Fuel Station](Fuel-Station). The block is switched by `enabled.fuelStation`
 |---|---|---|---|---|
 | `fuelstation.tankCapacity` | int | `16000` | 1000 to 64000 | Capacity of the station's tank in millibuckets. Use the same value on server and clients. Lowering it does not delete fuel already stored above the new limit. Needs a restart. |
 
+## Distillery (`distillery`)
+
+The [Distillery](Distillery) makes ethanol from crops for the fuel users. The block is switched by `enabled.distillery`. Items in the lists are written as in `recipes.boat.motors`: `item:<modid>:<item name>[:<damage>]` (without a damage value it takes every damage value), `ore:<Ore Dictionary name>`, `stack:<modid>:<registered stack name>` or `ic2:<IC2 item name>`.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `distillery.outputFluid` | string | `bioethanol` |  | Registered name of the fluid the Distillery makes. bioethanol is the name Forestry, Railcraft and GregTech use: when one of them is loaded the Distillery makes their ethanol. Any registered fluid name works; a name no loaded mod registers falls back to bioethanol. Set it the same on server and clients. Needs a restart. |
+| `distillery.ownEthanolFluid` | boolean | `true` |  | When no other mod registers a 'bioethanol' fluid, register Adventure Backpack's own (shown as Ethanol), only while enabled.distillery is on. It has no block and no bucket: it lives in tanks, pipes and fuel packs. When another mod has bioethanol, that one is used. Set it the same on server and clients. Needs a restart. |
+| `distillery.fuelMultiplier` | double | `1.2` | 0.1 to 10.0 | Burn rate of the output fluid when fuels.list does not list it (fuels.list wins when it does; its default has bioethanol=1.2). Higher burns faster: 1.2 makes ethanol last a little less than fuel (1.0) and more than oil (1.5). Needs a restart. |
+| `distillery.outputCapacity` | int | `8000` | 1000 to 64000 | Capacity of the ethanol tank in millibuckets (8000 is eight buckets). Use the same value on server and clients. Needs a restart. |
+| `distillery.waterCapacity` | int | `8000` | 1000 to 64000 | Capacity of the water tank in millibuckets. Use the same value on server and clients. Needs a restart. |
+| `distillery.waterPerBatch` | int | `1000` | 0 to 64000 | Millibuckets of water each batch uses up. 0 makes water free (and not needed). |
+| `distillery.ticksPerBatch` | int | `400` | 1 to 72000 | Ticks of burning flame one batch takes (400 is 20 seconds). With the defaults one coal (3200 ticks) runs eight batches. |
+| `distillery.intervalTicks` | int | `10` | 1 to 200 | The Distillery works once every this many ticks, doing the work of all those ticks at once. An idle Distillery (no flame and nothing to do) does no work at all until something changes. |
+| `distillery.organics` | string list | `item:minecraft:wheat=100, item:minecraft:potato=150, item:minecraft:carrot=120, item:minecraft:reeds=150, item:minecraft:apple=150, item:minecraft:melon=40, item:minecraft:pumpkin=250, item:minecraft:poisonous_potato=100, item:minecraft:wheat_seeds=20, ore:cropCorn=150, ore:cropRice=100, ore:cropBarley=100, ore:cropRye=100, ore:cropSugarbeet=150` |  | Organic items the grid takes and the ethanol each one makes, one per line: <item>=<millibuckets>. Every batch takes one item from each slot of the grid, so nine different crops make the most at once. Entries no loaded mod provides are ignored (the ore: names cover crops of Pam's HarvestCraft and other farming mods). Set it the same on server and clients. Needs a restart. |
+| `distillery.catalysts` | string list | `item:minecraft:sugar` |  | Items the catalyst slot takes, one per line, without amounts. Each batch uses catalystPerBatch of them. The window shows the first one in the empty slot. Set it the same on server and clients. Needs a restart. |
+| `distillery.catalystPerBatch` | int | `1` | 0 to 64 | Catalyst items each batch uses up. 0 makes the catalyst free (and not needed). |
+| `distillery.solidFuels` | string list | `item:minecraft:coal=3200, item:minecraft:coal_block=32000` |  | Solid fuels the fuel slot takes and how long each one burns, one per line: <item>=<ticks>. The coal entry has no damage value, so it covers coal and charcoal. These win over furnaceFuelMultiplier. Set it the same on server and clients. Needs a restart. |
+| `distillery.furnaceFuelMultiplier` | double | `1.0` | 0.0 to 100.0 | Any other furnace fuel (planks, sticks, blaze rods, lava buckets, fuels of other mods) burns for its furnace time times this. 0 takes only the fuels of solidFuels. |
+| `distillery.pushIntervalTicks` | int | `20` | 1 to 1200 | Ticks between two pushes of ethanol into the neighbours. It only pushes while there is ethanol and some neighbour takes fluid. |
+| `distillery.pushAmount` | int | `1000` | 0 to 64000 | Millibuckets offered to the neighbours in each push, shared in turn between the four sides. 0 turns the push off: then pipes have to pull the ethanol out. |
+| `distillery.waterPerSource` | int | `50` | 0 to 1000 | Millibuckets of water per second each water source block next to the Distillery (its four sides and below) gives while the water tank is not full. With the defaults two sources keep it running without buckets or pipes. 0 turns it off. |
+
+
+## Placed gear (`placedgear`)
+
+The Steam Jetpack, the Copter Pack, the Scuba Gear and the Flamethrower Pack can be put on the ground as a block, like a backpack (see [Gear](Gear#placing-gear-on-the-ground)). `enabled.placedGear` switches it all; each gear has its own switch here. A placed gear does not run and never ticks: the jetpack's boiler stays as it was, and the copter's engine and the pilot flame are off.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `placedgear.jetpack` | boolean | `true` |  | The Steam Jetpack can be placed. Set it the same on server and clients. |
+| `placedgear.copter` | boolean | `true` |  | The Copter Pack can be placed. Set it the same on server and clients. |
+| `placedgear.scuba` | boolean | `true` |  | The Scuba Gear can be placed. Set it the same on server and clients. |
+| `placedgear.flamethrower` | boolean | `true` |  | The Flamethrower Pack can be placed. Set it the same on server and clients. |
+| `placedgear.syncIntervalTicks` | int | `10` | 1 to 200 | A placed gear filled or emptied by pipes tells the nearby players about its new content at most once every this many ticks (20 per second). Its window updates at once. |
+
 
 ## Inflatable boat (`inflatableboat`)
 
@@ -388,7 +455,7 @@ The outboard motor of the Motorized Inflatable Boat. It burns the fuels of `fuel
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `inflatableboat.motor.enabled` | boolean | `true` |  | The motor of the Motorized Inflatable Boat. False: the motor is only a look, and the boat moves like the plain one. |
-| `inflatableboat.motor.mode` | string | `toggle` | toggle, hold | toggle: the motor key (keys.boatMotorToggle, set it in Options &gt; Controls) turns the motor on and off, and the boat goes ahead on its own while the pilot steers; holding back still brakes. hold: the motor pushes while the pilot holds the forward key. Either way it stops without fuel, when the pilot gets off and out of the water. Read on the server. |
+| `inflatableboat.motor.mode` | string | `toggle` | toggle, hold | toggle: the Change Mode key (keys.mode, G by default) turns the motor on and off, and the boat goes ahead on its own while the pilot steers; holding back still brakes. hold: the motor pushes while the pilot holds the forward key. Either way it stops without fuel, when the pilot gets off and out of the water. Read on the server. |
 | `inflatableboat.motor.maxSpeed` | double | `0.6` | 0.05 to 2.0 | Top speed while the motor runs, in blocks per tick (0.6 = 12 blocks per second; the boat without motor uses inflatableboat.maxSpeed). Use the same value on server and clients. |
 | `inflatableboat.motor.acceleration` | double | `2.0` | 1.0 to 10.0 | How much faster than the plain boat the boat speeds up while the motor runs: 1.0 = as fast as the plain boat, 2.0 = twice as fast. Use the same value on server and clients. |
 | `inflatableboat.motor.fuelPerTick` | int | `1` | 0 to 100 | Millibuckets of fuel per tick while the motor runs, before the fuel's own multiplier (fuels.list). With the defaults a full tank of fuel lasts 5 minutes. 0 makes the motor free (it still needs some fuel in the tank). |
@@ -401,7 +468,7 @@ The outboard motor of the Motorized Inflatable Boat. It burns the fuels of `fuel
 
 ## Clockwork crossbow (`crossbow`)
 
-A repeating crossbow fed with reusable Crossbow Magazines. The key `keys.crossbowMode` changes its mode; the other two modes have their own sections below. In repetition mode, hold right click to fire the magazine one bolt after another; when it is empty the next click puts in the first loaded magazine of your inventory, hotbar first, and the empty one comes back to the inventory, or drops at your feet when it is full. Sneak + right click swaps a partly used magazine, which comes back with the charges it has left. Ticks are 20 per second.
+A repeating crossbow fed with reusable Crossbow Magazines. The Change State key (`keys.state`, V by default) changes its mode; the other two modes have their own sections below. In repetition mode, hold right click to fire the magazine one bolt after another; when it is empty the next click puts in the first loaded magazine of your inventory, hotbar first, and the empty one comes back to the inventory, or drops at your feet when it is full. Sneak + right click swaps a partly used magazine, which comes back with the charges it has left. Ticks are 20 per second.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
@@ -419,7 +486,7 @@ The Crossbow Magazine is reusable: you load it by hand with ammunition and the c
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `crossbow.magazine.capacity` | int | `6` | 1 to 24 | Charges a full Crossbow Magazine holds, and bolts the crossbow fires from it. |
+| `crossbow.magazine.capacity` | int | `8` | 1 to 24 | Charges a full Crossbow Magazine holds, and bolts the crossbow fires from it. |
 | `crossbow.magazine.loadTicksPerCharge` | int | `4` | 0 to 100 | Pause between two charges while loading a magazine with a held right click (a held click repeats every 4 ticks). 0 loads the whole magazine with one click. |
 | `crossbow.magazine.reloadRecipe` | boolean | `true` |  | Shapeless recipe: a magazine and up to its free room of ammunition of one kind (the kind it already holds) make the magazine loaded with them. Needs a restart. |
 | `crossbow.magazine.legacyRecipe` | boolean | `true` |  | Keep the quick recipe (6 arrows, an iron ingot, 2 sticks): it makes a magazine already loaded with 6 arrows. The empty magazine has its own recipe (an iron ingot, 2 sticks and a string). Needs a restart. |
@@ -462,6 +529,17 @@ The third mode: with the bipod down (sneaking, standing still on the ground) the
 | `crossbow.sniper.stillTolerance` | double | `0.02` | 0.001 to 0.2 | Horizontal movement in blocks per tick under which the player counts as still (sneak walking is about 0.065). |
 | `crossbow.sniper.zoom` | double | `0.35` | 0.1 to 1.0 | Client only: field of view multiplier while the bipod is down. 1 = no zoom, 0.35 = about three times closer. |
 
+## Gatling mode (`crossbow.quiver`)
+
+While you wear a Skeleton Backpack with arrows or Crossbow Bolts in its quiver (`enabled.quiver`) and its abilities are on, the crossbow needs no magazine: hold right click and it fires one item of the quiver per shot, without stopping, until the quiver runs out. Then it goes back to the magazine inside and to the loaded magazines of your inventory. It takes the items in the order of `crossbow.ammo.list` (Crossbow Bolts first, then arrows). The grappling hook takes its charges from the quiver, and the sniper with the bipod down fires single bolts from it at its own rate. Turn the backpack's abilities off with the Gear On/Off key to use magazines while you wear it.
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `crossbow.quiver.enabled` | boolean | `true` |  | The crossbow fires from the quiver of a worn Skeleton Backpack (gatling mode). When false it always uses magazines. |
+| `crossbow.quiver.fireIntervalTicks` | int | `3` | 1 to 40 | Ticks between two bolts while the trigger is held. 3 = between 6 and 7 bolts a second (the magazine fires 5). Any value works, not only multiples of 4. |
+| `crossbow.quiver.triggerHoldTicks` | int | `6` | 5 to 20 | Ticks the trigger counts as held after the last right click the server got. Minecraft repeats a held click every 4 ticks; the margin covers a late packet. Higher values keep a laggy burst going but fire a little longer after letting go. |
+| `crossbow.quiver.flushEveryShots` | int | `8` | 1 to 64 | The server counts the spent items in memory and takes them out of the backpack every this many shots, and when the burst ends. Lower values update the quiver in the backpack window and on the model sooner and send the backpack to its wearer more often. |
+
 ## Piston boots (`pistonboots`)
 
 | Key | Type | Default | Range | What it does |
@@ -470,6 +548,10 @@ The third mode: with the bipod down (sneaking, standing still on the ground) the
 | `pistonboots.stepHeight` | double | `1.001` | 0.5 to 3.0 | Step height while the boots step up (vanilla is 0.5). |
 | `pistonboots.sprintSpeed` | boolean | `true` |  | Give Speed I while sprinting. |
 | `pistonboots.safeFallDistance` | int | `8` | 0 to 256 | Falls shorter than this many blocks do no damage. 0 turns it off. |
+| `pistonboots.leap.enabled` | boolean | `true` |  | A running jump in the boots carries more speed forward: the jump multiplies the horizontal speed you had, once, when your feet leave the ground. No flight and no extra fall protection. |
+| `pistonboots.leap.boost` | double | `1.4` | 1.0 to 3.0 | How much the jump multiplies your horizontal speed. 1.0 adds nothing. |
+| `pistonboots.leap.maxHorizontalSpeed` | double | `0.7` | 0.1 to 2.0 | The leap never takes your horizontal speed past this, in blocks per tick (vanilla sprinting is about 0.28, a vanilla sprint jump about 0.36). If something else already made you faster, you keep that speed: the leap never slows you down. |
+| `pistonboots.leap.requiresSprint` | boolean | `true` |  | Leap only from a sprint. False leaps from any moving jump in the boots. |
 
 ## Campfire cooking (`campfire.cooking`)
 
@@ -504,31 +586,29 @@ Client only: how the mod draws things. The server ignores this section.
 | `render.flamethrowerParticles` | int | `6` | 0 to 30 | Flame particles drawn along the cone for each burst of a Flamethrower (smoke comes with every second burst). 0 draws none. |
 | `render.wearableOverlay` | boolean | `true` |  | Show the overlays of the worn backpack, copter pack or jetpack on screen, and the fuel tank of the motorized boat the player rides. |
 | `render.boatSmokeTicks` | int | `8` | 0 to 200 | The running motor of the motorized boat puffs smoke once every this many ticks. 0 = no smoke. |
+| `render.quiverArrows` | boolean | `true` |  | Draw arrows sticking out of the Skeleton Backpack's quiver (worn, placed and as an item): none when it is empty, more as it fills up (1 to 8, 9 to 32, more than 32 items). |
+| `render.tooltipWidth` | int | `200` | 100 to 400 | Widest line of the mod's tooltips, in GUI pixels; longer lines wrap. The crossbow's controls show only while Shift is held. |
 
 ## Keys (`keys`)
 
-Client only. Default keys, as LWJGL key codes (B is 48, N is 49; see the LWJGL Keyboard class). They are only defaults: once you change a key in Options > Controls, Minecraft keeps your choice.
+Client only. The four keys of the mod and their default codes, as LWJGL key codes (B is 48, N is 49, G is 34, V is 47; see the LWJGL Keyboard class). They are only defaults: once you change a key in Options > Controls, Minecraft keeps your choice. What each key does in each case is in [Controls](Controls). The eight keys of older versions (`openBackpack`, `toggle`, `crossbowMode`, `toggleAbilities`, `boatMotorToggle` and the three `toolcycle` keys) are removed from the file.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `keys.openBackpack` | int | `48` | 0 to 255 | Default key that opens the worn backpack, copter pack or jetpack (48 = B). Needs a restart. |
-| `keys.toggle` | int | `49` | 0 to 255 | Default key that switches the hose tank and drives the worn copter pack or jetpack (49 = N). With the copter pack, the key changes its mode (normal or hover) and Sneak + the key turns it on or off; with the jetpack, Sneak + the key turns it on or off; Sneak + N lights the Flamethrower Pack. Needs a restart. |
-| `keys.crossbowMode` | int | `47` | 0 to 255 | Default key that changes the firing mode of the held Clockwork Crossbow (47 = V). Needs a restart. |
-| `keys.toggleAbilities` | int | `0` | 0 to 255 | Default key that turns the abilities of the worn backpack off and on, for this player only (night vision, water breathing, fire resistance, milk...). 0 = not bound: pick one in Options > Controls. Needs a restart. |
-| `keys.boatMotorToggle` | int | `0` | 0 to 255 | Default key that turns the motor of the Motorized Inflatable Boat on and off while riding it (inflatableboat.motor.mode toggle). 0 = not bound: pick one in Options &gt; Controls. Needs a restart. |
+| `keys.gear` | int | `48` | 0 to 255 | Default key of Open Gear: opens the window of the worn backpack, copter pack, jetpack, scuba gear or flamethrower pack (48 = B). Needs a restart. |
+| `keys.ability` | int | `49` | 0 to 255 | Default key of Gear On/Off: turns the worn gear on and off. Backpack: its abilities, for this player only. Copter pack: the engine. Steam Jetpack: the firebox. Flamethrower Pack: the pilot. The Scuba Gear always works (49 = N). Needs a restart. |
+| `keys.mode` | int | `34` | 0 to 255 | Default key of Change Mode, first match wins: riding the Motorized Inflatable Boat, the motor on and off (inflatableboat.motor.mode toggle); wearing the copter pack, normal or hover; a hose in the hand, the left or right tank (34 = G). Needs a restart. |
+| `keys.state` | int | `47` | 0 to 255 | Default key of Change State, first match wins: the Clockwork Crossbow in the hand, its firing mode; a hose in the hand, its mode (suck, spill, drink); wearing a backpack, swap the held tool with its tool slots. Sneak + the key goes backwards (47 = V). Needs a restart. |
 
 ## Tool swapping keys (`keys.toolcycle`)
 
-Client only. Swapping the held tool with the backpack's tool slots, and changing the hose mode. The keys themselves are changed in Options > Controls.
+Client only. Swapping the held tool with the backpack's tool slots, and changing the hose mode, with the Change State key or Sneak + the mouse wheel. The key itself is changed in Options > Controls.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
-| `keys.toolcycle.enabled` | boolean | `true` |  | Swap the held tool with the backpack's tool slots, and change the hose mode, from the keyboard or mouse wheel. False turns both off, so the wheel always scrolls the hotbar. |
-| `keys.toolcycle.mode` | string | `both` | wheel, keys, both | wheel: hold the modifier key and turn the mouse wheel. keys: only the next and previous tool keys. both: either one. |
+| `keys.toolcycle.enabled` | boolean | `true` |  | Swap the held tool with the backpack's tool slots, and change the hose mode, with the Change State key or Sneak + the mouse wheel. False turns both off, so the wheel always scrolls the hotbar (the crossbow mode still changes with the key). |
+| `keys.toolcycle.mode` | string | `both` | wheel, keys, both | wheel: hold Sneak and turn the mouse wheel. keys: only the Change State key. both: either one. |
 | `keys.toolcycle.invertWheel` | boolean | `false` |  | Turn the mouse wheel the other way to cycle. |
-| `keys.toolcycle.modifierKey` | int | `0` | 0 to 255 | Default key to hold while turning the mouse wheel. 0 means the sneak key (Left Shift by default), because a separate binding on the same key as sneak would stop one of the two from working in 1.7.10. Needs a restart. |
-| `keys.toolcycle.nextToolKey` | int | `0` | 0 to 255 | Default key for the next tool. 0 means not bound. Needs a restart. |
-| `keys.toolcycle.previousToolKey` | int | `0` | 0 to 255 | Default key for the previous tool. 0 means not bound. Needs a restart. |
 
 ## Backpacks in the world (`worldgen`)
 
@@ -607,8 +687,9 @@ Flying costs more in 1.0.0. These are the earlier values, for a pack that wants 
 | `steamjetpack.thrustFuelBurn` | 3 | 1 |
 | `steamjetpack.thrustHeatLossTicks` | 10 | 0 |
 | `steamjetpack.coolingSpeed` | 1.5 | 1.0 |
-| `steamjetpack.thrust` | 0.08 | 0.1 |
-| `steamjetpack.maxRiseSpeed` | 0.28 | 0.32 |
+| `steamjetpack.thrust` | 0.14 | 0.1 |
+| `steamjetpack.maxRiseSpeed` | 0.4 | 0.32 |
+| `steamjetpack.fallBrake` | 2.0 | 1.0 |
 | `steamjetpack.maxAltitude` | 90 | 100 |
 
 ## Keys moved from the older file

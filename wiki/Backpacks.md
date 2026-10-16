@@ -28,6 +28,8 @@ Open the backpack with B while you wear it, or right click with it in your hand,
 - 2 tanks, 4000 mB each by default (see [Configuration](Configuration#backpack-backpack)). Each tank has its own pair of slots for buckets, bottles and other fluid containers. See [Fluids and Hose](Fluids-and-Hose).
 - A 3x3 crafting grid with its result slot.
 
+The Skeleton backpack is different: it has one tank, and a quiver takes the place of the right tank. See [Skeleton backpack](#skeleton-backpack).
+
 ![Window of a worn Standard backpack with a few items and water in one tank](images/backpacks-3.png)
 
 ## Turning it into another type
@@ -74,12 +76,12 @@ You can wear one backpack, copter pack, jetpack, scuba gear or flamethrower pack
 | Ocelot | Creepers run away from you. | Raw fish, yellow wool |
 | Rainbow | Eat a golden apple to start the Nyan run: about 2.5 minutes of Speed III and Jump Boost III, with a rainbow trail and the song. | The seven rainbow dyes, a Cat music disc |
 | Sunflower | Feeds you in daylight, a drumstick every two minutes. | Sunflowers |
-| Skeleton | Bows take their arrows from the backpack. A bow can go in the tool slots. | Bones, Skeleton skull, bow, arrows |
+| Skeleton | Bows take their arrows from the backpack, quiver first. A bow can go in the tool slots. It has one tank and a quiver for arrows and crossbow bolts. | Bones, Skeleton skull, bow, arrows |
 | Iron Golem | No fall damage. | Not craftable. Found in village blacksmith chests. |
 | Spider | Tame spiders with a spider eye: they follow you for good, climb after you and carry you. See [Taming spiders](#taming-spiders). | Spider eyes, string, ladders |
 | Blaze | You do not burn in fire or lava, and what you punch catches fire for 4 seconds. | Blaze rods, fire charge, blaze powder, lava bucket |
 
-You can turn the abilities of the backpack you wear off and on with a key of your own, without taking the backpack off. The key is not bound by default. See [Controls](Controls#the-abilities-key).
+You can turn the abilities of the backpack you wear off and on without taking it off: press Gear On/Off (N by default) or click the ON/OFF button in its window. See [Controls](Controls#the-backpack-abilities).
 
 The Cactus and Melon timings, the Cow and Mooshroom amounts and every other number above are in [Configuration](Configuration#abilities-abilities).
 
@@ -118,6 +120,16 @@ Sneaking and right clicking with something other than a spider eye also makes it
 
 The limit, the taming chance, the item you tame and heal with, their health, how far they follow, how high they climb and when they jump to you are all in [Configuration](Configuration#spider-backpack-abilitiesspider). `abilities.spider.smartClimb` set to false makes them climb any wall they touch, like a wild spider.
 
+### Skeleton backpack
+
+The Skeleton backpack carries a quiver in the place of its right tank. The quiver has 4 slots that only take arrows and Crossbow Bolts, and shift click puts arrows there before the storage. When you draw a bow while you wear the backpack, the arrow comes from the backpack, the quiver first. The quiver shows on the backpack: one arrow when it holds a few, three with up to 32, and five when it holds more.
+
+Arrows and Crossbow Bolts you shoot while you wear the backpack leave 30 % faster, from a bow or from the crossbow. They fly flatter and further, and because an arrow hurts in proportion to its speed, they also hit about 30 % harder. The Clockwork Crossbow fires straight from the quiver, without magazines, as long as the quiver holds arrows or bolts: see [Gatling mode](Crossbow#gatling-mode-the-skeleton-backpacks-quiver). The Gear On/Off key turns both off together with the bow's arrows from the backpack.
+
+The backpack has one tank. A Skeleton backpack from an older version keeps its fluid: what fits moves into the left tank, and the rest stays sealed in the right tank until you empty it with the hose.
+
+The number of slots, the items the quiver takes and the arrows on the model are in [Configuration](Configuration#skeleton-quiver-backpacksskeletonquiver). With `enabled.quiver` off the Skeleton backpack has its two tanks again, and the arrows in the quiver wait in the backpack until you turn it on.
+
 ### Blaze backpack
 
 The Blaze backpack gives you the fire resistance of a magma cube: fire and lava do not burn you. Your punches set what you hit on fire for 4 seconds, mobs and players alike. A punch is an empty hand or an item that is not a weapon, like a block, food or a stick. Swords, tools and bows do not set things on fire.
@@ -135,6 +147,8 @@ A few types do something when placed:
 ### Appearance only
 
 These have no ability. They are craftable from the Standard backpack.
+
+The Horse backpack is one of them: it does not call your horses. Any tamed horse with a name tag follows its owner on its own, whether or not you wear a backpack, so name your horse with a name tag and it comes after you (the key is `tweaks.namedHorsesFollowOwner` in [Configuration](Configuration)). A tamed horse without a name does not follow you.
 
 | Backpack | Made with |
 |---|---|

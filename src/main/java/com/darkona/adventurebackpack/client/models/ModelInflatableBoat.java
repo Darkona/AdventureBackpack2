@@ -7,10 +7,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
-/**
- * InflatableBoat - Darkona
- * Created using Tabula 4.1.0
- */
 public class ModelInflatableBoat extends ModelBase
 {
     public ModelRenderer boatSides1;
@@ -147,7 +143,6 @@ public class ModelInflatableBoat extends ModelBase
             this.Axis.render(f5);
             this.EngineBody.render(f5);
 
-
             GL11.glPopMatrix();
         }else{
             this.boatSides5.render(f5);
@@ -160,9 +155,6 @@ public class ModelInflatableBoat extends ModelBase
         }
     }
 
-    /**
-     * This is a helper function from Tabula to set the rotation of model parts
-     */
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
     {
         modelRenderer.rotateAngleX = x;

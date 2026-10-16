@@ -8,9 +8,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 
-/**
- * Created by Darkona on 12/10/2014.
- */
 public class LavaEffect extends FluidEffect
 {
     public LavaEffect()
@@ -30,5 +27,4 @@ public class LavaEffect extends FluidEffect
             player.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, timeInSeconds * 20 * 6, 3, false));
         }
     }
-
 }

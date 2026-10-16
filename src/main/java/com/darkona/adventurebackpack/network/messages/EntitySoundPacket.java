@@ -11,14 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-/**
- * Created on 06/01/2015
- *
- * @author Darkona
- */
 public class EntitySoundPacket implements IMessageHandler<EntitySoundPacket.Message, EntitySoundPacket.Message>
 {
-
     public static final boolean play = true;
 
     public static final byte NYAN_SOUND = 0;
@@ -36,7 +30,6 @@ public class EntitySoundPacket implements IMessageHandler<EntitySoundPacket.Mess
             ClientActions.playSoundAtEntity(Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID), message.soundCode);
         } else
         {
-            // A client request: only the jetpack ignition of the sender itself is relayed (RelayGuard)
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
             if (RelayGuard.mayRelaySound(player, message.entityID, message.soundCode))
             {
@@ -48,8 +41,6 @@ public class EntitySoundPacket implements IMessageHandler<EntitySoundPacket.Mess
 
     public static class Message implements IMessage
     {
-
-
         private byte soundCode;
         private int entityID;
 

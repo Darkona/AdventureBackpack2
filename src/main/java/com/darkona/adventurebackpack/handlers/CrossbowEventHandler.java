@@ -7,10 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
-/**
- * What a crossbow bolt does when it hits a mob. The event fires only on a hit (Tier 2) and returns at once when the
- * damage does not come from a bolt.
- */
 public class CrossbowEventHandler
 {
     private static EntityBolt bolt(DamageSource source)
@@ -20,7 +16,6 @@ public class CrossbowEventHandler
         return direct instanceof EntityBolt ? (EntityBolt) direct : null;
     }
 
-    /** Fires before the invulnerability check, so clearing it lets every bolt of a burst land. */
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {

@@ -1,7 +1,8 @@
 package com.darkona.adventurebackpack.util;
 
 import com.darkona.adventurebackpack.compat.baubles.BackpackBauble;
-import com.darkona.adventurebackpack.events.WearableEvent;
+import adventurebackpack.api.WearableEvent;
+import com.darkona.adventurebackpack.inventory.QuiverFeed;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,14 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 
-/**
- * Created on 08/01/2015
- *
- * @author Darkona
- */
 public class BackpackUtils
 {
-
     public enum reasons{
         SUCCESFUL,ALREADY_EQUIPPED
     }
@@ -44,11 +39,11 @@ public class BackpackUtils
         BackpackProperty prop = BackpackProperty.get(player);
         if(prop.getWearable() != null)
         {
+            QuiverFeed.flush(player);
             player.openContainer.onContainerClosed(player);
             ItemStack gimme;
             if (prop.isWearableInBauble())
             {
-                // Worn from a Baubles slot: empty that slot so the stack exists only in the inventory
                 gimme = BackpackBauble.takeOutOfSlot(player);
                 if (gimme == null) return;
             } else
@@ -79,10 +74,6 @@ public class BackpackUtils
         return null;
     }
 
-    /**
-     * A world-time mark kept in the stack's root tag (abilities, see BackpackAbilities), or -1 when the stack has none.
-     * The root tag is used because InventoryBackpack rebuilds "backpackData" from its own fields when it saves.
-     */
     public static long getTimeMark(ItemStack stack, String key)
     {
         NBTTagCompound tag = stack.stackTagCompound;
@@ -100,5 +91,4 @@ public class BackpackUtils
         if(!stack.hasTagCompound())stack.stackTagCompound = new NBTTagCompound();
         stack.stackTagCompound.setTag("backpackData",compound);
     }
-
 }

@@ -14,24 +14,14 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
-/**
- * Created on 11/10/2014
- *
- * @author Darkona
- * @see com.darkona.adventurebackpack.handlers.PlayerEventHandler
- * @see com.darkona.adventurebackpack.fluids.FluidEffectRegistry
- * @see com.darkona.adventurebackpack.common.BackpackAbilities
- */
 public class ClientActions
 {
-    /** True for this client's own player; wearable updates also run for the other players a client sees. */
     @SideOnly(Side.CLIENT)
     public static boolean isLocalPlayer(EntityPlayer player)
     {
         return player != null && player == net.minecraft.client.Minecraft.getMinecraft().thePlayer;
     }
 
-    /** True while this client holds the jump key: the copter and the jetpack climb with it. */
     @SideOnly(Side.CLIENT)
     public static boolean isJumpKeyDown()
     {
@@ -93,10 +83,6 @@ public class ClientActions
         }
     }
 
-    /**
-     * The boat motor's sounds (inflatableboat.motor.sound), on the change of its running flag: START plays the cord pull
-     * once and begins the loop that follows the boat; STOP plays the cough once at the boat. Called only on the client.
-     */
     @SideOnly(Side.CLIENT)
     public static void boatMotorSound(EntityInflatableBoat boat, BoatMotorSound.Change change)
     {
@@ -114,5 +100,4 @@ public class ClientActions
             boat.worldObj.playSound(boat.posX, boat.posY, boat.posZ, ModInfo.MOD_ID + ":boatmotorstop", volume, 1.0F, false);
         }
     }
-
 }

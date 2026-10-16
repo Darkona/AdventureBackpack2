@@ -8,22 +8,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-/**
- * The Adventure Backpack worn in a Baubles slot: the "back" slot of Baubles Expanded, or the belt slot of the
- * original Baubles. No Baubles class is named here, so this class loads without Baubles; the calls into the API
- * go through {@link BaublesCompat} and only happen when Baubles is loaded.
- * <p>
- * The stack stays in the Baubles slot, where Baubles saves it, drops it on death and shows it to grave mods.
- * {@link BackpackProperty} points at that same stack ({@link BackpackProperty#linkBauble}), so abilities, the
- * open key, the hose, the overlays and the model on the back work exactly as for a backpack worn the usual
- * way. The properties never save a linked stack, so it cannot be duplicated, and a player wears one wearable at
- * most: a backpack only goes into the slot when nothing is worn, and the usual equip refuses while one is linked.
- *
- * @author Javier Darkona
- */
 public final class BackpackBauble
 {
-    /** Slot types the backpack fits in Baubles Expanded. */
     public static final String[] TYPES = {"back"};
 
     private static boolean loaded = false;
@@ -32,7 +18,6 @@ public final class BackpackBauble
     {
     }
 
-    /** preInit. The back slot is added whenever Baubles Expanded is there, whatever the config says, so client and server always have the same slots. */
     public static void preInit()
     {
         loaded = Loader.isModLoaded("Baubles");
@@ -58,13 +43,11 @@ public final class BackpackBauble
         return BaubleRules.canEquip(ConfigHandler.COMPAT_BAUBLES_ENABLED, isPlayer && props != null, props != null && props.hasWearable());
     }
 
-    /** Server: links at once so there is no tick without the backpack worn. */
     public static void onEquipped(ItemStack stack, EntityLivingBase entity)
     {
         tick(stack, entity);
     }
 
-    /** Server, every tick while the backpack is in a slot. Field comparisons only, unless the link is broken. */
     public static void tick(ItemStack stack, EntityLivingBase entity)
     {
         if (!(entity instanceof EntityPlayer) || entity.worldObj == null || entity.worldObj.isRemote || stack == null) return;
@@ -93,7 +76,6 @@ public final class BackpackBauble
         }
     }
 
-    /** Server: the stack left its slot (taken out, swapped, or emptied by a grave mod). */
     public static void onUnequipped(ItemStack stack, EntityLivingBase entity)
     {
         if (!(entity instanceof EntityPlayer) || entity.worldObj == null || entity.worldObj.isRemote) return;
@@ -106,10 +88,6 @@ public final class BackpackBauble
         }
     }
 
-    /**
-     * Server: the usual unequip (GUI button) of a backpack worn from a slot. Takes it out of the slot, which
-     * unlinks it, and returns the stack to hand to the player, or null when no slot holds it any more.
-     */
     public static ItemStack takeOutOfSlot(EntityPlayer player)
     {
         BackpackProperty props = BackpackProperty.get(player);

@@ -8,22 +8,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-/**
- * A tamed spider goes after its owner like a wolf, with or without the Spider Backpack: it walks, climbs walls and
- * towers to an owner above and climbs down to an owner below ({@link SpiderNavigate}). When it gets no closer for a
- * while it tries another wall; when it stays stuck, or falls far behind, it jumps next to the owner
- * (abilities.spider.teleportDistance, teleportStuckDistance).
- * <p>
- * The owner is looked up by UUID only when the task starts and dropped when it stops, so the task never keeps a
- * player that left. The decisions live in {@link SpiderFollowRules}.
- */
 public class EntityAISpiderFollowOwner extends EntityAIBase
 {
-    /** Ticks between two progress checks. */
     private static final int PROGRESS_TICKS = 20;
-    /** Squared blocks it must gain between two checks to count as moving on. */
     private static final double MIN_GAIN = 1.0;
-    /** Ticks it rests after giving up, before it tries again. */
     private static final int GIVE_UP_TICKS = 60;
 
     private final EntityFriendlySpider spider;
@@ -104,7 +92,7 @@ public class EntityAISpiderFollowOwner extends EntityAIBase
         else
         {
             stuckTicks += PROGRESS_TICKS;
-            if (distSq > bestDistSq) bestDistSq = distSq; // the owner moved away (or up): measure from here
+            if (distSq > bestDistSq) bestDistSq = distSq;
         }
         int level = SpiderFollowRules.stuckLevel(stuckTicks, ConfigHandler.SPIDER_STUCK_TICKS);
         if (level == SpiderFollowRules.STUCK_REPLAN)
@@ -123,18 +111,11 @@ public class EntityAISpiderFollowOwner extends EntityAIBase
         }
         else if (level >= SpiderFollowRules.STUCK_GIVE_UP && !nav.isClimbing())
         {
-            // rest a while, then start over; continueExecuting turns false now
             retryAfter = spider.worldObj.getTotalWorldTime() + GIVE_UP_TICKS;
             stuckTicks = 0;
         }
     }
 
-    /**
-     * Like the wolf: the first free spot in a ring two blocks around the owner, at the owner's feet height, then one and
-     * two lower and one higher; last, the block the owner stands on (the top of a one block pillar). The spot needs a
-     * solid top under it, nothing hot under or in it, and room for the whole spider. Returns false when there is none
-     * (the owner flies or swims, for example).
-     */
     private boolean teleportNearOwner()
     {
         World world = spider.worldObj;

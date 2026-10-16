@@ -58,8 +58,12 @@ Oxygen counts as air. Where the tanks take the fluid called oxygen, they keep it
 
 | Action | Control |
 |---|---|
-| Open the window | B, or right click with the gear in hand |
+| Open the window | B, or right click in the air with the gear in hand |
 | Put on, take off | The button of the window |
+
+### Putting it down
+
+Sneak and right click the top of a block with the gear in hand to put it on the ground. Right click it to open its window, break it or sneak and right click it with an empty hand to pick it up. Pipes of other mods can fill its tanks with air or oxygen. See [Gear](Gear#placing-gear-on-the-ground).
 
 ### Dying
 

@@ -12,7 +12,7 @@ Around the backpack the mod adds a hose to drink and move fluids, a crossbow wit
 
 - 76 backpacks. Most are craftable from a Standard backpack, and 20 of them do something while you wear them: night vision, fire resistance, milk from wheat, eggs, calm wolves, tame spiders that follow you up walls and carry you, burning punches, and so on.
 - Two tanks per backpack, filled with buckets or with the hose. The hose also lets you drink from the tank.
-- A Clockwork Crossbow loaded from reusable Crossbow Magazines, with three modes: a magazine of six bolts with a held right click, a grappling hook that pulls you to a block, and a sniper shot with a bipod. A key changes the mode.
+- A Clockwork Crossbow loaded from reusable Crossbow Magazines, with three modes: a magazine of eight bolts with a held right click, a grappling hook that pulls you to a block, and a sniper shot with a bipod. A key changes the mode.
 - A Steam Jetpack, powered by water and a furnace fuel, and a Copter Pack that burns liquid fuel from BuildCraft, Forestry, Railcraft or GregTech. Flying costs: a full tank gives a minute or two.
 - Scuba Gear with two air tanks and a diving mask: ten minutes under water, filled at an Air Compressor you pump by hand or run on any furnace fuel.
 - A Flamethrower: a pack on your back with two fuel tanks and a nozzle in your hand that throws flame in a cone. A Fuel Station fills it, the Copter Pack and the motor of the Motorized Inflatable Boat.
@@ -36,6 +36,7 @@ For players
 - [Scuba Gear](Scuba-Gear): the dive equipment and the Air Compressor
 - [Flamethrower](Flamethrower): the pack, the nozzle and the pilot
 - [Fuel Station](Fuel-Station): the block that fills the packs and the boat
+- [Distillery](Distillery): the block that makes ethanol from crops and fills the Fuel Station
 - [Fluids and Hose](Fluids-and-Hose): tanks, buckets, the hose, what each fluid does when drunk, air and the fuel list
 - [Crossbow](Crossbow): the three modes of the crossbow, its magazines and its ammunition
 - [Jetpack and Copter Pack](Jetpack-and-Copter-Pack): the two flying packs
@@ -46,6 +47,10 @@ For modpack makers and server owners
 
 - [Configuration](Configuration): every setting in the config file
 - [Compatibility](Compatibility): other mods, fuels, air and oxygen
+
+For addon authors
+
+- [API](API): the separate API jar, and how to add a fluid effect, a wearable or a backpack ability from your own mod, add fuels and air, and listen to the drink, ability and open events
 
 Project
 

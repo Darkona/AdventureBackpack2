@@ -4,35 +4,30 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.darkona.adventurebackpack.common.CodeRegistrations;
 import com.darkona.adventurebackpack.common.FuelRules;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 
-import java.util.HashMap;
+import gnu.trove.map.hash.TObjectFloatHashMap;
 
-/**
- * Created on 16/01/2015
- *
- * @author Darkona
- */
 public class GeneralReference
 {
-    /** The one fuel table (fuels.list): fluid name to cost multiplier. Every fuel user reads it. */
-    public static HashMap<String, Float> liquidFuels = new HashMap<String, Float>();
-    /** True when some loaded mod registers a fluid of the list; set once in postInit by {@link #findRegisteredFuels()}. */
+    public static final TObjectFloatHashMap<String> liquidFuels = new TObjectFloatHashMap<String>();
     public static boolean fuelRegistered = false;
 
-    /** Called once in postInit, when every mod has registered its fluids. */
     public static void findRegisteredFuels()
     {
         fuelRegistered = FuelRules.anyRegistered(liquidFuels.keySet(), FluidRegistry.getRegisteredFluids().keySet());
     }
 
-
-    /** Liquid fuels and their cost multipliers, from the fuels.list config key. */
     public static void init()
     {
         liquidFuels.clear();
-        liquidFuels.putAll(FuelRules.parse(ConfigHandler.FUELS));
+        liquidFuels.putAll(CodeRegistrations.mergeFuels(FuelRules.parse(ConfigHandler.FUELS), CodeRegistrations.INSTANCE.fuels()));
+        if (ConfigHandler.DISTILLERY_ENABLED)
+        {
+            FuelRules.addIfMissing(liquidFuels, ConfigHandler.DISTILLERY_OUTPUT_FLUID, (float) ConfigHandler.DISTILLERY_FUEL_MULTIPLIER);
+        }
     }
 
     public static boolean isValidFuel(Fluid fluid)
@@ -40,13 +35,11 @@ public class GeneralReference
         return fluid != null && FuelRules.accepts(liquidFuels, fluid.getName());
     }
 
-    /** True for a stack of a fuel on the list; false for null, an empty stack or a fluid that is gone. */
     public static boolean isValidFuel(FluidStack stack)
     {
         return stack != null && stack.amount > 0 && isValidFuel(stack.getFluid());
     }
 
-    /** Cost multiplier of the fuel (1 when it is not on the list). */
     public static float fuelMultiplier(Fluid fluid)
     {
         return FuelRules.multiplier(liquidFuels, fluid == null ? null : fluid.getName());

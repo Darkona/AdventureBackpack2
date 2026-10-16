@@ -10,11 +10,6 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
-/**
- * Created on 08/01/2015
- *
- * @author Darkona
- */
 public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacket.Message, SyncPropertiesPacket.Message>
 {
     public static final byte DATA_ONLY = 0;
@@ -25,15 +20,12 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
-
         if (ctx.side.isClient() && message.properties != null)
         {
             AdventureBackpack.proxy.synchronizePlayer(message.ID, message.properties);
         }
         if (ctx.side.isServer())
         {
-            // A client asks for its own data: answer that client only, and not more often than RelayGuard allows.
-            // The nearby players already get every real change (BackpackProperty.syncToNearIfChanged).
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
             if (RelayGuard.mayRelayFrom(player)) BackpackProperty.syncTo(player, player);
         }
@@ -42,11 +34,9 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
 
     public static class Message implements IMessage
     {
-
         int ID;
         byte type;
         NBTTagCompound properties;
-
 
         public Message()
         {
@@ -63,7 +53,6 @@ public class SyncPropertiesPacket implements IMessageHandler<SyncPropertiesPacke
         {
             ID = buf.readInt();
             properties = ByteBufUtils.readTag(buf);
-
         }
 
         @Override

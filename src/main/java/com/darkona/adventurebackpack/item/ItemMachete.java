@@ -17,11 +17,6 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Set;
 
-/**
- * Created on 10/10/2014
- *
- * @author Darkona
- */
 public class ItemMachete extends ToolAB
 {
     private static final Set breakableBlocks = Sets.newHashSet(Blocks.pumpkin,
@@ -50,7 +45,6 @@ public class ItemMachete extends ToolAB
 
     public ItemMachete()
     {
-
         super(ModMaterials.ruggedIron, breakableBlocks);
         setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
         setMaxDamage(Items.iron_sword.getMaxDamage() + 250);
@@ -69,13 +63,8 @@ public class ItemMachete extends ToolAB
             if (stacky.getItem() == Item.getItemFromBlock(block)) return 15F;
         }
         return material == Material.plants || material == Material.vine || material == Material.coral || material == Material.gourd || material == Material.leaves || material == Material.cloth ? 12.0F : 0.5F;
-
     }
 
-    /**
-     * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
-     * the damage on the stack.
-     */
     @Override
     public boolean hitEntity(ItemStack p_77644_1_, EntityLivingBase p_77644_2_, EntityLivingBase p_77644_3_)
     {
@@ -98,8 +87,6 @@ public class ItemMachete extends ToolAB
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
     {
-        // Shear leaves, tall grass and other IShearable blocks like shears do.
         return Items.shears.onBlockStartBreak(itemstack, x, y, z, player);
     }
-
 }

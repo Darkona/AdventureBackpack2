@@ -20,6 +20,76 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
+// The API for addons lives in its own source set (src/api/java, package adventurebackpack.api): it sees Minecraft and
+// Forge and never the mod's own classes. The mod depends on its output and its jar carries it, so the mod works with
+// that one jar; the same classes also go out alone in adventurebackpack-api-<mc>-<api_version>.jar for addon authors.
+sourceSets {
+    api
+}
+
+dependencies {
+    // Minecraft and Forge for the API source set: the same patched Minecraft RetroFuturaGradle gives to main
+    apiCompileOnly sourceSets.patchedMc.output
+    implementation sourceSets.api.output
+}
+
+// adventurebackpack.api.ApiVersion: the value behind AdventureBackpackAPI.getVersion(), written from api_version
+def apiVersionDir = layout.buildDirectory.dir('generated/sources/apiVersion')
+def generateApiVersion = tasks.register('generateApiVersion') {
+    def outDir = apiVersionDir
+    def apiVer = api_version
+    inputs.property 'apiVersion', apiVer
+    outputs.dir outDir
+    doLast {
+        def f = outDir.get().file('adventurebackpack/api/ApiVersion.java').asFile
+        f.parentFile.mkdirs()
+        f.text = "package adventurebackpack.api;\n\n/** Generated from api_version in gradle.properties. */\nfinal class ApiVersion\n{\n    static final String VALUE = \"${apiVer}\";\n\n    private ApiVersion()\n    {\n    }\n}\n"
+    }
+}
+sourceSets.api.java.srcDir apiVersionDir
+tasks.named('compileApiJava') { dependsOn generateApiVersion }
+
+tasks.named('jar') {
+    from sourceSets.api.output
+}
+
+// The API-only artifact: classes (reobfuscated by RetroFuturaGradle as reobfApiJar), sources and javadoc. No @Mod, no
+// mcmod.info and nothing of com.darkona: it is only for compiling an addon against (compileOnly), never for mods/.
+def apiBaseName = "${archive_name}-api-${minecraft_version}"
+def apiJar = tasks.register('apiJar', Jar) {
+    archiveBaseName = apiBaseName
+    archiveVersion = api_version
+    archiveClassifier = 'dev'
+    from sourceSets.api.output
+}
+tasks.register('apiSourcesJar', Jar) {
+    archiveBaseName = apiBaseName
+    archiveVersion = api_version
+    archiveClassifier = 'sources'
+    dependsOn generateApiVersion
+    from sourceSets.api.allJava
+}
+def apiJavadoc = tasks.register('apiJavadoc', Javadoc) {
+    dependsOn generateApiVersion
+    source = sourceSets.api.allJava
+    classpath = sourceSets.api.compileClasspath
+    destinationDir = layout.buildDirectory.dir('docs/apiJavadoc').get().asFile
+    options.encoding = 'UTF-8'
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+tasks.register('apiJavadocJar', Jar) {
+    archiveBaseName = apiBaseName
+    archiveVersion = api_version
+    archiveClassifier = 'javadoc'
+    from apiJavadoc
+}
+tasks.named('assemble') {
+    dependsOn 'apiSourcesJar', 'apiJavadocJar'
+}
+// reobfApiJar comes from RetroFuturaGradle's reobf<JarTaskName> task rule: named() makes it, as RFG does for reobfJar
+def reobfApiJar = tasks.named('reobfApiJar')
+tasks.named('assemble') { dependsOn reobfApiJar }
+
 minecraft {
     mcVersion = minecraft_version
     username = 'Developer'
@@ -60,6 +130,10 @@ repositories {
 dependencies {
     // Baubles Expanded keeps the original Baubles API (baubles.api) and adds baubles.api.expanded
     compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.25-GTNH:dev') { transitive = false }
+    // Inventory Tweaks: only its annotations (invtweaks.api.container) on ContainerBackpack and compat/invtweaks
+    compileOnly('com.github.GTNewHorizons:inventory-tweaks:1.7.1:dev') { transitive = false }
+    // Mouse Tweaks: only its interface, on a window subclass built when the mod is loaded (compat/mousetweaks)
+    compileOnly('com.github.GTNewHorizons:MouseTweaks:2.5.4-GTNH:dev') { transitive = false }
 }
 
 // Unit tests run on plain JUnit 5 without starting Minecraft: they cover logic that does not touch the game classes
@@ -67,6 +141,8 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.14.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // The backpack item implements Baubles' IBauble: tests that load it (the placed backpack's NBT) need the class
+    testRuntimeOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.25-GTNH:dev') { transitive = false }
 }
 
 tasks.withType(Test).configureEach {
@@ -86,5 +162,38 @@ if (project.hasProperty('golemdrive')) {
     minecraft {
         // GolemDrive's input coremod: in dev runs FML finds it only through this property
         extraRunJvmArguments.add('-Dfml.coreMods.load=com.darkona.golemdrive.mc.input.InputPlugin')
+    }
+}
+
+// Development only, off unless -PdevMods is given: puts NEI, Baubles Expanded, Inventory Tweaks and Mouse Tweaks on the
+// runClient classpath to test compatibility. They are runtimeOnly, so they never go into the mod jar, the normal
+// compilation or the release; without the property the build is unchanged. Their own dependencies (GTNHLib, UniMixins,
+// CodeChickenCore...) come in transitively from the GTNH Maven.
+if (project.hasProperty('devMods')) {
+    repositories {
+        maven {
+            name = 'GTNH Maven (dev mods dependencies)'
+            url = 'https://nexus.gtnewhorizons.com/repository/public/'
+            content { excludeGroup 'com.github.GTNewHorizons' }
+        }
+    }
+    dependencies {
+        runtimeOnly 'com.github.GTNewHorizons:GTNHLib:0.11.54:dev'
+        runtimeOnly 'com.github.GTNewHorizons:NotEnoughItems:2.8.161-GTNH:dev'
+        runtimeOnly 'com.github.GTNewHorizons:Baubles-Expanded:2.2.25-GTNH:dev'
+        runtimeOnly 'com.github.GTNewHorizons:inventory-tweaks:1.7.1:dev'
+        runtimeOnly 'com.github.GTNewHorizons:MouseTweaks:2.5.4-GTNH:dev'
+    }
+    // NEI brings its own (newer) CodeChickenLib, and the copies of codechicken.lib in this repo would shadow it and break
+    // NEI's rendering (NoSuchMethodError CCRenderState.instance()). For this run only, the mod goes in as a copy of the
+    // dev jar without codechicken/**, so the mod uses NEI's CodeChickenLib. The real jar is not touched.
+    def devRunJar = tasks.register('devRunJar', Jar) {
+        archiveClassifier = 'devrun'
+        dependsOn tasks.named('jar')
+        from(provider { zipTree(tasks.named('jar').get().archiveFile) }) { exclude 'codechicken/**' }
+    }
+    tasks.named('runClient') {
+        dependsOn devRunJar
+        classpath = classpath.minus(files(tasks.named('jar').get().archiveFile)).plus(files(devRunJar.get().archiveFile))
     }
 }

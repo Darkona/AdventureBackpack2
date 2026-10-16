@@ -1,10 +1,5 @@
 package com.darkona.adventurebackpack.client.gui;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
 public class GuiImageButtonNormal
 {
     private int X;

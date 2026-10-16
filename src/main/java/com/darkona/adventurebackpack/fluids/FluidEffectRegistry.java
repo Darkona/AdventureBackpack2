@@ -13,11 +13,6 @@ import net.minecraftforge.fluids.Fluid;
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
 public class FluidEffectRegistry
 {
     static BiMap<String, FluidEffect> EFFECT_REGISTRY = HashBiMap.create();
@@ -32,7 +27,6 @@ public class FluidEffectRegistry
 
     public static void init()
     {
-        EFFECT_REGISTRY.clear();
         WATER_EFFECT = new WaterEffect();
         LAVA_EFFECT = new LavaEffect();
         MILK_EFFECT = new MilkEffect();
@@ -40,10 +34,6 @@ public class FluidEffectRegistry
         SOUP_EFFECT = new MushroomStewEffect();
     }
 
-    /**
-     * @param effect
-     * @return
-     */
     public static int registerFluidEffect(FluidEffect effect)
     {
         String className = effect.getClass().getName();

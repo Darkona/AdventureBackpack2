@@ -27,6 +27,16 @@ class RainbowEffectsTest {
     }
 
     @Test
+    void theRunRenewsItsEffectsNearTheirEndOnly() {
+        assertTrue(AbilityEffects.needsRainbowRefresh(false, 0, 0, AMP), "missing");
+        assertTrue(AbilityEffects.needsRainbowRefresh(true, AMP - 1, 3600, AMP), "weaker: replaced, as addPotionEffect did");
+        assertTrue(AbilityEffects.needsRainbowRefresh(true, AMP, 19, AMP), "own, close to its end");
+        assertFalse(AbilityEffects.needsRainbowRefresh(true, AMP, 20, AMP), "own, time left: no packet");
+        assertFalse(AbilityEffects.needsRainbowRefresh(true, AMP, 39, AMP));
+        assertFalse(AbilityEffects.needsRainbowRefresh(true, AMP + 1, 5, AMP), "stronger: kept");
+    }
+
+    @Test
     void onlyTheOldMinusFiveMarkerIsStale() {
         assertTrue(AbilityEffects.isStaleRainbowMarker(-5));
         assertFalse(AbilityEffects.isStaleRainbowMarker(AMP));

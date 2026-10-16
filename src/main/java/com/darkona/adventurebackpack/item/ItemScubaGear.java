@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.block.BlockGear;
+import adventurebackpack.api.IBackWearableItem;
 import com.darkona.adventurebackpack.block.TileAirCompressor;
 import com.darkona.adventurebackpack.common.ScubaRules;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -22,15 +24,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-/**
- * The Scuba Gear: two air tanks on the back and a diving mask, one wearable in the back slot (it cannot be worn with
- * a backpack, copter pack or jetpack). While the head is under water it keeps the vanilla air bar full and pays for
- * it from the tanks.
- * <p>
- * Tick cost (performance contract, Tier 3): out of water one block check and a return; under water a boolean and
- * two ints per tick, and the stack's tag only on the beat (scuba.airIntervalTicks). The server spends the air; the
- * client reads its synced copy on the same beat so its air bar does not flicker.
- */
 public class ItemScubaGear extends ItemAB implements IBackWearableItem
 {
     public ItemScubaGear()
@@ -51,12 +44,11 @@ public class ItemScubaGear extends ItemAB implements IBackWearableItem
         return stack;
     }
 
-    /** Sneak + right click on an Air Compressor with the gear in hand fills it at once (the block's own click opens its GUI). */
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
         TileEntity te = world.getTileEntity(x, y, z);
-        if (!(te instanceof TileAirCompressor)) return false;
+        if (!(te instanceof TileAirCompressor)) return BlockGear.useGearOn(stack, player, world, x, y, z, side);
         if (!world.isRemote) ((TileAirCompressor) te).fillGearByHand(player, stack);
         return true;
     }
@@ -87,7 +79,6 @@ public class ItemScubaGear extends ItemAB implements IBackWearableItem
         }
     }
 
-    /** The beat: reads the tanks once, pays for the air on the server, warns, and caches whether air is left. */
     private void beat(World world, EntityPlayer player, ItemStack stack, BackpackProperty props)
     {
         InventoryScubaGear inv = new InventoryScubaGear(stack);
@@ -116,7 +107,6 @@ public class ItemScubaGear extends ItemAB implements IBackWearableItem
         props.setScubaHasAir(air > 0);
     }
 
-    /** A puff of vanilla bubbles in front of the mask (client, for every player this client sees). */
     private static void bubbles(World world, EntityPlayer player)
     {
         double yaw = Math.toRadians(player.rotationYaw);

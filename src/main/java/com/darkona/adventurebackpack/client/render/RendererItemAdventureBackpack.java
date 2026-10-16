@@ -1,21 +1,15 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackBlock;
-import com.darkona.adventurebackpack.inventory.InventoryBackpack;
-import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.common.RenderInfo;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
+import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
 public class RendererItemAdventureBackpack implements IItemRenderer
 {
     private final ModelBackpackBlock model;
@@ -63,18 +57,10 @@ public class RendererItemAdventureBackpack implements IItemRenderer
 
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack backpack, Object... data)
     {
-        InventoryBackpack inv = new InventoryBackpack(backpack);
-        ResourceLocation modelTexture;
-        if (BackpackNames.getBackpackColorName(backpack).equals("Standard"))
-        {
-            modelTexture = Resources.holidayTexture(AdventureBackpack.instance.Holiday);
-        } else
-        {
-            modelTexture = Resources.backpackTextureFromColor(inv);
-        }
+        RenderInfo inv = RenderInfoCache.get(backpack);
+        ResourceLocation modelTexture = ItemAdventureBackpack.modelTexture(inv);
         switch (type)
         {
-
             case INVENTORY:
                 Minecraft.getMinecraft().renderEngine.bindTexture(modelTexture);
             {
@@ -180,5 +166,4 @@ public class RendererItemAdventureBackpack implements IItemRenderer
                 break;
         }
     }
-
 }

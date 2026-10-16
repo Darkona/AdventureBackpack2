@@ -7,12 +7,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-/**
- * Created by Darkona on 12/10/2014.
- */
 public class SlotBackpack extends SlotAdventureBackpack
 {
-
     public SlotBackpack(IInventoryAdventureBackpack inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
@@ -29,6 +25,4 @@ public class SlotBackpack extends SlotAdventureBackpack
     {
         super.onPickupFromSlot(p_82870_1_, p_82870_2_);
     }
-
-
 }

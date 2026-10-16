@@ -4,7 +4,7 @@ import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
-import com.darkona.adventurebackpack.item.IFuelPack;
+import adventurebackpack.api.IFuelPack;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import com.darkona.adventurebackpack.util.Wearing;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -15,11 +15,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * The Fuel Station block. Right click opens its GUI. Riding a motorized Inflatable Boat, right click fills the boat's
- * tank. Sneak + right click with a fuel pack in hand, or worn, fills that pack. Every transfer moves all that fits at
- * once, on the server.
- */
 public class BlockFuelStation extends BlockStation
 {
     public BlockFuelStation()

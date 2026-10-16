@@ -14,9 +14,6 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Darkona on 12/10/2014.
- */
 public class GuiTank
 {
     private int height;
@@ -30,18 +27,6 @@ public class GuiTank
     private float zLevel;
     private FluidTank tank;
 
-    /**
-     * Draws the fluid from a fluidTank in a GUI.
-     *
-     * @param X     The startX coordinate to start drawing from.
-     * @param Y          The startY coordinate to start drawing from.
-     * @param H          The height in pixels of the tank.
-     * @param W          The width in pixels of the tank.
-     * @param resolution The resolution of the fluid painted in the tank. Higher values
-     *                   mean smaller and more numerous boxes. Values can be 1, 2, 4,
-     *                   8, 16. Other values are untested, but i guess they should
-     *                   always be integer divisors of the width, with modulus 0;
-     */
     public GuiTank(int X, int Y, int H, int W, int resolution)
     {
         this.startX = X;
@@ -49,7 +34,6 @@ public class GuiTank
         this.height = H;
         this.width = W;
         this.resolution = resolution > 0 ? W / resolution : W;
-
     }
 
     public List<String> getTankTooltip()
@@ -63,13 +47,8 @@ public class GuiTank
         return tankTips;
     }
 
-    /**
-     * @param gui
-     * @param theFluid
-     */
     public void draw(GuiWithTanks gui, FluidTank theFluid)
     {
-
         tank = theFluid;
         liquidPerPixel = Math.max(1, tank.getCapacity() / Math.max(1, this.height));
         this.zLevel = gui.getZLevel()+1;
@@ -88,7 +67,6 @@ public class GuiTank
                 drawMethodThree();
                 break;
         }
-
     }
 
     public void draw(GuiWithTanks gui, FluidTank theFluid, int X, int Y)
@@ -98,10 +76,6 @@ public class GuiTank
         draw(gui, theFluid);
     }
 
-    /**
-     * @param gui
-     * @param
-     */
     private void drawMethodOne(GuiWithTanks gui)
     {
         if(tank.getFluid() != null)
@@ -124,9 +98,6 @@ public class GuiTank
         }
     }
 
-    /**
-     * @param
-     */
     private void drawMethodTwo()
     {
         if(tank.getFluid() != null)
@@ -152,9 +123,6 @@ public class GuiTank
         }
     }
 
-    /**
-     * @param
-     */
     private void drawMethodThree()
     {
         if(tank.getFluid() != null)
@@ -170,17 +138,10 @@ public class GuiTank
             } catch (Exception oops)
             {
                 LogHelper.error("Exception while trying to render the fluid in the GUI");
-                //oops.printStackTrace();
             }
         }
     }
 
-    /**
-     * @param gui
-     * @param mouseX
-     * @param mouseY
-     * @return
-     */
     public boolean inTank(GuiWithTanks gui, int mouseX, int mouseY)
     {
         mouseX -= gui.getLeft();
@@ -188,37 +149,12 @@ public class GuiTank
         return startX <= mouseX && mouseX <= (startX + offsetX) + width && (startY + offsetY) <= mouseY && mouseY <= (startY + offsetY) + height;
     }
 
-    /**
-     * Draws a box textured with the selected box of an icon.
-     *
-     * @param x    The startX coordinate where to start drawing the box.
-     * @param y    The startY coordinate where to start drawing the box.
-     * @param icon The icon to draw from.
-     * @param w    The Width of the drawed box.
-     * @param h    The height of the drawed box.
-     * @param srcX The startX coordinate from the icon to start drawing from. Starts
-     *             at 0.
-     * @param srcY The startY coordinate from the icon to start drawing from. Starts
-     *             at 0.
-     * @param srcW The width of the selection in the icon to draw from. Starts at
-     *             0.
-     * @param srcH The height of the selection in the icon to draw from. Starts
-     *             at 0.
-     */
-    /**
-     * First pixel row of the fluid column: bottom minus the filled height, clamped to the tank (never above it,
-     * never a division by zero for tanks smaller than the drawing area).
-     */
     public static int fluidTop(int startY, int height, int amount, int liquidPerPixel)
     {
         int filled = liquidPerPixel <= 0 ? height : Math.min(height, amount / liquidPerPixel);
         return startY + height - Math.max(0, filled);
     }
 
-    /**
-     * Draws the fluid as two flat quads (lit top band and shaded body). Every texel of the fluid is sampled at the
-     * same UV point, so one quad per pixel was pure waste (#41). Colour is restored to white afterwards.
-     */
     public static void drawFluidColumn(int x, int startY, int width, int height, IIcon icon, int amount, int liquidPerPixel, float z)
     {
         int bottom = startY + height;
@@ -265,7 +201,5 @@ public class GuiTank
         tessellator.addVertexWithUV(x + w, y, zLevel, newMaxU, newMinV);
         tessellator.addVertexWithUV(x, y, zLevel, newMinU, newMinV);
         tessellator.draw();
-
-
     }
 }

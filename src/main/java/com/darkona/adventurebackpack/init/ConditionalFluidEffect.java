@@ -5,11 +5,6 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.fluids.effects.FuelEffect;
 import com.darkona.adventurebackpack.fluids.effects.OilEffect;
 
-/**
- * Created on 28/12/2014
- *
- * @author Darkona
- */
 public class ConditionalFluidEffect
 {
     public static FluidEffect oilEffect;

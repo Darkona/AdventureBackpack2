@@ -6,16 +6,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 
-/**
- * The Scuba Gear: two polished steel air tanks with a yellow band, brass manifold and valves, strapped to a
- * back plate by a leather harness; the air hose climbs over the right shoulder to the regulator of the diving mask
- * (rubber strap, glass visor), which is drawn on the head.
- * <p>
- * Geometry, UV layout and texture (models/scubaGear.png, 64x64) are generated together by
- * {@code notes/art-1.1/wearables.py}; the constructor body is its output. The parts hang from two empty anchors:
- * {@code back} copies the body's rotation and {@code face} the head's (RendererWearableEquipped passes the head
- * angles), so the mask follows the look. Nothing is allocated or read per frame (performance contract, tier 4).
- */
 @SideOnly(Side.CLIENT)
 public class ModelScubaGear extends ModelWearable
 {
@@ -117,6 +107,13 @@ public class ModelScubaGear extends ModelWearable
         face.rotationPointY = sneaking ? 1.0F : 0.0F;
         back.render(scale);
         face.render(scale);
+    }
+
+    public void renderPlaced(float scale)
+    {
+        back.rotateAngleX = back.rotateAngleY = back.rotateAngleZ = 0;
+        back.rotationPointX = back.rotationPointY = back.rotationPointZ = 0;
+        back.render(scale);
     }
 
     private static void copy(ModelRenderer from, ModelRenderer to)

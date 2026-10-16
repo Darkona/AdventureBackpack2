@@ -1,10 +1,10 @@
 package com.darkona.adventurebackpack.client.gui;
 
 import codechicken.lib.render.TextureUtils;
-import com.darkona.adventurebackpack.common.Constants;
+import com.darkona.adventurebackpack.common.RenderInfo;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
-import com.darkona.adventurebackpack.inventory.IInventoryTanks;
 import com.darkona.adventurebackpack.item.ItemHose;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -32,11 +32,6 @@ import org.lwjgl.opengl.GL12;
 import java.util.Collection;
 import java.util.Iterator;
 
-/**
- * Created on 09/01/2015
- *
- * @author Darkona
- */
 public class GuiOverlay extends Gui
 {
     private Minecraft mc;
@@ -47,25 +42,20 @@ public class GuiOverlay extends Gui
     ScaledResolution resolution;
     private static final ResourceLocation INVENTORY_TEXTURE = new ResourceLocation("textures/gui/container/inventory.png");
     private static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation(ModInfo.MOD_ID.toLowerCase(), "textures/gui/overlay.png");
-    private int lastInvReloadTick = Integer.MIN_VALUE;
-    private IInventoryTanks overlayInv;
-    private ItemStack overlayStack;
     public GuiOverlay(Minecraft mc)
     {
         super();
 
-        // We need this to invoke the render engine.
         this.mc = mc;
         this.itemRender.renderWithColor = false;
         this.fontRendererObj = mc.fontRenderer;
     }
 
     private static final int BUFF_ICON_SIZE = 18;
-    private static final int BUFF_ICON_SPACING = BUFF_ICON_SIZE + 2; // 2 pixels between buff icons
+    private static final int BUFF_ICON_SPACING = BUFF_ICON_SIZE + 2;
     private static final int BUFF_ICON_BASE_U_OFFSET = 0;
     private static final int BUFF_ICON_BASE_V_OFFSET = 198;
     private static final int BUFF_ICONS_PER_ROW = 8;
-
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onRenderExperienceBar(RenderGameOverlayEvent.Post event)
@@ -93,7 +83,6 @@ public class GuiOverlay extends Gui
                 {
                     PotionEffect potioneffect = (PotionEffect) iterator.next();
                     int potionId = potioneffect.getPotionID();
-                    // Effects from other mods can carry an id with no Potion registered on this client (#108)
                     Potion potion = potionId >= 0 && potionId < Potion.potionTypes.length ? Potion.potionTypes[potionId] : null;
 
                     if (potion != null && potion.hasStatusIcon())
@@ -111,30 +100,17 @@ public class GuiOverlay extends Gui
         if(ConfigHandler.TANKS_OVERLAY)
         {
             EntityPlayer player= mc.thePlayer;
-            if(Wearing.isWearingWearable(player))
+            ItemStack wearable = Wearing.getWearingWearable(player);
+            if (wearable != null)
             {
-                // One inventory per worn stack, reloaded from its NBT every few ticks: building it reads every
-                // slot and tank, which must not happen on every frame (a sync replaces the stack, so it is rebuilt)
-                ItemStack wearable = Wearing.getWearingWearable(player);
-                int now = player.ticksExisted;
-                if (overlayInv == null || wearable != overlayStack)
-                {
-                    overlayInv = Wearing.getWearableInv(player);
-                    overlayStack = wearable;
-                    lastInvReloadTick = now;
-                } else if (com.darkona.adventurebackpack.util.TickThrottle.due(lastInvReloadTick, now, 5))
-                {
-                    lastInvReloadTick = now;
-                    overlayInv.openInventory();
-                }
-                IInventoryTanks inv = overlayInv;
-                if (inv == null) return;
+                RenderInfo info = RenderInfoCache.get(wearable);
+                int tanks = info.tankCount();
+                if (tanks == 0) return;
 
                 int textureHeight = 23;
                 int textureWidth = 10;
 
                 int xPos = screenWidth - (textureWidth*3) - 4 ;
-                //int yPos = ((screenHeight / 3) * 2) - textureHeight - 2;
                 int yPos = (screenHeight) - textureHeight - 2;
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -143,64 +119,54 @@ public class GuiOverlay extends Gui
                 int tankX = xPos;
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                for (FluidTank tank : inv.getTanksArray())
+                for (int t = 0; t < tanks; t++)
                 {
-
                     mc.renderEngine.bindTexture(OVERLAY_TEXTURE);
                     drawTexturedModalRect(tankX, yPos, 10, 0, textureWidth, textureHeight);
-                    drawTank(tank, tankX + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
+                    drawTank(info.tankFluid(t), info.tankCapacity(t), tankX + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
                     ++tankX;
                     tankX += textureWidth;
                 }
-                if (Wearing.isWearingBackpack(player))
+                if (info.kind == RenderInfo.KIND_BACKPACK)
                 {
-                    int u[] = {10, 10};
-                    int v[] = {0, 0};
-                    int[] xStart = {xPos, xPos + textureWidth + 1};
-                    int[] yStart = {yPos, yPos};
-                    short tank = -1;
-                    if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemHose)
-                    {
-                        tank = (short) (ItemHose.getHoseTank(player.getHeldItem()));
-                    }
+                    int u0 = 10, u1 = 10;
+                    int xRight = xPos + textureWidth + 1;
+                    ItemStack held = player.getHeldItem();
+                    int tank = held != null && held.getItem() instanceof ItemHose ? ItemHose.getHoseTank(held) : -1;
                     if (tank > -1)
                     {
-                        u[0] = (tank == 0) ? 0 : 10;
-                        u[1] = (tank == 1) ? 0 : 10;
+                        u0 = (tank == 0) ? 0 : 10;
+                        u1 = (tank == 1) ? 0 : 10;
                     }
                     mc.renderEngine.bindTexture(OVERLAY_TEXTURE);
 
-                    //Left Tank
-                    drawTexturedModalRect(xStart[0], yStart[0], u[0], v[0], textureWidth, textureHeight);
-                    //Right Tank
-                    drawTexturedModalRect(xStart[1], yStart[0], u[1], v[1], textureWidth, textureHeight);
+                    drawTexturedModalRect(xPos, yPos, u0, 0, textureWidth, textureHeight);
+                    drawTexturedModalRect(xRight, yPos, u1, 0, textureWidth, textureHeight);
                     RenderHelper.enableStandardItemLighting();
                     RenderHelper.enableGUIStandardItemLighting();
                     GL11.glPushMatrix();
                     try
                     {
-                        GL11.glTranslatef(xStart[1] + textureWidth + 2, yStart[0], 0);
+                        GL11.glTranslatef(xRight + textureWidth + 2, yPos, 0);
                         GL11.glScalef(0.5f, 0.5f, 0.5f);
-                        drawItemStack(inv.getStackInSlot(Constants.upperTool), 0, 0);
-                        drawItemStack(inv.getStackInSlot(Constants.lowerTool), 0, 16);
+                        drawItemStack(info.upperTool, 0, 0);
+                        drawItemStack(info.lowerTool, 0, 16);
                     } finally
                     {
                         GL11.glPopMatrix();
                         RenderHelper.disableStandardItemLighting();
                     }
-
                 }
                 GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                 GL11.glDisable(GL11.GL_BLEND);
             }
             if (player.ridingEntity instanceof EntityInflatableBoat && ((EntityInflatableBoat) player.ridingEntity).isMotorized())
             {
-                drawBoatFuel((EntityInflatableBoat) player.ridingEntity, Wearing.isWearingWearable(player));
+                drawBoatFuel((EntityInflatableBoat) player.ridingEntity, wearable != null);
             }
         }
     }
 
-    /** Fuel tank of the motorized boat the player rides, left of the worn pack's tanks (read from the DataWatcher). */
     private void drawBoatFuel(EntityInflatableBoat boat, boolean wearing)
     {
         int textureHeight = 23;
@@ -214,19 +180,18 @@ public class GuiOverlay extends Gui
         try
         {
             mc.renderEngine.bindTexture(OVERLAY_TEXTURE);
-            // the brass frame of the overlay sheet (u 20) tells the boat's tank from the worn pack's
             drawTexturedModalRect(xPos, yPos, 20, 0, textureWidth, textureHeight);
-            drawTank(boat.getDisplayFuelTank(), xPos + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
+            FluidTank fuel = boat.getDisplayFuelTank();
+            drawTank(fuel.getFluid(), fuel.getCapacity(), xPos + 1, yPos + 1, textureHeight - 2, textureWidth - 2);
         } finally
         {
             GL11.glDisable(GL11.GL_BLEND);
         }
     }
 
-    private void drawTank(FluidTank tank, int startX, int startY, int height, int width)
+    private void drawTank(FluidStack fluid, int capacity, int startX, int startY, int height, int width)
     {
-        int liquidPerPixel = Math.max(1, tank.getCapacity() / Math.max(1, height));
-        FluidStack fluid = tank.getFluid();
+        int liquidPerPixel = Math.max(1, capacity / Math.max(1, height));
         if (fluid != null && fluid.getFluid() != null)
         {
             try
@@ -245,7 +210,6 @@ public class GuiOverlay extends Gui
     private void drawItemStack(ItemStack stack, int x, int y)
     {
         if(stack == null)return;
-        // Items from other mods (e.g. GregTech tools) may throw or leave GL state dirty: contain both (#110).
         GL11.glPushMatrix();
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         try

@@ -37,14 +37,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-/**
- * Created on 14/10/2014
- *
- * @author Darkona
- */
 public class BlockSleepingBag extends BlockDirectional
 {
-
     public static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
 
     @SideOnly(Side.CLIENT)
@@ -61,31 +55,22 @@ public class BlockSleepingBag extends BlockDirectional
         setBlockName(getUnlocalizedName());
     }
 
-
     @SideOnly(Side.CLIENT)
     protected String getTextureName()
     {
         return this.textureName == null ? "MISSING_ICON_BLOCK_" + getIdFromBlock(this) + "_" + getUnlocalizedName() : this.textureName;
     }
 
-    /**
-     * Returns the unlocalized name of the block with "tile." appended to the front.
-     */
     @Override
     public String getUnlocalizedName()
     {
         return "block.adventurebackpack:SleepingBag";
     }
 
-
     private void func_149978_e()
     {
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.1F, 1.0F);
     }
-
-    /**
-     * Returns whether or not this bed block is the head of the bed.
-     */
 
     public static boolean isBlockHeadOfBed(int meta)
     {
@@ -125,7 +110,6 @@ public class BlockSleepingBag extends BlockDirectional
 
             if (player.isSneaking() && ownerBackpack(world, x, y, z, meta) == null)
             {
-                // Sneak + right click rolls up a bag of its own into the inventory; a backpack's bag is folded from its GUI
                 pickUp(world, x, y, z, meta, player);
                 return true;
             }
@@ -182,11 +166,8 @@ public class BlockSleepingBag extends BlockDirectional
                     setBedOccupied(world, x, y, z, true);
                     if (!ConfigHandler.SLEEPINGBAG_SETS_SPAWN)
                     {
-                        // Vanilla moves the spawn here on waking up; the old one is put back afterwards
                         SleepingBagSpawn.remember(player);
                     }
-                    //This is so the wake up event can detect it. It fires before the player wakes up.
-                    //and the bed location isn't set until then, normally.
                     player.setSpawnChunk(new ChunkCoordinates(x,y,z),true,player.dimension);
                     LogHelper.info("Looking for a campfire nearby...");
                     ChunkCoordinates campfire = Utils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
@@ -232,10 +213,6 @@ public class BlockSleepingBag extends BlockDirectional
         }
     }
 
-    /**
-     * Forge only clears the occupied bit of the vanilla bed on waking up; this clears it for the sleeping bag too, so
-     * an empty bag does not look taken.
-     */
     @Override
     public void setBedOccupied(IBlockAccess world, int x, int y, int z, EntityPlayer player, boolean occupied)
     {
@@ -245,7 +222,6 @@ public class BlockSleepingBag extends BlockDirectional
         }
     }
 
-    /** The backpack whose deployed bag this is, or null for a bag placed on its own. */
     public static TileAdventureBackpack ownerBackpack(IBlockAccess world, int x, int y, int z, int meta)
     {
         int footX = SleepingBagRules.footX(x, meta);
@@ -258,7 +234,6 @@ public class BlockSleepingBag extends BlockDirectional
         return null;
     }
 
-    /** A bag of its own drops the Sleeping Bag item from its foot; a backpack's bag drops nothing. */
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune)
     {
@@ -275,7 +250,6 @@ public class BlockSleepingBag extends BlockDirectional
         return new ItemStack(ModItems.component, 1, ItemComponent.SLEEPING_BAG);
     }
 
-    /** Rolls up a bag of its own straight into the player's inventory (or at their feet when it is full). */
     private void pickUp(World world, int x, int y, int z, int meta, EntityPlayer player)
     {
         int footX = SleepingBagRules.footX(x, meta);
@@ -295,7 +269,6 @@ public class BlockSleepingBag extends BlockDirectional
                 }
             }
         }
-        // Foot first: a head without its foot just vanishes, while a foot without its head drops the item (a dupe here)
         if (world.getBlock(footX, y, footZ) == this) world.setBlockToAir(footX, y, footZ);
         if (world.getBlock(headX, y, headZ) == this) world.setBlockToAir(headX, y, headZ);
         world.playSoundEffect(footX + 0.5, y + 0.5, footZ + 0.5, Block.soundTypeCloth.func_150496_b(), 0.5F, 1.0F);
@@ -307,11 +280,6 @@ public class BlockSleepingBag extends BlockDirectional
         player.inventoryContainer.detectAndSendChanges();
     }
 
-    /**
-     * Places a bag of its own (the Sleeping Bag item) like a bed: the foot on the clicked block, the head away from
-     * the player. Server side. Returns false when there is no room, no solid floor, or a backpack would take the bag
-     * as its own (it would then fold into that backpack instead of dropping the item).
-     */
     public static boolean placeOnItsOwn(World world, EntityPlayer player, ItemStack stack, int x, int y, int z)
     {
         int dir = SleepingBagRules.directionFromYaw(player.rotationYaw);
@@ -434,7 +402,6 @@ public class BlockSleepingBag extends BlockDirectional
         }
     }
 
-
     @Override
     public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion boom)
     {
@@ -444,8 +411,6 @@ public class BlockSleepingBag extends BlockDirectional
     @Override
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
     {
-        // The backpack that deployed this bag (from either half, occupied or not) learns that it is folded again.
-        // Its stored position is kept, so the drops computed after this still see the bag as the backpack's.
         TileAdventureBackpack owner = ownerBackpack(world, x, y, z, meta);
         if (owner != null)
         {
@@ -504,37 +469,24 @@ public class BlockSleepingBag extends BlockDirectional
         return false;
     }
 
-    /**
-     * Indicate if a material is a normal solid opaque cube
-     */
     @Override
     public boolean isBlockNormalCube()
     {
         return false;
     }
 
-    /**
-     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
-     */
     @Override
     public boolean renderAsNormalBlock()
     {
         return false;
     }
 
-    /**
-     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
-     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-     */
     @Override
     public boolean isOpaqueCube()
     {
         return false;
     }
 
-    /**
-     * Returns if this block is collidable (only used by Fire). Args: x, y, z
-     */
     @Override
     public boolean isCollidable()
     {

@@ -18,14 +18,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import java.util.Calendar;
 import java.util.UUID;
 
-/**
- * Created on 12/10/2014
- * @author Darkona
- *
- */
 public class Utils
 {
-
     public static float degreesToRadians(float degrees)
     {
         return degrees / 57.2957795f;
@@ -38,8 +32,6 @@ public class Utils
 
     public static int[] calculateEaster(int year)
     {
-
-
         int a = year % 19,
                 b = year / 100,
                 c = year % 100,
@@ -59,7 +51,6 @@ public class Utils
 
     public static String getHoliday()
     {
-
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR),
                 month = calendar.get(Calendar.MONTH) + 1,
@@ -72,11 +63,11 @@ public class Utils
         if (month == 1)
         {
             if (day == 1) dia = "NewYear";
-            if (day == 28) dia = "Shuttle";//Challenger
+            if (day == 28) dia = "Shuttle";
         }
         if (month == 2)
         {
-            if (day == 1) dia = "Shuttle";//Columbia
+            if (day == 1) dia = "Shuttle";
             if (day == 14) dia = "Valentines";
             if (day == 23) dia = "Fatherland";
         }
@@ -124,19 +115,11 @@ public class Utils
             if (day >= 22 && day <= 26) dia = "Christmas";
             if (day == 31) dia = "NewYear";
         }
-        //LogHelper.info("Today is: " + day + "/" + month + "/" + year + ". Which means today is: " + dia);
         return dia;
-
     }
 
     public static int isBlockRegisteredAsFluid(Block block)
     {
-        /*
-         * for (Map.Entry<String,Fluid> fluid :
-		 * getRegisteredFluids().entrySet()) { int ID =
-		 * (fluid.getValue().getBlockID() == BlockID) ? fluid.getValue().getID()
-		 * : -1; if (ID > 0) return ID; }
-		 */
         int fluidID = -1;
         for (Fluid fluid : FluidRegistry.getRegisteredFluids().values())
         {
@@ -152,25 +135,16 @@ public class Utils
     public static boolean shouldGiveEmpty(ItemStack cont)
     {
         boolean valid = true;
-        // System.out.println("Item class name is: "+cont.getItem().getClass().getName());
 
         try
         {
-            // Industrialcraft cells
-            // if (apis.ic2.api.item.Items.getItem("cell").getClass().isInstance(cont.getItem()))
-            // {
-            //     valid = false;
-            // }
-            // Forestry capsules
             if (java.lang.Class.forName("forestry.core.items.ItemLiquidContainer").isInstance(cont.getItem()))
             {
                 valid = false;
             }
         } catch (Exception oops)
         {
-
         }
-        // Others
 
         return valid;
     }
@@ -210,7 +184,6 @@ public class Utils
 
     public static String capitalize(String s)
     {
-        // Character.toUpperCase(itemName.charAt(0)) + itemName.substring(1);
         return s.substring(0, 1).toUpperCase().concat(s.substring(1));
     }
 
@@ -219,7 +192,6 @@ public class Utils
         return (meta % 2 == 0) ? (meta == 0) ? 2 : 0 : ((meta + 1) % 4) + 1;
     }
 
-    //This is some black magic that returns a block or entity as far as the argument reach goes.
     public static MovingObjectPosition getMovingObjectPositionFromPlayersHat(World world, EntityPlayer player, boolean flag, double reach)
     {
         float f = 1.0F;
@@ -245,7 +217,7 @@ public class Utils
         float pointZ = cosYaw * cosPitch;
         Vec3 vecPoint = vecPlayer.addVector(pointX * reach, pointY * reach,
                 pointZ * reach);
-        return world.func_147447_a/*rayTraceBlocks_do_do*/(
+        return world.func_147447_a(
                 vecPlayer, vecPoint, flag, !flag, flag);
     }
 
@@ -253,7 +225,6 @@ public class Utils
     {
         return "X= " + x + ", Y= " + y + ", Z= " + z;
     }
-
 
     public static int secondsToTicks(int seconds)
     {
@@ -271,10 +242,6 @@ public class Utils
         return side == Side.SERVER;
     }
 
-    /**
-     * Air, or a block that placing replaces and that is not a fluid (snow layer, tall grass, vines).
-     * Without it a backpack finds no spot on a snow layer or in tall grass (#128, #104).
-     */
     public static boolean isFreeSpace(IBlockAccess world, int X, int Y, int Z)
     {
         Block block = world.getBlock(X, Y, Z);
@@ -284,15 +251,12 @@ public class Utils
 
     private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
     {
-        //LogHelper.info("Checking coordinates in X="+X+", Y="+Y+", Z="+Z);
         if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeSpace(world, X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
         {
-            //LogHelper.info("Found spot with the exception of the death point");
             return new ChunkCoordinates(X, Y, Z);
         }
         if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeSpace(world, X, Y, Z))
         {
-            //LogHelper.info("Found spot without exceptions");
             return new ChunkCoordinates(X, Y, Z);
         }
         return null;
@@ -311,27 +275,8 @@ public class Utils
         return null;
     }
 
-    /**
-     * Gets you the nearest Empty Chunk Coordinates, free of charge! Looks in two dimensions and finds a block
-     * that a: can have stuff placed on it and b: has space above it.
-     * This is a spiral search, will begin at close range and move out.
-     * @param world  The world object.
-     * @param origX  Original X coordinate
-     * @param origZ  Original Z coordinate
-     * @param X      Moving X coordinate, should be the same as origX when called.
-     * @param Y      Y coordinate, does not move.
-     * @param Z      Moving Z coordinate, should be the same as origZ when called.
-     * @param radius The radius of the search. If set to high numbers, will create a ton of lag
-     * @param except Wether to include the origin of the search as a valid block.
-     * @param steps  Number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
-     * @param pass   Pass switch for the witchcraft I can't quite explain. Set to 0 always at the beggining.
-     * @param type   True = for player, False = for backpack
-     * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
-     */
     public static ChunkCoordinates getNearestEmptyChunkCoordinatesSpiral(final IBlockAccess world, final int origX, final int origZ, int X, final int Y, int Z, int radius, final boolean except, int steps, byte pass, final boolean type)
     {
-        // Spiral search so the backpack (or player) lands near the starting point first.
-        // steps and pass are kept for callers; the walk always starts with legs of length 1.
         long found = SpiralSearch.find(X, Z, radius, new SpiralSearch.Cell()
         {
             @Override
@@ -345,17 +290,6 @@ public class Utils
                 : new ChunkCoordinates(SpiralSearch.unpackX(found), Y, SpiralSearch.unpackZ(found));
     }
 
-    /**
-     * Compares two coordinates. Heh.
-     *
-     * @param X1 First coordinate X.
-     * @param Y1 First coordinate Y.
-     * @param Z1 First coordinate Z.
-     * @param X2 Second coordinate X.
-     * @param Y2 Second coordinate Y.
-     * @param Z2 Second coordinate Z. I really didn't need to type all that, its obvious.
-     * @return If both coordinates are the same, returns true. This is the least helpful javadoc ever.
-     */
     private static boolean areCoordinatesTheSame(int X1, int Y1, int Z1, int X2, int Y2, int Z2)
     {
         return (X1 == X2 && Y1 == Y2 && Z1 == Z2);
@@ -366,10 +300,6 @@ public class Utils
         return (X1 == X2 &&  Z1 == Z2);
     }
 
-    /**
-     * Seriously why doesn't Java's instanceof check for null?
-     * @return true if the object is not null and is an instance of the supplied class.
-     */
     public static boolean notNullAndInstanceOf(Object object, Class clazz)
     {
         return object != null && clazz.isInstance(object);
@@ -378,22 +308,16 @@ public class Utils
     public static String getFirstWord(String text)
     {
         if (text.indexOf(' ') > -1)
-        { // Check if there is more than one word.
+        {
             String firstWord = text.substring(0, text.indexOf(' '));
             String secondWord = text.substring(text.indexOf(' ') + 1);
-            return firstWord.equals("Molten") ? secondWord : firstWord;// Extract first word.
+            return firstWord.equals("Molten") ? secondWord : firstWord;
         } else
         {
-            return text; // Text is the first word itself.
+            return text;
         }
     }
 
-    /**
-     * Parses an owner UUID string without throwing: horses tamed before 1.7.6 or edited by other
-     * mods can store an empty string or a player name instead of a UUID (#99).
-     *
-     * @return the UUID, or null when the string is null, empty or not a UUID.
-     */
     public static UUID parseUUIDOrNull(String text)
     {
         if (text == null || text.isEmpty()) return null;

@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.network;
 
+import adventurebackpack.api.BackpackOpenEvent;
 import com.darkona.adventurebackpack.AdventureBackpack;
+import com.darkona.adventurebackpack.common.ApiEvents;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
@@ -16,13 +18,8 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
-/**
- * Created by Darkona on 12/10/2014.
- */
 public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage>
 {
-
-
     public static final byte FROM_KEYBIND = 0;
     public static final byte FROM_HOLDING = 1;
     public static final byte FROM_TILE = 2;
@@ -117,6 +114,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                     {
                         if (Wearing.isWearingBackpack(player))
                         {
+                            if (ApiEvents.openCanceled(player, world, BackpackOpenEvent.Source.WEARING, Wearing.getWearingBackpack(player), playerX, playerY, playerZ)) return null;
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_WEARING, world, playerX, playerY, playerZ);
                             return null;
                         }
@@ -125,6 +123,7 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                     {
                         if (Wearing.isHoldingBackpack(player))
                         {
+                            if (ApiEvents.openCanceled(player, world, BackpackOpenEvent.Source.HOLDING, player.getCurrentEquippedItem(), playerX, playerY, playerZ)) return null;
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_HOLDING, world, playerX, playerY, playerZ);
                             return null;
                         }
@@ -135,20 +134,19 @@ public class GUIPacket implements IMessageHandler<GUIPacket.GUImessage, IMessage
                                 && ((ContainerBackpack) player.openContainer).inventory instanceof TileAdventureBackpack)
                         {
                             TileAdventureBackpack te = (TileAdventureBackpack) ((ContainerBackpack) player.openContainer).inventory;
+                            if (ApiEvents.openCanceled(player, world, BackpackOpenEvent.Source.PLACED, null, te.xCoord, te.yCoord, te.zCoord)) return null;
                             FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, te.xCoord, te.yCoord, te.zCoord);
                             return null;
                         }
                     }
                 }
             }
-
         }
         return null;
     }
 
     public static class GUImessage implements IMessage
     {
-
         private byte type;
         private byte from;
 

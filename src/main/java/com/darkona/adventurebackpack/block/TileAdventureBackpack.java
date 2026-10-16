@@ -7,13 +7,15 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
+import com.darkona.adventurebackpack.inventory.BackpackLayout;
+import com.darkona.adventurebackpack.inventory.BackpackLayouts;
+import com.darkona.adventurebackpack.inventory.BackpackNbt;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
+import com.darkona.adventurebackpack.inventory.Quiver;
 import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
-import com.darkona.adventurebackpack.util.BackpackUtils;
 import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,19 +25,17 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
-/**
- * Created by Darkona on 12/10/2014.
- */
 public class TileAdventureBackpack extends TileEntity implements IInventoryAdventureBackpack
 {
-
     public ItemStack[] inventory;
+    private int storage = BackpackLayout.LEGACY_STORAGE;
+    private int quiver;
+    private NBTTagList keptQuiver;
     private FluidTank leftTank;
     private FluidTank rightTank;
     public boolean sleepingBagDeployed;
@@ -48,6 +48,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     private String colorName;
     private int lastTime;
     private int luminosity;
+    private String placedFor;
+    private boolean hasPlaced;
     private NBTTagCompound extendedProperties;
 
     public int getLuminosity()
@@ -115,18 +117,12 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                     break;
             }
             sleepingBagDeployed = world.setBlock(x, y, z, sleepingBag, meta + 8, 3);
-            //LogHelper.info("deploySleepingBag() => SleepingBagDeployed is: " + sleepingBagDeployed);
             world.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             return sleepingBagDeployed;
         }
         return false;
     }
 
-    /**
-     * True when the foot of a sleeping bag at these coordinates is (or was last) this backpack's own. The position is
-     * kept after the bag is folded, so a bag broken by hand is still known as the backpack's when its drops are
-     * computed, and drops nothing.
-     */
     public boolean ownsSleepingBagAt(int footX, int footY, int footZ)
     {
         return sbx == footX && sby == footY && sbz == footZ;
@@ -156,8 +152,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return false;
     }
 
-    //=====================================================GETTERS====================================================//
-
     public String getColorName()
     {
         return colorName;
@@ -167,6 +161,18 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public ItemStack[] getInventory()
     {
         return this.inventory;
+    }
+
+    @Override
+    public int getStorageSize()
+    {
+        return storage;
+    }
+
+    @Override
+    public int getQuiverSlots()
+    {
+        return quiver;
     }
 
     @Override
@@ -205,15 +211,11 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return rightTank;
     }
 
-    //=====================================================SETTERS====================================================//
-
-
     public void setColorName(String string)
     {
         this.colorName = string;
     }
 
-    //=====================================================BOOLEANS===================================================//
     @Override
     public boolean hasCustomInventoryName()
     {
@@ -236,7 +238,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return special;
     }
 
-    //=======================================================NBT======================================================//
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
@@ -269,24 +270,17 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         if(compound.hasKey("backpackData"))
         {
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
-            NBTTagList items = backpackData.getTagList("ABPItems", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-            // empty slots are not written: clear first, or a client update keeps items that were taken out
-            java.util.Arrays.fill(inventory, null);
-            for (int i = 0; i < items.tagCount(); i++)
-            {
-                NBTTagCompound item = items.getCompoundTagAt(i);
-                byte slot = item.getByte("Slot");
-                if (slot >= 0 && slot < inventory.length)
-                {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(item);
-                }
-            }
+            colorName = backpackData.getString("colorName");
+            storage = BackpackLayouts.storage(colorName, BackpackNbt.savedStorage(backpackData));
+            quiver = BackpackLayouts.quiver(colorName);
+            inventory = BackpackNbt.readItems(backpackData, inventory, BackpackLayout.inventorySize(storage, quiver));
+            keptQuiver = BackpackNbt.readQuiver(backpackData, inventory, BackpackLayout.quiverIndex(storage, 0), quiver);
             FluidMigration.readTank(leftTank, backpackData.getCompoundTag("leftTank"));
             FluidMigration.readTank(rightTank, backpackData.getCompoundTag("rightTank"));
-            colorName = backpackData.getString("colorName");
+            Quiver.sealRightTank(leftTank, rightTank, quiver > 0);
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
-            extendedProperties = backpackData.getCompoundTag("extended");
+            extendedProperties = BackpackNbt.readExtended(backpackData);
         }
     }
 
@@ -294,23 +288,14 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void saveToNBT(NBTTagCompound compound)
     {
         NBTTagCompound backpackData = new NBTTagCompound();
-        NBTTagList items = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++)
-        {
-            ItemStack stack = inventory[i];
-            if (stack != null)
-            {
-                NBTTagCompound item = new NBTTagCompound();
-                item.setByte("Slot", (byte) i);
-                stack.writeToNBT(item);
-                items.appendTag(item);
-            }
-        }
-        backpackData.setTag("ABPItems", items);
+        int base = BackpackLayout.quiverIndex(storage, 0);
+        backpackData.setTag(BackpackNbt.ITEMS, BackpackNbt.writeItems(inventory, base));
+        backpackData.setInteger(BackpackNbt.STORAGE_SIZE, storage);
+        BackpackNbt.writeQuiver(backpackData, inventory, base, quiver, keptQuiver);
         backpackData.setString("colorName", colorName);
         backpackData.setInteger("lastTime", lastTime);
         backpackData.setBoolean("special", BackpackAbilities.hasAbility(colorName));
-        backpackData.setTag("extended", extendedProperties);
+        BackpackNbt.writeExtended(backpackData, extendedProperties);
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
 
@@ -324,7 +309,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return tanks;
     }
 
-    //====================================================INVENTORY===================================================//
     @Override
     public void openInventory()
     {
@@ -343,12 +327,16 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         {
             return false;
         }
-        if (slot == 6 || slot == 8)
+        if (slot == Constants.bucketInLeft || slot == Constants.bucketInRight)
         {
-            return FluidContainerRegistry.isContainer(stack);
+            return (quiver == 0 || slot == Constants.bucketInLeft) && FluidContainerRegistry.isContainer(stack);
+        }
+        if (slot >= BackpackLayout.quiverIndex(storage, 0))
+        {
+            return Quiver.accepts(stack);
         }
 
-        return !(slot == 0 || slot == 3) || SlotTool.isValidTool(stack);
+        return !(slot == Constants.upperTool || slot == Constants.lowerTool) || SlotTool.isValidTool(stack);
     }
 
     @Override
@@ -383,7 +371,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
-
         inventory[i] = itemstack;
         if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
         {
@@ -451,9 +438,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         InventoryActions.consumeItemInInventory(this, item);
     }
 
-    //===================================================TILE ENTITY==================================================//
-
-    //SEND SYNC PACKET
     @Override
     public Packet getDescriptionPacket()
     {
@@ -462,8 +446,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, compound);
     }
 
-    //RECEIV SYNC PACKET - This is necessary for the TileEntity to load the nbt as soon as it is loaded and be rendered
-    //properly when the custom renderer reads it
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
@@ -474,13 +456,16 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void updateEntity()
     {
-        //Execute this backpack's ability. No, seriously. You might not infer that from the code. Just sayin'
-        if (isSpecial() && !colorName.isEmpty())
+        if (colorName != placedFor)
+        {
+            placedFor = colorName;
+            hasPlaced = !colorName.isEmpty() && BackpackAbilities.hasPlacedAbility(colorName);
+        }
+        if (hasPlaced)
         {
             BackpackAbilities.backpackAbilities.executeAbility(null, this.worldObj, this);
         }
 
-        //Check for backpack luminosity and a deployed sleeping bag, just in case because i'm super paranoid.
         if (checkTime == 0)
         {
             int lastLumen = luminosity;
@@ -493,7 +478,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
                 worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.blockBackpack, meta, 3);
                 worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, luminosity);
             }
-            // only look when a bag is out: sbx/sby/sbz default to 0,0,0 and getBlock would load that chunk
             if (sleepingBagDeployed && worldObj.blockExists(sbx, sby, sbz)
                     && worldObj.getBlock(sbx, sby, sbz) != ModBlocks.blockSleepingBag)
             {
@@ -534,6 +518,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
             FluidMigration.readTank(leftTank, backpackData.getCompoundTag("leftTank"));
             FluidMigration.readTank(rightTank, backpackData.getCompoundTag("rightTank"));
+            Quiver.sealRightTank(leftTank, rightTank, quiver > 0);
         }
     }
 
@@ -549,32 +534,21 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         return null;
     }
 
-
     private ItemStack transferToItemStack(ItemStack stack)
     {
         NBTTagCompound compound = new NBTTagCompound();
         saveToNBT(compound);
         stack.setTagCompound(compound);
-        // the damage value is the backpack type: without it a picked-up Creeper backpack crafted like a Standard one
         stack.setItemDamage(BackpackNames.getBackpackDamageFromName(colorName));
         return stack;
     }
 
-    //=====================================================BACKPACK===================================================//
     public boolean equip(World world, EntityPlayer player, int x, int y, int z)
     {
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
         transferToItemStack(stacky);
         removeSleepingBag(world);
-        if (BackpackUtils.equipWearable(stacky, player) != BackpackUtils.reasons.SUCCESFUL)
-        {
-            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.already.equipped"));
-            if (!player.inventory.addItemStackToInventory(stacky))
-            {
-                return drop(world, player, x, y, z);
-            }
-        }
-        return true;
+        return PlacedWearables.equipOrGive(world, player, x, y, z, stacky);
     }
 
     public boolean drop(World world, EntityPlayer player, int x, int y, int z)
@@ -583,21 +557,8 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         if (player.capabilities.isCreativeMode) return true;
         ItemStack stacky = new ItemStack(ModItems.adventureBackpack, 1);
         transferToItemStack(stacky);
-        float spawnX = x + world.rand.nextFloat();
-        float spawnY = y + world.rand.nextFloat();
-        float spawnZ = z + world.rand.nextFloat();
-
-        EntityItem droppedItem = new EntityItem(world, spawnX, spawnY, spawnZ, stacky);
-
-        float mult = 0.05F;
-
-        droppedItem.motionX = (-0.5F + world.rand.nextFloat()) * mult;
-        droppedItem.motionY = (4 + world.rand.nextFloat()) * mult;
-        droppedItem.motionZ = (-0.5F + world.rand.nextFloat()) * mult;
-
-        return world.spawnEntityInWorld(droppedItem);
+        return PlacedWearables.spawnItem(world, x, y, z, stacky);
     }
-
 
     @Override
     public boolean updateTankSlots()
@@ -607,7 +568,6 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     public void dirtyTanks()
     {
-
     }
 
     public void dirtyTime()
@@ -616,11 +576,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     public void dirtyExtended()
     {
-
     }
 
     public void dirtyInventory()
     {
-
     }
 }

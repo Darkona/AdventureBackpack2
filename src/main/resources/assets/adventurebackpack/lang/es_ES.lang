@@ -51,6 +51,8 @@ block.adventurebackpack:AdventureBackpack.name=Mochila de Aventura Base
 block.adventurebackpack:CampFire.name=Fogata
 tile.adventurebackpack:blockFuelStation.name=Estación de combustible
 tile.adventurebackpack:blockAirCompressor.name=Compresor de Aire
+tile.adventurebackpack:blockDistillery.name=Destilador
+tile.adventurebackpack:blockGear.name=Equipo colocado
 block.adventurebackpack:SleepingBag.name=Bolsa de dormir
 
 ## CreativeTab
@@ -58,14 +60,10 @@ itemGroup.adventurebackpack=Mochila de Aventura
 
 ## Keybindings
 keys.adventureBackpack.category=Mochila de Aventura
-keys.adventureBackpack.openBackpackInventory=Abrir Inventario de Mochila
-keys.adventureBackpack.switchHoseTank=Tecla de Acción
-keys.adventureBackpack.toolModifier=Modificador para cambiar herramienta (ninguna = agacharse)
-keys.adventureBackpack.nextTool=Herramienta siguiente de la mochila
-keys.adventureBackpack.previousTool=Herramienta anterior de la mochila
-keys.adventureBackpack.crossbowMode=Modo de la ballesta
-keys.adventureBackpack.toggleAbilities=Activar/desactivar habilidades de la mochila
-keys.adventureBackpack.boatMotorToggle=Encender/apagar el motor del bote
+keys.adventureBackpack.gear=Abrir el equipo
+keys.adventureBackpack.ability=Encender/apagar el equipo
+keys.adventureBackpack.mode=Cambiar modo
+keys.adventureBackpack.state=Cambiar estado
 
 ## Fluids
 fluid.melonJuice=Jugo de Sandía
@@ -73,6 +71,7 @@ fluid.milk=Leche
 fluid.mushroomstew=Sopa de Champiñones
 fluid.steam=Vapor
 fluid.air=Aire
+fluid.bioethanol=Etanol
 
 ## Messages
 adventurebackpack:messages.already.equipped=Ya llevas una mochila puesta.
@@ -125,14 +124,22 @@ adventurebackpack:messages.fuelstation.disabled=La estación de combustible est�
 container.adventurebackpack:fuelStation=Estación de combustible
 adventurebackpack:gui.fuelstation.empty=Vacío
 adventurebackpack:gui.fuelstation.cost=Consumo: x%1$s
+adventurebackpack:messages.distillery.disabled=El Destilador está desactivado en la configuración del servidor.
+adventurebackpack:messages.placedgear.disabled=El equipo colocado está desactivado en la configuración del servidor. Mayús + clic derecho con la mano vacía, o rómpelo, para recogerlo.
+container.adventurebackpack:distillery=Destilador
+adventurebackpack:gui.distillery.catalyst=Catalizador: %1$s
+adventurebackpack:gui.distillery.water=Agua
+adventurebackpack:gui.distillery.ethanol=Etanol
 adventurebackpack:tooltip.station.tank=%1$s mB de %2$s
 adventurebackpack:tooltip.boat.fuel=Combustible: %1$s mB de %2$s
+adventurebackpack:tooltip.backpack.leftTank=Tanque izquierdo: %1$s/%2$s %3$s
+adventurebackpack:tooltip.backpack.rightTank=Tanque derecho: %1$s/%2$s %3$s
 adventurebackpack:tooltip.boat.nofuel=Combustible: vacío. Monta en el bote y haz clic derecho en una Estación de Combustible para llenarlo.
 adventurebackpack:tooltip.boat.motor.toggle=Encender/apagar el motor: %1$s
-adventurebackpack:tooltip.boat.motor.unbound=Encender/apagar el motor: asigna la tecla del motor del bote en Opciones > Controles.
+adventurebackpack:tooltip.boat.motor.unbound=Encender/apagar el motor: asigna la tecla Cambiar modo en Opciones > Controles.
 adventurebackpack:tooltip.boat.motor.hold=Mantén pulsado avanzar para usar el motor.
 adventurebackpack:tooltip.crossbow.loaded=Virotes: %1$s/%2$s
-adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Un cargador vacío se cambia por uno cargado del inventario y vuelve vacío. Agáchate + clic derecho para cambiar el cargador.
+adventurebackpack:tooltip.crossbow.controls=Mantén clic derecho para disparar. Vacía, toma un cargador cargado del inventario. Agáchate + clic derecho: cambia el cargador. Con una mochila de Esqueleto puesta y flechas o virotes en su carcaj, dispara del carcaj sin parar.
 adventurebackpack:tooltip.crossbow.controls.grapple=Clic derecho: dispara el garfio. Te arrastra hasta el bloque donde se engancha. Agáchate o salta para soltarte.
 adventurebackpack:tooltip.crossbow.controls.sniper=Agáchate y quédate quieto para desplegar el bípode y apuntar con zoom. Clic derecho: un virote fuerte y recto. Al moverte se pliega.
 adventurebackpack:tooltip.crossbow.mode=Modo: %1$s (%2$s para cambiar)
@@ -150,3 +157,14 @@ entity.adventurebackpack.inflatableBoat.name=Bote Inflable
 entity.adventurebackpack.rideableSpider.name=Araña Domada
 entity.adventurebackpack.crossbowBolt.name=Virote
 entity.adventurebackpack.crossbowGrapple.name=Garfio
+adventurebackpack:tooltip.holdShift=Mantén Shift para ver los controles.
+adventurebackpack:gui.toggle.on=SÍ
+adventurebackpack:gui.toggle.off=NO
+adventurebackpack:gui.toggle.stateOn=encendido
+adventurebackpack:gui.toggle.stateOff=apagado
+adventurebackpack:gui.toggle.hint=Haz clic o pulsa %s (Encender/apagar el equipo).
+adventurebackpack:gui.toggle.abilities=Habilidades de la mochila: %s
+adventurebackpack:gui.quiver.slot=Carcaj: flechas y virotes de ballesta
+adventurebackpack:gui.toggle.jetpack=Hogar (quema combustible y hace vapor): %s
+adventurebackpack:gui.toggle.copter=Motor: %s
+adventurebackpack:gui.toggle.pilot=Piloto: %s

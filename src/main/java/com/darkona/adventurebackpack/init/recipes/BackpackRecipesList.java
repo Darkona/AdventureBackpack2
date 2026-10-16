@@ -6,15 +6,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-
-/**
- * Created on 20/10/2014
- *
- * @author Darkona
- */
 public class BackpackRecipesList
 {
-
     public BackpackRecipesList()
     {
         String[] covered = {"XXX", "XaX", "XXX"};
@@ -36,7 +29,6 @@ public class BackpackRecipesList
         ItemStack woolGreen = new ItemStack(Blocks.wool, 1, 13);
         ItemStack woolRed = new ItemStack(Blocks.wool, 1, 14);
         ItemStack woolBlack = new ItemStack(Blocks.wool, 1, 15);
-
 
         Standard = reviewRecipe(
                 "LGL",
@@ -144,7 +136,7 @@ public class BackpackRecipesList
                 "WaW",
                 "ccc",
                 'c', Items.cookie,
-                'C', new ItemStack(Items.dye, 1, 3),//Chocolate
+                'C', new ItemStack(Items.dye, 1, 3),
                 'W', Items.wheat,
                 'a', backpack
         );
@@ -162,9 +154,9 @@ public class BackpackRecipesList
         Creeper = reviewRecipe(
                 "GHG",
                 "GaG",
-                "TNT",//see what I did there? ;D
+                "TNT",
                 'G', Items.gunpowder,
-                'H', new ItemStack(Items.skull, 1, 4), //Creeper Skull
+                'H', new ItemStack(Items.skull, 1, 4),
                 'a', backpack,
                 'T', Blocks.tnt,
                 'N', Blocks.tnt
@@ -416,13 +408,13 @@ public class BackpackRecipesList
                 "RCP",
                 "OaB",
                 "YGF",
-                'R', "dyeRed", //RED
-                'O', "dyeOrange",//ORANGE
-                'Y', "dyeYellow",//YELLOW
-                'G', "dyeLime",//LIME
-                'F', "dyeCyan",//CYAN
-                'B', "dyeBlue",//BLUE
-                'P', "dyePurple",//PURPLE
+                'R', "dyeRed",
+                'O', "dyeOrange",
+                'Y', "dyeYellow",
+                'G', "dyeLime",
+                'F', "dyeCyan",
+                'B', "dyeBlue",
+                'P', "dyePurple",
                 'C', Items.record_cat,
                 'a', backpack
         );
@@ -469,7 +461,7 @@ public class BackpackRecipesList
                 "bab",
                 "BAB",
                 'B', Items.bone,
-                'S', new ItemStack(Items.skull, 1, 0),//Skeleton skull
+                'S', new ItemStack(Items.skull, 1, 0),
                 'b', Items.bow,
                 'A', Items.arrow,
                 'a', backpack
@@ -509,7 +501,7 @@ public class BackpackRecipesList
                 "SSS",
                 "sas",
                 "NsD",
-                'S', new ItemStack(Items.skull, 1, 1),//WitherSkelleton Skull
+                'S', new ItemStack(Items.skull, 1, 1),
                 's', Blocks.soul_sand,
                 'N', Items.nether_star,
                 'D', Items.diamond,
@@ -676,10 +668,8 @@ public class BackpackRecipesList
     public final Object[] Yellow;
     public final Object[] Zombie;
 
-
     public static Object[] reviewRecipe(Object... objects)
     {
         return objects;
     }
-
 }

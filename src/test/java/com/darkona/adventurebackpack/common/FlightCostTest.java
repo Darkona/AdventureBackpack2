@@ -16,7 +16,7 @@ class FlightCostTest {
     private static final int INTERVAL = 3;
     private static final int STEAM_TANK = 12000;
     private static final int WATER_TANK = 6000;
-    private static final int STEAM_PER_TICK = 20;
+    private static final int STEAM_PER_TICK = 10;
     private static final int STEAM_PER_WATER = 4;
 
     @Test
@@ -96,9 +96,9 @@ class FlightCostTest {
     }
 
     @Test
-    void jetpackSteamTankAloneIsHalfAMinuteAndEverythingAboutNinetySeconds() {
-        assertEquals(600, FlightCost.ticksPerTank(STEAM_TANK, STEAM_PER_TICK));
+    void jetpackSteamTankAloneIsAMinuteAndEverythingAboutThreeMinutes() {
+        assertEquals(1200, FlightCost.ticksPerTank(STEAM_TANK, STEAM_PER_TICK));
         int allSteam = STEAM_TANK + WATER_TANK * STEAM_PER_WATER;
-        assertEquals(1800, FlightCost.ticksPerTank(allSteam, STEAM_PER_TICK));
+        assertEquals(3600, FlightCost.ticksPerTank(allSteam, STEAM_PER_TICK));
     }
 }

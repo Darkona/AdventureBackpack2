@@ -1,7 +1,11 @@
 package com.darkona.adventurebackpack.playerProperties;
 
+import adventurebackpack.api.IInventoryTanks;
+import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.item.IBackWearableItem;
+import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.inventory.QuiverFeed;
+import adventurebackpack.api.IBackWearableItem;
 import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.entity.Entity;
@@ -13,47 +17,39 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
-/**
- * Created on 24/10/2014
- *
- * @author Darkona
- */
 public class BackpackProperty implements IExtendedEntityProperties
 {
-
     public static final String PROPERTY_NAME = "abp.property";
     protected EntityPlayer player = null;
     private ItemStack wearable = null;
     private ChunkCoordinates campFire = null;
     private NBTTagCompound wearableData = new NBTTagCompound();
     private boolean forceCampFire = false;
-    /** The player switched the worn backpack's abilities off with the key (#57). Saved, synced, decided by the server. */
     private boolean abilitiesOff = false;
     private int dimension = 0;
-    /**
-     * Server, memory only: what the last sync sent, compared every tick without building NBT. The wearable is a
-     * deep copy: a written stack shares its tag with the live one, so comparing written NBT never saw a change
-     * made inside the tag (tanks, fuel, heat, inventory).
-     */
     private boolean sentOnce = false;
-    private ItemStack sentWearable = null;
+    private final StackSnapshot sentWearable = new StackSnapshot();
+    private int lastChangeSyncTick = Integer.MIN_VALUE;
     private ChunkCoordinates sentCampFire = null;
     private int sentDimension = 0;
     private boolean sentForceCampFire = false;
     private boolean sentAbilitiesOff = false;
-    /** Server, memory only: world time of the last particle or sound packet of this player relayed to others (RelayGuard). */
+    private NBTTagCompound sentObserverData = null;
     private long lastRelayTick = Long.MIN_VALUE / 2;
-    /**
-     * Memory only. Server: the client said its copter is climbing (PlayerActionPacket), so the climb is charged.
-     * Client: the last state this client sent. Never saved; a fresh player starts at false.
-     */
     private boolean copterClimbing = false;
-    /**
-     * Server only. True when {@link #wearable} is the very stack in a Baubles slot (compat/baubles). Baubles owns
-     * and saves that stack; these properties only point at it, so they never save it to disk nor hand it to the
-     * respawn store, which would duplicate it.
-     */
     private boolean wearableInBauble = false;
+    private QuiverFeed quiverFeed = null;
+
+    public QuiverFeed getQuiverFeed()
+    {
+        return quiverFeed;
+    }
+
+    public QuiverFeed createQuiverFeed()
+    {
+        if (quiverFeed == null) quiverFeed = new QuiverFeed();
+        return quiverFeed;
+    }
 
     public boolean isCopterClimbing()
     {
@@ -80,7 +76,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         return wearableData;
     }
 
-
     public static void sync(EntityPlayer player)
     {
         if(player instanceof EntityPlayerMP)
@@ -89,52 +84,66 @@ public class BackpackProperty implements IExtendedEntityProperties
         }
     }
 
-    /**
-     * Sends the properties to the player and its trackers only when they differ from the last ones sent.
-     * Called every tick: it compares fields and the wearable's tag, and copies them only when a packet goes out.
-     */
     public static void syncToNearIfChanged(EntityPlayer player)
     {
         if (!(player instanceof EntityPlayerMP)) return;
-        BackpackProperty props = get(player);
-        if (props == null || props.sameAsSent()) return;
-        props.sentOnce = true;
-        props.sentWearable = ItemStack.copyItemStack(props.wearable);
-        props.sentCampFire = props.campFire == null ? null : new ChunkCoordinates(props.campFire);
-        props.sentDimension = props.dimension;
-        props.sentForceCampFire = props.forceCampFire;
-        props.sentAbilitiesOff = props.abilitiesOff;
-        syncToNear(player);
+        syncToNearIfChanged((EntityPlayerMP) player, get(player));
+    }
+
+    public static void syncToNearIfChanged(EntityPlayerMP player, BackpackProperty props)
+    {
+        if (props == null) return;
+        if (!SyncInterval.due(player.ticksExisted, props.lastChangeSyncTick, ConfigHandler.WORN_SYNC_INTERVAL_TICKS)) return;
+        if (props.sameAsSent()) return;
+        props.lastChangeSyncTick = player.ticksExisted;
+        props.send(player, false);
+    }
+
+    private void send(EntityPlayerMP owner, boolean force)
+    {
+        sentOnce = true;
+        sentWearable.take(wearable);
+        sentCampFire = campFire == null ? null : new ChunkCoordinates(campFire);
+        sentDimension = dimension;
+        sentForceCampFire = forceCampFire;
+        sentAbilitiesOff = abilitiesOff;
+        try
+        {
+            NBTTagCompound ownerData = getSyncData();
+            ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(owner.getEntityId(), ownerData), owner);
+            NBTTagCompound observerData = ObserverView.properties(ownerData);
+            if (force || !observerData.equals(sentObserverData))
+            {
+                sentObserverData = observerData;
+                owner.getServerForPlayer().getEntityTracker()
+                        .func_151247_a(owner, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(owner.getEntityId(), observerData)));
+            }
+        } catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     private boolean sameAsSent()
     {
         return sentOnce && forceCampFire == sentForceCampFire && abilitiesOff == sentAbilitiesOff && dimension == sentDimension
                 && (campFire == null ? sentCampFire == null : campFire.equals(sentCampFire))
-                && ItemStack.areItemStacksEqual(wearable, sentWearable);
+                && sentWearable.matches(wearable);
     }
 
-    /** Sends the properties of {@code target} to one player that just started tracking it. */
     public static void syncTo(EntityPlayer target, EntityPlayerMP receiver)
     {
         if (target == null || receiver == null || get(target) == null) return;
-        ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(target.getEntityId(), get(target).getSyncData()), receiver);
+        NBTTagCompound data = get(target).getSyncData();
+        if (receiver != target) data = ObserverView.properties(data);
+        ModNetwork.net.sendTo(new SyncPropertiesPacket.Message(target.getEntityId(), data), receiver);
     }
 
     public static void syncToNear(EntityPlayer player)
     {
-        //Thanks diesieben07!!!
-        if(player != null && player instanceof EntityPlayerMP)
+        if (player instanceof EntityPlayerMP && get(player) != null)
         {
-            try
-            {
-                ((EntityPlayerMP) player)
-                        .getServerForPlayer()
-                        .getEntityTracker()
-                        .func_151248_b(player, ModNetwork.net.getPacketFrom(new SyncPropertiesPacket.Message(player.getEntityId(), get(player).getSyncData())));
-            }catch(Exception ex){
-                ex.printStackTrace();
-            }
+            get(player).send((EntityPlayerMP) player, true);
         }
     }
 
@@ -143,7 +152,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         this.player = player;
     }
 
-    /** What is stored for the player (disk, respawn): a wearable worn in a Baubles slot is left out, Baubles keeps it. */
     public NBTTagCompound getData()
     {
         NBTTagCompound data = new NBTTagCompound();
@@ -152,7 +160,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         return data;
     }
 
-    /** What clients see: also the wearable worn in a Baubles slot, so they draw it and show its tanks. */
     public NBTTagCompound getSyncData()
     {
         NBTTagCompound data = new NBTTagCompound();
@@ -170,15 +177,13 @@ public class BackpackProperty implements IExtendedEntityProperties
         return (BackpackProperty) player.getExtendedProperties(PROPERTY_NAME);
     }
 
-    /**
-     * Called when the entity that this class is attached to is saved.
-     * Any custom entity data  that needs saving should be saved here.
-     *
-     * @param compound The compound to save to.
-     */
     @Override
     public void saveNBTData(NBTTagCompound compound)
     {
+        if (liveGear instanceof InventorySteamJetpack && ((InventorySteamJetpack) liveGear).isCurrentFor(wearable))
+        {
+            ((InventorySteamJetpack) liveGear).flushCounters();
+        }
         write(compound, false);
     }
 
@@ -191,26 +196,17 @@ public class BackpackProperty implements IExtendedEntityProperties
             compound.setInteger("campFireY", campFire.posY);
             compound.setInteger("campFireZ", campFire.posZ);
             compound.setInteger("campFireDim", dimension);
-
         }
         compound.setBoolean("forceCampFire",forceCampFire);
         if (abilitiesOff) compound.setBoolean("abilitiesOff", true);
     }
 
-    /**
-     * Called when the entity that this class is attached to is loaded.
-     * In order to hook into this, you will need to subscribe to the EntityConstructing event.
-     * Otherwise, you will need to initialize manually.
-     *
-     * @param compound The compound to load from.
-     */
     @Override
     public void loadNBTData(NBTTagCompound compound)
     {
         if(compound!=null)
         {
             setWearable( compound.hasKey("wearable") ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null);
-            // Keys must match saveNBTData: a misspelt key reads as 0/false and the campfire spawn is lost
             setCampFire(compound.hasKey("campFireX") ? new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")) : null);
             dimension = compound.getInteger("campFireDim");
             forceCampFire = compound.getBoolean("forceCampFire");
@@ -218,16 +214,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         }
     }
 
-    /**
-     * Used to initialize the extended properties with the entity that this is attached to, as well
-     * as the world object.
-     * Called automatically if you register with the EntityConstructing event.
-     * May be called multiple times if the extended properties is moved over to a new entity.
-     * Such as when a player switches dimension {Minecraft re-creates the player entity}
-     *
-     * @param entity The entity that this extended properties is attached to
-     * @param world  The world in which the entity exists
-     */
     @Override
     public void init(Entity entity, World world)
     {
@@ -238,6 +224,7 @@ public class BackpackProperty implements IExtendedEntityProperties
     {
         wearable = bp;
         wearableInBauble = false;
+        liveGear = null;
     }
 
     public boolean isWearableInBauble()
@@ -245,7 +232,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         return wearableInBauble;
     }
 
-    /** Server: wear the stack that sits in a Baubles slot. The caller checked that nothing else is worn. */
     public void linkBauble(ItemStack inSlot)
     {
         wearable = inSlot;
@@ -253,15 +239,14 @@ public class BackpackProperty implements IExtendedEntityProperties
         executeWearableEquipProtocol();
     }
 
-    /** Server: the Baubles slot no longer gives the wearable. Does nothing when the wearable is not from a slot. */
     public void unlinkBauble()
     {
         if (!wearableInBauble) return;
+        if (quiverFeed != null) quiverFeed.finish(player);
         if (wearable != null) executeWearableUnequipProtocol();
         wearable = null;
         wearableInBauble = false;
     }
-
 
     public ItemStack getWearable()
     {
@@ -318,7 +303,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         this.forceCampFire = forceCampFire;
     }
 
-    //Scary names for methods because why not
     public void executeWearableUpdateProtocol()
     {
         if(Utils.notNullAndInstanceOf(wearable.getItem(), IBackWearableItem.class))
@@ -351,7 +335,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         }
     }
 
-    /** Not saved: the Piston Boots changed this player's step height and must put it back (ItemPistonBoots). */
     private boolean pistonStepApplied = false;
 
     public boolean isPistonStepApplied()
@@ -364,12 +347,7 @@ public class BackpackProperty implements IExtendedEntityProperties
         this.pistonStepApplied = applied;
     }
 
-    /**
-     * Not saved: whether the worn Scuba Gear had air at its last beat (ItemScubaGear). Between beats the tick only
-     * reads this boolean, never the stack's tag. Set on equip and on every beat, cleared on unequip.
-     */
     private boolean scubaHasAir = false;
-    /** Not saved: the vanilla air bar went down since the last beat of the Scuba Gear, so the beat pays for air. */
     private boolean scubaAirDropped = false;
 
     public boolean isScubaHasAir()
@@ -390,5 +368,17 @@ public class BackpackProperty implements IExtendedEntityProperties
     public void setScubaAirDropped(boolean dropped)
     {
         this.scubaAirDropped = dropped;
+    }
+
+    private IInventoryTanks liveGear = null;
+
+    public IInventoryTanks getLiveGear()
+    {
+        return liveGear;
+    }
+
+    public void setLiveGear(IInventoryTanks inventory)
+    {
+        liveGear = inventory;
     }
 }

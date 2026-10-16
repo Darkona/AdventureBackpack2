@@ -4,13 +4,14 @@ import com.darkona.adventurebackpack.inventory.AirContainers;
 
 import com.darkona.adventurebackpack.block.BlockSleepingBag;
 import com.darkona.adventurebackpack.common.BoatMotor;
+import com.darkona.adventurebackpack.common.TankTagMemo;
 import com.darkona.adventurebackpack.config.ConfigHandler;
+import com.darkona.adventurebackpack.client.TooltipLines;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,19 +25,14 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created on 11/10/2014
- * @author Darkona
- *
- */
 public class ItemComponent extends ItemAB
 {
-    /** Damage values of the components (one more than their index in {@code names}). */
     public static final int SLEEPING_BAG = 1;
     public static final int BACKPACK_TANK = 2;
     public static final int HOSE_NOZZLE = 3;
     public static final int INFLATABLE_BOAT = 7;
     public static final int MOTORIZED_BOAT = 8;
+    private static final TankTagMemo BOAT_FUEL_TIP = new TankTagMemo();
     public static final int HYDRO_BLADES = 9;
     public static final int INFLATABLE_CHAMBER = 10;
     public static final int AIR_TANK = 11;
@@ -60,7 +56,6 @@ public class ItemComponent extends ItemAB
             "pyroMask",
     };
 
-
     public ItemComponent()
     {
         setNoRepair();
@@ -73,33 +68,27 @@ public class ItemComponent extends ItemAB
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister)
     {
-
         for(String name : names){
             IIcon temporalIcon = iconRegister.registerIcon(super.getUnlocalizedName(name).substring(this.getUnlocalizedName().indexOf(".") + 1));
             componentIcons.put(name, temporalIcon);
         }
 
-
         itemIcon = iconRegister.registerIcon(super.getUnlocalizedName("sleepingBag").substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
-
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int damage)
     {
         return componentIcons.get(nameFor(damage));
-
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
         return super.getUnlocalizedName(nameFor(getDamage(stack)));
-
     }
 
-    /** Components start at damage 1; a stack with damage 0 or past the list (/give, NEI) must not crash. */
     private String nameFor(int damage)
     {
         return names[MathHelper.clamp_int(damage - 1, 0, names.length - 1)];
@@ -119,10 +108,6 @@ public class ItemComponent extends ItemAB
         }
     }
 
-    /**
-     * The Sleeping Bag goes on the ground like a bed, on top of the clicked block (enabled.sleepingBag and
-     * sleepingbag.placeable). The bag works without a backpack and gives the item back when broken or rolled up.
-     */
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
@@ -136,36 +121,30 @@ public class ItemComponent extends ItemAB
         return true;
     }
 
-
-    /** Motorized boat: the fuel it carries and how its motor is driven. */
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced)
     {
         if (stack.getItemDamage() != MOTORIZED_BOAT || !ConfigHandler.INFLATABLEBOAT_ENABLED) return;
-        FluidStack fuel = null;
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(EntityInflatableBoat.TAG_FUEL_TANK))
-        {
-            fuel = FluidStack.loadFluidStackFromNBT(stack.getTagCompound().getCompoundTag(EntityInflatableBoat.TAG_FUEL_TANK));
-        }
+        FluidStack fuel = BOAT_FUEL_TIP.fluid(stack.getTagCompound(), EntityInflatableBoat.TAG_FUEL_TANK);
         if (fuel != null && fuel.amount > 0)
         {
             tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.boat.fuel", fuel.amount, fuel.getLocalizedName()));
         } else
         {
-            tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.boat.nofuel"));
+            TooltipLines.addTranslated(tooltip, "adventurebackpack:tooltip.boat.nofuel");
         }
         if (!ConfigHandler.BOAT_MOTOR_ENABLED) return;
         if (ConfigHandler.BOAT_MOTOR_MODE == BoatMotor.Mode.HOLD)
         {
-            tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.boat.motor.hold"));
-        } else if (Keybindings.boatMotorToggle.getKeyCode() == 0)
+            TooltipLines.addTranslated(tooltip, "adventurebackpack:tooltip.boat.motor.hold");
+        } else if (Keybindings.mode.getKeyCode() == 0)
         {
-            tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.boat.motor.unbound"));
+            TooltipLines.addTranslated(tooltip, "adventurebackpack:tooltip.boat.motor.unbound");
         } else
         {
-            tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.boat.motor.toggle", GameSettings.getKeyDisplayString(Keybindings.boatMotorToggle.getKeyCode())));
+            tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.boat.motor.toggle", Keybindings.keyName(Keybindings.mode)));
         }
     }
 
@@ -232,7 +211,6 @@ public class ItemComponent extends ItemAB
                     }
 
                     EntityInflatableBoat inflatableBoat = new EntityInflatableBoat(world, i + 0.5, j + 1.0, k + 0.5, motorized);
-                    // the fuel saved in the item when the boat was picked up goes back into its tank
                     if (motorized && stack.hasTagCompound() && stack.getTagCompound().hasKey(EntityInflatableBoat.TAG_FUEL_TANK))
                     {
                         inflatableBoat.loadFuel(stack.getTagCompound().getCompoundTag(EntityInflatableBoat.TAG_FUEL_TANK));
@@ -259,15 +237,6 @@ public class ItemComponent extends ItemAB
         }
     }
 
-
-
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     *
-     * @param stack
-     * @param world
-     * @param player
-     */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {

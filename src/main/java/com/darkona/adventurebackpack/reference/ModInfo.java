@@ -1,8 +1,5 @@
 package com.darkona.adventurebackpack.reference;
 
-/**
- * Created by Darkona on 10/10/2014.
- */
 public class ModInfo
 {
     public static final String MOD_NAME = "Adventure Backpack";

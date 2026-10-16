@@ -6,12 +6,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * Created by Darkona on 12/10/2014.
- */
 public class FluidMelonJuice extends Fluid
 {
-
     public FluidMelonJuice()
     {
         super("melonJuice");

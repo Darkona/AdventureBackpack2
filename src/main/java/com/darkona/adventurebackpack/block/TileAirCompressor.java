@@ -22,14 +22,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-/**
- * The Air Compressor: an air tank, a furnace that burns any furnace fuel into air, a hand pump, two container slots
- * (air cells in, empty or filled cells out) and a slot that fills a Scuba Gear. Pipes of other mods can push any
- * breathable fluid in and pull the air out (IFluidHandler, by fluid name: no dependency).
- * <p>
- * Server only, on a beat of scuba.compressor.intervalTicks: between beats the tick is a counter and a return. The
- * GUI gets its numbers from the container, only while open and only when they change.
- */
 public class TileAirCompressor extends TileEntity implements IInventory, IFluidHandler
 {
     public static final int SLOT_FUEL = 0;
@@ -42,7 +34,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
     private int burnTicks;
     private int fuelTicks;
     private int beat;
-    /** Not saved: the gear in its slot was full at the last beat; cleared when the slot changes. */
     private boolean gearFull;
     private long lastStroke = Long.MIN_VALUE / 2;
 
@@ -111,7 +102,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
         return true;
     }
 
-    /** Moves up to {@code max} millibuckets into the gear and saves it once. Returns what moved. */
     private int moveInto(InventoryScubaGear gear, int max)
     {
         FluidStack offer = tank.drain(max, false);
@@ -123,7 +113,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
         return moved;
     }
 
-    /** One stroke of the hand pump (right click with an empty hand). Returns false when the pump is turned off. */
     public boolean pump(EntityPlayer player)
     {
         if (!ConfigHandler.SCUBA_ENABLED || ConfigHandler.COMPRESSOR_HAND_PUMP_AMOUNT <= 0 || ModFluids.air == null) return false;
@@ -147,7 +136,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
         return true;
     }
 
-    /** Fills a Scuba Gear (worn or held) with all the air that fits, at once, and says how much moved. */
     public void fillGearByHand(EntityPlayer player, ItemStack gearStack)
     {
         if (!ConfigHandler.SCUBA_ENABLED || gearStack == null || !(gearStack.getItem() instanceof ItemScubaGear)) return;
@@ -167,8 +155,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
         player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.compressor.filled", moved));
     }
 
-    // ---------------------------------------------------------------- GUI numbers
-
     public FluidTank getTank()
     {
         return tank;
@@ -184,7 +170,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
         return fuelTicks;
     }
 
-    /** Client side: the container sets the numbers the server sent. */
     public void setClientState(int air, int fluidId, int burnTicks, int fuelTicks)
     {
         Fluid fluid = fluidId < 0 ? null : net.minecraftforge.fluids.FluidRegistry.getFluid(fluidId);
@@ -192,8 +177,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
         this.burnTicks = burnTicks;
         this.fuelTicks = fuelTicks;
     }
-
-    // ---------------------------------------------------------------- NBT
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
@@ -231,8 +214,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
         }
         compound.setTag("items", items);
     }
-
-    // ---------------------------------------------------------------- IInventory
 
     @Override
     public int getSizeInventory()
@@ -333,8 +314,6 @@ public class TileAirCompressor extends TileEntity implements IInventory, IFluidH
                 return false;
         }
     }
-
-    // ---------------------------------------------------------------- IFluidHandler (pipes of other mods)
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)

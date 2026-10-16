@@ -10,7 +10,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RendererStack extends ModelRenderer
 {
-
     public ItemStack stack;
     private boolean which;
 
@@ -54,7 +53,6 @@ public class RendererStack extends ModelRenderer
                 RenderUtils.renderItemIn3d(stack);
             } catch (Throwable t)
             {
-                // A foreign item (e.g. GregTech tools) failed to render: do not break the player (#110).
             } finally
             {
                 GL11.glPopMatrix();
@@ -63,5 +61,4 @@ public class RendererStack extends ModelRenderer
             }
         }
     }
-
 }

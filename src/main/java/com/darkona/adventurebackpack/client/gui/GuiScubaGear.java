@@ -14,29 +14,39 @@ import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
+import com.darkona.adventurebackpack.block.TileGear;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-/**
- * GUI of the Scuba Gear: its two air tanks, the air container slots and the equip or unequip button. It reads the
- * stack's tag only when the stack it shows is replaced by a synced one, never on every frame.
- */
 @SideOnly(Side.CLIENT)
 public class GuiScubaGear extends GuiWithTanks
 {
+    private TileGear tile;
     private static final ResourceLocation texture = Resources.guiTextures("guiScubaGear");
     private static final GuiTank leftTank = new GuiTank(8, 8, 72, 16, ConfigHandler.GUI_TANK_RENDER);
     private static final GuiTank rightTank = new GuiTank(116, 8, 72, 16, ConfigHandler.GUI_TANK_RENDER);
     private static final GuiImageButtonNormal equipButton = new GuiImageButtonNormal(150, 64, 18, 18);
     private static final GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(150, 64, 18, 18);
 
-    private final InventoryScubaGear inventory;
-    private final boolean wearing;
-    private final EntityPlayer player;
+    private InventoryScubaGear inventory;
+    private boolean wearing;
+    private EntityPlayer player;
     private ItemStack shown;
     private int shownAir = -1;
+
+    public GuiScubaGear(EntityPlayer player, InventoryScubaGear inventory, TileGear tile)
+    {
+        super(new ContainerScubaGear(player, inventory, tile));
+        this.inventory = inventory;
+        this.player = player;
+        this.tile = tile;
+        this.wearing = false;
+        this.shown = inventory.getParentItemStack();
+        xSize = 176;
+        ySize = 166;
+    }
 
     public GuiScubaGear(EntityPlayer player, InventoryScubaGear inventory, boolean wearing)
     {
@@ -49,10 +59,9 @@ public class GuiScubaGear extends GuiWithTanks
         ySize = 166;
     }
 
-    /** Follows the synced stack: a new object means new numbers. */
     private void refresh()
     {
-        ItemStack current = wearing ? Wearing.getWearingWearable(player) : player.getCurrentEquippedItem();
+        ItemStack current = tile != null ? tile.getGear() : wearing ? Wearing.getWearingWearable(player) : player.getCurrentEquippedItem();
         if (current != null && current != shown && current.getItem() instanceof ItemScubaGear)
         {
             shown = current;
@@ -72,6 +81,7 @@ public class GuiScubaGear extends GuiWithTanks
         GL11.glColor4f(1, 1, 1, 1);
         this.mc.renderEngine.bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        if (tile != null) return;
         GuiImageButtonNormal button = wearing ? unequipButton : equipButton;
         int v = wearing ? 186 : 167;
         button.draw(this, button.inButton(this, mouseX, mouseY) ? 20 : 1, v);
@@ -97,20 +107,19 @@ public class GuiScubaGear extends GuiWithTanks
             player.closeScreen();
             return;
         }
-        if (!wearing && equipButton.inButton(this, mouseX, mouseY))
+        if (!wearing && tile == null && equipButton.inButton(this, mouseX, mouseY))
         {
             ModNetwork.net.sendToServer(new EquipUnequipBackWearablePacket.Message(EquipUnequipBackWearablePacket.EQUIP_WEARABLE, GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak)));
             player.closeScreen();
             return;
         }
-        // A click on our button is not also a click on the container (no slot, no drop of the held cursor stack)
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     protected void keyTyped(char key, int keycode)
     {
-        if (keycode == Keybindings.openBackpack.getKeyCode())
+        if (keycode == Keybindings.gear.getKeyCode())
         {
             player.closeScreen();
         }

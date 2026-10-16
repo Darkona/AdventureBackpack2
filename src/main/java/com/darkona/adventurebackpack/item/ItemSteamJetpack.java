@@ -1,7 +1,12 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.block.BlockGear;
+import adventurebackpack.api.IBackWearableItem;
+import adventurebackpack.api.IInventoryTanks;
 import com.darkona.adventurebackpack.common.Flight;
 import com.darkona.adventurebackpack.common.JetpackHeat;
+import com.darkona.adventurebackpack.common.RenderInfo;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import com.darkona.adventurebackpack.util.TickThrottle;
 import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -28,14 +33,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * Created on 15/01/2015
- *
- * @author Darkona
- */
 public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
 {
-
     public static byte OFF_MODE = 0;
     public static byte NORMAL_MODE = 1;
 
@@ -45,6 +44,12 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         setUnlocalizedName("steamJetpack");
         setFull3D();
         setMaxStackSize(1);
+    }
+
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        return BlockGear.useGearOn(stack, player, world, x, y, z, side);
     }
 
     @Override
@@ -64,18 +69,14 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             inv.setBurnTicks(inv.consumeFuel());
             inv.currentItemBurnTime = inv.getBurnTicks();
         }
-        inv.dirtyInventory();
     }
 
     private void runHeater(InventorySteamJetpack inv, World world, EntityPlayer player, boolean thrusting)
     {
         int temperature = inv.getTemperature();
-        // Thrusting burns the fuel faster (steamjetpack.thrustFuelBurn)
         int burnTicks = inv.getBurnTicks() - JetpackHeat.burnPerTick(thrusting, ConfigHandler.JETPACK_THRUST_FUEL_BURN);
         int coolTicks = inv.getCoolTicks() - 1;
         long now = world.getTotalWorldTime();
-        //Run the boiler: increase/maintain heat if there's burn ticks, or decrease temperature if there aren't.
-        // The steps run on world-time beats: the burn counter no longer falls by one per tick while thrusting.
         if (burnTicks > 0)
         {
             if (temperature < InventorySteamJetpack.MAX_TEMPERATURE
@@ -92,7 +93,6 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                 temperature = JetpackHeat.coolDown(temperature, getBiomeMinTemp(player, world));
             }
         }
-        // Steam leaving takes heat from the boiler (steamjetpack.thrustHeatLossTicks)
         if (thrusting && ConfigHandler.JETPACK_THRUST_HEAT_LOSS_TICKS > 0
                 && TickThrottle.every(now, player.getEntityId(), ConfigHandler.JETPACK_THRUST_HEAT_LOSS_TICKS))
         {
@@ -124,15 +124,20 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         return 25;
     }
 
+    private static FluidStack waterIntake;
+
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
         if (!ConfigHandler.STEAMJETPACK_ENABLED) return;
-        InventorySteamJetpack inv = new InventorySteamJetpack(stack);
-        inv.openInventory();
-        boolean mustFizzz = !inv.isInUse();
+        if (world.isRemote)
+        {
+            clientUpdate(world, player, stack);
+            return;
+        }
+        InventorySteamJetpack inv = liveInventory(player, stack);
         int steamConsumed = ConfigHandler.JETPACK_STEAM_PER_TICK;
-        boolean canUse = inv.getSteamTank().drain(steamConsumed,false) != null;
+        boolean canUse = inv.getSteamTank().getFluid() != null;
 
         if (inv.getStatus())
         {
@@ -140,36 +145,16 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
         }
         runHeater(inv, world, player, inv.isInUse() && canUse);
         runBoiler(inv, world, player);
-        inv.dirtyBoiler();
 
-        //Suction
         if(player.isInWater())
         {
-            inv.getWaterTank().fill(new FluidStack(FluidRegistry.WATER, ConfigHandler.JETPACK_WATER_INTAKE),true);
-        }
-
-        //Elevation: only this client's own player reads the jump key (the update also runs for players it sees)
-        if (world.isRemote && ClientActions.isLocalPlayer(player))
-        {
-            // Tell the server only when the state changes, not every tick (performance contract, rule 5).
-            if (inv.getStatus() && canUse && ClientActions.isJumpKeyDown())
-            {
-                if (mustFizzz)
-                {
-                    inv.setInUse(true);
-                    ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_IN_USE));
-                    ModNetwork.net.sendToServer(new EntitySoundPacket.Message(EntitySoundPacket.JETPACK_FIZZ, player));
-                }
-            } else if (!mustFizzz)
-            {
-                inv.setInUse(false);
-                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_NOT_IN_USE));
-            }
+            if (waterIntake == null) waterIntake = new FluidStack(FluidRegistry.WATER, 0);
+            waterIntake.amount = ConfigHandler.JETPACK_WATER_INTAKE;
+            inv.getWaterTank().fill(waterIntake, true);
         }
 
         if (inv.isInUse() && canUse)
         {
-
             elevate(player);
             inv.getSteamTank().drain(steamConsumed, true);
             if (inv.getSteamTank().getFluidAmount() == 0)
@@ -185,11 +170,70 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
             {
                 player.fallDistance = 0;
             }
-            // Every client draws the exhaust for the players it sees, from the synced in-use flag (no packet per tick)
-            if (world.isRemote) ClientActions.showParticlesAtEntity(player, EntityParticlePacket.JETPACK_PARTICLE);
-
         }
-        inv.closeInventory();
+        inv.flushChanges();
+    }
+
+    public static InventorySteamJetpack liveInventory(EntityPlayer player, ItemStack stack)
+    {
+        BackpackProperty props = BackpackProperty.get(player);
+        IInventoryTanks live = props == null ? null : props.getLiveGear();
+        if (live instanceof InventorySteamJetpack && ((InventorySteamJetpack) live).isCurrentFor(stack))
+        {
+            return (InventorySteamJetpack) live;
+        }
+        InventorySteamJetpack inv = new InventorySteamJetpack(stack);
+        if (props != null && props.getWearable() == stack) props.setLiveGear(inv);
+        return inv;
+    }
+
+    private void clientUpdate(World world, EntityPlayer player, ItemStack stack)
+    {
+        RenderInfo info = RenderInfoCache.get(stack);
+        boolean canUse = info.steamFluid != null;
+        boolean inUse = info.jetpackInUse;
+
+        if (ClientActions.isLocalPlayer(player))
+        {
+            if (info.jetpackOn && canUse && ClientActions.isJumpKeyDown())
+            {
+                if (!inUse)
+                {
+                    inUse = true;
+                    writeInUse(stack, true);
+                    ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_IN_USE));
+                    ModNetwork.net.sendToServer(new EntitySoundPacket.Message(EntitySoundPacket.JETPACK_FIZZ, player));
+                }
+            } else if (inUse)
+            {
+                inUse = false;
+                writeInUse(stack, false);
+                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.JETPACK_NOT_IN_USE));
+            }
+        }
+
+        if (inUse && canUse)
+        {
+            elevate(player);
+            player.moveFlying(player.moveStrafing, player.moveForward, ConfigHandler.JETPACK_AIR_CONTROL);
+            if (player.fallDistance > 1)
+            {
+                player.fallDistance -= 1;
+            }
+            if (player.motionY >= 0)
+            {
+                player.fallDistance = 0;
+            }
+            ClientActions.showParticlesAtEntity(player, EntityParticlePacket.JETPACK_PARTICLE);
+        }
+    }
+
+    private static void writeInUse(ItemStack stack, boolean inUse)
+    {
+        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("jetpackData"))
+        {
+            stack.stackTagCompound.getCompoundTag("jetpackData").setBoolean("inUse", inUse);
+        }
     }
 
     private void runBoiler(InventorySteamJetpack inv, World world, EntityPlayer player)
@@ -225,7 +269,6 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
                 {
                     int steam = inv.getWaterTank().drain((temperature / ConfigHandler.JETPACK_BOILING_TEMPERATURE), true).amount;
                     inv.getSteamTank().fill(new FluidStack(steamFluid, steam * ConfigHandler.JETPACK_STEAM_PER_WATER), true);
-                    inv.dirtyTanks();
                 }
             }
         }
@@ -254,7 +297,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
 
     public static void elevate(EntityPlayer player)
     {
-        player.motionY = Flight.thrustSpeed(player.posY, player.motionY, ConfigHandler.JETPACK_THRUST, ConfigHandler.JETPACK_MAX_RISE_SPEED, ConfigHandler.JETPACK_MAX_ALTITUDE);
+        player.motionY = Flight.thrustSpeed(player.posY, player.motionY, ConfigHandler.JETPACK_THRUST, ConfigHandler.JETPACK_MAX_RISE_SPEED, ConfigHandler.JETPACK_FALL_BRAKE, ConfigHandler.JETPACK_MAX_ALTITUDE);
     }
 
     @Override
@@ -276,7 +319,7 @@ public class ItemSteamJetpack extends ItemAB implements IBackWearableItem
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {
-        InventorySteamJetpack inv = new InventorySteamJetpack(stack);
+        InventorySteamJetpack inv = world.isRemote ? new InventorySteamJetpack(stack) : liveInventory(player, stack);
         inv.setBoiling(false);
         inv.setInUse(false);
         inv.setLeaking(false);

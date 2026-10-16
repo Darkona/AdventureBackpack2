@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.client;
 
+import com.darkona.adventurebackpack.common.ability.RainbowAbility;
 import com.darkona.adventurebackpack.entity.fx.SteamFX;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
@@ -8,32 +9,11 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-/**
- * Created on 17/10/2014
- *
- * @author Darkona
- */
 public class Visuals
 {
-
     public static void NyanParticles(EntityPlayer player, World world)
     {
-        // World world = player.worldObj;
-        int i = 2;
-        for (int j = 0; j < i * 3; ++j)
-        {
-            float f = world.rand.nextFloat() * (float) Math.PI * 2.0F;
-            float f1 = world.rand.nextFloat() * 0.5F + 0.5F;
-            float f2 = MathHelper.sin(f) * i * 0.5F * f1;
-            float f3 = MathHelper.cos(f) * i * 0.5F * f1;
-            world.spawnParticle("note",
-                    player.posX + f2,
-                    player.boundingBox.minY + 0.8f,
-                    player.posZ + f3,
-                    (double) (float) Math.pow(2.0D, (world.rand.nextInt(169) - 12) / 12.0D) / 24.0D,
-                    -1.0D,
-                    0.0D);
-        }
+        RainbowAbility.notes(player, world);
     }
 
     public static void SlimeParticles(EntityPlayer player, World world)
@@ -74,7 +54,6 @@ public class Visuals
         }
     }
 
-
     private static Minecraft mc = Minecraft.getMinecraft();
     private static World theWorld = mc.theWorld;
 
@@ -108,17 +87,6 @@ public class Visuals
                 if (particleName.equals("steam"))
                 {
                     entityFX = new SteamFX(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
-                    /*
-                    try
-                    {
-                        entityFX = (EntityFX) Class.forName("mods.railcraft.client.particles.EntitySteamFX")
-                                .getConstructor(World.class,int.class,int.class,int.class,float.class,float.class,float.class)
-                                .newInstance(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
-                    }catch(Exception ex)
-                    {
-                        entityFX = new SteamFX(theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ);
-                    }
-                    */
                 }
                 mc.effectRenderer.addEffect(entityFX);
                 return entityFX;

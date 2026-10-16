@@ -27,18 +27,8 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import java.lang.reflect.Field;
 import java.util.List;
 
-/**
- * Created on 20/10/2014
- *
- * @author Darkona
- */
 public class ModRecipes
 {
-    /**
-     * The Clockwork Crossbow, built around a clock; the empty Crossbow Magazine (an iron ingot, 2 sticks and a string
-     * as the spring); the 1.0 cartridge recipe, which now makes a magazine loaded with its 6 arrows; the reload recipe;
-     * and the Crossbow Bolt (iron ingot, stick and feather make 4).
-     */
     private static void crossbowRecipes()
     {
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.cwxbow),
@@ -91,8 +81,6 @@ public class ModRecipes
 
     public static void init()
     {
-
-        //CampFire
         GameRegistry.addRecipe(new ShapedOreRecipe(ModBlocks.blockCampFire,
                 " S ",
                 "SxS",
@@ -102,7 +90,6 @@ public class ModRecipes
                 'c', "cobblestone"
         ));
 
-        //Sleeping Bag
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 1),
                 "  X",
                 "CCC",
@@ -110,7 +97,6 @@ public class ModRecipes
                 'C', Blocks.carpet
         );
 
-        //Backpack Tank
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 2),
                 "GIG",
                 "GGG",
@@ -119,7 +105,6 @@ public class ModRecipes
                 'I', Items.iron_ingot
         );
 
-        //Hose Nozzle
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 3),
                 " G ",
                 "ILI",
@@ -129,7 +114,6 @@ public class ModRecipes
                 'L', Blocks.lever
         );
 
-        //Machete Handle
         GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 4),
                 "YIY",
                 "BSB",
@@ -141,7 +125,6 @@ public class ModRecipes
                 'I', Items.iron_ingot,
                 'S', Items.stick
         );
-
 
         GameRegistry.addRecipe(new ItemStack(ModItems.machete),
                 " I ",
@@ -159,16 +142,6 @@ public class ModRecipes
                 'C', Items.leather_helmet,
                 'L', Items.leather
         );
-/*
-        GameRegistry.addRecipe(new ItemStack(ModItems.adventureSuit),
-                " V ",
-                " W ",
-                " P ",
-                'V', Items.leather_chestplate,
-                'W', Blocks.wool,
-                'P', Items.leather_leggings
-        );
-*/
         if (ConfigHandler.PISTONBOOTS_ENABLED) GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
                 " B ",
                 "PSP",
@@ -199,7 +172,7 @@ public class ModRecipes
             {
                 try
                 {
-                    if (field.getName().equals((BackpackNames.backpackNames[i])))
+                    if (field.getName().equals((BackpackNames.backpackNames[i])) && ConfigHandler.isBackpackTypeEnabled(BackpackNames.backpackNames[i]))
                     {
                         GameRegistry.addRecipe(new BackpackUpgradeRecipe(BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i), (Object[]) field.get(br)));
                         counter++;
@@ -210,11 +183,9 @@ public class ModRecipes
                     oops.printStackTrace();
                 }
             }
-
         }
         RecipeSorter.register(ModInfo.MOD_ID + ":backpackUpgrade", BackpackUpgradeRecipe.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
         LogHelper.info("Loaded " + counter + " backpack recipes.");
-
     }
 
     private static ItemStack component(int damage, int amount)
@@ -222,18 +193,12 @@ public class ModRecipes
         return new ItemStack(ModItems.component, amount, damage);
     }
 
-    /**
-     * The Inflatable Boat, its Inflatable Chambers, the Hydro Blades and the motorized boat (recipes.boat). In postInit,
-     * so the Ore Dictionary and the other mods' items are complete; the items are always registered, only the
-     * recipes depend on the mode and on what the loaded mods provide.
-     */
     private static void boatRecipes()
     {
         BoatRecipeRules.Mode mode = ConfigHandler.BOAT_RECIPE_MODE;
         List<String> rubbers = TechParts.presentOres(ConfigHandler.BOAT_RUBBER);
         List<Object> motors = TechParts.find(ConfigHandler.BOAT_MOTORS);
 
-        // Inflatable Chamber: leather sealed with slime, or rubber from a technical mod
         if (BoatRecipeRules.vanillaRecipe(mode, !rubbers.isEmpty()))
         {
             GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.INFLATABLE_CHAMBER, 1),
@@ -251,7 +216,6 @@ public class ModRecipes
             }
         }
 
-        // Hydro Blades: a small iron propeller
         GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.HYDRO_BLADES, 1),
                 "I I",
                 " S ",
@@ -259,7 +223,6 @@ public class ModRecipes
                 'I', "ingotIron",
                 'S', "stickWood"));
 
-        // Inflatable Boat: five chambers, a rope around them and the Hose Nozzle as the valve
         GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.INFLATABLE_BOAT, 1),
                 "SNS",
                 "C C",
@@ -268,7 +231,6 @@ public class ModRecipes
                 'N', component(ItemComponent.HOSE_NOZZLE, 1),
                 'C', component(ItemComponent.INFLATABLE_CHAMBER, 1)));
 
-        // Motorized boat: an outboard engine (piston and furnace, or another mod's electric motor) and Hydro Blades
         if (BoatRecipeRules.vanillaRecipe(mode, !motors.isEmpty()))
         {
             GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.MOTORIZED_BOAT, 1),
@@ -290,10 +252,6 @@ public class ModRecipes
         LogHelper.info("Inflatable boat recipes: mode " + mode + ", rubber " + rubbers + ", " + motors.size() + " electric motor(s) found.");
     }
 
-    /**
-     * The Fuel Station (recipes.fuelstation): iron ingots, glass panes, a Hose Nozzle and a Backpack Tank, or metal plates
-     * of a technical mod in place of the ingots. In postInit, so the Ore Dictionary is complete.
-     */
     private static void fuelStationRecipes()
     {
         BoatRecipeRules.Mode mode = ConfigHandler.FUELSTATION_RECIPE_MODE;
@@ -326,17 +284,11 @@ public class ModRecipes
         LogHelper.info("Fuel Station recipes: mode " + mode + ", plates " + plates + ".");
     }
 
-    /**
-     * The Scuba Gear, its Air Tank and Diving Mask, and the Air Compressor (enabled.scuba, and only when some
-     * breathable fluid exists). The mask takes rubber instead of leather like the boat's chambers (recipes.boat.mode
-     * and recipes.boat.rubber).
-     */
     private static void scubaRecipes()
     {
         BoatRecipeRules.Mode mode = ConfigHandler.BOAT_RECIPE_MODE;
         List<String> rubbers = TechParts.presentOres(ConfigHandler.BOAT_RUBBER);
 
-        // Air Tank: an iron bottle with the Hose Nozzle as its valve
         GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.AIR_TANK, 1),
                 "IHI",
                 "I I",
@@ -344,7 +296,6 @@ public class ModRecipes
                 'I', "ingotIron",
                 'H', component(ItemComponent.HOSE_NOZZLE, 1)));
 
-        // Diving Mask: a glass visor in leather (or rubber) with the Hose Nozzle as the regulator
         if (BoatRecipeRules.vanillaRecipe(mode, !rubbers.isEmpty()))
         {
             GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.DIVING_MASK, 1),
@@ -369,7 +320,6 @@ public class ModRecipes
             }
         }
 
-        // Scuba Gear: the mask, two air tanks on a harness
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.scubaGear),
                 " M ",
                 "ASA",
@@ -379,7 +329,6 @@ public class ModRecipes
                 'S', Items.string,
                 'L', Items.leather));
 
-        // Air Compressor: a piston pump driven by a furnace, pushing into a Backpack Tank
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.blockAirCompressor),
                 "IPI",
                 "ITI",
@@ -390,11 +339,6 @@ public class ModRecipes
                 'F', Blocks.furnace));
     }
 
-    /**
-     * The Pyro Mask, the Flamethrower Pack and the Flamethrower nozzle (enabled.flamethrower, and only when some fuel
-     * of fuels.list exists). Metal plates of a technical mod take the place of the iron ingots (recipes.flamethrower),
-     * and the mask takes rubber instead of leather like the Diving Mask (recipes.boat.mode and recipes.boat.rubber).
-     */
     private static void flamethrowerRecipes()
     {
         BoatRecipeRules.Mode rubberMode = ConfigHandler.BOAT_RECIPE_MODE;
@@ -402,7 +346,6 @@ public class ModRecipes
         BoatRecipeRules.Mode plateMode = ConfigHandler.FLAMETHROWER_RECIPE_MODE;
         List<String> plates = TechParts.presentOres(ConfigHandler.FLAMETHROWER_PLATES);
 
-        // Pyro Mask: a glass visor in a leather (or rubber) hood with an iron frame
         if (BoatRecipeRules.vanillaRecipe(rubberMode, !rubbers.isEmpty()))
         {
             GameRegistry.addRecipe(new ShapedOreRecipe(component(ItemComponent.PYRO_MASK, 1),
@@ -427,8 +370,6 @@ public class ModRecipes
             }
         }
 
-        // Flamethrower Pack: the mask, two Backpack Tanks on a leather harness, flint and steel as the pilot
-        // Flamethrower: an iron (or plate) barrel with the Hose Nozzle, flint and steel at the tip
         if (BoatRecipeRules.vanillaRecipe(plateMode, !plates.isEmpty()))
         {
             addFlamethrowerRecipes("ingotIron");
@@ -462,12 +403,26 @@ public class ModRecipes
                 'F', Items.flint_and_steel));
     }
 
+    private static void distilleryRecipe()
+    {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.blockDistillery),
+                "IBI",
+                "GCG",
+                "IFI",
+                'I', "ingotIron",
+                'B', Items.bucket,
+                'G', "paneGlass",
+                'C', Items.cauldron,
+                'F', Blocks.furnace));
+    }
+
     public static void conditionalInit()
     {
         if (ConfigHandler.INFLATABLEBOAT_ENABLED) boatRecipes();
         if (ConfigHandler.FUELSTATION_ENABLED) fuelStationRecipes();
         if (AirContainers.usable()) scubaRecipes();
         if (ItemFlamethrowerPack.isUsable()) flamethrowerRecipes();
+        if (ConfigHandler.DISTILLERY_ENABLED && ModFluids.ethanol != null) distilleryRecipe();
 
         if(ConfigHandler.SADDLE_RECIPE)
         {
@@ -480,10 +435,8 @@ public class ModRecipes
             );
         }
 
-        // The copter parts and pack need some liquid fuel of fuels.list from a loaded mod, whichever it is
         if (ItemCopterPack.isUsable())
         {
-            //Copter Engine
             GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 5),
                     "IGI",
                     "PCP",
@@ -496,7 +449,6 @@ public class ModRecipes
                     'O', Blocks.obsidian
             );
 
-            //Copter Blades
             GameRegistry.addRecipe(new ItemStack(ModItems.component, 1, 6),
                     "III",
                     " F ",
@@ -505,7 +457,6 @@ public class ModRecipes
                     'F', Blocks.fence
             );
 
-            //Copter Pack
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.copterPack),
                     "WBW",
                     "TEI",
@@ -520,7 +471,6 @@ public class ModRecipes
             ));
         }
 
-        // Railcraft's firebox and low pressure boiler tank when Railcraft is present, a furnace and a cauldron otherwise
         if (ConfigHandler.STEAMJETPACK_ENABLED && ModFluids.steam != null)
         {
             try

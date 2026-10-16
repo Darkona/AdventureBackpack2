@@ -54,8 +54,10 @@ itemGroup.adventurebackpack=探险背包
 ## Keybindings
 ##按键绑定
 keys.adventureBackpack.category=探险背包
-keys.adventureBackpack.openBackpackInventory=打开背包
-keys.adventureBackpack.switchHoseTank=选择储水箱
+keys.adventureBackpack.gear=打开装备
+keys.adventureBackpack.ability=开关装备
+keys.adventureBackpack.mode=切换模式
+keys.adventureBackpack.state=切换状态
 
 ## Fluids
 ##流体
@@ -75,3 +77,6 @@ adventurebackpack:messages.copterpack.off=直升机背包:关闭。
 adventurebackpack:messages.jetpack.on=蒸汽喷射背包:开启
 adventurebackpack:messages.jetpack.off=蒸汽喷射背包:关闭。
 adventurebackpack:messages.crossbow.outofammo=发条弩:没有弹药。
+tile.adventurebackpack:blockDistillery.name=蒸馏器
+tile.adventurebackpack:blockGear.name=放置的装备
+fluid.bioethanol=乙醇

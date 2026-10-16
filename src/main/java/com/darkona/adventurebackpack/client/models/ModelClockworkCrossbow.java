@@ -12,26 +12,12 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.DoubleBuffer;
 
-/**
- * The Clockwork Crossbow: dark walnut tiller, stock and limbs, iron fittings, a brass six-chamber drum over the
- * rail that turns one step per shot and empties as the magazine does, a brass gear and winding key that turn with
- * it, and the string on the rail. Units are sixteenths of a block, +Y up, -Z forward (muzzle), +X the shooter's
- * right; the item renderer turns this frame into each render type's frame.
- * <p>
- * Geometry, UV layout and texture are generated together by {@code notes/art-1.1/crossbow.py} (Javier's copy of the
- * script); the constructor body is its output. 1.1 adds the grappling hook resting in the muzzle (grapple mode: it
- * takes the place of the bolt in the firing chamber) and the bipod under the tiller (sniper mode: folded back along
- * the tiller, or hanging down and splayed while the shooter is crouched and still). Only the drum, gear, key, bolts,
- * strings, magazine, hook and legs move; every angle comes from {@link CrossbowAnimation} so the frame-by-frame
- * work is arithmetic (performance contract, tier 4).
- */
 @SideOnly(Side.CLIENT)
 public class ModelClockworkCrossbow extends ModelBase
 {
     private static final float DEG = (float) Math.PI / 180F;
-    /** Keeps what is above the slot: y - SLOT_Y >= 0 in model units (scaled in {@link #renderMagazine}). */
     private static final DoubleBuffer SLOT_PLANE = BufferUtils.createDoubleBuffer(4);
-    /** Model X of the bolts lying on the new magazine. */
+    private static final float PLATE_INFLATE = 0.03F;
     private static final float[] MAGAZINE_BOLT_X = {0F, -1.5F, 1.5F};
 
     public ModelRenderer body;
@@ -81,7 +67,6 @@ public class ModelClockworkCrossbow extends ModelBase
     public ModelRenderer armL3;
     public ModelRenderer string;
     public ModelRenderer cartridge;
-    /** Pose of the magazine being drawn ({@code CrossbowAnimation.MAG_*}), reused every frame. */
     private final float[] magazinePose = new float[CrossbowAnimation.MAG_SIZE];
     public ModelRenderer hook;
     public ModelRenderer hookEye;
@@ -98,7 +83,6 @@ public class ModelClockworkCrossbow extends ModelBase
     public ModelRenderer legL;
 
     private final ModelRenderer[] chambers = new ModelRenderer[CrossbowAnimation.CHAMBERS];
-    /** Scratch for {@link CrossbowAnimation#stringTransform}: angle, axis X, axis Z, length. */
     private final float[] stringMath = new float[4];
 
     public ModelClockworkCrossbow()
@@ -189,19 +173,19 @@ public class ModelClockworkCrossbow extends ModelBase
         plateB0.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
         plateF1 = new ModelRenderer(this, 22, 34);
         plateF1.setRotationPoint(0.0F, 0.0F, -5.5F);
-        plateF1.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        plateF1.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, PLATE_INFLATE);
         setRotateAngle(plateF1, 0.0F, 0.0F, 0.5236F);
         plateB1 = new ModelRenderer(this, 22, 34);
         plateB1.setRotationPoint(0.0F, 0.0F, 5.5F);
-        plateB1.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        plateB1.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, PLATE_INFLATE);
         setRotateAngle(plateB1, 0.0F, 0.0F, 0.5236F);
         plateF2 = new ModelRenderer(this, 22, 34);
         plateF2.setRotationPoint(0.0F, 0.0F, -5.5F);
-        plateF2.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        plateF2.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 2F * PLATE_INFLATE);
         setRotateAngle(plateF2, 0.0F, 0.0F, 1.0472F);
         plateB2 = new ModelRenderer(this, 22, 34);
         plateB2.setRotationPoint(0.0F, 0.0F, 5.5F);
-        plateB2.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 0.0F);
+        plateB2.addBox(-3.0F, -3.0F, -0.5F, 6, 6, 1, 2F * PLATE_INFLATE);
         setRotateAngle(plateB2, 0.0F, 0.0F, 1.0472F);
         spindle = new ModelRenderer(this, 22, 41);
         spindle.addBox(-0.5F, -0.5F, -7.5F, 1, 1, 2, 0.0F);
@@ -337,26 +321,12 @@ public class ModelClockworkCrossbow extends ModelBase
         chambers[5] = chamber5;
     }
 
-    /** Static pose: full drum, cocked string, repeating mode. Used by nothing in the mod; kept for ModelBase callers. */
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
         render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, CrossbowAnimation.NEVER, -1F, false, CrossbowLogic.MODE_REPEATING, 0F, false);
     }
 
-    /**
-     * Draws the crossbow in its current state. Leaves the GL matrix and colour as it found them.
-     *
-     * @param scale          model unit in blocks (1/16)
-     * @param ammo           bolts in the magazine
-     * @param capacity       bolts in a full magazine
-     * @param sinceShot      ticks since the last shot with the partial tick, or {@link CrossbowAnimation#NEVER}
-     * @param reloadProgress 0..1 while a reload runs, else -1
-     * @param swapped        the running reload took a magazine out (the spent one is drawn flying away)
-     * @param mode           effective firing mode ({@link CrossbowLogic#MODE_REPEATING}, {@code MODE_GRAPPLE}, {@code MODE_SNIPER})
-     * @param bipodPose      0 = legs folded along the tiller, 1 = legs down (only drawn in sniper mode)
-     * @param hookLoaded     in grapple mode, whether the hook is still in the muzzle (false while it flies or hangs)
-     */
     public void render(float scale, int ammo, int capacity, float sinceShot, float reloadProgress, boolean swapped, int mode, float bipodPose, boolean hookLoaded)
     {
         float drumDegrees = CrossbowAnimation.drumDegrees(ammo, capacity, sinceShot, reloadProgress);
@@ -417,11 +387,6 @@ public class ModelClockworkCrossbow extends ModelBase
         }
     }
 
-    /**
-     * The magazine (brass case, {@code bolts} bolts lying on it along the rail) at {@link #magazinePose}, an offset
-     * from its seat on the slot. While it is in the slot column a clip plane at {@link CrossbowAnimation#SLOT_Y} hides
-     * the part already inside the drum, so it goes in (or comes out) through the slot instead of popping.
-     */
     private void renderMagazine(float scale, int bolts)
     {
         float[] pose = magazinePose;
@@ -454,7 +419,6 @@ public class ModelClockworkCrossbow extends ModelBase
         }
     }
 
-    /** Bolts lying on the case: bolt centre one unit over its top, tips to the muzzle, fletching tinted. */
     private void renderMagazineBolts(float scale, int bolts)
     {
         int color = CrossbowAnimation.FLETCH_COLOR;
@@ -477,10 +441,6 @@ public class ModelClockworkCrossbow extends ModelBase
         }
     }
 
-    /**
-     * One bolt per loaded chamber, drawn inside the drum and chamber transforms; the fletching is tinted. The
-     * chamber {@code hiddenChamber} (the firing one while the hook sits in the muzzle) shows no bolt.
-     */
     private void renderBolts(float scale, int ammo, int capacity, int hiddenChamber)
     {
         int color = CrossbowAnimation.FLETCH_COLOR;
@@ -508,7 +468,6 @@ public class ModelClockworkCrossbow extends ModelBase
         }
     }
 
-    /** The string box runs along +Y from the origin: move it to the limb tip, aim it at the latch, stretch it. */
     private void renderString(float scale, float tipX, float nockZ)
     {
         CrossbowAnimation.stringTransform(tipX, CrossbowAnimation.TIP_Y, CrossbowAnimation.TIP_Z, 0F, CrossbowAnimation.STRING_Y, nockZ, stringMath);

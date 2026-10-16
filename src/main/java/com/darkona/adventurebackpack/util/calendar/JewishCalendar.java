@@ -1,16 +1,9 @@
 package com.darkona.adventurebackpack.util.calendar;
 
-/**
- * Created on 22/12/2014
- *
- * @author Javier Darkona
- */
 public class JewishCalendar
 {
-
     public static boolean isHannukah(int year, int month, int day)
     {
-
         CalendarDate gregorianDate = new CalendarDate(day, month, year);
         CalendarImpl kosher = new CalendarImpl();
         int absolutedate = kosher.absoluteFromGregorianDate(gregorianDate);
@@ -26,13 +19,11 @@ public class JewishCalendar
         }
         if (kosher.getLastDayOfJewishMonth(9, hebYear) == 30)
         {
-
             if (hebDay == 30 && hebMonth == 9)
             {
                 result = true;
             }
             if (hebMonth == 10 && (hebDay == 1 || hebDay == 2)) result = true;
-
         }
         if (kosher.getLastDayOfJewishMonth(9, hebYear) == 29)
         {
@@ -40,5 +31,4 @@ public class JewishCalendar
         }
         return result;
     }
-
 }

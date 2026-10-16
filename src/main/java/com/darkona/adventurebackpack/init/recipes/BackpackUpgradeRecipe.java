@@ -7,10 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-/**
- * Shaped backpack recipe that keeps the contents of the backpack used as an ingredient. A plain ShapedOreRecipe
- * returned an empty backpack, so turning a Standard backpack into another type deleted its items and tanks.
- */
 public class BackpackUpgradeRecipe extends ShapedOreRecipe
 {
     public BackpackUpgradeRecipe(ItemStack result, Object... recipe)

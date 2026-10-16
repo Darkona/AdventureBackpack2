@@ -15,14 +15,8 @@ import com.darkona.adventurebackpack.util.Utils;
 
 import java.util.UUID;
 
-/**
- * Created on 16/10/2014
- *
- * @author Darkona
- */
 public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbilityMessage, IMessage>
 {
-
     public static final byte CONSUME_WHEAT = 0;
 
     @Override
@@ -51,7 +45,6 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
 
     public static class CowAbilityMessage implements IMessage
     {
-
         private byte action;
         private String playerID;
 
@@ -68,7 +61,6 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
         @Override
         public void fromBytes(ByteBuf buf)
         {
-
             playerID = ByteBufUtils.readUTF8String(buf);
             action = buf.readByte();
         }
@@ -80,5 +72,4 @@ public class CowAbilityPacket implements IMessageHandler<CowAbilityPacket.CowAbi
             buf.writeByte(action);
         }
     }
-
 }

@@ -1,20 +1,14 @@
 package com.darkona.adventurebackpack.client.audio;
 
-import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
-/**
- * Created on 16/01/2015
- *
- * @author Darkona
- */
 public class LeakingBoilerSound extends MovingSound
 {
-
     public EntityPlayer thePlayer;
     protected boolean repeat = true;
     protected int repeatDelay = 0;
@@ -60,8 +54,7 @@ public class LeakingBoilerSound extends MovingSound
             return;
         }
 
-        InventorySteamJetpack inv = new InventorySteamJetpack(Wearing.getWearingSteam(thePlayer));
-        if(inv.isLeaking())
+        if (RenderInfoCache.get(Wearing.getWearingSteam(thePlayer)).jetpackLeaking)
         {
             xPosF = (float)thePlayer.posX;
             yPosF = (float)thePlayer.posY;
@@ -98,5 +91,4 @@ public class LeakingBoilerSound extends MovingSound
     {
         return AttenuationType.LINEAR;
     }
-
 }

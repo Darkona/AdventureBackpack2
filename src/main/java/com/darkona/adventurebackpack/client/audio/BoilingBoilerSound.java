@@ -1,20 +1,15 @@
 package com.darkona.adventurebackpack.client.audio;
 
-import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.common.RenderInfo;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
-/**
- * Created on 16/01/2015
- *
- * @author Darkona
- */
 public class BoilingBoilerSound extends MovingSound
 {
-
     public EntityPlayer thePlayer;
     protected boolean repeat = true;
     protected int repeatDelay = 0;
@@ -54,15 +49,14 @@ public class BoilingBoilerSound extends MovingSound
     @Override
     public void update()
     {
-
         if (thePlayer == null || thePlayer.isDead || thePlayer.worldObj == null || !Wearing.isWearingSteam(thePlayer))
         {
             setDonePlaying();
             return;
         }
 
-        InventorySteamJetpack inv = new InventorySteamJetpack(Wearing.getWearingSteam(thePlayer));
-        if(inv.isBoiling() && inv.getWaterTank().getFluidAmount() > 0)
+        RenderInfo info = RenderInfoCache.get(Wearing.getWearingSteam(thePlayer));
+        if (info.jetpackBoiling && info.leftFluid != null && info.leftFluid.amount > 0)
         {
             xPosF = (float)thePlayer.posX;
             yPosF = (float)thePlayer.posY;
@@ -99,5 +93,4 @@ public class BoilingBoilerSound extends MovingSound
     {
         return AttenuationType.LINEAR;
     }
-
 }

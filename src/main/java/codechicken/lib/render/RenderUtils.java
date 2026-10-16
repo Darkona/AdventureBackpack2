@@ -4,6 +4,7 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rectangle4i;
 import codechicken.lib.vec.Vector3;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -143,44 +144,21 @@ public class RenderUtils
         var2.draw();
     }
 
+    /** Feeds the quads of {@link FluidQuads} to the tessellator; one instance, it holds no state. */
+    private static final FluidQuads.Sink TESSELLATOR_SINK = new FluidQuads.Sink()
+    {
+        @Override
+        public void vertex(double x, double y, double z, double u, double v)
+        {
+            Tessellator.instance.addVertexWithUV(x, y, z, u, v);
+        }
+    };
+
+    /** Adds the six faces of {@code bound} to the tessellator that is drawing quads; builds nothing, see {@link FluidQuads}. */
     public static void renderFluidCuboid(Cuboid6 bound, IIcon tex, double res)
     {
-        renderFluidQuad(//bottom
-                new Vector3(bound.min.x, bound.min.y, bound.min.z),
-                new Vector3(bound.max.x, bound.min.y, bound.min.z),
-                new Vector3(bound.max.x, bound.min.y, bound.max.z),
-                new Vector3(bound.min.x, bound.min.y, bound.max.z),
-                tex, res);
-        renderFluidQuad(//top
-                new Vector3(bound.min.x, bound.max.y, bound.min.z),
-                new Vector3(bound.min.x, bound.max.y, bound.max.z),
-                new Vector3(bound.max.x, bound.max.y, bound.max.z),
-                new Vector3(bound.max.x, bound.max.y, bound.min.z),
-                tex, res);
-        renderFluidQuad(//-x
-                new Vector3(bound.min.x, bound.max.y, bound.min.z),
-                new Vector3(bound.min.x, bound.min.y, bound.min.z),
-                new Vector3(bound.min.x, bound.min.y, bound.max.z),
-                new Vector3(bound.min.x, bound.max.y, bound.max.z),
-                tex, res);
-        renderFluidQuad(//+x
-                new Vector3(bound.max.x, bound.max.y, bound.max.z),
-                new Vector3(bound.max.x, bound.min.y, bound.max.z),
-                new Vector3(bound.max.x, bound.min.y, bound.min.z),
-                new Vector3(bound.max.x, bound.max.y, bound.min.z),
-                tex, res);
-        renderFluidQuad(//-z
-                new Vector3(bound.max.x, bound.max.y, bound.min.z),
-                new Vector3(bound.max.x, bound.min.y, bound.min.z),
-                new Vector3(bound.min.x, bound.min.y, bound.min.z),
-                new Vector3(bound.min.x, bound.max.y, bound.min.z),
-                tex, res);
-        renderFluidQuad(//+z
-                new Vector3(bound.min.x, bound.max.y, bound.max.z),
-                new Vector3(bound.min.x, bound.min.y, bound.max.z),
-                new Vector3(bound.max.x, bound.min.y, bound.max.z),
-                new Vector3(bound.max.x, bound.max.y, bound.max.z),
-                tex, res);
+        FluidQuads.cuboid(TESSELLATOR_SINK, bound.min.x, bound.min.y, bound.min.z, bound.max.x, bound.max.y, bound.max.z,
+                tex.getMinU(), tex.getMaxU(), tex.getMinV(), tex.getMaxV(), res);
     }
 
     public static void renderBlockOverlaySide(int x, int y, int z, int side, double tx1, double tx2, double ty1, double ty2)
@@ -265,10 +243,12 @@ public class RenderUtils
     }
 
     /**
-     * Renders a fluid within a bounding box.
+     * Renders a fluid within a bounding box, on every frame without allocating.
      * If the fluid is a liquid it will render as a normal tank with height equal to density/bound.height.
      * If the fluid is a gas, it will render the full box with an alpha equal to density.
-     * Warning, bound will be mutated if the fluid is a liquid
+     * {@code bound} is only read. A density above 1 (a tank holding more than a lowered capacity) is drawn as full.
+     * The light is the one the caller's entity or tile entity was lit with ({@code OpenGlHelper.lastBrightness}),
+     * raised to the fluid's own luminosity, and the GL state is restored.
      *
      * @param stack   The fluid to render.
      * @param bound   The box within which the fluid is contained.
@@ -277,25 +257,55 @@ public class RenderUtils
      */
     public static void renderFluidCuboid(FluidStack stack, Cuboid6 bound, double density, double res)
     {
-        if (!shouldRenderFluid(stack))
+        if (!shouldRenderFluid(stack) || !(density > 0))
         {
             return;
         }
+        if (density > 1)
+        {
+            density = 1;
+        }
 
+        Fluid fluid = stack.getFluid();
         int alpha = 255;
-        if (stack.getFluid().isGaseous())
+        double maxY = bound.max.y;
+        if (fluid.isGaseous())
         {
             alpha = (int) (fluidDensityToAlpha(density) * 255);
         } else
         {
-            bound.max.y = bound.min.y + (bound.max.y - bound.min.y) * density;
+            maxY = bound.min.y + (bound.max.y - bound.min.y) * density;
         }
 
-        IIcon tex = prepareFluidRender(stack, alpha);
-        CCRenderState.startDrawing();
-        renderFluidCuboid(bound, tex, res);
-        CCRenderState.draw();
-        postFluidRender();
+        IIcon tex = TextureUtils.safeIcon(fluid.getIcon(stack));
+        int colour = fluid.getColor(stack) & 0xFFFFFF;
+        int blockLight = (int) OpenGlHelper.lastBrightnessX;
+        int skyLight = (int) OpenGlHelper.lastBrightnessY;
+        int glow = Math.min(fluid.getLuminosity(stack) << 4, 240);
+        if (glow > blockLight)
+        {
+            blockLight = glow;
+        }
+
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
+        try
+        {
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            TextureUtils.bindAtlas(fluid.getSpriteNumber());
+
+            Tessellator t = Tessellator.instance;
+            t.startDrawingQuads();
+            t.setColorRGBA_I(colour, alpha);
+            t.setBrightness(skyLight << 16 | blockLight);
+            FluidQuads.cuboid(TESSELLATOR_SINK, bound.min.x, bound.min.y, bound.min.z, bound.max.x, maxY, bound.max.z,
+                    tex.getMinU(), tex.getMaxU(), tex.getMinV(), tex.getMaxV(), res);
+            t.draw();
+        } finally
+        {
+            GL11.glPopAttrib();
+        }
     }
 
     public static void renderFluidGauge(FluidStack stack, Rectangle4i rect, double density, double res)

@@ -26,33 +26,15 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-/**
- * A spider tamed by a player who wears the Spider Backpack. It is theirs for good, like a wolf: it never despawns and
- * stays tamed when the owner logs out, dies, changes dimension or the server restarts. It follows its owner (with or
- * without the backpack), climbs walls and towers after them, sits when told, is healed with rotten flesh and never
- * attacks. Only its owner rides it, and only while wearing the Spider Backpack. Gestures: {@link SpiderCare}.
- * <p>
- * {@link SpiderTaming} counts each player's spiders for the limit; the spider writes itself back there every second.
- * A spider saved by 1.0.0 (no owner) turns back into a normal {@link EntitySpider} on its first check.
- * <p>
- * Created on 11/01/2015
- *
- * @author Darkona
- */
 public class EntityFriendlySpider extends EntityCreature
 {
-    /** Ticks between two heartbeats (ledger, rider check). */
     private static final int OWNER_CHECK_TICKS = 20;
-    /** DataWatcher 16 bits: 1 = touching a wall, 2 = sitting. */
     private static final int BIT_WALL = 1, BIT_SITTING = 2;
-    /** Ticks it keeps counting as "on the wall" after losing contact, so corners do not drop it halfway up. */
     private static final int WALL_GRACE_TICKS = 5;
 
     private int jumpTicks;
-    /** Owner's player UUID; null for a spider saved by an older version, which is released on its first check. */
     private UUID ownerId;
     private final EntityAIControlledByPlayer aiControlledByPlayer;
-    /** Created before the tasks; null only while EntityLiving's constructor runs. */
     private final SpiderNavigate spiderNav;
     private int wallGrace;
 
@@ -93,27 +75,18 @@ public class EntityFriendlySpider extends EntityCreature
     {
         return 300;
     }
-    /**
-     * Returns the sound this mob makes while it's alive.
-     */
     @Override
     protected String getLivingSound()
     {
         return "mob.spider.say";
     }
 
-    /**
-     * Returns the sound this mob makes when it is hurt.
-     */
     @Override
     protected String getHurtSound()
     {
         return "mob.spider.say";
     }
 
-    /**
-     * Returns the sound this mob makes on death.
-     */
     @Override
     protected String getDeathSound()
     {
@@ -170,33 +143,23 @@ public class EntityFriendlySpider extends EntityCreature
         }
     }
 
-    /**
-     * Takes a coordinate in and returns a weight to determine how likely this creature will try to path to the block.
-     * Args: x, y, z
-     */
     @Override
     public float getBlockPathWeight(int p_70783_1_, int p_70783_2_, int p_70783_3_)
     {
         return 0.5F - this.worldObj.getLightBrightness(p_70783_1_, p_70783_2_, p_70783_3_);
     }
 
-    /**
-     * Checks if the entity's current position is a valid location to spawn this entity.
-     */
     @Override
     public boolean getCanSpawnHere()
     {
         return false;
     }
 
-    /** Kept like a wolf: a tamed spider never despawns (a 1.0.0 one without owner is released on its first check). */
     @Override
     protected boolean canDespawn()
     {
         return false;
     }
-
-    // ---------------------------------------------------------------- navigation
 
     @Override
     public PathNavigate getNavigator()
@@ -209,15 +172,12 @@ public class EntityFriendlySpider extends EntityCreature
         return spiderNav;
     }
 
-    /** Runs right after the (idle) vanilla navigator and before the move helper, so this navigator drives the spider. */
     @Override
     protected void updateAITick()
     {
         super.updateAITick();
         spiderNav.onUpdateNavigation();
     }
-
-    // ---------------------------------------------------------------- owner
 
     public void setOwner(UUID owner)
     {
@@ -234,23 +194,17 @@ public class EntityFriendlySpider extends EntityCreature
         return ownerId != null && player != null && ownerId.equals(player.getUniqueID());
     }
 
-    /** The owner when they are in this world, or null. Looks the player up by UUID: call it on a timer, not per frame. */
     public EntityPlayer getOwnerPlayer()
     {
         return ownerId == null ? null : worldObj.func_152378_a(ownerId);
     }
 
-    /** True while the owner is here and wears the Spider Backpack with the ability on: the only time it carries them. */
     public static boolean canRide(EntityPlayer owner)
     {
         return owner != null && !owner.isDead && ConfigHandler.BACKPACK_ABILITIES && ConfigHandler.SPIDER_ENABLED
                 && Wearing.isWearingTheRightBackpack(owner, "Spider");
     }
 
-    /**
-     * Turns this spider back into a normal one, in place, keeping its health and name, and frees its place under the
-     * limit. Server only. A named spider then stays like any named mob; an unnamed one despawns by the vanilla rules.
-     */
     public void release()
     {
         if (worldObj.isRemote || isDead) return;
@@ -290,7 +244,6 @@ public class EntityFriendlySpider extends EntityCreature
                 ? new UUID(compound.getLong("OwnerUUIDMost"), compound.getLong("OwnerUUIDLeast"))
                 : null;
         setSitting(compound.getBoolean("Sitting"));
-        // saved attributes would keep an old maximum: apply the configured one, so a config change reaches every spider
         getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(ConfigHandler.SPIDER_TAMED_HEALTH);
         setHealth(SpiderCare.clampLoadedHealth(getHealth(), getMaxHealth()));
     }
@@ -305,11 +258,6 @@ public class EntityFriendlySpider extends EntityCreature
         }
     }
 
-    /**
-     * Removed from the world (killed by a command, removed by another mod, or the old copy when it changes dimension:
-     * the new copy writes itself back on its first heartbeat). Unloading a chunk does not call this, so a spider in an
-     * unloaded chunk keeps its place.
-     */
     @Override
     public void setDead()
     {
@@ -326,34 +274,21 @@ public class EntityFriendlySpider extends EntityCreature
     {
         return true;
     }
-    /**
-     * Returns the item that this EntityLiving is holding, if any.
-     */
     @Override
     public ItemStack getHeldItem()
     {
         return null;
     }
 
-    /**
-     * 0: Tool in Hand; 1-4: Armor
-     * */
     @Override
     public ItemStack getEquipmentInSlot(int slot)
     {
         return null;
     }
 
-    /**
-     * Sets the held item, or an armor slot. Slot 0 is held item. Slot 1-4 is armor. Params: Item, slot
-     *
-     * @param slot
-     * @param stack
-     */
     @Override
     public void setCurrentItemOrArmor(int slot, ItemStack stack)
     {
-
     }
 
     @Override
@@ -367,10 +302,8 @@ public class EntityFriendlySpider extends EntityCreature
         return false;
     }
 
-    /** Right click by a player; the gesture table is {@link SpiderCare#interactAction}. The server decides. */
     @Override
     protected boolean interact(EntityPlayer player) {
-
         if (this.worldObj.isRemote) return false;
         ItemStack held = player.getCurrentEquippedItem();
         SpiderCare.Action action = SpiderCare.interactAction(isOwnedBy(player), this.riddenByEntity != null,
@@ -378,7 +311,6 @@ public class EntityFriendlySpider extends EntityCreature
         switch (action)
         {
             case RELEASE:
-                // The owner lets it go: it turns back into a normal spider and frees a place for another one
                 release();
                 return true;
             case TOGGLE_SIT:
@@ -414,7 +346,6 @@ public class EntityFriendlySpider extends EntityCreature
         return SpiderCare.Hand.OTHER;
     }
 
-    /** Hearts over its head after a heal (entity state 7, as a tamed wolf). Client side. */
     @Override
     public void handleHealthUpdate(byte id)
     {
@@ -438,7 +369,6 @@ public class EntityFriendlySpider extends EntityCreature
         return true;
     }
 
-    /** A tamed spider hunts nobody. */
     @Override
     protected Entity findPlayerToAttack() {
         return null;
@@ -449,7 +379,6 @@ public class EntityFriendlySpider extends EntityCreature
         return !isDead;
     }
 
-    /** On a wall nobody pushes it off (its owner standing on top of a pillar would, again and again). */
     @Override
     public boolean canBePushed()
     {
@@ -467,7 +396,6 @@ public class EntityFriendlySpider extends EntityCreature
         return spiderNav != null && spiderNav.isClimbing() && riddenByEntity == null;
     }
 
-    /** Owner and spider never shove each other (the owner on a one block pillar would push it off). */
     @Override
     public void applyEntityCollision(Entity entity)
     {
@@ -494,7 +422,6 @@ public class EntityFriendlySpider extends EntityCreature
         return (this.dataWatcher.getWatchableObjectByte(16) & BIT_WALL) != 0;
     }
 
-    /** Touching a wall; synced through DataWatcher 16 (sent only when it changes). */
     public void setBesideClimbableBlock(boolean beside)
     {
         setSpiderFlag(BIT_WALL, beside);
@@ -505,7 +432,6 @@ public class EntityFriendlySpider extends EntityCreature
         return (this.dataWatcher.getWatchableObjectByte(16) & BIT_SITTING) != 0;
     }
 
-    /** Sitting; synced through DataWatcher 16 so the client draws the flat pose. */
     public void setSitting(boolean sitting)
     {
         setSpiderFlag(BIT_SITTING, sitting);
@@ -541,10 +467,6 @@ public class EntityFriendlySpider extends EntityCreature
         }
     }
 
-    /**
-     * Every second, server side: a 1.0.0 spider (no owner) goes free; a tamed one writes itself back to the ledger; a
-     * rider who took the Spider Backpack off gets off.
-     */
     private void heartbeat()
     {
         if (ownerId == null)
@@ -611,7 +533,6 @@ public class EntityFriendlySpider extends EntityCreature
         }
         else if (this.isClientWorld())
         {
-
         }
 
         this.worldObj.theProfiler.endSection();
@@ -715,16 +636,12 @@ public class EntityFriendlySpider extends EntityCreature
             super.moveEntityWithHeading(strafe, forward);
             if (spiderNav != null && spiderNav.isDescending() && (isBesideClimbableBlock() || spiderNav.isClinging()))
             {
-                // climbing down a face: slow and without fall damage (vanilla has no controlled way down)
                 if (this.motionY < -0.15D) this.motionY = -0.15D;
                 this.fallDistance = 0.0F;
             }
         }
     }
 
-    /**
-     * Basic mob attack. Default to touch of death in EntityCreature. Overridden by each mob to define their attack.
-     */
     @Override
     protected void attackEntity(Entity p_70785_1_, float p_70785_2_)
     {
@@ -761,10 +678,6 @@ public class EntityFriendlySpider extends EntityCreature
         return Items.string;
     }
 
-    /**
-     * Drop 0-2 items of this living's type. @param par1 - Whether this entity has recently been hit by a player. @param
-     * par2 - Level of Looting used to kill this mob.
-     */
     @Override
     protected void dropFewItems(boolean p_70628_1_, int p_70628_2_)
     {
@@ -776,11 +689,6 @@ public class EntityFriendlySpider extends EntityCreature
         }
     }
 
-    /**
-     * Climbs like a wild spider (up whatever wall it touches) only when someone rides it or when its navigator climbs a
-     * planned wall. Wandering, sitting or following on flat ground it does not climb, so it no longer hangs on trees,
-     * leaves or walls. With abilities.spider.smartClimb off it climbs any wall it touches, as before.
-     */
     @Override
     public boolean isOnLadder()
     {
@@ -788,15 +696,9 @@ public class EntityFriendlySpider extends EntityCreature
         return this.riddenByEntity != null || !ConfigHandler.SPIDER_SMART_CLIMB || (spiderNav != null && spiderNav.wantsLadder());
     }
 
-    /**
-     * Sets the Entity inside a web block.
-     */
     @Override
     public void setInWeb() {}
 
-    /**
-     * Get this Entity's EnumCreatureAttribute
-     */
     @Override
     public EnumCreatureAttribute getCreatureAttribute()
     {
@@ -809,4 +711,3 @@ public class EntityFriendlySpider extends EntityCreature
         return p_70687_1_.getPotionID() == Potion.poison.id ? false : super.isPotionApplicable(p_70687_1_);
     }
 }
-

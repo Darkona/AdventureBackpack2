@@ -1,6 +1,6 @@
 # Gear
 
-The smaller items of the mod: boots, a machete, a hat, the campfire and sleeping bag that make a camp, and the inflatable boat with its outboard motor. The backpacks, the hose, the crossbow, the flying packs, the [Scuba Gear](Scuba-Gear), the [Flamethrower](Flamethrower) and the [Fuel Station](Fuel-Station) have their own pages.
+The smaller items of the mod: boots, a machete, a hat, the campfire and sleeping bag that make a camp, and the inflatable boat with its outboard motor. It also tells how to [put the back gear on the ground](#placing-gear-on-the-ground). The backpacks, the hose, the crossbow, the flying packs, the [Scuba Gear](Scuba-Gear), the [Flamethrower](Flamethrower) and the [Fuel Station](Fuel-Station) have their own pages.
 
 ## Piston Boots
 
@@ -17,11 +17,12 @@ Wearing them you:
 - step up full blocks while sprinting, without jumping (a server can let the boots step up at any pace, walking included)
 - get Speed I while sprinting
 - jump a little higher, with a piston sound
+- leap farther when you jump while sprinting: the jump keeps your speed and adds to it, up to a limit
 - take no damage from falls shorter than 8 blocks
 
 They give 2 armor points, like iron boots.
 
-The step height, the speed, the fall distance and when the boots step up are in [Configuration](Configuration#piston-boots-pistonboots).
+The step height, the speed, the fall distance, the leap and when the boots step up are in [Configuration](Configuration#piston-boots-pistonboots).
 
 ## Machete
 
@@ -128,14 +129,14 @@ The Motorized Inflatable Boat has an outboard motor that burns fuel and makes it
 **Starting the motor**
 
 1. Fill the tank at a [Fuel Station](Fuel-Station): sit in the boat and right click the station. The tank holds 6000 mB.
-2. Bind the Boat Motor On/Off key in Options > Controls. It has no default key.
+2. The motor goes with the Change Mode key, G by default. You can change it in Options > Controls.
 3. Sit in the boat on water and press the key. You hear the pull of a cord and the motor starts.
 4. Steer with the move keys. The boat goes ahead by itself while the motor runs; holding back still brakes.
 5. Press the key again to stop. The motor coughs and goes quiet.
 
 The motor does not start without fuel, or when the boat is not on water. The tank shows on screen while you ride.
 
-If you prefer, `inflatableboat.motor.mode` can be changed to `hold`. The motor then pushes only while you hold the forward key, and there is no key to bind.
+If you prefer, `inflatableboat.motor.mode` can be changed to `hold`. The motor then pushes only while you hold the forward key, and Change Mode does nothing in the boat.
 
 **Sound**
 
@@ -159,9 +160,20 @@ The motor stops by itself:
 
 The fuel goes with the item when you pick the boat up, and is in the tank again when you put the boat down.
 
-![Options > Controls with the Boat Motor On/Off key bound to M](images/gear-11.png)
-
 The speed, the acceleration, the fuel per tick, the tank size, the mode and the sound are in [Configuration](Configuration#boat-motor-inflatableboatmotor).
+
+## Placing gear on the ground
+
+The Steam Jetpack, the Copter Pack, the Scuba Gear and the Flamethrower Pack can be put down like a backpack and stand on the ground as a block.
+
+- **Put it down:** hold the gear, sneak and right click the top of a block. Right click in the air still opens its window.
+- **Open it:** right click the placed gear. Its usual window opens, without the equip button and the ON/OFF switch: fill the tanks with buckets, put fuel in the jetpack's firebox slot.
+- **Pick it up:** break it, or sneak and right click it with an empty hand. Sneaking puts it straight on your back when the back slot is free; otherwise it goes into your inventory. In creative, breaking it without sneaking does not drop it.
+- **Nothing is lost:** the gear keeps everything it holds (water, steam, fuel, air, the firebox, its name). Pistons cannot move it and explosions do not break it.
+- **It does not run:** the jetpack's boiler stays as you left it, at the same temperature, until you pick it up. The copter's engine and the pilot flame are off.
+- **Pipes:** pipes and tanks of other mods can fill a placed gear from any side: water into the jetpack, fuels of the [fuel list](Fluids-and-Hose#fuels) into the copter and the flamethrower, air into the scuba. Steam can be taken out of the jetpack.
+
+A server or a modpack can turn this off for all the gear or for each one. See [Configuration](Configuration#placed-gear-placedgear).
 
 ## See also
 

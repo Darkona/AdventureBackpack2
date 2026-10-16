@@ -9,11 +9,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-/**
- * Shapeless reload of the Crossbow Magazine (crossbow.magazine.reloadRecipe): one magazine and 1 or more items of one
- * ammunition of crossbow.ammo.list, the kind the magazine already holds when it is not empty, no more than its free
- * room. The result is the magazine with those charges added; each grid slot gives one item, as in any recipe.
- */
 public class CrossbowReloadRecipe implements IRecipe
 {
     @Override
@@ -62,7 +57,6 @@ public class CrossbowReloadRecipe implements IRecipe
         return 2;
     }
 
-    /** What recipe viewers show: a magazine loaded with arrows. */
     @Override
     public ItemStack getRecipeOutput()
     {

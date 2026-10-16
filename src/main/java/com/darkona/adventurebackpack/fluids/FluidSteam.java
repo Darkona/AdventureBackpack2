@@ -4,10 +4,6 @@ import com.darkona.adventurebackpack.client.Icons;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 
-/**
- * Plain gaseous steam for the Steam Jetpack, registered only when no other mod (Railcraft, IC2, ...) registers a
- * "steam" fluid (see ModFluids.registerSteamIfMissing). It has no block: it only lives in tanks.
- */
 public class FluidSteam extends Fluid
 {
     public FluidSteam()

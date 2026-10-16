@@ -47,8 +47,10 @@ itemGroup.adventurebackpack=Рюкзак искателя приключений
 
 ## Keybindings
 keys.adventureBackpack.category=Рюкзак искателя приключений
-keys.adventureBackpack.openBackpackInventory=Открыть инвентарь рюкзака
-keys.adventureBackpack.switchHoseTank=Сменить используемый резервуар
+keys.adventureBackpack.gear=Открыть снаряжение
+keys.adventureBackpack.ability=Вкл./выкл. снаряжение
+keys.adventureBackpack.mode=Сменить режим
+keys.adventureBackpack.state=Сменить состояние
 
 ## Fluids
 fluid.melonJuice=Арбузный сок
@@ -66,3 +68,6 @@ adventurebackpack:messages.copterpack.off=Вертолётный ранец: В�
 adventurebackpack:messages.jetpack.on=Паровой ранец: Включен.
 adventurebackpack:messages.jetpack.off=Паровой ранец: Выключен.
 adventurebackpack:messages.crossbow.outofammo=Арбалет с часовым механизмом: Нет боеприпасов.
+tile.adventurebackpack:blockDistillery.name=Дистиллятор
+tile.adventurebackpack:blockGear.name=Поставленное снаряжение
+fluid.bioethanol=Этанол

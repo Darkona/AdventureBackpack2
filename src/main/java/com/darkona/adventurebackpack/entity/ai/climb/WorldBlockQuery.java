@@ -5,7 +5,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
-/** {@link BlockQuery} over a live world, by block material: no allocation per question. One per spider. */
 public class WorldBlockQuery implements BlockQuery
 {
     private final World world;

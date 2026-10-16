@@ -11,16 +11,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
-
 public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
 {
-
-    //    private ModelAdventureBackpackBlock model;
     private ModelBackpackBlock model;
 
     public RendererAdventureBackpackBlock()
@@ -78,6 +70,4 @@ public class RendererAdventureBackpackBlock extends TileEntitySpecialRenderer
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
-
-
 }

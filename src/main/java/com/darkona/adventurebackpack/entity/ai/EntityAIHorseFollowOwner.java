@@ -10,11 +10,6 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-/**
- * Created on 09/01/2015
- *
- * @author Darkona
- */
 public class EntityAIHorseFollowOwner extends EntityAIBase
 {
         private EntityHorse theHorse;
@@ -38,7 +33,6 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
             this.maxDist = maxDist;
         }
 
-
         private EntityPlayer findOwner()
         {
             UUID ownerUUID = Utils.parseUUIDOrNull(theHorse.func_152119_ch());
@@ -52,8 +46,6 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
             double relZ = theHorse.posZ - theOwner.posZ;
             return relX * relX + relY * relY + relZ * relZ;
         }
-
-
 
         public boolean shouldExecute()
         {
@@ -91,10 +83,8 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
             theHorse.getNavigator().setAvoidsWater(this.avoidWater);
         }
 
-
         public void updateTask()
         {
-            //theHorse.getLookHelper().setLookPositionWithEntity(theOwner, 10.0F, this.theHorse.getVerticalFaceSpeed());
             if (--tickCounter <= 0)
             {
                 tickCounter = 10;
@@ -107,6 +97,4 @@ public class EntityAIHorseFollowOwner extends EntityAIBase
                 }
             }
         }
-
-
 }

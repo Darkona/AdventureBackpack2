@@ -11,12 +11,8 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
-/**
- * Created by Darkona on 11/10/2014.
- */
 public class ItemPistonBoots extends ArmorAB
 {
-
     public ItemPistonBoots()
     {
         super(2, 3);
@@ -29,7 +25,6 @@ public class ItemPistonBoots extends ArmorAB
         update(player, true);
     }
 
-    /** Runs every player tick (PlayerEventHandler) so the step height also comes back when the boots come off. */
     public static void tickUnworn(EntityPlayer player)
     {
         BackpackProperty prop = BackpackProperty.get(player);
@@ -52,7 +47,6 @@ public class ItemPistonBoots extends ArmorAB
                 player.stepHeight = ConfigHandler.PISTONBOOTS_STEP_HEIGHT;
                 if (sprinting && ConfigHandler.PISTONBOOTS_SPRINT_SPEED && !player.worldObj.isRemote)
                 {
-                    // Renewed shortly before it ends instead of a 1-tick effect (and a packet) every tick.
                     PotionEffect speed = player.getActivePotionEffect(Potion.moveSpeed);
                     if (PistonStep.needsSpeed(speed != null, speed != null ? speed.getAmplifier() : 0, speed != null ? speed.getDuration() : 0))
                     {

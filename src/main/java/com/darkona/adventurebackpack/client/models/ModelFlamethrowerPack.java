@@ -6,16 +6,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 
-/**
- * The Flamethrower Pack: two blackened steel fuel tanks with red enamel caps, brass valves, a pressure gauge
- * and a bottom manifold with the hose that feeds the hand nozzle, strapped by a leather harness; the pyro hood
- * (dark leather, two amber lenses, a brass filter canister) is drawn on the head.
- * <p>
- * Geometry, UV layout and texture (models/flamethrowerPack.png, 64x64) are generated together by
- * {@code notes/art-1.1/wearables.py}; the constructor body is its output. The parts hang from two empty anchors:
- * {@code back} copies the body's rotation and {@code face} the head's (RendererWearableEquipped passes the head
- * angles), so the mask follows the look. Nothing is allocated or read per frame (performance contract, tier 4).
- */
 @SideOnly(Side.CLIENT)
 public class ModelFlamethrowerPack extends ModelWearable
 {
@@ -114,6 +104,13 @@ public class ModelFlamethrowerPack extends ModelWearable
         face.rotationPointY = sneaking ? 1.0F : 0.0F;
         back.render(scale);
         face.render(scale);
+    }
+
+    public void renderPlaced(float scale)
+    {
+        back.rotateAngleX = back.rotateAngleY = back.rotateAngleZ = 0;
+        back.rotationPointX = back.rotationPointY = back.rotationPointZ = 0;
+        back.render(scale);
     }
 
     private static void copy(ModelRenderer from, ModelRenderer to)

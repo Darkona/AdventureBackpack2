@@ -25,16 +25,14 @@ class ToolCycleInputTest {
     @Test
     void disabledIgnoresEverything() {
         assertEquals(0, ToolCycleInput.wheelDirection(false, Mode.BOTH, true, 120, false));
-        assertEquals(0, ToolCycleInput.keyDirection(false, Mode.BOTH, true, false));
+        assertEquals(false, ToolCycleInput.keyAllowed(false, Mode.BOTH));
     }
 
     @Test
-    void keysNeedTheKeysModeAndOneKey() {
-        assertEquals(1, ToolCycleInput.keyDirection(true, Mode.KEYS, true, false));
-        assertEquals(-1, ToolCycleInput.keyDirection(true, Mode.BOTH, false, true));
-        assertEquals(0, ToolCycleInput.keyDirection(true, Mode.WHEEL, true, false));
-        assertEquals(0, ToolCycleInput.keyDirection(true, Mode.BOTH, true, true));
-        assertEquals(0, ToolCycleInput.keyDirection(true, Mode.BOTH, false, false));
+    void theKeyNeedsTheKeysMode() {
+        assertEquals(true, ToolCycleInput.keyAllowed(true, Mode.KEYS));
+        assertEquals(true, ToolCycleInput.keyAllowed(true, Mode.BOTH));
+        assertEquals(false, ToolCycleInput.keyAllowed(true, Mode.WHEEL));
     }
 
     @Test
@@ -49,7 +47,7 @@ class ToolCycleInputTest {
     void nextMatchesTheOldScrollUp() {
         // Scroll up (+) used to take the lower tool; "next" keeps that meaning.
         Object[] tools = {"held", "upper", "lower"};
-        ServerActions.rotateTools(tools, ToolCycleInput.keyDirection(true, Mode.KEYS, true, false));
+        ServerActions.rotateTools(tools, KeyActions.direction(false));
         assertEquals("lower", tools[0]);
     }
 }

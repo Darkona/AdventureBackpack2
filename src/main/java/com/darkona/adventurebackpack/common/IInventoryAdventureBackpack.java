@@ -1,23 +1,23 @@
 package com.darkona.adventurebackpack.common;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
-import com.darkona.adventurebackpack.inventory.IInventoryTanks;
+import adventurebackpack.api.IInventoryTanks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidTank;
 
-/**
- * Created by Darkona on 12/10/2014.
- */
 public interface IInventoryAdventureBackpack extends IInventoryTanks
 {
-
     public FluidTank getLeftTank();
 
     public FluidTank getRightTank();
 
     public ItemStack[] getInventory();
+
+    int getStorageSize();
+
+    int getQuiverSlots();
 
     public TileAdventureBackpack getTile();
 
@@ -45,9 +45,7 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
 
     void setLastTime(int time);
 
-
     public void dirtyTime();
 
     public void dirtyExtended();
-
 }

@@ -13,18 +13,10 @@ import net.minecraftforge.common.ChestGenHooks;
 
 import java.util.Random;
 
-/**
- * Created on 24/12/2014
- *
- * @author Darkona
- */
 public class ModWorldGen
 {
     public static void init()
     {
-
-        //Dungeon Generation
-
         for (int i = 0; i < BackpackNames.backpackNames.length; i++)
         {
             if (BackpackNames.backpackNames[i].equals("IronGolem"))
@@ -40,7 +32,6 @@ public class ModWorldGen
             {
                 ItemStack backpack = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), i);
                 ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(backpack, 1, 1, 12));
-                // the first argument is the villager profession, not the backpack index (which no villager has)
                 VillagerRegistry.instance().registerVillageTradeHandler(1, new ModWorldGen.TradeHandler(backpack));
                 VillagerRegistry.instance().registerVillageTradeHandler(2, new ModWorldGen.TradeHandler(backpack));
                 VillagerRegistry.instance().registerVillageTradeHandler(3, new ModWorldGen.TradeHandler(backpack));
@@ -56,15 +47,10 @@ public class ModWorldGen
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(backpack, 0, 1, 5));
             }
         }
-
-        //Villager Trade
-
-
     }
 
     public static class TradeHandler implements VillagerRegistry.IVillageTradeHandler
     {
-
         ItemStack backpack;
 
         TradeHandler(ItemStack backpack)
@@ -72,18 +58,9 @@ public class ModWorldGen
             this.backpack = backpack;
         }
 
-        /**
-         * Called to allow changing the content of the {@link net.minecraft.village.MerchantRecipeList} for the villager
-         * supplied during creation
-         *
-         * @param villager
-         * @param recipeList
-         * @param random
-         */
         @Override
         public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
         {
-            //0 Farmer, 1 Librarian, 2Priest, 3 Blacksmith, 4 Butcher
             if (villager.getProfession() == 1 || villager.getProfession() == 2)
             {
                 ItemStack payment = BackpackNames.setBackpackColorNameFromDamage(new ItemStack(ModItems.adventureBackpack), 0);
@@ -97,5 +74,4 @@ public class ModWorldGen
             }
         }
     }
-
 }

@@ -9,22 +9,14 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
 
-/**
- * Created on 08/01/2015
- *
- * @author Darkona
- */
 public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUnequipBackWearablePacket.Message,EquipUnequipBackWearablePacket.Message>
 {
-
     public static final byte EQUIP_WEARABLE = 0;
     public static final byte UNEQUIP_WEARABLE = 1;
-
 
     @Override
     public Message onMessage(Message message, MessageContext ctx)
     {
-
         if(ctx.side.isServer())
         {
             EntityPlayer player = ctx.getServerHandler().playerEntity;
@@ -55,7 +47,6 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
 
     public static class Message implements IMessage
     {
-
         private byte action;
         private boolean force;
 
@@ -72,11 +63,6 @@ public class EquipUnequipBackWearablePacket implements IMessageHandler<EquipUneq
             force = buf.readBoolean();
         }
 
-        /**
-         * Deconstruct your message into the supplied byte buffer
-         *
-         * @param buf
-         */
         @Override
         public void toBytes(ByteBuf buf)
         {

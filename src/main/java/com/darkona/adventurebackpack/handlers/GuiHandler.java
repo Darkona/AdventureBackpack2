@@ -1,13 +1,17 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.item.ItemSteamJetpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileFuelStation;
 import com.darkona.adventurebackpack.client.gui.GuiFuelStation;
 import com.darkona.adventurebackpack.block.TileAirCompressor;
 import com.darkona.adventurebackpack.client.gui.GuiAirCompressor;
+import com.darkona.adventurebackpack.block.TileDistillery;
+import com.darkona.adventurebackpack.block.TileGear;
+import com.darkona.adventurebackpack.client.gui.GuiDistillery;
 import com.darkona.adventurebackpack.client.gui.GuiScubaGear;
 import com.darkona.adventurebackpack.client.gui.GuiFlamethrowerPack;
-import com.darkona.adventurebackpack.client.gui.GuiAdvBackpack;
+import com.darkona.adventurebackpack.compat.mousetweaks.MouseTweaksCompat;
 import com.darkona.adventurebackpack.client.gui.GuiCopterPack;
 import com.darkona.adventurebackpack.client.gui.GuiSteamJetpack;
 import com.darkona.adventurebackpack.inventory.*;
@@ -16,13 +20,10 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
 public class GuiHandler implements IGuiHandler
 {
+    public static final byte DISTILLERY = 13;
+    public static final byte GEAR_TILE = 14;
     public static final byte AIR_COMPRESSOR = 11;
     public static final byte FLAMETHROWER_WEARING = 10;
     public static final byte FLAMETHROWER_HOLDING = 9;
@@ -37,7 +38,6 @@ public class GuiHandler implements IGuiHandler
     public static final byte BACKPACK_WEARING = 1;
     public static final byte BACKPACK_TILE = 0;
 
-
     public GuiHandler()
     {
     }
@@ -45,6 +45,7 @@ public class GuiHandler implements IGuiHandler
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
+        QuiverFeed.flush(player);
         switch (ID)
         {
             case BACKPACK_TILE:
@@ -86,7 +87,7 @@ public class GuiHandler implements IGuiHandler
             case JETPACK_WEARING:
                 if (Wearing.isWearingSteam(player))
                 {
-                    return new ContainerJetpack(player, new InventorySteamJetpack(Wearing.getWearingSteam(player)), true);
+                    return new ContainerJetpack(player, ItemSteamJetpack.liveInventory(player, Wearing.getWearingSteam(player)), true);
                 }
                 break;
             case FUEL_STATION:
@@ -125,13 +126,24 @@ public class GuiHandler implements IGuiHandler
                     return new ContainerAirCompressor(player.inventory, (TileAirCompressor) world.getTileEntity(x, y, z));
                 }
                 break;
+            case DISTILLERY:
+                if (world.getTileEntity(x, y, z) instanceof TileDistillery)
+                {
+                    return new ContainerDistillery(player.inventory, (TileDistillery) world.getTileEntity(x, y, z));
+                }
+                break;
+            case GEAR_TILE:
+                if (world.getTileEntity(x, y, z) instanceof TileGear)
+                {
+                    return gearContainer(player, (TileGear) world.getTileEntity(x, y, z));
+                }
+                break;
             default:
                 player.closeScreen();
                 break;
         }
 
         return null;
-
     }
 
     @Override
@@ -142,19 +154,19 @@ public class GuiHandler implements IGuiHandler
             case BACKPACK_TILE:
                 if (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAdventureBackpack)
                 {
-                    return new GuiAdvBackpack(player, (TileAdventureBackpack) world.getTileEntity(x, y, z));
+                    return MouseTweaksCompat.backpackGui(player, (TileAdventureBackpack) world.getTileEntity(x, y, z));
                 }
                 break;
             case BACKPACK_WEARING:
                 if (Wearing.isWearingBackpack(player))
                 {
-                    return new GuiAdvBackpack(player, new InventoryBackpack(Wearing.getWearingBackpack(player)), true);
+                    return MouseTweaksCompat.backpackGui(player, new InventoryBackpack(Wearing.getWearingBackpack(player)), true);
                 }
                 break;
             case BACKPACK_HOLDING:
                 if (Wearing.isHoldingBackpack(player))
                 {
-                    return new GuiAdvBackpack(player, new InventoryBackpack(Wearing.getHoldingBackpack(player)), false);
+                    return MouseTweaksCompat.backpackGui(player, new InventoryBackpack(Wearing.getHoldingBackpack(player)), false);
                 }
                 break;
             case COPTER_HOLDING:
@@ -217,10 +229,54 @@ public class GuiHandler implements IGuiHandler
                     return new GuiAirCompressor(player.inventory, (TileAirCompressor) world.getTileEntity(x, y, z));
                 }
                 break;
+            case DISTILLERY:
+                if (world.getTileEntity(x, y, z) instanceof TileDistillery)
+                {
+                    return new GuiDistillery(player.inventory, (TileDistillery) world.getTileEntity(x, y, z));
+                }
+                break;
+            case GEAR_TILE:
+                if (world.getTileEntity(x, y, z) instanceof TileGear)
+                {
+                    return gearGui(player, (TileGear) world.getTileEntity(x, y, z));
+                }
+                break;
             default:
                 player.closeScreen();
                 break;
         }
         return null;
+    }
+
+    private static Object gearContainer(EntityPlayer player, TileGear tile)
+    {
+        if (!tile.enabled() || tile.inventory() == null) return null;
+        switch (tile.type())
+        {
+            case JETPACK:
+                return new ContainerJetpack(player, (InventorySteamJetpack) tile.inventory(), tile);
+            case COPTER:
+                return new ContainerCopter(player, (InventoryCopterPack) tile.inventory(), tile);
+            case SCUBA:
+                return new ContainerScubaGear(player, (InventoryScubaGear) tile.inventory(), tile);
+            default:
+                return new ContainerFlamethrowerPack(player, (InventoryFlamethrowerPack) tile.inventory(), tile);
+        }
+    }
+
+    private static Object gearGui(EntityPlayer player, TileGear tile)
+    {
+        if (tile.getGear() == null || tile.type() == null) return null;
+        switch (tile.type())
+        {
+            case JETPACK:
+                return new GuiSteamJetpack(player, new InventorySteamJetpack(tile.getGear()), tile);
+            case COPTER:
+                return new GuiCopterPack(player, new InventoryCopterPack(tile.getGear()), tile);
+            case SCUBA:
+                return new GuiScubaGear(player, new InventoryScubaGear(tile.getGear()), tile);
+            default:
+                return new GuiFlamethrowerPack(player, new InventoryFlamethrowerPack(tile.getGear()), tile);
+        }
     }
 }

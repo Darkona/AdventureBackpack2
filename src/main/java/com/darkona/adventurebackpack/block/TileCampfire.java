@@ -16,40 +16,26 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.util.UUID;
 
-/**
- * The campfire's cooking state (see {@link CampfireCooking}): one virtual slot with the raw items on the fire, the
- * world time when the current one is done and who put them there. The tile never ticks; {@link BlockCampFire}
- * gets a scheduled block update when an item is due. Clients only learn what is cooking (item and damage), when it
- * starts or stops, for the smoke, the sizzle and the item drawn over the fire.
- *
- * @author Darkona
- */
 public class TileCampfire extends TileEntity
 {
-    /** Server: the raw items on the fire (stack size = how many are left), or null when idle. */
     private ItemStack cooking;
-    /** Server: world time when the current item is done. */
     private long readyAt;
     private boolean hasOwner;
     private long ownerMost;
     private long ownerLeast;
-    /** Client: something is cooking (from the description packet). */
     private boolean cookingClient;
-    /** Client: the item on the fire as an entity for RenderItem, built when the packet names a new item. */
     private EntityItem displayItem;
 
     public TileCampfire()
     {
     }
 
-    /** No per-tick work: cooking runs on scheduled block updates (BlockCampFire.updateTick). */
     @Override
     public boolean canUpdate()
     {
         return false;
     }
 
-    /** The furnace result for a raw item, when the config lets the campfire cook it; null otherwise. */
     public static ItemStack cookResult(ItemStack raw)
     {
         if (raw == null || raw.getItem() == null) return null;
@@ -59,10 +45,6 @@ public class TileCampfire extends TileEntity
         return CampfireCooking.canCook(enabled, result != null && result.getItem() != null, food, ConfigHandler.CAMPFIRE_ONLY_FOOD) ? result : null;
     }
 
-    /**
-     * Server: puts raw items from the player's hand on the fire. Returns how many it took; the caller takes them
-     * from the hand. Zero when the slot is full or holds another item.
-     */
     public int insert(ItemStack held, EntityPlayer player, long now)
     {
         boolean busy = cooking != null;
@@ -87,7 +69,6 @@ public class TileCampfire extends TileEntity
         return take;
     }
 
-    /** Server, on a block update: cooks the current item when it is due, and schedules the next check. */
     public void onBlockUpdate(long now)
     {
         if (cooking == null) return;
@@ -99,7 +80,6 @@ public class TileCampfire extends TileEntity
         ItemStack result = cookResult(cooking);
         if (result == null)
         {
-            // Turned off in the config, or the recipe is gone: the raw items come back.
             deliver(cooking);
             stop();
             return;
@@ -117,7 +97,6 @@ public class TileCampfire extends TileEntity
         }
     }
 
-    /** Server, when the block is broken: the raw items still on the fire drop. */
     public void dropContents()
     {
         if (cooking == null) return;
@@ -139,7 +118,6 @@ public class TileCampfire extends TileEntity
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
-    /** Into the inventory of the player who put the items on the fire when close enough, else on top of the fire. */
     private void deliver(ItemStack stack)
     {
         EntityPlayer owner = hasOwner ? worldObj.func_152378_a(new UUID(ownerMost, ownerLeast)) : null;
@@ -194,16 +172,11 @@ public class TileCampfire extends TileEntity
         ownerLeast = compound.getLong("ownerLeast");
     }
 
-    /** Client: the item to draw over the fire while something cooks, or null. */
     public EntityItem getDisplayItem()
     {
         return cookingClient ? displayItem : null;
     }
 
-    /**
-     * Clients only need to know what cooks (item id and damage, not its tag). Sent on chunk load and when cooking
-     * starts or stops; more of the same item never changes it.
-     */
     @Override
     public Packet getDescriptionPacket()
     {

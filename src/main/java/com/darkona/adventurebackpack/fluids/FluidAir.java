@@ -4,10 +4,6 @@ import com.darkona.adventurebackpack.client.Icons;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 
-/**
- * Compressed air for the Scuba Gear and the Air Compressor, registered only when no other mod (GregTech) registers
- * an "air" fluid (see ModFluids.registerAirIfMissing). It has no block: it only lives in tanks.
- */
 public class FluidAir extends Fluid
 {
     public FluidAir()

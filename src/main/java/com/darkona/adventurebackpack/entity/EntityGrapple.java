@@ -16,19 +16,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-/**
- * The grappling hook of the Clockwork Crossbow. It flies straight from the shooter's eyes, catches the first solid
- * block it meets within {@code crossbow.grapple.maxDistance}, and then pulls its owner towards that point.
- * <p>
- * The server decides everything: where the hook catches, when it lets go (sneak, arrival, timeout, jump request, mode change,
- * crossbow out of the hand, owner gone) and it resets the owner's fall distance. A player's movement is computed by
- * his own client in 1.7.10, so the owner's client applies the pull to its own player with the speed the server sent
- * in the spawn data; there is no packet per tick and no teleport. The state (flying or hooked, and the anchor) reaches
- * the clients once, through the data watcher.
- * <p>
- * The work runs only while a hook exists: nothing ticks for a player without one. The hook is never saved: a hook in
- * a chunk being saved, or after a restart, is simply gone.
- */
 public class EntityGrapple extends Entity implements IEntityAdditionalSpawnData
 {
     private static final int DW_STATE = 16;
@@ -39,24 +26,17 @@ public class EntityGrapple extends Entity implements IEntityAdditionalSpawnData
     public static final byte FLYING = 0;
     public static final byte HOOKED = 1;
 
-    /** Ticks between two checks that the anchor block is still there. */
     private static final int ANCHOR_CHECK_TICKS = 10;
 
     private EntityPlayer owner;
     private int ownerId = -1;
-    /**
-     * Server: hotbar slot of the crossbow that fired. The hook lets go when the owner holds something else. Not the
-     * stack object: 1.7.10 replaces the held stack with a copy after every right click.
-     */
     private int launcherSlot = -1;
-    /** Pull speed and release distance chosen by the server, sent to the clients in the spawn data. */
     private double pullSpeed;
     private double releaseDistance;
     private int pullTicks;
     private int anchorBlockX;
     private int anchorBlockY;
     private int anchorBlockZ;
-    /** Client: the owner asked to let go (jump); stop pulling before the server's answer arrives. */
     public boolean releasedLocally;
 
     private final double[] pull = new double[3];
@@ -68,7 +48,6 @@ public class EntityGrapple extends Entity implements IEntityAdditionalSpawnData
         ignoreFrustumCheck = true;
     }
 
-    /** A hook leaving {@code owner}'s eyes along his look, fired by the crossbow he holds. Server side. */
     public EntityGrapple(World world, EntityPlayer owner)
     {
         this(world);
@@ -115,7 +94,6 @@ public class EntityGrapple extends Entity implements IEntityAdditionalSpawnData
         return releaseDistance;
     }
 
-    /** The live hook with id {@code id} fired by {@code player}, or null. Tier 2: one map lookup. */
     public static EntityGrapple find(World world, int id, EntityPlayer player)
     {
         Entity entity = world.getEntityByID(id);
@@ -166,7 +144,6 @@ public class EntityGrapple extends Entity implements IEntityAdditionalSpawnData
         if (ConfigHandler.GRAPPLE_NO_FALL_DAMAGE) owner.fallDistance = 0F;
     }
 
-    /** One tick of flight: catch the first solid block on the way, or come back past the range or the loaded world. */
     private void fly()
     {
         double nextX = posX + motionX;
@@ -220,7 +197,6 @@ public class EntityGrapple extends Entity implements IEntityAdditionalSpawnData
         return block.getMaterial().isSolid() && block.getMaterial().blocksMovement();
     }
 
-    /** Lets go of the owner. Server side; the client hook disappears with the entity. */
     public void release()
     {
         if (owner != null && isHooked() && ConfigHandler.GRAPPLE_NO_FALL_DAMAGE) owner.fallDistance = 0F;
@@ -271,7 +247,6 @@ public class EntityGrapple extends Entity implements IEntityAdditionalSpawnData
         return false;
     }
 
-    /** Never saved with the chunk: a hook only makes sense while its owner holds the crossbow. */
     @Override
     public boolean writeToNBTOptional(NBTTagCompound tag)
     {

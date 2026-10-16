@@ -21,11 +21,6 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-/**
- * A station block (Fuel Station, later the Air Compressor): one plain block with a front face, a {@link TileStation}
- * and a GUI. Breaking it drops what is in its slots and the block itself with the fluid still in it (kept in the
- * item's NBT and put back when it is placed again); a creative player breaking it only gets the slots back.
- */
 public abstract class BlockStation extends BlockContainer
 {
     private static final int[] FACING = {2, 5, 3, 4};
@@ -64,7 +59,6 @@ public abstract class BlockStation extends BlockContainer
     public IIcon getIcon(int side, int meta)
     {
         if (side == 0 || side == 1) return iconTop;
-        // meta 0 is the item in the inventory: show the front facing the viewer
         int front = meta < 2 || meta > 5 ? 3 : meta;
         return side == front ? iconFront : iconSide;
     }
@@ -119,7 +113,6 @@ public abstract class BlockStation extends BlockContainer
         super.breakBlock(world, x, y, z, block, meta);
     }
 
-    /** The drops are spawned by {@link #breakBlock}, which still sees the tile entity and its fluid. */
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
@@ -140,7 +133,6 @@ public abstract class BlockStation extends BlockContainer
         return true;
     }
 
-    /** Redstone comparators read how full the tank is (0 to 15). */
     @Override
     public int getComparatorInputOverride(World world, int x, int y, int z, int side)
     {

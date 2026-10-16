@@ -6,7 +6,6 @@ import net.minecraft.entity.Entity;
 
 public class ModelAdventureHat extends ModelBiped
 {
-    //fields
     ModelRenderer wing;
     ModelRenderer top;
     ModelRenderer thing;
@@ -54,12 +53,9 @@ public class ModelAdventureHat extends ModelBiped
             ((ModelRenderer) part).rotateAngleY = bipedHead.rotateAngleY;
             ((ModelRenderer) part).rotateAngleZ = bipedHead.rotateAngleZ;
         }
-        /*GL11.glPushMatrix();
-        GL11.glScalef(1.2f, 1.2f, 1.2f);*/
         wing.render(f5);
         thing.render(f5);
         top.render(f5);
-       /* GL11.glPopMatrix();*/
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z)
@@ -73,5 +69,4 @@ public class ModelAdventureHat extends ModelBiped
     {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
     }
-
 }

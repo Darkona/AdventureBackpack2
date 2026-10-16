@@ -58,7 +58,7 @@ It does not follow while it is sitting, or when you are in another dimension: it
 
 ## How do I turn the abilities off?
 
-Bind the Backpack Abilities On/Off key in Options > Controls, which has no default key, and press it. It turns off the abilities of the backpack you wear, only for you. Press it again to turn them on. See [Controls](Controls#the-abilities-key).
+Press Gear On/Off (N by default) with the backpack on, or click the ON/OFF button in its window. It turns off the abilities of the backpack you wear, only for you. Do it again to turn them on. See [Controls](Controls#the-backpack-abilities).
 
 ## How do I change the crossbow mode?
 
@@ -66,7 +66,7 @@ Hold the crossbow and press V. The modes go repetition, grappling hook, sniper. 
 
 ## How do I load the crossbow?
 
-Hold a Crossbow Magazine and hold right click: it takes arrows or Crossbow Bolts from your inventory, one charge at a time, until it holds six. Then hold the crossbow and right click: when it has no bolts left it takes the first loaded magazine of your inventory, hotbar first. Sneak and right click swaps the magazine before it is empty. See [Crossbow](Crossbow#the-crossbow-magazine).
+Hold a Crossbow Magazine and hold right click: it takes arrows or Crossbow Bolts from your inventory, one charge at a time, until it holds eight. Then hold the crossbow and right click: when it has no bolts left it takes the first loaded magazine of your inventory, hotbar first. Sneak and right click swaps the magazine before it is empty. See [Crossbow](Crossbow#the-crossbow-magazine).
 
 ## Where did my empty Crossbow Magazine go?
 
@@ -121,7 +121,7 @@ The hand pump and the furnace need open air: the block above the compressor must
 
 ## How do I light the Flamethrower?
 
-Wear the pack, fill its tanks and press Sneak + N. A message says the pilot is lit. Then hold the Flamethrower in your hand and hold right click. If it does not fire, the pilot is out: it goes out when the tanks run dry, when you take the pack off and when you die. See [Flamethrower](Flamethrower).
+Wear the pack, fill its tanks and press N (Gear On/Off), or click the ON/OFF button in its window. A message says the pilot is lit. Then hold the Flamethrower in your hand and hold right click. If it does not fire, the pilot is out: it goes out when the tanks run dry, when you take the pack off and when you die. See [Flamethrower](Flamethrower).
 
 ## Why does the Flamethrower not hurt other players?
 
@@ -129,7 +129,7 @@ By default it does not: `flamethrower.pvp` is off. It does not set blocks on fir
 
 ## How do I start the boat motor?
 
-Fill the tank at a Fuel Station: sit in the Motorized Inflatable Boat and right click the station. Bind the Boat Motor On/Off key in Options > Controls, which has no default key, and press it while you sit in the boat on water. The motor starts with the pull of a cord and the boat goes ahead by itself; press the key again to stop it. The motor stops by itself when it runs out of fuel, when you get off, or when the boat leaves the water. See [Gear](Gear#motorized-inflatable-boat).
+Fill the tank at a Fuel Station: sit in the Motorized Inflatable Boat and right click the station. Press the Change Mode key (G by default) while you sit in the boat on water. The motor starts with the pull of a cord and the boat goes ahead by itself; press the key again to stop it. The motor stops by itself when it runs out of fuel, when you get off, or when the boat leaves the water. See [Gear](Gear#motorized-inflatable-boat).
 
 ## Why does the boat motor make no sound, or no message?
 

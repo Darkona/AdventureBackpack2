@@ -2,34 +2,15 @@ package com.darkona.adventurebackpack.entity.ai.climb;
 
 import com.darkona.adventurebackpack.entity.ai.climb.ClimbPlan.Mode;
 
-/**
- * Plans the vertical moves the ground path finder cannot make: up a wall or a tower to an owner above, down a cliff to
- * an owner below. Pure (works on a {@link BlockQuery}), allocates nothing, and is only asked every few ticks when the
- * ground path does not reach the owner.
- * <p>
- * Up: the first wall on the straight line to the owner, or else a column next to (or under) the owner, that is solid
- * from the spider's feet to within one block of the owner's feet, with room on top and nothing overhanging the side it
- * climbs. Down: the first edge on the line to the owner; a drop no higher than the safe height is just walked off,
- * a higher one is climbed down along a solid face.
- */
 public final class ClimbPlanner
 {
-    /** Ticks for the spider to come close enough to the wall foot before the column counts as failed. */
     public static final int APPROACH_TICKS = 100;
-    /** Ticks of hitting something above while climbing before the column counts as failed. */
     public static final int CEILING_TICKS = 10;
-    /** Ticks to get over the top edge. */
     public static final int LIP_TICKS = 15;
-    /** How far along the line to the owner an edge is looked for. */
     public static final int EDGE_SCAN = 4;
 
     private ClimbPlanner() {}
 
-    /**
-     * Fills {@code out} with a plan from the spider's feet ({@code sx, sy, sz}) to the owner's feet ({@code tx, ty,
-     * tz}). Returns false (and leaves {@code out.mode} NONE) when the height difference is under 2 (the ground path
-     * finder's job), over {@code maxClimb}, or no safe way is found.
-     */
     public static boolean plan(BlockQuery q, int sx, int sy, int sz, int tx, int ty, int tz, int maxClimb, int safeDrop,
                                int scanRadius, long[] badColumns, ClimbPlan out)
     {
@@ -40,12 +21,9 @@ public final class ClimbPlanner
         return false;
     }
 
-    // ---------------------------------------------------------------- up
-
     private static boolean planAscend(BlockQuery q, int sx, int sy, int sz, int tx, int ty, int tz, int maxClimb,
                                       int scanRadius, long[] bad, ClimbPlan out)
     {
-        // 1) the first wall on the line to the owner
         int adx = Math.abs(tx - sx), adz = Math.abs(tz - sz);
         int stepX = tx > sx ? 1 : -1, stepZ = tz > sz ? 1 : -1;
         int x = sx, z = sz, prevX = sx, prevZ = sz, i = 0, j = 0;
@@ -62,14 +40,13 @@ public final class ClimbPlanner
                     fill(out, Mode.APPROACH, x, z, prevX, prevZ, sy, top, sy, !straight);
                     return true;
                 }
-                break; // nothing behind a bad wall can be seen from here: try the columns at the owner
+                break;
             }
             if (!standable(q, x, sy, z)) straight = false;
             prevX = x;
             prevZ = z;
         }
 
-        // 2) a column at or next to the owner's own column (a tower, the building under the owner)
         int bestDistSq = Integer.MAX_VALUE, bestWallX = 0, bestWallZ = 0, bestAX = 0, bestAZ = 0, bestTop = 0;
         for (int cx = tx - 2; cx <= tx + 2; cx++)
         {
@@ -99,12 +76,6 @@ public final class ClimbPlanner
         return true;
     }
 
-    /**
-     * The first free height on top of column {@code (cx, cz)} when it is climbable from {@code (ax, az)}, else
-     * {@code Integer.MIN_VALUE}. Climbable: solid without gaps from the spider's feet up (it needs contact all the
-     * way), ending within one block of the owner's feet with two free blocks on top, nothing overhanging the climbing
-     * side, and not on the list of failed columns.
-     */
     static int columnTop(BlockQuery q, int cx, int cz, int ax, int az, int sy, int ty, int maxClimb, long[] bad)
     {
         if (!q.solid(cx, sy, cz)) return Integer.MIN_VALUE;
@@ -121,8 +92,6 @@ public final class ClimbPlanner
         return top;
     }
 
-    // ---------------------------------------------------------------- down
-
     private static boolean planDescend(BlockQuery q, int sx, int sy, int sz, int tx, int ty, int tz, int safeDrop,
                                        long[] bad, ClimbPlan out)
     {
@@ -134,7 +103,7 @@ public final class ClimbPlanner
         {
             if ((1 + 2 * i) * adz < (1 + 2 * j) * adx) { x += stepX; i++; } else { z += stepZ; j++; }
             if (!q.loaded(x, z)) return false;
-            if (q.solid(x, sy, z) || q.solid(x, sy + 1, z) || q.hazard(x, sy, z)) return false; // a wall: the path finder's job
+            if (q.solid(x, sy, z) || q.solid(x, sy + 1, z) || q.hazard(x, sy, z)) return false;
             if (!q.solid(x, sy - 1, z))
             {
                 found = true;
@@ -146,7 +115,6 @@ public final class ClimbPlanner
         }
         if (!found) return false;
 
-        // free fall height over the edge cell, down to the first solid block
         int maxFall = Math.max(safeDrop, sy - ty) + 1;
         int k = sy - 1;
         while (sy - k <= maxFall && !q.solid(x, k, z) && !q.hazard(x, k, z)) k--;
@@ -160,7 +128,6 @@ public final class ClimbPlanner
         }
         else
         {
-            // climbing down needs a solid face all the way, and a landing not far below the owner
             if (bottom < ty - 2) return false;
             for (int y = bottom; y < sy; y++)
             {
@@ -173,23 +140,11 @@ public final class ClimbPlanner
         return true;
     }
 
-    // ---------------------------------------------------------------- while moving
-
-    /** Ticks a single mode may last for a move of {@code height} blocks (the spider climbs about 0.12 a tick). */
     public static int modeTimeLimit(int height)
     {
         return 60 + 12 * Math.abs(height);
     }
 
-    /**
-     * The next mode of a vertical move, from what the spider feels now. {@link Mode#NONE} means done (the ground path
-     * finder takes over); {@link Mode#FAILED} means this column did not work.
-     *
-     * @param posY              the spider's feet height
-     * @param besideWall        it touches a wall (with a few ticks of grace at corners)
-     * @param horizDistSqToWall squared horizontal distance from the spider's centre to the centre of the wall column
-     * @param ceilingTicks      ticks in a row it hit something above while in the air
-     */
     public static Mode nextMode(Mode mode, double posY, int startY, int topY, int bottomY, int safeDrop, boolean onGround,
                                 boolean besideWall, double horizDistSqToWall, int ceilingTicks, int ticksInMode,
                                 int timeLimit)
@@ -207,7 +162,7 @@ public final class ClimbPlanner
                 if (onGround && !besideWall && ticksInMode > 20) return Mode.FAILED;
                 return Mode.ASCEND;
             case LIP:
-                if (onGround && posY >= topY - 0.1 && horizDistSqToWall <= 1.0) return Mode.NONE; // standing on the column, not beside it
+                if (onGround && posY >= topY - 0.1 && horizDistSqToWall <= 1.0) return Mode.NONE;
                 if (posY < topY - 1.5 || ticksInMode > LIP_TICKS) return Mode.FAILED;
                 return Mode.LIP;
             case DROP:
@@ -216,18 +171,15 @@ public final class ClimbPlanner
                 return Mode.DROP;
             case DESCEND:
                 if (onGround && posY <= bottomY + 0.5) return Mode.NONE;
-                if (onGround && posY < startY - 0.5) return Mode.NONE; // a ledge on the way: walk on from there
-                if (onGround && ticksInMode > 60) return Mode.FAILED; // never went over the edge
-                if (!onGround && !besideWall && posY < startY - 1.5 && posY > bottomY + safeDrop) return Mode.NONE; // lost the face below the edge: it just falls
+                if (onGround && posY < startY - 0.5) return Mode.NONE;
+                if (onGround && ticksInMode > 60) return Mode.FAILED;
+                if (!onGround && !besideWall && posY < startY - 1.5 && posY > bottomY + safeDrop) return Mode.NONE;
                 return Mode.DESCEND;
             default:
                 return Mode.NONE;
         }
     }
 
-    // ---------------------------------------------------------------- helpers
-
-    /** A spider can stand here: two free blocks, ground under them, nothing that burns or drowns. */
     static boolean standable(BlockQuery q, int x, int y, int z)
     {
         return q.passable(x, y, z) && q.passable(x, y + 1, z) && q.solid(x, y - 1, z) && !q.hazard(x, y, z)

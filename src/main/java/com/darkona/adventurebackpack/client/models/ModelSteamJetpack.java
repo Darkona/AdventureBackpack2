@@ -1,7 +1,8 @@
 package com.darkona.adventurebackpack.client.models;
 
 import codechicken.lib.vec.Vector3;
-import com.darkona.adventurebackpack.inventory.InventorySteamJetpack;
+import com.darkona.adventurebackpack.common.RenderInfo;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,8 +11,10 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-
 public class ModelSteamJetpack extends ModelWearable {
+    private static final Vector3 TANK_MIN = new Vector3(0, .5f, 0);
+    private static final Vector3 TANK_MAX = new Vector3(.155f, 0, .135f);
+    private static final Vector3 TANK_OFFSET = new Vector3(0.18f, 0.0625f, -0.045f);
     public ModelRenderer Base;
     public ModelRenderer tubeStraightLeft;
     public ModelRenderer tubeStraightRight;
@@ -103,7 +106,6 @@ public class ModelSteamJetpack extends ModelWearable {
         bipedBody.addChild(tankWallLeft);
         bipedBody.addChild(tankWallRight);
 
-
         float offsetZ = 0.08F;
         float offsetY = 0.0F;
         for (ModelRenderer part : (List<ModelRenderer>) bipedBody.childModels)
@@ -174,14 +176,20 @@ public class ModelSteamJetpack extends ModelWearable {
             GL11.glTranslatef(-bipedBody.offsetX, -bipedBody.offsetY, -(bipedBody.offsetZ));
             GL11.glPopMatrix();
         }
+    }
 
+    public void renderPlaced(ItemStack stack, float scale)
+    {
+        this.jetpack = stack;
+        GL11.glColor4f(1, 1, 1, 1);
+        renderSteamPack(scale);
     }
 
     public void renderSteamPack(float f5)
     {
-        InventorySteamJetpack inv = new InventorySteamJetpack(jetpack);
+        RenderInfo info = RenderInfoCache.get(jetpack);
 
-        this.fireBox.setTextureOffset((inv.getBurnTicks() > 0) ? 9 : 26, 25);
+        this.fireBox.setTextureOffset(info.jetpackBurning ? 9 : 26, 25);
 
         tubeStraightRight.render(f5);
         tubeEndLeft.render(f5);
@@ -192,9 +200,7 @@ public class ModelSteamJetpack extends ModelWearable {
         tubeStraightLeft.render(f5);
 
         GL11.glPushMatrix();
-        renderFluidInTank(inv.getWaterTank(), new Vector3(0, .5f, 0), new Vector3(.155f, 0, .135f), new Vector3(0.18f, 0.0625f, -0.045f), tankTop);
+        renderFluidInTank(info.leftFluid, info.leftCapacity, TANK_MIN, TANK_MAX, TANK_OFFSET, tankTop);
         GL11.glPopMatrix();
-
     }
-
 }

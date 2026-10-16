@@ -8,12 +8,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-/**
- * Created by Darkona on 10/10/2014.
- */
 public class ItemAB extends Item
 {
-
     public ItemAB()
     {
         super();
@@ -43,7 +39,6 @@ public class ItemAB extends Item
     {
         itemIcon = iconRegister.registerIcon(this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
-
 
     protected String getUnwrappedUnlocalizedName(String unlocalizedName)
     {

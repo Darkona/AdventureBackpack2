@@ -1,22 +1,17 @@
 package com.darkona.adventurebackpack.client.gui;
 
+import com.darkona.adventurebackpack.common.KeyActions;
+import com.darkona.adventurebackpack.handlers.KeybindHandler;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.util.ResourceLocation;
 
-/**
- * Created on 06/01/2015
- *
- * @author Darkona
- */
 public abstract class GuiWithTanks extends GuiContainer
 {
-    /**
-     * The label column of the two-tank windows (Scuba Gear, Flamethrower Pack): from right of the container slots
-     * (x 48) to the frame of the right tank (x 115).
-     */
     protected static final int LABEL_X = 50;
     protected static final int LABEL_WIDTH = 64;
     private static final int LABEL_LINE = 10;
@@ -27,7 +22,6 @@ public abstract class GuiWithTanks extends GuiContainer
         super(p_i1072_1_);
     }
 
-    /** Rebuilds the label column, each part wrapped to its width ("" leaves an empty line). Only when a value changed. */
     protected void setLabels(String... parts)
     {
         labelLines.clear();
@@ -38,12 +32,47 @@ public abstract class GuiWithTanks extends GuiContainer
         }
     }
 
-    /** Draws the label column built by {@link #setLabels}, from y down. */
     protected void drawLabels(int y, int color)
     {
         for (int i = 0; i < labelLines.size(); i++)
         {
             fontRendererObj.drawString(labelLines.get(i), LABEL_X, y + i * LABEL_LINE, color, false);
+        }
+    }
+
+    private GuiToggleButton toggle;
+
+    protected void setToggle(GuiToggleButton button)
+    {
+        toggle = button;
+        if (toggle != null) toggle.init();
+    }
+
+    protected boolean isToggleOn()
+    {
+        return false;
+    }
+
+    protected void drawToggle(int mouseX, int mouseY)
+    {
+        if (toggle != null) toggle.draw(fontRendererObj, isToggleOn(), toggle.inButton(this, mouseX, mouseY));
+    }
+
+    protected boolean clickToggle(int mouseX, int mouseY)
+    {
+        if (toggle == null || !toggle.inButton(this, mouseX, mouseY)) return false;
+        mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+        KeybindHandler.press(mc.thePlayer, KeyActions.Key.ABILITY, 1, false);
+        return true;
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        if (toggle != null && toggle.inButton(this, mouseX, mouseY))
+        {
+            drawHoveringText(toggle.tooltip(isToggleOn()), mouseX, mouseY, fontRendererObj);
         }
     }
 
@@ -58,5 +87,4 @@ public abstract class GuiWithTanks extends GuiContainer
     }
 
     public float getZLevel() {return zLevel;}
-
 }

@@ -10,14 +10,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-/**
- * Created on 11/10/2014
- *
- * @author Darkona
- */
 public class ItemAdventureJacket extends ArmorAB
 {
-
     public ItemAdventureJacket()
     {
         super(2, 2);
@@ -43,11 +37,14 @@ public class ItemAdventureJacket extends ArmorAB
         return Resources.modelTextureResourceString("adventureSuit_texture.png");
     }
 
+    @SideOnly(Side.CLIENT)
+    private static ModelBiped armorModel;
+
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack itemStack, int armorSlot)
     {
-        return new ModelFullArmor();
+        if (armorModel == null) armorModel = new ModelFullArmor();
+        return armorModel;
     }
-
 }

@@ -9,19 +9,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-/**
- * Created by Darkona on 11/10/2014.
- */
 public class ItemAdventureHat extends ArmorAB
 {
-
     public ItemAdventureHat()
     {
         super(2, 0);
         setUnlocalizedName("adventureHat");
     }
 
-    /** Built once: getArmorModel runs on every frame the hat is rendered (performance contract, tier 4). */
     @SideOnly(Side.CLIENT)
     private static ModelBiped armorModel;
 
@@ -33,7 +28,6 @@ public class ItemAdventureHat extends ArmorAB
         return armorModel;
     }
 
-
     @SideOnly(Side.CLIENT)
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
@@ -44,4 +38,3 @@ public class ItemAdventureHat extends ArmorAB
         return modelTexture;
     }
 }
-

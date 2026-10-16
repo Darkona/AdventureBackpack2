@@ -11,14 +11,8 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * The Air Compressor's GUI container. The numbers the GUI shows (air, which fluid, fire) travel as progress bar
- * updates, only while the GUI is open and only when one of them changed (performance contract, rule 5). A progress
- * bar carries a short, so the air goes in two halves.
- */
 public class ContainerAirCompressor extends Container
 {
     private static final int PLAYER_SLOTS = 36;
@@ -33,7 +27,6 @@ public class ContainerAirCompressor extends Container
     private int sentFluid = -2;
     private int sentBurn = -1;
     private int sentFuel = -1;
-    // client side: the halves arrive one by one
     private int clientAir, clientFluid = -1, clientBurn, clientFuel;
 
     public ContainerAirCompressor(InventoryPlayer invPlayer, TileAirCompressor tile)
@@ -88,7 +81,7 @@ public class ContainerAirCompressor extends Container
         super.detectAndSendChanges();
         FluidStack fluid = tile.getTank().getFluid();
         int air = fluid == null ? 0 : fluid.amount;
-        int fluidId = fluid == null ? -1 : FluidRegistry.getFluidID(fluid.getFluid().getName());
+        int fluidId = fluid == null ? -1 : fluid.getFluidID();
         int burn = tile.getBurnTicks();
         int fuel = tile.getFuelTicks();
         for (Object crafter : crafters)
@@ -113,7 +106,6 @@ public class ContainerAirCompressor extends Container
     public void addCraftingToCrafters(ICrafting crafter)
     {
         super.addCraftingToCrafters(crafter);
-        // a new viewer gets everything once
         sentAir = -1;
         sentFluid = -2;
         sentBurn = -1;

@@ -5,7 +5,7 @@ import com.darkona.adventurebackpack.common.BoatMotor;
 import com.darkona.adventurebackpack.common.BoatMotorSound;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.IInventoryTanks;
+import adventurebackpack.api.IInventoryTanks;
 import com.darkona.adventurebackpack.item.ItemComponent;
 import com.darkona.adventurebackpack.reference.GeneralReference;
 import cpw.mods.fml.relauncher.Side;
@@ -35,26 +35,17 @@ import net.minecraftforge.fluids.FluidTank;
 
 import java.util.List;
 
-/**
- * Created on 05/01/2015
- *
- * @author Darkona
- */
 public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
 {
-    /** DataWatcher ids, after EntityBoat's 17-19: fuel in mB, fuel fluid id (-1 empty), flags (BoatMotor). */
     private static final int DW_FUEL = 20;
     private static final int DW_FUEL_FLUID = 21;
     private static final int DW_FLAGS = 22;
-    /** Key of the fuel tank in the entity NBT and in the NBT of the boat item. */
     public static final String TAG_FUEL_TANK = "FuelTank";
 
     private FluidTank fuelTank;
     private FluidTank[] tanks;
-    /** Server: last fuel values written to the DataWatcher. Client: the values the display tank mirrors. */
     private int syncedFuel = -1;
     private int syncedFluid = -2;
-    /** Server: ticks the motor has run (fuel is paid every few of them) and ticks in a row out of the water. */
     private int runTicks;
     private int dryTicks;
     private boolean isBoatEmpty;
@@ -74,20 +65,17 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     private boolean inflated = false;
     public float inflation = 0.25f;
 
-    /** True for the motorized boat, on the server and on the clients (DataWatcher). */
     public boolean isMotorized()
     {
         return BoatMotor.isMotorized(dataWatcher.getWatchableObjectByte(DW_FLAGS));
     }
 
-    /** True while the outboard motor runs, on the server and on the clients (DataWatcher, set by the server). */
     public boolean isMotorRunning()
     {
         return BoatMotor.isRunning(dataWatcher.getWatchableObjectByte(DW_FLAGS));
     }
 
     private boolean motorized;
-    /** Client: the running flag as motorSound() last saw it. */
     private boolean soundRunning;
 
     public EntityInflatableBoat(World world)
@@ -110,10 +98,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         dataWatcher.addObject(DW_FLAGS, (byte) 0);
     }
 
-    /**
-     * Fuel tank of the outboard motor (inflatableboat.motor.tankCapacity); the Fuel Station fills it while the player
-     * rides the boat. On a client it holds only what {@link #getDisplayFuelTank()} copied from the DataWatcher.
-     */
     public FluidTank getFuelTank()
     {
         if (fuelTank == null)
@@ -124,10 +108,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         return fuelTank;
     }
 
-    /**
-     * Client: the fuel tank as the server last sent it (amount and fluid from the DataWatcher). Rebuilt only when
-     * those numbers change, so the HUD can read it on every frame.
-     */
     @SideOnly(Side.CLIENT)
     public FluidTank getDisplayFuelTank()
     {
@@ -144,7 +124,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         return tank;
     }
 
-    /** Server: writes the tank to the DataWatcher when it changed since the last time (it sends only changes). */
     private void syncFuelWatcher()
     {
         FluidStack fuel = getFuelTank().getFluid();
@@ -162,7 +141,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         }
     }
 
-    /** True when the tank holds some fuel that is on fuels.list. */
     private boolean hasFuel()
     {
         FluidStack fuel = getFuelTank().getFluid();
@@ -175,10 +153,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         if (flags != dataWatcher.getWatchableObjectByte(DW_FLAGS)) dataWatcher.updateObject(DW_FLAGS, flags);
     }
 
-    /**
-     * Server, on the pilot's motor key (inflatableboat.motor.mode toggle): turns the motor on or off. It starts only
-     * with fuel and on water. Anyone but the pilot, or the hold mode, is ignored.
-     */
     public void toggleMotor(EntityPlayer player)
     {
         if (worldObj.isRemote || !motorized || player == null || riddenByEntity != player) return;
@@ -190,7 +164,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         float volume = BoatMotorSound.master(ConfigHandler.BOAT_MOTOR_SOUND_VOLUME);
         if (player instanceof EntityPlayerMP && BoatMotorSound.failedStartClick(ConfigHandler.BOAT_MOTOR_SOUND, volume, was, now))
         {
-            // only the pilot hears it: the motor did not start, so nothing changed for anyone else
             ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S29PacketSoundEffect(BoatMotorSound.FAILED_START_SOUND,
                     posX, posY, posZ, volume * BoatMotorSound.FAILED_START_VOLUME, BoatMotorSound.FAILED_START_PITCH));
         }
@@ -204,11 +177,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.boat.motor." + message));
     }
 
-    /**
-     * Server, every tick of a motorized boat: keeps the DataWatcher fuel up to date while someone rides it (the Fuel
-     * Station fills it then), decides whether the motor runs, and burns its fuel. With no pilot and the motor off it
-     * returns after counting the ticks out of the water.
-     */
     private void updateMotor(boolean onWater)
     {
         dryTicks = onWater ? 0 : Math.min(dryTicks + 1, Short.MAX_VALUE);
@@ -246,10 +214,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         }
     }
 
-    /**
-     * Client: reacts to the motor's running flag (DataWatcher) turning on or off (inflatableboat.motor.sound). One
-     * looping sound per start; the sound watches the boat and ends by itself, so a re-sync never doubles it.
-     */
     private void motorSound()
     {
         boolean running = isMotorRunning();
@@ -259,7 +223,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         if (change != BoatMotorSound.Change.NONE) ClientActions.boatMotorSound(this, change);
     }
 
-    /** Client: smoke from the stern while the motor runs (render.boatSmokeTicks). Called only when isRemote. */
     private void motorSmoke()
     {
         int every = ConfigHandler.RENDER_BOAT_SMOKE_TICKS;
@@ -268,7 +231,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         worldObj.spawnParticle("smoke", posX + Math.cos(yaw) * 0.9D, posY + 0.6D, posZ + Math.sin(yaw) * 0.9D, 0.0D, 0.03D, 0.0D);
     }
 
-    /** Saves the fuel tank into the NBT of the boat item, so picking the boat up keeps its fuel. */
     public static void saveFuelToItem(FluidTank tank, ItemStack stack)
     {
         if (tank == null || tank.getFluidAmount() <= 0 || stack == null) return;
@@ -277,7 +239,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         stack.setTagCompound(tag);
     }
 
-    /** Server: fills the tank from saved NBT (the entity's or the item's), dropping what is above the capacity. */
     public void loadFuel(NBTTagCompound tankTag)
     {
         FluidTank tank = getFuelTank();
@@ -297,9 +258,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         return inflated;
     }
 
-    /**
-     * Called to update the entity's position/logic.
-     */
     @Override
     public void onUpdate()
     {
@@ -433,7 +391,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
                 this.motionY += 0.007000000216066837D;
             }
 
-            // Without a running motor these are the plain boat's numbers: inflatableboat.maxSpeed and 35
             boolean motorRunning = this.isMotorRunning();
             double topSpeed = BoatMotor.maxSpeed(motorRunning, ConfigHandler.BOAT_MAX_SPEED, ConfigHandler.BOAT_MOTOR_MAX_SPEED);
             double accelerationDivisor = BoatMotor.accelerationDivisor(motorRunning, ConfigHandler.BOAT_MOTOR_ACCELERATION);
@@ -507,30 +464,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
             }
 
             this.moveEntity(this.motionX, this.motionY, this.motionZ);
-
-           /* if (this.isCollidedHorizontally && d10 > 0.2D)
-            {
-                if (!this.worldObj.isRemote && !this.isDead)
-                {
-                    this.setDead();
-
-                    for (l = 0; l < 3; ++l)
-                    {
-                        this.func_145778_a(Item.getItemFromBlock(Blocks.planks), 1, 0.0F);
-                    }
-
-                    for (l = 0; l < 2; ++l)
-                    {
-                        this.func_145778_a(Items.stick, 1, 0.0F);
-                    }
-                }
-            }
-            else
-            {
-                this.motionX *= 0.9900000095367432D;
-                this.motionY *= 0.949999988079071D;
-                this.motionZ *= 0.9900000095367432D;
-            }*/
 
             this.rotationPitch = 0.0F;
             d4 = (double) this.rotationYaw;
@@ -606,7 +539,6 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
                 if (!flag)
                 {
                     ItemStack boat = new ItemStack(ModItems.component, 1, motorized ? ItemComponent.MOTORIZED_BOAT : ItemComponent.INFLATABLE_BOAT);
-                    // the fuel goes with the boat item, and comes back when the boat is placed again
                     if (motorized) saveFuelToItem(getFuelTank(), boat);
                     this.entityDropItem(boat, 0.0f);
                 }
@@ -689,16 +621,13 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     @Override
     public void loadFromNBT(NBTTagCompound compound)
     {
-
     }
 
     @Override
     public void saveToNBT(NBTTagCompound compound)
     {
-
     }
 
-    /** The motor's fuel tank. */
     @Override
     public FluidTank[] getTanksArray()
     {
@@ -709,19 +638,16 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     @Override
     public void dirtyInventory()
     {
-
     }
 
     @Override
     public void dirtyTanks()
     {
-
     }
 
     @Override
     public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
     {
-
     }
 
     @Override
@@ -730,105 +656,58 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
         return null;
     }
 
-    /**
-     * Returns the number of slots in the inventory.
-     */
     @Override
     public int getSizeInventory()
     {
         return 0;
     }
 
-    /**
-     * Returns the stack in slot i
-     *
-     * @param p_70301_1_
-     */
     @Override
     public ItemStack getStackInSlot(int p_70301_1_)
     {
         return null;
     }
 
-    /**
-     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
-     * new stack.
-     *
-     * @param p_70298_1_
-     * @param p_70298_2_
-     */
     @Override
     public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_)
     {
         return null;
     }
 
-    /**
-     * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
-     * like when you close a workbench GUI.
-     *
-     * @param p_70304_1_
-     */
     @Override
     public ItemStack getStackInSlotOnClosing(int p_70304_1_)
     {
         return null;
     }
 
-    /**
-     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-     *
-     * @param p_70299_1_
-     * @param p_70299_2_
-     */
     @Override
     public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_)
     {
-
     }
 
-    /**
-     * Returns the name of the inventory
-     */
     @Override
     public String getInventoryName()
     {
         return null;
     }
 
-    /**
-     * Returns if the inventory is named
-     */
     @Override
     public boolean hasCustomInventoryName()
     {
         return false;
     }
 
-    /**
-     * Returns the maximum stack size for a inventory slot.
-     */
     @Override
     public int getInventoryStackLimit()
     {
         return 0;
     }
 
-    /**
-     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
-     * hasn't changed and skip it.
-     */
     @Override
     public void markDirty()
     {
-
     }
 
-    /**
-     * Do not make give this method the name canInteractWith because it clashes with Container
-     *
-     * @param p_70300_1_
-     */
     @Override
     public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
     {
@@ -838,21 +717,13 @@ public class EntityInflatableBoat extends EntityBoat implements IInventoryTanks
     @Override
     public void openInventory()
     {
-
     }
 
     @Override
     public void closeInventory()
     {
-
     }
 
-    /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
-     *
-     * @param p_94041_1_
-     * @param p_94041_2_
-     */
     @Override
     public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
     {

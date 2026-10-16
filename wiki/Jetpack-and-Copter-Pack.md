@@ -29,30 +29,30 @@ Open the jetpack window with B while you wear it. It has a water tank with bucke
 
 1. Put water in the water tank. Buckets work, and swimming also fills it slowly.
 2. Put a furnace fuel in the fuel slot: coal, charcoal, wood.
-3. Press Sneak + N to turn the jetpack on. The firebox starts burning and the boiler heats up.
+3. Press N (Gear On/Off), or the ON/OFF button in the window, to turn the jetpack on. The firebox starts burning and the boiler heats up.
 4. Wait for the boiler to pass 100 degrees. Then water turns into steam, 1 mB of water for 4 of steam.
 5. Hold jump to thrust.
 
 ![Steam Jetpack window with water, the firebox lit, the boiler hot and steam in the tank](images/jetpack-3.png)
 
-Thrust costs 20 mB of steam per tick, and the first moment of each thrust costs 150 mB more. With the default tanks:
+Thrust costs 10 mB of steam per tick, and the first moment of each thrust costs 150 mB more. With the default tanks:
 
 | Situation | How long |
 |---|---|
-| Full steam tank (12000 mB) | 30 seconds of thrust |
-| Full steam tank and full water tank (6000 mB) | about 90 seconds of thrust |
-| One piece of coal | about 27 seconds of thrust |
+| Full steam tank (12000 mB) | 1 minute of thrust |
+| Full steam tank and full water tank (6000 mB) | about 3 minutes of thrust |
+| One piece of coal | about 54 seconds of thrust |
 | Boiler from 25 to 100 degrees | about 1 minute |
 | Boiler cooling from 200 to 100 degrees without fire | about 3 minutes 20 seconds |
 
-While you thrust the boiler loses heat. With the fire lit it keeps up; without fuel a long flight drops it below the boiling point in under a minute. Thrust lifts you at up to about 5.6 blocks a second, and it fades out above Y 90.
+While you thrust the boiler loses heat. With the fire lit it keeps up; without fuel a long flight drops it below the boiling point in under a minute. Thrust lifts you at about 8 blocks a second: it reaches that speed in a fraction of a second, and it stops a fall almost at once. It fades out above Y 90 and holds you around Y 130.
 
 ### Controls
 
 | Action | Control |
 |---|---|
 | Open the window | B |
-| Turn on and off | Sneak + N |
+| Turn on and off | N (Gear On/Off), or the ON/OFF button in the window |
 | Thrust | Hold jump |
 | Move sideways in the air | Move keys |
 
@@ -83,9 +83,9 @@ Each fuel burns at its own rate: oil 1.5 times as fast as fuel, creosote 1.8 tim
 
 ### Flying
 
-1. Press Sneak + N to start the engine. It takes 100 mB of fuel to start, and it does not start with less in the tank.
+1. Press N (Gear On/Off), or the ON/OFF button in the window, to start the engine. It takes 100 mB of fuel to start, and it does not start with less in the tank.
 2. Jump to climb. Sneak to come down.
-3. Press N to switch between normal mode and hover.
+3. Press G (Change Mode) to switch between normal mode and hover.
 
 In normal mode you fall slowly, at 60 percent of the usual speed, and take no fall damage. In hover mode you stay at your height and move sideways; you still climb and descend with jump and sneak. The rotor blows dropped items away from you.
 
@@ -109,10 +109,14 @@ The engine stops in water. If the tank runs dry on the ground it switches off. I
 | Action | Control |
 |---|---|
 | Open the window | B |
-| Start and stop the engine | Sneak + N |
-| Normal mode and hover | N |
+| Start and stop the engine | N (Gear On/Off), or the ON/OFF button in the window |
+| Normal mode and hover | G (Change Mode) |
 | Climb | Hold jump |
 | Descend | Sneak |
+
+## Putting them down
+
+Both packs can stand on the ground as a block: sneak and right click the top of a block with the pack in hand. A placed jetpack keeps its boiler as it was (frozen) and a placed copter has its engine off. Pipes fill a placed jetpack with water and a placed copter with fuel. See [Gear](Gear#placing-gear-on-the-ground).
 
 ## Dying while you fly
 

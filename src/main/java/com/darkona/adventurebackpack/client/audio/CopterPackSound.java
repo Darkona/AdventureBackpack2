@@ -9,20 +9,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-/**
- * Created on 16/10/2014
- *
- * @author Darkona
- */
 public class CopterPackSound extends MovingSound
 {
-
     public EntityPlayer thePlayer;
     protected boolean repeat = true;
     protected int repeatDelay = 0;
 
     protected float pitch;
-
 
     public CopterPackSound(EntityPlayer player)
     {
@@ -45,7 +38,6 @@ public class CopterPackSound extends MovingSound
         LogHelper.info("Setting sound repeat");
         repeat = newRepeat;
     }
-
 
     public void setDonePlaying()
     {
@@ -126,5 +118,4 @@ public class CopterPackSound extends MovingSound
     {
         return AttenuationType.LINEAR;
     }
-
 }

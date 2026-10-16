@@ -11,46 +11,29 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
-/**
- * Server check of the client packets that the server sends on to the nearby players (particles and sounds at an
- * entity). A client packet is a request (performance contract, rule 4): it is relayed only when the type is one the
- * sender's worn wearable really makes, the entity exists in the sender's world and is the sender or what the sender
- * rides (or is ridden by), it is near the sender, and the sender did not relay another one a moment ago. Anything
- * else is dropped, so a modified client cannot make other players hear or see effects at will.
- */
 public final class RelayGuard
 {
-    /** Shortest wait between two relayed packets of one player, in ticks. */
     public static final int MIN_INTERVAL_TICKS = 4;
-    /** Farthest the entity of a relayed packet may be from its sender (squared blocks). */
     public static final double MAX_DISTANCE_SQ = 8 * 8;
 
     private RelayGuard() {}
 
-    /** Pure decision: every check passed and the per-player wait is over (or the clock went back). */
     public static boolean allowed(boolean typeAllowed, boolean related, double distanceSq, long now, long lastRelay)
     {
         if (!typeAllowed || !related || distanceSq > MAX_DISTANCE_SQ) return false;
         return now < lastRelay || now - lastRelay >= MIN_INTERVAL_TICKS;
     }
 
-    /** Checks a particle packet from {@code sender} and records the relay when it passes. */
     public static boolean mayRelayParticle(EntityPlayerMP sender, int entityId, byte particle)
     {
         return mayRelay(sender, entityId, particleMatchesWearable(sender, particle));
     }
 
-    /** Checks a sound packet from {@code sender} and records the relay when it passes. */
     public static boolean mayRelaySound(EntityPlayerMP sender, int entityId, byte sound)
     {
-        // The only sound a client sends is the jetpack's ignition; the others come from the server itself
         return mayRelay(sender, entityId, sound == EntitySoundPacket.JETPACK_FIZZ && jetpackOn(sender));
     }
 
-    /**
-     * Rate limit alone, for what a client action makes the server send to the nearby players or back to the sender
-     * (copter start sound, a requested properties sync). Records the relay when it passes.
-     */
     public static boolean mayRelayFrom(EntityPlayerMP sender)
     {
         return sender != null && mayRelay(sender, sender.getEntityId(), true);

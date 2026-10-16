@@ -3,20 +3,13 @@ package com.darkona.adventurebackpack.init;
 import com.darkona.adventurebackpack.item.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-/**
- * Created on 10/10/2014
- * @author Darkona
- *
- */
 public class ModItems
 {
-
     public static final ItemMachete machete = new ItemMachete();
     public static final ItemComponent component = new ItemComponent();
     public static final ItemHose hose = new ItemHose();
     public static final ArmorAB adventureHat = new ItemAdventureHat();
     public static final ArmorAB pistonBoots = new ItemPistonBoots();
-    //public static final ArmorAB adventureSuit = new ItemAdventureJacket();
     public static final ItemAdventureBackpack adventureBackpack = new ItemAdventureBackpack();
     public static final ItemJuiceBottle melonJuiceBottle = new ItemJuiceBottle();
     public static final ItemCopterPack copterPack = new ItemCopterPack();
@@ -34,23 +27,16 @@ public class ModItems
         GameRegistry.registerItem(machete, "machete");
         GameRegistry.registerItem(adventureHat, "adventureHat");
         GameRegistry.registerItem(pistonBoots, "pistonBoots");
-       // GameRegistry.registerItem(adventureSuit, "adventureSuit");
         GameRegistry.registerItem(adventureBackpack, "adventureBackpack");
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");
         GameRegistry.registerItem(cwxbow, "clockworkCrossbow");
-        // Always registered: it boils another mod's steam or its own (ModFluids.registerSteamIfMissing)
         GameRegistry.registerItem(steamJetpack, "steamJetpack");
-        // The Crossbow Magazine keeps the 1.0 Bolt Cartridge id so old worlds keep their cartridges
         GameRegistry.registerItem(boltCartridge, "boltCartridge");
         GameRegistry.registerItem(bolt, "bolt");
-        // Always registered; it only works when a loaded mod adds a fuel of fuels.list (ItemCopterPack.isUsable)
         GameRegistry.registerItem(copterPack, "copterPack");
-        // Always registered; hidden and inert with enabled.scuba off or without any breathable fluid
         GameRegistry.registerItem(scubaGear, "scubaGear");
-        // Always registered; hidden and inert with enabled.flamethrower off or without any fuel of fuels.list
         GameRegistry.registerItem(flamethrowerPack, "flamethrowerPack");
         GameRegistry.registerItem(flamethrower, "flamethrower");
-
     }
 }

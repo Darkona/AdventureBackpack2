@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.inventory.QuiverFeed;
 import com.darkona.adventurebackpack.common.AbilityToggle;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.DeathRoute;
@@ -13,7 +14,7 @@ import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.item.IBackWearableItem;
+import adventurebackpack.api.IBackWearableItem;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemPistonBoots;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
@@ -55,28 +56,15 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
 import java.util.UUID;
 
-/**
- * Created on 11/10/2014
- * Handle ALL the events!
- *
- * @author Darkona
- * @see com.darkona.adventurebackpack.client.ClientActions
- */
 public class PlayerEventHandler
 {
-
     @SubscribeEvent
     public void registerBackpackProperty(EntityEvent.EntityConstructing event)
     {
         if (event.entity instanceof EntityPlayer && BackpackProperty.get((EntityPlayer) event.entity) == null)
         {
             BackpackProperty.register((EntityPlayer) event.entity);
-            /*if (!event.entity.worldObj.isRemote)
-            {
-                AdventureBackpack.proxy.joinPlayer((EntityPlayer)event.entity);
-            }*/
         }
-
     }
 
     @SubscribeEvent
@@ -87,19 +75,15 @@ public class PlayerEventHandler
             if (Utils.notNullAndInstanceOf(event.entity,  EntityPlayer.class))
             {
                 EntityPlayer player = (EntityPlayer) event.entity;
-                LogHelper.info("Joined EntityPlayer of name: " + event.entity.getCommandSenderName());
                 NBTTagCompound playerData = ServerProxy.extractPlayerProps(player.getUniqueID());
                 if (playerData != null)
                 {
                     BackpackProperty.get(player).loadNBTData(playerData);
                     BackpackProperty.syncToNear(player);
-                    LogHelper.info("Stored properties retrieved");
                 }
             }
         }
-
     }
-
 
     @SubscribeEvent
     public void playerLogsIn(PlayerEvent.PlayerLoggedInEvent event)
@@ -107,7 +91,6 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
-            // Tamed spiders stay tamed like wolves; drop ledger entries of spiders that no longer exist
             SpiderTaming.verify(event.player.worldObj, event.player.getUniqueID());
         }
     }
@@ -117,6 +100,7 @@ public class PlayerEventHandler
     {
         if (event.player instanceof EntityPlayerMP)
         {
+            QuiverFeed.flush(event.player);
             SleepingBagSpawn.restoreNow(event.player);
         }
     }
@@ -130,11 +114,6 @@ public class PlayerEventHandler
         }
     }
 
-    /**
-     * Used for the Piston Boots to give them their amazing powers.
-     *
-     * @param event
-     */
     @SubscribeEvent
     public void onPlayerJump(LivingEvent.LivingJumpEvent event)
     {
@@ -143,19 +122,13 @@ public class PlayerEventHandler
         {
             EntityPlayer player = (EntityPlayer) event.entity;
 
-
-            if (Wearing.isWearingBoots(player) && player.onGround)
+            if (ConfigHandler.PISTONBOOTS_ENABLED && Wearing.isWearingBoots(player) && player.onGround)
             {
                 ServerActions.pistonBootsJump(player);
             }
         }
     }
 
-    /**
-     * Used by the Piston boots to lessen the fall damage. It's hacky, but I don't care.
-     *
-     * @param event
-     */
     @SubscribeEvent
     public void onFall(LivingFallEvent event)
     {
@@ -198,7 +171,6 @@ public class PlayerEventHandler
         }
     }
 
-
     @SubscribeEvent(priority = EventPriority.LOW)
     public void playerDies(LivingDeathEvent event)
     {
@@ -215,10 +187,7 @@ public class PlayerEventHandler
                     {
                         player.setSpawnChunk(lastCampFire, false, player.dimension);
                     }
-                    //Set the forced spawn coordinates on the campfire. False, because the player must respawn at spawn point if there's no campfire.
                 }
-                // With keepInventory there is no PlayerDropsEvent (EntityPlayerMP.onDeath) and the respawn clone does not
-                // copy these properties: store them here or the worn wearable and the campfire are lost on respawn.
                 if (player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
                 {
                     ServerProxy.storePlayerProps(player);
@@ -228,17 +197,12 @@ public class PlayerEventHandler
         event.setResult(Event.Result.ALLOW);
     }
 
-    /**
-     * Before GraveStone (HIGH) empties the inventory into its grave: moves the worn wearable into a free main
-     * inventory slot so the grave takes it with everything else. Without a free slot, or without a GraveStone
-     * grave for this death, {@link #playerDrops} handles it as usual. If another mod cancels the death later,
-     * the wearable is simply in the inventory: nothing is lost.
-     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void wearableToInventoryGrave(LivingDeathEvent event)
     {
         if (!(event.entityLiving instanceof EntityPlayer) || event.entityLiving.worldObj.isRemote) return;
         EntityPlayer player = (EntityPlayer) event.entityLiving;
+        QuiverFeed.flush(player);
         BackpackProperty props = BackpackProperty.get(player);
         if (props == null || !props.hasWearable()) return;
         boolean keepInventory = player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory");
@@ -258,12 +222,6 @@ public class PlayerEventHandler
         deathMessage(player, wearable, "grave", MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ));
     }
 
-    /**
-     * Drops or places the wearable together with the rest of the player's drops, so grave and soulbound mods see
-     * it in the drop list and a death another mod cancels drops nothing (#117). HIGH on purpose: OpenBlocks reads
-     * the drop list at LOW and Baubles adds its slots at NORMAL, so the wearable must be in the list before them.
-     * Receives cancelled events so the wearable still leaves the player when another mod cancels the drops.
-     */
     @SubscribeEvent(priority = EventPriority.HIGH, receiveCanceled = true)
     public void playerDrops(PlayerDropsEvent event)
     {
@@ -276,14 +234,12 @@ public class PlayerEventHandler
                 ConfigHandler.COMPAT_GRAVES_ENABLED, GraveCompat.hasDropsGrave(), ConfigHandler.BACKPACK_DEATH_PLACE,
                 wearable != null && wearable.getItem() instanceof ItemAdventureBackpack);
         int x = MathHelper.floor_double(player.posX), y = MathHelper.floor_double(player.posY), z = MathHelper.floor_double(player.posZ);
-        // While capturing, a dropped wearable joins event.drops instead of spawning on its own
         player.captureDrops = !event.isCanceled();
         try
         {
             switch (route)
             {
                 case BAUBLES:
-                    // Baubles drops (or keeps) its own slot; only stop pointing at it so it is not stored for respawn
                     props.unlinkBauble();
                     break;
                 case GRAVE_DROPS:
@@ -321,12 +277,10 @@ public class PlayerEventHandler
             ((ItemAdventureBackpack) wearable.getItem()).dropOnDeath(player.worldObj, player, wearable);
         } else if (wearable.getItem() instanceof IBackWearableItem)
         {
-            // Copter pack and jetpack always drop
             ((IBackWearableItem) wearable.getItem()).onPlayerDeath(player.worldObj, player, wearable);
         }
     }
 
-    /** Chat line with where the wearable went; the player reads it after respawning (backpack.deathMessage). */
     private static void deathMessage(EntityPlayer player, ItemStack wearable, String where, int x, int y, int z)
     {
         if (!ConfigHandler.BACKPACK_DEATH_MESSAGE) return;
@@ -339,7 +293,6 @@ public class PlayerEventHandler
     {
         if (event.crafting != null && event.crafting.getItem() == ModItems.adventureBackpack)
         {
-            // A backpack from another mod's recipe may have no tag: getBackpackColorName copes, getTagCompound() did not
             if (BackpackNames.getBackpackColorName(event.crafting).equals("Dragon"))
             {
                 event.player.dropPlayerItemWithRandomChoice(new ItemStack(Blocks.dragon_egg, 1), false);
@@ -354,7 +307,6 @@ public class PlayerEventHandler
         EntityPlayer player = event.entityPlayer;
         if (!event.entityPlayer.worldObj.isRemote)
         {
-            // Only the plain vanilla spider: a cave spider or another mod's spider would lose what makes it different
             if (event.target != null && event.target.getClass() == EntitySpider.class && tameSpider(player, (EntitySpider) event.target))
             {
                 event.setCanceled(true);
@@ -383,7 +335,6 @@ public class PlayerEventHandler
         event.setResult(Event.Result.ALLOW);
     }
 
-    /** A Blaze Backpack wearer's punch sets the target on fire. Only direct melee hits ("player" damage), not arrows. */
     @SubscribeEvent
     public void blazePunch(LivingHurtEvent event)
     {
@@ -395,11 +346,6 @@ public class PlayerEventHandler
         }
     }
 
-    /**
-     * Wearing the Spider Backpack, right click with the tame item (a spider eye by default) tries to tame the spider,
-     * like a wolf with a bone: one item is used up per try and the try works with abilities.spider.tameChance.
-     * Server only. Returns true when the click was a taming try, so nothing else handles it.
-     */
     private static boolean tameSpider(EntityPlayer player, EntitySpider spider)
     {
         if (!ConfigHandler.BACKPACK_ABILITIES || !ConfigHandler.SPIDER_ENABLED || ConfigHandler.SPIDER_MAX_TAMED <= 0) return false;
@@ -433,7 +379,7 @@ public class PlayerEventHandler
         }
         EntityFriendlySpider pet = new EntityFriendlySpider(world);
         pet.setLocationAndAngles(spider.posX, spider.posY, spider.posZ, spider.rotationYaw, spider.rotationPitch);
-        pet.setHealth(SpiderCare.tamedHealth(pet.getMaxHealth())); // taming heals it to the tamed maximum
+        pet.setHealth(SpiderCare.tamedHealth(pet.getMaxHealth()));
         if (spider.hasCustomNameTag())
         {
             pet.setCustomNameTag(spider.getCustomNameTag());
@@ -454,18 +400,14 @@ public class PlayerEventHandler
         ChunkCoordinates bedLocation = event.entityPlayer.getBedLocation(event.entityPlayer.dimension);
         if (bedLocation != null && event.entityPlayer.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ) == ModBlocks.blockSleepingBag)
         {
-            //If the player wakes up in one of those super confortable SleepingBags (tm) (Patent Pending)
             BackpackProperty.get(event.entityPlayer).setForceCampFire(true);
             LogHelper.info("Player just woke up in a sleeping bag, forcing respawn in the last lighted campfire, if there's any");
         } else
         {
-            //If it's a regular bed or whatever
             BackpackProperty.get(event.entityPlayer).setForceCampFire(false);
         }
     }
 
-
-    /** A player that comes into range gets the wearable of the one it now sees, since syncs only follow changes. */
     @SubscribeEvent
     public void startTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event)
     {
@@ -480,30 +422,24 @@ public class PlayerEventHandler
     {
         if (event.phase == TickEvent.Phase.START && event.player != null) ItemPistonBoots.tickUnworn(event.player);
         if (event.phase == TickEvent.Phase.END && event.side.isServer() && event.player != null) SleepingBagSpawn.restoreWhenAwake(event.player);
-        if (event.player != null && !event.player.isDead && Wearing.isWearingWearable(event.player))
+        if (event.player == null || event.player.isDead) return;
+        BackpackProperty props = BackpackProperty.get(event.player);
+        if (props == null) return;
+        ItemStack worn = props.getWearable();
+        if (worn != null && worn.getItem() instanceof IBackWearableItem)
         {
             if(event.phase == TickEvent.Phase.START)
             {
-                BackpackProperty.get(event.player).executeWearableUpdateProtocol();
+                props.executeWearableUpdateProtocol();
             }
             if (event.phase == TickEvent.Phase.END)
             {
-                if (event.side.isServer())
+                if (event.side.isServer() && event.player instanceof EntityPlayerMP)
                 {
-                    BackpackProperty.syncToNearIfChanged(event.player);
-//                    if (Utils.notNullAndInstanceOf(event.player.openContainer, IWearableContainer.class))
-//                    {
-//                        //playerMP.sendContainerAndContentsToPlayer(playerMP.openContainer, playerMP.openContainer.getInventory());
-//                        BackpackProperty.syncToNear(event.player);
-//                    }else
-//                    {
-//                        BackpackProperty.syncToNear(event.player);
-//                    }
+                    QuiverFeed.tick(event.player, props);
+                    BackpackProperty.syncToNearIfChanged((EntityPlayerMP) event.player, props);
                 }
             }
         }
     }
-
-
 }
-

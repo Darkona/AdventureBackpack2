@@ -17,16 +17,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-/**
- * A station block with one tank, a container slot in, a container slot out and a slot for a pack: the base of the Fuel
- * Station (and later the Air Compressor). It never ticks: everything happens when a slot changes, when a pipe fills or
- * drains it, or when a player clicks it. Pipes of any mod fill it from any side through {@link IFluidHandler}, with
- * only the fluids {@link #accepts(Fluid)} allows. The client copy of the tank is only filled by the open GUI's
- * container, so there is no block update packet.
- */
 public abstract class TileStation extends TileEntity implements ISidedInventory, IFluidHandler
 {
-
     public static final int SLOT_IN = 0;
     public static final int SLOT_OUT = 1;
     public static final int SLOT_PACK = 2;
@@ -35,11 +27,8 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
 
     protected final FluidTank tank;
     private final ItemStack[] slots = new ItemStack[3];
-    /** False once the pack in its slot took less than the station offered (full, or another fuel): pipes then skip it. */
     private boolean packMayAccept = true;
-    /** Set while the slots are being processed, so the changes made by the processing do not start it again. */
     private boolean busy;
-    /** False when a creative player breaks the block: the slots drop, the block item does not. */
     boolean dropOnBreak = true;
 
     protected TileStation(int capacity)
@@ -47,16 +36,12 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         tank = new FluidTank(capacity);
     }
 
-    /** True when this fluid may go into the tank. */
     protected abstract boolean accepts(Fluid fluid);
 
-    /** The station's system switch: when false it neither takes nor gives fluid. */
     public abstract boolean enabled();
 
-    /** True for an item the pack slot takes. */
     protected abstract boolean isPack(ItemStack stack);
 
-    /** Moves up to {@code offered.amount} into the pack; returns how much it took. */
     protected abstract int fillPack(ItemStack pack, FluidStack offered, boolean doFill);
 
     public FluidTank getTank()
@@ -70,9 +55,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         return false;
     }
 
-    // ---------------------------------------------------------------- transfers (server side, on actions)
-
-    /** Fills a pack the player wears or holds with everything that fits. Returns the millibuckets moved. */
     public int fillPackStack(ItemStack pack)
     {
         FluidStack stored = tank.getFluid();
@@ -89,7 +71,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         return moved;
     }
 
-    /** Fills another tank (the boat's) with everything that fits, when it may hold this fluid. Returns the mB moved. */
     public int fillTank(FluidTank target, boolean targetAccepts)
     {
         FluidStack stored = tank.getFluid();
@@ -117,7 +98,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         saveChanges();
     }
 
-    /** Adds fluid the caller already checked (accepted, same fluid, fits). */
     private void put(FluidStack fluid, int amount)
     {
         FluidStack stored = tank.getFluid();
@@ -133,7 +113,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         saveChanges();
     }
 
-    /** Millibuckets of {@code fluid} the tank takes now. */
     private int room(FluidStack fluid)
     {
         if (fluid == null || fluid.getFluid() == null) return 0;
@@ -157,7 +136,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         if (moved < offered) packMayAccept = false;
     }
 
-    /** One transfer between the container in the input slot and the tank. True when something moved. */
     private boolean processContainer()
     {
         ItemStack in = slots[SLOT_IN];
@@ -169,7 +147,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
             if (in.getItem() instanceof IFluidContainerItem && in.stackSize == 1) return exchangeFluidItem(in, (IFluidContainerItem) in.getItem());
         } catch (RuntimeException e)
         {
-            // another mod's container misbehaved: leave it in the slot
         }
         return false;
     }
@@ -199,7 +176,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         return true;
     }
 
-    /** A can, cell or portable tank of another mod that holds its fluid in NBT: empty it into the tank, or fill it. */
     private boolean exchangeFluidItem(ItemStack in, IFluidContainerItem item)
     {
         FluidStack inside = item.getFluid(in);
@@ -259,7 +235,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         slots[SLOT_IN] = null;
     }
 
-    /** A slot changed: empty or fill the containers in the input slot, then fill the pack. Server side only. */
     private void onSlotsChanged()
     {
         if (worldObj == null || worldObj.isRemote || !enabled()) return;
@@ -268,7 +243,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         pushToPack();
     }
 
-    /** Marks the chunk for saving without processing the slots again. */
     private void saveChanges()
     {
         super.markDirty();
@@ -288,8 +262,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
             busy = false;
         }
     }
-
-    // ---------------------------------------------------------------- IFluidHandler (pipes of any mod)
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
@@ -345,9 +317,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         return new FluidTankInfo[]{tank.getInfo()};
     }
 
-    // ---------------------------------------------------------------- client copy of the tank (GUI only)
-
-    /** Fluid id + 1 (0 = empty), for the GUI container. */
     public int syncedFluidId()
     {
         FluidStack stored = tank.getFluid();
@@ -359,8 +328,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         Fluid fluid = fluidIdPlusOne <= 0 ? null : FluidRegistry.getFluid(fluidIdPlusOne - 1);
         tank.setFluid(fluid == null || amount <= 0 ? null : new FluidStack(fluid, amount));
     }
-
-    // ---------------------------------------------------------------- NBT
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
@@ -394,7 +361,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         compound.setTag("Items", items);
     }
 
-    /** The tank alone, also kept on the dropped block item so breaking the station does not lose its fluid. */
     public void writeTank(NBTTagCompound compound)
     {
         compound.setTag("Tank", tank.writeToNBT(new NBTTagCompound()));
@@ -404,11 +370,8 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
     {
         tank.setFluid(null);
         if (compound != null && compound.hasKey("Tank")) tank.readFromNBT(compound.getCompoundTag("Tank"));
-        // a fluid whose mod was removed reads as null; keep the tank empty then
         if (tank.getFluid() != null && tank.getFluid().getFluid() == null) tank.setFluid(null);
     }
-
-    // ---------------------------------------------------------------- IInventory
 
     @Override
     public int getSizeInventory()
@@ -489,9 +452,6 @@ public abstract class TileStation extends TileEntity implements ISidedInventory,
         return false;
     }
 
-    // ---------------------------------------------------------------- ISidedInventory (hoppers and item pipes)
-
-    /** Containers go in from the top and the sides and come out from the bottom; the pack slot is for players only. */
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {

@@ -1,6 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
 import com.darkona.adventurebackpack.common.AirCompressorRules;
+import com.darkona.adventurebackpack.common.CodeRegistrations;
 import com.darkona.adventurebackpack.compat.tech.TechParts;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModFluids;
@@ -16,17 +17,10 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * What the Scuba Gear and the Air Compressor breathe and which items carry it: the fluids of scuba.breathableFluids
- * (by name, so GregTech's, Galacticraft's or Mekanism's work without depending on them), the fluid containers of
- * {@link FluidContainerRegistry} that hold them, and the items of scuba.airItems (IC2's air cell is not a fluid
- * container). Built once in postInit (Tier 1); the checks run on player actions and on the compressor's beat.
- */
 public final class AirContainers
 {
     private AirContainers() {}
 
-    /** One resolved entry of scuba.airItems. */
     private static final class AirItem
     {
         final Object full;
@@ -43,12 +37,13 @@ public final class AirContainers
 
     private static AirItem[] airItems = new AirItem[0];
     private static Fluid[] breathable = new Fluid[0];
+    private static String[] breathableNames;
 
-    /** Called in postInit, after ModFluids.registerAirIfMissing and once every mod registered its items. */
     public static void init()
     {
+        breathableNames = CodeRegistrations.mergeAirFluids(ConfigHandler.SCUBA_BREATHABLE_FLUIDS, CodeRegistrations.INSTANCE.airFluids());
         List<Fluid> fluids = new ArrayList<Fluid>();
-        for (String name : ConfigHandler.SCUBA_BREATHABLE_FLUIDS)
+        for (String name : breathableNames)
         {
             Fluid fluid = name == null ? null : FluidRegistry.getFluid(name.trim().toLowerCase());
             if (fluid != null && !fluids.contains(fluid)) fluids.add(fluid);
@@ -79,7 +74,6 @@ public final class AirContainers
         return found.isEmpty() ? null : found.get(0);
     }
 
-    /** True when the Scuba Gear can work at all: it is enabled and some breathable fluid exists. */
     public static boolean usable()
     {
         return ConfigHandler.SCUBA_ENABLED && (ModFluids.air != null || breathable.length > 0);
@@ -87,20 +81,15 @@ public final class AirContainers
 
     public static boolean isBreathable(Fluid fluid)
     {
-        return fluid != null && AirCompressorRules.isBreathable(fluid.getName(), ConfigHandler.SCUBA_BREATHABLE_FLUIDS);
+        return fluid != null && AirCompressorRules.isBreathable(fluid.getName(), breathableNames != null ? breathableNames : ConfigHandler.SCUBA_BREATHABLE_FLUIDS);
     }
 
-    /**
-     * The fluid a tank keeps for {@code in}: air when the air fluid exists (oxygen from a pipe becomes air, so the
-     * tanks never hold two fluids that block each other), the same fluid otherwise; null when it is not breathable.
-     */
     public static FluidStack toStored(FluidStack in)
     {
         if (in == null || in.getFluid() == null || in.amount <= 0 || !isBreathable(in.getFluid())) return null;
         return ModFluids.air != null ? new FluidStack(ModFluids.air, in.amount) : in.copy();
     }
 
-    /** True for an item the container slots take: a fluid container of a breathable fluid (full or empty) or an air item. */
     public static boolean isAirContainer(ItemStack stack)
     {
         if (stack == null || stack.getItem() == null) return false;
@@ -127,18 +116,12 @@ public final class AirContainers
         return false;
     }
 
-    /**
-     * Moves one item of slot {@code in} through the tank and into slot {@code out}: a full container or air item is
-     * emptied into the tank, an empty one is filled from it. Returns true when something moved. Works on the slot
-     * array so the caller decides when to save.
-     */
     public static boolean process(ItemStack[] slots, int in, int out, FluidTank tank)
     {
         ItemStack stack = slots[in];
         if (stack == null || stack.getItem() == null || tank == null) return false;
         try
         {
-            // container -> tank
             FluidStack contained = FluidContainerRegistry.getFluidForFilledItem(stack);
             if (contained != null)
             {
@@ -150,7 +133,6 @@ public final class AirContainers
                 move(slots, in, out, emptied);
                 return true;
             }
-            // air item -> tank
             for (AirItem item : airItems)
             {
                 if (!matches(item.full, stack)) continue;
@@ -164,7 +146,6 @@ public final class AirContainers
             }
             FluidStack inTank = tank.getFluid();
             if (inTank == null || inTank.amount <= 0) return false;
-            // tank -> empty container
             if (FluidContainerRegistry.isEmptyContainer(stack))
             {
                 int capacity = FluidContainerRegistry.getContainerCapacity(inTank, stack);
@@ -175,7 +156,6 @@ public final class AirContainers
                 move(slots, in, out, filled);
                 return true;
             }
-            // tank -> empty air item
             if (inTank.getFluid() != ModFluids.air) return false;
             for (AirItem item : airItems)
             {
@@ -193,7 +173,6 @@ public final class AirContainers
         return false;
     }
 
-    /** Runs {@link #process} until nothing more moves (bounded by the stack in the slot). */
     public static boolean processAll(ItemStack[] slots, int in, int out, FluidTank tank)
     {
         boolean moved = false;

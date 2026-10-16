@@ -1,13 +1,13 @@
 # Crossbow
 
-The Clockwork Crossbow is a repeating crossbow with three modes. In repetition mode it fires a magazine of six bolts one after another while you hold the right mouse button. In grappling hook mode it shoots a hook that pulls you to a block. In sniper mode, with a bipod down, it fires one strong, straight bolt. It takes reusable Crossbow Magazines, which you fill with arrows or Crossbow Bolts, and you change the mode with a key.
+The Clockwork Crossbow is a repeating crossbow with three modes. In repetition mode it fires a magazine of eight bolts one after another while you hold the right mouse button. In grappling hook mode it shoots a hook that pulls you to a block. In sniper mode, with a bipod down, it fires one strong, straight bolt. It takes reusable Crossbow Magazines, which you fill with arrows or Crossbow Bolts, and you change the mode with a key.
 
 | | |
 |---|---|
 | Type | Weapon |
 | Stack size | 1 (Crossbow Magazine: 16, Crossbow Bolt: 64) |
 | Obtained by | Crafting |
-| Key | Crossbow Mode (V) |
+| Key | Change State (V) |
 | Config section | `crossbow`, `crossbow.magazine`, `crossbow.ammo`, `crossbow.grapple`, `crossbow.sniper`, `enabled.crossbow` |
 
 ## Crafting
@@ -30,7 +30,7 @@ Two recipes fill a magazine in the crafting grid, so you can make loaded magazin
 
 ## The Crossbow Magazine
 
-The magazine is not used up. It holds six charges, and you load it again when it is empty. It holds one kind of ammunition at a time: arrows or Crossbow Bolts. An empty magazine takes whichever ammunition it finds first in your inventory, hotbar first, and then only that kind until it is empty again.
+The magazine is not used up. It holds eight charges, and you load it again when it is empty. It holds one kind of ammunition at a time: arrows or Crossbow Bolts. An empty magazine takes whichever ammunition it finds first in your inventory, hotbar first, and then only that kind until it is empty again.
 
 To load it, hold the magazine in your hand and hold right click. One charge goes in from your inventory with each click sound, about five a second, until the magazine is full or you run out of that ammunition. If you have none, you hear a click and get a message that says what is missing. In creative mode you do not need ammunition.
 
@@ -66,7 +66,7 @@ A bolt stuck in a block cannot be picked up again by default. If the server allo
 
 ## Changing the mode
 
-Press the Crossbow Mode key (V by default) with the crossbow in your hand. The modes go in a circle: repetition, grappling hook, sniper, and back to repetition. The mode is kept in the crossbow, shows in its name in the hotbar, and the tooltip tells you which key changes it.
+Press the Change State key (V by default) with the crossbow in your hand. The modes go in a circle: repetition, grappling hook, sniper, and back to repetition. The mode is kept in the crossbow, shows in its name in the hotbar, and the tooltip tells you which key changes it.
 
 A mode that a server has turned off is skipped. A crossbow left in a mode that is off fires in repetition mode.
 
@@ -100,6 +100,14 @@ The bipod folds when you move, jump, stop sneaking or ride something. Walking wh
 
 ![Sniper mode: crouched with the bipod down, and the zoomed view of a distant sheep](images/crossbow-11.png)
 
+## Gatling mode: the Skeleton backpack's quiver
+
+Wear a Skeleton backpack with arrows or Crossbow Bolts in its quiver, and the crossbow needs no magazine. Hold right click and it fires without stopping, one item of the quiver per bolt, a little faster than a magazine: between 6 and 7 bolts a second. It fires Crossbow Bolts first and arrows after them. The drum stays full and turns one chamber per bolt. When the quiver is empty, the crossbow fires the magazine inside it and then reloads from your inventory as usual. The magazine inside is not touched while the quiver feeds the crossbow.
+
+The other modes use the quiver too. The grappling hook takes its charge from the quiver, and the sniper mode with the bipod down fires its single strong bolts from the quiver at its own pace. With the bipod folded the sniper mode fires like the gatling mode. Sneak + right click still swaps the magazine.
+
+To use magazines while you wear the backpack, turn its abilities off with the Gear On/Off key (N). The Skeleton backpack also makes your bolts and arrows leave about 30 % faster, so they fly flatter and hit about 30 % harder (see [Backpacks](Backpacks#skeleton-backpack)).
+
 ## Tips
 
 - Keep magazines and ammunition in the hotbar. Both are looked up there first.
@@ -108,7 +116,7 @@ The bipod folds when you move, jump, stop sneaking or ride something. Walking wh
 
 ## Configuration
 
-The size of the magazine, the loading pause and the two magazine recipes are in [Crossbow Magazine](Configuration#crossbow-magazine-crossbowmagazine). The list of ammunition and the damage of Crossbow Bolts are in [Ammunition](Configuration#ammunition-crossbowammo). The pause between bolts, the reload time, damage, speed, the recoverable bolts and the wear are in [Clockwork crossbow](Configuration#clockwork-crossbow-crossbow). The hook has its own numbers (range, speed, cooldown, cost) in [Grappling hook](Configuration#grappling-hook-crossbowgrapple), and the sniper mode in [Sniper mode](Configuration#sniper-mode-crossbowsniper). Each mode has a switch.
+The size of the magazine, the loading pause and the two magazine recipes are in [Crossbow Magazine](Configuration#crossbow-magazine-crossbowmagazine). The list of ammunition and the damage of Crossbow Bolts are in [Ammunition](Configuration#ammunition-crossbowammo). The pause between bolts, the reload time, damage, speed, the recoverable bolts and the wear are in [Clockwork crossbow](Configuration#clockwork-crossbow-crossbow). The hook has its own numbers (range, speed, cooldown, cost) in [Grappling hook](Configuration#grappling-hook-crossbowgrapple), and the sniper mode in [Sniper mode](Configuration#sniper-mode-crossbowsniper). The gatling mode has its rate and its switch in [Gatling mode](Configuration#gatling-mode-crossbowquiver). Each mode has a switch.
 
 ## See also
 

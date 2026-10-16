@@ -1,5 +1,9 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.block.BlockGear;
+import adventurebackpack.api.IInventoryTanks;
+import adventurebackpack.api.IFuelPack;
+import adventurebackpack.api.IBackWearableItem;
 import com.darkona.adventurebackpack.block.BlockStation;
 import com.darkona.adventurebackpack.client.models.ModelCopterPack;
 import com.darkona.adventurebackpack.common.StationTransfer;
@@ -35,14 +39,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-/**
- * Created on 31/12/2014
- *
- * @author Darkona
- */
 public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPack
 {
-
     public ItemCopterPack()
     {
         super();
@@ -51,11 +49,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
         setMaxStackSize(1);
     }
 
-    /**
-     * The copter pack is always registered (so worlds and servers keep their ids whatever mods are installed), but it
-     * only works when it is enabled in the config and some loaded mod registers a fluid of fuels.list (BuildCraft,
-     * Forestry, Railcraft, GregTech...). No fuel mod is a dependency: with none of them it is inert.
-     */
     public static boolean isUsable()
     {
         return ConfigHandler.COPTERPACK_ENABLED && GeneralReference.fuelRegistered;
@@ -79,7 +72,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
         return amount;
     }
 
-    /** Sneak + right click on a Fuel Station with the pack in hand reaches the station, which fills the pack. */
     @Override
     public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
     {
@@ -89,6 +81,12 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
     public static byte OFF_MODE = 0;
     public static byte NORMAL_MODE = 1;
     public static byte HOVER_MODE = 2;
+
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        return BlockGear.useGearOn(stack, player, world, x, y, z, side);
+    }
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -104,7 +102,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isCurrent)
     {
     }
-
 
     @SuppressWarnings(value = "unchecked")
     public void pushEntities(World world, EntityPlayer player, float speed)
@@ -150,13 +147,11 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
         }
     }
 
-
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
         return ModelCopterPack.instance.setWearable(stack);
     }
-
 
     @SideOnly(Side.CLIENT)
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
@@ -176,10 +171,8 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
         if (!isUsable()) return;
-        // Switched off: nothing to fly, so no inventory is rebuilt from the stack's NBT every tick
         if (stack == null || stack.stackTagCompound == null || stack.stackTagCompound.getByte("status") == OFF_MODE) return;
-        InventoryCopterPack inv = new InventoryCopterPack(Wearing.getWearingCopter(player));
-        inv.openInventory();
+        InventoryCopterPack inv = liveInventory(player, stack);
         boolean canElevate = true;
         if (inv.getStatus() != OFF_MODE)
         {
@@ -204,11 +197,9 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
                         player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.copterpack.off"));
                     }
                     return;
-                    //TODO play "backpackOff" sound
                 }
                 if (inv.getStatus() == HOVER_MODE)
                 {
-
                     inv.setStatus(NORMAL_MODE);
                     inv.dirtyStatus();
                     if (!world.isRemote)
@@ -216,7 +207,6 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
                         player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.copterpack.outoffuel"));
                     }
                     return;
-                    //TODO play "outofFuel" sound
                 }
             }
         }
@@ -248,27 +238,22 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
             }
             player.fallDistance = 0;
 
-            //Smoke: every client draws it for the players it sees, from the synced status (no packet per tick)
             if (world.isRemote)
             {
                 ClientActions.showParticlesAtEntity(player, EntityParticlePacket.COPTER_PARTICLE);
             }
 
             float factor = ConfigHandler.COPTER_AIR_CONTROL;
-            // Airwave: item motion belongs to the server, and the item search runs once every few ticks
             boolean push = !world.isRemote && TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), ConfigHandler.COPTER_PUSH_INTERVAL_TICKS);
             if (!player.onGround)
             {
                 if (push) pushEntities(world, player, 0.2f);
-                //movement boost
                 player.moveFlying(player.moveStrafing,player.moveForward,factor);
             } else
             {
                 if (push) pushEntities(world, player, factor + 0.4f);
             }
 
-            // Climbing: this client's own player reads the jump key and lifts itself; the server only learns when
-            // climbing starts or stops (one packet per change), and charges the climb from that.
             boolean climbing = false;
             BackpackProperty props = BackpackProperty.get(player);
             if (world.isRemote)
@@ -293,15 +278,26 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
             double multiplier = 1.0;
             if (inv.fuelTank.getFluid() != null && GeneralReference.isValidFuel(inv.getFuelTank().getFluid().getFluid()))
             {
-                multiplier = GeneralReference.liquidFuels.get(inv.getFuelTank().getFluid().getFluid().getName());
+                multiplier = GeneralReference.fuelMultiplier(inv.getFuelTank().getFluid().getFluid());
             }
-            // Fuel is taken on a world-time beat instead of a counter saved in the stack every tick, so the stack's
-            // NBT (and the sync to nearby players) only changes when fuel or status really change.
             if (TickThrottle.every(world.getTotalWorldTime(), player.getEntityId(), ConfigHandler.COPTER_FUEL_INTERVAL_TICKS))
             {
                 inv.consumeFuel(FlightCost.copterFuelPerInterval(perTick, ConfigHandler.COPTER_FUEL_INTERVAL_TICKS, multiplier));
             }
         }
+    }
+
+    public static InventoryCopterPack liveInventory(EntityPlayer player, ItemStack stack)
+    {
+        BackpackProperty props = BackpackProperty.get(player);
+        IInventoryTanks live = props == null ? null : props.getLiveGear();
+        if (live instanceof InventoryCopterPack && ((InventoryCopterPack) live).isCurrentFor(stack))
+        {
+            return (InventoryCopterPack) live;
+        }
+        InventoryCopterPack inv = new InventoryCopterPack(stack);
+        if (props != null && props.getWearable() == stack) props.setLiveGear(inv);
+        return inv;
     }
 
     @Override
@@ -338,6 +334,4 @@ public class ItemCopterPack extends ItemAB implements IBackWearableItem, IFuelPa
     {
         return Resources.modelTextures("copterPack");
     }
-
-
 }

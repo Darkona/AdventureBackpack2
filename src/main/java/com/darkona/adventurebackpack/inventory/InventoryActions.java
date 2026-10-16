@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
-import com.darkona.adventurebackpack.common.Constants;
+import adventurebackpack.api.IInventoryTanks;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.util.FluidUtils;
 import net.minecraft.block.Block;
@@ -11,78 +11,46 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-/**
- * Created on 16/10/2014
- *
- * @author Darkona
- */
 public class InventoryActions
 {
-
-    /**
-     * What a complicated mess. I hated every minute of coding this.
-     * This code takes a fluid container item. If its filled, it empties it out into a tank.
-     * If its empty, it drains the tank into the item. Then it puts the resulting filled or empty item
-     * into a different slot, consuming the first one. If there is no empty container, such as the Forestry Cells,
-     * it simply fills the tank.
-     *
-     * @param inventory The inventory type thing that will have its tank updated.
-     * @param tank     The tank that's going to be updated.
-     * @param slotIn   The slot in which the fluid container item must be to update the tank.
-     * @return True if the tank was filled and the resulting filled or empty container item was placed in the other slot.
-     */
     public static boolean transferContainerTank(IInventoryTanks inventory, FluidTank tank, int slotIn)
     {
         ItemStack stackIn = inventory.getStackInSlot(slotIn);
         if (tank == null || stackIn == null) return false;
 
-        //Set slot out for whatever number the output slot should be.
         int slotOut = slotIn + 1;
 
-        //CONTAINER ===========> TANK
         if (FluidContainerRegistry.isFilledContainer(stackIn))
         {
-            //See if the tank can accept moar fluid.
             int fill = tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), false);
 
-            if (fill > 0)//If can accept the fluid
+            if (fill > 0)
             {
-                //Get the empty container for the input, if there's any.
                 ItemStack stackOut = FluidContainerRegistry.drainFluidContainer(stackIn);
 
                 if (inventory.getStackInSlot(slotOut) == null || stackOut == null)
                 {
-
                     tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
-                    //inventory.dirtyTanks();
                     inventory.decrStackSizeNoSave(slotIn, 1);
                     inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
-                    //inventory.dirtyInventory();
                     return true;
                 } else if (inventory.getStackInSlot(slotOut).getItem() == stackOut.getItem())
                 {
                     int maxStack = inventory.getStackInSlot(slotOut).getMaxStackSize();
                     if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
                     {
-
                         tank.fill(FluidContainerRegistry.getFluidForFilledItem(stackIn), true);
-                        //inventory.dirtyTanks();
                         inventory.decrStackSizeNoSave(slotIn, 1);
                         inventory.getStackInSlot(slotOut).stackSize++;
-                       // inventory.dirtyInventory();
                         return true;
                     }
                 }
             }
         }
 
-        //TANK =====> CONTAINER
-
         if (tank.getFluid() != null && tank.getFluidAmount() > 0 && FluidUtils.isEmptyContainerForFluid(stackIn, tank.getFluid().getFluid()))
         {
-            //How much fluid can this container hold.
             int amount = FluidContainerRegistry.getContainerCapacity(tank.getFluid(), stackIn);
-            //Let's see how much can we drain this tank
             FluidStack drain = tank.drain(amount, false);
 
             ItemStack stackOut = FluidContainerRegistry.fillFluidContainer(drain, stackIn);
@@ -92,10 +60,8 @@ public class InventoryActions
                 if (inventory.getStackInSlot(slotOut) == null)
                 {
                     tank.drain(amount, true);
-                    //inventory.dirtyTanks();
                     inventory.decrStackSizeNoSave(slotIn, 1);
                     inventory.setInventorySlotContentsNoSave(slotOut, stackOut);
-                    //inventory.dirtyInventory();
                     return true;
                 } else
                 if (stackOut.getItem() != null
@@ -105,10 +71,8 @@ public class InventoryActions
                     if (maxStack > 1 && (inventory.getStackInSlot(slotOut).stackSize + 1) <= maxStack)
                     {
                         tank.drain(amount, true);
-                        //inventory.dirtyTanks();
                         inventory.decrStackSizeNoSave(slotIn, 1);
                         inventory.getStackInSlot(slotOut).stackSize++;
-                       // inventory.dirtyInventory();
                         return true;
                     }
                 }
@@ -120,8 +84,9 @@ public class InventoryActions
     public static void consumeItemInInventory(IInventory backpack, Item item)
     {
         int i = -1;
-        for (int j = 0; j < Constants.inventorySize - 7; ++j)
+        for (int j = 0; j < backpack.getSizeInventory(); ++j)
         {
+            if (j >= BackpackLayout.LEGACY_STORAGE && j < BackpackLayout.FIRST_EXTRA_STORAGE) continue;
             if (backpack.getStackInSlot(j) != null && backpack.getStackInSlot(j).getItem() == item)
             {
                 i = j;
@@ -161,5 +126,4 @@ public class InventoryActions
         }
         return false;
     }
-
 }

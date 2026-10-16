@@ -10,11 +10,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
 
-/**
- * Saves the {@link SpiderLedger} with the world. It lives in {@code World.mapStorage}, which Forge shares between all
- * dimensions of a server, so one ledger covers every dimension and survives restarts, logouts, deaths and dimension
- * changes without more code.
- */
 public class SpiderLedgerData extends WorldSavedData
 {
     public static final String NAME = "adventurebackpack_spiders";
@@ -24,7 +19,6 @@ public class SpiderLedgerData extends WorldSavedData
 
     private SpiderLedger ledger = new SpiderLedger();
 
-    /** Called by {@link MapStorage#loadData} through reflection. */
     public SpiderLedgerData(String name)
     {
         super(name);
@@ -35,7 +29,6 @@ public class SpiderLedgerData extends WorldSavedData
         return ledger;
     }
 
-    /** The ledger of this server. Server side only. */
     public static SpiderLedgerData get(World world)
     {
         MapStorage storage = world.mapStorage;

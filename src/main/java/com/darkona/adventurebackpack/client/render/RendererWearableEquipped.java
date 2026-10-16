@@ -1,6 +1,6 @@
 package com.darkona.adventurebackpack.client.render;
 
-import com.darkona.adventurebackpack.item.IBackWearableItem;
+import adventurebackpack.api.IBackWearableItem;
 import com.darkona.adventurebackpack.util.Wearing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
@@ -15,14 +15,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-/**
- * Created on 25/12/2014
- *
- * @author Darkona
- */
 public class RendererWearableEquipped extends RendererLivingEntity
 {
-
     public ResourceLocation texture;
     public ModelBiped modelBipedMain;
 
@@ -43,17 +37,12 @@ public class RendererWearableEquipped extends RendererLivingEntity
         render(entity, x, y, z, rotX, rotY, rotZ, yaw, pitch, 0.0F, 0.0F);
     }
 
-    /**
-     * {@code headX} and {@code headY} are the head angles of the player's own model, copied to the wearable's
-     * {@code bipedHead} so a part hung from the head (the Scuba Gear's mask) follows the look. Models that only use
-     * the body ignore them.
-     */
     public void render(Entity entity, double x, double y, double z, float rotX, float rotY, float rotZ, float yaw, float pitch, float headX, float headY)
     {
         try
         {
             if (!Wearing.isWearingWearable((EntityPlayer) entity)) return;
-            ItemStack wearable = Wearing.getWearingWearable((EntityPlayer) entity).copy();
+            ItemStack wearable = Wearing.getWearingWearable((EntityPlayer) entity);
             IBackWearableItem wearableItem = (IBackWearableItem) wearable.getItem();
             modelBipedMain = wearableItem.getWearableModel(wearable);
             texture = wearableItem.getWearableTexture(wearable);
@@ -70,7 +59,6 @@ public class RendererWearableEquipped extends RendererLivingEntity
                 renderMainModel((EntityPlayer) entity, 0, 0, 0, 0, 0, 0.0625f);
             } catch (Exception oops)
             {
-
             }
             OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -78,7 +66,6 @@ public class RendererWearableEquipped extends RendererLivingEntity
             GL11.glPopMatrix();
         }catch(Exception ex)
         {
-            //discard silently because NO ONE CARES
         }
     }
 

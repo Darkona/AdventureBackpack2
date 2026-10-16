@@ -1,13 +1,17 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.block.PlacedWearables;
+import adventurebackpack.api.IBackWearableItem;
 import com.darkona.adventurebackpack.common.AbilityToggle;
 import com.darkona.adventurebackpack.AdventureBackpack;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.client.models.ModelBackpackArmor;
+import com.darkona.adventurebackpack.common.RenderInfo;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.events.WearableEvent;
+import adventurebackpack.api.WearableEvent;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -44,19 +48,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
 @Optional.InterfaceList({
         @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles"),
         @Optional.Interface(iface = "baubles.api.expanded.IBaubleExpanded", modid = "Baubles|Expanded")
 })
 public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, IBauble, IBaubleExpanded
 {
-
-
     public ItemAdventureBackpack()
     {
         super();
@@ -65,53 +62,29 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
         setMaxStackSize(1);
     }
 
-
     public static Item getItemFromBlock(Block block)
     {
         return block instanceof BlockAdventureBackpack ? ModItems.adventureBackpack : null;
     }
 
-    /**
-     * Return the enchantability factor of the item, most of the timeInSeconds is based on material.
-     */
     @Override
     public int getItemEnchantability()
     {
         return 0;
     }
 
-    /**
-     * Return whether this item is repairable in an anvil.
-     *
-     * @param p_82789_1_
-     * @param p_82789_2_
-     */
     @Override
     public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_)
     {
         return false;
     }
 
-    /**
-     * Determines if the durability bar should be rendered for this item.
-     * Defaults to vanilla stack.isDamaged behavior.
-     * But modders can use this for any data they wish.
-     *
-     * @param stack The current Item Stack
-     * @return True if it should render the 'durability' bar.
-     */
     @Override
     public boolean showDurabilityBar(ItemStack stack)
     {
         return false;
     }
 
-    /**
-     * Queries the percentage of the 'Durability' bar that should be drawn.
-     *
-     * @param stack The current ItemStack
-     * @return 1.0 for 100% 0 for 0%
-     */
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
@@ -121,7 +94,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
     @Override
     public void onCreated(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer)
     {
-
         super.onCreated(stack, par2World, par3EntityPlayer);
         BackpackNames.setBackpackColorNameFromDamage(stack, stack.getItemDamage());
     }
@@ -135,40 +107,12 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
             stack.stackTagCompound.setString("colorName", "Standard");
         }
 
-        // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
         BlockAdventureBackpack backpack = ModBlocks.blockBackpack;
 
-        if (y <= 0 || y >= world.getHeight())
-        {
-            return false;
-        }
         if (backpack.canPlaceBlockOnSide(world, x, y, z, side))
         {
-            if (world.getBlock(x, y, z).getMaterial().isSolid())
-            {
-                switch (side)
-                {
-                    case 0:
-                        --y;
-                        break;
-                    case 1:
-                        ++y;
-                        break;
-                    case 2:
-                        --z;
-                        break;
-                    case 3:
-                        ++z;
-                        break;
-                    case 4:
-                        --x;
-                        break;
-                    case 5:
-                        ++x;
-                        break;
-                }
-            }
-            if (y <= 0 || y >= world.getHeight())
+            y = PlacedWearables.placeY(world, x, y, z, side);
+            if (y < 0)
             {
                 return false;
             }
@@ -181,8 +125,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
                     ((TileAdventureBackpack) world.getTileEntity(x, y, z)).loadFromNBT(stack.stackTagCompound);
                     if (from)
                     {
-                        // Shrink the used stack like ItemBlock does, so a cancelled place event (protected
-                        // area) can give it back; taking it out of the slot loses the backpack (#86).
                         --stack.stackSize;
                     } else
                     {
@@ -217,7 +159,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
         return stack;
     }
 
-
     @Override
     public boolean isDamageable()
     {
@@ -234,8 +175,13 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
     @Override
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, int armorSlot)
     {
-        return new ModelBackpackArmor();
+        ModelBackpackArmor model = armorModel;
+        if (model == null) armorModel = model = new ModelBackpackArmor();
+        return model;
     }
+
+    @SideOnly(Side.CLIENT)
+    private static ModelBackpackArmor armorModel;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -267,7 +213,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
         }
     }
 
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     @SideOnly(Side.CLIENT)
@@ -275,6 +220,7 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
     {
         for (int i = 0; i < BackpackNames.backpackNames.length; i++)
         {
+            if (!ConfigHandler.isBackpackTypeEnabled(BackpackNames.backpackNames[i])) continue;
             ItemStack bp = new ItemStack(this, 1, 0);
             bp.setItemDamage(i);
             NBTTagCompound c = new NBTTagCompound();
@@ -287,15 +233,10 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
     @Override
     public void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
     {
-
         if (world == null || player == null || stack == null) return;
-        // enabled.abilities and the player's own switch (#57)
         if (!AbilityToggle.isActive(player)) return;
 
-        if (BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(stack)))
-        {
-            BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
-        }
+        BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
     }
 
     @Override
@@ -311,7 +252,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
         }
     }
 
-    /** The Creeper Backpack explodes when its wearer dies, wherever the backpack goes afterwards. */
     public static void deathEffects(World world, EntityPlayer player, ItemStack stack)
     {
         if (AbilityToggle.isActive(player) && ConfigHandler.CREEPER_DEATH_EXPLOSION && "Creeper".equals(BackpackNames.getBackpackColorName(stack)))
@@ -320,7 +260,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
         }
     }
 
-    /** Places the worn backpack near the death point, or drops it when no spot is free. Returns where it was placed, or null when dropped. */
     public ChunkCoordinates placeOrDropOnDeath(World world, EntityPlayer player, ItemStack stack)
     {
         deathEffects(world, player, stack);
@@ -333,7 +272,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
         return placed;
     }
 
-    /** Drops the worn backpack as an item (into the death drop list while the player captures drops). */
     public void dropOnDeath(World world, EntityPlayer player, ItemStack stack)
     {
         deathEffects(world, player, stack);
@@ -362,7 +300,6 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
     @Override
     public void onEquipped(World world, EntityPlayer player, ItemStack stack)
     {
-
     }
 
     @Override
@@ -384,23 +321,21 @@ public class ItemAdventureBackpack extends ItemAB implements IBackWearableItem, 
     @Override
     @SideOnly(Side.CLIENT)
     public ResourceLocation getWearableTexture(ItemStack wearable){
-
-        ResourceLocation modelTexture;
-
-        if (BackpackNames.getBackpackColorName(wearable).equals("Standard"))
-        {
-            modelTexture = Resources.holidayTexture(AdventureBackpack.instance.Holiday);
-        } else
-        {
-            modelTexture = Resources.backpackTextureFromString(BackpackNames.getBackpackColorName(wearable));
-        }
-        return modelTexture;
+        return modelTexture(RenderInfoCache.get(wearable));
     }
 
+    @SideOnly(Side.CLIENT)
+    public static ResourceLocation modelTexture(RenderInfo info)
+    {
+        if (info.texture == null)
+        {
+            info.texture = RenderInfo.STANDARD.equals(info.colorName)
+                    ? Resources.holidayTexture(AdventureBackpack.instance.Holiday)
+                    : Resources.backpackTextureFromString(info.colorName);
+        }
+        return (ResourceLocation) info.texture;
+    }
 
-    // ---------------------------------------------------------------- Baubles (compat/baubles; stripped without Baubles)
-
-    /** Original Baubles has no back slot: the belt is the closest. */
     @Override
     @Optional.Method(modid = "Baubles")
     public BaubleType getBaubleType(ItemStack itemstack)

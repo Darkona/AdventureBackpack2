@@ -31,8 +31,10 @@ itemGroup.adventurebackpack=Zaino dell'avventuriero
 
 #Keybindings
 keys.adventureBackpack.category=Zaini dell'avventuriero
-keys.adventureBackpack.openBackpackInventory=Apri lo zaino
-keys.adventureBackpack.switchHoseTank=Cambia serbatoio per il tubo
+keys.adventureBackpack.gear=Apri l'equipaggiamento
+keys.adventureBackpack.ability=Attiva/disattiva l'equipaggiamento
+keys.adventureBackpack.mode=Cambia modalità
+keys.adventureBackpack.state=Cambia stato
 
 #FREDDYHAIR: Italian names (they follow NEI's order); @lines 75-76 I didn't stick literally to the literal translation
 Cow = Mucca
@@ -103,3 +105,6 @@ Standard = Standard
 White = Bianco
 Wolf = Lupo
 Yellow = Giallo
+tile.adventurebackpack:blockDistillery.name=Distilleria
+tile.adventurebackpack:blockGear.name=Equipaggiamento posato
+fluid.bioethanol=Etanolo

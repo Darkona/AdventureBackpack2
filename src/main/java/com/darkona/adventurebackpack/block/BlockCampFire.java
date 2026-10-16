@@ -22,11 +22,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created on 05/01/2015
- *
- * @author Darkona
- */
 public class BlockCampFire extends BlockContainer
 {
     private IIcon icon;
@@ -36,7 +31,6 @@ public class BlockCampFire extends BlockContainer
         super(Material.rock);
         this.setTickRandomly(true);
         this.setCreativeTab(CreativeTabAB.ADVENTURE_BACKPACK_CREATIVE_TAB);
-
     }
 
     private void func_149978_e()
@@ -80,9 +74,6 @@ public class BlockCampFire extends BlockContainer
         return false;
     }
 
-    /**
-     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
-     */
     @Override
     public boolean renderAsNormalBlock()
     {
@@ -101,18 +92,12 @@ public class BlockCampFire extends BlockContainer
         return false;
     }
 
-    /**
-     * Indicate if a material is a normal solid opaque cube
-     */
     @Override
     public boolean isBlockNormalCube()
     {
         return false;
     }
 
-    /**
-     * A randomly called display update to be able to add particles or other items for display
-     */
     @SideOnly(Side.CLIENT)
     @Override
     public void randomDisplayTick(World world, int posX, int posY, int posZ, Random rnd)
@@ -126,13 +111,11 @@ public class BlockCampFire extends BlockContainer
             rndX = posX + 0.5f - (float) rnd.nextGaussian() * 0.08f;
             rndY = (float) (posY + 1f - Math.cos((float) rnd.nextGaussian() * 0.1f));
             rndZ = posZ + 0.5f - (float) rnd.nextGaussian() * 0.08f;
-            //world.spawnParticle("flame", posX+Math.sin(i/4), posY, posZ+Math.cos(i/4), 0.0D, 0.0D, 0.0D);
             world.spawnParticle("flame", rndX, rndY + 0.16, rndZ, 0.0D, 0.0D, 0.0D);
         }
         TileEntity te = world.getTileEntity(posX, posY, posZ);
         if (te instanceof TileCampfire && ((TileCampfire) te).isCooking())
         {
-            // Something on the fire: more smoke and a sizzle now and then (client only, from the synced flag).
             for (int i = 0; i < 3; i++)
             {
                 world.spawnParticle("smoke", posX + 0.35 + rnd.nextFloat() * 0.3, posY + 0.3, posZ + 0.35 + rnd.nextFloat() * 0.3, 0.0D, 0.04D, 0.0D);
@@ -142,14 +125,8 @@ public class BlockCampFire extends BlockContainer
                 world.playSound(posX + 0.5, posY + 0.5, posZ + 0.5, "random.fizz", 0.15F, 1.8F + rnd.nextFloat() * 0.2F, false);
             }
         }
-
     }
 
-    /**
-     * Right click with a raw item puts it on the fire (campfire.cooking). Anything that cannot cook here falls through
-     * to the item's own use (eating, placing a block). The client only predicts that the click is taken, so it does not
-     * start eating; the server does the work.
-     */
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
@@ -173,7 +150,6 @@ public class BlockCampFire extends BlockContainer
         return true;
     }
 
-    /** Scheduled when an item on the fire is due (random ticks land here too and only reschedule). */
     @Override
     public void updateTick(World world, int x, int y, int z, Random random)
     {
@@ -217,29 +193,12 @@ public class BlockCampFire extends BlockContainer
         this.setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 0.15F, 0.8F);
     }
 
-    /**
-     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
-     * cleared to be reused)
-     *
-     * @param p_149668_1_
-     * @param p_149668_2_
-     * @param p_149668_3_
-     * @param p_149668_4_
-     */
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_)
     {
         return super.getCollisionBoundingBoxFromPool(p_149668_1_, p_149668_2_, p_149668_3_, p_149668_4_);
     }
 
-    /**
-     * Returns the bounding box of the wired rectangular prism to render.
-     *
-     * @param p_149633_1_
-     * @param p_149633_2_
-     * @param p_149633_3_
-     * @param p_149633_4_
-     */
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World p_149633_1_, int p_149633_2_, int p_149633_3_, int p_149633_4_)
     {
@@ -252,30 +211,12 @@ public class BlockCampFire extends BlockContainer
         return icon;
     }
 
-    /**
-     * Gets the block's texture. Args: side, meta
-     *
-     * @param p_149691_1_
-     * @param p_149691_2_
-     */
     @Override
     public IIcon getIcon(int p_149691_1_, int p_149691_2_)
     {
         return icon;
     }
 
-    /**
-     * Determines if this block is classified as a Bed, Allowing
-     * players to sleep in it, though the block has to specifically
-     * perform the sleeping functionality in it's activated event.
-     *
-     * @param world  The current world
-     * @param x      X Position
-     * @param y      Y Position
-     * @param z      Z Position
-     * @param player The player or camera entity, null in some cases.
-     * @return True to treat this as a bed
-     */
     @Override
     public boolean isBed(IBlockAccess world, int x, int y, int z, EntityLivingBase player)
     {

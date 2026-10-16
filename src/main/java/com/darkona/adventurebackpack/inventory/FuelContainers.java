@@ -7,17 +7,10 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-/**
- * Fuel containers for the container slots of the Flamethrower Pack: any container of {@link FluidContainerRegistry}
- * (BuildCraft buckets, Forestry cans and capsules, GregTech and IC2 cells, Railcraft buckets) of a fuel on
- * fuels.list, full to empty into the tanks, or empty to fill from them. Runs on player actions only (Tier 2), and
- * catches what another mod's container throws.
- */
 public final class FuelContainers
 {
     private FuelContainers() {}
 
-    /** True for a registered container of a fuel (full), or an empty container that some fuel fits in. */
     public static boolean isFuelContainer(ItemStack stack)
     {
         if (stack == null || stack.getItem() == null) return false;
@@ -32,11 +25,6 @@ public final class FuelContainers
         }
     }
 
-    /**
-     * Moves one item of slot {@code in} through the tank and into slot {@code out}: a full fuel container is emptied
-     * into the tank, an empty one is filled from it. Returns true when something moved. Works on the slot array so
-     * the caller decides when to save.
-     */
     public static boolean process(ItemStack[] slots, int in, int out, FluidTank tank)
     {
         ItemStack stack = slots[in];
@@ -69,7 +57,6 @@ public final class FuelContainers
         return false;
     }
 
-    /** Runs {@link #process} until nothing more moves (bounded by the stack in the slot). */
     public static boolean processAll(ItemStack[] slots, int in, int out, FluidTank tank)
     {
         boolean moved = false;

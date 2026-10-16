@@ -25,7 +25,7 @@ With a mod that brings metal plates, such as steel, there are extra recipes with
 
 1. Put the pack on. Hold it, right click in the air, and press Equip in the window. Once you wear it, B opens the window and the same button takes it off.
 2. Fill the tanks. Each holds 4000 mB. Put a bucket or can of fuel in the container slots of the window, or fill the pack at a [Fuel Station](Fuel-Station), which does it in one click. Both tanks hold the same fuel; a different fuel is refused.
-3. Light the pilot with Sneak + N. You get a message in chat. Press Sneak + N again to put it out.
+3. Light the pilot with Gear On/Off (N by default), or with the ON/OFF button in the pack's window. You get a message in chat. Press N again to put it out.
 4. Hold the Flamethrower in your hand and hold right click.
 
 ![Flamethrower Pack window with fuel in both tanks and the pilot lit](images/flamethrower-2.png)
@@ -61,9 +61,9 @@ The cost of a burst is multiplied by the fuel: oil burns 1.5 times faster than f
 
 | Action | Control |
 |---|---|
-| Open the window | B, or right click with the pack in hand |
+| Open the window | B, or right click in the air with the pack in hand |
 | Put on, take off | The button of the window |
-| Light and put out the pilot | Sneak + N |
+| Light and put out the pilot | N (Gear On/Off), or the ON/OFF button in the window |
 | Fire | Hold right click with the Flamethrower in hand |
 
 ## Tips
@@ -71,6 +71,10 @@ The cost of a burst is multiplied by the fuel: oil burns 1.5 times faster than f
 - Light the pilot before the fight. It costs no fuel by default, and with empty tanks it does not light.
 - Reach is short, 6 blocks. Back away while you fire.
 - Keep a spare container of fuel in the window of the pack, or a Fuel Station at camp.
+
+## Putting it down
+
+Sneak and right click the top of a block with the pack in hand to put it on the ground; the pilot goes out. Right click it to open its window, break it or sneak and right click it with an empty hand to pick it up. Pipes of other mods can fill its tanks with fuel. See [Gear](Gear#placing-gear-on-the-ground).
 
 ## Dying
 

@@ -2,10 +2,11 @@ package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.common.AbilityToggle;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
+import com.darkona.adventurebackpack.common.QuiverFeedRules;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.ai.EntityAIHorseFollowOwner;
-import com.darkona.adventurebackpack.events.WearableEvent;
+import adventurebackpack.api.WearableEvent;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.init.ModNetwork;
 import com.darkona.adventurebackpack.inventory.InventoryBackpack;
@@ -17,6 +18,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemStack;
@@ -31,16 +33,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.UUID;
 
-/**
- * Created on 17/10/2014
- *
- * @author Darkona
- */
 public class GeneralEventHandler
 {
-    /**
-     * @param event
-     */
     @SubscribeEvent
     public void eatGoldenApple(PlayerUseItemEvent.Finish event)
     {
@@ -48,10 +42,8 @@ public class GeneralEventHandler
         if (ConfigHandler.RAINBOW_ENABLED && AbilityToggle.isActive(player))
         {
             if (event.item.getItem() instanceof ItemAppleGold &&
-                    //((ItemAppleGold) event.item.getItem()).getRarity(event.item) == EnumRarity.epic &&
                     Wearing.isWearingTheRightBackpack(player, "Rainbow"))
             {
-
                 ItemStack backpack = Wearing.getWearingBackpack(player);
                 if (BackpackAbilities.isRainbowRunning(player.worldObj, backpack)) return;
                 BackpackAbilities.startRainbowRun(player.worldObj, backpack);
@@ -71,7 +63,6 @@ public class GeneralEventHandler
             }
         }
 
-        // Only the vanilla water bottle: other mods' ItemPotion subclasses also use damage 0.
         if (event.item.getItem() == Items.potionitem && event.item.getItemDamage() == 0)
         {
             if (!player.worldObj.isRemote)
@@ -111,9 +102,6 @@ public class GeneralEventHandler
         }
     }
 
-    /**
-     * @param event
-     */
     @SubscribeEvent
     public void detectLightning(EntityStruckByLightningEvent event)
     {
@@ -124,12 +112,26 @@ public class GeneralEventHandler
     }
 
     @SubscribeEvent
+    public void skeletonArrowSpeed(EntityJoinWorldEvent event)
+    {
+        if (event.world.isRemote || !(event.entity instanceof EntityArrow)) return;
+        EntityArrow arrow = (EntityArrow) event.entity;
+        if (arrow.ticksExisted > 0 || !(arrow.shootingEntity instanceof EntityPlayer)) return;
+        double factor = QuiverFeedRules.speedFactor(ConfigHandler.SKELETON_ARROW_SPEED_BONUS);
+        if (factor == 1.0 || !ConfigHandler.SKELETON_ENABLED) return;
+        EntityPlayer shooter = (EntityPlayer) arrow.shootingEntity;
+        if (!AbilityToggle.isActive(shooter) || !Wearing.isWearingTheRightBackpack(shooter, "Skeleton")) return;
+        arrow.motionX *= factor;
+        arrow.motionY *= factor;
+        arrow.motionZ *= factor;
+    }
+
+    @SubscribeEvent
     public void makeHorsesFollowOwner(EntityJoinWorldEvent event)
     {
         if (!ConfigHandler.HORSES_FOLLOW_OWNER) return;
         if(event.entity instanceof EntityHorse)
         {
-
             EntityHorse horse = ((EntityHorse)event.entity);
             if(!horse.isDead && horse.isTame() && horse.hasCustomNameTag())
             {
@@ -164,13 +166,5 @@ public class GeneralEventHandler
     @SubscribeEvent
     public void backpackUnequipped(WearableEvent.UnequipWearableEvent event)
     {
-
-
     }
-
-  /*  @SubscribeEvent
-    public void listFluids(FluidRegistry.FluidRegisterEvent event)
-    {
-        LogHelper.info("Registered fluid " + event.fluidName + " with id " +  event.fluidID);
-    }*/
 }

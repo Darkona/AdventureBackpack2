@@ -102,8 +102,11 @@ class ConfigHandlerTest
         assertTrue(keys > 100, "found " + keys + " keys");
         assertTrue(ConfigHandler.BACKPACK_ABILITIES);
         assertEquals(4000, ConfigHandler.BACKPACK_TANK_CAPACITY);
-        assertEquals(48, ConfigHandler.KEY_OPEN_BACKPACK);
-        assertEquals(49, ConfigHandler.KEY_TOGGLE);
+        assertEquals(48, ConfigHandler.KEY_GEAR);
+        assertEquals(49, ConfigHandler.KEY_ABILITY);
+        assertEquals(34, ConfigHandler.KEY_MODE);
+        assertEquals(47, ConfigHandler.KEY_STATE);
+        assertEquals(200, ConfigHandler.TOOLTIP_WIDTH);
         assertEquals(1, ConfigHandler.DRAGON_STRENGTH_AMPLIFIER);
         assertEquals(0.35, ConfigHandler.BOAT_MAX_SPEED, 1e-9);
         assertTrue(ConfigHandler.BAT_NIGHT_VISION_TICKS > ConfigHandler.BAT_NIGHT_VISION_REFRESH_BELOW);
@@ -184,10 +187,8 @@ class ConfigHandlerTest
         assertEquals(0.6, ConfigHandler.BOAT_MOTOR_SOUND_VOLUME, 1e-9);
         assertFalse(ConfigHandler.BOAT_MOTOR_MESSAGES, "the sound is the notice; chat messages are for players who cannot hear");
         assertEquals(8, ConfigHandler.RENDER_BOAT_SMOKE_TICKS);
-        assertEquals(0, ConfigHandler.KEY_BOAT_MOTOR_TOGGLE);
         assertEquals("enabled", cfg.getCategory(ConfigHandler.INFLATABLEBOAT_MOTOR).getOrderedValues().get(0).getName());
         assertTrue(cfg.getCategory(ConfigHandler.INFLATABLEBOAT_MOTOR).get("tankCapacity").requiresMcRestart());
-        assertTrue(cfg.getCategory(ConfigHandler.KEYS).containsKey("boatMotorToggle"));
     }
 
     private static String oldCopterFuels(String... entries)
@@ -300,13 +301,93 @@ class ConfigHandlerTest
         assertFalse(cfg.getCategory(ConfigHandler.CROSSBOW).containsKey("shotsPerMagazine"));
         assertNotNull(cfg.getCategory(ConfigHandler.CROSSBOW_MAGAZINE).getComment());
         assertNotNull(cfg.getCategory(ConfigHandler.CROSSBOW_AMMO).getComment());
-        assertEquals(6, ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE);
+        assertEquals(8, ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE);
         assertEquals(4, ConfigHandler.MAGAZINE_LOAD_TICKS);
         assertTrue(ConfigHandler.MAGAZINE_RELOAD_RECIPE);
         assertTrue(ConfigHandler.MAGAZINE_LEGACY_RECIPE);
         assertTrue(cfg.getCategory(ConfigHandler.CROSSBOW_MAGAZINE).get("reloadRecipe").requiresMcRestart());
         assertArrayEquals(new String[]{"adventurebackpack:bolt", "minecraft:arrow"}, ConfigHandler.CROSSBOW_AMMO_LIST);
         assertEquals(1.5, ConfigHandler.CROSSBOW_BOLT_DAMAGE_MULTIPLIER, 1e-9);
+    }
+
+    @Test
+    void pistonBootsLeapKeysLiveInTheirOwnBranchWithDefaults() throws IOException
+    {
+        Configuration cfg = load("leap.cfg", null);
+        assertNotNull(cfg.getCategory(ConfigHandler.PISTONBOOTS_LEAP).getComment());
+        assertTrue(ConfigHandler.PISTONBOOTS_LEAP_ENABLED);
+        assertEquals(1.4, ConfigHandler.PISTONBOOTS_LEAP_BOOST, 1e-9);
+        assertEquals(0.7, ConfigHandler.PISTONBOOTS_LEAP_MAX_SPEED, 1e-9);
+        assertTrue(ConfigHandler.PISTONBOOTS_LEAP_REQUIRES_SPRINT);
+    }
+
+    @Test
+    void theEightOldKeysGiveWayToTheFourKeys() throws IOException
+    {
+        String old = "adventurebackpack {\n"
+                + "    keys {\n"
+                + "        I:openBackpack=30\n"
+                + "        I:toggle=49\n"
+                + "        I:crossbowMode=47\n"
+                + "        I:toggleAbilities=0\n"
+                + "        I:boatMotorToggle=50\n"
+                + "        toolcycle {\n"
+                + "            I:modifierKey=56\n"
+                + "            I:nextToolKey=0\n"
+                + "            I:previousToolKey=0\n"
+                + "            S:mode=keys\n"
+                + "        }\n"
+                + "    }\n"
+                + "}\n";
+        Configuration cfg = load("oldkeys.cfg", old);
+        for (String gone : ConfigHandler.GONE_KEYS)
+        {
+            assertFalse(cfg.getCategory(ConfigHandler.KEYS).containsKey(gone), gone);
+        }
+        for (String gone : ConfigHandler.GONE_TOOL_CYCLE_KEYS)
+        {
+            assertFalse(cfg.getCategory(ConfigHandler.TOOL_CYCLE).containsKey(gone), gone);
+        }
+        assertEquals(48, ConfigHandler.KEY_GEAR);
+        assertEquals(49, ConfigHandler.KEY_ABILITY);
+        assertEquals(34, ConfigHandler.KEY_MODE);
+        assertEquals(47, ConfigHandler.KEY_STATE);
+        assertEquals(com.darkona.adventurebackpack.common.ToolCycleInput.Mode.KEYS, ConfigHandler.TOOL_CYCLE_MODE, "kept");
+    }
+
+    @Test
+    void theOldFloatingJetpackThrustIsReplacedButAChosenOneIsKept() throws IOException
+    {
+        String old = "adventurebackpack {\n"
+                + "    steamjetpack {\n"
+                + "        D:thrust=0.08\n"
+                + "        D:maxRiseSpeed=0.28\n"
+                + "    }\n"
+                + "}\n";
+        Configuration cfg = load("oldthrust.cfg", old);
+        assertEquals(0.14, ConfigHandler.JETPACK_THRUST, 1e-9);
+        assertEquals(0.4, ConfigHandler.JETPACK_MAX_RISE_SPEED, 1e-9);
+        assertEquals(0.14, cfg.getCategory(ConfigHandler.STEAMJETPACK).get("thrust").getDouble(), 1e-9);
+
+        String chosen = old.replace("0.28", "0.3");
+        load("chosenthrust.cfg", chosen);
+        assertEquals(0.08, ConfigHandler.JETPACK_THRUST, 1e-9);
+        assertEquals(0.3, ConfigHandler.JETPACK_MAX_RISE_SPEED, 1e-9);
+    }
+
+    @Test
+    void theOldJetpackSteamCostIsHalvedButAChosenOneIsKept() throws IOException
+    {
+        String old = "adventurebackpack {\n"
+                + "    steamjetpack {\n"
+                + "        I:steamPerTick=20\n"
+                + "    }\n"
+                + "}\n";
+        load("oldsteamcost.cfg", old);
+        assertEquals(10, ConfigHandler.JETPACK_STEAM_PER_TICK);
+
+        load("chosensteamcost.cfg", old.replace("=20", "=25"));
+        assertEquals(25, ConfigHandler.JETPACK_STEAM_PER_TICK);
     }
 
     @Test
@@ -351,5 +432,43 @@ class ConfigHandlerTest
         assertEquals(5, ConfigHandler.FLAMETHROWER_FIRE_SECONDS);
         assertEquals(0, ConfigHandler.FLAMETHROWER_PILOT_FUEL_PER_MINUTE);
         assertEquals(6, ConfigHandler.RENDER_FLAMETHROWER_PARTICLES);
+    }
+
+    @Test
+    void distilleryKeysLiveInTheirOwnBranchWithDefaults() throws IOException
+    {
+        Configuration cfg = load("distillery.cfg", null);
+        assertTrue(cfg.getCategory(ConfigHandler.ENABLED).containsKey("distillery"));
+        assertNotNull(cfg.getCategory(ConfigHandler.DISTILLERY).getComment());
+        for (String key : new String[]{"outputFluid", "ownEthanolFluid", "fuelMultiplier", "outputCapacity", "waterCapacity",
+                "waterPerBatch", "ticksPerBatch", "intervalTicks", "organics", "catalysts", "catalystPerBatch", "solidFuels",
+                "furnaceFuelMultiplier", "pushIntervalTicks", "pushAmount", "waterPerSource"})
+        {
+            assertTrue(cfg.getCategory(ConfigHandler.DISTILLERY).containsKey(key), key);
+        }
+        assertTrue(cfg.getCategory(ConfigHandler.DISTILLERY).get("outputFluid").requiresMcRestart());
+        assertTrue(cfg.getCategory(ConfigHandler.DISTILLERY).get("organics").requiresMcRestart());
+        assertTrue(ConfigHandler.DISTILLERY_ENABLED);
+        assertEquals("bioethanol", ConfigHandler.DISTILLERY_OUTPUT_FLUID);
+        assertEquals(8000, ConfigHandler.DISTILLERY_OUTPUT_CAPACITY);
+        assertEquals(1.2, ConfigHandler.DISTILLERY_FUEL_MULTIPLIER, 1e-9);
+        assertEquals("item:minecraft:sugar", ConfigHandler.DISTILLERY_CATALYSTS[0]);
+        assertEquals("item:minecraft:coal=3200", ConfigHandler.DISTILLERY_SOLID_FUELS[0]);
+        assertEquals(1000, ConfigHandler.DISTILLERY_PUSH_AMOUNT);
+    }
+
+    @Test
+    void placedGearHasAMasterSwitchAndOneFlagPerGear() throws IOException
+    {
+        Configuration cfg = load("placedgear.cfg", null);
+        assertTrue(cfg.getCategory(ConfigHandler.ENABLED).containsKey("placedGear"));
+        assertNotNull(cfg.getCategory(ConfigHandler.PLACEDGEAR).getComment());
+        for (String key : new String[]{"jetpack", "copter", "scuba", "flamethrower", "syncIntervalTicks"})
+        {
+            assertTrue(cfg.getCategory(ConfigHandler.PLACEDGEAR).containsKey(key), key);
+        }
+        assertTrue(ConfigHandler.PLACEDGEAR_ENABLED);
+        assertTrue(ConfigHandler.PLACEDGEAR_JETPACK && ConfigHandler.PLACEDGEAR_COPTER && ConfigHandler.PLACEDGEAR_SCUBA && ConfigHandler.PLACEDGEAR_FLAMETHROWER);
+        assertEquals(10, ConfigHandler.PLACEDGEAR_SYNC_INTERVAL_TICKS);
     }
 }

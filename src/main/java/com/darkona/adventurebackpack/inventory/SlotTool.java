@@ -7,14 +7,8 @@ import com.darkona.adventurebackpack.item.ItemHose;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
 public class SlotTool extends SlotAdventureBackpack
 {
-
     public SlotTool(IInventory inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
@@ -26,10 +20,6 @@ public class SlotTool extends SlotAdventureBackpack
         return isValidTool(stack);
     }
 
-    /**
-     * True when the stack may go into the backpack's tool slots, by hand or by cycling. Never a stackable item, a hose
-     * or a backpack; past that, tweaks.toolcycle decides between the built-in rules and the config list (#49).
-     */
     public static boolean isValidTool(ItemStack stack)
     {
         if (stack == null || stack.getItem() == null || stack.getMaxStackSize() != 1) return false;
@@ -41,101 +31,76 @@ public class SlotTool extends SlotAdventureBackpack
         return ToolCycleFilter.allows(mode, listed, mode == ToolCycleFilter.Mode.BLACKLIST && !listed && isBuiltInTool(stack));
     }
 
-    /** True when the item is on the tweaks.toolcycle.list (whatever the mode). */
     public static boolean isListed(Item item)
     {
         return ConfigHandler.TOOL_CYCLE_FILTER.listed(Item.itemRegistry.getNameForObject(item));
     }
 
-    /** True when the item is blacklisted: the Skeleton's bow obeys the blacklist too. */
     public static boolean isBlacklisted(ItemStack stack)
     {
         return stack != null && stack.getItem() != null && ConfigHandler.TOOL_CYCLE_LIST_MODE == ToolCycleFilter.Mode.BLACKLIST && isListed(stack.getItem());
     }
 
-    /** The original rules: vanilla tools, known tool names, and tools of a few mods. */
-    private static boolean isBuiltInTool(ItemStack stack)
+    private static final String[] VALID_TOOL_NAMES = {
+            "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill",
+    };
+
+    private static final String[] INVALID_TOOL_NAMES = {
+            "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip"
+    };
+
+    private static final class ModTools
     {
-        boolean valid = false;
+        static final Class<?> BUILDCRAFT_WRENCH = find("buildcraft.api.tools.IToolWrench");
+        static final Class<?> IC2_ELECTRIC = find("ic2.api.item.IElectricItem");
+        static final Class<?> COFH_TOOL = find("cofh.core.item.tool");
+        static final Class<?> THERMAL_TOOL = find("thermalexpansion.item.tool");
 
-        String[] validToolNames = {
-                "wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill",/*"hatchet","excavator","chisel"*/
-        };
-
-        String[] invalidToolNames = {
-                "bucket", "sword", "dagger", "sabre", "rapier", "shield", "cutlass", "bow", "whip"
-        };
-
-        if (stack != null && stack.getMaxStackSize() == 1)
+        private static Class<?> find(String name)
         {
-            Item item = stack.getItem();
-            String name = item.getUnlocalizedName().toLowerCase();
-
-            // Vanilla
-            if (item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemShears || item instanceof ItemFishingRod || item instanceof ItemFlintAndSteel)
-            {
-                return true;
-            }
-
-            //Adventure Backpack duh!
-            if (item instanceof ItemHose || item instanceof ItemAdventureBackpack)
-            {
-                return false;
-            }
-
-            // Just for extra compatibility and/or security and/or less annoyance
-            for (String toolName : validToolNames)
-            {
-                String a = toolName;
-                if (name.contains(toolName)) return true;
-            }
-
-            for (String toolName : invalidToolNames)
-            {
-                String a = toolName;
-                if (name.contains(toolName)) return false;
-            }
-
-            //And also this because I'm a badass
             try
             {
-                // Tinker's Construct
-                if (item.getClass().getName().contains("tconstruct.items.tools")) return true;
-            } catch (Exception oops)
+                return Class.forName(name);
+            } catch (Throwable absent)
             {
-                //  oops.printStackTrace();
+                return null;
             }
-            try
-            {
-                //Buildcraft
-                if (java.lang.Class.forName("buildcraft.api.tools.IToolWrench").isInstance(item)) return true;
-            } catch (Exception oops)
-            {
-                //  oops.printStackTrace();
-            }
-            try
-            {
-                //IndustrialCraft
-                if (java.lang.Class.forName("ic2.api.item.IElectricItem").isInstance(item)) return true;
-            } catch (Exception oops)
-            {
-                //  oops.printStackTrace();
-            }
-            //Thaumcraft
-            try
-            {
-                //Thermal Expansion
-                if (java.lang.Class.forName("cofh.core.item.tool").isInstance(item)) return true;
-                if (java.lang.Class.forName("thermalexpansion.item.tool").isInstance(item)) return true;
-            } catch (Exception oops)
-            {
-                // oops.printStackTrace();
-            }
-
         }
-
-        return valid;
     }
 
+    private static boolean isBuiltInTool(ItemStack stack)
+    {
+        if (stack == null || stack.getMaxStackSize() != 1) return false;
+        Item item = stack.getItem();
 
+        if (item instanceof ItemTool || item instanceof ItemHoe || item instanceof ItemShears || item instanceof ItemFishingRod || item instanceof ItemFlintAndSteel)
+        {
+            return true;
+        }
+
+        if (item instanceof ItemHose || item instanceof ItemAdventureBackpack)
+        {
+            return false;
+        }
+
+        String name = item.getUnlocalizedName().toLowerCase();
+        for (String toolName : VALID_TOOL_NAMES)
+        {
+            if (name.contains(toolName)) return true;
+        }
+        for (String toolName : INVALID_TOOL_NAMES)
+        {
+            if (name.contains(toolName)) return false;
+        }
+
+        if (item.getClass().getName().contains("tconstruct.items.tools")) return true;
+        if (ModTools.BUILDCRAFT_WRENCH != null && ModTools.BUILDCRAFT_WRENCH.isInstance(item)) return true;
+        if (ModTools.IC2_ELECTRIC != null && ModTools.IC2_ELECTRIC.isInstance(item)) return true;
+        if (ModTools.COFH_TOOL != null)
+        {
+            if (ModTools.COFH_TOOL.isInstance(item)) return true;
+            if (ModTools.THERMAL_TOOL != null && ModTools.THERMAL_TOOL.isInstance(item)) return true;
+        }
+        return false;
+    }
 }

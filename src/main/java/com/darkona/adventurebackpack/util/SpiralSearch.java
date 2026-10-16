@@ -1,10 +1,5 @@
 package com.darkona.adventurebackpack.util;
 
-/**
- * Square spiral walk around a point on one Y level, nearest cells first. Used to find a free spot for a backpack
- * placed on death and for a player respawning at a campfire. The old recursive walk tested the first cell of each
- * leg over and over instead of every cell along it, so it saw only the corners of the spiral.
- */
 public final class SpiralSearch
 {
     public interface Cell
@@ -12,16 +7,10 @@ public final class SpiralSearch
         boolean accept(int x, int z);
     }
 
-    /** Value returned when no cell is accepted. */
     public static final long NONE = Long.MIN_VALUE;
 
     private SpiralSearch() {}
 
-    /**
-     * Walks legs of length 1, 2, 3... up to {@code radius - 1}, alternating +X/-Z and -X/+Z, starting at (x, z).
-     *
-     * @return the accepted cell packed with {@link #pack}, or {@link #NONE}
-     */
     public static long find(int x, int z, int radius, Cell cell)
     {
         for (int steps = 1; steps < radius; steps++)

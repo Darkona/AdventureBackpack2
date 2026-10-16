@@ -12,14 +12,8 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fluids.FluidRegistry;
 
-/**
- * Created on 12/10/2014.
- *
- * @author Javier Darkona
- */
 public class WaterEffect extends FluidEffect
 {
-
     public WaterEffect()
     {
         super(FluidRegistry.WATER, 7);
@@ -31,11 +25,8 @@ public class WaterEffect extends FluidEffect
         if (entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
-            // serverPosX/Z are client-only fields (NoSuchFieldError on a server, #144/#109) and hold
-            // posX * 32, so the biome was read far from the player (#152). Use the real block position.
             BiomeGenBase biome = world.getWorldChunkManager().getBiomeGenAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posZ));
 
-            //If it's hot
             if (
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.HOT) ||
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.DRY) ||
@@ -44,7 +35,6 @@ public class WaterEffect extends FluidEffect
                     BiomeDictionary.isBiomeOfType(biome, BiomeDictionary.Type.NETHER)
                     )
             {
-                // player.getFoodStats().addStats(1, 0.1f);
                 if (player.isBurning())
                 {
                     player.extinguish();
@@ -52,7 +42,6 @@ public class WaterEffect extends FluidEffect
                     player.addPotionEffect(new PotionEffect(Potion.regeneration.id, Utils.secondsToTicks(timeInSeconds), 0));
                 }
             }
-
         }
     }
 }

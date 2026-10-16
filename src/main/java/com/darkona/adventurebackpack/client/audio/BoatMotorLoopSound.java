@@ -9,11 +9,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.util.ResourceLocation;
 
-/**
- * The looping putt-putt of one boat's running motor (inflatableboat.motor.sound). It follows the boat, gets a little
- * louder and higher with the speed, and ends by itself when the motor stops, the boat dies or it stops ticking
- * (unloaded). ClientActions starts one per motor start; nothing here allocates per tick.
- */
 @SideOnly(Side.CLIENT)
 public class BoatMotorLoopSound extends MovingSound
 {

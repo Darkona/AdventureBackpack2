@@ -1,5 +1,8 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.block.BlockGear;
+import adventurebackpack.api.IFuelPack;
+import adventurebackpack.api.IBackWearableItem;
 import com.darkona.adventurebackpack.block.BlockStation;
 import com.darkona.adventurebackpack.common.FlamethrowerLogic;
 import com.darkona.adventurebackpack.common.ParticleBeat;
@@ -27,19 +30,9 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * The Flamethrower Pack: two fuel tanks on the back and a pyro mask, one wearable in the back slot (it cannot be worn
- * with a backpack, copter pack, jetpack or scuba gear). It does nothing on its own: Sneak + the toggle key lights its
- * pilot, and the Flamethrower nozzle held in hand fires from its tanks. The Fuel Station fills it ({@link IFuelPack}).
- * <p>
- * Tick cost (performance contract, Tier 3): with the default free pilot one config read and a return on the server;
- * on the client a held-item check, and the stack's tag only on the pilot flame's beat.
- */
 public class ItemFlamethrowerPack extends ItemAB implements IBackWearableItem, IFuelPack
 {
-    /** Ticks between two charges of the pilot flame (pilotFuelPerMinute). */
     private static final int PILOT_BEAT_TICKS = 1200;
-    /** Set in postInit: some fuel of fuels.list is a registered fluid, so the tanks can ever be filled. */
     private static boolean fuelPresent = false;
 
     public ItemFlamethrowerPack()
@@ -50,7 +43,6 @@ public class ItemFlamethrowerPack extends ItemAB implements IBackWearableItem, I
         setMaxStackSize(1);
     }
 
-    /** Called once in postInit, after every mod registered its fluids (Tier 1). */
     public static void detectFuels()
     {
         fuelPresent = false;
@@ -65,7 +57,6 @@ public class ItemFlamethrowerPack extends ItemAB implements IBackWearableItem, I
         LogHelper.info("Flamethrower: " + (fuelPresent ? "a fuel of fuels.list is present." : "no fuel of fuels.list is registered; it stays hidden."));
     }
 
-    /** True when the Flamethrower works at all: it is enabled and some fuel exists. */
     public static boolean isUsable()
     {
         return ConfigHandler.FLAMETHROWER_ENABLED && fuelPresent;
@@ -89,11 +80,16 @@ public class ItemFlamethrowerPack extends ItemAB implements IBackWearableItem, I
         return amount;
     }
 
-    /** Sneak + right click on a Fuel Station with the pack in hand reaches the station, which fills the pack. */
     @Override
     public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
     {
         return world.getBlock(x, y, z) instanceof BlockStation;
+    }
+
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        return BlockGear.useGearOn(stack, player, world, x, y, z, side);
     }
 
     @Override
@@ -111,7 +107,6 @@ public class ItemFlamethrowerPack extends ItemAB implements IBackWearableItem, I
     {
         if (world.isRemote)
         {
-            // the pilot flame at the nozzle, for every player this client sees with the nozzle in hand
             if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemFlamethrower)) return;
             if (!ParticleBeat.pilot(world.getTotalWorldTime(), player.getEntityId())) return;
             if (isUsable() && InventoryFlamethrowerPack.isLit(stack)) pilotFlame(world, player);
@@ -127,14 +122,12 @@ public class ItemFlamethrowerPack extends ItemAB implements IBackWearableItem, I
         inv.markDirty();
     }
 
-    /** Puts the pilot out (does not save) and tells the wearer why. Server side. */
     static void putOut(EntityPlayer player, InventoryFlamethrowerPack inv, String message)
     {
         inv.setOn(false);
         player.addChatComponentMessage(new ChatComponentTranslation(message));
     }
 
-    /** A small still flame at the nozzle (client). */
     private static void pilotFlame(World world, EntityPlayer player)
     {
         Vec3 at = ItemFlamethrower.nozzle(player);
@@ -155,7 +148,6 @@ public class ItemFlamethrowerPack extends ItemAB implements IBackWearableItem, I
         putOutQuietly(stack);
     }
 
-    /** Taking the pack off (or dying with it) puts the pilot out. */
     @Override
     public void onUnequipped(World world, EntityPlayer player, ItemStack stack)
     {

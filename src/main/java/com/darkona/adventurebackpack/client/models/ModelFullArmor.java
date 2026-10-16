@@ -6,11 +6,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 
-/**
- * Created on 19/10/2014
- *
- * @author Darkona
- */
 public class ModelFullArmor extends ModelBiped
 {
     public ModelFullArmor()
@@ -21,7 +16,6 @@ public class ModelFullArmor extends ModelBiped
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-
         setRotationAngles(f,f1,f2,f3,f4,f5,entity);
         if(entity instanceof EntityLivingBase)
         {
@@ -30,6 +24,7 @@ public class ModelFullArmor extends ModelBiped
             this.onGround = entity.onGround ? 1 : 0;
             this.heldItemRight = (owner.getHeldItem() != null) ? 1 : 0;
             this.isRiding = entity.isRiding();
+            this.aimedBow = false;
             if(owner instanceof EntityPlayer)
             {
                 EntityPlayer player = (EntityPlayer) owner;

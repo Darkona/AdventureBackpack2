@@ -1,26 +1,7 @@
 package com.darkona.adventurebackpack.util.calendar;
 
-/**
- * Created on 22/12/2014
- * Copyright © by Ulrich and David Greve (2005)
- *
- * @author Darkona
- */
 public class CalendarImpl
 {
-  /*
-  public static int getWeekday(int absDate)
-  public int getLastDayOfGregorianMonth(int month, int year)
-  public int absoluteFromGregorianDate(CalendarDate date)
-  public CalendarDate gregorianDateFromAbsolute(int absDate)
-
-  public int getLastMonthOfJewishYear(int year)
-  public int getLastDayOfJewishMonth(int month, int year)
-  public int absoluteFromJewishDate(CalendarDate date)
-  public CalendarDate jewishDateFromAbsolute(int absDate)
-  */
-
-    //------------------------------------------------
     public static int getWeekday(int absDate)
     {
         return (absDate % 7);
@@ -47,23 +28,17 @@ public class CalendarImpl
     {
         int value, m;
 
-    /* Days so far this month */
         value = date.getDay();
 
-    /* Days in prior months this year */
         for (m = 1; m < date.getMonth(); m++)
             value += getLastDayOfGregorianMonth(m, date.getYear());
 
-    /* Days in prior years */
         value += (365 * (date.getYear() - 1));
 
-   /* Julian leap days in prior years ... */
         value += ((date.getYear() - 1) / 4);
 
-    /* ... minus prior century years ... */
         value -= ((date.getYear() - 1) / 100);
 
-    /* ... plus prior years divisible by 400 */
         value += ((date.getYear() - 1) / 400);
 
         return (value);
@@ -73,10 +48,8 @@ public class CalendarImpl
     {
         int approx, y, m, day, month, year, temp;
 
-    /* Approximation */
         approx = absDate / 366;
 
-    /* Search forward from the approximation */
         y = approx;
         for (; ; )
         {
@@ -86,7 +59,6 @@ public class CalendarImpl
         }
         year = y;
 
-    /* Search forward from January */
         m = 1;
         for (; ; )
         {
@@ -96,7 +68,6 @@ public class CalendarImpl
         }
         month = m;
 
-    /* Calculate the day by subtraction */
         temp = absoluteFromGregorianDate(new CalendarDate(1, month, year));
         day = absDate - temp + 1;
 
@@ -155,15 +126,12 @@ public class CalendarImpl
         int value, monthsElapsed, partsElapsed, hoursElapsed;
         int day, parts, alternativeDay;
 
-    /* Months in complete cycles so far */
         value = 235 * ((year - 1) / 19);
         monthsElapsed = value;
 
-    /* Regular months in this cycle */
         value = 12 * ((year - 1) % 19);
         monthsElapsed += value;
 
-    /* Leap months this cycle */
         value = ((((year - 1) % 19) * 7) + 1) / 19;
         monthsElapsed += value;
 
@@ -173,30 +141,20 @@ public class CalendarImpl
                 ((monthsElapsed / 1080) * 793) +
                 (partsElapsed / 1080));
 
-    /* Conjunction day */
         day = 1 + (29 * monthsElapsed) + (hoursElapsed / 24);
 
-    /* Conjunction parts */
         parts = ((hoursElapsed % 24) * 1080) +
                 (partsElapsed % 1080);
 
-    /* If new moon is at or after midday, */
         if ((parts >= 19440) ||
 
-    /* ...or is on a Tuesday... */
                 (((day % 7) == 2) &&
-    /* at 9 hours, 204 parts or later */
                         (parts >= 9924) &&
-    /* of a common year */
                         (!hebrewLeapYear(year))) ||
 
-    /* ...or is on a Monday at... */
                 (((day % 7) == 1) &&
-    /* 15 hours, 589 parts or later... */
                         (parts >= 16789) &&
-    /* at the end of a leap year */
                         (hebrewLeapYear(year - 1))))
-    /* Then postpone Rosh HaShanah one day */
         {
             alternativeDay = day + 1;
         } else
@@ -204,12 +162,9 @@ public class CalendarImpl
             alternativeDay = day;
         }
 
-    /* If Rosh HaShanah would occur on Sunday, Wednesday, */
-    /* or Friday */
         if (((alternativeDay % 7) == 0) ||
                 ((alternativeDay % 7) == 3) ||
                 ((alternativeDay % 7) == 5))
-    /* Then postpone it one (more) day and return */
         {
             alternativeDay++;
         }
@@ -249,15 +204,11 @@ public class CalendarImpl
     {
         int value, returnValue, m;
 
-    /* Days so far this month */
         value = date.getDay();
         returnValue = value;
 
-    /* If before Tishri */
         if (date.getMonth() < 7)
         {
-      /* Then add days in prior months this year before and */
-      /* after Nisan. */
             for (m = 7; m <= getLastMonthOfJewishYear(date.getYear()); m++)
             {
                 value = getLastDayOfJewishMonth(m, date.getYear());
@@ -277,11 +228,9 @@ public class CalendarImpl
             }
         }
 
-    /* Days in prior years */
         value = hebrewCalendarElapsedDays(date.getYear());
         returnValue += value;
 
-    /* Days elapsed before absolute date 1 */
         value = 1373429;
         returnValue -= value;
 
@@ -292,10 +241,8 @@ public class CalendarImpl
     {
         int approx, y, m, year, month, day, temp, start;
 
-    /* Approximation */
         approx = (absDate + 1373429) / 366;
 
-    /* Search forward from the approximation */
         y = approx;
         for (; ; )
         {
@@ -305,7 +252,6 @@ public class CalendarImpl
         }
         year = y;
 
-    /* Starting month for search for month */
         temp = absoluteFromJewishDate(new CalendarDate(1, 1, year));
         if (absDate < temp)
         {
@@ -315,7 +261,6 @@ public class CalendarImpl
             start = 1;
         }
 
-    /* Search forward from either Tishri or Nisan */
         m = start;
         for (; ; )
         {
@@ -328,7 +273,6 @@ public class CalendarImpl
         }
         month = m;
 
-    /* Calculate the day by subtraction */
         temp = absoluteFromJewishDate(new CalendarDate(1, month, year));
         day = absDate - temp + 1;
 

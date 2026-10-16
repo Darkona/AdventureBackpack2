@@ -34,14 +34,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
-/**
- * Created on 10/10/2014
- *
- * @author Darkona
- */
 public class ClientProxy implements IProxy
 {
-
     public static RendererItemAdventureBackpack rendererItemAdventureBackpack;
     public static RendererItemAdventureHat rendererItemAdventureHat;
     public static RendererHose rendererHose;
@@ -56,7 +50,6 @@ public class ClientProxy implements IProxy
     public static ModelScubaGear modelScubaGear = new ModelScubaGear();
     public static ModelFlamethrowerPack modelFlamethrowerPack = new ModelFlamethrowerPack();
 
-
     public void init()
     {
         initRenderers();
@@ -66,7 +59,6 @@ public class ClientProxy implements IProxy
 
     public void initNetwork()
     {
-
     }
 
     @Override
@@ -78,7 +70,6 @@ public class ClientProxy implements IProxy
     @Override
     public void synchronizePlayer(int id, NBTTagCompound properties)
     {
-        // The client world is null while joining or changing worlds; the server syncs again later (#121).
         if (Minecraft.getMinecraft().theWorld == null) return;
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(id);
         if(Utils.notNullAndInstanceOf(entity, EntityPlayer.class)&& properties != null)
@@ -99,6 +90,7 @@ public class ClientProxy implements IProxy
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureBackpack, rendererItemAdventureBackpack);
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.blockBackpack), rendererItemAdventureBackpack);
         ClientRegistry.bindTileEntitySpecialRenderer(TileAdventureBackpack.class, new RendererAdventureBackpackBlock());
+        ClientRegistry.bindTileEntitySpecialRenderer(com.darkona.adventurebackpack.block.TileGear.class, new com.darkona.adventurebackpack.client.render.RendererGearBlock());
 
         rendererItemAdventureHat = new RendererItemAdventureHat();
         MinecraftForgeClient.registerItemRenderer(ModItems.adventureHat, rendererItemAdventureHat);
@@ -128,15 +120,10 @@ public class ClientProxy implements IProxy
     public void registerKeybindings()
     {
         Keybindings.init();
-        ClientRegistry.registerKeyBinding(Keybindings.openBackpack);
-        ClientRegistry.registerKeyBinding(Keybindings.toggleHose);
-        ClientRegistry.registerKeyBinding(Keybindings.toolModifier);
-        ClientRegistry.registerKeyBinding(Keybindings.nextTool);
-        ClientRegistry.registerKeyBinding(Keybindings.previousTool);
-        ClientRegistry.registerKeyBinding(Keybindings.crossbowMode);
-        ClientRegistry.registerKeyBinding(Keybindings.toggleAbilities);
-        ClientRegistry.registerKeyBinding(Keybindings.boatMotorToggle);
+        ClientRegistry.registerKeyBinding(Keybindings.gear);
+        ClientRegistry.registerKeyBinding(Keybindings.ability);
+        ClientRegistry.registerKeyBinding(Keybindings.mode);
+        ClientRegistry.registerKeyBinding(Keybindings.state);
         FMLCommonHandler.instance().bus().register(new KeybindHandler());
     }
-
 }

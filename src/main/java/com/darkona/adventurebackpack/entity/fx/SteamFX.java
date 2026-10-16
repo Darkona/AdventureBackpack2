@@ -6,12 +6,6 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
 
-/**
- * Created on 19/01/2015
- *
- * @author Darkona
- */
-
 @SideOnly(Side.CLIENT)
 public class SteamFX
         extends EntityFX

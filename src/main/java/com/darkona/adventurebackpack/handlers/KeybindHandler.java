@@ -1,157 +1,98 @@
 package com.darkona.adventurebackpack.handlers;
 
 import com.darkona.adventurebackpack.client.GrappleClient;
+import com.darkona.adventurebackpack.common.KeyActions;
+import com.darkona.adventurebackpack.common.KeyActions.Action;
+import com.darkona.adventurebackpack.common.KeyActions.Key;
+import com.darkona.adventurebackpack.common.KeyContext;
 import com.darkona.adventurebackpack.common.ServerActions;
 import com.darkona.adventurebackpack.common.ToolCycleInput;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.entity.EntityFriendlySpider;
-import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.init.ModNetwork;
-import com.darkona.adventurebackpack.item.ItemHose;
-import com.darkona.adventurebackpack.network.*;
-import com.darkona.adventurebackpack.reference.Key;
-import com.darkona.adventurebackpack.util.Wearing;
+import com.darkona.adventurebackpack.network.GUIPacket;
+import com.darkona.adventurebackpack.network.KeyActionPacket;
+import com.darkona.adventurebackpack.network.PlayerActionPacket;
+import com.darkona.adventurebackpack.network.SyncPropertiesPacket;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 
-/**
- * Created by Darkona on 11/10/2014.
- */
 public class KeybindHandler
 {
-
-    private static Key getPressedKeyBinding()
-    {
-        if (Keybindings.openBackpack.isPressed())
-        {
-            return Key.INVENTORY_KEY;
-        }
-        if (Keybindings.toggleHose.isPressed())
-        {
-            return Key.TOGGLE_KEY;
-        }
-
-        if (Minecraft.getMinecraft().gameSettings.keyBindJump.isPressed())
-        {
-            return Key.JUMP;
-        }
-        return Key.UNKNOWN;
-    }
-
     @SubscribeEvent
     public void handleKeyInputEvent(InputEvent.KeyInputEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
+        boolean gear = Keybindings.gear.isPressed();
+        boolean ability = Keybindings.ability.isPressed();
+        boolean mode = Keybindings.mode.isPressed();
+        boolean state = Keybindings.state.isPressed();
+        boolean jump = mc.gameSettings.keyBindJump.isPressed();
+
         EntityPlayer player = mc.thePlayer;
-        // isPressed() consumes the press, so both tool keys are read on every event, before the other keys.
-        int toolDirection = ToolCycleInput.keyDirection(ConfigHandler.TOOL_CYCLE_ENABLED, ConfigHandler.TOOL_CYCLE_MODE,
-                Keybindings.nextTool.isPressed(), Keybindings.previousTool.isPressed());
-        boolean crossbowMode = Keybindings.crossbowMode.isPressed();
-        boolean toggleAbilities = Keybindings.toggleAbilities.isPressed();
-        boolean boatMotor = Keybindings.boatMotorToggle.isPressed();
-        Key keypressed = getPressedKeyBinding();
+        if (player == null) return;
 
-        if(player != null)
+        if (jump)
         {
-            if (toolDirection != 0 && !player.isDead && mc.inGameHasFocus)
+            GrappleClient.releaseOnJump(player);
+            if (player.ridingEntity instanceof EntityFriendlySpider)
             {
-                ClientEventHandler.cycleHeldTool(player, toolDirection);
-            }
-
-            if (crossbowMode && mc.inGameHasFocus && CrossbowRenderHandler.isHoldingCrossbow(player.getHeldItem()))
-            {
-                // The server checks the held item and changes the mode; the new name shows when the stack syncs.
-                ModNetwork.net.sendToServer(new CrossbowPacket.Message(CrossbowPacket.CYCLE_MODE));
-            }
-
-            if (toggleAbilities && mc.inGameHasFocus)
-            {
-                // A request: the server flips the switch, syncs it back and says the result in chat.
-                ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.ABILITIES_TOGGLE, ""));
-            }
-
-            if (boatMotor && mc.inGameHasFocus && player.ridingEntity instanceof EntityInflatableBoat
-                    && ((EntityInflatableBoat) player.ridingEntity).isMotorized())
-            {
-                // A request, one per press: the server checks the pilot and the fuel, and the boat's DataWatcher
-                // brings the new state back to every client
-                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.BOAT_MOTOR_TOGGLE));
-            }
-
-            if (keypressed == Key.INVENTORY_KEY)
-            {
-                if (mc.inGameHasFocus)
-                {
-                    ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
-                    if (Wearing.isWearingBackpack(player))
-                    {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.BACKPACK_GUI, GUIPacket.FROM_KEYBIND));
-                    }
-                    if (Wearing.isWearingCopter(player))
-                    {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.COPTER_GUI, GUIPacket.FROM_KEYBIND));
-                    }
-                    if (Wearing.isWearingSteam(player))
-                    {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.JETPACK_GUI, GUIPacket.FROM_KEYBIND));
-                    }
-                    if (Wearing.isWearingScuba(player))
-                    {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.SCUBA_GUI, GUIPacket.FROM_KEYBIND));
-                    }
-                    if (Wearing.isWearingFlamethrowerPack(player))
-                    {
-                        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(GUIPacket.FLAMETHROWER_GUI, GUIPacket.FROM_KEYBIND));
-                    }
-                }
-            }
-
-            if (keypressed == Key.TOGGLE_KEY)
-            {
-                if(player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() instanceof ItemHose)
-                {
-                    ModNetwork.net.sendToServer(new CycleToolPacket.CycleToolMessage(0, (player).inventory.currentItem, CycleToolPacket.TOGGLE_HOSE_TANK));
-                    ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, (player).inventory.currentItem);
-                }
-                if (Wearing.isWearingCopter(player))
-                {
-                    if (!player.isSneaking())
-                    {
-                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.COPTER_TOGGLE, ""));
-                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_TOGGLE);
-                    } else
-                    {
-                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.COPTER_ON_OFF, ""));
-                        ServerActions.toggleCopterPack(player, Wearing.getWearingCopter(player), WearableModePacket.COPTER_ON_OFF);
-                    }
-                }
-                if (Wearing.isWearingSteam(player))
-                {
-                    if (player.isSneaking())
-                    {
-                        ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.JETPACK_ON_OFF, ""));
-                        ServerActions.toggleSteamJetpack(player, Wearing.getWearingSteam(player), WearableModePacket.JETPACK_ON_OFF);
-                    }
-                }
-                if (Wearing.isWearingFlamethrowerPack(player) && player.isSneaking())
-                {
-                    // the server owns the pilot: it answers in chat and the worn stack syncs back
-                    ModNetwork.net.sendToServer(new WearableModePacket.Message(WearableModePacket.FLAMETHROWER_ON_OFF, ""));
-                }
-            }
-
-            if(keypressed == Key.JUMP )
-            {
-                GrappleClient.releaseOnJump(player);
-                if(player.ridingEntity != null && player.ridingEntity instanceof EntityFriendlySpider)
-                {
-                    ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.spiderJump));
-                    ((EntityFriendlySpider)player.ridingEntity).setJumping(true);
-                }
+                ModNetwork.net.sendToServer(new PlayerActionPacket.ActionMessage(PlayerActionPacket.spiderJump));
+                ((EntityFriendlySpider) player.ridingEntity).setJumping(true);
             }
         }
+
+        if (!mc.inGameHasFocus || player.isDead) return;
+        if (gear) openGear(player);
+        boolean toolKey = ToolCycleInput.keyAllowed(ConfigHandler.TOOL_CYCLE_ENABLED, ConfigHandler.TOOL_CYCLE_MODE);
+        if (ability) press(player, Key.ABILITY, 1, toolKey);
+        if (mode) press(player, Key.MODE, 1, toolKey);
+        if (state) press(player, Key.STATE, KeyActions.direction(player.isSneaking()), toolKey);
+    }
+
+    private static void openGear(EntityPlayer player)
+    {
+        byte type;
+        switch (KeyContext.resolve(Key.GEAR, player, false))
+        {
+            case OPEN_BACKPACK: type = GUIPacket.BACKPACK_GUI; break;
+            case OPEN_COPTER: type = GUIPacket.COPTER_GUI; break;
+            case OPEN_JETPACK: type = GUIPacket.JETPACK_GUI; break;
+            case OPEN_SCUBA: type = GUIPacket.SCUBA_GUI; break;
+            case OPEN_FLAMETHROWER: type = GUIPacket.FLAMETHROWER_GUI; break;
+            default: return;
+        }
+        ModNetwork.net.sendToServer(new SyncPropertiesPacket.Message());
+        ModNetwork.net.sendToServer(new GUIPacket.GUImessage(type, GUIPacket.FROM_KEYBIND));
+    }
+
+    public static boolean press(EntityPlayer player, Key key, int direction, boolean toolCycleAllowed)
+    {
+        return perform(player, key, direction, KeyContext.resolve(key, player, toolCycleAllowed));
+    }
+
+    public static boolean perform(EntityPlayer player, Key key, int direction, Action action)
+    {
+        if (action == Action.NONE) return false;
+        ModNetwork.net.sendToServer(new KeyActionPacket.Message(key, direction));
+        int slot = player.inventory.currentItem;
+        switch (action)
+        {
+            case HOSE_TANK:
+                ServerActions.switchHose(player, ServerActions.HOSE_TOGGLE, 0, slot);
+                break;
+            case HOSE_MODE:
+                ServerActions.switchHose(player, ServerActions.HOSE_SWITCH, direction, slot);
+                break;
+            case CYCLE_TOOL:
+                ServerActions.cycleTool(player, direction, slot);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }

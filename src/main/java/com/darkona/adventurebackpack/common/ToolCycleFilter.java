@@ -5,28 +5,16 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-/**
- * The config list of items that may or may not go into the backpack's tool slots (tweaks.toolcycle, #49). Built once
- * when the config is read; the decision is pure, so the unit test covers it. The server runs the same check when a
- * cycle packet arrives, so a client with another list cannot put a forbidden item in the slots.
- * <p>
- * Entries are item registry names, {@code modid:name} (the names /give takes), or {@code modid:*} for every item of a
- * mod. A name without a mod id means {@code minecraft:}. Case does not matter.
- */
 public final class ToolCycleFilter
 {
     public enum Mode
     {
-        /** Only the built-in rules (vanilla tools and the known tool names and mods). */
         NONE,
-        /** Only the listed items, whatever the built-in rules say. */
         WHITELIST,
-        /** The built-in rules, minus the listed items. */
         BLACKLIST;
 
         public static final String[] NAMES = {"none", "whitelist", "blacklist"};
 
-        /** Reads a config value; anything unknown falls back to {@link #NONE}. */
         public static Mode parse(String text)
         {
             if (text != null)
@@ -52,7 +40,6 @@ public final class ToolCycleFilter
         this.mods = mods;
     }
 
-    /** Builds the filter from the config entries; blank entries are skipped. */
     public static ToolCycleFilter parse(String[] entries)
     {
         if (entries == null || entries.length == 0) return EMPTY;
@@ -78,7 +65,6 @@ public final class ToolCycleFilter
         return new ToolCycleFilter(ids, mods);
     }
 
-    /** True when the item with this registry name is on the list. A null name (unregistered item) never is. */
     public boolean listed(String registryName)
     {
         if (registryName == null || (ids.isEmpty() && mods.isEmpty())) return false;
@@ -88,12 +74,6 @@ public final class ToolCycleFilter
         return mods.contains(colon < 0 ? "minecraft" : id.substring(0, colon));
     }
 
-    /**
-     * The final word on an item that is not stackable, not a hose and not a backpack.
-     *
-     * @param listed  the item is on the config list
-     * @param builtIn the built-in rules accept it as a tool
-     */
     public static boolean allows(Mode mode, boolean listed, boolean builtIn)
     {
         switch (mode)

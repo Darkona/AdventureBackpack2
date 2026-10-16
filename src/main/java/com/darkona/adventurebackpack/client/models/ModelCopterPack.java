@@ -1,8 +1,8 @@
 package com.darkona.adventurebackpack.client.models;
 
 import codechicken.lib.vec.Vector3;
-import com.darkona.adventurebackpack.inventory.InventoryCopterPack;
-import com.darkona.adventurebackpack.item.ItemCopterPack;
+import com.darkona.adventurebackpack.common.RenderInfo;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import com.darkona.adventurebackpack.util.Utils;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -12,15 +12,12 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-/**
- * Created on 31/12/2014
- *
- * @author Darkona
- */
 public class ModelCopterPack extends ModelWearable
 {
-
     public static ModelCopterPack instance = new ModelCopterPack();
+    private static final Vector3 TANK_MIN = new Vector3(0, .25f, 0);
+    private static final Vector3 TANK_MAX = new Vector3(.25f, 0, .25f);
+    private static final Vector3 TANK_OFFSET = new Vector3(0f, 0.0625f, 0.0f);
     public ModelRenderer Base;
     public ModelRenderer EngineBody;
     public ModelRenderer TankTop;
@@ -54,9 +51,6 @@ public class ModelCopterPack extends ModelWearable
         this.Base = new ModelRenderer(this, 0, 0);
         this.Base.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.Base.addBox(-4.0F, 0.0F, 2.0F, 8, 12, 1);
-
-
-        //TANK
 
         this.TankTop = new ModelRenderer(this, 0, 33);
         this.TankTop.setRotationPoint(1.0F, 0.0F, 3.0F);
@@ -98,8 +92,6 @@ public class ModelCopterPack extends ModelWearable
         this.FuelLine2.addBox(1.0F, 1.0F, 2.0F, 1, 1, 1, 0.0F);
         this.TankBottom.addChild(this.FuelLine2);
 
-
-        //ENGINE
         this.EngineBody = new ModelRenderer(this, 0, 23);
         this.EngineBody.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.EngineBody.addBox(-2.0F, 8.0F, 3.0F, 4, 4, 4);
@@ -120,7 +112,6 @@ public class ModelCopterPack extends ModelWearable
         this.Axis = new ModelRenderer(this, 25, 22);
         this.Axis.setRotationPoint(0.0F, 8.0F, 5.75F);
         this.Axis.addBox(-0.5F, -25.0F, -0.5F, 1, 25, 1);
-        //this.EngineBody.addChild(this.Axis);
 
         this.Blade1 = new ModelRenderer(this, 29, 0);
         this.Blade1.setRotationPoint(0.0F, -25.0F, 0.0F);
@@ -143,8 +134,6 @@ public class ModelCopterPack extends ModelWearable
         this.Blade4.addBox(-1.0F, -0.5F, 0.0F, 2, 1, 15);
         this.setRotateAngle(Blade4, -3.141592653589793F, 0.0F, 0.0F);
         this.Axis.addChild(this.Blade4);
-
-        //ESCAPE
 
         this.Escape1 = new ModelRenderer(this, 9, 35);
         this.Escape1.setRotationPoint(-4.0F, 9.0F, 4.0F);
@@ -192,14 +181,23 @@ public class ModelCopterPack extends ModelWearable
         init();
     }
 
+    public void renderPlaced(ItemStack stack, float scale)
+    {
+        this.copterPack = stack;
+        RenderInfo info = RenderInfoCache.get(stack);
+        GL11.glColor4f(1, 1, 1, 1);
+        this.Axis.isHidden = false;
+        this.Base.render(scale);
+        this.Axis.render(scale);
+        renderFluidInTank(info.leftFluid, info.leftCapacity, TANK_MIN, TANK_MAX, TANK_OFFSET, TankTop);
+    }
+
     private void renderCopterPack(Entity entity, float scale)
     {
-        InventoryCopterPack copterInv = new InventoryCopterPack(this.copterPack);
-        copterInv.openInventory();
+        RenderInfo info = RenderInfoCache.get(this.copterPack);
         Axis.isHidden = true;
-        if (copterPack != null && copterPack.stackTagCompound != null && copterPack.stackTagCompound.hasKey("status"))
         {
-            if (copterPack.stackTagCompound.getByte("status") != ItemCopterPack.OFF_MODE)
+            if (info.copterOn)
             {
                 Axis.isHidden = false;
                 int degrees;
@@ -216,7 +214,7 @@ public class ModelCopterPack extends ModelWearable
         }
         this.Base.render(scale);
         this.Axis.render(scale);
-        renderFluidInTank(copterInv.getFuelTank(), new Vector3(0, .25f, 0), new Vector3(.25f, 0, .25f), new Vector3(0f, 0.0625f, 0.0f), TankTop);
+        renderFluidInTank(info.leftFluid, info.leftCapacity, TANK_MIN, TANK_MAX, TANK_OFFSET, TankTop);
     }
 
    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5, ItemStack stack)
@@ -244,7 +242,6 @@ public class ModelCopterPack extends ModelWearable
                 if (bipedBody.rotationPointX == 0.0F && bipedBody.rotationPointY == 0.0F && bipedBody.rotationPointZ == 0.0F)
                 {
                     renderCopterPack(entity, f5);
-
                 } else
                 {
                     GL11.glTranslatef(bipedBody.rotationPointX * f5, bipedBody.rotationPointY * f5, bipedBody.rotationPointZ * f5);

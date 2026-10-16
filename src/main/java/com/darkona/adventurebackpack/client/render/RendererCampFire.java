@@ -12,15 +12,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-/**
- * Created on 05/01/2015
- *
- * @author Darkona
- */
 public class RendererCampFire extends TileEntitySpecialRenderer
 {
-
-    //    private ModelAdventureBackpackBlock model;
     private ModelCampFire model;
 
     public RendererCampFire()
@@ -49,10 +42,6 @@ public class RendererCampFire extends TileEntitySpecialRenderer
         if (food != null) renderFood(food, x, y, z, te.getWorldObj().getTotalWorldTime(), par8);
     }
 
-    /**
-     * The item cooking, hung under the top of the sticks and turning slowly like on a spit. The entity is cached by the
-     * tile; drawn the way an item frame draws its item (no bobbing, no spin of its own).
-     */
     private static void renderFood(EntityItem food, double x, double y, double z, long time, float partialTicks)
     {
         GL11.glPushMatrix();
@@ -65,13 +54,10 @@ public class RendererCampFire extends TileEntitySpecialRenderer
             RenderManager.instance.renderEntityWithPosYaw(food, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
         } catch (Throwable t)
         {
-            // food from another mod failed to render: the campfire and the GL state stay as they were
         } finally
         {
             RenderItem.renderInFrame = false;
             GL11.glPopMatrix();
         }
     }
-
-
 }

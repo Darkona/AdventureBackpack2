@@ -24,6 +24,7 @@ There are three ways to fill it:
 
 - **Containers.** Right click the station to open its window. Put a bucket, can or cell of fuel in the input slot: the fuel goes into the tank and the empty container comes out in the output slot. An empty container in the input slot is filled from the tank.
 - **Pipes.** A pipe or machine of another mod can fill the station with fuel from any side, and take fuel out of it. It only takes fuels of the list.
+- **A Distillery.** A [Distillery](Distillery) next to the station pushes its ethanol into it by itself.
 - **Hoppers.** A hopper puts containers in the input slot from the top and from the sides, and takes the empty ones from the bottom. The slot for packs is only for players.
 
 A redstone comparator next to the station reads how full the tank is, from 0 to 15.

@@ -5,9 +5,13 @@ import com.darkona.adventurebackpack.common.BoatMotor;
 import com.darkona.adventurebackpack.common.BoatRecipeRules;
 import com.darkona.adventurebackpack.common.FuelRules;
 import com.darkona.adventurebackpack.common.NightVisionRefresh;
+import com.darkona.adventurebackpack.common.QuiverRules;
 import com.darkona.adventurebackpack.common.ToolCycleFilter;
 import com.darkona.adventurebackpack.common.ToolCycleInput;
+import com.darkona.adventurebackpack.inventory.BackpackLayout;
+import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
+import com.darkona.adventurebackpack.util.LogHelper;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -19,26 +23,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-/**
- * Reads adventurebackpack.cfg once at load (and again when the in-game config screen saves) into static fields.
- * Nothing reads the {@link Configuration} during play: tick and render code only reads the fields (Tier 1).
- * <p>
- * The file is one tree under {@link #ROOT}: first {@code enabled} (one flag per system), then one category per
- * system with its own flags and values. A disabled system stays registered and is only made inert and hidden,
- * so a client and a server with different files can still play together.
- *
- * @author Javier Darkona
- */
 public class ConfigHandler
 {
     public static Configuration config;
 
-    // ---------------------------------------------------------------- categories
     public static final String ROOT = "adventurebackpack";
     public static final String ENABLED = ROOT + ".enabled";
     public static final String BACKPACK = ROOT + ".backpack";
+    public static final String BACKPACKS = ROOT + ".backpacks";
+    public static final String QUIVER = BACKPACKS + ".skeleton.quiver";
     public static final String ABILITIES = ROOT + ".abilities";
     public static final String HOSE = ROOT + ".hose";
     public static final String COPTERPACK = ROOT + ".copterpack";
@@ -50,12 +46,16 @@ public class ConfigHandler
     public static final String INFLATABLEBOAT_MOTOR = INFLATABLEBOAT + ".motor";
     public static final String FUELS_CATEGORY = ROOT + ".fuels";
     public static final String FUELSTATION = ROOT + ".fuelstation";
+    public static final String DISTILLERY = ROOT + ".distillery";
+    public static final String PLACEDGEAR = ROOT + ".placedgear";
     public static final String CROSSBOW = ROOT + ".crossbow";
     public static final String CROSSBOW_GRAPPLE = CROSSBOW + ".grapple";
     public static final String CROSSBOW_SNIPER = CROSSBOW + ".sniper";
     public static final String CROSSBOW_MAGAZINE = CROSSBOW + ".magazine";
     public static final String CROSSBOW_AMMO = CROSSBOW + ".ammo";
+    public static final String CROSSBOW_QUIVER = CROSSBOW + ".quiver";
     public static final String PISTONBOOTS = ROOT + ".pistonboots";
+    public static final String PISTONBOOTS_LEAP = PISTONBOOTS + ".leap";
     public static final String SLEEPINGBAG = ROOT + ".sleepingbag";
     public static final String CAMPFIRE = ROOT + ".campfire";
     public static final String CAMPFIRE_COOKING = CAMPFIRE + ".cooking";
@@ -73,7 +73,6 @@ public class ConfigHandler
     public static final String COMPAT_GRAVES = COMPAT + ".graves";
     public static final String COMPAT_BAUBLES = COMPAT + ".baubles";
 
-    /** Keys that lived in the old flat "general" category: old name, new category, new name. */
     static final String[][] LEGACY_KEYS = {
             {"BackpackAbilities", ENABLED, "abilities"},
             {"BackpackDeathPlace", BACKPACK, "placeOnDeath"},
@@ -89,7 +88,6 @@ public class ConfigHandler
             {"FixVanillaLead", TWEAKS, "fixVanillaLead"},
     };
 
-    // ---------------------------------------------------------------- detected mods (not config, set in postInit)
     public static boolean IS_BUILDCRAFT = false;
     public static boolean IS_BAUBLES = false;
     public static boolean IS_TINKERS = false;
@@ -98,7 +96,6 @@ public class ConfigHandler
     public static boolean IS_ENVIROMINE = false;
     public static boolean IS_RAILCRAFT = false;
 
-    // ---------------------------------------------------------------- enabled
     public static boolean BACKPACK_ABILITIES = true;
     public static boolean HOSE_ENABLED = true;
     public static boolean COPTERPACK_ENABLED = true;
@@ -111,15 +108,31 @@ public class ConfigHandler
     public static boolean PISTONBOOTS_ENABLED = true;
     public static boolean CAMPFIRE_ENABLED = true;
     public static boolean FUELSTATION_ENABLED = true;
+    public static boolean DISTILLERY_ENABLED = true;
+    public static boolean PLACEDGEAR_ENABLED = true;
 
-    // ---------------------------------------------------------------- backpack
+    public static boolean PLACEDGEAR_JETPACK = true;
+    public static boolean PLACEDGEAR_COPTER = true;
+    public static boolean PLACEDGEAR_SCUBA = true;
+    public static boolean PLACEDGEAR_FLAMETHROWER = true;
+    public static int PLACEDGEAR_SYNC_INTERVAL_TICKS = 10;
+
     public static boolean BACKPACK_DEATH_PLACE = true;
     public static int BACKPACK_TANK_CAPACITY = 4000;
     public static float BACKPACK_BLAST_RESISTANCE = 2000f;
     public static float BACKPACK_HARDNESS = 1.0f;
     public static boolean BACKPACK_DEATH_MESSAGE = true;
+    public static int WORN_SYNC_INTERVAL_TICKS = 4;
+    private static volatile Map<String, int[]> BACKPACK_TYPES = new HashMap<String, int[]>();
+    public static volatile int BACKPACK_TYPES_GENERATION;
 
-    // ---------------------------------------------------------------- abilities
+    public static boolean QUIVER_ENABLED = true;
+    public static int QUIVER_SLOTS = 4;
+    public static final int QUIVER_MAX_SLOTS = 6;
+    public static final String[] QUIVER_ITEMS_DEFAULT = {"item:minecraft:arrow", "item:adventurebackpack:bolt"};
+    public static QuiverRules.Filter QUIVER_FILTER = QuiverRules.Filter.parse(QUIVER_ITEMS_DEFAULT);
+    public static boolean RENDER_QUIVER_ARROWS = true;
+
     public static int ABILITY_EFFECT_REFRESH_TICKS = AbilityEffects.EFFECT_REFRESH_TICKS;
     public static boolean ABILITY_TOGGLE_MESSAGE = true;
 
@@ -200,6 +213,7 @@ public class ConfigHandler
     public static float SUNFLOWER_SATURATION = 0.2f;
 
     public static boolean SKELETON_ENABLED = true;
+    public static double SKELETON_ARROW_SPEED_BONUS = 0.30;
     public static boolean IRONGOLEM_ENABLED = true;
 
     public static boolean SPIDER_ENABLED = true;
@@ -227,13 +241,11 @@ public class ConfigHandler
     public static int BLAZE_PUNCH_FIRE_SECONDS = 4;
     public static boolean BLAZE_PUNCH_WITH_NON_WEAPONS = true;
 
-    // ---------------------------------------------------------------- hose
     public static int HOSE_TRANSFER_AMOUNT = 1000;
     public static int HOSE_DRINK_AMOUNT = 1000;
     public static int HOSE_DRINK_TICKS = 24;
     public static int HOSE_MILK_AMOUNT = 1000;
 
-    // ---------------------------------------------------------------- copter pack
     public static boolean ALLOW_COPTER_SOUND = true;
     public static int COPTER_TANK_CAPACITY = 6000;
     public static int COPTER_FUEL_INTERVAL_TICKS = 3;
@@ -249,12 +261,11 @@ public class ConfigHandler
     public static double COPTER_PUSH_RANGE = 4.0;
     public static int COPTER_PUSH_INTERVAL_TICKS = 2;
 
-    // ---------------------------------------------------------------- steam jetpack
     public static boolean ALLOW_JETPACK_SOUNDS = true;
     public static boolean JETPACK_OWN_STEAM = true;
     public static int JETPACK_WATER_CAPACITY = 6000;
     public static int JETPACK_STEAM_CAPACITY = 12000;
-    public static int JETPACK_STEAM_PER_TICK = 20;
+    public static int JETPACK_STEAM_PER_TICK = 10;
     public static int JETPACK_IGNITION_STEAM = 150;
     public static int JETPACK_THRUST_FUEL_BURN = 3;
     public static int JETPACK_THRUST_HEAT_LOSS_TICKS = 10;
@@ -263,12 +274,12 @@ public class ConfigHandler
     public static int JETPACK_WATER_INTAKE = 2;
     public static int JETPACK_STEAM_PER_WATER = 4;
     public static int JETPACK_BOILING_TEMPERATURE = 100;
-    public static double JETPACK_THRUST = 0.08;
-    public static double JETPACK_MAX_RISE_SPEED = 0.28;
+    public static double JETPACK_THRUST = 0.14;
+    public static double JETPACK_MAX_RISE_SPEED = 0.4;
+    public static double JETPACK_FALL_BRAKE = 2.0;
     public static float JETPACK_AIR_CONTROL = 0.02f;
     public static int JETPACK_MAX_ALTITUDE = 90;
 
-    // ---------------------------------------------------------------- scuba gear and air compressor
     public static final String[] SCUBA_BREATHABLE_DEFAULT = {"air", "oxygen"};
     public static final String[] SCUBA_AIR_ITEMS_DEFAULT = {"ic2:airCell=1000>ic2:cell"};
     public static int SCUBA_TANK_CAPACITY = 3000;
@@ -287,7 +298,6 @@ public class ConfigHandler
     public static int COMPRESSOR_INTERVAL_TICKS = 10;
     public static boolean COMPRESSOR_NEEDS_OPEN_AIR = true;
 
-    // ---------------------------------------------------------------- flamethrower
     public static int FLAMETHROWER_TANK_CAPACITY = 4000;
     public static int FLAMETHROWER_FUEL_PER_BURST = 50;
     public static int FLAMETHROWER_FIRE_INTERVAL_TICKS = 4;
@@ -300,7 +310,6 @@ public class ConfigHandler
     public static int FLAMETHROWER_PILOT_FUEL_PER_MINUTE = 0;
     public static boolean FLAMETHROWER_SOUND = true;
 
-    // ---------------------------------------------------------------- inflatable boat
     public static double BOAT_MAX_SPEED = 0.35;
     public static boolean BOAT_MOTOR_ENABLED = true;
     public static BoatMotor.Mode BOAT_MOTOR_MODE = BoatMotor.Mode.TOGGLE;
@@ -314,17 +323,37 @@ public class ConfigHandler
     public static double BOAT_MOTOR_SOUND_VOLUME = 0.6;
     public static boolean BOAT_MOTOR_MESSAGES = false;
 
-    // ---------------------------------------------------------------- fuels and fuel station
     public static String[] FUELS = FuelRules.DEFAULTS;
     public static int FUELSTATION_TANK_CAPACITY = 16000;
 
-    // ---------------------------------------------------------------- sleeping bag
+    public static String DISTILLERY_OUTPUT_FLUID = "bioethanol";
+    public static boolean DISTILLERY_OWN_ETHANOL = true;
+    public static double DISTILLERY_FUEL_MULTIPLIER = 1.2;
+    public static int DISTILLERY_OUTPUT_CAPACITY = 8000;
+    public static int DISTILLERY_WATER_CAPACITY = 8000;
+    public static int DISTILLERY_WATER_PER_BATCH = 1000;
+    public static int DISTILLERY_TICKS_PER_BATCH = 400;
+    public static int DISTILLERY_INTERVAL_TICKS = 10;
+    public static int DISTILLERY_CATALYST_PER_BATCH = 1;
+    public static final String[] DISTILLERY_CATALYSTS_DEFAULT = {"item:minecraft:sugar"};
+    public static String[] DISTILLERY_CATALYSTS = DISTILLERY_CATALYSTS_DEFAULT;
+    public static final String[] DISTILLERY_ORGANICS_DEFAULT = {
+            "item:minecraft:wheat=100", "item:minecraft:potato=150", "item:minecraft:carrot=120",
+            "item:minecraft:reeds=150", "item:minecraft:apple=150", "item:minecraft:melon=40",
+            "item:minecraft:pumpkin=250", "item:minecraft:poisonous_potato=100", "item:minecraft:wheat_seeds=20",
+            "ore:cropCorn=150", "ore:cropRice=100", "ore:cropBarley=100", "ore:cropRye=100", "ore:cropSugarbeet=150"};
+    public static String[] DISTILLERY_ORGANICS = DISTILLERY_ORGANICS_DEFAULT;
+    public static final String[] DISTILLERY_SOLID_FUELS_DEFAULT = {"item:minecraft:coal=3200", "item:minecraft:coal_block=32000"};
+    public static String[] DISTILLERY_SOLID_FUELS = DISTILLERY_SOLID_FUELS_DEFAULT;
+    public static double DISTILLERY_FURNACE_FUEL_MULTIPLIER = 1.0;
+    public static int DISTILLERY_PUSH_INTERVAL_TICKS = 20;
+    public static int DISTILLERY_PUSH_AMOUNT = 1000;
+    public static int DISTILLERY_WATER_PER_SOURCE = 50;
+
     public static boolean SLEEPINGBAG_PLACEABLE = true;
     public static boolean SLEEPINGBAG_SETS_SPAWN = true;
 
-    // ---------------------------------------------------------------- crossbow
-    /** Charges of a full Crossbow Magazine (key crossbow.magazine.capacity; the field keeps its old name for the renderer). */
-    public static int CROSSBOW_SHOTS_PER_MAGAZINE = 6;
+    public static int CROSSBOW_SHOTS_PER_MAGAZINE = 8;
     public static int MAGAZINE_LOAD_TICKS = 4;
     public static boolean MAGAZINE_RELOAD_RECIPE = true;
     public static boolean MAGAZINE_LEGACY_RECIPE = true;
@@ -353,21 +382,26 @@ public class ConfigHandler
     public static int SNIPER_SHOT_DELAY_TICKS = 30;
     public static double SNIPER_STILL_TOLERANCE = 0.02;
     public static float SNIPER_ZOOM = 0.35f;
+    public static boolean CROSSBOW_QUIVER_ENABLED = true;
+    public static int QUIVER_FIRE_INTERVAL_TICKS = 3;
+    public static int QUIVER_TRIGGER_HOLD_TICKS = 6;
+    public static int QUIVER_FLUSH_EVERY_SHOTS = 8;
 
-    // ---------------------------------------------------------------- piston boots
     public static float PISTONBOOTS_STEP_HEIGHT = 1.001f;
     public static boolean PISTONBOOTS_SPRINT_SPEED = true;
     public static boolean PISTONBOOTS_ONLY_WHILE_SPRINTING = true;
     public static int PISTONBOOTS_SAFE_FALL_DISTANCE = 8;
+    public static boolean PISTONBOOTS_LEAP_ENABLED = true;
+    public static double PISTONBOOTS_LEAP_BOOST = 1.4;
+    public static double PISTONBOOTS_LEAP_MAX_SPEED = 0.7;
+    public static boolean PISTONBOOTS_LEAP_REQUIRES_SPRINT = true;
 
-    // ---------------------------------------------------------------- campfire
     public static boolean CAMPFIRE_COOKING_ENABLED = true;
     public static int CAMPFIRE_TICKS_PER_ITEM = 200;
     public static boolean CAMPFIRE_ONLY_FOOD = true;
     public static int CAMPFIRE_MAX_PER_USE = 8;
     public static double CAMPFIRE_RETURN_RANGE = 4.0;
 
-    // ---------------------------------------------------------------- render (client)
     public static boolean RENDER_BACKPACK_ON_PLAYER = true;
     public static int GUI_TANK_RENDER = 3;
     public static int RENDER_BOAT_SMOKE_TICKS = 8;
@@ -377,20 +411,15 @@ public class ConfigHandler
     public static int RENDER_SCUBA_BUBBLE_TICKS = 10;
     public static int RENDER_FLAMETHROWER_PARTICLES = 6;
 
-    // ---------------------------------------------------------------- keys (client, defaults only)
-    public static int KEY_OPEN_BACKPACK = Keyboard.KEY_B;
-    public static int KEY_TOGGLE = Keyboard.KEY_N;
-    public static int KEY_CROSSBOW_MODE = Keyboard.KEY_V;
-    public static int KEY_TOGGLE_ABILITIES = 0;
-    public static int KEY_BOAT_MOTOR_TOGGLE = 0;
+    public static int TOOLTIP_WIDTH = 200;
+    public static int KEY_GEAR = Keyboard.KEY_B;
+    public static int KEY_ABILITY = Keyboard.KEY_N;
+    public static int KEY_MODE = Keyboard.KEY_G;
+    public static int KEY_STATE = Keyboard.KEY_V;
     public static boolean TOOL_CYCLE_ENABLED = true;
     public static ToolCycleInput.Mode TOOL_CYCLE_MODE = ToolCycleInput.Mode.BOTH;
     public static boolean TOOL_CYCLE_INVERT_WHEEL = false;
-    public static int KEY_TOOL_MODIFIER = 0;
-    public static int KEY_NEXT_TOOL = 0;
-    public static int KEY_PREVIOUS_TOOL = 0;
 
-    // ---------------------------------------------------------------- worldgen, recipes, tweaks
     public static boolean BONUS_CHEST_ALLOWED = false;
     public static boolean PIGMAN_ALLOWED = false;
     public static boolean SADDLE_RECIPE = true;
@@ -410,11 +439,9 @@ public class ConfigHandler
     public static ToolCycleFilter.Mode TOOL_CYCLE_LIST_MODE = ToolCycleFilter.Mode.NONE;
     public static ToolCycleFilter TOOL_CYCLE_FILTER = ToolCycleFilter.EMPTY;
 
-    // ---------------------------------------------------------------- compat (each bridge only acts when its mod is loaded)
     public static boolean COMPAT_GRAVES_ENABLED = true;
     public static boolean COMPAT_BAUBLES_ENABLED = true;
 
-    /** Order in which each category writes its keys: insertion order, so {@code enabled} flags come first. */
     private static final Map<String, List<String>> ORDER = new HashMap<String, List<String>>();
 
     public static void init(File configFile)
@@ -426,10 +453,6 @@ public class ConfigHandler
         }
     }
 
-    /**
-     * Builds the category tree, moves the old flat keys into it, reads every value into the fields and saves the
-     * file when something was added or moved. Public so the unit test can run it on a temporary file.
-     */
     public static void load(Configuration cfg)
     {
         ORDER.clear();
@@ -437,6 +460,7 @@ public class ConfigHandler
         migrateLegacy(cfg);
         readEnabled(cfg);
         readBackpack(cfg);
+        readBackpackTypes(cfg);
         readAbilities(cfg);
         readHose(cfg);
         readCopterPack(cfg);
@@ -446,6 +470,8 @@ public class ConfigHandler
         readInflatableBoat(cfg);
         readFuels(cfg);
         readFuelStation(cfg);
+        readDistillery(cfg);
+        readPlacedGear(cfg);
         readCrossbow(cfg);
         readPistonBoots(cfg);
         readSleepingBag(cfg);
@@ -465,12 +491,17 @@ public class ConfigHandler
         }
     }
 
-    /** Creates the categories in the order they are written: children of a category keep their creation order. */
     private static void declareCategories(Configuration cfg)
     {
         cfg.setCategoryComment(ROOT, "Adventure Backpack configuration. Change a value and restart the game; nothing needs recompiling.");
         cfg.setCategoryComment(ENABLED, "One switch per system. A disabled system stays registered (worlds and servers still load it) but it is hidden, has no recipe and does nothing.");
         cfg.setCategoryComment(BACKPACK, "The Adventure Backpack itself, worn or placed.");
+        cfg.setCategoryComment(BACKPACKS, "One category per backpack type, named after its colour in lower case (backpacks.standard, backpacks.cow...). enabled comes first; rows and columns are the size of its storage grid. The 3x3 crafting grid takes the bottom right corner of the grid, so a backpack has rows x columns - 9 storage slots: the classic 6 rows of 8 columns give 39. A backpack never loses slots: one that holds more than its type now gives keeps its size, and a smaller size only applies to new backpacks. The window is read when a backpack is opened or loaded, so no restart is needed, but set it the same on server and clients.");
+        for (String name : BackpackNames.backpackNames)
+        {
+            cfg.setCategoryComment(backpackCategory(name), "The " + name + " Backpack.");
+        }
+        cfg.setCategoryComment(QUIVER, "The quiver of the Skeleton Backpack (only when enabled.quiver is on): slots that take the place of the right tank and only take the items of the list. Bows drawn by the wearer take their arrows from the backpack, quiver first (abilities.skeleton). The model shows a few arrows when the quiver holds some.");
         cfg.setCategoryComment(ABILITIES, "Special abilities of the backpacks while they are worn (or placed, for Cactus and Melon). Each backpack has its own switch. Ticks: 20 per second. Abilities run on the server and on the client, so use the same values on both.");
         String[] abilities = {"bat", "squid", "pigman", "dragon", "cactus", "melon", "pig", "slime", "chicken", "creeper", "cow", "mooshroom", "wolf", "ocelot", "rainbow", "sunflower", "skeleton", "irongolem", "spider", "blaze"};
         for (String a : abilities)
@@ -482,22 +513,26 @@ public class ConfigHandler
         cfg.setCategoryComment(STEAMJETPACK, "The Steam Jetpack. Its boiler needs a 'steam' fluid: another mod's, or its own (ownSteamFluid). Speeds in blocks per tick.");
         cfg.setCategoryComment(SCUBA, "The Scuba Gear: two air tanks on the back and a diving mask, worn in the back slot like the jetpack. While the head is under water it keeps the air bar full and spends the air of its tanks (left tank first). Air is the 'air' fluid (GregTech's when present, its own otherwise, see ownAirFluid) or any other fluid of breathableFluids. Ticks: 20 per second; amounts in millibuckets.");
         cfg.setCategoryComment(SCUBA_COMPRESSOR, "The Air Compressor block: fills the Scuba Gear in its slot, air cells and other air containers. It makes air with a hand pump (right click with an empty hand) and with a furnace that burns any furnace fuel, and takes air or oxygen from pipes of other mods. No electricity.");
-        cfg.setCategoryComment(FLAMETHROWER, "The Flamethrower: the Flamethrower Pack (two fuel tanks and a pyro mask, worn in the back slot like the jetpack) and the Flamethrower nozzle held in hand. Sneak + the toggle key (keys.toggle) lights or puts out the pack's pilot; while it is lit, holding right click with the nozzle fires bursts of flame in a cone that set mobs on fire. The tanks take the fuels of fuels.list (the Fuel Station fills them). The wearer is never hurt. Ticks: 20 per second; amounts in millibuckets.");
+        cfg.setCategoryComment(FLAMETHROWER, "The Flamethrower: the Flamethrower Pack (two fuel tanks and a pyro mask, worn in the back slot like the jetpack) and the Flamethrower nozzle held in hand. The Gear On/Off key (keys.ability, N by default) or the button in its window lights or puts out the pack's pilot; while it is lit, holding right click with the nozzle fires bursts of flame in a cone that set mobs on fire. The tanks take the fuels of fuels.list (the Fuel Station fills them). The wearer is never hurt. Ticks: 20 per second; amounts in millibuckets.");
         cfg.setCategoryComment(INFLATABLEBOAT, "The Inflatable Boat.");
         cfg.setCategoryComment(INFLATABLEBOAT_MOTOR, "The outboard motor of the Motorized Inflatable Boat. It burns a liquid fuel from fuels.list, put in its tank at the Fuel Station (right click the station while riding the boat). With the defaults the boat goes almost twice as fast and a full tank lasts about 5 minutes of running. Without fuel, or with the motor off, the boat moves like the plain one. Picking the boat up keeps its fuel in the item. Speeds in blocks per tick; ticks: 20 per second.");
         cfg.setCategoryComment(FUELS_CATEGORY, "Liquid fuels, one list for everything that burns them (the Copter Pack, the Flamethrower Pack, the motor of the Motorized Inflatable Boat, the Fuel Station and what it fills). A fuel is known by the fluid name the mod that adds it registers, so no fuel mod is needed: BuildCraft oil and fuel, Forestry bioethanol and biomass, Railcraft creosote, Thermal Foundation coal, GregTech fuel (diesel), bioethanol and creosote.");
         cfg.setCategoryComment(FUELSTATION, "The Fuel Station: a block with a fuel tank that fills the Copter Pack and the Flamethrower Pack (in its slot, worn or held), the tank of the motorized boat the player rides, and buckets, cans or cells. Pipes of any mod fill it from any side. It does no work on its own between actions.");
-        cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with reusable Crossbow Magazines. Hold right click to fire the magazine one bolt after another; when it is empty the next click puts in the first loaded magazine of the inventory (hotbar first) and the empty one comes back to the inventory (or drops at the feet when the inventory is full). Sneak + right click swaps a partly used magazine, which comes back with the charges it has left. Without a loaded magazine a click gives back the empty one. The crossbow mode key (keys.crossbowMode, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
+        cfg.setCategoryComment(DISTILLERY, "The Distillery: a block that turns organic items (crops) into ethanol with heat, water and a catalyst. Three inputs: up to nine kinds of organics in its 3x3 grid (one item of each slot goes into every batch), a catalyst in its own slot (sugar by default), and water in its own tank (buckets, pipes of any mod, or the water source blocks next to it). The flame of a solid fuel in its fuel slot is the heat: it only works while the flame burns. The ethanol goes into its output tank and is pushed out of its four sides into any fluid handler next to it (the Fuel Station, pipes and tanks of any mod). Without flame, water, catalyst or organics, or with the output tank full, it stops. Items as in recipes.boat.motors: item:<modid>:<item name>[:<damage>] (no damage: every damage value), ore:<Ore Dictionary name>, stack:<modid>:<registered stack name>, ic2:<IC2 item name>. Ticks: 20 per second; amounts in millibuckets.");
+        cfg.setCategoryComment(PLACEDGEAR, "Back gear placed on the ground as a block, like a backpack: right click a block's top with the Steam Jetpack, the Copter Pack, the Scuba Gear or the Flamethrower Pack in hand. Right click the placed gear to open its window; break it, or sneak + right click it with an empty hand, to pick it up (sneaking puts it on your back when the back slot is free). It keeps everything it holds. A placed gear does not run: the jetpack's boiler stays as it was (frozen), the copter's engine and the pilot flame are off. Pipes of other mods can fill it from any side: water into the jetpack, fuels of fuels.list into the copter and the flamethrower, air into the scuba; steam comes out of the jetpack.");
+        cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with reusable Crossbow Magazines. Hold right click to fire the magazine one bolt after another; when it is empty the next click puts in the first loaded magazine of the inventory (hotbar first) and the empty one comes back to the inventory (or drops at the feet when the inventory is full). Sneak + right click swaps a partly used magazine, which comes back with the charges it has left. Without a loaded magazine a click gives back the empty one. The Change State key (keys.state, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
         cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the magazine (an empty magazine still reloads by itself).");
         cfg.setCategoryComment(CROSSBOW_MAGAZINE, "The Crossbow Magazine (the old Bolt Cartridge): a reusable magazine. Right click it (hold the click) to load it with ammunition of crossbow.ammo.list from the inventory, one charge per click sound, until it is full. A magazine holds one kind of ammunition; an empty one takes any. Old cartridges without a charge count load as full magazines of arrows. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_AMMO, "What the Crossbow Magazine is loaded with. Bolts fired from a magazine of Crossbow Bolts hit harder than those from a magazine of arrows.");
+        cfg.setCategoryComment(CROSSBOW_QUIVER, "Gatling mode: while the player wears a Skeleton Backpack with arrows or Crossbow Bolts in its quiver (enabled.quiver) and its abilities are on, the crossbow takes no magazine. Holding right click fires one item of the quiver per shot, without stopping, until the quiver runs out; then it fires the magazine inside and reloads from the inventory as usual. It fires the items of crossbow.ammo.list in that order (Crossbow Bolts before arrows by default). The grappling hook takes its charges from the quiver and the sniper (bipod down) fires single bolts from it at its own rate. The server decides every shot; the spent items leave the backpack at the end of the burst or every flushEveryShots shots.");
         cfg.setCategoryComment(PISTONBOOTS, "The Piston Boots.");
+        cfg.setCategoryComment(PISTONBOOTS_LEAP, "Forward leap of the Piston Boots: a jump taken while running keeps its horizontal speed and adds to it, once, when the feet leave the ground. No flight and no fall protection beyond pistonboots.safeFallDistance. The client and the server apply the same numbers, so use the same values on both. Speeds are in blocks per tick (20 ticks per second): vanilla sprinting is about 0.28, a vanilla sprint jump leaves the ground at about 0.36.");
         cfg.setCategoryComment(SLEEPINGBAG, "The sleeping bag, deployed from a placed backpack or placed on its own.");
         cfg.setCategoryComment(CAMPFIRE, "The Campfire: a respawn point for the sleeping bag, and a fire to cook on.");
         cfg.setCategoryComment(CAMPFIRE_COOKING, "Right click the campfire with raw food to cook it. The campfire holds one kind of item at a time and cooks it one by one; the cooked items go into the inventory of the player who put them there when that player is close, or pop out on top of the campfire. No fuel. Breaking the campfire drops what is still raw. Ticks: 20 per second.");
         cfg.setCategoryComment(RENDER, "Client only: how the mod draws things. The server ignores this category.");
-        cfg.setCategoryComment(KEYS, "Client only: default keys, as LWJGL key codes (B = 48, N = 49, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
+        cfg.setCategoryComment(KEYS, "Client only: the four keys (Open Gear, Gear On/Off, Change Mode, Change State) and their default codes, as LWJGL key codes (B = 48, N = 49, G = 34, V = 47, see the LWJGL Keyboard class). They are only defaults: once a key is changed in Options > Controls, Minecraft keeps that choice.");
         cfg.setCategoryComment(WORLDGEN, "Backpacks found in the world.");
         cfg.setCategoryComment(RECIPES, "Extra recipes.");
         cfg.setCategoryComment(RECIPES_BOAT, "Recipes of the Inflatable Boat (only when enabled.inflatableBoat is on). Vanilla: Inflatable Chambers (leather, slime ball, leather), five of them with string and a Hose Nozzle as the valve make the boat; a piston, a furnace and Hydro Blades make it a motorized boat. With technical mods, rubber makes the chambers (three rubber, two chambers) and an electric motor plus Hydro Blades makes the motorized boat. The recipes are read once at startup: needs a restart.");
@@ -507,15 +542,14 @@ public class ConfigHandler
         cfg.setCategoryComment(RECIPES_FLAMETHROWER, "Recipes of the Flamethrower Pack and the Flamethrower nozzle (only when enabled.flamethrower is on). Vanilla: iron ingots, leather, a Pyro Mask, two Backpack Tanks and flint and steel for the pilot. With technical mods, metal plates take the place of the iron ingots, and the Pyro Mask takes rubber instead of leather like the Inflatable Chamber (recipes.boat.mode and recipes.boat.rubber). Read once at startup: needs a restart.");
         cfg.getCategory(RECIPES_FLAMETHROWER).setRequiresMcRestart(true);
         cfg.setCategoryComment(TWEAKS, "Small fixes and behaviours that are not tied to one item.");
-        cfg.setCategoryComment(TWEAKS_TOOL_CYCLE, "The backpack's two tool slots: which items they take, by hand and with the tool cycle (keys.toolcycle). The server checks the same list.");
+        cfg.setCategoryComment(TWEAKS_TOOL_CYCLE, "The backpack's two tool slots: which items they take, by hand and with the tool swap (keys.toolcycle). The server checks the same list.");
         cfg.setCategoryComment(COMPAT, "Integrations with other mods. Each one only acts when its mod is loaded; nothing here is a hard dependency.");
         cfg.setCategoryComment(COMPAT_GRAVES, "Grave mods (OpenBlocks graves, GraveStone). When one of them is loaded and makes a grave, the worn backpack (or copter pack, or jetpack) goes into the grave instead of being placed as a block. Without a grave mod, backpack.placeOnDeath decides.");
         cfg.setCategoryComment(COMPAT_BAUBLES, "Baubles and Baubles Expanded. The Adventure Backpack can be worn in a bauble slot and then works as if worn the usual way (abilities, open key, hose, model on the back). Baubles Expanded gets a new back slot; the original Baubles uses the belt slot. Only one backpack is worn at a time. The default open key (B) is the same as the Baubles inventory key: change one of them in Options > Controls.");
         cfg.getCategory(KEYS).setRequiresMcRestart(true);
-        cfg.setCategoryComment(TOOL_CYCLE, "Client only: swapping the held tool with the backpack's tool slots (and the hose mode). The keys themselves are changed in Options > Controls.");
+        cfg.setCategoryComment(TOOL_CYCLE, "Client only: swapping the held tool with the backpack's tool slots (and the hose mode) with the Change State key or Sneak + the mouse wheel. The key itself is changed in Options > Controls.");
     }
 
-    /** Moves keys from the old flat "general" category into the tree, keeping their values, then drops "general". */
     static void migrateLegacy(Configuration cfg)
     {
         if (!cfg.hasCategory(Configuration.CATEGORY_GENERAL)) return;
@@ -546,7 +580,10 @@ public class ConfigHandler
         SCUBA_ENABLED = bool(cfg, ENABLED, "scuba", true, "The Scuba Gear, its Air Tanks and Diving Mask, and the Air Compressor.");
         FLAMETHROWER_ENABLED = bool(cfg, ENABLED, "flamethrower", true, "The Flamethrower Pack, the Flamethrower nozzle and the Pyro Mask. When false they have no recipe, are hidden from the creative tab, and the nozzle does not fire. Set it the same on server and clients.");
         CAMPFIRE_ENABLED = bool(cfg, ENABLED, "campfire", true, "Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way.");
+        QUIVER_ENABLED = bool(cfg, ENABLED, "quiver", true, "The quiver of the Skeleton Backpack (backpacks.skeleton.quiver): it takes the place of the right tank, so that backpack has one tank and a few slots that only take arrows and crossbow bolts. When false the Skeleton Backpack has its two tanks again; arrows already in the quiver are kept in the backpack and come back when it is turned on. Set it the same on server and clients.");
         FUELSTATION_ENABLED = bool(cfg, ENABLED, "fuelStation", true, "The Fuel Station block. When false it has no recipe, is hidden from the creative tab, and a placed one neither takes nor gives fuel (it can still be broken, and keeps its fuel).");
+        DISTILLERY_ENABLED = bool(cfg, ENABLED, "distillery", true, "The Distillery block, which makes ethanol for the fuel users. When false it has no recipe, is hidden from the creative tab, and a placed one does nothing: no batches, no push, no fluid in or out (it can still be broken and drops its items). Set it the same on server and clients.");
+        PLACEDGEAR_ENABLED = bool(cfg, ENABLED, "placedGear", true, "Placing the Steam Jetpack, the Copter Pack, the Scuba Gear and the Flamethrower Pack on the ground as a block (see placedgear for each one). When false they cannot be placed; gear already placed does nothing (no window, no fluid in or out) but can still be picked up with everything it holds. Set it the same on server and clients.");
     }
 
     private static void readBackpack(Configuration cfg)
@@ -556,12 +593,69 @@ public class ConfigHandler
         BACKPACK_BLAST_RESISTANCE = (float) decimal(cfg, BACKPACK, "blastResistance", 2000.0, 0.0, 6000000.0, "Explosion resistance of a placed backpack, on the same scale as Block.setResistance: 2000 is obsidian (survives TNT and creepers), 10 is stone.", true);
         BACKPACK_HARDNESS = (float) decimal(cfg, BACKPACK, "hardness", 1.0, 0.0, 100.0, "How long a placed backpack takes to break by hand. Stone is 1.5.", true);
         BACKPACK_DEATH_MESSAGE = bool(cfg, BACKPACK, "deathMessage", true, "On death, tell the player in chat where the worn backpack, copter pack or jetpack went (placed, dropped or in the grave) with its coordinates.");
+        WORN_SYNC_INTERVAL_TICKS = integer(cfg, BACKPACK, "wornSyncIntervalTicks", 4, 1, 20, "Worn gear (backpack, jetpack, copter pack...) that changes every tick, such as a boiling jetpack, a burning firebox or a Cow backpack filling a tank, tells its wearer and the players near about it at most once every this many ticks (20 per second). A single change is sent at once. 1 sends every tick.");
+    }
+
+    public static String backpackCategory(String colorName)
+    {
+        return BACKPACKS + "." + colorName.toLowerCase(Locale.ROOT);
+    }
+
+    private static void readBackpackTypes(Configuration cfg)
+    {
+        Map<String, int[]> types = new HashMap<String, int[]>();
+        for (String name : BackpackNames.backpackNames)
+        {
+            String category = backpackCategory(name);
+            boolean enabled = bool(cfg, category, "enabled", true, "The " + name + " Backpack. When false it has no crafting recipe and is hidden from the creative tab (and NEI); backpacks of this type that already exist keep working. Needs a restart for the recipe.");
+            int rows = integer(cfg, category, "rows", BackpackLayout.CLASSIC_ROWS, BackpackLayout.MIN_ROWS, BackpackLayout.MAX_ROWS, "Rows of the storage grid of this backpack's window. Set it the same on server and clients.");
+            int columns = integer(cfg, category, "columns", BackpackLayout.CLASSIC_COLUMNS, BackpackLayout.MIN_COLUMNS, BackpackLayout.MAX_COLUMNS, "Columns of the storage grid of this backpack's window. Set it the same on server and clients.");
+            types.put(name, new int[]{enabled ? 1 : 0, rows, columns});
+        }
+        readQuiver(cfg);
+        BACKPACK_TYPES = types;
+        BACKPACK_TYPES_GENERATION++;
+    }
+
+    private static void readQuiver(Configuration cfg)
+    {
+        QUIVER_SLOTS = integer(cfg, QUIVER, "slots", 4, 1, QUIVER_MAX_SLOTS, "Slots of the quiver, each holding one stack. They fill the column of the right tank, then the column of its bucket slots. Lowering it keeps the arrows of the slots that go away in the backpack (they come back when the slots do). Set it the same on server and clients.");
+        order(QUIVER, "items");
+        String[] items = cfg.getStringList("items", QUIVER, QUIVER_ITEMS_DEFAULT, "What the quiver slots take, one per line: item:modid:name (any damage value), item:modid:name:meta (that damage value only), ore:name (an Ore Dictionary name) or modid:name. The default is vanilla arrows and the Crossbow Bolts. Set it the same on server and clients.");
+        QUIVER_FILTER = QuiverRules.Filter.parse(items);
+        for (String bad : QUIVER_FILTER.rejected())
+        {
+            LogHelper.error("Ignoring the malformed quiver item '" + bad + "' (backpacks.skeleton.quiver.items)");
+        }
+    }
+
+    public static int backpackQuiverSlots(String colorName)
+    {
+        return QUIVER_ENABLED && "Skeleton".equals(colorName) ? QUIVER_SLOTS : 0;
+    }
+
+    public static boolean isBackpackTypeEnabled(String colorName)
+    {
+        int[] t = BACKPACK_TYPES.get(colorName);
+        return t == null || t[0] != 0;
+    }
+
+    public static int backpackRows(String colorName)
+    {
+        int[] t = BACKPACK_TYPES.get(colorName);
+        return t == null ? BackpackLayout.CLASSIC_ROWS : t[1];
+    }
+
+    public static int backpackColumns(String colorName)
+    {
+        int[] t = BACKPACK_TYPES.get(colorName);
+        return t == null ? BackpackLayout.CLASSIC_COLUMNS : t[2];
     }
 
     private static void readAbilities(Configuration cfg)
     {
         ABILITY_EFFECT_REFRESH_TICKS = integer(cfg, ABILITIES, "effectRefreshTicks", AbilityEffects.EFFECT_REFRESH_TICKS, 2, 200, "Ticks left on a long potion effect (fire resistance, Dragon effects) under which the ability renews it.");
-        ABILITY_TOGGLE_MESSAGE = bool(cfg, ABILITIES, "toggleMessage", true, "Tell the player in chat when the abilities key (keys.toggleAbilities) turns the worn backpack's abilities off or on. Each player's choice is kept with the player; enabled.abilities false keeps them off for everyone.");
+        ABILITY_TOGGLE_MESSAGE = bool(cfg, ABILITIES, "toggleMessage", true, "Tell the player in chat when the Gear On/Off key (keys.ability) or the button in the backpack window turns the worn backpack's abilities off or on. Each player's choice is kept with the player; enabled.abilities false keeps them off for everyone.");
 
         String c = ABILITIES + ".bat";
         BAT_ENABLED = bool(cfg, c, "enabled", true, "Bat Backpack: night vision.");
@@ -656,7 +750,8 @@ public class ConfigHandler
         SUNFLOWER_SATURATION = (float) decimal(cfg, c, "saturation", 0.2, 0.0, 2.0, "Saturation modifier per meal.");
 
         c = ABILITIES + ".skeleton";
-        SKELETON_ENABLED = bool(cfg, c, "enabled", true, "Skeleton Backpack: bows take arrows from the backpack.");
+        SKELETON_ENABLED = bool(cfg, c, "enabled", true, "Skeleton Backpack: bows take arrows from the backpack, quiver first, and arrows leave faster (arrowSpeedBonus).");
+        SKELETON_ARROW_SPEED_BONUS = decimal(cfg, c, "arrowSpeedBonus", 0.30, 0.0, 2.0, "Extra speed of the arrows and Crossbow Bolts the wearer shoots, as a part of their normal speed (0.30 = 30 % faster). Arrows hurt in proportion to their speed, so they also hit about this much harder. 0 turns it off.");
 
         c = ABILITIES + ".irongolem";
         IRONGOLEM_ENABLED = bool(cfg, c, "enabled", true, "Iron Golem Backpack: no fall damage.");
@@ -715,14 +810,31 @@ public class ConfigHandler
         COPTER_PUSH_INTERVAL_TICKS = integer(cfg, COPTERPACK, "itemPushIntervalTicks", 2, 1, 20, "The rotor looks for dropped items to blow away once every this many ticks.");
     }
 
+    static void migrateJetpackThrust(Configuration cfg)
+    {
+        ConfigCategory jet = cfg.getCategory(STEAMJETPACK);
+        if (!jet.containsKey("thrust") || !jet.containsKey("maxRiseSpeed")) return;
+        if (jet.get("thrust").getDouble() != 0.08 || jet.get("maxRiseSpeed").getDouble() != 0.28) return;
+        jet.remove("thrust");
+        jet.remove("maxRiseSpeed");
+    }
+
+    static void migrateJetpackSteamCost(Configuration cfg)
+    {
+        ConfigCategory jet = cfg.getCategory(STEAMJETPACK);
+        if (jet.containsKey("steamPerTick") && jet.get("steamPerTick").getInt() == 20) jet.remove("steamPerTick");
+    }
+
     private static void readSteamJetpack(Configuration cfg)
     {
+        migrateJetpackThrust(cfg);
+        migrateJetpackSteamCost(cfg);
         ALLOW_JETPACK_SOUNDS = bool(cfg, STEAMJETPACK, "sound", true, "Play the boiler and thrust sounds (client only).");
         JETPACK_OWN_STEAM = bool(cfg, STEAMJETPACK, "ownSteamFluid", true, "When no other mod (Railcraft, IC2...) registers a 'steam' fluid, register Adventure Backpack's own so the jetpack boils water without them. When another mod has steam, that one is used. Set it the same on server and clients. Needs a restart.");
         cfg.getCategory(STEAMJETPACK).get("ownSteamFluid").setRequiresMcRestart(true);
         JETPACK_WATER_CAPACITY = integer(cfg, STEAMJETPACK, "waterCapacity", 6000, 1000, 64000, "Water tank capacity in millibuckets. Use the same value on server and clients.", true);
         JETPACK_STEAM_CAPACITY = integer(cfg, STEAMJETPACK, "steamCapacity", 12000, 1000, 64000, "Steam tank capacity in millibuckets. Use the same value on server and clients.", true);
-        JETPACK_STEAM_PER_TICK = integer(cfg, STEAMJETPACK, "steamPerTick", 20, 0, 1000, "Steam spent per tick of thrust. With the defaults a full steam tank gives 30 seconds of thrust, and full water and steam tanks with a hot boiler about 90 seconds.");
+        JETPACK_STEAM_PER_TICK = integer(cfg, STEAMJETPACK, "steamPerTick", 10, 0, 1000, "Steam spent per tick of thrust. With the defaults a full steam tank gives 60 seconds of thrust, and full water and steam tanks with a hot boiler about 3 minutes.");
         JETPACK_IGNITION_STEAM = integer(cfg, STEAMJETPACK, "ignitionSteam", 150, 0, 64000, "Steam spent at once each time the thrust starts, so taking off costs more than keeping it going. 0 turns it off.");
         JETPACK_THRUST_FUEL_BURN = integer(cfg, STEAMJETPACK, "thrustFuelBurn", 3, 1, 20, "Ticks of firebox burn time used per tick of thrust (1 = as fast as idle). Coal burns 1600 ticks, so 3 makes one coal last about 27 seconds of thrust.");
         JETPACK_THRUST_HEAT_LOSS_TICKS = integer(cfg, STEAMJETPACK, "thrustHeatLossTicks", 10, 0, 1200, "While thrusting the boiler loses one degree every this many ticks, down to the ambient temperature. With the fire lit it still heats up; without fuel a long flight cools it below boiling. 0 turns it off.");
@@ -731,8 +843,9 @@ public class ConfigHandler
         JETPACK_WATER_INTAKE = integer(cfg, STEAMJETPACK, "waterIntake", 2, 0, 1000, "Millibuckets of water taken per tick while the wearer is in water.");
         JETPACK_STEAM_PER_WATER = integer(cfg, STEAMJETPACK, "steamPerWater", 4, 1, 100, "Millibuckets of steam made from one millibucket of water.");
         JETPACK_BOILING_TEMPERATURE = integer(cfg, STEAMJETPACK, "boilingTemperature", 100, 1, 199, "Boiler temperature at which water turns into steam (the boiler tops out at 200).");
-        JETPACK_THRUST = decimal(cfg, STEAMJETPACK, "thrust", 0.08, 0.01, 1.0, "Upward acceleration per tick.");
-        JETPACK_MAX_RISE_SPEED = decimal(cfg, STEAMJETPACK, "maxRiseSpeed", 0.28, 0.01, 2.0, "Top climbing speed.");
+        JETPACK_THRUST = decimal(cfg, STEAMJETPACK, "thrust", 0.14, 0.01, 1.0, "Upward speed added per tick of thrust. Gravity takes 0.08 each tick, so the jetpack climbs only with more than that: 0.08 just floats. 0.14 reaches the top climbing speed in about 6 ticks. Movement is decided by each client, so use the same value on server and clients.");
+        JETPACK_MAX_RISE_SPEED = decimal(cfg, STEAMJETPACK, "maxRiseSpeed", 0.4, 0.01, 2.0, "Top climbing speed in blocks per tick (0.4 is 8 blocks a second). Needs thrust above 0.08 + maxRiseSpeed / 50 to be reached.");
+        JETPACK_FALL_BRAKE = decimal(cfg, STEAMJETPACK, "fallBrake", 2.0, 1.0, 10.0, "Thrust multiplier while the wearer is falling, so holding jump stops a fall at once. 1 turns it off.");
         JETPACK_AIR_CONTROL = (float) decimal(cfg, STEAMJETPACK, "airControl", 0.02, 0.0, 0.5, "Horizontal acceleration while thrusting.");
         JETPACK_MAX_ALTITUDE = integer(cfg, STEAMJETPACK, "maxAltitude", 90, 1, 255, "Height above which thrust fades out: thrust holds the wearer at about maxRiseSpeed x 100 blocks higher.");
     }
@@ -781,14 +894,14 @@ public class ConfigHandler
         BOAT_MAX_SPEED = decimal(cfg, INFLATABLEBOAT, "maxSpeed", 0.35, 0.07, 2.0, "Top speed in blocks per tick (the vanilla boat uses 0.35). The motorized boat without fuel, or with its motor off, uses it too.");
         BOAT_MOTOR_ENABLED = bool(cfg, INFLATABLEBOAT_MOTOR, "enabled", true, "The motor of the Motorized Inflatable Boat. False: the motor is only a look, and the boat moves like the plain one.");
         BOAT_MOTOR_MODE = BoatMotor.Mode.parse(choice(cfg, INFLATABLEBOAT_MOTOR, "mode", "toggle", BoatMotor.Mode.NAMES,
-                "toggle: the motor key (keys.boatMotorToggle, set it in Options > Controls) turns the motor on and off, and the boat goes ahead on its own while the pilot steers; holding back still brakes. hold: the motor pushes while the pilot holds the forward key. Either way it stops without fuel, when the pilot gets off and out of the water. Read on the server."));
+                "toggle: the Change Mode key (keys.mode, G by default) turns the motor on and off, and the boat goes ahead on its own while the pilot steers; holding back still brakes. hold: the motor pushes while the pilot holds the forward key. Either way it stops without fuel, when the pilot gets off and out of the water. Read on the server."));
         BOAT_MOTOR_MAX_SPEED = decimal(cfg, INFLATABLEBOAT_MOTOR, "maxSpeed", 0.6, 0.05, 2.0, "Top speed while the motor runs, in blocks per tick (0.6 = 12 blocks per second; the boat without motor uses inflatableboat.maxSpeed). Use the same value on server and clients.");
         BOAT_MOTOR_ACCELERATION = decimal(cfg, INFLATABLEBOAT_MOTOR, "acceleration", 2.0, 1.0, 10.0, "How much faster than the plain boat the boat speeds up while the motor runs: 1.0 = as fast as the plain boat, 2.0 = twice as fast. Use the same value on server and clients.");
         BOAT_MOTOR_FUEL_PER_TICK = integer(cfg, INFLATABLEBOAT_MOTOR, "fuelPerTick", 1, 0, 100, "Millibuckets of fuel per tick while the motor runs, before the fuel's own multiplier (fuels.list). With the defaults a full tank of fuel lasts 5 minutes. 0 makes the motor free (it still needs some fuel in the tank).");
         BOAT_MOTOR_FUEL_INTERVAL = integer(cfg, INFLATABLEBOAT_MOTOR, "fuelIntervalTicks", 10, 1, 200, "Fuel is taken once every this many ticks of running: the cost of all those ticks at once.");
         BOAT_MOTOR_TANK_CAPACITY = integer(cfg, INFLATABLEBOAT_MOTOR, "tankCapacity", 6000, 1000, 64000, "Capacity of the motor's fuel tank in millibuckets. Use the same value on server and clients. Lowering it drops the fuel above the new limit when a boat is loaded or placed.", true);
         BOAT_MOTOR_OUT_OF_WATER_TICKS = integer(cfg, INFLATABLEBOAT_MOTOR, "outOfWaterTicks", 10, 1, 200, "The motor stops after the boat has been out of the water for this many ticks in a row (on land, or in the air over a wave or a drop).");
-        BOAT_MOTOR_SOUND = bool(cfg, INFLATABLEBOAT_MOTOR, "sound", true, "Sound of the boat motor, on the client: a looping putt-putt while the motor runs, a cord pull when it starts, a cough when it stops and a dry click when the motor key cannot start it (no fuel or not on water; the server sends the click to the pilot). It replaces the chat messages as the motor's notice. False: the motor is silent.");
+        BOAT_MOTOR_SOUND = bool(cfg, INFLATABLEBOAT_MOTOR, "sound", true, "Sound of the boat motor, on the client: a looping putt-putt while the motor runs, a cord pull when it starts, a cough when it stops and a dry click when the Change Mode key cannot start it (no fuel or not on water; the server sends the click to the pilot). It replaces the chat messages as the motor's notice. False: the motor is silent.");
         BOAT_MOTOR_SOUND_VOLUME = decimal(cfg, INFLATABLEBOAT_MOTOR, "soundVolume", 0.6, 0.0, 1.0, "Volume of the boat motor's sounds, from 0.0 (silent) to 1.0, on the client. The running loop is a little quieter at low speed and louder at full speed.");
         BOAT_MOTOR_MESSAGES = bool(cfg, INFLATABLEBOAT_MOTOR, "messages", false, "Chat messages about the boat motor (on, off, out of fuel, not on water), read on the server. Off by default: the sound is the notice. Turn it on for players who cannot hear.");
     }
@@ -801,7 +914,6 @@ public class ConfigHandler
         cfg.getCategory(FUELS_CATEGORY).get("list").setRequiresMcRestart(true);
     }
 
-    /** Moves the old copterpack.fuels value into fuels.list (see FuelRules.migrate) and drops the old key. */
     static void migrateFuels(Configuration cfg)
     {
         ConfigCategory copter = cfg.getCategory(COPTERPACK);
@@ -818,7 +930,44 @@ public class ConfigHandler
         FUELSTATION_TANK_CAPACITY = integer(cfg, FUELSTATION, "tankCapacity", 16000, 1000, 64000, "Capacity of the station's tank in millibuckets. Use the same value on server and clients. Lowering it does not delete fuel already stored above the new limit.", true);
     }
 
-    /** Moves the old crossbow.shotsPerMagazine value into crossbow.magazine.capacity and drops the old key. */
+    private static void readDistillery(Configuration cfg)
+    {
+        DISTILLERY_OUTPUT_FLUID = text(cfg, DISTILLERY, "outputFluid", "bioethanol", "Registered name of the fluid the Distillery makes. bioethanol is the name Forestry, Railcraft and GregTech use: when one of them is loaded the Distillery makes their ethanol. Any registered fluid name works; a name no loaded mod registers falls back to bioethanol. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(DISTILLERY).get("outputFluid").setRequiresMcRestart(true);
+        if (DISTILLERY_OUTPUT_FLUID.isEmpty()) DISTILLERY_OUTPUT_FLUID = "bioethanol";
+        DISTILLERY_OWN_ETHANOL = bool(cfg, DISTILLERY, "ownEthanolFluid", true, "When no other mod registers a 'bioethanol' fluid, register Adventure Backpack's own (shown as Ethanol), only while enabled.distillery is on. It has no block and no bucket: it lives in tanks, pipes and fuel packs. When another mod has bioethanol, that one is used. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(DISTILLERY).get("ownEthanolFluid").setRequiresMcRestart(true);
+        DISTILLERY_FUEL_MULTIPLIER = decimal(cfg, DISTILLERY, "fuelMultiplier", 1.2, 0.1, 10.0, "Burn rate of the output fluid when fuels.list does not list it (fuels.list wins when it does; its default has bioethanol=1.2). Higher burns faster: 1.2 makes ethanol last a little less than fuel (1.0) and more than oil (1.5).", true);
+        DISTILLERY_OUTPUT_CAPACITY = integer(cfg, DISTILLERY, "outputCapacity", 8000, 1000, 64000, "Capacity of the ethanol tank in millibuckets (8000 is eight buckets). Use the same value on server and clients.", true);
+        DISTILLERY_WATER_CAPACITY = integer(cfg, DISTILLERY, "waterCapacity", 8000, 1000, 64000, "Capacity of the water tank in millibuckets. Use the same value on server and clients.", true);
+        DISTILLERY_WATER_PER_BATCH = integer(cfg, DISTILLERY, "waterPerBatch", 1000, 0, 64000, "Millibuckets of water each batch uses up. 0 makes water free (and not needed).");
+        DISTILLERY_TICKS_PER_BATCH = integer(cfg, DISTILLERY, "ticksPerBatch", 400, 1, 72000, "Ticks of burning flame one batch takes (400 is 20 seconds). With the defaults one coal (3200 ticks) runs eight batches.");
+        DISTILLERY_INTERVAL_TICKS = integer(cfg, DISTILLERY, "intervalTicks", 10, 1, 200, "The Distillery works once every this many ticks, doing the work of all those ticks at once. An idle Distillery (no flame and nothing to do) does no work at all until something changes.");
+        order(DISTILLERY, "organics");
+        DISTILLERY_ORGANICS = cfg.getStringList("organics", DISTILLERY, DISTILLERY_ORGANICS_DEFAULT, "Organic items the grid takes and the ethanol each one makes, one per line: <item>=<millibuckets>. Every batch takes one item from each slot of the grid, so nine different crops make the most at once. Entries no loaded mod provides are ignored (the ore: names cover crops of Pam's HarvestCraft and other farming mods). Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(DISTILLERY).get("organics").setRequiresMcRestart(true);
+        order(DISTILLERY, "catalysts");
+        DISTILLERY_CATALYSTS = cfg.getStringList("catalysts", DISTILLERY, DISTILLERY_CATALYSTS_DEFAULT, "Items the catalyst slot takes, one per line, without amounts. Each batch uses catalystPerBatch of them. The window shows the first one in the empty slot. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(DISTILLERY).get("catalysts").setRequiresMcRestart(true);
+        DISTILLERY_CATALYST_PER_BATCH = integer(cfg, DISTILLERY, "catalystPerBatch", 1, 0, 64, "Catalyst items each batch uses up. 0 makes the catalyst free (and not needed).");
+        order(DISTILLERY, "solidFuels");
+        DISTILLERY_SOLID_FUELS = cfg.getStringList("solidFuels", DISTILLERY, DISTILLERY_SOLID_FUELS_DEFAULT, "Solid fuels the fuel slot takes and how long each one burns, one per line: <item>=<ticks>. The coal entry has no damage value, so it covers coal and charcoal. These win over furnaceFuelMultiplier. Set it the same on server and clients. Needs a restart.");
+        cfg.getCategory(DISTILLERY).get("solidFuels").setRequiresMcRestart(true);
+        DISTILLERY_FURNACE_FUEL_MULTIPLIER = decimal(cfg, DISTILLERY, "furnaceFuelMultiplier", 1.0, 0.0, 100.0, "Any other furnace fuel (planks, sticks, blaze rods, lava buckets, fuels of other mods) burns for its furnace time times this. 0 takes only the fuels of solidFuels.");
+        DISTILLERY_PUSH_INTERVAL_TICKS = integer(cfg, DISTILLERY, "pushIntervalTicks", 20, 1, 1200, "Ticks between two pushes of ethanol into the neighbours. It only pushes while there is ethanol and some neighbour takes fluid.");
+        DISTILLERY_PUSH_AMOUNT = integer(cfg, DISTILLERY, "pushAmount", 1000, 0, 64000, "Millibuckets offered to the neighbours in each push, shared in turn between the four sides. 0 turns the push off: then pipes have to pull the ethanol out.");
+        DISTILLERY_WATER_PER_SOURCE = integer(cfg, DISTILLERY, "waterPerSource", 50, 0, 1000, "Millibuckets of water per second each water source block next to the Distillery (its four sides and below) gives while the water tank is not full. With the defaults two sources keep it running without buckets or pipes. 0 turns it off.");
+    }
+
+    private static void readPlacedGear(Configuration cfg)
+    {
+        PLACEDGEAR_JETPACK = bool(cfg, PLACEDGEAR, "jetpack", true, "The Steam Jetpack can be placed. Set it the same on server and clients.");
+        PLACEDGEAR_COPTER = bool(cfg, PLACEDGEAR, "copter", true, "The Copter Pack can be placed. Set it the same on server and clients.");
+        PLACEDGEAR_SCUBA = bool(cfg, PLACEDGEAR, "scuba", true, "The Scuba Gear can be placed. Set it the same on server and clients.");
+        PLACEDGEAR_FLAMETHROWER = bool(cfg, PLACEDGEAR, "flamethrower", true, "The Flamethrower Pack can be placed. Set it the same on server and clients.");
+        PLACEDGEAR_SYNC_INTERVAL_TICKS = integer(cfg, PLACEDGEAR, "syncIntervalTicks", 10, 1, 200, "A placed gear filled or emptied by pipes tells the nearby players about its new content at most once every this many ticks (20 per second). Its window updates at once.");
+    }
+
     static void migrateMagazineCapacity(Configuration cfg)
     {
         ConfigCategory crossbow = cfg.getCategory(CROSSBOW);
@@ -833,10 +982,8 @@ public class ConfigHandler
         ConfigCategory crossbow = cfg.getCategory(CROSSBOW);
         for (String gone : new String[]{"arrowVelocity", "arrowDamage"})
         {
-            // Keys of the single-shot crossbow; their scale does not match the bolt keys, so they are dropped, not moved.
             if (crossbow.containsKey(gone)) crossbow.remove(gone);
         }
-        // The elemental bolts were removed in 1.1: drop their category from older files.
         String elemental = CROSSBOW + ".elemental";
         if (cfg.hasCategory(elemental)) cfg.removeCategory(cfg.getCategory(elemental));
         migrateMagazineCapacity(cfg);
@@ -856,7 +1003,7 @@ public class ConfigHandler
         GRAPPLE_COOLDOWN_TICKS = integer(cfg, CROSSBOW_GRAPPLE, "cooldownTicks", 20, 0, 200, "Wait after firing the hook before the crossbow can fire or reload again.");
         GRAPPLE_CHARGES = integer(cfg, CROSSBOW_GRAPPLE, "chargesPerShot", 1, 0, 24, "Bolts from the magazine a hook shot takes. 0 makes it free; more than a full magazine counts as a full magazine.");
         GRAPPLE_NO_FALL_DAMAGE = bool(cfg, CROSSBOW_GRAPPLE, "noFallDamage", true, "The pull never causes fall damage: the fall distance is reset while pulling and when the hook lets go. A fall after letting go counts from there.");
-        CROSSBOW_SHOTS_PER_MAGAZINE = integer(cfg, CROSSBOW_MAGAZINE, "capacity", 6, 1, 24, "Charges a full Crossbow Magazine holds, and bolts the crossbow fires from it. Old cartridges without a charge count hold 6 (the 6 arrows they were made of), never more than this.");
+        CROSSBOW_SHOTS_PER_MAGAZINE = integer(cfg, CROSSBOW_MAGAZINE, "capacity", 8, 1, 24, "Charges a full Crossbow Magazine holds, and bolts the crossbow fires from it. Old cartridges without a charge count hold 6 (the 6 arrows they were made of), never more than this.");
         MAGAZINE_LOAD_TICKS = integer(cfg, CROSSBOW_MAGAZINE, "loadTicksPerCharge", 4, 0, 100, "Pause between two charges while loading a magazine with a held right click. A held click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4. 0 loads the whole magazine with one click.");
         MAGAZINE_RELOAD_RECIPE = bool(cfg, CROSSBOW_MAGAZINE, "reloadRecipe", true, "Shapeless recipe: a magazine and up to its free room of ammunition of one kind (the kind it already holds) make the magazine loaded with them. Needs a restart.");
         cfg.getCategory(CROSSBOW_MAGAZINE).get("reloadRecipe").setRequiresMcRestart(true);
@@ -871,6 +1018,10 @@ public class ConfigHandler
         SNIPER_SHOT_DELAY_TICKS = integer(cfg, CROSSBOW_SNIPER, "shotDelayTicks", 30, 4, 200, "Pause after a sniper shot. A held right click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4.");
         SNIPER_STILL_TOLERANCE = decimal(cfg, CROSSBOW_SNIPER, "stillTolerance", 0.02, 0.001, 0.2, "Horizontal movement in blocks per tick under which the player counts as still (sneak walking is about 0.065).");
         SNIPER_ZOOM = (float) decimal(cfg, CROSSBOW_SNIPER, "zoom", 0.35, 0.1, 1.0, "Client only: field of view multiplier while the bipod is down. 1 = no zoom, 0.35 = about three times closer.");
+        CROSSBOW_QUIVER_ENABLED = bool(cfg, CROSSBOW_QUIVER, "enabled", true, "The crossbow fires from the quiver of a worn Skeleton Backpack (gatling mode). When false it always uses magazines.");
+        QUIVER_FIRE_INTERVAL_TICKS = integer(cfg, CROSSBOW_QUIVER, "fireIntervalTicks", 3, 1, 40, "Ticks between two bolts while the trigger is held in gatling mode. 3 = between 6 and 7 bolts a second (the magazine fires 5). The server fires on its own clock, so any value works, not only multiples of 4.");
+        QUIVER_TRIGGER_HOLD_TICKS = integer(cfg, CROSSBOW_QUIVER, "triggerHoldTicks", 6, 5, 20, "Ticks the trigger counts as held after the last right click the server got. Minecraft repeats a held click every 4 ticks; the margin covers a late packet. Higher values keep a laggy burst going but fire a little longer after letting go.");
+        QUIVER_FLUSH_EVERY_SHOTS = integer(cfg, CROSSBOW_QUIVER, "flushEveryShots", 8, 1, 64, "During a burst the server counts the spent items in memory and takes them out of the backpack every this many shots, and when the burst ends. Lower values update the quiver in the backpack window and on the model sooner and send the backpack to its wearer more often.");
     }
 
     private static void readSleepingBag(Configuration cfg)
@@ -885,6 +1036,10 @@ public class ConfigHandler
         PISTONBOOTS_STEP_HEIGHT = (float) decimal(cfg, PISTONBOOTS, "stepHeight", 1.001, 0.5, 3.0, "Step height while the boots step up (vanilla is 0.5).");
         PISTONBOOTS_SPRINT_SPEED = bool(cfg, PISTONBOOTS, "sprintSpeed", true, "Give Speed I while sprinting.");
         PISTONBOOTS_SAFE_FALL_DISTANCE = integer(cfg, PISTONBOOTS, "safeFallDistance", 8, 0, 256, "Falls shorter than this many blocks do no damage. 0 turns it off.");
+        PISTONBOOTS_LEAP_ENABLED = bool(cfg, PISTONBOOTS_LEAP, "enabled", true, "A running jump in the boots carries more speed forward.");
+        PISTONBOOTS_LEAP_BOOST = decimal(cfg, PISTONBOOTS_LEAP, "boost", 1.4, 1.0, 3.0, "The jump multiplies the horizontal speed the player had by this. 1.0 adds nothing.");
+        PISTONBOOTS_LEAP_MAX_SPEED = decimal(cfg, PISTONBOOTS_LEAP, "maxHorizontalSpeed", 0.7, 0.1, 2.0, "The leap never takes the horizontal speed past this, in blocks per tick. A player already faster keeps their speed: the leap never slows anyone down.");
+        PISTONBOOTS_LEAP_REQUIRES_SPRINT = bool(cfg, PISTONBOOTS_LEAP, "requiresSprint", true, "Leap only from a sprint. False leaps from any moving jump in the boots.");
     }
 
     private static void readCampfire(Configuration cfg)
@@ -906,22 +1061,27 @@ public class ConfigHandler
         RENDER_FLAMETHROWER_PARTICLES = integer(cfg, RENDER, "flamethrowerParticles", 6, 0, 30, "Flame particles drawn along the cone for each burst of a Flamethrower (smoke comes with every second burst). 0 draws none.");
         TANKS_OVERLAY = bool(cfg, RENDER, "wearableOverlay", true, "Show the overlays of the worn backpack, copter pack or jetpack on screen, and the fuel tank of the motorized boat the player rides.");
         RENDER_BOAT_SMOKE_TICKS = integer(cfg, RENDER, "boatSmokeTicks", 8, 0, 200, "The running motor of the motorized boat puffs smoke once every this many ticks. 0 = no smoke.");
+        RENDER_QUIVER_ARROWS = bool(cfg, RENDER, "quiverArrows", true, "Draw arrows sticking out of the Skeleton Backpack's quiver (worn, placed and as an item): none when it is empty, more as it fills up (1 to 8, 9 to 32, more than 32 items).");
+        TOOLTIP_WIDTH = integer(cfg, RENDER, "tooltipWidth", 200, 100, 400, "Widest line of the mod's tooltips, in GUI pixels; longer lines wrap. The crossbow's controls show only while Shift is held.");
     }
+
+    static final String[] GONE_KEYS = {"openBackpack", "toggle", "crossbowMode", "toggleAbilities", "boatMotorToggle"};
+    static final String[] GONE_TOOL_CYCLE_KEYS = {"modifierKey", "nextToolKey", "previousToolKey"};
 
     private static void readKeys(Configuration cfg)
     {
-        KEY_OPEN_BACKPACK = integer(cfg, KEYS, "openBackpack", Keyboard.KEY_B, 0, 255, "Default key that opens the worn backpack, copter pack or jetpack (48 = B).", true);
-        KEY_TOGGLE = integer(cfg, KEYS, "toggle", Keyboard.KEY_N, 0, 255, "Default key that switches the hose tank and drives the worn copter pack or jetpack (49 = N). With the copter pack, the key changes its mode (normal or hover) and Sneak + the key turns it on or off; with the jetpack, Sneak + the key turns it on or off; Sneak + N lights the Flamethrower Pack.", true);
-        KEY_CROSSBOW_MODE = integer(cfg, KEYS, "crossbowMode", Keyboard.KEY_V, 0, 255, "Default key that changes the firing mode of the held Clockwork Crossbow (47 = V).", true);
-        KEY_TOGGLE_ABILITIES = integer(cfg, KEYS, "toggleAbilities", 0, 0, 255, "Default key that turns the abilities of the worn backpack off and on, for this player only (night vision, water breathing, fire resistance, milk...). 0 = not bound: pick one in Options > Controls.", true);
-        KEY_BOAT_MOTOR_TOGGLE = integer(cfg, KEYS, "boatMotorToggle", 0, 0, 255, "Default key that turns the motor of the Motorized Inflatable Boat on and off while riding it (inflatableboat.motor.mode toggle). 0 = not bound: pick one in Options > Controls.", true);
-        TOOL_CYCLE_ENABLED = bool(cfg, TOOL_CYCLE, "enabled", true, "Swap the held tool with the backpack's tool slots, and change the hose mode, from the keyboard or mouse wheel. False turns both off, so the wheel always scrolls the hotbar.");
+        ConfigCategory keys = cfg.getCategory(KEYS);
+        for (String gone : GONE_KEYS) if (keys.containsKey(gone)) keys.remove(gone);
+        ConfigCategory toolCycle = cfg.getCategory(TOOL_CYCLE);
+        for (String gone : GONE_TOOL_CYCLE_KEYS) if (toolCycle.containsKey(gone)) toolCycle.remove(gone);
+        KEY_GEAR = integer(cfg, KEYS, "gear", Keyboard.KEY_B, 0, 255, "Default key of Open Gear: opens the window of the worn backpack, copter pack, jetpack, scuba gear or flamethrower pack (48 = B).", true);
+        KEY_ABILITY = integer(cfg, KEYS, "ability", Keyboard.KEY_N, 0, 255, "Default key of Gear On/Off: turns the worn gear on and off. Backpack: its abilities, for this player only. Copter pack: the engine. Steam Jetpack: the firebox. Flamethrower Pack: the pilot. The Scuba Gear always works (49 = N).", true);
+        KEY_MODE = integer(cfg, KEYS, "mode", Keyboard.KEY_G, 0, 255, "Default key of Change Mode, first match wins: riding the Motorized Inflatable Boat, the motor on and off (inflatableboat.motor.mode toggle); wearing the copter pack, normal or hover; a hose in the hand, the left or right tank (34 = G).", true);
+        KEY_STATE = integer(cfg, KEYS, "state", Keyboard.KEY_V, 0, 255, "Default key of Change State, first match wins: the Clockwork Crossbow in the hand, its firing mode; a hose in the hand, its mode (suck, spill, drink); wearing a backpack, swap the held tool with its tool slots. Sneak + the key goes backwards (47 = V).", true);
+        TOOL_CYCLE_ENABLED = bool(cfg, TOOL_CYCLE, "enabled", true, "Swap the held tool with the backpack's tool slots, and change the hose mode, with the Change State key or Sneak + the mouse wheel. False turns both off, so the wheel always scrolls the hotbar (the crossbow mode still changes with the key).");
         TOOL_CYCLE_MODE = ToolCycleInput.Mode.parse(choice(cfg, TOOL_CYCLE, "mode", "both", ToolCycleInput.Mode.NAMES,
-                "wheel: hold the modifier key and turn the mouse wheel. keys: only the next and previous tool keys. both: either one."));
+                "wheel: hold Sneak and turn the mouse wheel. keys: only the Change State key. both: either one."));
         TOOL_CYCLE_INVERT_WHEEL = bool(cfg, TOOL_CYCLE, "invertWheel", false, "Turn the mouse wheel the other way to cycle.");
-        KEY_TOOL_MODIFIER = integer(cfg, TOOL_CYCLE, "modifierKey", 0, 0, 255, "Default key to hold while turning the wheel. 0 means the sneak key (Left Shift by default): a separate binding on the same key as sneak would stop one of the two from working in 1.7.10.", true);
-        KEY_NEXT_TOOL = integer(cfg, TOOL_CYCLE, "nextToolKey", 0, 0, 255, "Default key for the next tool. 0 = not bound.", true);
-        KEY_PREVIOUS_TOOL = integer(cfg, TOOL_CYCLE, "previousToolKey", 0, 0, 255, "Default key for the previous tool. 0 = not bound.", true);
     }
 
     private static void readWorldgenRecipesTweaks(Configuration cfg)
@@ -958,7 +1118,6 @@ public class ConfigHandler
         COMPAT_GRAVES_ENABLED = bool(cfg, COMPAT_GRAVES, "enabled", true, "Send the worn wearable to the grave of OpenBlocks or GraveStone when one of them is loaded. When false, backpack.placeOnDeath decides as if no grave mod were there.");
     }
 
-    /** Fixes values that are valid alone but not together. Pure: the unit test calls it. */
     static void validate()
     {
         if (BAT_NIGHT_VISION_TICKS <= BAT_NIGHT_VISION_REFRESH_BELOW)
@@ -971,17 +1130,13 @@ public class ConfigHandler
         }
         if (SPIDER_FOLLOW_STOP_DISTANCE >= SPIDER_FOLLOW_START_DISTANCE)
         {
-            // otherwise the spider would start and stop following in the same tick
             SPIDER_FOLLOW_STOP_DISTANCE = Math.max(1.0, SPIDER_FOLLOW_START_DISTANCE - 1.0);
         }
         if (SPIDER_TELEPORT_DISTANCE > 0 && SPIDER_TELEPORT_STUCK_DISTANCE >= SPIDER_TELEPORT_DISTANCE)
         {
-            // a stuck spider should jump sooner than one that is just far behind
             SPIDER_TELEPORT_STUCK_DISTANCE = SPIDER_TELEPORT_DISTANCE / 2;
         }
     }
-
-    // ---------------------------------------------------------------- helpers
 
     private static void order(String category, String key)
     {

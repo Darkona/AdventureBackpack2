@@ -10,10 +10,6 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-/**
- * GUI container of a station (the Fuel Station): its three slots plus the player's inventory. The tank reaches the
- * client through the window properties, and only when the fluid or the amount changed since the last send.
- */
 public class ContainerFuelStation extends Container
 {
     private static final int PLAYER_SLOTS = 36;
@@ -85,7 +81,6 @@ public class ContainerFuelStation extends Container
     public void addCraftingToCrafters(ICrafting crafter)
     {
         super.addCraftingToCrafters(crafter);
-        // a newly opened GUI gets the tank at once
         lastFluid = -1;
     }
 
@@ -127,7 +122,6 @@ public class ContainerFuelStation extends Container
         return result;
     }
 
-    /** A station slot: the output only gives, the pack slot holds one pack. */
     private static class StationSlot extends Slot
     {
         private final int limit;

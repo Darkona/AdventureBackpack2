@@ -1,7 +1,11 @@
 package com.darkona.adventurebackpack.client.gui;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.reference.BackpackNames;
+import com.darkona.adventurebackpack.util.Wearing;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.config.Keybindings;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -10,25 +14,27 @@ import com.darkona.adventurebackpack.inventory.InventoryBackpack;
 import com.darkona.adventurebackpack.network.EquipUnequipBackWearablePacket;
 import com.darkona.adventurebackpack.network.SleepingBagPacket;
 import com.darkona.adventurebackpack.util.Resources;
-import com.darkona.adventurebackpack.util.TickThrottle;
+import com.darkona.adventurebackpack.common.RenderInfoCache;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import com.darkona.adventurebackpack.inventory.BackpackLayout;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
+import java.util.Collections;
+import java.util.List;
+
 @SideOnly(Side.CLIENT)
 public class GuiAdvBackpack extends GuiWithTanks
 {
-
     protected IInventoryAdventureBackpack inventory;
     protected boolean isTile;
     protected boolean wearing;
@@ -37,14 +43,20 @@ public class GuiAdvBackpack extends GuiWithTanks
     protected int Z;
     private EntityPlayer player;
     private static final ResourceLocation texture = Resources.guiTextures("guiBackpackNew");
-    private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 91, 18, 18);
-    private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 91, 18, 18);
-    private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 91, 18, 18);
-    private static GuiTank tankLeft = new GuiTank(25, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
-    private static GuiTank tankRight = new GuiTank(207, 7, 100, 16, ConfigHandler.GUI_TANK_RENDER);
+    private final BackpackLayout layout;
+    private final int[] background;
+    private final GuiImageButtonNormal bedButton;
+    private final GuiImageButtonNormal equipButton;
+    private final GuiImageButtonNormal unequipButton;
+    private final GuiToggleButton abilitiesButton;
+    private BackpackProperty props;
+    private final GuiTank tankLeft;
+    private final GuiTank tankRight;
+    private List<String> quiverTip;
     private FluidTank lft;
     private FluidTank rgt;
-    private int lastReloadTick = Integer.MIN_VALUE;
+    private ItemStack shownStack;
+    private int shownVersion;
     public int lefties;
     public int topsies;
 
@@ -53,8 +65,14 @@ public class GuiAdvBackpack extends GuiWithTanks
         super(new ContainerBackpack(player, tileBackpack, ContainerBackpack.SOURCE_TILE));
         this.inventory = tileBackpack;
         this.isTile = true;
-        xSize = 248;
-        ySize = 207;
+        layout = ((ContainerBackpack) inventorySlots).layout;
+        background = BackpackBackground.compose(layout);
+        xSize = layout.width();
+        ySize = layout.height();
+        bedButton = equipButton = unequipButton = new GuiImageButtonNormal(layout.buttonX(), layout.buttonY(), 18, 18);
+        abilitiesButton = new GuiToggleButton(layout.toggleX(), layout.toggleY(), 18, 12, "adventurebackpack:gui.toggle.abilities");
+        tankLeft = new GuiTank(layout.tankX(0), layout.tankY(), layout.tankHeight(), layout.tankWidth(), ConfigHandler.GUI_TANK_RENDER);
+        tankRight = layout.tanks() > 1 ? new GuiTank(layout.tankX(1), layout.tankY(), layout.tankHeight(), layout.tankWidth(), ConfigHandler.GUI_TANK_RENDER) : null;
         this.X = tileBackpack.xCoord;
         this.Y = tileBackpack.yCoord;
         this.Z = tileBackpack.zCoord;
@@ -69,9 +87,21 @@ public class GuiAdvBackpack extends GuiWithTanks
         this.inventory = inventoryBackpack;
         this.wearing = wearing;
         this.isTile = false;
-        xSize = 248;
-        ySize = 207;
+        layout = ((ContainerBackpack) inventorySlots).layout;
+        background = BackpackBackground.compose(layout);
+        xSize = layout.width();
+        ySize = layout.height();
+        bedButton = equipButton = unequipButton = new GuiImageButtonNormal(layout.buttonX(), layout.buttonY(), 18, 18);
+        abilitiesButton = new GuiToggleButton(layout.toggleX(), layout.toggleY(), 18, 12, "adventurebackpack:gui.toggle.abilities");
+        tankLeft = new GuiTank(layout.tankX(0), layout.tankY(), layout.tankHeight(), layout.tankWidth(), ConfigHandler.GUI_TANK_RENDER);
+        tankRight = layout.tanks() > 1 ? new GuiTank(layout.tankX(1), layout.tankY(), layout.tankHeight(), layout.tankWidth(), ConfigHandler.GUI_TANK_RENDER) : null;
         this.player = player;
+        ItemStack worn = wearing ? Wearing.getWearingBackpack(player) : null;
+        if (worn != null && ConfigHandler.BACKPACK_ABILITIES && BackpackAbilities.hasAbility(BackpackNames.getBackpackColorName(worn)))
+        {
+            props = BackpackProperty.get(player);
+            if (props != null) setToggle(abilitiesButton);
+        }
         this.lefties = guiLeft;
         this.topsies = guiTop;
     }
@@ -93,9 +123,8 @@ public class GuiAdvBackpack extends GuiWithTanks
 
         this.mc.renderEngine.bindTexture(texture);
 
-        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        drawPieces(background);
 
-        // Buttons and button highlight
         if (isTile)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
@@ -127,7 +156,6 @@ public class GuiAdvBackpack extends GuiWithTanks
                 }
             }
         }
-        //zLevel +=1;
         if(ConfigHandler.HOVERING_TEXT_TANKS)
         {
             if (tankLeft.inTank(this, mouseX, mouseY))
@@ -135,53 +163,62 @@ public class GuiAdvBackpack extends GuiWithTanks
                 drawHoveringText(tankLeft.getTankTooltip(), mouseX, mouseY, fontRendererObj);
             }
 
-            if (tankRight.inTank(this, mouseX, mouseY))
+            if (tankRight != null && tankRight.inTank(this, mouseX, mouseY))
             {
                 drawHoveringText(tankRight.getTankTooltip(), mouseX, mouseY, fontRendererObj);
             }
         }
     }
 
+    private void refreshShown()
+    {
+        if (isTile || !(inventory instanceof InventoryBackpack)) return;
+        InventoryBackpack inv = (InventoryBackpack) inventory;
+        ItemStack source = wearing ? Wearing.getWearingBackpack(player) : inv.getContainerStack();
+        if (source == null) return;
+        int version = RenderInfoCache.get(source).version();
+        if (source == shownStack && version == shownVersion) return;
+        if (source != inv.getContainerStack()) inv.setContainerStack(source);
+        inv.openInventory();
+        shownStack = source;
+        shownVersion = version;
+    }
+
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-
-        // Reloading the whole inventory from NBT on every frame was the cursor lag of #41: once per 5 ticks is plenty.
-        int now = player.ticksExisted;
-        if (TickThrottle.due(lastReloadTick, now, 5))
-        {
-            lastReloadTick = now;
-            inventory.openInventory();
-        }
+        refreshShown();
         lft = inventory.getLeftTank();
         rgt = inventory.getRightTank();
         tankLeft.draw(this, lft);
-        tankRight.draw(this, rgt);
+        if (tankRight != null) tankRight.draw(this, rgt);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
-        /*
-        if(!ConfigHandler.HOVERING_TEXT_TANKS){
-            GL11.glPushMatrix();
-            //GL11.glTranslatef(8f,64f,0f);
-            GL11.glScalef(0.6f, 0.6f, 0.6f);
-            String name = (lft.getFluid() != null) ? lft.getFluid().getLocalizedName() : "None";
-            String amount = (lft.getFluid() != null ? lft.getFluid().amount : "Empty").toString();
-            String capacity = Integer.toString(inventory.getLeftTank().getCapacity());
-            int offsetY = 32;
-            int offsetX = 8;
-            fontRendererObj.drawString(Utils.getFirstWord(name), 1 + offsetX, 64 + offsetY, 0x373737, false);
-            fontRendererObj.drawString(amount, 1 + offsetX, 79 + offsetY, 0x373737, false);
-            fontRendererObj.drawString(capacity, 1 + offsetX, 94 + offsetY, 0x373737, false);
+        drawToggle(mouseX, mouseY);
+    }
 
-            name = (rgt.getFluid() != null) ? rgt.getFluid().getLocalizedName() : "None";
-            amount = (rgt.getFluid() != null ? rgt.getFluid().amount : "Empty").toString();
-            fontRendererObj.drawString(Utils.getFirstWord(name), 369 + offsetX, 64 + offsetY, 0x373737, false);
-            fontRendererObj.drawString(amount, 369 + offsetX, 79 + offsetY, 0x373737, false);
-            fontRendererObj.drawString(capacity, 369 + offsetX, 94 + offsetY, 0x373737, false);
-
-            GL11.glPopMatrix();
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        if (layout.quiver() == 0 || mc.thePlayer.inventory.getItemStack() != null) return;
+        int x = mouseX - guiLeft, y = mouseY - guiTop;
+        for (int q = 0; q < layout.quiver(); q++)
+        {
+            int qx = layout.quiverX(q), qy = layout.quiverY(q);
+            if (x >= qx - 1 && x < qx + 17 && y >= qy - 1 && y < qy + 17)
+            {
+                Slot slot = inventorySlots.getSlot(layout.quiverStart() + q);
+                if (!slot.getHasStack()) drawHoveringText(quiverTip, mouseX, mouseY, fontRendererObj);
+                return;
+            }
         }
-        */
+    }
+
+    @Override
+    protected boolean isToggleOn()
+    {
+        return props != null && !props.isAbilitiesOff();
     }
 
     @Override
@@ -190,11 +227,30 @@ public class GuiAdvBackpack extends GuiWithTanks
         return this.zLevel;
     }
 
+    private void drawPieces(int[] pieces)
+    {
+        float px = 1f / 256f;
+        Tessellator t = Tessellator.instance;
+        t.startDrawingQuads();
+        for (int i = 0; i < pieces.length; i += BackpackBackground.STRIDE)
+        {
+            int x = guiLeft + pieces[i], y = guiTop + pieces[i + 1];
+            int u = pieces[i + 2], v = pieces[i + 3], w = pieces[i + 4], h = pieces[i + 5];
+            t.addVertexWithUV(x, y + h, zLevel, u * px, (v + h) * px);
+            t.addVertexWithUV(x + w, y + h, zLevel, (u + w) * px, (v + h) * px);
+            t.addVertexWithUV(x + w, y, zLevel, (u + w) * px, v * px);
+            t.addVertexWithUV(x, y, zLevel, u * px, v * px);
+        }
+        t.draw();
+    }
+
     @Override
     public void initGui()
     {
         super.initGui();
-
+        quiverTip = Collections.singletonList(StatCollector.translateToLocal("adventurebackpack:gui.quiver.slot"));
+        if (guiLeft < 0) guiLeft = 0;
+        if (guiTop < 0) guiTop = 0;
     }
 
     @Override
@@ -212,6 +268,7 @@ public class GuiAdvBackpack extends GuiWithTanks
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
+        if (clickToggle(mouseX, mouseY)) return;
         if(isTile)
         {
             if (bedButton.inButton(this, mouseX, mouseY))
@@ -238,21 +295,18 @@ public class GuiAdvBackpack extends GuiWithTanks
                     player.closeScreen();
                     return;
                 }
-
             }
         }
-        // A click on our button is not also a click on the container (no slot, no drop of the held cursor stack)
         super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     protected void keyTyped(char key, int keycode)
     {
-        if (keycode == Keybindings.openBackpack.getKeyCode())
+        if (keycode == Keybindings.gear.getKeyCode())
         {
             player.closeScreen();
         }
         super.keyTyped(key, keycode);
     }
 }
-

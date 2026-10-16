@@ -6,14 +6,8 @@ import com.darkona.adventurebackpack.util.BackpackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-/**
- * Created on 15/10/2014
- *
- * @author Darkona
- */
 public class BackpackNames
 {
-
     public static String[] backpackNames = {
             "Standard",
             "Cow",
@@ -95,7 +89,6 @@ public class BackpackNames
 
     public static ItemStack setBackpackColorNameFromDamage(ItemStack backpack, int damage)
     {
-
         if (backpack == null) return null;
         if (!(backpack.getItem() instanceof ItemAdventureBackpack)) return null;
         NBTTagCompound backpackData = BackpackUtils.getBackpackData(backpack) != null ? BackpackUtils.getBackpackData(backpack) : new NBTTagCompound() ;

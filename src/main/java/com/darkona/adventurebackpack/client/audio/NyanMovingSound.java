@@ -6,14 +6,8 @@ import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
-/**
- * Created on 16/10/2014
- *
- * @author Darkona
- */
 public class NyanMovingSound extends MovingSound
 {
-
     public static NyanMovingSound instance = new NyanMovingSound();
 
     public EntityPlayer getPlayer()
@@ -60,7 +54,6 @@ public class NyanMovingSound extends MovingSound
             } else
             {
                 this.donePlaying = true;
-                // this.volume = 0.0f;
             }
 
             this.xPosF = (float) this.player.posX;

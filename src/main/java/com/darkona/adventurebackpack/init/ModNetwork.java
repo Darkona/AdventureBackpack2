@@ -11,11 +11,6 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
 
-/**
- * Created on 12/10/2014
- * @author Darkona
- *
- */
 public class ModNetwork
 {
     public static SimpleNetworkWrapper net;
@@ -29,15 +24,13 @@ public class ModNetwork
         registerMessage(EntityParticlePacket.class, EntityParticlePacket.Message.class);
         registerMessage(EntitySoundPacket.class, EntitySoundPacket.Message.class);
 
-        registerMessage(WearableModePacket.class, WearableModePacket.Message.class);
-        registerMessage(CycleToolPacket.class, CycleToolPacket.CycleToolMessage.class);
+        registerMessage(KeyActionPacket.class, KeyActionPacket.Message.class);
         registerMessage(GUIPacket.class, GUIPacket.GUImessage.class);
         registerMessage(SleepingBagPacket.class, SleepingBagPacket.SleepingBagMessage.class);
         registerMessage(CowAbilityPacket.class, CowAbilityPacket.CowAbilityMessage.class);
         registerMessage(PlayerActionPacket.class, PlayerActionPacket.ActionMessage.class);
         registerMessage(EquipUnequipBackWearablePacket.class, EquipUnequipBackWearablePacket.Message.class);
         registerMessage(CrossbowPacket.class, CrossbowPacket.Message.class);
-
     }
 
     @SuppressWarnings("unchecked")

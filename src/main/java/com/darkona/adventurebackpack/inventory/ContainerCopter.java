@@ -1,18 +1,17 @@
 package com.darkona.adventurebackpack.inventory;
 
+import adventurebackpack.api.IWearableContainer;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.block.TileGear;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-/**
- * Created on 03/01/2015
- *
- * @author Darkona
- */
 public class ContainerCopter extends Container implements IWearableContainer
 {
+    private TileGear tile;
 
     public InventoryCopterPack inventory;
     private final int
@@ -22,6 +21,12 @@ public class ContainerCopter extends Container implements IWearableContainer
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
     EntityPlayer player;
     boolean wearing;
+
+    public ContainerCopter(EntityPlayer player, InventoryCopterPack copterPack, TileGear tile)
+    {
+        this(player, copterPack, false);
+        this.tile = tile;
+    }
 
     public ContainerCopter(EntityPlayer player, InventoryCopterPack copterPack, boolean wearing)
     {
@@ -37,13 +42,11 @@ public class ContainerCopter extends Container implements IWearableContainer
         int startX = 8;
         int startY = 84;
 
-        // Player's Hotbar
         for (int x = 0; x < 9; x++)
         {
             addSlotToContainer(new Slot(invPlayer, x, startX + 18 * x, 142));
         }
 
-        // Player's Inventory
         for (int y = 0; y < 3; y++)
         {
             for (int x = 0; x < 9; x++)
@@ -51,25 +54,22 @@ public class ContainerCopter extends Container implements IWearableContainer
                 addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (startX + 18 * x), (startY + y * 18)));
             }
         }
-        //Total 36 slots
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
-
         bindPlayerInventory(invPlayer);
         int slot = 0;
-        //Bucket Slots
-        // bucket in
         addSlotToContainer(new SlotFluid(inventory, slot++, 44, 23));
-        // bucket out
         addSlotToContainer(new SlotFluid(inventory, slot++, 44, 53));
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer p_75145_1_)
     {
-        return true;
+        if (tile != null) return tile.isUseableByPlayer(p_75145_1_);
+        return HeldContainerGuard.stillOpen(wearing, inventory.getParentItemStack(),
+                BackpackProperty.get(p_75145_1_).getWearable(), p_75145_1_.getCurrentEquippedItem());
     }
 
     @Override
@@ -92,6 +92,7 @@ public class ContainerCopter extends Container implements IWearableContainer
                 }
             }
         }
+        if (tile != null) tile.afterContainerTick();
     }
 
     @Override
@@ -99,13 +100,12 @@ public class ContainerCopter extends Container implements IWearableContainer
     {
         boolean clickedIsHeld = slot >= 0 && slot < inventorySlots.size() && player.getHeldItem() != null
                 && getSlot(slot).getStack() == player.getHeldItem();
-        if (HeldContainerGuard.refuses(!wearing, clickedIsHeld, flag, button, player.inventory.currentItem))
+        if (HeldContainerGuard.refuses(!wearing && tile == null, clickedIsHeld, flag, button, player.inventory.currentItem))
         {
             return null;
         }
         return super.slotClick(slot, button, flag, player);
     }
-
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i)
@@ -158,11 +158,12 @@ public class ContainerCopter extends Container implements IWearableContainer
     {
         refresh();
         super.detectAndSendChanges();
+        if (tile != null) tile.afterContainerTick();
     }
 
     @Override
     public void refresh()
     {
-        inventory.openInventory();
+        if (!inventory.isCurrentFor(inventory.getParentItemStack())) inventory.openInventory();
     }
 }

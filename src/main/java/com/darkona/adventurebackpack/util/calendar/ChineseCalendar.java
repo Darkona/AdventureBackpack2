@@ -1,10 +1,5 @@
 package com.darkona.adventurebackpack.util.calendar;
 
-/**
- * Created on 22/12/2014
- *
- * @author Darkona
- */
 public class ChineseCalendar
 {
     private int gregorianYear;
@@ -12,9 +7,9 @@ public class ChineseCalendar
     private int gregorianDate;
     private boolean isGregorianLeap;
     private int dayOfYear;
-    private int dayOfWeek; // Sunday is the first day
+    private int dayOfWeek;
     private int chineseYear;
-    private int chineseMonth; // -n is a leap month
+    private int chineseMonth;
     private int chineseDate;
     private int sectionalTerm;
     private int principleTerm;
@@ -68,7 +63,6 @@ public class ChineseCalendar
         return c.chineseMonth == 1 && c.chineseDate == 1;
     }
 
-
     public ChineseCalendar()
     {
         setGregorian(1901, 1, 1);
@@ -101,7 +95,7 @@ public class ChineseCalendar
     public static int daysInGregorianMonth(int y, int m)
     {
         int d = daysInGregorianMonth[m - 1];
-        if (m == 2 && isGregorianLeapYear(y)) d++; // Leap year adjustment
+        if (m == 2 && isGregorianLeapYear(y)) d++;
         return d;
     }
 
@@ -109,7 +103,7 @@ public class ChineseCalendar
     {
         int c = 0;
         for (int i = 1; i < m; i++)
-        { // Number of months passed
+        {
             c = c + daysInGregorianMonth(y, i);
         }
         c = c + d;
@@ -118,24 +112,20 @@ public class ChineseCalendar
 
     public static int dayOfWeek(int y, int m, int d)
     {
-        int w = 1; // 01-Jan-0001 is Monday, so base is Sunday
-        y = (y - 1) % 400 + 1; // Gregorian calendar cycle is 400 years
-        int ly = (y - 1) / 4; // Leap years passed
-        ly = ly - (y - 1) / 100; // Adjustment
-        ly = ly + (y - 1) / 400; // Adjustment
-        int ry = y - 1 - ly; // Regular years passed
-        w = w + ry; // Regular year has one extra week day
-        w = w + 2 * ly; // Leap year has two extra week days
+        int w = 1;
+        y = (y - 1) % 400 + 1;
+        int ly = (y - 1) / 4;
+        ly = ly - (y - 1) / 100;
+        ly = ly + (y - 1) / 400;
+        int ry = y - 1 - ly;
+        w = w + ry;
+        w = w + 2 * ly;
         w = w + dayOfYear(y, m, d);
         w = (w - 1) % 7 + 1;
         return w;
     }
 
     private static char[] chineseMonths = {
-            //Chinese month map, 2 bytes per year, from 1900 to 2100, 402 bytes.
-            //The first 4 bits represents the leap month of the year.
-            //The rest 12 bits are flags indicate if the corresponding month
-            //is a 29-day month. 2 bytes are stored in low-high order.
             0x00, 0x04, 0xad, 0x08, 0x5a, 0x01, 0xd5, 0x54, 0xb4, 0x09, 0x64, 0x05, 0x59, 0x45,
             0x95, 0x0a, 0xa6, 0x04, 0x55, 0x24, 0xad, 0x08, 0x5a, 0x62, 0xda, 0x04, 0xb4, 0x05,
             0xb4, 0x55, 0x52, 0x0d, 0x94, 0x0a, 0x4a, 0x2a, 0x56, 0x02, 0x6d, 0x71, 0x6d, 0x01,
@@ -166,14 +156,12 @@ public class ChineseCalendar
             0xb4, 0x09, 0x68, 0x89, 0x54, 0x0b, 0xa4, 0x0a, 0xa5, 0x6a, 0x95, 0x04, 0xad, 0x08,
             0x6a, 0x44, 0xda, 0x04, 0x74, 0x05, 0xb0, 0x25, 0x54, 0x03
     };
-    // Base date: 01-Jan-1901, 4598/11/11 in Chinese calendar
     private static int baseYear = 1901;
     private static int baseIndex = 0;
     private static int baseChineseYear = 4598 - 1;
 
     public int computeChineseFields()
     {
-        // Gregorian year out of the computation range
         if (gregorianYear < 1901 || gregorianYear > 2100) return 1;
         int startYear = baseYear;
         int baseMonth = 1;
@@ -185,8 +173,6 @@ public class ChineseCalendar
         chineseMonth = baseChineseMonth;
         int baseChineseDate = 11;
         chineseDate = baseChineseDate;
-        // Switching to the second base to reduce the calculation process
-        // Second base date: 01-Jan-2000, 4697/11/25 in Chinese calendar
         if (gregorianYear >= 2000)
         {
             startYear = baseYear + 99;
@@ -196,15 +182,11 @@ public class ChineseCalendar
             chineseMonth = 11;
             chineseDate = 25;
         }
-        // Calculating the number of days
-        //    between the start date and the current date
-        // The following algorithm only works
-        //    for startMonth = 1 and startDate = 1
         int daysDiff = 0;
         for (int i = startYear; i < gregorianYear; i++)
         {
             daysDiff += 365;
-            if (isGregorianLeapYear(i)) daysDiff += 1; // leap year
+            if (isGregorianLeapYear(i)) daysDiff += 1;
         }
         for (int i = startMonth; i < gregorianMonth; i++)
         {
@@ -212,9 +194,6 @@ public class ChineseCalendar
         }
         daysDiff += gregorianDate - startDate;
 
-        // Adding that number of days to the Chinese date
-        // Then bring Chinese date into the correct range.
-        //    one Chinese month at a timeInSeconds
         chineseDate += daysDiff;
         int lastDate = daysInChineseMonth(chineseYear, chineseMonth);
         int nextMonth = nextChineseMonth(chineseYear, chineseMonth);
@@ -230,19 +209,16 @@ public class ChineseCalendar
     }
 
     private static int[] bigLeapMonthYears = {
-            // The leap months in the following years have 30 days
             6, 14, 19, 25, 33, 36, 38, 41, 44, 52,
             55, 79, 117, 136, 147, 150, 155, 158, 185, 193
     };
 
     public static int daysInChineseMonth(int y, int m)
     {
-        // Regular month: m > 0
-        // Leap month: m < 0
         int index = y - baseChineseYear + baseIndex;
         int v = 0;
         int l = 0;
-        int d = 30; // normal month
+        int d = 30;
         if (1 <= m && m <= 8)
         {
             v = chineseMonths[2 * index];
@@ -254,12 +230,12 @@ public class ChineseCalendar
             l = m - 9;
             if (((v >> l) & 0x01) == 1) d = 29;
         } else
-        { // leap month
+        {
             v = chineseMonths[2 * index + 1];
             v = (v >> 4) & 0x0F;
             if (v != Math.abs(m))
             {
-                d = 0; // wrong m specified
+                d = 0;
             } else
             {
                 d = 29;
@@ -278,46 +254,45 @@ public class ChineseCalendar
 
     public static int nextChineseMonth(int y, int m)
     {
-        int n = Math.abs(m) + 1; // normal behavior
+        int n = Math.abs(m) + 1;
         if (m > 0)
         {
-            // need to find out if we are in a leap year or not
             int index = y - baseChineseYear + baseIndex;
             int v = chineseMonths[2 * index + 1];
             v = (v >> 4) & 0x0F;
-            if (v == m) n = -m; // next month is a leap month
+            if (v == m) n = -m;
         }
-        if (n == 13) n = 1; //roll into next year
+        if (n == 13) n = 1;
         return n;
     }
 
     private static char[][] sectionalTermMap = {
-            {7, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5, 5},   // Jan
-            {5, 4, 5, 5, 5, 4, 4, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 3, 3, 4, 4, 3, 3, 3},   // Feb
-            {6, 6, 6, 7, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 5}, // Mar
-            {5, 5, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 4, 4, 5, 5, 4, 4, 4, 5, 4, 4, 4, 4, 5}, // Apr
-            {6, 6, 6, 7, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 5}, // May
+            {7, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5, 5},
+            {5, 4, 5, 5, 5, 4, 4, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 3, 3, 4, 4, 3, 3, 3},
+            {6, 6, 6, 7, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 5},
+            {5, 5, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 4, 4, 5, 5, 4, 4, 4, 5, 4, 4, 4, 4, 5},
+            {6, 6, 6, 7, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 5},
             {6, 6, 7, 7, 6, 6, 6, 7, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 5},
-            {7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6, 7, 7, 6, 6, 6, 7, 7}, // Jul
+            {7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6, 7, 7, 6, 6, 6, 7, 7},
             {8, 8, 8, 9, 8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6, 7, 7, 7},
-            {8, 8, 8, 9, 8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 7}, // Sep
-            {9, 9, 9, 9, 8, 9, 9, 9, 8, 8, 9, 9, 8, 8, 8, 9, 8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 8}, // Oct
-            {8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6, 7, 7, 7}, // Nov
-            {7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6, 7, 7, 6, 6, 6, 7, 7}  // Dec
+            {8, 8, 8, 9, 8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 7},
+            {9, 9, 9, 9, 8, 9, 9, 9, 8, 8, 9, 9, 8, 8, 8, 9, 8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 8},
+            {8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6, 7, 7, 7},
+            {7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6, 7, 7, 6, 6, 6, 7, 7}
     };
     private static char[][] sectionalTermYear = {
-            {13, 49, 85, 117, 149, 185, 201, 250, 250}, // Jan
-            {13, 45, 81, 117, 149, 185, 201, 250, 250}, // Feb
-            {13, 48, 84, 112, 148, 184, 200, 201, 250}, // Mar
-            {13, 45, 76, 108, 140, 172, 200, 201, 250}, // Apr
-            {13, 44, 72, 104, 132, 168, 200, 201, 250}, // May
-            {5, 33, 68, 96, 124, 152, 188, 200, 201}, // Jun
-            {29, 57, 85, 120, 148, 176, 200, 201, 250}, // Jul
-            {13, 48, 76, 104, 132, 168, 196, 200, 201}, // Aug
-            {25, 60, 88, 120, 148, 184, 200, 201, 250}, // Sep
-            {16, 44, 76, 108, 144, 172, 200, 201, 250}, // Oct
-            {28, 60, 92, 124, 160, 192, 200, 201, 250}, // Nov
-            {17, 53, 85, 124, 156, 188, 200, 201, 250}  // Dec
+            {13, 49, 85, 117, 149, 185, 201, 250, 250},
+            {13, 45, 81, 117, 149, 185, 201, 250, 250},
+            {13, 48, 84, 112, 148, 184, 200, 201, 250},
+            {13, 45, 76, 108, 140, 172, 200, 201, 250},
+            {13, 44, 72, 104, 132, 168, 200, 201, 250},
+            {5, 33, 68, 96, 124, 152, 188, 200, 201},
+            {29, 57, 85, 120, 148, 176, 200, 201, 250},
+            {13, 48, 76, 104, 132, 168, 196, 200, 201},
+            {25, 60, 88, 120, 148, 184, 200, 201, 250},
+            {16, 44, 76, 108, 144, 172, 200, 201, 250},
+            {28, 60, 92, 124, 160, 192, 200, 201, 250},
+            {17, 53, 85, 124, 156, 188, 200, 201, 250}
     };
     private static char[][] principleTermMap = {
             {21, 21, 21, 21, 21, 20, 21, 21, 21, 20, 20, 21, 21, 20, 20, 20, 20, 20, 20, 20, 20, 19,
@@ -346,23 +321,22 @@ public class ChineseCalendar
                     21, 22, 21, 21, 21, 21, 22}
     };
     private static char[][] principleTermYear = {
-            {13, 45, 81, 113, 149, 185, 201},     // Jan
-            {21, 57, 93, 125, 161, 193, 201},     // Feb
-            {21, 56, 88, 120, 152, 188, 200, 201}, // Mar
-            {21, 49, 81, 116, 144, 176, 200, 201}, // Apr
-            {17, 49, 77, 112, 140, 168, 200, 201}, // May
-            {28, 60, 88, 116, 148, 180, 200, 201}, // Jun
-            {25, 53, 84, 112, 144, 172, 200, 201}, // Jul
-            {29, 57, 89, 120, 148, 180, 200, 201}, // Aug
-            {17, 45, 73, 108, 140, 168, 200, 201}, // Sep
-            {28, 60, 92, 124, 160, 192, 200, 201}, // Oct
-            {16, 44, 80, 112, 148, 180, 200, 201}, // Nov
-            {17, 53, 88, 120, 156, 188, 200, 201}  // Dec
+            {13, 45, 81, 113, 149, 185, 201},
+            {21, 57, 93, 125, 161, 193, 201},
+            {21, 56, 88, 120, 152, 188, 200, 201},
+            {21, 49, 81, 116, 144, 176, 200, 201},
+            {17, 49, 77, 112, 140, 168, 200, 201},
+            {28, 60, 88, 116, 148, 180, 200, 201},
+            {25, 53, 84, 112, 144, 172, 200, 201},
+            {29, 57, 89, 120, 148, 180, 200, 201},
+            {17, 45, 73, 108, 140, 168, 200, 201},
+            {28, 60, 92, 124, 160, 192, 200, 201},
+            {16, 44, 80, 112, 148, 180, 200, 201},
+            {17, 53, 88, 120, 156, 188, 200, 201}
     };
 
     public int computeSolarTerms()
     {
-        // Gregorian year out of the computation range
         if (gregorianYear < 1901 || gregorianYear > 2100) return 1;
         sectionalTerm = sectionalTerm(gregorianYear, gregorianMonth);
         principleTerm = principleTerm(gregorianYear, gregorianMonth);
@@ -404,7 +378,7 @@ public class ChineseCalendar
         setGregorian(gregorianYear, 1, 1);
         computeChineseFields();
         computeSolarTerms();
-        String[] table = new String[59]; // 6*9 + 5
+        String[] table = new String[59];
         table[0] = getTextLine(27,
                 "Gregorian Calendar Year: " + gregorianYear);
         table[1] = getTextLine(27,
@@ -558,4 +532,3 @@ public class ChineseCalendar
         return 0;
     }
 }
-

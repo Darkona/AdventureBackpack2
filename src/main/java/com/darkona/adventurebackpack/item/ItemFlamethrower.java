@@ -24,18 +24,8 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.List;
 
-/**
- * The Flamethrower nozzle: hold right click while wearing a lit Flamethrower Pack to fire bursts of flame in a cone.
- * It stores nothing; the fuel lives in the pack.
- * <p>
- * No packet of its own: {@link #onUsingTick} runs on the server and on every client that sees the player (vanilla
- * syncs the "using an item" flag). The server fires one burst every flamethrower.fireIntervalTicks (Tier 2, a player
- * action: it reads the worn pack's tag once per burst, never per tick) and checks every time that the pack is worn
- * and lit. Clients draw the flames and play the sound on the same world-time beat.
- */
 public class ItemFlamethrower extends ItemAB
 {
-    /** Long enough to hold the trigger for an hour; it never finishes on its own. */
     private static final int USE_DURATION = 72000;
 
     public ItemFlamethrower()
@@ -86,7 +76,6 @@ public class ItemFlamethrower extends ItemAB
         int cost = FlamethrowerLogic.fuelPerBurst(ConfigHandler.FLAMETHROWER_FUEL_PER_BURST, GeneralReference.fuelMultiplier(pack.getFuelFluid()));
         if (!FlamethrowerLogic.canFire(true, pack.isOn(), fuel, cost))
         {
-            // lit with empty tanks (the tanks were drained in the GUI): put the pilot out once
             if (pack.isOn())
             {
                 ItemFlamethrowerPack.putOut(player, pack, "adventurebackpack:messages.flamethrower.nofuel");
@@ -103,8 +92,6 @@ public class ItemFlamethrower extends ItemAB
         burst(world, player, stack);
     }
 
-    // ---------------------------------------------------------------- server: one burst
-
     private static void burst(World world, EntityPlayer player, ItemStack nozzle)
     {
         double range = ConfigHandler.FLAMETHROWER_RANGE;
@@ -116,7 +103,6 @@ public class ItemFlamethrower extends ItemAB
         double endX = eyeX + look.xCoord * range;
         double endY = eyeY + look.yCoord * range;
         double endZ = eyeZ + look.zCoord * range;
-        // the box around the cone: from the eyes to the far end, widened by the cone's radius there
         double widen = range * Math.sqrt(Math.max(0.0, 1.0 - cos * cos)) + 1.0;
         AxisAlignedBB box = AxisAlignedBB.getBoundingBox(Math.min(eyeX, endX), Math.min(eyeY, endY), Math.min(eyeZ, endZ),
                 Math.max(eyeX, endX), Math.max(eyeY, endY), Math.max(eyeZ, endZ)).expand(widen, widen, widen);
@@ -146,7 +132,6 @@ public class ItemFlamethrower extends ItemAB
         if (ConfigHandler.FLAMETHROWER_IGNITES_BLOCKS) igniteBlock(world, player, nozzle, eyeX, eyeY, eyeZ, endX, endY, endZ);
     }
 
-    /** One ray per burst; fire on the free side of the block it hits, like flint and steel, when the wearer may build there. */
     private static void igniteBlock(World world, EntityPlayer player, ItemStack nozzle, double eyeX, double eyeY, double eyeZ, double endX, double endY, double endZ)
     {
         MovingObjectPosition hit = world.rayTraceBlocks(Vec3.createVectorHelper(eyeX, eyeY, eyeZ), Vec3.createVectorHelper(endX, endY, endZ));
@@ -161,23 +146,18 @@ public class ItemFlamethrower extends ItemAB
         if (!FlamethrowerLogic.mayIgnite(true, free, spawnProtected, canEdit)) return;
         BlockSnapshot before = BlockSnapshot.getBlockSnapshot(world, x, y, z);
         world.setBlock(x, y, z, Blocks.fire);
-        // protection mods cancel block placing: treat the fire as a placed block and undo it when they do
         if (ForgeEventFactory.onPlayerBlockPlace(player, before, side).isCanceled())
         {
             before.restore(true, false);
         }
     }
 
-    // ---------------------------------------------------------------- client: flames, smoke and sound
-
-    /** Where the nozzle is: in front of the right hand, below the eyes. */
     static Vec3 nozzle(EntityPlayer player)
     {
         double yaw = Math.toRadians(player.rotationYaw);
         double sideX = -Math.cos(yaw) * 0.35;
         double sideZ = -Math.sin(yaw) * 0.35;
         Vec3 look = player.getLookVec();
-        // a client sees other players at posY of their feet plus the eye height; its own player at the eyes
         double eyeY = player.boundingBox.minY + 1.62;
         return Vec3.createVectorHelper(player.posX + sideX + look.xCoord * 0.6, eyeY - 0.3 + look.yCoord * 0.6, player.posZ + sideZ + look.zCoord * 0.6);
     }

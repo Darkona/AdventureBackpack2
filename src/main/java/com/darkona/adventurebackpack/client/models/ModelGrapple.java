@@ -5,12 +5,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
-/**
- * The grappling hook in flight or hanging from a block: an iron eye for the rope, a shank and four barbed teeth.
- * Frame as {@code RenderArrow}: after the yaw and pitch turns the shank lies along +X with the teeth at +X, units
- * of 1/16 block. Texture entity/grapple.png (32x32; the rope strip is at u 28, 0, 4, 32). Geometry, UVs and texture are
- * generated together by {@code notes/art-1.1/crossbow.py}; the constructor body is its output.
- */
 @SideOnly(Side.CLIENT)
 public class ModelGrapple extends ModelBase
 {

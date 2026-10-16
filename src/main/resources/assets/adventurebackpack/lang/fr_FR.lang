@@ -47,8 +47,10 @@ itemGroup.adventurebackpack=Adventure Backpack
 
 ## Keybindings
 keys.adventureBackpack.category=Adventure Backpack
-keys.adventureBackpack.openBackpackInventory=Touche pour inventaire
-keys.adventureBackpack.switchHoseTank=Touche de bascule d'action
+keys.adventureBackpack.gear=Ouvrir l'équipement
+keys.adventureBackpack.ability=Activer/désactiver l'équipement
+keys.adventureBackpack.mode=Changer de mode
+keys.adventureBackpack.state=Changer d'état
 
 ## Fluids
 fluid.melonJuice=Jus de melon
@@ -66,3 +68,6 @@ adventurebackpack:messages.copterpack.off=Paquet hélico: Arrêt.
 adventurebackpack:messages.jetpack.on=Propulseur à vapeur: Marche.
 adventurebackpack:messages.jetpack.off=Propulseur à vapeur: Arrêt.
 adventurebackpack:messages.crossbow.outofammo=Arbalète à rouage: Plus de munitions.
+tile.adventurebackpack:blockDistillery.name=Distillerie
+tile.adventurebackpack:blockGear.name=Équipement posé
+fluid.bioethanol=Éthanol

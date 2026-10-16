@@ -13,16 +13,10 @@ import java.util.List;
 
 import net.minecraftforge.oredict.OreDictionary;
 
-/**
- * Finds the parts other mods provide for recipes (rubber, electric motors) without depending on them: the Ore
- * Dictionary, items looked up by name only when their mod is loaded, and the IC2 API through reflection. Called once
- * in postInit, when every mod has registered its items and ores.
- */
 public final class TechParts
 {
     private TechParts() {}
 
-    /** The Ore Dictionary names of the list that some loaded mod filled. */
     public static List<String> presentOres(String[] names)
     {
         List<String> found = new ArrayList<String>();
@@ -34,10 +28,6 @@ public final class TechParts
         return found;
     }
 
-    /**
-     * The ingredients the entries point at and that exist in this game: an Ore Dictionary name (String) or an
-     * ItemStack. Malformed entries are logged and skipped.
-     */
     public static List<Object> find(String[] entries)
     {
         List<Object> found = new ArrayList<Object>();
@@ -66,11 +56,11 @@ public final class TechParts
                 case IC2:
                     return Loader.isModLoaded("IC2") ? ic2Item(entry.name) : null;
                 case STACK:
-                    if (!Loader.isModLoaded(entry.modId)) return null;
+                    if (!loaded(entry.modId)) return null;
                     ItemStack stack = GameRegistry.findItemStack(entry.modId, entry.name, 1);
                     return stack != null && stack.getItem() != null ? stack : null;
                 case ITEM:
-                    if (!Loader.isModLoaded(entry.modId)) return null;
+                    if (!loaded(entry.modId)) return null;
                     Item item = GameRegistry.findItem(entry.modId, entry.name);
                     return item != null ? new ItemStack(item, 1, entry.meta) : null;
                 default:
@@ -83,7 +73,11 @@ public final class TechParts
         }
     }
 
-    /** ic2.api.item.IC2Items.getItem(name), by reflection so IC2 is not needed to build or run. */
+    private static boolean loaded(String modId)
+    {
+        return "minecraft".equalsIgnoreCase(modId) || Loader.isModLoaded(modId);
+    }
+
     private static ItemStack ic2Item(String name)
     {
         try

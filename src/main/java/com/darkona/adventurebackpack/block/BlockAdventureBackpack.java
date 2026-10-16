@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.block;
 
+import adventurebackpack.api.BackpackOpenEvent;
 import com.darkona.adventurebackpack.AdventureBackpack;
+import com.darkona.adventurebackpack.common.ApiEvents;
 import com.darkona.adventurebackpack.client.Icons;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.handlers.GuiHandler;
@@ -31,13 +33,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Random;
 
-/**
- * Created on 12/10/2014.
- * @author Javier Darkona
- */
 public class BlockAdventureBackpack extends BlockContainer
 {
-
     public BlockAdventureBackpack()
     {
         super(new BackpackMaterial());
@@ -46,15 +43,6 @@ public class BlockAdventureBackpack extends BlockContainer
         setResistance(ConfigHandler.BACKPACK_BLAST_RESISTANCE);
     }
 
-    /**
-     * Pretty effects for the bookshelf ;)
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     * @param random
-     */
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
@@ -169,40 +157,17 @@ public class BlockAdventureBackpack extends BlockContainer
         }
     }
 
-    /**
-     * Called when a player hits the block. Args: world, x, y, z, player
-     *
-     * @param p_149699_1_
-     * @param p_149699_2_
-     * @param p_149699_3_
-     * @param p_149699_4_
-     * @param p_149699_5_
-     */
     @Override
     public void onBlockClicked(World p_149699_1_, int p_149699_2_, int p_149699_3_, int p_149699_4_, EntityPlayer p_149699_5_)
     {
         super.onBlockClicked(p_149699_1_, p_149699_2_, p_149699_3_, p_149699_4_, p_149699_5_);
     }
 
-    /**
-     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     * @param side
-     * @param hitX
-     * @param hitY
-     * @param hitZ
-     * @param meta
-     */
     @Override
     public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
     {
         return super.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, meta);
     }
-
 
     @Override
     public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face)
@@ -257,11 +222,11 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
-
+        if (world.isRemote) return true;
+        if (ApiEvents.openCanceled(player, world, BackpackOpenEvent.Source.PLACED, null, x, y, z)) return true;
         FMLNetworkHandler.openGui(player, AdventureBackpack.instance, GuiHandler.BACKPACK_TILE, world, x, y, z);
         return true;
     }
-
 
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
@@ -317,7 +282,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack)
     {
-        int dir = MathHelper.floor_double((player.rotationYaw * 4F) / 360F + 0.5D) & 3;
+        int dir = PlacedWearables.facing(player.rotationYaw);
         if (stack != null && stack.stackTagCompound != null && stack.stackTagCompound.hasKey("color"))
         {
             if (stack.stackTagCompound.getString("color").contains("BlockRedstone"))
@@ -331,7 +296,6 @@ public class BlockAdventureBackpack extends BlockContainer
         }
         world.setBlockMetadataWithNotify(x, y, z, dir, 3);
         createNewTileEntity(world, world.getBlockMetadata(x, y, z));
-
     }
 
     @Override
@@ -392,7 +356,6 @@ public class BlockAdventureBackpack extends BlockContainer
                     ((TileAdventureBackpack) tile).equip(world, player, x, y, z) :
                     ((TileAdventureBackpack) tile).drop(world, player, x, y, z))
             {
-                // the item now holds every slot; empty the tile so breakBlock does not drop the bucket slots again
                 java.util.Arrays.fill(((TileAdventureBackpack) tile).inventory, null);
                 return world.func_147480_a(x, y, z, false);
             }
@@ -431,8 +394,6 @@ public class BlockAdventureBackpack extends BlockContainer
                     world.spawnEntityInWorld(droppedItem);
                 }
             }
-
-
         }
 
         super.breakBlock(world, x, y, z, world.getBlock(x, y, z), meta);
@@ -463,6 +424,5 @@ public class BlockAdventureBackpack extends BlockContainer
 
     @Override
     public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
-        //DO NOTHING
     }
 }

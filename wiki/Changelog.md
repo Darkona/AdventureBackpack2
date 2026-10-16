@@ -28,7 +28,7 @@ The first stable release after the 0.8 betas. It reviews the whole mod and adds 
 - **A chat message when you die** tells you where the backpack, copter pack or jetpack went, with coordinates.
 - **Config for everything.** The file is one tree with a switch per system and 253 keys: abilities, hose, flying packs, crossbow, gear, boots, display, keys, world and compatibility. Old keys move to their new place on the first start. See [Configuration](Configuration).
 - **Placed backpack settings.** Explosion resistance and hardness of a placed backpack, and the size of the backpack tanks, are settings now.
-- **Abilities key.** A key, not bound by default, turns the abilities of the backpack you wear off and on, only for you (#57). Setting: `abilities.toggleMessage`. See [Controls](Controls#the-abilities-key).
+- **Abilities key.** A key, not bound by default, turns the abilities of the backpack you wear off and on, only for you (#57). Setting: `abilities.toggleMessage`. See [Controls](Controls#the-backpack-abilities).
 - **Tool slot list.** A whitelist or a blacklist decides which items go in the tool slots of the backpack and into the tool swap (#49). Settings: `tweaks.toolcycle`.
 - **Squid backpack on land.** `abilities.squid.worksOnLand` gives the Squid water breathing and night vision out of water too, for mods that make the player breathe water (#151).
 - **Piston Boots at any pace.** `pistonboots.onlyWhileSprinting` set to false makes the boots step up blocks while walking (#126).

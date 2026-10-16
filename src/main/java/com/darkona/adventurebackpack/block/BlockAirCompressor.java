@@ -23,13 +23,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-/**
- * The Air Compressor block (see {@link TileAirCompressor}). Right click with an empty hand pumps air in; sneak +
- * right click with an empty hand fills the worn Scuba Gear (or opens the GUI when none is worn); right click with an
- * item opens the GUI. Sneak + right click with the Scuba Gear in hand fills it (ItemScubaGear.onItemUse).
- * <p>
- * Always registered; with enabled.scuba false it is hidden, has no recipe and does nothing.
- */
 public class BlockAirCompressor extends BlockContainer
 {
     private IIcon front, side, top, bottom;

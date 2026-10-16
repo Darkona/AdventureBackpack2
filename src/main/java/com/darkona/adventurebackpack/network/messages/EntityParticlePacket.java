@@ -11,19 +11,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-/**
- * Created on 06/01/2015
- *
- * @author Darkona
- */
 public class EntityParticlePacket implements IMessageHandler<EntityParticlePacket.Message, EntityParticlePacket.Message>
 {
     public static final byte NYAN_PARTICLE = 0;
     public static final byte COPTER_PARTICLE = 1;
     public static final byte SLIME_PARTICLE = 2;
     public static final byte JETPACK_PARTICLE = 3;
-
-
 
     @Override
     public Message onMessage(Message message, MessageContext ctx)
@@ -36,7 +29,6 @@ public class EntityParticlePacket implements IMessageHandler<EntityParticlePacke
         }
         else
         {
-            // A client request: relayed only when it matches what the sender wears (RelayGuard), dropped otherwise
             EntityPlayerMP sender = ctx.getServerHandler().playerEntity;
             if (RelayGuard.mayRelayParticle(sender, message.entityID, message.particleCode))
             {
@@ -48,7 +40,6 @@ public class EntityParticlePacket implements IMessageHandler<EntityParticlePacke
 
     public static class Message implements IMessage
     {
-
         private byte particleCode;
         private int entityID;
 

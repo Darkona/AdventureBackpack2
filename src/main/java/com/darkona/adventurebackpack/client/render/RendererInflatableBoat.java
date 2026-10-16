@@ -9,14 +9,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-/**
- * Created on 05/01/2015
- *
- * @author Darkona
- */
 public class RendererInflatableBoat extends Render
 {
-
     private  ResourceLocation boatTexture = Resources.modelTextures("inflatableBoat");
     private  ModelInflatableBoat boatModel = new ModelInflatableBoat();
 
@@ -52,18 +46,11 @@ public class RendererInflatableBoat extends Render
         GL11.glPopMatrix();
     }
 
-
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     *
-     * @param p_110775_1_
-     */
     @Override
     protected ResourceLocation getEntityTexture(Entity p_110775_1_)
     {
         return boatTexture;
     }
-
 
     @Override
     public void doRender(Entity entity, double posX, double posY, double posZ, float p_76986_8_, float p_76986_9_)

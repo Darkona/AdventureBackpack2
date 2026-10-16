@@ -6,11 +6,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * Created on 11/01/2015
- *
- * @author Darkona
- */
 public class FluidMushroomStew extends Fluid
 {
     public FluidMushroomStew()
@@ -42,7 +37,6 @@ public class FluidMushroomStew extends Fluid
     @Override
     public int getColor(FluidStack stack)
     {
-        //Color color1 = new Color(205,140,111);
         return 0xcd8c6f;
     }
 

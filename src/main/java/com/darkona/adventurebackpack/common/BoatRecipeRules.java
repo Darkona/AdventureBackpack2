@@ -2,16 +2,6 @@ package com.darkona.adventurebackpack.common;
 
 import java.util.Locale;
 
-/**
- * Which Inflatable Boat recipes are registered (recipes.boat.mode), as pure decisions. Each technical part (rubber for
- * the chambers, an electric motor for the motorized boat) is decided on its own, by whether another mod provides it.
- * <ul>
- * <li>vanilla: only the vanilla recipes (leather and slime chambers, a piston and furnace engine).</li>
- * <li>auto: the vanilla recipes, plus a rubber or motor variant for each part another mod provides.</li>
- * <li>technical: the rubber or motor variant replaces the vanilla recipe of each part another mod provides; a part
- * that no loaded mod provides keeps its vanilla recipe, so the boat can always be made.</li>
- * </ul>
- */
 public final class BoatRecipeRules
 {
     public enum Mode
@@ -20,7 +10,6 @@ public final class BoatRecipeRules
 
         public static final String[] NAMES = {"auto", "vanilla", "technical"};
 
-        /** Unknown text falls back to auto. */
         public static Mode parse(String text)
         {
             if (text != null)
@@ -33,20 +22,14 @@ public final class BoatRecipeRules
         }
     }
 
-    /** Kind of a recipes.boat.motors entry. */
     public enum Source
     {
-        /** {@code ore:name}: an Ore Dictionary name. */
         ORE,
-        /** {@code ic2:name}: an IC2 item through its API (IC2Items.getItem). */
         IC2,
-        /** {@code stack:modid:name}: an item stack a mod registered by name (GameRegistry.findItemStack). */
         STACK,
-        /** {@code item:modid:name} or {@code item:modid:name:meta}: a registered item, with an optional damage value. */
         ITEM
     }
 
-    /** One parsed entry: kind, mod id (null for ore and ic2), name and damage (0 when not given). */
     public static final class Entry
     {
         public final Source source;
@@ -65,19 +48,16 @@ public final class BoatRecipeRules
 
     private BoatRecipeRules() {}
 
-    /** True when the vanilla recipe of a part is registered. */
     public static boolean vanillaRecipe(Mode mode, boolean technicalFound)
     {
         return mode != Mode.TECHNICAL || !technicalFound;
     }
 
-    /** True when the technical variant of a part is registered. */
     public static boolean technicalRecipe(Mode mode, boolean technicalFound)
     {
         return mode != Mode.VANILLA && technicalFound;
     }
 
-    /** Parses one recipes.boat.motors entry, or returns null when it is malformed. */
     public static Entry parse(String text)
     {
         if (text == null) return null;

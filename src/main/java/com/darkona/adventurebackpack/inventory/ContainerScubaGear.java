@@ -1,21 +1,27 @@
 package com.darkona.adventurebackpack.inventory;
 
+import adventurebackpack.api.IWearableContainer;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.block.TileGear;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-/**
- * The Scuba Gear's GUI container: the player's inventory and the two air container slots. The slots are not saved:
- * what is left in them goes back to the player when the GUI closes.
- */
 public class ContainerScubaGear extends Container implements IWearableContainer
 {
+    private TileGear tile;
     private static final int PLAYER_SLOTS = 36;
 
     public final InventoryScubaGear inventory;
     private final boolean wearing;
+
+    public ContainerScubaGear(EntityPlayer player, InventoryScubaGear inventory, TileGear tile)
+    {
+        this(player, inventory, false);
+        this.tile = tile;
+    }
 
     public ContainerScubaGear(EntityPlayer player, InventoryScubaGear inventory, boolean wearing)
     {
@@ -40,7 +46,16 @@ public class ContainerScubaGear extends Container implements IWearableContainer
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return true;
+        if (tile != null) return tile.isUseableByPlayer(player);
+        return HeldContainerGuard.stillOpen(wearing, inventory.getParentItemStack(),
+                BackpackProperty.get(player).getWearable(), player.getCurrentEquippedItem());
+    }
+
+    @Override
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
+        if (tile != null) tile.afterContainerTick();
     }
 
     @Override
@@ -66,6 +81,7 @@ public class ContainerScubaGear extends Container implements IWearableContainer
                 }
             }
         }
+        if (tile != null) tile.afterContainerTick();
     }
 
     @Override
@@ -73,7 +89,7 @@ public class ContainerScubaGear extends Container implements IWearableContainer
     {
         boolean clickedIsHeld = slot >= 0 && slot < inventorySlots.size() && player.getHeldItem() != null
                 && getSlot(slot).getStack() == player.getHeldItem();
-        if (HeldContainerGuard.refuses(!wearing, clickedIsHeld, flag, button, player.inventory.currentItem))
+        if (HeldContainerGuard.refuses(!wearing && tile == null, clickedIsHeld, flag, button, player.inventory.currentItem))
         {
             return null;
         }

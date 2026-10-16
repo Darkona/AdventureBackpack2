@@ -11,14 +11,8 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-/**
- * Created on 19/10/2014
- *
- * @author Darkona
- */
 public class ItemJuiceBottle extends ItemAB
 {
-
     public ItemJuiceBottle()
     {
         super();
@@ -27,7 +21,6 @@ public class ItemJuiceBottle extends ItemAB
         setUnlocalizedName("melonJuiceBottle");
         setMaxStackSize(1);
     }
-
 
     @Override
     public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
@@ -49,13 +42,11 @@ public class ItemJuiceBottle extends ItemAB
         return false;
     }
 
-
     @Override
     public EnumAction getItemUseAction(ItemStack p_77661_1_)
     {
         return EnumAction.drink;
     }
-
 
     @Override
     public int getMaxItemUseDuration(ItemStack p_77626_1_)

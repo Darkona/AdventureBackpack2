@@ -1,19 +1,13 @@
 package com.darkona.adventurebackpack.fluids;
 
-
 import com.darkona.adventurebackpack.client.Icons;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-/**
- * Created on 12/10/2014.
- * @author Javier Darkona
- */
 public class FluidMilk extends Fluid
 {
-
     public FluidMilk()
     {
         super("milk");
@@ -21,7 +15,6 @@ public class FluidMilk extends Fluid
         setViscosity(1200);
         setLuminosity(0);
     }
-
 
     @Override
     public IIcon getStillIcon()
@@ -52,6 +45,4 @@ public class FluidMilk extends Fluid
     {
         return false;
     }
-
-
 }

@@ -10,11 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 
-/**
- * Created on 25/12/2014
- *
- * @author Darkona
- */
 public class RenderHandler
 {
     @SubscribeEvent
@@ -23,7 +18,6 @@ public class RenderHandler
     {
         if (!ConfigHandler.RENDER_BACKPACK_ON_PLAYER) return;
         EntityPlayer player = event.entityPlayer;
-        // Only touch the player when it really wears something; the cape (Optifine, vanilla) stays otherwise (#89).
         if (!Wearing.isWearingWearable(player)) return;
 
         float rotationY = event.renderer.modelBipedMain.bipedBody.rotateAngleY;
@@ -36,7 +30,6 @@ public class RenderHandler
 
         float pitch = player.rotationPitch;
         float yaw = player.rotationYaw;
-        // Whatever the wearable (or a foreign model in it) does to the GL state must not leak into the rest of the player (#110).
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glPushMatrix();
         try

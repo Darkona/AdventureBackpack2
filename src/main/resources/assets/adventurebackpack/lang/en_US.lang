@@ -51,6 +51,8 @@ block.adventurebackpack:AdventureBackpack.name=Adventure Backpack Block
 block.adventurebackpack:CampFire.name=Campfire
 tile.adventurebackpack:blockFuelStation.name=Fuel Station
 tile.adventurebackpack:blockAirCompressor.name=Air Compressor
+tile.adventurebackpack:blockDistillery.name=Distillery
+tile.adventurebackpack:blockGear.name=Placed Gear
 block.adventurebackpack:SleepingBag.name=Sleeping Bag
 
 ## CreativeTab
@@ -58,14 +60,10 @@ itemGroup.adventurebackpack=Adventure Backpack
 
 ## Keybindings
 keys.adventureBackpack.category=Adventure Backpack
-keys.adventureBackpack.openBackpackInventory=Open Inventory Key
-keys.adventureBackpack.switchHoseTank=Toggle Action Key
-keys.adventureBackpack.toolModifier=Tool Cycle Modifier (none = sneak)
-keys.adventureBackpack.nextTool=Next Backpack Tool
-keys.adventureBackpack.previousTool=Previous Backpack Tool
-keys.adventureBackpack.crossbowMode=Crossbow Mode
-keys.adventureBackpack.toggleAbilities=Backpack Abilities On/Off
-keys.adventureBackpack.boatMotorToggle=Boat Motor On/Off
+keys.adventureBackpack.gear=Open Gear
+keys.adventureBackpack.ability=Gear On/Off
+keys.adventureBackpack.mode=Change Mode
+keys.adventureBackpack.state=Change State
 
 ## Fluids
 fluid.melonJuice=Melon Juice
@@ -73,6 +71,7 @@ fluid.milk=Milk
 fluid.mushroomstew=Mushroom Stew
 fluid.steam=Steam
 fluid.air=Air
+fluid.bioethanol=Ethanol
 
 ## Messages
 adventurebackpack:messages.already.equipped=You are already equipping a backpack.
@@ -125,14 +124,22 @@ adventurebackpack:messages.fuelstation.disabled=The Fuel Station is turned off i
 container.adventurebackpack:fuelStation=Fuel Station
 adventurebackpack:gui.fuelstation.empty=Empty
 adventurebackpack:gui.fuelstation.cost=Burn rate: x%1$s
+adventurebackpack:messages.distillery.disabled=The Distillery is turned off in the server config.
+adventurebackpack:messages.placedgear.disabled=Placed gear is turned off in the server config. Sneak + right click with an empty hand, or break it, to pick it up.
+container.adventurebackpack:distillery=Distillery
+adventurebackpack:gui.distillery.catalyst=Catalyst: %1$s
+adventurebackpack:gui.distillery.water=Water
+adventurebackpack:gui.distillery.ethanol=Ethanol
 adventurebackpack:tooltip.station.tank=%1$s mB of %2$s
 adventurebackpack:tooltip.boat.fuel=Fuel: %1$s mB of %2$s
+adventurebackpack:tooltip.backpack.leftTank=Left Tank: %1$s/%2$s %3$s
+adventurebackpack:tooltip.backpack.rightTank=Right Tank: %1$s/%2$s %3$s
 adventurebackpack:tooltip.boat.nofuel=Fuel: empty. Ride the boat and right click a Fuel Station to fill it.
 adventurebackpack:tooltip.boat.motor.toggle=Motor on/off: %1$s
-adventurebackpack:tooltip.boat.motor.unbound=Motor on/off: set the Boat Motor key in Options > Controls.
+adventurebackpack:tooltip.boat.motor.unbound=Motor on/off: set the Change Mode key in Options > Controls.
 adventurebackpack:tooltip.boat.motor.hold=Hold forward to run the motor.
 adventurebackpack:tooltip.crossbow.loaded=Bolts: %1$s/%2$s
-adventurebackpack:tooltip.crossbow.controls=Hold right click to fire. An empty magazine is swapped for a loaded one from your inventory and comes back empty. Sneak + right click to change the magazine.
+adventurebackpack:tooltip.crossbow.controls=Hold right click to fire. An empty crossbow takes a loaded magazine from your inventory. Sneak + right click: change the magazine. Wearing a Skeleton Backpack with arrows or bolts in its quiver, it fires from the quiver without stopping.
 adventurebackpack:tooltip.crossbow.controls.grapple=Right click: fire the hook. It pulls you to the block it catches. Sneak or jump to let go.
 adventurebackpack:tooltip.crossbow.controls.sniper=Sneak and stand still to deploy the bipod and zoom in. Right click: one strong, straight bolt. Moving folds the bipod.
 adventurebackpack:tooltip.crossbow.mode=Mode: %1$s (%2$s to change)
@@ -150,3 +157,14 @@ entity.adventurebackpack.inflatableBoat.name=Inflatable Boat
 entity.adventurebackpack.rideableSpider.name=Tamed Spider
 entity.adventurebackpack.crossbowBolt.name=Crossbow Bolt
 entity.adventurebackpack.crossbowGrapple.name=Grappling Hook
+adventurebackpack:tooltip.holdShift=Hold Shift for the controls.
+adventurebackpack:gui.toggle.on=ON
+adventurebackpack:gui.toggle.off=OFF
+adventurebackpack:gui.toggle.stateOn=On
+adventurebackpack:gui.toggle.stateOff=Off
+adventurebackpack:gui.toggle.hint=Click, or press %s (Gear On/Off).
+adventurebackpack:gui.toggle.abilities=Backpack abilities: %s
+adventurebackpack:gui.quiver.slot=Quiver: arrows and crossbow bolts
+adventurebackpack:gui.toggle.jetpack=Firebox (burn fuel, make steam): %s
+adventurebackpack:gui.toggle.copter=Engine: %s
+adventurebackpack:gui.toggle.pilot=Pilot flame: %s

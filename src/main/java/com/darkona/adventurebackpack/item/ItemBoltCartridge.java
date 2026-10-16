@@ -1,7 +1,9 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.client.TooltipLines;
 import com.darkona.adventurebackpack.common.CrossbowLogic;
 import com.darkona.adventurebackpack.common.MagazineLogic;
+import com.darkona.adventurebackpack.common.QuiverFeedRules;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModItems;
 import com.darkona.adventurebackpack.reference.ModInfo;
@@ -23,24 +25,12 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The Crossbow Magazine (registry name {@code boltCartridge}, kept from the 1.0 Bolt Cartridge so worlds and the
- * recipe still work). It is reusable: the player loads it with ammunition from the inventory (right click, held), the
- * crossbow takes it loaded and gives it back empty. Rules in {@link MagazineLogic}.
- * <p>
- * NBT: {@value #TAG_CHARGES} (int, 0 to {@code crossbow.magazine.capacity}) and {@value #TAG_AMMO} (string, registry
- * name of the ammunition, only while it holds charges). Every empty magazine carries exactly {@code {Charges:0}}, so
- * empty ones stack together and loaded ones stack when they hold the same. A stack without {@value #TAG_CHARGES} is a
- * 1.0/1.1 cartridge: full of arrows; the first tick it spends in an inventory writes that down.
- */
 public class ItemBoltCartridge extends ItemAB
 {
     public static final String TAG_CHARGES = "Charges";
     public static final String TAG_AMMO = "AmmoItem";
 
-    /** Player entity data (not saved on the magazine, so it keeps stacking): world tick of the next charge. */
     private static final String PLAYER_READY_AT = ModInfo.MOD_ID + ":magazineReadyAt";
-    /** Player entity data: last "no ammunition" message. */
     private static final String PLAYER_LAST_DRY = ModInfo.MOD_ID + ":magazineLastDry";
     private static final int MESSAGE_QUIET_TICKS = 20;
 
@@ -55,9 +45,6 @@ public class ItemBoltCartridge extends ItemAB
         setMaxStackSize(16);
     }
 
-    // ----------------------------------------------------------------------------------------------- stacks and NBT
-
-    /** A magazine with {@code charges} of {@code ammo}; with 0 charges, the plain empty magazine. */
     public static ItemStack create(int charges, String ammo)
     {
         ItemStack stack = new ItemStack(ModItems.boltCartridge);
@@ -80,14 +67,12 @@ public class ItemBoltCartridge extends ItemAB
         return MagazineLogic.charges(tagged, tagged ? tag.getInteger(TAG_CHARGES) : 0, capacity);
     }
 
-    /** Registry name of the ammunition in a loaded magazine (arrows for an old cartridge). */
     public static String getAmmo(ItemStack stack)
     {
         NBTTagCompound tag = stack.getTagCompound();
         return MagazineLogic.ammoType(tag != null ? tag.getString(TAG_AMMO) : null);
     }
 
-    /** First magazine with charges in the inventory, hotbar first, or -1. */
     public static int findLoaded(EntityPlayer player)
     {
         int capacity = ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE;
@@ -100,20 +85,16 @@ public class ItemBoltCartridge extends ItemAB
         return -1;
     }
 
-    /** Gives a magazine back to the player, or drops it at the feet when the inventory is full. */
     public static void giveBack(EntityPlayer player, ItemStack magazine)
     {
         player.inventory.addItemStackToInventory(magazine);
         if (magazine.stackSize > 0) player.dropPlayerItemWithRandomChoice(magazine, false);
     }
 
-    // ------------------------------------------------------------------------------------------------- ammunition
-
     private static String[] ammoSource;
     private static Item[] ammoItems = new Item[0];
     private static String[] ammoNames = new String[0];
 
-    /** Resolves crossbow.ammo.list once per config change (Tier 2: only on a right click or a recipe check). */
     private static void resolveAmmo()
     {
         String[] list = ConfigHandler.CROSSBOW_AMMO_LIST;
@@ -139,7 +120,6 @@ public class ItemBoltCartridge extends ItemAB
         ammoSource = list;
     }
 
-    /** Registry name of {@code stack} when it is ammunition of crossbow.ammo.list, otherwise null. */
     public static String ammoName(ItemStack stack)
     {
         if (stack == null || stack.getItem() == null) return null;
@@ -151,21 +131,29 @@ public class ItemBoltCartridge extends ItemAB
         return null;
     }
 
-    /** The first ammunition of the list, for creative loading without ammunition. */
+    public static int ammoRank(Item item)
+    {
+        if (item == null) return QuiverFeedRules.NOT_AMMO;
+        resolveAmmo();
+        for (int i = 0; i < ammoItems.length; i++)
+        {
+            if (ammoItems[i] == item) return i;
+        }
+        return QuiverFeedRules.NOT_AMMO;
+    }
+
+    public static String ammoNameAt(int rank)
+    {
+        resolveAmmo();
+        return rank >= 0 && rank < ammoNames.length ? ammoNames[rank] : null;
+    }
+
     private static String defaultAmmo()
     {
         resolveAmmo();
         return ammoNames.length > 0 ? ammoNames[0] : MagazineLogic.LEGACY_AMMO;
     }
 
-    // ---------------------------------------------------------------------------------------------- loading by hand
-
-    /**
-     * Holding right click loads the magazine one charge at a time (every {@code crossbow.magazine.loadTicksPerCharge}),
-     * taking ammunition from the inventory, hotbar first. Server side only; the pause is a world-tick timestamp on the
-     * player, so nothing runs between clicks. A held stack of several magazines keeps one in the hand and moves the
-     * rest to the inventory, so the clicks fill one magazine at a time.
-     */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
@@ -228,7 +216,6 @@ public class ItemBoltCartridge extends ItemAB
         return stack;
     }
 
-    /** Takes {@code count} items of the ammunition {@code name} from the inventory, hotbar first. */
     private static void take(ItemStack[] inventory, String name, int count)
     {
         for (int i = 0; i < inventory.length && count > 0; i++)
@@ -241,7 +228,6 @@ public class ItemBoltCartridge extends ItemAB
         }
     }
 
-    /** The ammunition's name for a chat message, translated by each client. */
     private static Object ammoComponent(String ammo)
     {
         Object item = Item.itemRegistry.getObject(ammo);
@@ -254,13 +240,6 @@ public class ItemBoltCartridge extends ItemAB
         return item instanceof Item ? new ItemStack((Item) item).getDisplayName() : ammo;
     }
 
-    // ---------------------------------------------------------------------------------------------------- legacy
-
-    /**
-     * Migration of the 1.0/1.1 cartridges: the 1.0 elemental metadata goes back to 0, and a cartridge without a
-     * charge count gets its full charges of arrows written down so it stacks with new full magazines. One int compare
-     * and one null check per tick; a write only on an old stack.
-     */
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean held)
     {
@@ -270,8 +249,6 @@ public class ItemBoltCartridge extends ItemAB
             write(stack, getCharges(stack, ConfigHandler.CROSSBOW_SHOTS_PER_MAGAZINE), MagazineLogic.LEGACY_AMMO);
         }
     }
-
-    // ------------------------------------------------------------------------------------------------------ client
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -291,7 +268,6 @@ public class ItemBoltCartridge extends ItemAB
         emptyIcon = iconRegister.registerIcon(ModInfo.MOD_ID.toLowerCase() + ":boltCartridgeEmpty");
     }
 
-    /** Empty or loaded icon: one int read from the stack's tag, like the durability bar. */
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconIndex(ItemStack stack)
@@ -328,13 +304,12 @@ public class ItemBoltCartridge extends ItemAB
             String ammo = getAmmo(stack);
             if (!ammo.equals(tooltipAmmo))
             {
-                // The display name is looked up once per kind, not on every frame the tooltip is drawn.
                 tooltipAmmoName = displayName(ammo);
                 tooltipAmmo = ammo;
             }
             tooltip.add(StatCollector.translateToLocalFormatted("adventurebackpack:tooltip.magazine.ammo", tooltipAmmoName));
         }
-        if (charges < capacity) tooltip.add(StatCollector.translateToLocal("adventurebackpack:tooltip.magazine.load"));
+        if (charges < capacity) TooltipLines.addTranslated(tooltip, "adventurebackpack:tooltip.magazine.load");
     }
 
     @Override

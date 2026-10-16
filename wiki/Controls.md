@@ -4,36 +4,53 @@ Every key, button and mouse action of the mod. The keys are listed in Options > 
 
 ## Keys
 
+The mod has four keys. Each one looks at what you ride, hold and wear, and does the first thing in its table that fits.
+
 | Key (as listed in Controls) | Default | Does |
 |---|---|---|
-| Open Inventory Key | B | Opens the window of the backpack, copter pack, jetpack, scuba gear or flamethrower pack you wear. Pressing it again closes the window. |
-| Toggle Action Key | N | Depends on what you hold and wear. See the table below. |
-| Tool Cycle Modifier (none = sneak) | Sneak (Left Shift) | Hold it while turning the mouse wheel to swap tools. |
-| Next Backpack Tool | not bound | Swaps to the next tool. |
-| Previous Backpack Tool | not bound | Swaps to the previous tool. |
-| Crossbow Mode | V | Changes the mode of the Clockwork Crossbow in your hand: repetition, grappling hook, sniper. |
-| Backpack Abilities On/Off | not bound | Turns the abilities of the backpack you wear off and on. |
-| Boat Motor On/Off | not bound | Turns the outboard motor of the Motorized Inflatable Boat you ride on and off, and with it the forward push of the boat (in the default toggle mode). The motor sounds while it runs. See [Gear](Gear#motorized-inflatable-boat). |
+| Open Gear | B | Opens the window of the backpack, copter pack, jetpack, scuba gear or flamethrower pack you wear. Pressing it again closes the window. |
+| Gear On/Off | N | Turns the gear you wear on and off: backpack abilities, copter engine, jetpack firebox, flamethrower pilot. |
+| Change Mode | G | Boat motor, copter hover, hose tank. |
+| Change State | V | Crossbow mode, hose mode, backpack tools. Sneak + the key goes backwards. |
 
 The defaults come from the config file (see `keys` in [Configuration](Configuration#keys-keys)). They are applied the first time. Once you change a key in the game, Minecraft keeps your choice.
 
-## The abilities key
+## Gear On/Off
 
-The Backpack Abilities On/Off key is not bound by default: pick a key for it in Options > Controls. Press it and the abilities of the backpack you wear switch off, press it again and they switch on. A chat message tells you which one happened.
+| You wear | N does |
+|---|---|
+| A backpack | Turns its abilities off and on. See below. |
+| A Copter Pack | Starts and stops the engine |
+| A Steam Jetpack | Lets the firebox burn fuel and make steam, or stops it |
+| A Flamethrower Pack | Lights and puts out the pilot |
+| Scuba Gear | Nothing: it always works |
+
+The windows of the copter pack, the jetpack and the flamethrower pack have an ON/OFF button that does the same, green when the gear is on and red when it is off. The window of a backpack you wear has one too, when the backpack has an ability. A chat message tells you what happened.
+
+## Change Mode
+
+| Order | When | G does |
+|---|---|---|
+| 1 | You ride the Motorized Inflatable Boat | Starts and stops the motor (in the default toggle mode). See [Gear](Gear#motorized-inflatable-boat). |
+| 2 | You wear a Copter Pack with the engine on | Switches between normal mode and hover |
+| 3 | You hold a Backpack Hose | Switches between the left and the right tank |
+
+## Change State
+
+| Order | When | V does |
+|---|---|---|
+| 1 | You hold the Clockwork Crossbow | Next mode: repetition, grappling hook, sniper |
+| 2 | You hold a Backpack Hose | Next hose mode: suck, spill, drink. Sneak + V goes back. |
+| 3 | You wear a backpack and hold a tool its tool slots take | Swaps the tool with the tool slots. Sneak + V swaps the other way. See [Swapping tools](#swapping-tools). |
+
+## The backpack abilities
+
+Press Gear On/Off with a backpack on, or click the ON/OFF button in its window, and the abilities of the backpack switch off; do it again and they switch on.
 
 - It is yours alone. Other players keep theirs, and the choice is kept when you log out.
 - Turning them off takes away effects the backpack gave you, like night vision or fire resistance. The backpack keeps working as a backpack.
 - If abilities are turned off in the server config, the key only tells you so.
 - The chat message can be turned off with `abilities.toggleMessage`.
-
-## The toggle key
-
-| You hold or wear | N does | Sneak + N does |
-|---|---|---|
-| A Backpack Hose in the hand | Switches between the left and the right tank | |
-| A Copter Pack | Switches between normal mode and hover | Starts and stops the engine |
-| A Steam Jetpack | Nothing | Turns the jetpack on and off |
-| A Flamethrower Pack | Nothing | Lights and puts out the pilot |
 
 ## Other controls
 
@@ -56,7 +73,7 @@ The Backpack Abilities On/Off key is not bound by default: pick a key for it in 
 | Right click a Fuel Station | Opens its window. See [Fuel Station](Fuel-Station). |
 | Sneak and right click a Fuel Station, flamethrower pack or copter pack in hand or worn | Fills the pack |
 | Right click a Fuel Station, riding the Motorized Inflatable Boat | Fills the boat's tank |
-| Boat Motor On/Off key, riding the Motorized Inflatable Boat | Starts the motor, with the pull of a cord, and the boat goes ahead by itself. Press it again to stop it. |
+| Change Mode key (G), riding the Motorized Inflatable Boat | Starts the motor, with the pull of a cord, and the boat goes ahead by itself. Press it again to stop it. |
 | Right click a wild spider, Spider backpack on, spider eye in hand | Tries to tame it. See [Taming spiders](Backpacks#taming-spiders). |
 | Right click your tame spider, Spider backpack on | Gets on it. Without the backpack, nobody can ride it. |
 | Jump, riding a spider | The spider jumps |
@@ -77,20 +94,20 @@ The Backpack Abilities On/Off key is not bound by default: pick a key for it in 
 
 With a backpack on, the tool in your hand can trade places with the two tool slots of the backpack. Each step rotates the three: the tool in your hand, the one in the upper slot and the one in the lower slot. The tool you hold goes into the backpack and one comes out.
 
-- With the mouse wheel: hold the modifier key (Sneak by default) and turn the wheel. One direction brings the tool of the upper slot, the other the one of the lower slot.
-- With keys: press Next Backpack Tool or Previous Backpack Tool. They are not bound by default, so bind them in Options > Controls first.
+- With the key: press Change State (V). Sneak + V swaps the other way.
+- With the mouse wheel: hold Sneak and turn the wheel. One direction brings the tool of the upper slot, the other the one of the lower slot.
 
 What counts as a tool: pickaxes, axes, shovels, hoes, shears, fishing rods, flint and steel, and tools from other mods like wrenches, hammers, scoops, grafters, crowbars, mattocks and drills. Swords, bows and buckets do not. With the Skeleton backpack, a bow does count.
 
 A modpack or a server can change this with a list: only the items on it, or every tool except the ones on it. The list applies to the tool slots and to the swap. See [Configuration](Configuration#tool-slots-tweakstoolcycle).
 
-With a hose in your hand the same wheel or keys change the hose mode instead: suck, spill, drink. If you hold something else, the wheel scrolls your hotbar as usual.
+With a hose in your hand the same key or wheel changes the hose mode instead: suck, spill, drink. If you hold something else, the wheel scrolls your hotbar as usual.
 
 If the mouse wheel clashes with another mod, change the mode with `keys.toolcycle.mode`: `wheel`, `keys` or `both` (the default). `keys.toolcycle.invertWheel` reverses the direction, and `keys.toolcycle.enabled` turns the whole thing off.
 
 ## Conflicts
 
-B is also the default key for the Baubles inventory. If you use Baubles, change one of the two in Options > Controls. See [Compatibility](Compatibility).
+B is also the default key for the Baubles inventory. If you use Baubles, change one of the two in Options > Controls. See [Compatibility](Compatibility). N, G and V are free in vanilla Minecraft; if another mod uses one of them, Options > Controls shows it in red.
 
 ## See also
 

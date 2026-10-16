@@ -302,4 +302,34 @@ class CrossbowAnimationTest {
         float[] half = hold(0F, 0F, true, 0.5F, 0F);
         assertEquals(CrossbowAnimation.KICK_BACK / 2F, half[CrossbowAnimation.POSE_KICK_BACK], EPS);
     }
+
+    /** Normalises an angle to [0, 360). */
+    private static float norm(float degrees)
+    {
+        float d = degrees % 360F;
+        return d < 0 ? d + 360F : d;
+    }
+
+    @Test
+    void fedFromTheQuiverTheDrumStaysFullAndTurnsOneChamberPerBolt()
+    {
+        int ammo = CrossbowAnimation.feedAmmo();
+        for (int chamber = 0; chamber < CrossbowAnimation.CHAMBERS; chamber++)
+        {
+            assertTrue(CrossbowAnimation.chamberLoaded(chamber, ammo, CrossbowAnimation.feedCapacity(7)), "every chamber drawn loaded");
+        }
+        assertEquals(0F, CrossbowAnimation.drumDegrees(ammo, CrossbowAnimation.feedCapacity(0), CrossbowAnimation.NEVER, -1F), EPS);
+        for (int shots = 1; shots <= 13; shots++)
+        {
+            int capacity = CrossbowAnimation.feedCapacity(shots);
+            // Right after the shot (recoil 1) the drum is where the previous shot left it...
+            float start = CrossbowAnimation.drumDegrees(ammo, capacity, 0F, -1F);
+            float before = CrossbowAnimation.drumDegrees(ammo, CrossbowAnimation.feedCapacity(shots - 1), CrossbowAnimation.NEVER, -1F);
+            assertEquals(norm(before), norm(start), 0.01F, "no jump at shot " + shots);
+            // ...and when the recoil is over it is one chamber further
+            float end = CrossbowAnimation.drumDegrees(ammo, capacity, CrossbowAnimation.NEVER, -1F);
+            assertEquals(norm(start - CrossbowAnimation.STEP_DEGREES), norm(end), 0.01F, "one step at shot " + shots);
+        }
+        assertEquals(CrossbowAnimation.firingChamber(ammo, CrossbowAnimation.feedCapacity(8)), 2);
+    }
 }

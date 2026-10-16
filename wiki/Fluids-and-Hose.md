@@ -67,8 +67,8 @@ The sips, the transfer amounts and the drink time are in [Configuration](Configu
 
 | Action | Control |
 |---|---|
-| Change the tank | Press N with the hose in your hand |
-| Change the mode | Turn the mouse wheel with the tool modifier held (Left Shift by default), or use the next and previous tool keys |
+| Change the tank | Press G (Change Mode) with the hose in your hand |
+| Change the mode | Press V (Change State); Sneak + V goes back. Or hold Sneak and turn the mouse wheel |
 
 See [Controls](Controls) for the details and how to change the keys.
 
@@ -91,15 +91,15 @@ The Copter Pack, the Flamethrower Pack, the motor of the Motorized Inflatable Bo
 |---|---|---|
 | `fuel` | 1.0 | BuildCraft, Railcraft, GregTech (diesel) |
 | `oil` | 1.5 | BuildCraft |
-| `bioethanol` | 1.2 | Forestry, Railcraft, GregTech |
+| `bioethanol` | 1.2 | Forestry, Railcraft, GregTech, and the [Distillery](Distillery) of this mod |
 | `biofuel` | 1.0 | Railcraft |
 | `creosote` | 1.8 | Railcraft, GregTech |
 | `coal` | 0.8 | Thermal Foundation, Railcraft |
 | `biomass` | 1.5 | Forestry |
 
-No mod is needed on its own: with any one of them loaded, everything that burns fuel works. With none, the Copter Pack and the Flamethrower Pack have no recipe and do nothing, and the Fuel Station takes nothing.
+No mod is needed: the [Distillery](Distillery) makes ethanol from crops, and with any one of these mods loaded their fuels work too. With the Distillery turned off and none of these mods, the Copter Pack and the Flamethrower Pack have no recipe and do nothing, and the Fuel Station takes nothing.
 
-Tanks hold one fuel at a time. The list, and the rates, are in `fuels.list`; a modpack can add fluids to it or take them out. See [Configuration](Configuration#fuels-fuels).
+Tanks hold one fuel at a time. The list, and the rates, are in `fuels.list`; a modpack can add fluids to it or take them out. An addon can also add a fuel by code; it can only add, so the list always has the last word (see [API](API#fuels-and-air-from-code)). See [Configuration](Configuration#fuels-fuels).
 
 ## See also
 

@@ -1,9 +1,11 @@
 package com.darkona.adventurebackpack.inventory;
 
+import adventurebackpack.api.IInventoryTanks;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.util.FluidUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -11,11 +13,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
-/**
- * Created on 15/01/2015
- *
- * @author Darkona
- */
 public class InventorySteamJetpack implements IInventoryTanks
 {
     public static final boolean OFF = false;
@@ -32,7 +29,6 @@ public class InventorySteamJetpack implements IInventoryTanks
     private boolean leaking = false;
     private boolean inUse = false;
     public int currentItemBurnTime = 0;
-
 
     public static final int MAX_TEMPERATURE = 200;
     public static final int BUCKET_IN_SLOT = 0;
@@ -84,6 +80,7 @@ public class InventorySteamJetpack implements IInventoryTanks
             boiling = jetpackData.getBoolean("boiling");
             leaking = jetpackData.getBoolean("leaking");
             currentItemBurnTime = jetpackData.getInteger("currentBurn");
+            java.util.Arrays.fill(inventory, null);
             NBTTagList items = jetpackData.getTagList("inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < items.tagCount(); i++)
             {
@@ -95,6 +92,7 @@ public class InventorySteamJetpack implements IInventoryTanks
                 }
             }
         }
+        if (compound == containerStack.stackTagCompound) remember();
     }
 
     @Override
@@ -134,6 +132,7 @@ public class InventorySteamJetpack implements IInventoryTanks
         }
         jetpackData.setTag("inventory", items);
         compound.setTag("jetpackData",jetpackData);
+        if (compound == containerStack.stackTagCompound) remember();
     }
 
     @Override
@@ -159,24 +158,36 @@ public class InventorySteamJetpack implements IInventoryTanks
             }
         }
         containerStack.stackTagCompound.getCompoundTag("jetpackData").setTag("inventory", items);
+        inventoryChanged = false;
+        rememberTags();
     }
 
     @Override
     public void dirtyTanks()
     {
-        containerStack.stackTagCompound.getCompoundTag("jetPackData").setTag("waterTank",waterTank.writeToNBT(new NBTTagCompound()));
-        containerStack.stackTagCompound.getCompoundTag("jetPackData").setTag("steamTank",steamTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag("jetpackData").setTag("waterTank",waterTank.writeToNBT(new NBTTagCompound()));
+        containerStack.stackTagCompound.getCompoundTag("jetpackData").setTag("steamTank",steamTank.writeToNBT(new NBTTagCompound()));
+        flushedWater = tankKey(waterTank);
+        flushedSteam = tankKey(steamTank);
+        rememberTags();
     }
 
     public void dirtyBoiler()
     {
-        NBTTagCompound jetpackData = containerStack.stackTagCompound.getCompoundTag("jetPackData");
+        NBTTagCompound jetpackData = containerStack.stackTagCompound.getCompoundTag("jetpackData");
         jetpackData.setBoolean("boiling", boiling);
         jetpackData.setBoolean("leaking", leaking);
         jetpackData.setInteger("temperature", temperature);
         jetpackData.setInteger("burnTicks", burnTicks);
         jetpackData.setInteger("coolTicks", coolTicks);
         jetpackData.setInteger("currentBurn",currentItemBurnTime);
+        flushedBoiling = boiling;
+        flushedLeaking = leaking;
+        flushedTemperature = temperature;
+        flushedBurnTicks = burnTicks;
+        flushedCoolTicks = coolTicks;
+        flushedCurrentBurn = currentItemBurnTime;
+        rememberTags();
     }
 
     public int consumeFuel()
@@ -190,7 +201,7 @@ public class InventorySteamJetpack implements IInventoryTanks
             {
                 inventory[FUEL_SLOT] = inventory[FUEL_SLOT].getItem().getContainerItem(inventory[FUEL_SLOT]);
             }
-            dirtyInventory();
+            inventoryChanged = true;
         }
         return result;
     }
@@ -199,8 +210,6 @@ public class InventorySteamJetpack implements IInventoryTanks
     {
         return TileEntityFurnace.isItemFuel(stack);
     }
-
-
 
     @Override
     public void setInventorySlotContentsNoSave(int slot, ItemStack stack)
@@ -283,7 +292,6 @@ public class InventorySteamJetpack implements IInventoryTanks
         }
         if(slot < FUEL_SLOT)onInventoryChanged();
         dirtyInventory();
-
 }
 
     public void onInventoryChanged()
@@ -338,6 +346,7 @@ public class InventorySteamJetpack implements IInventoryTanks
     @Override
     public void openInventory()
     {
+        if (isCurrentFor(containerStack)) flushCounters();
         loadFromNBT(containerStack.stackTagCompound);
     }
 
@@ -473,6 +482,114 @@ public class InventorySteamJetpack implements IInventoryTanks
     public void calculateLostTime()
     {
         long elapsedTimesince = System.currentTimeMillis() - systemTime;
+    }
 
+    private boolean inventoryChanged = false;
+    private NBTTagCompound tagRef;
+    private Object dataRef, waterRef, steamRef, inventoryRef, statusRef, inUseRef;
+    private int flushedTemperature, flushedBurnTicks, flushedCoolTicks, flushedCurrentBurn;
+    private boolean flushedBoiling, flushedLeaking, flushedInUse, flushedStatus;
+    private int flushedWater = -1, flushedSteam = -1;
+
+    public boolean isCurrentFor(ItemStack stack)
+    {
+        if (stack != containerStack || stack.stackTagCompound != tagRef || tagRef == null) return false;
+        NBTBase data = tagRef.getTag("jetpackData");
+        if (data != dataRef || !(data instanceof NBTTagCompound)) return false;
+        NBTTagCompound d = (NBTTagCompound) data;
+        return d.getTag("waterTank") == waterRef && d.getTag("steamTank") == steamRef
+                && d.getTag("inventory") == inventoryRef && d.getTag("status") == statusRef && d.getTag("inUse") == inUseRef;
+    }
+
+    private void remember()
+    {
+        rememberTags();
+        flushedTemperature = temperature;
+        flushedBurnTicks = burnTicks;
+        flushedCoolTicks = coolTicks;
+        flushedCurrentBurn = currentItemBurnTime;
+        flushedBoiling = boiling;
+        flushedLeaking = leaking;
+        flushedInUse = inUse;
+        flushedStatus = status;
+        flushedWater = tankKey(waterTank);
+        flushedSteam = tankKey(steamTank);
+    }
+
+    private void rememberTags()
+    {
+        tagRef = containerStack.stackTagCompound;
+        NBTTagCompound d = tagRef == null ? null : (NBTTagCompound) (tagRef.getTag("jetpackData") instanceof NBTTagCompound ? tagRef.getTag("jetpackData") : null);
+        dataRef = d;
+        waterRef = d == null ? null : d.getTag("waterTank");
+        steamRef = d == null ? null : d.getTag("steamTank");
+        inventoryRef = d == null ? null : d.getTag("inventory");
+        statusRef = d == null ? null : d.getTag("status");
+        inUseRef = d == null ? null : d.getTag("inUse");
+    }
+
+    private static int tankKey(FluidTank tank)
+    {
+        return tank.getFluid() == null ? -1 : tank.getFluidAmount();
+    }
+
+    static final int COUNTER_STEP = 20;
+
+    static boolean counterDue(int current, int flushed)
+    {
+        if (current == flushed) return false;
+        if (current > flushed || current <= 0) return true;
+        return Math.floorDiv(current, COUNTER_STEP) != Math.floorDiv(flushed, COUNTER_STEP);
+    }
+
+    public void flushCounters()
+    {
+        if (containerStack == null || !(containerStack.stackTagCompound != null
+                && containerStack.stackTagCompound.getTag("jetpackData") instanceof NBTTagCompound)) return;
+        NBTTagCompound d = containerStack.stackTagCompound.getCompoundTag("jetpackData");
+        boolean written = false;
+        if (burnTicks != flushedBurnTicks) { d.setInteger("burnTicks", flushedBurnTicks = burnTicks); written = true; }
+        if (coolTicks != flushedCoolTicks) { d.setInteger("coolTicks", flushedCoolTicks = coolTicks); written = true; }
+        if (written) rememberTags();
+    }
+
+    public int flushChanges()
+    {
+        if (containerStack.stackTagCompound == null) containerStack.stackTagCompound = new NBTTagCompound();
+        if (!(containerStack.stackTagCompound.getTag("jetpackData") instanceof NBTTagCompound))
+        {
+            saveToNBT(containerStack.stackTagCompound);
+            inventoryChanged = false;
+            return 1;
+        }
+        int written = 0;
+        NBTTagCompound d = containerStack.stackTagCompound.getCompoundTag("jetpackData");
+        if (temperature != flushedTemperature) { d.setInteger("temperature", flushedTemperature = temperature); written++; }
+        if (counterDue(burnTicks, flushedBurnTicks)) { d.setInteger("burnTicks", flushedBurnTicks = burnTicks); written++; }
+        if (counterDue(coolTicks, flushedCoolTicks)) { d.setInteger("coolTicks", flushedCoolTicks = coolTicks); written++; }
+        if (currentItemBurnTime != flushedCurrentBurn) { d.setInteger("currentBurn", flushedCurrentBurn = currentItemBurnTime); written++; }
+        if (boiling != flushedBoiling) { d.setBoolean("boiling", flushedBoiling = boiling); written++; }
+        if (leaking != flushedLeaking) { d.setBoolean("leaking", flushedLeaking = leaking); written++; }
+        if (inUse != flushedInUse) { d.setBoolean("inUse", flushedInUse = inUse); written++; }
+        if (status != flushedStatus) { d.setBoolean("status", flushedStatus = status); written++; }
+        if (tankKey(waterTank) != flushedWater)
+        {
+            d.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
+            flushedWater = tankKey(waterTank);
+            written++;
+        }
+        if (tankKey(steamTank) != flushedSteam)
+        {
+            d.setTag("steamTank", steamTank.writeToNBT(new NBTTagCompound()));
+            flushedSteam = tankKey(steamTank);
+            written++;
+        }
+        if (inventoryChanged)
+        {
+            dirtyInventory();
+            written++;
+        }
+        if (written > 0) rememberTags();
+        return written;
     }
 }

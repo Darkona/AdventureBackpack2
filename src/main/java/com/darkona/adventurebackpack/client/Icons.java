@@ -2,11 +2,6 @@ package com.darkona.adventurebackpack.client;
 
 import net.minecraft.util.IIcon;
 
-/**
- * Created on 14/10/2014
- *
- * @author Darkona
- */
 public class Icons
 {
     public static IIcon milkFlowing;
@@ -18,4 +13,5 @@ public class Icons
     public static IIcon mushRoomStewFlowing;
     public static IIcon steamStill;
     public static IIcon airStill;
+    public static IIcon ethanolStill;
 }

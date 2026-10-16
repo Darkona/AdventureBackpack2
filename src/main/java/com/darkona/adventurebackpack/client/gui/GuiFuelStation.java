@@ -14,10 +14,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
-/**
- * GUI of the Fuel Station: its tank, the container slots (in above, out below) and the pack slot. The texts are
- * rebuilt only when the fluid or the amount changes.
- */
 @SideOnly(Side.CLIENT)
 public class GuiFuelStation extends GuiWithTanks
 {

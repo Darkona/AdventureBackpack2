@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import adventurebackpack.api.IInventoryTanks;
 import com.darkona.adventurebackpack.common.ScubaRules;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,13 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-/**
- * The two air tanks of a Scuba Gear stack, kept in the stack's {@code scubaData} tag, and the two container slots of
- * its GUI (in and out, never saved: the container gives them back when it closes, like the copter pack).
- * <p>
- * One key and one save: every change first reloads the tag (the worn gear spends air while its GUI is open, so a
- * view opened earlier is stale) and then writes the whole tag once.
- */
 public class InventoryScubaGear implements IInventoryTanks
 {
     public static final String TAG = "scubaData";
@@ -38,7 +32,6 @@ public class InventoryScubaGear implements IInventoryTanks
         return containerStack;
     }
 
-    /** Points this view at another stack (the synced copy that replaced the old one) and reads it. */
     public void setContainerStack(ItemStack stack)
     {
         containerStack = stack;
@@ -66,7 +59,6 @@ public class InventoryScubaGear implements IInventoryTanks
         return leftTank.getCapacity() + rightTank.getCapacity();
     }
 
-    /** Takes up to {@code due} millibuckets, left tank first. Returns what it took. Does not save. */
     public int takeAir(int due)
     {
         int fromLeft = ScubaRules.fromFirst(leftTank.getFluidAmount(), due);
@@ -76,7 +68,6 @@ public class InventoryScubaGear implements IInventoryTanks
         return fromLeft + fromRight;
     }
 
-    /** Fills with {@code air} (already a breathable stored fluid), left tank first. Returns what fit. Does not save. */
     public int fill(FluidStack air, boolean doFill)
     {
         if (air == null || air.amount <= 0) return 0;
@@ -87,7 +78,6 @@ public class InventoryScubaGear implements IInventoryTanks
         return intoLeft + rightTank.fill(rest, doFill);
     }
 
-    /** Room left for {@code air}: both tanks, as long as each holds nothing or the same fluid. */
     public int room(FluidStack air)
     {
         if (air == null) return 0;
@@ -95,8 +85,6 @@ public class InventoryScubaGear implements IInventoryTanks
         all.amount = Integer.MAX_VALUE / 2;
         return fill(all, false);
     }
-
-    // ---------------------------------------------------------------- IInventory
 
     @Override
     public int getSizeInventory()
@@ -122,7 +110,6 @@ public class InventoryScubaGear implements IInventoryTanks
         return getStackInSlot(slot);
     }
 
-    /** Only stores the stack: the server runs {@link #updateTankSlots} from the slot (SlotAirContainer), never the client. */
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {
@@ -183,7 +170,6 @@ public class InventoryScubaGear implements IInventoryTanks
         loadFromNBT(containerStack.stackTagCompound);
     }
 
-    /** Nothing to save: every change already saved itself (a stale save would give back air already spent). */
     @Override
     public void closeInventory()
     {
@@ -195,15 +181,11 @@ public class InventoryScubaGear implements IInventoryTanks
         return slot == SLOT_IN && AirContainers.isAirContainer(stack);
     }
 
-    // ---------------------------------------------------------------- IInventoryTanks
-
-    /** Empties or fills the containers of the in slot through the tanks, reading the tag first and saving once. */
     @Override
     public boolean updateTankSlots()
     {
         if (inventory[SLOT_IN] == null) return false;
         openInventory();
-        // the slot array goes through one tank view that spans both tanks
         FluidTank both = new FluidTank(getCapacity())
         {
             @Override

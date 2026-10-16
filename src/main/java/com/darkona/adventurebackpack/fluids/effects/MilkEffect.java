@@ -6,11 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 
-/**
- * Created on 12/10/2014.
- *
- * @author Javier Darkona
- */
 public class MilkEffect extends FluidEffect
 {
     public MilkEffect()

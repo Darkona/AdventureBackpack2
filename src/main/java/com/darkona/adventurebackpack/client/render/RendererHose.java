@@ -10,14 +10,8 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-/**
- * Created on 13/10/2014
- *
- * @author Darkona
- */
 public class RendererHose implements IItemRenderer
 {
-
     private static RenderItem renderHose = new RenderItem();
     private FontRenderer fontRenderer;
     private Tessellator tessellator = Tessellator.instance;
@@ -38,10 +32,8 @@ public class RendererHose implements IItemRenderer
     @Override
     public void renderItem(ItemRenderType type, ItemStack hose, Object... data)
     {
-
         if (type == ItemRenderType.INVENTORY)
         {
-            // ====================Render the item===================== //
             GL11.glColor4f(1, 1, 1, 1);
             IIcon icon = hose.getItem().getIcon(hose, 0);
             renderHose.renderIcon(0, 0, icon, 16, 16);

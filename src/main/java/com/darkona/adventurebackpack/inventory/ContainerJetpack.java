@@ -1,20 +1,17 @@
 package com.darkona.adventurebackpack.inventory;
 
+import adventurebackpack.api.IWearableContainer;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
+import com.darkona.adventurebackpack.block.TileGear;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-/**
- * Created on 15/01/2015
- *
- * @author Darkona
- */
 public class ContainerJetpack extends Container implements IWearableContainer
 {
+    private TileGear tile;
     InventorySteamJetpack inventory;
     EntityPlayer player;
     private final int
@@ -23,6 +20,12 @@ public class ContainerJetpack extends Container implements IWearableContainer
     private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
     private final int PLAYER_INV_END = PLAYER_INV_START + 26;
     boolean wearing;
+
+    public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inventory, TileGear tile)
+    {
+        this(player, inventory, false);
+        this.tile = tile;
+    }
 
     public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inventory, boolean wearing)
     {
@@ -38,13 +41,11 @@ public class ContainerJetpack extends Container implements IWearableContainer
         int startX = 8;
         int startY = 84;
 
-        // Player's Hotbar
         for (int x = 0; x < 9; x++)
         {
             addSlotToContainer(new Slot(invPlayer, x, startX + 18 * x, 142));
         }
 
-        // Player's Inventory
         for (int y = 0; y < 3; y++)
         {
             for (int x = 0; x < 9; x++)
@@ -52,44 +53,30 @@ public class ContainerJetpack extends Container implements IWearableContainer
                 addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (startX + 18 * x), (startY + y * 18)));
             }
         }
-        //Total 36 slots
     }
 
     private void makeSlots(InventoryPlayer invPlayer)
     {
-
         bindPlayerInventory(invPlayer);
 
-        //Bucket Slots
-        // bucket in
         addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_IN_SLOT, 30, 22));
-        // bucket out
         addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_OUT_SLOT, 30, 52));
-        // fuel
         addSlotToContainer(new SlotFuel(inventory,InventorySteamJetpack.FUEL_SLOT, 77, 64));
-
     }
     @Override
     public boolean canInteractWith(EntityPlayer p_75145_1_)
     {
-        return true;
+        if (tile != null) return tile.isUseableByPlayer(p_75145_1_);
+        return HeldContainerGuard.stillOpen(wearing, inventory.getParentItemStack(),
+                BackpackProperty.get(p_75145_1_).getWearable(), p_75145_1_.getCurrentEquippedItem());
     }
 
     @Override
     public void detectAndSendChanges()
     {
-        if(wearing)
-        {
-            refresh();
-            super.detectAndSendChanges();
-            if (wearing && player instanceof EntityPlayerMP)
-            {
-                ((EntityPlayerMP) player).sendContainerAndContentsToPlayer(this, inventoryItemStacks);
-                BackpackProperty.syncToNear(player);
-            }
-        }else{
-            super.detectAndSendChanges();
-        }
+        if (wearing) refresh();
+        super.detectAndSendChanges();
+        if (tile != null) tile.afterContainerTick();
     }
 
     public void onContainerClosed(EntityPlayer player)
@@ -111,6 +98,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
                 }
             }
         }
+        if (tile != null) tile.afterContainerTick();
     }
 
     @Override
@@ -118,7 +106,7 @@ public class ContainerJetpack extends Container implements IWearableContainer
     {
         boolean clickedIsHeld = slot >= 0 && slot < inventorySlots.size() && player.getHeldItem() != null
                 && getSlot(slot).getStack() == player.getHeldItem();
-        if (HeldContainerGuard.refuses(!wearing, clickedIsHeld, flag, button, player.inventory.currentItem))
+        if (HeldContainerGuard.refuses(!wearing && tile == null, clickedIsHeld, flag, button, player.inventory.currentItem))
         {
             return null;
         }
@@ -150,7 +138,6 @@ public class ContainerJetpack extends Container implements IWearableContainer
                     int JETPACK_INV_START = PLAYER_INV_END + 1;
                     if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
                     {
-
                     }
                 }
                 else
@@ -183,6 +170,6 @@ public class ContainerJetpack extends Container implements IWearableContainer
     @Override
     public void refresh()
     {
-        inventory.openInventory();
+        if (!inventory.isCurrentFor(inventory.getParentItemStack())) inventory.openInventory();
     }
 }

@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.inventory;
 
+import adventurebackpack.api.IInventoryTanks;
 import com.darkona.adventurebackpack.common.ScubaRules;
 import com.darkona.adventurebackpack.common.StationTransfer;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -11,14 +12,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-/**
- * The two fuel tanks and the pilot switch of a Flamethrower Pack stack, kept in the stack's {@code flamethrowerData}
- * tag, and the two container slots of its GUI (in and out, never saved: the container gives them back when it
- * closes). Both tanks hold the same fuel: a fill is refused when it is another fuel. They empty left tank first.
- * <p>
- * One key and one save: every change first reloads the tag (the worn pack burns fuel while its GUI is open, so a
- * view opened earlier is stale) and then writes the whole tag once.
- */
 public class InventoryFlamethrowerPack implements IInventoryTanks
 {
     public static final String TAG = "flamethrowerData";
@@ -39,7 +32,6 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         openInventory();
     }
 
-    /** True when the stack's tag says the pilot is lit, without building an inventory (one byte read). */
     public static boolean isLit(ItemStack pack)
     {
         return pack != null && pack.stackTagCompound != null && pack.stackTagCompound.getCompoundTag(TAG).getBoolean("on");
@@ -50,7 +42,6 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         return containerStack;
     }
 
-    /** Points this view at another stack (the synced copy that replaced the old one) and reads it. */
     public void setContainerStack(ItemStack stack)
     {
         containerStack = stack;
@@ -88,14 +79,12 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         return leftTank.getCapacity() + rightTank.getCapacity();
     }
 
-    /** The fuel in the tanks (left first), or null when both are empty. */
     public Fluid getFuelFluid()
     {
         FluidStack kind = leftTank.getFluidAmount() > 0 ? leftTank.getFluid() : rightTank.getFluid();
         return kind == null || kind.amount <= 0 ? null : kind.getFluid();
     }
 
-    /** Takes up to {@code due} millibuckets, left tank first. Returns what it took. Does not save. */
     public int takeFuel(int due)
     {
         int fromLeft = ScubaRules.fromFirst(leftTank.getFluidAmount(), due);
@@ -105,10 +94,6 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         return fromLeft + fromRight;
     }
 
-    /**
-     * Fills with {@code fuel} when it is on fuels.list and the tanks hold nothing or the same fuel, left tank first.
-     * Returns what fit (or would fit). Does not save.
-     */
     public int fill(FluidStack fuel, boolean doFill)
     {
         if (!GeneralReference.isValidFuel(fuel)) return 0;
@@ -120,8 +105,6 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         rest.amount = fuel.amount - intoLeft;
         return intoLeft + rightTank.fill(rest, doFill);
     }
-
-    // ---------------------------------------------------------------- IInventory
 
     @Override
     public int getSizeInventory()
@@ -147,7 +130,6 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         return getStackInSlot(slot);
     }
 
-    /** Only stores the stack: the server runs {@link #updateTankSlots} from the slot (SlotFuelContainer), never the client. */
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {
@@ -208,7 +190,6 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         loadFromNBT(containerStack.stackTagCompound);
     }
 
-    /** Nothing to save: every change already saved itself (a stale save would give back fuel already burned). */
     @Override
     public void closeInventory()
     {
@@ -220,15 +201,11 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         return slot == SLOT_IN && FuelContainers.isFuelContainer(stack);
     }
 
-    // ---------------------------------------------------------------- IInventoryTanks
-
-    /** Empties or fills the containers of the in slot through the tanks, reading the tag first and saving once. */
     @Override
     public boolean updateTankSlots()
     {
         if (inventory[SLOT_IN] == null) return false;
         openInventory();
-        // the slot array goes through one tank view that spans both tanks
         FluidTank both = new FluidTank(getCapacity())
         {
             @Override

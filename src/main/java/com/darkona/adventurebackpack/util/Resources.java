@@ -8,22 +8,28 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Created on 10/10/2014
- *
- * @author Darkona
- */
 public class Resources
 {
-
     public static final String TEXTURE_LOCATION = ModInfo.MOD_ID.toLowerCase();
 
     public static String modelTextureResourceString(String name)
     {
+        String cached = MODEL_TEXTURE_STRINGS.get(name);
+        if (cached == null)
+        {
+            cached = modelTextureStringOf(name);
+            MODEL_TEXTURE_STRINGS.put(name, cached);
+        }
+        return cached;
+    }
+
+    static String modelTextureStringOf(String name)
+    {
         return new ResourceLocation(TEXTURE_LOCATION, "textures/models/" + name).toString();
     }
 
-    // Texture locations are asked for on every rendered frame (performance contract, tier 4): build each one once.
+    private static final ConcurrentHashMap<String, String> MODEL_TEXTURE_STRINGS = new ConcurrentHashMap<String, String>();
+
     private static final ConcurrentHashMap<String, ResourceLocation> BACKPACK_TEXTURES = new ConcurrentHashMap<String, ResourceLocation>();
     private static final ConcurrentHashMap<String, String> BACKPACK_TEXTURE_STRINGS = new ConcurrentHashMap<String, String>();
     private static final ConcurrentHashMap<String, ResourceLocation> MODEL_TEXTURES = new ConcurrentHashMap<String, ResourceLocation>();
@@ -54,10 +60,6 @@ public class Resources
     private static String cachedHoliday;
     private static ResourceLocation cachedHolidayTexture;
 
-    /**
-     * Texture of the special-day backpack, falling back to Standard when the file does not exist (#106).
-     * The resource lookup runs once per holiday name, never per frame. Client side only.
-     */
     public static synchronized ResourceLocation holidayTexture(String holiday)
     {
         if (cachedHolidayTexture == null || holiday == null || !holiday.equals(cachedHoliday))
@@ -118,6 +120,4 @@ public class Resources
     {
         return TEXTURE_LOCATION + ":" + name;
     }
-
-
 }

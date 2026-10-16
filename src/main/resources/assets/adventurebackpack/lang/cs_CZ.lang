@@ -47,8 +47,10 @@ itemGroup.adventurebackpack=Dobrodružný batoh
 
 ## Keybindings
 keys.adventureBackpack.category=§6Dobrodružný batoh
-keys.adventureBackpack.openBackpackInventory=Klávesa pro otevření inventáře
-keys.adventureBackpack.switchHoseTank=Klávesa pro přepínání akce
+keys.adventureBackpack.gear=Otevřít vybavení
+keys.adventureBackpack.ability=Zapnout/vypnout vybavení
+keys.adventureBackpack.mode=Změnit režim
+keys.adventureBackpack.state=Změnit stav
 
 ## Fluids
 fluid.melonJuice=Melounový džus
@@ -75,3 +77,6 @@ adventurebackpack:messages.crossbow.outofammo=§6Mechanická kuš: §cdošla mun
 blockAdventureBackpack.name=Batoh dobrodruha - §aKemp
 blockCampFire.name=§eOhniště 
 blockSleepingBag.name=Lůžko dobrodruha - §aSpacák
+tile.adventurebackpack:blockDistillery.name=Destilátor
+tile.adventurebackpack:blockGear.name=Položená výbava
+fluid.bioethanol=Etanol

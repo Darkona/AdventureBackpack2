@@ -9,30 +9,13 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 
-/**
- * Created on 12/10/2014
- *
- * @author Darkona
- */
-
-
 public class FuelEffect extends FluidEffect
 {
-
     public FuelEffect()
     {
         super(FluidRegistry.getFluid("fuel"), 20);
     }
 
-    /**
-     * This method determines what will happen to the player when drinking the
-     * corresponding fluid. For example set potion effects, set player on fire,
-     * heal, fill hunger, etc. You can use the world parameter to make
-     * conditions based on where the player is.
-     *
-     * @param world  The World.
-     * @param player The Player.
-     */
     @Override
     public void affectDrinker(World world, Entity entity)
     {

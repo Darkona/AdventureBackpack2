@@ -2,10 +2,14 @@ package com.darkona.adventurebackpack;
 
 import com.darkona.adventurebackpack.inventory.AirContainers;
 import com.darkona.adventurebackpack.item.ItemFlamethrowerPack;
+import com.darkona.adventurebackpack.common.AbilityRegistry;
+import com.darkona.adventurebackpack.common.ApiProvider;
+import com.darkona.adventurebackpack.common.CodeRegistrations;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.compat.baubles.BackpackBauble;
 import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.FeatureVisibility;
+import com.darkona.adventurebackpack.inventory.DistilleryItems;
 import com.darkona.adventurebackpack.fluids.FluidEffectRegistry;
 import com.darkona.adventurebackpack.handlers.ClientEventHandler;
 import com.darkona.adventurebackpack.handlers.CrossbowEventHandler;
@@ -34,11 +38,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.Calendar;
 
-/**
- * Created on 10/10/2014
- *
- * @author Javier Darkona
- */
 @Mod(modid = ModInfo.MOD_ID,
         name = ModInfo.MOD_NAME,
         version = ModInfo.MOD_VERSION,
@@ -47,15 +46,12 @@ import java.util.Calendar;
 )
 public class AdventureBackpack
 {
-
     @SidedProxy(clientSide = ModInfo.MOD_CLIENT_PROXY, serverSide = ModInfo.MOD_SERVER_PROXY)
     public static IProxy proxy;
     @Mod.Instance(ModInfo.MOD_ID)
     public static AdventureBackpack instance;
 
-    //Static things
     public static CreativeTabAB creativeTab = new CreativeTabAB();
-
 
     public boolean chineseNewYear;
     public boolean hannukah;
@@ -69,30 +65,27 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-
         int year = Calendar.getInstance().get(Calendar.YEAR), month = Calendar.getInstance().get(Calendar.MONTH) + 1, day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
-        //Configuration
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
         ConfigHandler.init(event.getSuggestedConfigurationFile());
         chineseNewYear = ChineseCalendar.isChineseNewYear(year, month, day);
         hannukah = JewishCalendar.isHannukah(year, month, day);
         Holiday = Utils.getHoliday();
 
-        //ModStuff
+        ApiProvider.install();
         BackpackBauble.preInit();
         ModItems.init();
         ModBlocks.init();
         ModFluids.init();
         FluidEffectRegistry.init();
+        AbilityRegistry.INSTANCE.registerBuiltIn();
         ModEntities.init();
         ModNetwork.init();
         proxy.initNetwork();
-        // EVENTS
         playerEventHandler = new PlayerEventHandler();
         generalEventHandler = new GeneralEventHandler();
         clientEventHandler = new ClientEventHandler();
-
 
         MinecraftForge.EVENT_BUS.register(generalEventHandler);
         MinecraftForge.EVENT_BUS.register(clientEventHandler);
@@ -100,18 +93,15 @@ public class AdventureBackpack
         MinecraftForge.EVENT_BUS.register(new CrossbowEventHandler());
 
         FMLCommonHandler.instance().bus().register(playerEventHandler);
-
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
-
         proxy.init();
         ModRecipes.init();
 
         ModWorldGen.init();
-        //GUIs
         guiHandler = new GuiHandler();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);
     }
@@ -119,7 +109,6 @@ public class AdventureBackpack
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-
         ConfigHandler.IS_TINKERS = Loader.isModLoaded("TConstruct");
         ConfigHandler.IS_THAUM = Loader.isModLoaded("Thaumcraft");
         ConfigHandler.IS_TWILIGHT = Loader.isModLoaded("TwilightForest");
@@ -128,7 +117,8 @@ public class AdventureBackpack
         ConfigHandler.IS_RAILCRAFT = Loader.isModLoaded("Railcraft");
         ConfigHandler.IS_BAUBLES = BackpackBauble.isLoaded();
         GraveCompat.init();
-
+        AbilityRegistry.INSTANCE.freeze();
+        CodeRegistrations.INSTANCE.freeze();
 
         if (ConfigHandler.IS_BUILDCRAFT)
         {
@@ -140,7 +130,8 @@ public class AdventureBackpack
             LogHelper.info("Twilight Forest is present. Acting accordingly");
         }
 
-        // Before the recipes and the creative tab: the copter works with any loaded fuel mod
+        ModFluids.registerEthanolIfMissing();
+        DistilleryItems.init();
         GeneralReference.findRegisteredFuels();
         ModFluids.registerSteamIfMissing();
         ModFluids.registerAirIfMissing();
@@ -149,29 +140,5 @@ public class AdventureBackpack
         ConditionalFluidEffect.init();
         ModRecipes.conditionalInit();
         FeatureVisibility.hideDisabledItems();
-
-
-        /*
-        LogHelper.info("DUMPING FLUID INFORMATION");
-        LogHelper.info("-------------------------------------------------------------------------");
-        for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
-        {
-
-            LogHelper.info("Unlocalized name: " + fluid.getUnlocalizedName());
-            LogHelper.info("Name: " + fluid.getName());
-            LogHelper.info("");
-        }
-        LogHelper.info("-------------------------------------------------------------------------");
-        */
-        /*
-        LogHelper.info("DUMPING TILE INFORMATION");
-        LogHelper.info("-------------------------------------------------------------------------");
-        for (Block block : GameData.getBlockRegistry().typeSafeIterable())
-        {
-            LogHelper.info("Block= " + block.getUnlocalizedName());
-        }
-        LogHelper.info("-------------------------------------------------------------------------");
-        */
     }
-
 }
