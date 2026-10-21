@@ -1,7 +1,10 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.common.layout.WidgetLayout;
+import com.darkona.adventurebackpack.common.layout.classic.ClassicSlots;
+
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.inventory.BackpackLayouts;
+import com.darkona.adventurebackpack.inventory.WidgetLayouts;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.item.ItemCopterPack;
 import com.darkona.adventurebackpack.item.ItemFlamethrowerPack;
@@ -27,8 +30,6 @@ public final class RenderInfo
 
     public static final String STANDARD = "Standard";
 
-    private static final int UPPER_TOOL_SLOT = Constants.upperTool;
-    private static final int LOWER_TOOL_SLOT = Constants.lowerTool;
     private static final int NBT_COMPOUND = 10;
 
     public int kind = KIND_OTHER;
@@ -201,20 +202,23 @@ public final class RenderInfo
             if (name != null && !name.isEmpty()) colorName = name;
             leftFluid = readFluid(bd.getCompoundTag("leftTank"), true);
             rightFluid = readFluid(bd.getCompoundTag("rightTank"), true);
+            WidgetLayout layout = WidgetLayouts.widgets(colorName, WidgetLayouts.storage(colorName, 0));
+            int upperSlot = ClassicSlots.toolIndex(layout, 0);
+            int lowerSlot = ClassicSlots.toolIndex(layout, 1);
             NBTTagList items = bd.getTagList("ABPItems", NBT_COMPOUND);
             for (int i = 0; i < items.tagCount(); i++)
             {
                 NBTTagCompound item = items.getCompoundTagAt(i);
                 int slot = item.getByte("Slot");
-                if (slot == UPPER_TOOL_SLOT) upperTool = ItemStack.loadItemStackFromNBT(item);
-                else if (slot == LOWER_TOOL_SLOT) lowerTool = ItemStack.loadItemStackFromNBT(item);
+                if (slot == upperSlot) upperTool = ItemStack.loadItemStackFromNBT(item);
+                else if (slot == lowerSlot) lowerTool = ItemStack.loadItemStackFromNBT(item);
             }
         }
         blend = isBlended(colorName);
         pigNose = colorName.equals("Pig") || colorName.equals("Horse");
         villagerNose = colorName.equals("Villager") || colorName.equals("IronGolem");
         ocelotNose = colorName.equals("Ocelot");
-        quiver = BackpackLayouts.quiver(colorName) > 0;
+        quiver = WidgetLayouts.quiver(colorName) > 0;
         if (!quiver) quiverLevel = 0;
     }
 

@@ -226,15 +226,6 @@ public class BlockCampFire extends BlockContainer
     @Override
     public ChunkCoordinates getBedSpawnPosition(IBlockAccess world, int x, int y, int z, EntityPlayer player)
     {
-        for (int i = y - 5; i <= y + 5; i++)
-        {
-            ChunkCoordinates spawn = Utils.getNearestEmptyChunkCoordinatesSpiral(world, x, z, x, i, z, 8, true, 1, (byte) 0, true);
-
-            if (spawn != null)
-            {
-              return spawn;
-            }
-        }
-        return null;
+        return Utils.getNearestEmptyChunkCoordinatesSpiral(world, x, y, z, 8, 5, true, true);
     }
 }

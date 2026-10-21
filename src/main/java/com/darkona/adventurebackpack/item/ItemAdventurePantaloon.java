@@ -15,7 +15,7 @@ public class ItemAdventurePantaloon extends ArmorAB
     public ItemAdventurePantaloon()
     {
         super(2, 2);
-        setUnlocalizedName("adventureSuit");
+        setUnlocalizedName("adventurePants");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ItemAdventurePantaloon extends ArmorAB
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack itemStack, int armorSlot)
     {
-        if (armorModel == null) armorModel = new ModelFullArmor();
+        if (armorModel == null) armorModel = new ModelFullArmor(2);
         return armorModel;
     }
 }

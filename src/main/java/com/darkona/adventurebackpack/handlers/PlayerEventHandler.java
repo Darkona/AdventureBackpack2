@@ -1,10 +1,15 @@
 package com.darkona.adventurebackpack.handlers;
 
+import com.darkona.adventurebackpack.network.LayoutSyncPacket;
+import com.darkona.adventurebackpack.inventory.WidgetLayouts;
+import com.darkona.adventurebackpack.init.ModNetwork;
+
 import com.darkona.adventurebackpack.inventory.QuiverFeed;
 import com.darkona.adventurebackpack.common.AbilityToggle;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.DeathRoute;
 import com.darkona.adventurebackpack.common.ServerActions;
+import com.darkona.adventurebackpack.common.CampfireRespawn;
 import com.darkona.adventurebackpack.common.SleepingBagSpawn;
 import com.darkona.adventurebackpack.common.SpiderCare;
 import com.darkona.adventurebackpack.common.SpiderTaming;
@@ -42,6 +47,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -52,7 +58,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
 import java.util.UUID;
 
@@ -91,6 +96,7 @@ public class PlayerEventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             BackpackProperty.sync(event.player);
+            ModNetwork.net.sendTo(new LayoutSyncPacket.Message(WidgetLayouts.localSpecs()), (EntityPlayerMP) event.player);
             SpiderTaming.verify(event.player.worldObj, event.player.getUniqueID());
         }
     }
@@ -102,6 +108,7 @@ public class PlayerEventHandler
         {
             QuiverFeed.flush(event.player);
             SleepingBagSpawn.restoreNow(event.player);
+            CampfireRespawn.restore(event.player);
         }
     }
 
@@ -180,12 +187,16 @@ public class PlayerEventHandler
             if (!player.worldObj.isRemote)
             {
                 BackpackProperty props = BackpackProperty.get(player);
-                if (props.isForcedCampFire())
+                ChunkCoordinates campFire = props.getCampFire();
+                if (campFire != null)
                 {
-                    ChunkCoordinates lastCampFire = BackpackProperty.get(player).getCampFire();
-                    if (lastCampFire != null)
+                    World world = player.worldObj;
+                    if (props.getDimension() == player.dimension && world.getBlock(campFire.posX, campFire.posY, campFire.posZ) == ModBlocks.blockCampFire)
                     {
-                        player.setSpawnChunk(lastCampFire, false, player.dimension);
+                        CampfireRespawn.redirect(player, campFire);
+                    } else if (props.getDimension() == player.dimension)
+                    {
+                        props.setCampFire(null);
                     }
                 }
                 if (player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
@@ -394,17 +405,11 @@ public class PlayerEventHandler
     }
 
     @SubscribeEvent
-    public void playerWokeUp(PlayerWakeUpEvent event)
+    public void playerRespawned(PlayerEvent.PlayerRespawnEvent event)
     {
-        if (event.entity.worldObj.isRemote) return;
-        ChunkCoordinates bedLocation = event.entityPlayer.getBedLocation(event.entityPlayer.dimension);
-        if (bedLocation != null && event.entityPlayer.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ) == ModBlocks.blockSleepingBag)
+        if (event.player instanceof EntityPlayerMP)
         {
-            BackpackProperty.get(event.entityPlayer).setForceCampFire(true);
-            LogHelper.info("Player just woke up in a sleeping bag, forcing respawn in the last lighted campfire, if there's any");
-        } else
-        {
-            BackpackProperty.get(event.entityPlayer).setForceCampFire(false);
+            CampfireRespawn.restore(event.player);
         }
     }
 

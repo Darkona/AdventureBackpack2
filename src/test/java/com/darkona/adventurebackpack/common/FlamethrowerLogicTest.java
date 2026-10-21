@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 class FlamethrowerLogicTest
 {
-    // defaults of the flamethrower keys
     private static final double RANGE = 6.0;
     private static final double CONE = 25.0;
     private static final int PER_BURST = 50;
@@ -19,11 +18,12 @@ class FlamethrowerLogicTest
     @Test
     void defaultsInTheConfigFieldsMatchTheseNumbers()
     {
-        assertEquals(RANGE, ConfigHandler.FLAMETHROWER_RANGE, 1e-9);
-        assertEquals(CONE, ConfigHandler.FLAMETHROWER_CONE_DEGREES, 1e-9);
-        assertEquals(PER_BURST, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
-        assertEquals(INTERVAL, ConfigHandler.FLAMETHROWER_FIRE_INTERVAL_TICKS);
-        assertEquals(2.0, ConfigHandler.FLAMETHROWER_DAMAGE, 1e-9);
+        assertEquals(8.0, ConfigHandler.FLAMETHROWER_RANGE, 1e-9);
+        assertEquals(30.0, ConfigHandler.FLAMETHROWER_CONE_DEGREES, 1e-9);
+        assertEquals(25, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
+        assertEquals(5, ConfigHandler.FLAMETHROWER_FIRE_INTERVAL_TICKS);
+        assertEquals(4.0, ConfigHandler.FLAMETHROWER_DAMAGE, 1e-9);
+        assertEquals(10, ConfigHandler.FLAMETHROWER_FIRE_SECONDS);
         assertFalse(ConfigHandler.FLAMETHROWER_PVP);
         assertFalse(ConfigHandler.FLAMETHROWER_IGNITES_BLOCKS);
     }
@@ -81,7 +81,7 @@ class FlamethrowerLogicTest
     // ---------------------------------------------------------------- cost and damage
 
     @Test
-    void oneBurstCostsFiftyWithTheDefaultsAndScalesWithTheFuel()
+    void oneBurstOfFiftyScalesWithTheFuel()
     {
         assertEquals(50, FlamethrowerLogic.fuelPerBurst(PER_BURST, 1.0));
         assertEquals(75, FlamethrowerLogic.fuelPerBurst(PER_BURST, 1.5), "oil");
@@ -91,7 +91,7 @@ class FlamethrowerLogicTest
     }
 
     @Test
-    void twoFullTanksMakeOneHundredSixtyBurstsOfThirtyTwoSeconds()
+    void theOldDesignFiguresOfFiftyPerBurstGaveThirtyTwoSecondsNotOneHundredSixty()
     {
         int fuel = 2 * 4000;
         int bursts = 0;

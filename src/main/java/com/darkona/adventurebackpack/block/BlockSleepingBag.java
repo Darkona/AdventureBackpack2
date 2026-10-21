@@ -9,6 +9,7 @@ import com.darkona.adventurebackpack.item.ItemComponent;
 import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.util.LogHelper;
 import com.darkona.adventurebackpack.util.Resources;
+import com.darkona.adventurebackpack.util.SpiralSearch;
 import com.darkona.adventurebackpack.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,6 +40,9 @@ import java.util.Random;
 
 public class BlockSleepingBag extends BlockDirectional
 {
+    private static final int CAMPFIRE_REACH = 5;
+    private static final int CAMPFIRE_REACH_VERTICAL = 2;
+
     public static final int[][] footBlockToHeadBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
 
     @SideOnly(Side.CLIENT)
@@ -96,6 +100,32 @@ public class BlockSleepingBag extends BlockDirectional
         boolean flag1 = (!material.isSolid()) && (!material.isLiquid());
         boolean flag2 = (!material1.isSolid()) && (!material1.isLiquid());
         return (forced) && (flag1) && (flag2) ? chunkCoordinates : null;
+    }
+
+    private static void useCampfire(World world, EntityPlayer player, int x, int y, int z)
+    {
+        ChunkCoordinates campfire = findCampfire(world, x, y, z);
+        BackpackProperty props = BackpackProperty.get(player);
+        props.setCampFire(campfire);
+        if (campfire != null)
+        {
+            props.setDimension(player.dimension);
+            player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.spawn.campfire", new Object[0]));
+        }
+    }
+
+    private static ChunkCoordinates findCampfire(final World world, int x, int y, int z)
+    {
+        long found = SpiralSearch.find(x, y, z, CAMPFIRE_REACH, CAMPFIRE_REACH_VERTICAL, new SpiralSearch.Cell()
+        {
+            @Override
+            public boolean accept(int cx, int cy, int cz)
+            {
+                return world.getBlock(cx, cy, cz) == ModBlocks.blockCampFire;
+            }
+        });
+        return found == SpiralSearch.NONE ? null
+                : new ChunkCoordinates(SpiralSearch.unpackX(found), SpiralSearch.unpackY(found), SpiralSearch.unpackZ(found));
     }
 
     @Override
@@ -164,31 +194,20 @@ public class BlockSleepingBag extends BlockDirectional
                 if (enumstatus == EntityPlayer.EnumStatus.OK)
                 {
                     setBedOccupied(world, x, y, z, true);
-                    if (!ConfigHandler.SLEEPINGBAG_SETS_SPAWN)
-                    {
-                        SleepingBagSpawn.remember(player);
-                    }
-                    player.setSpawnChunk(new ChunkCoordinates(x,y,z),true,player.dimension);
-                    LogHelper.info("Looking for a campfire nearby...");
-                    ChunkCoordinates campfire = Utils.findBlock3D(world, x, y, z, ModBlocks.blockCampFire, 8, 2);
-                    if (campfire != null)
-                    {
-                        LogHelper.info("Campfire Found, saving coordinates. " + LogHelper.print3DCoords(campfire));
-                        BackpackProperty.get(player).setCampFire(campfire);
-                    }
-                    return true;
-                } else
-                {
-                    if (enumstatus == EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW)
-                    {
-                        player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.noSleep", new Object[0]));
-                    } else if (enumstatus == EntityPlayer.EnumStatus.NOT_SAFE)
-                    {
-                        player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.notSafe", new Object[0]));
-                    }
-
+                    SleepingBagSpawn.remember(player);
+                    useCampfire(world, player, x, y, z);
                     return true;
                 }
+                if (enumstatus == EntityPlayer.EnumStatus.NOT_POSSIBLE_NOW)
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.noSleep", new Object[0]));
+                    useCampfire(world, player, x, y, z);
+                } else if (enumstatus == EntityPlayer.EnumStatus.NOT_SAFE)
+                {
+                    player.addChatComponentMessage(new ChatComponentTranslation("tile.bed.notSafe", new Object[0]));
+                    useCampfire(world, player, x, y, z);
+                }
+                return true;
             } else
             {
                 double d2 = (double) x + 0.5D;

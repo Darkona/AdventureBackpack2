@@ -12,6 +12,7 @@ public class CrossbowRenderState
     private ItemStack cached;
     public int ammo;
     public long lastShot;
+    public long readyAt;
     public long lastReload;
     public boolean reloadSwap;
     public int mode;
@@ -27,6 +28,7 @@ public class CrossbowRenderState
         {
             ammo = 0;
             lastShot = 0;
+            readyAt = 0;
             lastReload = 0;
             reloadSwap = false;
             mode = 0;
@@ -36,6 +38,7 @@ public class CrossbowRenderState
         }
         ammo = tag.getInteger(ItemCrossbow.TAG_AMMO);
         lastShot = tag.getLong(ItemCrossbow.TAG_LAST_SHOT);
+        readyAt = tag.getLong(ItemCrossbow.TAG_READY_AT);
         lastReload = tag.getLong(ItemCrossbow.TAG_LAST_RELOAD);
         reloadSwap = tag.getBoolean(ItemCrossbow.TAG_RELOAD_SWAP);
         mode = tag.getInteger(ItemCrossbow.TAG_MODE);

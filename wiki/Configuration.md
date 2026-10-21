@@ -240,6 +240,7 @@ Special effects of the backpacks while they are worn (the Cactus and Melon also 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `abilities.skeleton.enabled` | boolean | `true` |  | Skeleton Backpack: bows take arrows from the backpack, quiver first, and arrows leave faster (`arrowSpeedBonus`). |
+| `abilities.skeleton.fireRateBonus` | double | `0.3` | 0.0 to 2.0 | Extra fire rate of the crossbow in gatling mode (fed from the quiver), as a part of its normal rate (0.30 = 30 % more bolts a second: `crossbow.quiver.fireIntervalTicks` 3 becomes 3 / 1.3, about 2.3 ticks, fired as a mix of 2 and 3 tick pauses that averages out). Magazines and the sniper mode keep their own pace. 0 turns it off. |
 | `abilities.skeleton.arrowSpeedBonus` | double | `0.3` | 0.0 to 2.0 | Extra speed of the arrows and Crossbow Bolts the wearer shoots, as a part of their normal speed (0.30 = 30 % faster). Arrows hurt in proportion to their speed, so they also hit about this much harder. 0 turns it off. |
 
 ### Iron Golem backpack (`abilities.irongolem`)
@@ -371,21 +372,21 @@ The Air Compressor block, which fills the Scuba Gear. It is switched by `enabled
 
 ## Flamethrower (`flamethrower`)
 
-The [Flamethrower](Flamethrower): the Flamethrower Pack worn on the back and the nozzle held in hand. Amounts are in millibuckets, time in ticks (20 per second), ranges in blocks.
+The [Flamethrower](Flamethrower): the Flamethrower Pack worn on the back and the nozzle held in hand. Amounts are in millibuckets, time in ticks (20 per second), ranges in blocks. A file that still has the old defaults of 1.1 (fuelPerBurst 20, fireIntervalTicks 4, range 6, coneDegrees 25, damage 2, fireSeconds 5) gets the new ones on the next launch; if you changed any of those six, all six are kept as they are.
 
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `flamethrower.tankCapacity` | int | `4000` | 500 to 64000 | Capacity of each of the two fuel tanks of the pack, in millibuckets. Use the same value on server and clients. Needs a restart. |
-| `flamethrower.fuelPerBurst` | int | `20` | 0 to 10000 | Millibuckets of fuel one burst burns, times the fuel's multiplier in fuels.list (oil 1.5 makes it 30). With the defaults two full tanks of fuel make 400 bursts, 80 seconds of continuous fire. 0 makes the fuel free. |
-| `flamethrower.fireIntervalTicks` | int | `4` | 1 to 40 | Cooldown between two bursts while right click is held, in ticks. Each burst burns fuelPerBurst and deals its damage once. |
-| `flamethrower.range` | double | `6.0` | 1.0 to 16.0 | Reach of the flame in blocks, from the wearer's eyes. |
-| `flamethrower.coneDegrees` | double | `25.0` | 5.0 to 90.0 | Opening of the cone of flame in degrees, around the direction the wearer looks. |
-| `flamethrower.damage` | double | `2.0` | 0.0 to 40.0 | Fire damage of one burst to each target in the cone (2 is one heart). Vanilla's half second of invulnerability after a hit means not every burst lands. Fire-immune mobs take none. |
-| `flamethrower.fireSeconds` | int | `5` | 0 to 60 | Seconds every target in the cone keeps burning after a burst. 0 does not set targets on fire. |
+| `flamethrower.fuelPerBurst` | int | `25` | 0 to 10000 | Millibuckets of fuel one burst burns, times the fuel's multiplier in fuels.list (oil 1.5 makes it 38). With the defaults the flame burns 100 millibuckets a second and two full tanks of fuel make 320 bursts, 80 seconds of continuous fire. 0 makes the fuel free. |
+| `flamethrower.fireIntervalTicks` | int | `5` | 1 to 40 | Cooldown between two bursts while right click is held, in ticks. Each burst burns fuelPerBurst. A mob takes damage at most once every 10 ticks (vanilla's invulnerability after a hit), so 5 lands every second burst and 4 only every third. |
+| `flamethrower.range` | double | `8.0` | 1.0 to 16.0 | Reach of the flame in blocks, from the wearer's eyes. |
+| `flamethrower.coneDegrees` | double | `30.0` | 5.0 to 90.0 | Opening of the cone of flame in degrees, around the direction the wearer looks. |
+| `flamethrower.damage` | double | `4.0` | 0.0 to 40.0 | Fire damage of one burst to each target in the cone (2 is one heart). A target takes it at most twice a second, so the default deals 8 a second while it stays in the cone, plus the burning afterwards. Fire-immune mobs take none. |
+| `flamethrower.fireSeconds` | int | `10` | 0 to 60 | Seconds every target in the cone keeps burning after a burst; vanilla fire deals 1 damage a second, so the default adds 10 after the target leaves the flame. Water puts it out. 0 does not set targets on fire. |
 | `flamethrower.pvp` | boolean | `false` |  | Let the flame hurt and burn other players. Even when true, the server's pvp setting and scoreboard teams still apply. Animals the wearer owns are never hurt. |
 | `flamethrower.ignitesBlocks` | boolean | `false` |  | Let each burst set fire to the side of the block it hits, like flint and steel. The fire is vanilla fire, so it spreads and burns as usual. It respects spawn protection, adventure mode and protection mods that cancel block placing. |
 | `flamethrower.pilotFuelPerMinute` | int | `0` | 0 to 6000 | Millibuckets of fuel the lit pilot burns per minute while the pack is worn, times the fuel's multiplier. 0 (the default) makes the pilot free. |
-| `flamethrower.sound` | boolean | `true` |  | Play the vanilla ignite sound when the pilot is lit (the server sends it) and the vanilla fire sound while the nozzle fires (each client plays it). Set it the same on server and clients. |
+| `flamethrower.sound` | boolean | `true` |  | Play the flamethrower's sounds on this client: the pilot lighting up, going out and running dry, a click when the nozzle is used with the pilot out, and the roar of the flame in a loop while the nozzle fires. Each client plays them for every player it sees, from the pack's state, without extra network traffic. The volume is render.flamethrowerVolume. |
 
 ## Fuels (`fuels`)
 
@@ -498,7 +499,7 @@ What the Crossbow Magazine is loaded with. Bolts fired from a magazine of Crossb
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `crossbow.ammo.list` | string list | `adventurebackpack:bolt`, `minecraft:arrow` |  | Items a magazine can be loaded with, as modid:itemName (any damage value). An empty magazine takes the first ammunition found in the inventory (hotbar first); a loaded one only its own kind. Unknown names are ignored. Same on server and clients. |
-| `crossbow.ammo.boltDamageMultiplier` | double | `1.5` | 0.1 to 10.0 | Damage of bolts fired from a magazine of Crossbow Bolts, as a multiple of `crossbow.boltDamage` and `crossbow.sniper.boltDamage`. Other ammunition does the base damage. |
+| `crossbow.ammo.boltDamageMultiplier` | double | `1.5` | 0.1 to 10.0 | Damage of bolts fired from a magazine of Crossbow Bolts, as a multiple of the normal or the sniper damage. Other ammunition does the base damage. |
 
 ## Grappling hook (`crossbow.grapple`)
 
@@ -523,9 +524,13 @@ The third mode: with the bipod down (sneaking, standing still on the ground) the
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `crossbow.sniper.enabled` | boolean | `true` |  | The sniper mode. When false the mode is skipped and a crossbow left in it shoots normal bolts. |
-| `crossbow.sniper.boltDamage` | double | `12.0` | 0.0 to 100.0 | Damage of a sniper bolt as it leaves the crossbow, in half hearts. It drops a little with distance as the bolt slows down. |
-| `crossbow.sniper.boltVelocity` | double | `5.0` | 0.5 to 8.0 | Speed of a sniper bolt in blocks per tick. Faster bolts fly flatter and further. |
-| `crossbow.sniper.shotDelayTicks` | int | `30` | 4 to 200 | Pause after a sniper shot. A held right click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4. |
+| `crossbow.sniper.fireIntervalTicks` | int | `48` | 4 to 400 | Ticks between two sniper shots with the bipod down, from a magazine or from the quiver (48 = one shot every 2.4 seconds). A held right click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4. |
+| `crossbow.sniper.speedMultiplier` | double | `3.0` | 0.5 to 4.0 | Speed of a sniper bolt as a multiple of `crossbow.boltVelocity` (3.0 x 3 = 9 blocks a tick). Faster bolts fly flatter and further and hurt more at range, since a bolt loses damage as it slows down. |
+| `crossbow.sniper.damageMultiplier` | double | `6.0` | 0.0 to 25.0 | Damage of a sniper bolt as it leaves the crossbow, as a multiple of `crossbow.boltDamage` (4 x 6 = 24 half hearts, more than a zombie's health). Crossbow Bolts multiply it again by `crossbow.ammo.boltDamageMultiplier`. |
+| `crossbow.sniper.gravity` | double | `0.025` | 0.0 to 0.05 | How much a sniper bolt falls, in blocks per tick lost each tick. Arrows and normal bolts use 0.05; 0.025 drops half as fast. |
+| `crossbow.sniper.drag` | double | `0.995` | 0.9 to 1.0 | Part of its speed a sniper bolt keeps each tick in the air. Arrows and normal bolts keep 0.99; 1 never slows down. In water it slows down like an arrow. |
+| `crossbow.sniper.drumSpeed` | double | `1.0` | 0.25 to 8.0 | Client only: how fast the drum turns to the next bolt after a sniper shot. 1 = the turn takes the whole pause between shots and ends when the crossbow can fire again, 2 = half of it. |
+| `crossbow.sniper.piercing` | int | `1` | 0 to 10 | Creatures a sniper bolt goes through after the first one it hurts, keeping its speed. 0 = it stops in the first one, like other bolts. |
 | `crossbow.sniper.stillTolerance` | double | `0.02` | 0.001 to 0.2 | Horizontal movement in blocks per tick under which the player counts as still (sneak walking is about 0.065). |
 | `crossbow.sniper.zoom` | double | `0.35` | 0.1 to 1.0 | Client only: field of view multiplier while the bipod is down. 1 = no zoom, 0.35 = about three times closer. |
 
@@ -570,7 +575,6 @@ Right click the campfire with a raw item to cook it. The campfire block, its rec
 | Key | Type | Default | Range | What it does |
 |---|---|---|---|---|
 | `sleepingbag.placeable` | boolean | `true` |  | Right click the top of a block with the Sleeping Bag item to lay it on the ground as a bed, without a backpack. Breaking it gives the item back; sneak + right click rolls it up into the inventory. |
-| `sleepingbag.setsSpawn` | boolean | `true` |  | Sleeping in a sleeping bag (placed on its own or from a backpack) moves the player's spawn point there, like a bed. When false the player keeps the spawn point they had. |
 
 ## Display (`render`)
 
@@ -584,6 +588,7 @@ Client only: how the mod draws things. The server ignores this section.
 | `render.statusOverlay` | boolean | `true` |  | Show the player's potion effects on screen. |
 | `render.scubaBubbleTicks` | int | `10` | 1 to 200 | Ticks between two puffs of bubbles from the mask of a player breathing from the Scuba Gear. |
 | `render.flamethrowerParticles` | int | `6` | 0 to 30 | Flame particles drawn along the cone for each burst of a Flamethrower (smoke comes with every second burst). 0 draws none. |
+| `render.flamethrowerVolume` | double | `1.0` | 0.0 to 1.0 | Volume of the Flamethrower's sounds on this client, from 0.0 (silent) to 1.0. flamethrower.sound turns them off. |
 | `render.wearableOverlay` | boolean | `true` |  | Show the overlays of the worn backpack, copter pack or jetpack on screen, and the fuel tank of the motorized boat the player rides. |
 | `render.boatSmokeTicks` | int | `8` | 0 to 200 | The running motor of the motorized boat puffs smoke once every this many ticks. 0 = no smoke. |
 | `render.quiverArrows` | boolean | `true` |  | Draw arrows sticking out of the Skeleton Backpack's quiver (worn, placed and as an item): none when it is empty, more as it fills up (1 to 8, 9 to 32, more than 32 items). |

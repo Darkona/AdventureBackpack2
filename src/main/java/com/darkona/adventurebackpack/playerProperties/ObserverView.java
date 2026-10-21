@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.playerProperties;
 
+import com.darkona.adventurebackpack.common.layout.classic.ClassicArrangement;
 import com.darkona.adventurebackpack.common.Constants;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +24,7 @@ public final class ObserverView
         if (tag.hasKey("backpackData", NBT_COMPOUND))
         {
             NBTTagCompound data = tag.getCompoundTag("backpackData");
-            NBTTagCompound dataView = copyExcept(data, "ABPItems", "ABPQuiver");
+            NBTTagCompound dataView = copyExcept(data, "ABPItems", "ABPQuiver", "ABPRope");
             dataView.setTag("ABPItems", toolsOnly(data.getTagList("ABPItems", NBT_COMPOUND)));
             tagView = copyExcept(tag, "backpackData");
             tagView.setTag("backpackData", dataView);
@@ -56,16 +57,18 @@ public final class ObserverView
 
     private static NBTTagCompound copyExcept(NBTTagCompound source, String skipped)
     {
-        return copyExcept(source, skipped, skipped);
+        return copyExcept(source, new String[] {skipped});
     }
 
     @SuppressWarnings("unchecked")
-    private static NBTTagCompound copyExcept(NBTTagCompound source, String skipped, String alsoSkipped)
+    private static NBTTagCompound copyExcept(NBTTagCompound source, String... skipped)
     {
         NBTTagCompound copy = new NBTTagCompound();
         for (String key : (Set<String>) source.func_150296_c())
         {
-            if (!key.equals(skipped) && !key.equals(alsoSkipped)) copy.setTag(key, source.getTag(key).copy());
+            boolean skip = false;
+            for (String name : skipped) skip |= name.equals(key);
+            if (!skip) copy.setTag(key, source.getTag(key).copy());
         }
         return copy;
     }
@@ -77,7 +80,7 @@ public final class ObserverView
         {
             NBTTagCompound item = items.getCompoundTagAt(i);
             int slot = item.getByte("Slot");
-            if (slot == Constants.upperTool || slot == Constants.lowerTool) tools.appendTag(item.copy());
+            if (slot == ClassicArrangement.UPPER_TOOL || slot == ClassicArrangement.LOWER_TOOL) tools.appendTag(item.copy());
         }
         return tools;
     }

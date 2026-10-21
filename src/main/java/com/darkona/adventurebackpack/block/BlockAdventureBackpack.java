@@ -47,21 +47,22 @@ public class BlockAdventureBackpack extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-        if (getAssociatedTileColorName(world, x, y, z).equals("Bookshelf"))
+        if (!getAssociatedTileColorName(world, x, y, z).equals("Bookshelf")) return;
+        for (int dy = 0; dy <= 1; dy++)
         {
-            ChunkCoordinates enchTable = Utils.findBlock3D(world, x, y, z, Blocks.enchanting_table, 2, 2);
-            if(enchTable !=null)
+            for (int dx = -2; dx <= 2; dx++)
             {
-                if (!world.isAirBlock((enchTable.posX - x) / 2 + x, enchTable.posY, (enchTable.posZ - z) / 2 + z))
+                for (int dz = -2; dz <= 2; dz++)
                 {
-                    return;
-                }
-                for (int o = 0; o < 4; o++)
-                {
-                    world.spawnParticle("enchantmenttable",enchTable.posX + 0.5D,enchTable.posY + 2.0D,enchTable.posZ + 0.5D,
-                            ((x - enchTable.posX) + random.nextFloat()) - 0.5D,
-                            ((y - enchTable.posY) - random.nextFloat() - 1.0F),
-                            ((z - enchTable.posZ) + random.nextFloat()) - 0.5D);
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != 2) continue;
+                    int tableX = x - dx, tableY = y - dy, tableZ = z - dz;
+                    if (world.getBlock(tableX, tableY, tableZ) != Blocks.enchanting_table) continue;
+                    if (!world.isAirBlock(tableX + dx / 2, y, tableZ + dz / 2)) continue;
+                    if (random.nextInt(16) != 0) continue;
+                    world.spawnParticle("enchantmenttable", tableX + 0.5D, tableY + 2.0D, tableZ + 0.5D,
+                            (dx + random.nextFloat()) - 0.5D,
+                            (dy - random.nextFloat()) - 1.0D,
+                            (dz + random.nextFloat()) - 0.5D);
                 }
             }
         }
@@ -109,7 +110,7 @@ public class BlockAdventureBackpack extends BlockContainer
     @Override
     public float getEnchantPowerBonus(World world, int x, int y, int z)
     {
-        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 10 : 0;
+        return getAssociatedTileColorName(world, x, y, z).equals("Bookshelf") ? 4 : 0;
     }
 
     @Override

@@ -8,9 +8,17 @@ import net.minecraft.item.EnumAction;
 
 public class ModelFullArmor extends ModelBiped
 {
-    public ModelFullArmor()
+    public ModelFullArmor(int armorType)
     {
         super(0.1F);
+        boolean legs = armorType == 2;
+        bipedHead.showModel = false;
+        bipedHeadwear.showModel = false;
+        bipedBody.showModel = !legs;
+        bipedRightArm.showModel = !legs;
+        bipedLeftArm.showModel = !legs;
+        bipedRightLeg.showModel = legs;
+        bipedLeftLeg.showModel = legs;
     }
 
     @Override

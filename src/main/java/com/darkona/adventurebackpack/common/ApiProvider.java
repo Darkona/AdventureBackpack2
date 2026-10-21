@@ -1,5 +1,14 @@
 package com.darkona.adventurebackpack.common;
 
+import adventurebackpack.api.BackpackWidget;
+import adventurebackpack.api.BackpackWidgetSkin;
+import com.darkona.adventurebackpack.client.gui.widget.FrameSkin;
+import com.darkona.adventurebackpack.client.gui.widget.WidgetSkin;
+import com.darkona.adventurebackpack.client.gui.widget.WidgetSkins;
+import com.darkona.adventurebackpack.inventory.WidgetLayouts;
+import com.darkona.adventurebackpack.inventory.widget.ExternalWidgetType;
+import com.darkona.adventurebackpack.inventory.widget.ExternalWidgets;
+
 import adventurebackpack.api.AdventureBackpackAPI;
 import adventurebackpack.api.FluidEffect;
 import adventurebackpack.api.IApiProvider;
@@ -64,5 +73,22 @@ public final class ApiProvider implements IApiProvider
     public void registerAirFluid(String fluidName)
     {
         CodeRegistrations.INSTANCE.addAirFluid(fluidName);
+    }
+
+    @Override
+    public void registerWidget(BackpackWidget widget)
+    {
+        ExternalWidgets.register(widget);
+        WidgetLayouts.invalidate();
+    }
+
+    @Override
+    public void registerWidgetSkin(String widgetId, BackpackWidgetSkin skin)
+    {
+        ExternalWidgetType type = ExternalWidgets.get(widgetId);
+        if (type == null) throw new IllegalStateException("register the widget " + widgetId + " before its skin");
+        if (skin == null) throw new IllegalArgumentException("null skin for " + widgetId);
+        int texture = WidgetSkins.texture(skin.getTexture(), skin.getTextureSize());
+        WidgetSkins.register(type.kind(), new FrameSkin(texture, skin.getFrameU(), skin.getFrameV(), skin.getTint(), WidgetSkin.DEFAULT_LAYER, skin.getEmptyTip()));
     }
 }

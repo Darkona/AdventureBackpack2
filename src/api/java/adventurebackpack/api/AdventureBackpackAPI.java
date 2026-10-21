@@ -153,6 +153,16 @@ public final class AdventureBackpackAPI
         return abilityEvents;
     }
 
+    public static void registerWidget(BackpackWidget widget)
+    {
+        provider().registerWidget(widget);
+    }
+
+    public static void registerWidgetSkin(String widgetId, BackpackWidgetSkin skin)
+    {
+        provider().registerWidgetSkin(widgetId, skin);
+    }
+
     private static IApiProvider provider()
     {
         IApiProvider current = provider;

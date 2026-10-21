@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.common.layout.classic.ClassicArrangement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -117,14 +118,14 @@ class HudTanksTest
         Assumptions.assumeTrue(Item.getIdFromItem(TOOL) > 0, "the item registry takes no test item here: " + registryError);
         ItemStack backpack = empty();
         InventoryBackpack bp = new InventoryBackpack(backpack);
-        bp.setInventorySlotContentsNoSave(Constants.upperTool, new ItemStack(TOOL, 1, 3));
+        bp.setInventorySlotContentsNoSave(ClassicArrangement.UPPER_TOOL, new ItemStack(TOOL, 1, 3));
         bp.saveToNBT(backpack.stackTagCompound);
         RenderInfo info = new RenderInfo().read(backpack.stackTagCompound, RenderInfo.KIND_BACKPACK);
         assertNotNull(info.upperTool);
         assertSame(TOOL, info.upperTool.getItem());
         assertEquals(3, info.upperTool.getItemDamage());
         assertNull(info.lowerTool);
-        assertSame(bp.getStackInSlot(Constants.upperTool).getItem(), info.upperTool.getItem());
+        assertSame(bp.getStackInSlot(ClassicArrangement.UPPER_TOOL).getItem(), info.upperTool.getItem());
     }
 
     @Test
@@ -163,8 +164,8 @@ class HudTanksTest
         ItemStack stack = empty();
         InventoryBackpack seed = new InventoryBackpack(stack);
         for (int i = 0; i < seed.getStorageSize(); i++) seed.setInventorySlotContentsNoSave(i, new ItemStack(TOOL, 64, i));
-        seed.setInventorySlotContentsNoSave(Constants.upperTool, new ItemStack(TOOL, 1, 1));
-        seed.setInventorySlotContentsNoSave(Constants.lowerTool, new ItemStack(TOOL, 1, 2));
+        seed.setInventorySlotContentsNoSave(ClassicArrangement.UPPER_TOOL, new ItemStack(TOOL, 1, 1));
+        seed.setInventorySlotContentsNoSave(ClassicArrangement.LOWER_TOOL, new ItemStack(TOOL, 1, 2));
         seed.saveToNBT(stack.stackTagCompound);
         Map<ItemStack, RenderInfo> cache = new WeakHashMap<ItemStack, RenderInfo>();
         cache.put(stack, new RenderInfo().read(stack.stackTagCompound, RenderInfo.KIND_BACKPACK));

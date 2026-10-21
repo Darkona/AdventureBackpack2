@@ -19,7 +19,7 @@ import com.darkona.adventurebackpack.common.ability.SlimeAbility;
 import com.darkona.adventurebackpack.common.ability.SquidAbility;
 import com.darkona.adventurebackpack.common.ability.SunflowerAbility;
 import com.darkona.adventurebackpack.common.ability.WolfAbility;
-import com.darkona.adventurebackpack.inventory.BackpackLayouts;
+import com.darkona.adventurebackpack.inventory.WidgetLayouts;
 import com.darkona.adventurebackpack.util.LogHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -75,7 +75,7 @@ public final class AbilityRegistry
         {
             shaped.put(colorName, ability);
         }
-        if (this == INSTANCE) BackpackLayouts.invalidate();
+        if (this == INSTANCE) WidgetLayouts.invalidate();
     }
 
     public void freeze()

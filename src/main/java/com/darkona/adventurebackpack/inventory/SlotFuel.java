@@ -8,4 +8,10 @@ public class SlotFuel extends SlotAdventureBackpack
     {
         super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
     }
+
+    @Override
+    public boolean isItemValid(net.minecraft.item.ItemStack stack)
+    {
+        return inventory.isItemValidForSlot(getSlotIndex(), stack);
+    }
 }

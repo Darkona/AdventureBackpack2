@@ -376,6 +376,34 @@ class ConfigHandlerTest
     }
 
     @Test
+    void theOldFlamethrowerBalanceIsReplacedButATunedOneIsKept() throws IOException
+    {
+        String old = "adventurebackpack {\n"
+                + "    flamethrower {\n"
+                + "        D:coneDegrees=25.0\n"
+                + "        D:damage=2.0\n"
+                + "        I:fireIntervalTicks=4\n"
+                + "        I:fireSeconds=5\n"
+                + "        I:fuelPerBurst=20\n"
+                + "        D:range=6.0\n"
+                + "    }\n"
+                + "}\n";
+        Configuration cfg = load("oldflame.cfg", old);
+        assertEquals(4.0, ConfigHandler.FLAMETHROWER_DAMAGE, 1e-9);
+        assertEquals(5, ConfigHandler.FLAMETHROWER_FIRE_INTERVAL_TICKS);
+        assertEquals(25, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
+        assertEquals(8.0, ConfigHandler.FLAMETHROWER_RANGE, 1e-9);
+        assertEquals(30.0, ConfigHandler.FLAMETHROWER_CONE_DEGREES, 1e-9);
+        assertEquals(10, ConfigHandler.FLAMETHROWER_FIRE_SECONDS);
+        assertEquals(4.0, cfg.getCategory(ConfigHandler.FLAMETHROWER).get("damage").getDouble(), 1e-9);
+
+        load("tunedflame.cfg", old.replace("damage=2.0", "damage=3.0"));
+        assertEquals(3.0, ConfigHandler.FLAMETHROWER_DAMAGE, 1e-9);
+        assertEquals(4, ConfigHandler.FLAMETHROWER_FIRE_INTERVAL_TICKS);
+        assertEquals(20, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
+    }
+
+    @Test
     void theOldJetpackSteamCostIsHalvedButAChosenOneIsKept() throws IOException
     {
         String old = "adventurebackpack {\n"
@@ -424,12 +452,14 @@ class ConfigHandlerTest
         assertFalse(ConfigHandler.FLAMETHROWER_PVP);
         assertFalse(ConfigHandler.FLAMETHROWER_IGNITES_BLOCKS);
         assertEquals(4000, ConfigHandler.FLAMETHROWER_TANK_CAPACITY);
-        assertEquals(20, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
-        assertEquals(4, ConfigHandler.FLAMETHROWER_FIRE_INTERVAL_TICKS);
-        assertEquals(6.0, ConfigHandler.FLAMETHROWER_RANGE, 1e-9);
-        assertEquals(25.0, ConfigHandler.FLAMETHROWER_CONE_DEGREES, 1e-9);
-        assertEquals(2.0, ConfigHandler.FLAMETHROWER_DAMAGE, 1e-9);
-        assertEquals(5, ConfigHandler.FLAMETHROWER_FIRE_SECONDS);
+        assertEquals(25, ConfigHandler.FLAMETHROWER_FUEL_PER_BURST);
+        assertEquals(5, ConfigHandler.FLAMETHROWER_FIRE_INTERVAL_TICKS);
+        assertEquals(8.0, ConfigHandler.FLAMETHROWER_RANGE, 1e-9);
+        assertEquals(30.0, ConfigHandler.FLAMETHROWER_CONE_DEGREES, 1e-9);
+        assertEquals(4.0, ConfigHandler.FLAMETHROWER_DAMAGE, 1e-9);
+        assertEquals(10, ConfigHandler.FLAMETHROWER_FIRE_SECONDS);
+        assertTrue(cfg.getCategory(ConfigHandler.RENDER).containsKey("flamethrowerVolume"));
+        assertEquals(1.0, ConfigHandler.RENDER_FLAMETHROWER_VOLUME, 1e-9);
         assertEquals(0, ConfigHandler.FLAMETHROWER_PILOT_FUEL_PER_MINUTE);
         assertEquals(6, ConfigHandler.RENDER_FLAMETHROWER_PARTICLES);
     }

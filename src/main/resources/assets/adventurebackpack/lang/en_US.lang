@@ -42,7 +42,9 @@ item.adventurebackpack:flamethrowerPack.name=Flamethrower Pack
 item.adventurebackpack:flamethrower.name=Flamethrower
 
 ## Armor
-item.adventurebackpack:adventureSuit.name=Adventurer's Suit
+item.adventurebackpack:adventureJacket.name=Adventurer's Jacket
+item.adventurebackpack:telescope.name=Telescope
+item.adventurebackpack:adventurePants.name=Adventurer's Pants
 item.adventurebackpack:adventureHat.name=Adventurer's Fedora
 item.adventurebackpack:pistonBoots.name=Piston Boots
 
@@ -162,9 +164,18 @@ adventurebackpack:gui.toggle.on=ON
 adventurebackpack:gui.toggle.off=OFF
 adventurebackpack:gui.toggle.stateOn=On
 adventurebackpack:gui.toggle.stateOff=Off
-adventurebackpack:gui.toggle.hint=Click, or press %s (Gear On/Off).
-adventurebackpack:gui.toggle.abilities=Backpack abilities: %s
-adventurebackpack:gui.quiver.slot=Quiver: arrows and crossbow bolts
-adventurebackpack:gui.toggle.jetpack=Firebox (burn fuel, make steam): %s
+adventurebackpack:gui.toggle.hint=Click or press %s
+adventurebackpack:gui.toggle.abilities=Abilities: %s
+adventurebackpack:gui.quiver.slot=Arrows and bolts
+adventurebackpack:gui.toggle.jetpack=Firebox: %s
 adventurebackpack:gui.toggle.copter=Engine: %s
 adventurebackpack:gui.toggle.pilot=Pilot flame: %s
+adventurebackpack:messages.spawn.campfire=Respawn point set at the campfire.
+item.adventurebackpack:rope.name=Rope
+tile.adventurebackpack:blockRope.name=Rope
+adventurebackpack:gui.lock.off=Lock slots
+adventurebackpack:gui.lock.on=Click a slot to lock it
+adventurebackpack:gui.sort=Sort storage
+adventurebackpack:gui.button.bed=Sleeping bag
+adventurebackpack:gui.button.equip=Wear
+adventurebackpack:gui.button.unequip=Take off

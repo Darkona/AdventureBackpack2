@@ -19,9 +19,12 @@ public class CrossbowEventHandler
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {
-        if (ConfigHandler.CROSSBOW_IGNORE_HURT_COOLDOWN && bolt(event.source) != null)
+        EntityBolt bolt = bolt(event.source);
+        if (bolt == null) return;
+        if (ConfigHandler.CROSSBOW_IGNORE_HURT_COOLDOWN)
         {
             event.entityLiving.hurtResistantTime = 0;
         }
+        if (!event.entityLiving.worldObj.isRemote) bolt.markHit();
     }
 }

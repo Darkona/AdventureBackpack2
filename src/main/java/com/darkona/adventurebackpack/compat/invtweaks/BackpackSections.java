@@ -1,7 +1,9 @@
 package com.darkona.adventurebackpack.compat.invtweaks;
 
-import com.darkona.adventurebackpack.inventory.BackpackLayout;
+import com.darkona.adventurebackpack.common.layout.WidgetLayout;
 import com.darkona.adventurebackpack.inventory.ContainerBackpack;
+import com.darkona.adventurebackpack.inventory.widget.WidgetType;
+import com.darkona.adventurebackpack.inventory.widget.WidgetTypes;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.inventory.Slot;
 
@@ -18,21 +20,31 @@ public final class BackpackSections
 
     public static Map<ContainerSection, List<Slot>> of(ContainerBackpack container)
     {
-        BackpackLayout l = container.layout;
         Map<ContainerSection, List<Slot>> map = new EnumMap<ContainerSection, List<Slot>>(ContainerSection.class);
-        map.put(ContainerSection.CHEST, slots(container, 0, l.storage()));
-        map.put(ContainerSection.INVENTORY, slots(container, l.playerStart(), l.slotCount()));
-        map.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots(container, l.playerStart(), l.hotbarStart()));
-        map.put(ContainerSection.INVENTORY_HOTBAR, slots(container, l.hotbarStart(), l.slotCount()));
+        List<Slot> chest = slots(container, WidgetType.Section.CHEST);
+        List<Slot> main = slots(container, WidgetType.Section.PLAYER);
+        List<Slot> hotbar = slots(container, WidgetType.Section.HOTBAR);
+        List<Slot> inventory = new ArrayList<Slot>(main.size() + hotbar.size());
+        inventory.addAll(main);
+        inventory.addAll(hotbar);
+        map.put(ContainerSection.CHEST, chest);
+        map.put(ContainerSection.INVENTORY, inventory);
+        map.put(ContainerSection.INVENTORY_NOT_HOTBAR, main);
+        map.put(ContainerSection.INVENTORY_HOTBAR, hotbar);
         return map;
     }
 
-    private static List<Slot> slots(ContainerBackpack container, int from, int to)
+    public static List<Slot> slots(ContainerBackpack container, WidgetType.Section section)
     {
-        List<Slot> list = new ArrayList<Slot>(to - from);
-        for (int i = from; i < to; i++)
+        WidgetLayout l = container.widgets;
+        List<Slot> list = new ArrayList<Slot>();
+        for (int w = 0; w < l.count(); w++)
         {
-            list.add(container.getSlot(i));
+            if (WidgetTypes.get(l.kind(w)).section() != section) continue;
+            for (int s = l.slotFirst(w); s < l.slotFirst(w) + l.slots(w); s++)
+            {
+                if (!container.isLocked(s)) list.add(container.getSlot(s));
+            }
         }
         return list;
     }

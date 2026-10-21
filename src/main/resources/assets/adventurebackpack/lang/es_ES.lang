@@ -42,7 +42,9 @@ item.adventurebackpack:flamethrowerPack.name=Mochila Lanzallamas
 item.adventurebackpack:flamethrower.name=Lanzallamas
 
 ## Armor
-item.adventurebackpack:adventureSuit.name=Traje de Aventurero
+item.adventurebackpack:adventureJacket.name=Chaqueta de Aventurero
+item.adventurebackpack:telescope.name=Telescopio
+item.adventurebackpack:adventurePants.name=Pantalón de Aventurero
 item.adventurebackpack:adventureHat.name=Fedora de Aventurero
 item.adventurebackpack:pistonBoots.name=Botas Pistón
 
@@ -162,9 +164,18 @@ adventurebackpack:gui.toggle.on=SÍ
 adventurebackpack:gui.toggle.off=NO
 adventurebackpack:gui.toggle.stateOn=encendido
 adventurebackpack:gui.toggle.stateOff=apagado
-adventurebackpack:gui.toggle.hint=Haz clic o pulsa %s (Encender/apagar el equipo).
-adventurebackpack:gui.toggle.abilities=Habilidades de la mochila: %s
-adventurebackpack:gui.quiver.slot=Carcaj: flechas y virotes de ballesta
-adventurebackpack:gui.toggle.jetpack=Hogar (quema combustible y hace vapor): %s
+adventurebackpack:gui.toggle.hint=Clic o pulsa %s
+adventurebackpack:gui.toggle.abilities=Habilidades: %s
+adventurebackpack:gui.quiver.slot=Flechas y virotes
+adventurebackpack:gui.toggle.jetpack=Hogar: %s
 adventurebackpack:gui.toggle.copter=Motor: %s
 adventurebackpack:gui.toggle.pilot=Piloto: %s
+adventurebackpack:messages.spawn.campfire=Punto de reaparición fijado en la hoguera.
+item.adventurebackpack:rope.name=Soga
+tile.adventurebackpack:blockRope.name=Soga
+adventurebackpack:gui.lock.off=Bloquear ranuras
+adventurebackpack:gui.lock.on=Pulsa una ranura para bloquearla
+adventurebackpack:gui.sort=Ordenar
+adventurebackpack:gui.button.bed=Saco de dormir
+adventurebackpack:gui.button.equip=Ponerse
+adventurebackpack:gui.button.unequip=Quitar

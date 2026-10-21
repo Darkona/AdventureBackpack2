@@ -109,7 +109,16 @@ class PerformanceContractTest
                     + "|LivingDeathEvent|EntityStruckByLightningEvent|StartTracking|LivingSetAttackTargetEvent|LivingDropsEvent");
 
     /** Methods with another name that a tick calls every time (file#method). */
+    static final Set<String> REACHED_FROM_FRAME = new TreeSet<String>(Arrays.asList(
+            "client/gui/GuiTank.java#getTankTooltip"));
+
     static final Set<String> REACHED_FROM_TICK = new TreeSet<String>(Arrays.asList(
+            "inventory/widget/classic/StorageWidget.java#accepts",
+            "inventory/widget/classic/ToolsWidget.java#accepts",
+            "inventory/widget/classic/TankWidget.java#accepts",
+            "inventory/widget/classic/TankWidget.java#acceptsAt",
+            "inventory/widget/classic/QuiverWidget.java#accepts",
+            "inventory/widget/classic/RopeWidget.java#accepts",
             "playerProperties/BackpackProperty.java#sameAsSent",
             "playerProperties/BackpackProperty.java#send",
             "playerProperties/BackpackProperty.java#getSyncData",
@@ -205,7 +214,7 @@ class PerformanceContractTest
 
     static Tier tierOf(String rel, SourceScan.Method m)
     {
-        if (FRAME_NAME.matcher(m.name).matches() || FRAME_EVENT.matcher(m.params).find()) return Tier.FRAME;
+        if (FRAME_NAME.matcher(m.name).matches() || FRAME_EVENT.matcher(m.params).find() || REACHED_FROM_FRAME.contains(rel + "#" + m.name)) return Tier.FRAME;
         if (TICK_NAME.matcher(m.name).matches() || TICK_EVENT.matcher(m.params).find() || REACHED_FROM_TICK.contains(rel + "#" + m.name)
                 || rel.startsWith("block/Tile") && PIPE_NAME.matcher(m.name).matches()) return Tier.TICK;
         if (ENTITY_EVENT.matcher(m.params).find()) return Tier.ENTITY_EVENT;
@@ -424,13 +433,15 @@ class PerformanceContractTest
             ok("item/ItemHose.java#onUpdate NBT", "the hose's own empty tag, once, on the first tick of a hose without one (P7 closed: the readout is written only on change)");
             String backpackMiss = "reached from the backpack window's tick only on a cache miss: InventoryBackpack.reloadIfChanged reads the stack again when another writer changed its tags (P1 fixed)";
             ok("inventory/BackpackNbt.java#readItems NBT", backpackMiss);
-            ok("inventory/BackpackNbt.java#readQuiver NBT", backpackMiss);
-            ok("inventory/BackpackNbt.java#readQuiver COPY", backpackMiss);
+            ok("client/gui/GuiTank.java#getTankTooltip STRING", "the two lines are rebuilt only when the fluid or its amount changes while the mouse is over the tank; otherwise the cached list is returned");
+            ok("inventory/BackpackNbt.java#readSlots NBT", backpackMiss);
+            String userSort = "reached from the backpack window's tick only when the player pressed the sort button: the packet queues one request and the tick runs it once";
+            ok("inventory/ContainerBackpack.java#sortStorage COPY", userSort);
+            ok("common/HandRefill.java#sameKind NBT", userSort + " (and the merge and hand-refill paths)");
+            ok("inventory/BackpackNbt.java#readSlots COPY", backpackMiss);
             ok("inventory/InventoryBackpack.java#openInventory NBT", backpackMiss);
             ok("inventory/InventoryBackpack.java#loadFromNBT NBT", backpackMiss);
-            ok("inventory/Quiver.java#sealRightTank COPY", backpackMiss);
-            ok("inventory/ContainerJetpack.java#refresh COPY", "the window reads the gear again only when isCurrentFor says another writer changed it (P6 fixed)");
-            ok("inventory/ContainerCopter.java#refresh COPY", "the window reads the gear again only when isCurrentFor says another writer changed it (P6 fixed)");
+            ok("inventory/HiddenTank.java#seal COPY", backpackMiss);
             ok("inventory/InventorySteamJetpack.java#flushChanges NBT", "writes only the keys whose value changed; a full write only when the data tag is missing");
             ok("inventory/InventorySteamJetpack.java#saveToNBT NBT", "reached only from flushChanges when the data tag is missing");
             ok("inventory/InventorySteamJetpack.java#dirtyInventory NBT", "only when a fuel item was burnt");

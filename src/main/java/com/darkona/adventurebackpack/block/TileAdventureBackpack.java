@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.block;
 
+import com.darkona.adventurebackpack.common.layout.WidgetLayout;
+import com.darkona.adventurebackpack.inventory.widget.WidgetInventory;
 import com.darkona.adventurebackpack.util.FluidMigration;
 import com.darkona.adventurebackpack.common.BackpackAbilities;
 import com.darkona.adventurebackpack.common.Constants;
@@ -7,12 +9,13 @@ import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.init.ModBlocks;
 import com.darkona.adventurebackpack.init.ModItems;
-import com.darkona.adventurebackpack.inventory.BackpackLayout;
-import com.darkona.adventurebackpack.inventory.BackpackLayouts;
+import com.darkona.adventurebackpack.common.layout.StorageIndex;
+import com.darkona.adventurebackpack.inventory.HiddenTank;
+import com.darkona.adventurebackpack.common.sort.SlotLocks;
+import com.darkona.adventurebackpack.inventory.widget.WidgetStore;
+import com.darkona.adventurebackpack.inventory.WidgetLayouts;
 import com.darkona.adventurebackpack.inventory.BackpackNbt;
 import com.darkona.adventurebackpack.inventory.InventoryActions;
-import com.darkona.adventurebackpack.inventory.Quiver;
-import com.darkona.adventurebackpack.inventory.SlotTool;
 import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import net.minecraft.block.Block;
@@ -27,15 +30,14 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 public class TileAdventureBackpack extends TileEntity implements IInventoryAdventureBackpack
 {
     public ItemStack[] inventory;
-    private int storage = BackpackLayout.LEGACY_STORAGE;
-    private int quiver;
-    private NBTTagList keptQuiver;
+    private int storage = StorageIndex.LEGACY_STORAGE;
+    private WidgetLayout layout;
+    private NBTTagList[] kept;
     private FluidTank leftTank;
     private FluidTank rightTank;
     public boolean sleepingBagDeployed;
@@ -51,6 +53,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     private String placedFor;
     private boolean hasPlaced;
     private NBTTagCompound extendedProperties;
+    private final SlotLocks locks = new SlotLocks();
 
     public int getLuminosity()
     {
@@ -81,7 +84,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     {
         leftTank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
         rightTank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
-        inventory = new ItemStack[Constants.inventorySize];
+        inventory = new ItemStack[StorageIndex.FIRST_EXTRA_STORAGE];
         sleepingBagDeployed = false;
         setColorName("Standard");
         luminosity = 0;
@@ -170,9 +173,10 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     }
 
     @Override
-    public int getQuiverSlots()
+    public WidgetLayout getLayout()
     {
-        return quiver;
+        if (layout == null) layout = WidgetLayouts.widgets(colorName, storage);
+        return layout;
     }
 
     @Override
@@ -214,6 +218,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void setColorName(String string)
     {
         this.colorName = string;
+        layout = null;
     }
 
     @Override
@@ -271,16 +276,17 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         {
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
             colorName = backpackData.getString("colorName");
-            storage = BackpackLayouts.storage(colorName, BackpackNbt.savedStorage(backpackData));
-            quiver = BackpackLayouts.quiver(colorName);
-            inventory = BackpackNbt.readItems(backpackData, inventory, BackpackLayout.inventorySize(storage, quiver));
-            keptQuiver = BackpackNbt.readQuiver(backpackData, inventory, BackpackLayout.quiverIndex(storage, 0), quiver);
+            storage = WidgetLayouts.storage(colorName, BackpackNbt.savedStorage(backpackData));
+            layout = WidgetLayouts.widgets(colorName, storage);
+            kept = WidgetStore.keptFor(layout, kept);
+            inventory = WidgetStore.read(backpackData, layout, inventory, kept);
             FluidMigration.readTank(leftTank, backpackData.getCompoundTag("leftTank"));
             FluidMigration.readTank(rightTank, backpackData.getCompoundTag("rightTank"));
-            Quiver.sealRightTank(leftTank, rightTank, quiver > 0);
+            HiddenTank.seal(leftTank, rightTank, WidgetInventory.showsTank(getLayout(), 1));
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
             extendedProperties = BackpackNbt.readExtended(backpackData);
+            BackpackNbt.readLocks(backpackData, locks);
         }
     }
 
@@ -288,17 +294,16 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     public void saveToNBT(NBTTagCompound compound)
     {
         NBTTagCompound backpackData = new NBTTagCompound();
-        int base = BackpackLayout.quiverIndex(storage, 0);
-        backpackData.setTag(BackpackNbt.ITEMS, BackpackNbt.writeItems(inventory, base));
-        backpackData.setInteger(BackpackNbt.STORAGE_SIZE, storage);
-        BackpackNbt.writeQuiver(backpackData, inventory, base, quiver, keptQuiver);
+        WidgetStore.write(backpackData, getLayout(), inventory, kept, storage);
         backpackData.setString("colorName", colorName);
         backpackData.setInteger("lastTime", lastTime);
         backpackData.setBoolean("special", BackpackAbilities.hasAbility(colorName));
         BackpackNbt.writeExtended(backpackData, extendedProperties);
+        BackpackNbt.writeLocks(backpackData, locks);
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
 
+        WidgetStore.keepUnknown(compound.getCompoundTag("backpackData"), backpackData, getLayout());
         compound.setTag("backpackData",backpackData);
     }
 
@@ -320,6 +325,16 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         markDirty();
     }
 
+    private int limitFor(int slot)
+    {
+        return WidgetInventory.limit(widgets(), slot, getInventoryStackLimit());
+    }
+
+    private WidgetLayout widgets()
+    {
+        return getLayout();
+    }
+
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
@@ -327,16 +342,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
         {
             return false;
         }
-        if (slot == Constants.bucketInLeft || slot == Constants.bucketInRight)
-        {
-            return (quiver == 0 || slot == Constants.bucketInLeft) && FluidContainerRegistry.isContainer(stack);
-        }
-        if (slot >= BackpackLayout.quiverIndex(storage, 0))
-        {
-            return Quiver.accepts(stack);
-        }
-
-        return !(slot == Constants.upperTool || slot == Constants.lowerTool) || SlotTool.isValidTool(stack);
+        return WidgetInventory.accepts(widgets(), slot, stack);
     }
 
     @Override
@@ -361,20 +367,16 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-        if (slot == Constants.bucketInLeft || slot == Constants.bucketInRight || slot == Constants.bucketOutLeft || slot == Constants.bucketOutRight)
-        {
-            return inventory[slot];
-        }
-        return null;
+        return WidgetInventory.dropsOnClose(widgets(), slot) ? inventory[slot] : null;
     }
 
     @Override
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
         inventory[i] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+        if (itemstack != null && itemstack.stackSize > limitFor(i))
         {
-            itemstack.stackSize = getInventoryStackLimit();
+            itemstack.stackSize = limitFor(i);
         }
         markDirty();
     }
@@ -382,18 +384,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void markDirty()
     {
-        for (int i = 0; i < inventory.length; i++)
-        {
-            if (i == Constants.bucketInLeft && inventory[i] != null)
-            {
-                updateTankSlots(getLeftTank(), i);
-            }
-
-            if (i == Constants.bucketInRight && inventory[i] != null)
-            {
-                updateTankSlots(getRightTank(), i);
-            }
-        }
+        WidgetInventory.fillTanks(this, getLayout());
         super.markDirty();
     }
 
@@ -402,9 +393,9 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     {
         if (slot > inventory.length) return;
         inventory[slot] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+        if (itemstack != null && itemstack.stackSize > limitFor(slot))
         {
-            itemstack.stackSize = getInventoryStackLimit();
+            itemstack.stackSize = limitFor(slot);
         }
     }
 
@@ -435,7 +426,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
     @Override
     public void consumeInventoryItem(Item item)
     {
-        InventoryActions.consumeItemInInventory(this, item);
+        WidgetInventory.consume(this, widgets(), item);
     }
 
     @Override
@@ -518,7 +509,7 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
             FluidMigration.readTank(leftTank, backpackData.getCompoundTag("leftTank"));
             FluidMigration.readTank(rightTank, backpackData.getCompoundTag("rightTank"));
-            Quiver.sealRightTank(leftTank, rightTank, quiver > 0);
+            HiddenTank.seal(leftTank, rightTank, WidgetInventory.showsTank(getLayout(), 1));
         }
     }
 
@@ -580,5 +571,17 @@ public class TileAdventureBackpack extends TileEntity implements IInventoryAdven
 
     public void dirtyInventory()
     {
+    }
+
+    @Override
+    public SlotLocks getLocks()
+    {
+        return locks;
+    }
+
+    @Override
+    public void dirtyLocks()
+    {
+        markDirty();
     }
 }

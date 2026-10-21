@@ -1,175 +1,51 @@
 package com.darkona.adventurebackpack.inventory;
 
-import adventurebackpack.api.IWearableContainer;
-import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.block.TileGear;
+import com.darkona.adventurebackpack.common.layout.gear.GearArrangement;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerJetpack extends Container implements IWearableContainer
+public class ContainerJetpack extends ContainerGear
 {
-    private TileGear tile;
-    InventorySteamJetpack inventory;
-    EntityPlayer player;
-    private final int
-    PLAYER_HOT_START = 0;
-    private final int PLAYER_HOT_END = PLAYER_HOT_START + 8;
-    private final int PLAYER_INV_START = PLAYER_HOT_END + 1;
-    private final int PLAYER_INV_END = PLAYER_INV_START + 26;
-    boolean wearing;
+    private final InventorySteamJetpack gear;
 
     public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inventory, TileGear tile)
     {
-        this(player, inventory, false);
-        this.tile = tile;
+        this(player, inventory, false, tile);
     }
 
     public ContainerJetpack(EntityPlayer player, InventorySteamJetpack inventory, boolean wearing)
     {
-        this.player = player;
-        this.inventory = inventory;
-        makeSlots(player.inventory);
-        this.inventory.openInventory();
-        this.wearing = wearing;
+        this(player, inventory, wearing, null);
     }
 
-    private void bindPlayerInventory(InventoryPlayer invPlayer)
+    private ContainerJetpack(EntityPlayer player, InventorySteamJetpack inventory, boolean wearing, TileGear tile)
     {
-        int startX = 8;
-        int startY = 84;
-
-        for (int x = 0; x < 9; x++)
-        {
-            addSlotToContainer(new Slot(invPlayer, x, startX + 18 * x, 142));
-        }
-
-        for (int y = 0; y < 3; y++)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                addSlotToContainer(new Slot(invPlayer, (x + y * 9 + 9), (startX + 18 * x), (startY + y * 18)));
-            }
-        }
-    }
-
-    private void makeSlots(InventoryPlayer invPlayer)
-    {
-        bindPlayerInventory(invPlayer);
-
-        addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_IN_SLOT, 30, 22));
-        addSlotToContainer(new SlotFluid(inventory, InventorySteamJetpack.BUCKET_OUT_SLOT, 30, 52));
-        addSlotToContainer(new SlotFuel(inventory,InventorySteamJetpack.FUEL_SLOT, 77, 64));
-    }
-    @Override
-    public boolean canInteractWith(EntityPlayer p_75145_1_)
-    {
-        if (tile != null) return tile.isUseableByPlayer(p_75145_1_);
-        return HeldContainerGuard.stillOpen(wearing, inventory.getParentItemStack(),
-                BackpackProperty.get(p_75145_1_).getWearable(), p_75145_1_.getCurrentEquippedItem());
+        super(player, inventory, GearArrangement.jetpack(), wearing, tile);
+        this.gear = inventory;
     }
 
     @Override
-    public void detectAndSendChanges()
+    protected ItemStack parentStack()
     {
-        if (wearing) refresh();
-        super.detectAndSendChanges();
-        if (tile != null) tile.afterContainerTick();
-    }
-
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-        if (wearing)
-        {
-            this.crafters.remove(player);
-        }
-        if (!player.worldObj.isRemote)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                ItemStack itemstack = this.inventory.getStackInSlotOnClosing(i);
-                if (itemstack != null)
-                {
-                    inventory.setInventorySlotContents(i, null);
-                    player.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-        }
-        if (tile != null) tile.afterContainerTick();
+        return gear.getParentItemStack();
     }
 
     @Override
-    public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player)
+    protected boolean liveRefresh()
     {
-        boolean clickedIsHeld = slot >= 0 && slot < inventorySlots.size() && player.getHeldItem() != null
-                && getSlot(slot).getStack() == player.getHeldItem();
-        if (HeldContainerGuard.refuses(!wearing && tile == null, clickedIsHeld, flag, button, player.inventory.currentItem))
-        {
-            return null;
-        }
-        return super.slotClick(slot, button, flag, player);
+        return wearing;
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i)
+    protected void takeOut(int slot)
     {
-        refresh();
-        Slot slot = getSlot(i);
-        ItemStack result = null;
-
-        if (slot != null && slot.getHasStack())
-        {
-            ItemStack stack = slot.getStack();
-            result = stack.copy();
-            if (i >= 36)
-            {
-                if (!mergeItemStack(stack, PLAYER_HOT_START, PLAYER_INV_END + 1, false))
-                {
-                    return null;
-                }
-            }
-            if (i < 36)
-            {
-                if (SlotFluid.valid(stack))
-                {
-                    int JETPACK_INV_START = PLAYER_INV_END + 1;
-                    if (!mergeItemStack(stack, JETPACK_INV_START, JETPACK_INV_START + 1, false))
-                    {
-                    }
-                }
-                else
-                {
-                    int JETPACK_FUEL_START = PLAYER_INV_END + 3;
-                    if (inventory.isFuel(stack) && !mergeItemStack(stack, JETPACK_FUEL_START, JETPACK_FUEL_START + 1, false))
-                    {
-                        return null;
-                    }
-                }
-            }
-
-            if (stack.stackSize == 0)
-            {
-                slot.putStack(null);
-            } else
-            {
-                slot.onSlotChanged();
-            }
-
-            if (stack.stackSize == result.stackSize)
-            {
-                return null;
-            }
-            slot.onPickupFromSlot(player, stack);
-        }
-        return result;
+        gear.setInventorySlotContents(slot, null);
     }
 
     @Override
     public void refresh()
     {
-        if (!inventory.isCurrentFor(inventory.getParentItemStack())) inventory.openInventory();
+        if (!gear.isCurrentFor(gear.getParentItemStack())) gear.openInventory();
     }
 }

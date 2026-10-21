@@ -60,4 +60,54 @@ public final class FlamethrowerLogic
         if (pilotFuelPerMinute <= 0 || multiplier <= 0) return 0;
         return (int) Math.ceil(pilotFuelPerMinute * multiplier - 1e-4);
     }
+
+    public static final int INVULNERABLE_TICKS = 10;
+    public static final float FIRE_DAMAGE_PER_SECOND = 1.0F;
+
+    public static int landedPeriodTicks(int fireIntervalTicks)
+    {
+        int interval = Math.max(1, fireIntervalTicks);
+        return (INVULNERABLE_TICKS + interval - 1) / interval * interval;
+    }
+
+    public static double directDamagePerSecond(double damage, int fireIntervalTicks)
+    {
+        return damagePerBurst(damage) * 20.0 / landedPeriodTicks(fireIntervalTicks);
+    }
+
+    public static int landedHits(int sprayTicks, int fireIntervalTicks)
+    {
+        if (sprayTicks <= 0) return 0;
+        return (sprayTicks - 1) / landedPeriodTicks(fireIntervalTicks) + 1;
+    }
+
+    public static double afterburnDamage(int fireSeconds)
+    {
+        return Math.max(0, fireSeconds) * FIRE_DAMAGE_PER_SECOND;
+    }
+
+    public static double sweepDamage(double damage, int fireIntervalTicks, int fireSeconds, int sprayTicks)
+    {
+        return landedHits(sprayTicks, fireIntervalTicks) * (double) damagePerBurst(damage) + afterburnDamage(fireSeconds);
+    }
+
+    public static double fuelPerSecond(int fuelPerBurst, int fireIntervalTicks, double multiplier)
+    {
+        return fuelPerBurst(fuelPerBurst, multiplier) * 20.0 / Math.max(1, fireIntervalTicks);
+    }
+
+    public static int burstsPerFill(int totalFuel, int fuelPerBurst, double multiplier)
+    {
+        int cost = fuelPerBurst(fuelPerBurst, multiplier);
+        if (totalFuel <= 0) return 0;
+        if (cost <= 0) return Integer.MAX_VALUE;
+        return (totalFuel + cost - 1) / cost;
+    }
+
+    public static double autonomySeconds(int totalFuel, int fuelPerBurst, int fireIntervalTicks, double multiplier)
+    {
+        int bursts = burstsPerFill(totalFuel, fuelPerBurst, multiplier);
+        if (bursts == Integer.MAX_VALUE) return Double.POSITIVE_INFINITY;
+        return bursts * (double) Math.max(1, fireIntervalTicks) / 20.0;
+    }
 }

@@ -34,6 +34,18 @@ class ContainerBackpackSlotsTest
     /** As {@link #build(String)}, with a backpack whose slots are kept in {@code contents} (inventory index to stack). */
     static ContainerBackpack build(String colorName, java.util.Map<Integer, ItemStack> contents) throws Exception
     {
+        return build(colorName, contents, 0);
+    }
+
+    /** As {@link #build(String, java.util.Map)}, with a backpack that saved {@code storage} storage slots. */
+    static ContainerBackpack build(String colorName, java.util.Map<Integer, ItemStack> contents, int storage) throws Exception
+    {
+        return build(colorName, contents, storage, new com.darkona.adventurebackpack.common.sort.SlotLocks());
+    }
+
+    /** As {@link #build(String, java.util.Map, int)}, with the lock state of the backpack given. */
+    static ContainerBackpack build(String colorName, java.util.Map<Integer, ItemStack> contents, int storage, com.darkona.adventurebackpack.common.sort.SlotLocks locks) throws Exception
+    {
         Field f = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
         f.setAccessible(true);
         sun.misc.Unsafe unsafe = (sun.misc.Unsafe) f.get(null);
@@ -47,6 +59,10 @@ class ContainerBackpackSlotsTest
                         case "getColorName": return colorName;
                         case "getStackInSlot": return contents.get(args[0]);
                         case "getInventoryStackLimit": return 64;
+                        case "getStorageSize": return storage;
+                        case "getLocks": return locks;
+                        case "getInventory": return null;
+                        case "setInventorySlotContentsNoSave":
                         case "setInventorySlotContents":
                             if (args[1] == null) contents.remove(args[0]);
                             else contents.put((Integer) args[0], (ItemStack) args[1]);
@@ -82,6 +98,7 @@ class ContainerBackpackSlotsTest
             else if (s instanceof SlotTool) kind = "tool";
             else if (s instanceof SlotFluid) kind = "bucket";
             else if (s instanceof SlotQuiver) kind = "quiver";
+            else if (s instanceof SlotRope) kind = "rope";
             else if (s instanceof SlotBackpack) kind = "storage";
             else if (s.inventory == container.craftMatrix) kind = "craft";
             else if (s.inventory instanceof InventoryPlayer) kind = "player";
@@ -121,6 +138,7 @@ class ContainerBackpackSlotsTest
         add(e, "bucket", 42, 6, 37);
         add(e, "bucket", 43, 226, 7);
         add(e, "bucket", 44, 226, 37);
+        add(e, "rope", 45, 44, 43);
         for (int row = 0; row < 3; row++)
             for (int col = 0; col < 3; col++) add(e, "craft", col + row * 3, 152 + 18 * col, 61 + 18 * row);
         add(e, "result", 0, 226, 97);
@@ -146,7 +164,7 @@ class ContainerBackpackSlotsTest
     {
         org.junit.jupiter.api.Assertions.assertThrows(ClassNotFoundException.class,
                 () -> Class.forName("invtweaks.api.container.ChestContainer"));
-        assertEquals(91, build("Standard").inventorySlots.size());
+        assertEquals(92, build("Standard").inventorySlots.size());
         assertEquals(0, ContainerBackpack.class.getAnnotations().length);
         assertEquals(0, ContainerBackpack.class.getMethod("invTweaksSections").getAnnotations().length);
         assertEquals(0, ContainerBackpack.class.getMethod("invTweaksRowSize").getAnnotations().length);
@@ -163,7 +181,7 @@ class ContainerBackpackSlotsTest
         ContainerBackpack c = build("Standard");
         EntityPlayer player = c.player;
         Item item = new Item();
-        int craft = c.layout.craftStart();
+        int craft = BackpackLayout.view(c).craftStart();
         c.craftMatrix.setInventorySlotContents(0, new ItemStack(item, 10));
         player.inventory.mainInventory[20] = new ItemStack(item, 60);
         c.transferStackInSlot(player, craft);

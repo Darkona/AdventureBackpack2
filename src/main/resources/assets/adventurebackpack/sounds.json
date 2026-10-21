@@ -7,5 +7,6 @@
 	"s_background2":{"category":"player","sounds":[{"name":"s_background2","stream":"false"}]},
 	"boatmotorloop":{"category":"player","sounds":[{"name":"boatMotorLoop","stream":"false"}]},
 	"boatmotorstop":{"category":"player","sounds":[{"name":"boatMotorStop","stream":"false"}]},
-	"boatmotorstart":{"category":"player","sounds":[{"name":"boatMotorStart","stream":"false"}]}
+	"boatmotorstart":{"category":"player","sounds":[{"name":"boatMotorStart","stream":"false"}]},
+	"flamethrowerloop":{"category":"player","sounds":[{"name":"flamethrowerLoop","stream":"false"}]}
 }

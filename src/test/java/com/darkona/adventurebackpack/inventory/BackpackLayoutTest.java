@@ -37,8 +37,8 @@ class BackpackLayoutTest
         assertEquals(43, l.toggleX(), who);
         assertEquals(63, l.toggleY(), who);
         assertEquals(39, l.storage(), who);
-        assertEquals(91, l.slotCount(), who);
-        assertEquals(45, l.inventorySize(), who);
+        assertEquals(92, l.slotCount(), who);
+        assertEquals(46, l.inventorySize(), who);
     }
 
     /** Container slot table of a layout, in the same format as ContainerBackpackSlotsTest (positions and indices). */
@@ -49,6 +49,7 @@ class BackpackLayoutTest
         for (int i = 0; i < 2; i++) out.add(out.size() + " tool " + (BackpackLayout.UPPER_TOOL + i) + " " + l.toolX() + "," + l.toolY(i));
         for (int i = 0; i < l.bucketSlots(); i++) out.add(out.size() + " bucket " + BackpackLayout.bucketIndex(i) + " " + l.bucketX(i) + "," + l.bucketY(i));
         for (int q = 0; q < l.quiver(); q++) out.add(out.size() + " quiver " + BackpackLayout.quiverIndex(l.storage(), q) + " " + l.quiverX(q) + "," + l.quiverY(q));
+        out.add(out.size() + " rope " + BackpackLayout.ropeIndex(l.storage(), l.quiver()) + " " + l.ropeX() + "," + l.ropeY());
         for (int i = 0; i < 9; i++) out.add(out.size() + " craft " + i + " " + l.craftX(i) + "," + l.craftY(i));
         out.add(out.size() + " result 0 " + l.resultX() + "," + l.resultY());
         for (int i = 0; i < 27; i++) out.add(out.size() + " player " + (9 + i) + " " + (l.playerX() + 18 * (i % 9)) + "," + (l.playerY() + 18 * (i / 9)));
@@ -63,7 +64,7 @@ class BackpackLayoutTest
         {
             // The Skeleton's quiver (enabled.quiver, on by default) changes its window: see theSkeletonHasAQuiver...
             if (name.equals("Skeleton")) continue;
-            BackpackLayout l = BackpackLayouts.layout(name, 0);
+            BackpackLayout l = BackpackLayout.view(WidgetLayouts.widgets(name, 0));
             assertClassicWindow(l, name);
             assertEquals(ContainerBackpackSlotsTest.expectedClassicSlots(false), slots(l), name);
         }
@@ -72,13 +73,16 @@ class BackpackLayoutTest
     @Test
     void theSpecialSlotsKeepTheirOldInventoryIndices()
     {
-        assertEquals(Constants.upperTool, BackpackLayout.UPPER_TOOL);
-        assertEquals(Constants.lowerTool, BackpackLayout.LOWER_TOOL);
-        assertEquals(Constants.bucketInLeft, BackpackLayout.BUCKET_IN_LEFT);
-        assertEquals(Constants.bucketOutLeft, BackpackLayout.BUCKET_OUT_LEFT);
-        assertEquals(Constants.bucketInRight, BackpackLayout.BUCKET_IN_RIGHT);
-        assertEquals(Constants.bucketOutRight, BackpackLayout.BUCKET_OUT_RIGHT);
-        assertEquals(Constants.inventorySize, BackpackLayout.inventorySize(BackpackLayout.LEGACY_STORAGE));
+        assertEquals(39, BackpackLayout.UPPER_TOOL);
+        assertEquals(40, BackpackLayout.LOWER_TOOL);
+        assertEquals(41, BackpackLayout.BUCKET_IN_LEFT);
+        assertEquals(42, BackpackLayout.BUCKET_OUT_LEFT);
+        assertEquals(43, BackpackLayout.BUCKET_IN_RIGHT);
+        assertEquals(44, BackpackLayout.BUCKET_OUT_RIGHT);
+        assertEquals(45, BackpackLayout.inventorySize(BackpackLayout.LEGACY_STORAGE));
+        com.darkona.adventurebackpack.common.layout.WidgetLayout classic = BackpackLayout.of(6, 8).widgets();
+        assertEquals(39, com.darkona.adventurebackpack.common.layout.classic.ClassicSlots.toolIndex(classic, 0));
+        assertEquals(40, com.darkona.adventurebackpack.common.layout.classic.ClassicSlots.toolIndex(classic, 1));
     }
 
     @Test
@@ -192,12 +196,12 @@ class BackpackLayoutTest
     void aBiggerBackpackIsOnlyAnotherShape()
     {
         registerBigExample();
-        assertEquals(new BackpackShape(7, 9), BackpackLayouts.shape(BIG));
-        assertEquals(new BackpackShape(6, 8), BackpackLayouts.shape("Standard"));
-        BackpackLayout l = BackpackLayouts.layout(BIG, 0);
+        assertEquals(com.darkona.adventurebackpack.common.layout.classic.ClassicComposition.of(7, 9, 0), WidgetLayouts.spec(BIG));
+        assertEquals(com.darkona.adventurebackpack.common.layout.classic.ClassicComposition.of(6, 8, 0), WidgetLayouts.spec("Standard"));
+        BackpackLayout l = BackpackLayout.view(WidgetLayouts.widgets(BIG, 0));
         assertEquals(54, l.storage());
-        assertEquals(106, l.slotCount());
-        assertEquals(60, l.inventorySize());
+        assertEquals(107, l.slotCount());
+        assertEquals(61, l.inventorySize());
         // The grid starts where it always did; everything right of it and under it moves with it
         assertEquals(62, l.storageX(0));
         assertEquals(7, l.storageY(0));
@@ -210,8 +214,8 @@ class BackpackLayoutTest
         assertEquals(225, l.height());
         assertEquals(62, l.playerX());
         assertEquals(54, l.toolStart());
-        assertEquals(70, l.playerStart());
-        assertEquals(97, l.hotbarStart());
+        assertEquals(71, l.playerStart());
+        assertEquals(98, l.hotbarStart());
         // An ability that asks for too much is kept inside the limits
         assertEquals(BackpackLayout.MAX_COLUMNS, BackpackLayout.of(20, 40).columns());
         assertEquals(BackpackLayout.MAX_ROWS, BackpackLayout.of(20, 40).rows());
@@ -223,26 +227,26 @@ class BackpackLayoutTest
         registerBigExample();
         ContainerBackpack c = ContainerBackpackSlotsTest.build(BIG);
         List<String> got = ContainerBackpackSlotsTest.describe(c);
-        assertEquals(slots(BackpackLayouts.layout(BIG, 0)), got);
-        assertTrue(got.get(c.layout.playerStart()).contains(" player 9 "));
-        assertTrue(got.get(c.layout.slotCount() - 1).contains(" player 8 "));
+        assertEquals(slots(BackpackLayout.view(WidgetLayouts.widgets(BIG, 0))), got);
+        assertTrue(got.get(BackpackLayout.view(c).playerStart()).contains(" player 9 "));
+        assertTrue(got.get(BackpackLayout.view(c).slotCount() - 1).contains(" player 8 "));
     }
 
     /** With the defaults (enabled.quiver on, 4 slots) the Skeleton has one tank and its quiver in the right tank's column. */
     @Test
     void theSkeletonHasAQuiverInThePlaceOfTheRightTank()
     {
-        BackpackLayout l = BackpackLayouts.layout("Skeleton", 0);
+        BackpackLayout l = BackpackLayout.view(WidgetLayouts.widgets("Skeleton", 0));
         assertEquals(4, l.quiver());
         assertEquals(1, l.tanks());
         assertEquals(2, l.bucketSlots());
         assertEquals(39, l.storage());
         // Storage, tools, two buckets, four quiver slots, crafting grid, result, player
-        assertEquals(39 + 2 + 2 + 4 + 9 + 1 + 36, l.slotCount());
+        assertEquals(39 + 2 + 2 + 4 + 1 + 9 + 1 + 36, l.slotCount());
         assertEquals(43, l.quiverStart());
-        assertEquals(47, l.craftStart());
-        assertEquals(57, l.playerStart());
-        assertEquals(45 + 4, l.inventorySize());
+        assertEquals(48, l.craftStart());
+        assertEquals(58, l.playerStart());
+        assertEquals(45 + 4 + 1, l.inventorySize());
         // The column of the right tank (x 207), one slot per storage row from the top
         for (int q = 0; q < 4; q++)
         {
@@ -276,7 +280,7 @@ class BackpackLayoutTest
         {
             ConfigHandler.QUIVER_ENABLED = false;
             ConfigHandler.BACKPACK_TYPES_GENERATION++;
-            BackpackLayout l = BackpackLayouts.layout("Skeleton", 0);
+            BackpackLayout l = BackpackLayout.view(WidgetLayouts.widgets("Skeleton", 0));
             assertEquals(0, l.quiver());
             assertClassicWindow(l, "Skeleton without quiver");
             assertEquals(ContainerBackpackSlotsTest.expectedClassicSlots(false), slots(l));
@@ -285,8 +289,8 @@ class BackpackLayoutTest
             ConfigHandler.QUIVER_ENABLED = was;
             ConfigHandler.BACKPACK_TYPES_GENERATION++;
         }
-        assertEquals(4, BackpackLayouts.quiver("Skeleton"));
-        assertEquals(0, BackpackLayouts.quiver("Standard"));
+        assertEquals(4, WidgetLayouts.quiver("Skeleton"));
+        assertEquals(0, WidgetLayouts.quiver("Standard"));
     }
 
     @Test
@@ -294,10 +298,10 @@ class BackpackLayoutTest
     {
         ContainerBackpack c = ContainerBackpackSlotsTest.build("Skeleton");
         List<String> got = ContainerBackpackSlotsTest.describe(c);
-        assertEquals(slots(BackpackLayouts.layout("Skeleton", 0)), got);
-        assertTrue(got.get(c.layout.quiverStart()).endsWith(" quiver 45 207,7"), got.get(c.layout.quiverStart()));
-        assertTrue(got.get(c.layout.bucketStart() + 1).contains(" bucket 42 "));
-        assertTrue(got.get(c.layout.quiverStart() + 4).contains(" craft 0 "));
-        assertTrue(got.get(c.layout.slotCount() - 1).contains(" player 8 "));
+        assertEquals(slots(BackpackLayout.view(WidgetLayouts.widgets("Skeleton", 0))), got);
+        assertTrue(got.get(BackpackLayout.view(c).quiverStart()).endsWith(" quiver 45 207,7"), got.get(BackpackLayout.view(c).quiverStart()));
+        assertTrue(got.get(BackpackLayout.view(c).bucketStart() + 1).contains(" bucket 42 "));
+        assertTrue(got.get(BackpackLayout.view(c).quiverStart() + 5).contains(" craft 0 "));
+        assertTrue(got.get(BackpackLayout.view(c).slotCount() - 1).contains(" player 8 "));
     }
 }

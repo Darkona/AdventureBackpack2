@@ -23,3 +23,9 @@ boatMotorStart.ogg
   URL:     https://freesound.org/people/piotrkier/sounds/700142/
   License: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/)
   Use:     the whole clip (0.7 s) with short fades.
+
+Flamethrower sounds. The roar of the flame is the mod's own work, released with the mod; the other flamethrower sounds are vanilla Minecraft sounds called by name (fire.ignite, random.fizz, random.click, mob.ghast.fireball), not shipped in the mod.
+
+flamethrowerLoop.ogg
+  Author:  made for Adventure Backpack (no recording used)
+  Use:     3 seconds of synthesized noise (a low roar, a band of hiss and random crackles, each with a slow random swell), joined end to start with a 0.4 second crossfade so it loops without a click; mono Ogg Vorbis, 44.1 kHz.

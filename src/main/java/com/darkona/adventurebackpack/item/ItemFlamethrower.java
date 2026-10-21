@@ -1,6 +1,8 @@
 package com.darkona.adventurebackpack.item;
 
+import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.common.FlamethrowerLogic;
+import com.darkona.adventurebackpack.common.FlamethrowerSound;
 import com.darkona.adventurebackpack.common.ParticleBeat;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.inventory.InventoryFlamethrowerPack;
@@ -51,9 +53,14 @@ public class ItemFlamethrower extends ItemAB
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if (ItemFlamethrowerPack.isUsable() && Wearing.isWearingFlamethrowerPack(player))
+        boolean wearing = Wearing.isWearingFlamethrowerPack(player);
+        if (ItemFlamethrowerPack.isUsable() && wearing)
         {
             player.setItemInUse(stack, getMaxItemUseDuration(stack));
+        }
+        if (world.isRemote && FlamethrowerSound.dryTrigger(ItemFlamethrowerPack.isUsable(), wearing, InventoryFlamethrowerPack.isLit(Wearing.getWearingFlamethrowerPack(player))))
+        {
+            ClientActions.flamethrowerDryClick(player);
         }
         return stack;
     }
@@ -180,10 +187,6 @@ public class ItemFlamethrower extends ItemAB
         {
             world.spawnParticle("largesmoke", at.xCoord + look.xCoord, at.yCoord + look.yCoord, at.zCoord + look.zCoord,
                     look.xCoord * 0.1, 0.05, look.zCoord * 0.1);
-        }
-        if (ConfigHandler.FLAMETHROWER_SOUND && ParticleBeat.sound(now, player.getEntityId()))
-        {
-            world.playSound(at.xCoord, at.yCoord, at.zCoord, "fire.fire", 1.0F, 0.8F + world.rand.nextFloat() * 0.3F, false);
         }
     }
 }

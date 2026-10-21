@@ -36,17 +36,17 @@ The pilot goes out by itself when you take the pack off, when you die, and when 
 
 ## What the flame does
 
-Every burst, five times a second while you hold right click, hits every living thing in a cone in front of you:
+Every burst, four times a second while you hold right click, hits every living thing in a cone in front of you:
 
 | | Default |
 |---|---|
-| Reach | 6 blocks from your eyes |
-| Cone | 25 degrees wide, around where you look |
-| Damage | 2.0 per burst (one heart) |
-| Fire | the target burns for 5 seconds |
-| Fuel | 20 mB per burst |
+| Reach | 8 blocks from your eyes |
+| Cone | 30 degrees wide, around where you look |
+| Damage | 4.0 per burst (two hearts) |
+| Fire | the target burns for 10 seconds |
+| Fuel | 25 mB per burst, 100 mB a second |
 
-- Minecraft gives a creature half a second of protection after a hit, so not every burst does damage. The fire keeps burning anyway. Creatures that do not burn, like blazes, take no damage.
+- Minecraft gives a creature half a second of protection after a hit, so every second burst does damage: 8 damage a second to each creature in the cone, a little more than an iron sword. Then the fire keeps burning for 10 seconds, 1 damage a second, so a quick sweep does more harm by fire than by flame. A zombie dies after about two seconds in the flame. Creatures that do not burn, like blazes, take no damage, and water puts the fire out.
 - The flame needs a clear line. It does not go through walls.
 - You never hurt or burn yourself.
 - Other players are not hurt by default. A server can allow it; the server's PvP setting and teams still apply. Tamed animals you own are never hurt.
@@ -55,7 +55,7 @@ Every burst, five times a second while you hold right click, hits every living t
 
 ### How long the fuel lasts
 
-The cost of a burst is multiplied by the fuel: oil burns 1.5 times faster than fuel. With fuel, two full tanks of 4000 mB give 400 bursts, which is 80 seconds of continuous fire. With oil it is about 53 seconds. The left tank empties first. When the fuel runs out you get a message and the pilot goes out.
+The cost of a burst is multiplied by the fuel: oil burns 1.5 times faster than fuel. With fuel, two full tanks of 4000 mB give 320 bursts, which is 80 seconds of continuous fire, and a bucket is 10 seconds. With oil it is about 53 seconds. The left tank empties first. When the fuel runs out you get a message and the pilot goes out.
 
 ## Controls
 
@@ -69,8 +69,13 @@ The cost of a burst is multiplied by the fuel: oil burns 1.5 times faster than f
 ## Tips
 
 - Light the pilot before the fight. It costs no fuel by default, and with empty tanks it does not light.
-- Reach is short, 6 blocks. Back away while you fire.
+- Reach is short, 8 blocks. Back away while you fire.
+- Sweep the flame across a group and step back: the fire finishes the work and saves fuel.
 - Keep a spare container of fuel in the window of the pack, or a Fuel Station at camp.
+
+## Sounds
+
+The pilot clicks when it lights and hisses when you put it out; it sputters when the tanks run dry. Firing starts with a whoosh and the flame roars in a loop while you hold right click. Using the nozzle with the pilot out makes a dry click. Players near you hear it too. The sounds can be turned off, and their volume set, in [Configuration](Configuration#flamethrower-flamethrower). The roar is the mod's own sound; the others are Minecraft's.
 
 ## Putting it down
 
@@ -82,7 +87,7 @@ The pack drops where you died. With a grave mod it goes into the grave. See [FAQ
 
 ## Configuration
 
-The reach, cone, damage, fire time, fuel per burst, tank size, PvP and block fire are in [Configuration](Configuration#flamethrower-flamethrower).
+The reach, cone, damage, fire time, fuel per burst, tank size, PvP, block fire, sounds and their volume are in [Configuration](Configuration#flamethrower-flamethrower).
 
 ## See also
 

@@ -199,7 +199,7 @@ public class GuiOverlay extends Gui
                 IIcon icon = fluid.getFluid().getStillIcon();
                 if (icon == null) return;
                 TextureUtils.bindAtlas(fluid.getFluid().getSpriteNumber());
-                GuiTank.drawFluidColumn(startX, startY, width, height, icon, fluid.amount, liquidPerPixel, 1);
+                GuiTank.drawFluidColumn(startX, startY, width, height, icon, fluid.amount, liquidPerPixel, 1, fluid.getFluid().getColor(fluid));
             } catch (Exception oops)
             {
                 LogHelper.error("Exception while trying to render the fluid in the overlay");

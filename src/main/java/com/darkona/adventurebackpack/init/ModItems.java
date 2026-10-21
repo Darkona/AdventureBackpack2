@@ -10,6 +10,10 @@ public class ModItems
     public static final ItemHose hose = new ItemHose();
     public static final ArmorAB adventureHat = new ItemAdventureHat();
     public static final ArmorAB pistonBoots = new ItemPistonBoots();
+    public static final ItemRope rope = new ItemRope();
+    public static final ItemTelescope telescope = new ItemTelescope();
+    public static final ArmorAB adventureJacket = new ItemAdventureJacket();
+    public static final ArmorAB adventurePants = new ItemAdventurePantaloon();
     public static final ItemAdventureBackpack adventureBackpack = new ItemAdventureBackpack();
     public static final ItemJuiceBottle melonJuiceBottle = new ItemJuiceBottle();
     public static final ItemCopterPack copterPack = new ItemCopterPack();
@@ -27,6 +31,10 @@ public class ModItems
         GameRegistry.registerItem(machete, "machete");
         GameRegistry.registerItem(adventureHat, "adventureHat");
         GameRegistry.registerItem(pistonBoots, "pistonBoots");
+        GameRegistry.registerItem(telescope, "telescope");
+        GameRegistry.registerItem(rope, "rope");
+        GameRegistry.registerItem(adventureJacket, "adventureJacket");
+        GameRegistry.registerItem(adventurePants, "adventurePants");
         GameRegistry.registerItem(adventureBackpack, "adventureBackpack");
         GameRegistry.registerItem(hose, "backpackHose");
         GameRegistry.registerItem(melonJuiceBottle, "melonJuiceBottle");

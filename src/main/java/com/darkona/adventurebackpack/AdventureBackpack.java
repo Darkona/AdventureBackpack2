@@ -7,6 +7,7 @@ import com.darkona.adventurebackpack.common.ApiProvider;
 import com.darkona.adventurebackpack.common.CodeRegistrations;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.compat.baubles.BackpackBauble;
+import com.darkona.adventurebackpack.compat.bogosorter.BogoSorterCompat;
 import com.darkona.adventurebackpack.compat.graves.GraveCompat;
 import com.darkona.adventurebackpack.config.FeatureVisibility;
 import com.darkona.adventurebackpack.inventory.DistilleryItems;
@@ -117,6 +118,7 @@ public class AdventureBackpack
         ConfigHandler.IS_RAILCRAFT = Loader.isModLoaded("Railcraft");
         ConfigHandler.IS_BAUBLES = BackpackBauble.isLoaded();
         GraveCompat.init();
+        BogoSorterCompat.init();
         AbilityRegistry.INSTANCE.freeze();
         CodeRegistrations.INSTANCE.freeze();
 

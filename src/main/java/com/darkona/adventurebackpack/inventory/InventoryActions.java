@@ -81,24 +81,6 @@ public class InventoryActions
         return false;
     }
 
-    public static void consumeItemInInventory(IInventory backpack, Item item)
-    {
-        int i = -1;
-        for (int j = 0; j < backpack.getSizeInventory(); ++j)
-        {
-            if (j >= BackpackLayout.LEGACY_STORAGE && j < BackpackLayout.FIRST_EXTRA_STORAGE) continue;
-            if (backpack.getStackInSlot(j) != null && backpack.getStackInSlot(j).getItem() == item)
-            {
-                i = j;
-                break;
-            }
-        }
-        if (i >= 0)
-        {
-           backpack.decrStackSize(i,1);
-        }
-    }
-
     public static boolean hasItem(IInventoryAdventureBackpack backpack, Item item)
     {
         ItemStack[] inventory = backpack.getInventory();

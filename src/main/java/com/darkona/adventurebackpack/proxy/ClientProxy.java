@@ -1,5 +1,8 @@
 package com.darkona.adventurebackpack.proxy;
 
+import com.darkona.adventurebackpack.handlers.ClientConnectionHandler;
+import com.darkona.adventurebackpack.client.gui.widget.classic.ClassicSkins;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileCampfire;
 import com.darkona.adventurebackpack.client.gui.GuiOverlay;
@@ -110,6 +113,7 @@ public class ClientProxy implements IProxy
 
         renderCrossbow = new RendererItemClockworkCrossbow();
         MinecraftForgeClient.registerItemRenderer(ModItems.cwxbow, renderCrossbow);
+        MinecraftForgeClient.registerItemRenderer(ModItems.telescope, new com.darkona.adventurebackpack.client.render.RendererItemTelescope());
         RenderingRegistry.registerEntityRenderingHandler(EntityBolt.class, new RenderBolt());
         RenderingRegistry.registerEntityRenderingHandler(EntityGrapple.class, new RenderGrapple());
         CrossbowRenderHandler crossbowRenderHandler = new CrossbowRenderHandler();
@@ -125,5 +129,7 @@ public class ClientProxy implements IProxy
         ClientRegistry.registerKeyBinding(Keybindings.mode);
         ClientRegistry.registerKeyBinding(Keybindings.state);
         FMLCommonHandler.instance().bus().register(new KeybindHandler());
+        FMLCommonHandler.instance().bus().register(new ClientConnectionHandler());
+        ClassicSkins.install();
     }
 }

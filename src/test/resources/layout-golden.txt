@@ -1,0 +1,541 @@
+4x8 q0 s0 | slots=76 be45a4fb | storage=23 inv=46 quiver=- rope=45 | win=248,171,85,36,176 tanks=2,207,64 btn=5,55 tog=43,27 | bg=156 c4ae68e8
+4x8 q1 s0 | slots=75 f24331f0 | storage=23 inv=47 quiver=45+1 rope=46 | win=248,171,85,36,176 tanks=1,207,64 btn=5,55 tog=43,27 | bg=148 3e824706
+4x8 q2 s0 | slots=76 d3f8fad6 | storage=23 inv=48 quiver=45+2 rope=47 | win=248,171,85,36,176 tanks=1,207,64 btn=5,55 tog=43,27 | bg=149 b639d824
+4x8 q3 s0 | slots=77 a91ae636 | storage=23 inv=49 quiver=45+3 rope=48 | win=248,171,85,36,176 tanks=1,207,64 btn=5,55 tog=43,27 | bg=150 d254eb38
+4x8 q4 s0 | slots=78 f66d94fe | storage=23 inv=50 quiver=45+4 rope=49 | win=248,171,85,36,176 tanks=1,207,64 btn=5,55 tog=43,27 | bg=151 43a297d0
+4x8 q5 s0 | slots=79 1ba3d61b | storage=23 inv=51 quiver=45+5 rope=50 | win=248,171,85,36,176 tanks=1,207,64 btn=5,55 tog=43,27 | bg=152 4cc5b46a
+4x8 q6 s0 | slots=80 6d09766a | storage=23 inv=52 quiver=45+6 rope=51 | win=248,171,85,36,176 tanks=1,207,64 btn=5,55 tog=43,27 | bg=153 5273ed2c
+4x9 q0 s0 | slots=80 d8860390 | storage=27 inv=46 quiver=- rope=45 | win=266,171,85,54,176 tanks=2,225,64 btn=5,55 tog=43,27 | bg=164 a9f6471e
+4x9 q1 s0 | slots=79 55767627 | storage=27 inv=47 quiver=45+1 rope=46 | win=266,171,85,54,176 tanks=1,225,64 btn=5,55 tog=43,27 | bg=156 35f19c4e
+4x9 q2 s0 | slots=80 fbf1b0dd | storage=27 inv=48 quiver=45+2 rope=47 | win=266,171,85,54,176 tanks=1,225,64 btn=5,55 tog=43,27 | bg=157 b9e9af92
+4x9 q3 s0 | slots=81 de019257 | storage=27 inv=49 quiver=45+3 rope=48 | win=266,171,85,54,176 tanks=1,225,64 btn=5,55 tog=43,27 | bg=158 b00bda42
+4x9 q4 s0 | slots=82 c4f1b085 | storage=27 inv=50 quiver=45+4 rope=49 | win=266,171,85,54,176 tanks=1,225,64 btn=5,55 tog=43,27 | bg=159 c3ab5e03
+4x9 q5 s0 | slots=83 1e1b2859 | storage=27 inv=51 quiver=45+5 rope=50 | win=266,171,85,54,176 tanks=1,225,64 btn=5,55 tog=43,27 | bg=160 85ed0a63
+4x9 q6 s0 | slots=84 b1efc3b6 | storage=27 inv=52 quiver=45+6 rope=51 | win=266,171,85,54,176 tanks=1,225,64 btn=5,55 tog=43,27 | bg=161 25f9e926
+4x10 q0 s0 | slots=84 a2aa0f6e | storage=31 inv=46 quiver=- rope=45 | win=284,171,85,72,176 tanks=2,243,64 btn=5,55 tog=43,27 | bg=171 6231f846
+4x10 q1 s0 | slots=83 5ff61b16 | storage=31 inv=47 quiver=45+1 rope=46 | win=284,171,85,72,176 tanks=1,243,64 btn=5,55 tog=43,27 | bg=163 eb667e99
+4x10 q2 s0 | slots=84 74c55954 | storage=31 inv=48 quiver=45+2 rope=47 | win=284,171,85,72,176 tanks=1,243,64 btn=5,55 tog=43,27 | bg=164 91eab7a1
+4x10 q3 s0 | slots=85 7ee98bb1 | storage=31 inv=49 quiver=45+3 rope=48 | win=284,171,85,72,176 tanks=1,243,64 btn=5,55 tog=43,27 | bg=165 d2a3e6ee
+4x10 q4 s0 | slots=86 ba243c31 | storage=31 inv=50 quiver=45+4 rope=49 | win=284,171,85,72,176 tanks=1,243,64 btn=5,55 tog=43,27 | bg=166 6e74ba70
+4x10 q5 s0 | slots=87 89aead72 | storage=31 inv=51 quiver=45+5 rope=50 | win=284,171,85,72,176 tanks=1,243,64 btn=5,55 tog=43,27 | bg=167 d404e178
+4x10 q6 s0 | slots=88 60d3a0ba | storage=31 inv=52 quiver=45+6 rope=51 | win=284,171,85,72,176 tanks=1,243,64 btn=5,55 tog=43,27 | bg=168 76fb896d
+4x11 q0 s0 | slots=88 f4e83e4f | storage=35 inv=46 quiver=- rope=45 | win=302,171,85,90,176 tanks=2,261,64 btn=5,55 tog=43,27 | bg=177 ce97d3bb
+4x11 q1 s0 | slots=87 f5299e3c | storage=35 inv=47 quiver=45+1 rope=46 | win=302,171,85,90,176 tanks=1,261,64 btn=5,55 tog=43,27 | bg=169 bb3d937
+4x11 q2 s0 | slots=88 55c89527 | storage=35 inv=48 quiver=45+2 rope=47 | win=302,171,85,90,176 tanks=1,261,64 btn=5,55 tog=43,27 | bg=170 13e036cb
+4x11 q3 s0 | slots=89 85ed0939 | storage=35 inv=49 quiver=45+3 rope=48 | win=302,171,85,90,176 tanks=1,261,64 btn=5,55 tog=43,27 | bg=171 cac6d1bb
+4x11 q4 s0 | slots=90 7dfdbac7 | storage=35 inv=50 quiver=45+4 rope=49 | win=302,171,85,90,176 tanks=1,261,64 btn=5,55 tog=43,27 | bg=172 b9cd0a99
+4x11 q5 s0 | slots=91 fcb1e4af | storage=35 inv=51 quiver=45+5 rope=50 | win=302,171,85,90,176 tanks=1,261,64 btn=5,55 tog=43,27 | bg=173 4a6eefa6
+4x11 q6 s0 | slots=92 d72b92b | storage=35 inv=52 quiver=45+6 rope=51 | win=302,171,85,90,176 tanks=1,261,64 btn=5,55 tog=43,27 | bg=174 e6a1fa7b
+4x12 q0 s0 | slots=92 6da611e2 | storage=39 inv=46 quiver=- rope=45 | win=320,171,85,108,176 tanks=2,279,64 btn=5,55 tog=43,27 | bg=184 dd924024
+4x12 q1 s0 | slots=91 e5f80724 | storage=39 inv=47 quiver=45+1 rope=46 | win=320,171,85,108,176 tanks=1,279,64 btn=5,55 tog=43,27 | bg=176 c92723c3
+4x12 q2 s0 | slots=92 724ccb53 | storage=39 inv=48 quiver=45+2 rope=47 | win=320,171,85,108,176 tanks=1,279,64 btn=5,55 tog=43,27 | bg=177 ed07bb31
+4x12 q3 s0 | slots=93 1ecbf4d4 | storage=39 inv=49 quiver=45+3 rope=48 | win=320,171,85,108,176 tanks=1,279,64 btn=5,55 tog=43,27 | bg=178 1f8c5519
+4x12 q4 s0 | slots=94 8432071b | storage=39 inv=50 quiver=45+4 rope=49 | win=320,171,85,108,176 tanks=1,279,64 btn=5,55 tog=43,27 | bg=179 d3828289
+4x12 q5 s0 | slots=95 123a9c20 | storage=39 inv=51 quiver=45+5 rope=50 | win=320,171,85,108,176 tanks=1,279,64 btn=5,55 tog=43,27 | bg=180 dcf8ef58
+4x12 q6 s0 | slots=96 9709412 | storage=39 inv=52 quiver=45+6 rope=51 | win=320,171,85,108,176 tanks=1,279,64 btn=5,55 tog=43,27 | bg=181 23d394aa
+5x8 q0 s0 | slots=84 b22e3d9a | storage=31 inv=46 quiver=- rope=45 | win=248,189,103,36,176 tanks=2,207,82 btn=5,73 tog=43,45 | bg=166 d552007f
+5x8 q1 s0 | slots=83 2e17edef | storage=31 inv=47 quiver=45+1 rope=46 | win=248,189,103,36,176 tanks=1,207,82 btn=5,73 tog=43,45 | bg=157 eb7e2de1
+5x8 q2 s0 | slots=84 158fc14d | storage=31 inv=48 quiver=45+2 rope=47 | win=248,189,103,36,176 tanks=1,207,82 btn=5,73 tog=43,45 | bg=158 295a39a7
+5x8 q3 s0 | slots=85 30366b20 | storage=31 inv=49 quiver=45+3 rope=48 | win=248,189,103,36,176 tanks=1,207,82 btn=5,73 tog=43,45 | bg=159 ab691a00
+5x8 q4 s0 | slots=86 66902237 | storage=31 inv=50 quiver=45+4 rope=49 | win=248,189,103,36,176 tanks=1,207,82 btn=5,73 tog=43,45 | bg=160 b23ea622
+5x8 q5 s0 | slots=87 8a43b596 | storage=31 inv=51 quiver=45+5 rope=50 | win=248,189,103,36,176 tanks=1,207,82 btn=5,73 tog=43,45 | bg=161 fa307613
+5x8 q6 s0 | slots=88 865441e3 | storage=31 inv=52 quiver=45+6 rope=51 | win=248,189,103,36,176 tanks=1,207,82 btn=5,73 tog=43,45 | bg=162 4effc2e1
+5x8 q7 s0 | slots=89 92581d2d | storage=31 inv=53 quiver=45+7 rope=52 | win=248,189,103,36,176 tanks=1,207,82 btn=5,73 tog=43,45 | bg=163 33483144
+5x8 q8 s0 | slots=90 900030bf | storage=31 inv=54 quiver=45+8 rope=53 | win=248,189,103,36,176 tanks=1,207,82 btn=5,73 tog=43,45 | bg=164 b92f56f2
+5x9 q0 s0 | slots=89 197f032b | storage=36 inv=46 quiver=- rope=45 | win=266,189,103,54,176 tanks=2,225,82 btn=5,73 tog=43,45 | bg=175 8373c8ca
+5x9 q1 s0 | slots=88 29683057 | storage=36 inv=47 quiver=45+1 rope=46 | win=266,189,103,54,176 tanks=1,225,82 btn=5,73 tog=43,45 | bg=166 2220cec0
+5x9 q2 s0 | slots=89 5b12c8eb | storage=36 inv=48 quiver=45+2 rope=47 | win=266,189,103,54,176 tanks=1,225,82 btn=5,73 tog=43,45 | bg=167 ff4be84d
+5x9 q3 s0 | slots=90 da145201 | storage=36 inv=49 quiver=45+3 rope=48 | win=266,189,103,54,176 tanks=1,225,82 btn=5,73 tog=43,45 | bg=168 632aaedb
+5x9 q4 s0 | slots=91 f92321e1 | storage=36 inv=50 quiver=45+4 rope=49 | win=266,189,103,54,176 tanks=1,225,82 btn=5,73 tog=43,45 | bg=169 3327162c
+5x9 q5 s0 | slots=92 8ed378f | storage=36 inv=51 quiver=45+5 rope=50 | win=266,189,103,54,176 tanks=1,225,82 btn=5,73 tog=43,45 | bg=170 5c2c8ca8
+5x9 q6 s0 | slots=93 fd812024 | storage=36 inv=52 quiver=45+6 rope=51 | win=266,189,103,54,176 tanks=1,225,82 btn=5,73 tog=43,45 | bg=171 91876ab0
+5x9 q7 s0 | slots=94 2fbd8d3e | storage=36 inv=53 quiver=45+7 rope=52 | win=266,189,103,54,176 tanks=1,225,82 btn=5,73 tog=43,45 | bg=172 170e06bd
+5x9 q8 s0 | slots=95 b7195bb8 | storage=36 inv=54 quiver=45+8 rope=53 | win=266,189,103,54,176 tanks=1,225,82 btn=5,73 tog=43,45 | bg=173 2ea5f1f0
+5x10 q0 s0 | slots=94 2d84b56c | storage=41 inv=48 quiver=- rope=47 | win=284,189,103,72,176 tanks=2,243,82 btn=5,73 tog=43,45 | bg=183 cfc1ad92
+5x10 q1 s0 | slots=93 24e613d8 | storage=41 inv=49 quiver=47+1 rope=48 | win=284,189,103,72,176 tanks=1,243,82 btn=5,73 tog=43,45 | bg=174 86795645
+5x10 q2 s0 | slots=94 8f6aa561 | storage=41 inv=50 quiver=47+2 rope=49 | win=284,189,103,72,176 tanks=1,243,82 btn=5,73 tog=43,45 | bg=175 a887cc1a
+5x10 q3 s0 | slots=95 8aa47f99 | storage=41 inv=51 quiver=47+3 rope=50 | win=284,189,103,72,176 tanks=1,243,82 btn=5,73 tog=43,45 | bg=176 3dc6f5ab
+5x10 q4 s0 | slots=96 e3718478 | storage=41 inv=52 quiver=47+4 rope=51 | win=284,189,103,72,176 tanks=1,243,82 btn=5,73 tog=43,45 | bg=177 e0efd416
+5x10 q5 s0 | slots=97 af6785b3 | storage=41 inv=53 quiver=47+5 rope=52 | win=284,189,103,72,176 tanks=1,243,82 btn=5,73 tog=43,45 | bg=178 88f9b86f
+5x10 q6 s0 | slots=98 5630ea1d | storage=41 inv=54 quiver=47+6 rope=53 | win=284,189,103,72,176 tanks=1,243,82 btn=5,73 tog=43,45 | bg=179 477dd90e
+5x10 q7 s0 | slots=99 3c0e61c8 | storage=41 inv=55 quiver=47+7 rope=54 | win=284,189,103,72,176 tanks=1,243,82 btn=5,73 tog=43,45 | bg=180 f851b658
+5x10 q8 s0 | slots=100 f34a8e0a | storage=41 inv=56 quiver=47+8 rope=55 | win=284,189,103,72,176 tanks=1,243,82 btn=5,73 tog=43,45 | bg=181 8e44f126
+5x11 q0 s0 | slots=99 e34d095a | storage=46 inv=53 quiver=- rope=52 | win=302,189,103,90,176 tanks=2,261,82 btn=5,73 tog=43,45 | bg=190 61ca25e5
+5x11 q1 s0 | slots=98 a06beee7 | storage=46 inv=54 quiver=52+1 rope=53 | win=302,189,103,90,176 tanks=1,261,82 btn=5,73 tog=43,45 | bg=181 e6e30f8e
+5x11 q2 s0 | slots=99 3b9703c1 | storage=46 inv=55 quiver=52+2 rope=54 | win=302,189,103,90,176 tanks=1,261,82 btn=5,73 tog=43,45 | bg=182 58406b4c
+5x11 q3 s0 | slots=100 c18407a5 | storage=46 inv=56 quiver=52+3 rope=55 | win=302,189,103,90,176 tanks=1,261,82 btn=5,73 tog=43,45 | bg=183 cd63b8bd
+5x11 q4 s0 | slots=101 9e43ad52 | storage=46 inv=57 quiver=52+4 rope=56 | win=302,189,103,90,176 tanks=1,261,82 btn=5,73 tog=43,45 | bg=184 bb83ac36
+5x11 q5 s0 | slots=102 2bebadda | storage=46 inv=58 quiver=52+5 rope=57 | win=302,189,103,90,176 tanks=1,261,82 btn=5,73 tog=43,45 | bg=185 5f7532f9
+5x11 q6 s0 | slots=103 78dace78 | storage=46 inv=59 quiver=52+6 rope=58 | win=302,189,103,90,176 tanks=1,261,82 btn=5,73 tog=43,45 | bg=186 413672d
+5x11 q7 s0 | slots=104 95a645b1 | storage=46 inv=60 quiver=52+7 rope=59 | win=302,189,103,90,176 tanks=1,261,82 btn=5,73 tog=43,45 | bg=187 d4111ed6
+5x11 q8 s0 | slots=105 15936334 | storage=46 inv=61 quiver=52+8 rope=60 | win=302,189,103,90,176 tanks=1,261,82 btn=5,73 tog=43,45 | bg=188 abec680c
+5x12 q0 s0 | slots=104 6ac8b6da | storage=51 inv=58 quiver=- rope=57 | win=320,189,103,108,176 tanks=2,279,82 btn=5,73 tog=43,45 | bg=198 31236169
+5x12 q1 s0 | slots=103 cbd12c2f | storage=51 inv=59 quiver=57+1 rope=58 | win=320,189,103,108,176 tanks=1,279,82 btn=5,73 tog=43,45 | bg=189 323e6a69
+5x12 q2 s0 | slots=104 a152e58c | storage=51 inv=60 quiver=57+2 rope=59 | win=320,189,103,108,176 tanks=1,279,82 btn=5,73 tog=43,45 | bg=190 8768fe63
+5x12 q3 s0 | slots=105 9825774d | storage=51 inv=61 quiver=57+3 rope=60 | win=320,189,103,108,176 tanks=1,279,82 btn=5,73 tog=43,45 | bg=191 174479a8
+5x12 q4 s0 | slots=106 bf9b9216 | storage=51 inv=62 quiver=57+4 rope=61 | win=320,189,103,108,176 tanks=1,279,82 btn=5,73 tog=43,45 | bg=192 be72bd5f
+5x12 q5 s0 | slots=107 a49919f1 | storage=51 inv=63 quiver=57+5 rope=62 | win=320,189,103,108,176 tanks=1,279,82 btn=5,73 tog=43,45 | bg=193 624b0668
+5x12 q6 s0 | slots=108 3585d502 | storage=51 inv=64 quiver=57+6 rope=63 | win=320,189,103,108,176 tanks=1,279,82 btn=5,73 tog=43,45 | bg=194 38d5e24f
+5x12 q7 s0 | slots=109 8646c070 | storage=51 inv=65 quiver=57+7 rope=64 | win=320,189,103,108,176 tanks=1,279,82 btn=5,73 tog=43,45 | bg=195 4b33f170
+5x12 q8 s0 | slots=110 9d082871 | storage=51 inv=66 quiver=57+8 rope=65 | win=320,189,103,108,176 tanks=1,279,82 btn=5,73 tog=43,45 | bg=196 5355ca1e
+6x8 q0 s0 | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+6x8 q1 s0 | slots=91 eea9e60a | storage=39 inv=47 quiver=45+1 rope=46 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=167 a1d40ab2
+6x8 q2 s0 | slots=92 cf759af7 | storage=39 inv=48 quiver=45+2 rope=47 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=168 9c74f66b
+6x8 q3 s0 | slots=93 e766e7ca | storage=39 inv=49 quiver=45+3 rope=48 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=169 86a58a3b
+6x8 q4 s0 | slots=94 77f0af01 | storage=39 inv=50 quiver=45+4 rope=49 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=170 49437470
+6x8 q5 s0 | slots=95 a8589be8 | storage=39 inv=51 quiver=45+5 rope=50 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=171 cc22dce3
+6x8 q6 s0 | slots=96 701939ec | storage=39 inv=52 quiver=45+6 rope=51 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=172 e97898d8
+6x8 q7 s0 | slots=97 438f3ae2 | storage=39 inv=53 quiver=45+7 rope=52 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=173 a8dbd5d8
+6x8 q8 s0 | slots=98 e683504 | storage=39 inv=54 quiver=45+8 rope=53 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=174 40e208db
+6x8 q9 s0 | slots=99 9f6a5ac1 | storage=39 inv=55 quiver=45+9 rope=54 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=175 566a3ecc
+6x8 q10 s0 | slots=100 9573379 | storage=39 inv=56 quiver=45+10 rope=55 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=176 81ad5c92
+6x9 q0 s0 | slots=98 101ab8e0 | storage=45 inv=52 quiver=- rope=51 | win=266,207,121,54,176 tanks=2,225,100 btn=5,91 tog=43,63 | bg=186 1b252995
+6x9 q1 s0 | slots=97 242bcd0c | storage=45 inv=53 quiver=51+1 rope=52 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=177 64c0b78b
+6x9 q2 s0 | slots=98 4e074654 | storage=45 inv=54 quiver=51+2 rope=53 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=178 649e0ba8
+6x9 q3 s0 | slots=99 6158797c | storage=45 inv=55 quiver=51+3 rope=54 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=179 81ef6f8c
+6x9 q4 s0 | slots=100 8b0c975 | storage=45 inv=56 quiver=51+4 rope=55 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=180 10bc0a44
+6x9 q5 s0 | slots=101 e29f4b90 | storage=45 inv=57 quiver=51+5 rope=56 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=181 b5060d82
+6x9 q6 s0 | slots=102 a568cee | storage=45 inv=58 quiver=51+6 rope=57 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=182 409754b
+6x9 q7 s0 | slots=103 3de9cd31 | storage=45 inv=59 quiver=51+7 rope=58 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=183 36a5070f
+6x9 q8 s0 | slots=104 34ad67f4 | storage=45 inv=60 quiver=51+8 rope=59 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=184 6b980fdc
+6x9 q9 s0 | slots=105 9b00964e | storage=45 inv=61 quiver=51+9 rope=60 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=185 c20011c0
+6x9 q10 s0 | slots=106 b6e5bd82 | storage=45 inv=62 quiver=51+10 rope=61 | win=266,207,121,54,176 tanks=1,225,100 btn=5,91 tog=43,63 | bg=186 96f5c64e
+6x10 q0 s0 | slots=104 6b3d5986 | storage=51 inv=58 quiver=- rope=57 | win=284,207,121,72,176 tanks=2,243,100 btn=5,91 tog=43,63 | bg=195 c0c7d8b0
+6x10 q1 s0 | slots=103 5f5c142a | storage=51 inv=59 quiver=57+1 rope=58 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=186 3f543682
+6x10 q2 s0 | slots=104 3c5f1afc | storage=51 inv=60 quiver=57+2 rope=59 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=187 7e5a8c4a
+6x10 q3 s0 | slots=105 bc5e45a6 | storage=51 inv=61 quiver=57+3 rope=60 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=188 61c359ce
+6x10 q4 s0 | slots=106 b68065ad | storage=51 inv=62 quiver=57+4 rope=61 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=189 bfb85cd0
+6x10 q5 s0 | slots=107 894c017d | storage=51 inv=63 quiver=57+5 rope=62 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=190 30361a10
+6x10 q6 s0 | slots=108 20c8f577 | storage=51 inv=64 quiver=57+6 rope=63 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=191 710d5628
+6x10 q7 s0 | slots=109 d33ca1d1 | storage=51 inv=65 quiver=57+7 rope=64 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=192 4c204870
+6x10 q8 s0 | slots=110 20db2321 | storage=51 inv=66 quiver=57+8 rope=65 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=193 c667c043
+6x10 q9 s0 | slots=111 b23d5555 | storage=51 inv=67 quiver=57+9 rope=66 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=194 69bc4db9
+6x10 q10 s0 | slots=112 bf1295e2 | storage=51 inv=68 quiver=57+10 rope=67 | win=284,207,121,72,176 tanks=1,243,100 btn=5,91 tog=43,63 | bg=195 61cf3f92
+6x11 q0 s0 | slots=110 502df58e | storage=57 inv=64 quiver=- rope=63 | win=302,207,121,90,176 tanks=2,261,100 btn=5,91 tog=43,63 | bg=203 4fe86d72
+6x11 q1 s0 | slots=109 1fa11e41 | storage=57 inv=65 quiver=63+1 rope=64 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=194 c89f6188
+6x11 q2 s0 | slots=110 4be9179b | storage=57 inv=66 quiver=63+2 rope=65 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=195 ed8f74e9
+6x11 q3 s0 | slots=111 7090589f | storage=57 inv=67 quiver=63+3 rope=66 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=196 7eb54cc7
+6x11 q4 s0 | slots=112 2a28807c | storage=57 inv=68 quiver=63+4 rope=67 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=197 740873f3
+6x11 q5 s0 | slots=113 1a175663 | storage=57 inv=69 quiver=63+5 rope=68 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=198 88c3df6e
+6x11 q6 s0 | slots=114 e1b80af8 | storage=57 inv=70 quiver=63+6 rope=69 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=199 6c66b92a
+6x11 q7 s0 | slots=115 a9994698 | storage=57 inv=71 quiver=63+7 rope=70 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=200 a71baa66
+6x11 q8 s0 | slots=116 dc9d7506 | storage=57 inv=72 quiver=63+8 rope=71 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=201 2f5d4070
+6x11 q9 s0 | slots=117 dfda0f50 | storage=57 inv=73 quiver=63+9 rope=72 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=202 8f266b74
+6x11 q10 s0 | slots=118 da02e18c | storage=57 inv=74 quiver=63+10 rope=73 | win=302,207,121,90,176 tanks=1,261,100 btn=5,91 tog=43,63 | bg=203 6061e989
+6x12 q0 s0 | slots=116 61e6f0fc | storage=63 inv=70 quiver=- rope=69 | win=320,207,121,108,176 tanks=2,279,100 btn=5,91 tog=43,63 | bg=212 d64d85a8
+6x12 q1 s0 | slots=115 2e9d0d59 | storage=63 inv=71 quiver=69+1 rope=70 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=203 ea5383d5
+6x12 q2 s0 | slots=116 f3b51f37 | storage=63 inv=72 quiver=69+2 rope=71 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=204 da2403b5
+6x12 q3 s0 | slots=117 28c3c36 | storage=63 inv=73 quiver=69+3 rope=72 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=205 b83dbb5a
+6x12 q4 s0 | slots=118 e9c98d13 | storage=63 inv=74 quiver=69+4 rope=73 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=206 6717878d
+6x12 q5 s0 | slots=119 db09a8e | storage=63 inv=75 quiver=69+5 rope=74 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=207 a3c23af5
+6x12 q6 s0 | slots=120 c5e95bc7 | storage=63 inv=76 quiver=69+6 rope=75 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=208 8fe25cd9
+6x12 q7 s0 | slots=121 21acce7f | storage=63 inv=77 quiver=69+7 rope=76 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=209 a95c18cf
+6x12 q8 s0 | slots=122 3f641adc | storage=63 inv=78 quiver=69+8 rope=77 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=210 440a34a3
+6x12 q9 s0 | slots=123 b4c6d2e3 | storage=63 inv=79 quiver=69+9 rope=78 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=211 ec4f6883
+6x12 q10 s0 | slots=124 8a673557 | storage=63 inv=80 quiver=69+10 rope=79 | win=320,207,121,108,176 tanks=1,279,100 btn=5,91 tog=43,63 | bg=212 2b142c65
+7x8 q0 s0 | slots=100 f72a1b5a | storage=47 inv=54 quiver=- rope=53 | win=248,225,139,36,176 tanks=2,207,118 btn=5,109 tog=43,81 | bg=186 ecb4f213
+7x8 q1 s0 | slots=99 59fd4311 | storage=47 inv=55 quiver=53+1 rope=54 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=176 b035fe3
+7x8 q2 s0 | slots=100 2bd027b9 | storage=47 inv=56 quiver=53+2 rope=55 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=177 aa1146d7
+7x8 q3 s0 | slots=101 d7f87f99 | storage=47 inv=57 quiver=53+3 rope=56 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=178 50742c3e
+7x8 q4 s0 | slots=102 6323d322 | storage=47 inv=58 quiver=53+4 rope=57 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=179 5cf442bd
+7x8 q5 s0 | slots=103 2abfffc3 | storage=47 inv=59 quiver=53+5 rope=58 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=180 432358ae
+7x8 q6 s0 | slots=104 a7d0e1bc | storage=47 inv=60 quiver=53+6 rope=59 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=181 b1cef66e
+7x8 q7 s0 | slots=105 e7966248 | storage=47 inv=61 quiver=53+7 rope=60 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=182 cc9d2deb
+7x8 q8 s0 | slots=106 6a8d999a | storage=47 inv=62 quiver=53+8 rope=61 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=183 c0acf466
+7x8 q9 s0 | slots=107 16253a1e | storage=47 inv=63 quiver=53+9 rope=62 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=184 17f691c0
+7x8 q10 s0 | slots=108 e2a5924d | storage=47 inv=64 quiver=53+10 rope=63 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=185 6a54befe
+7x8 q11 s0 | slots=109 91e7385e | storage=47 inv=65 quiver=53+11 rope=64 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=186 cc846fa
+7x8 q12 s0 | slots=110 e689715c | storage=47 inv=66 quiver=53+12 rope=65 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=187 89eb0cfb
+7x9 q0 s0 | slots=107 3e07fc20 | storage=54 inv=61 quiver=- rope=60 | win=266,225,139,54,176 tanks=2,225,118 btn=5,109 tog=43,81 | bg=197 422f115f
+7x9 q1 s0 | slots=106 48820ce8 | storage=54 inv=62 quiver=60+1 rope=61 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=187 ad1481dc
+7x9 q2 s0 | slots=107 f7e1b061 | storage=54 inv=63 quiver=60+2 rope=62 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=188 b7a0a476
+7x9 q3 s0 | slots=108 d710d1e8 | storage=54 inv=64 quiver=60+3 rope=63 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=189 1ba5eac9
+7x9 q4 s0 | slots=109 d961cb64 | storage=54 inv=65 quiver=60+4 rope=64 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=190 f7ff1546
+7x9 q5 s0 | slots=110 5fd42d7d | storage=54 inv=66 quiver=60+5 rope=65 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=191 286bc10f
+7x9 q6 s0 | slots=111 88510b1b | storage=54 inv=67 quiver=60+6 rope=66 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=192 5e4e5e2f
+7x9 q7 s0 | slots=112 9efd971c | storage=54 inv=68 quiver=60+7 rope=67 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=193 70da12dd
+7x9 q8 s0 | slots=113 7e0e503b | storage=54 inv=69 quiver=60+8 rope=68 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=194 b2ac2ae1
+7x9 q9 s0 | slots=114 cb53b65e | storage=54 inv=70 quiver=60+9 rope=69 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=195 5155234
+7x9 q10 s0 | slots=115 887d525 | storage=54 inv=71 quiver=60+10 rope=70 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=196 4a41145f
+7x9 q11 s0 | slots=116 ed43525c | storage=54 inv=72 quiver=60+11 rope=71 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=197 ef7ef8b2
+7x9 q12 s0 | slots=117 954b53ff | storage=54 inv=73 quiver=60+12 rope=72 | win=266,225,139,54,176 tanks=1,225,118 btn=5,109 tog=43,81 | bg=198 eeae11ad
+7x10 q0 s0 | slots=114 5130d822 | storage=61 inv=68 quiver=- rope=67 | win=284,225,139,72,176 tanks=2,243,118 btn=5,109 tog=43,81 | bg=207 4a709a70
+7x10 q1 s0 | slots=113 b0b9abcd | storage=61 inv=69 quiver=67+1 rope=68 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=197 f3a3f310
+7x10 q2 s0 | slots=114 5bd6453a | storage=61 inv=70 quiver=67+2 rope=69 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=198 93f0f156
+7x10 q3 s0 | slots=115 30ca122c | storage=61 inv=71 quiver=67+3 rope=70 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=199 e40fc4de
+7x10 q4 s0 | slots=116 a233cbf | storage=61 inv=72 quiver=67+4 rope=71 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=200 287378bf
+7x10 q5 s0 | slots=117 6e079e7f | storage=61 inv=73 quiver=67+5 rope=72 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=201 1eedfe2b
+7x10 q6 s0 | slots=118 376d85ae | storage=61 inv=74 quiver=67+6 rope=73 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=202 d3670a58
+7x10 q7 s0 | slots=119 666bd084 | storage=61 inv=75 quiver=67+7 rope=74 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=203 f69a89e0
+7x10 q8 s0 | slots=120 b4248837 | storage=61 inv=76 quiver=67+8 rope=75 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=204 d30e3351
+7x10 q9 s0 | slots=121 c50f0fd | storage=61 inv=77 quiver=67+9 rope=76 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=205 ee33d238
+7x10 q10 s0 | slots=122 25d22091 | storage=61 inv=78 quiver=67+10 rope=77 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=206 a78d1826
+7x10 q11 s0 | slots=123 cf0c1557 | storage=61 inv=79 quiver=67+11 rope=78 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=207 2a93be19
+7x10 q12 s0 | slots=124 313e2d68 | storage=61 inv=80 quiver=67+12 rope=79 | win=284,225,139,72,176 tanks=1,243,118 btn=5,109 tog=43,81 | bg=208 231eb8b9
+7x11 q0 s0 | slots=121 52ce0b8b | storage=68 inv=75 quiver=- rope=74 | win=302,225,139,90,176 tanks=2,261,118 btn=5,109 tog=43,81 | bg=216 d477cecf
+7x11 q1 s0 | slots=120 e54a8ab2 | storage=68 inv=76 quiver=74+1 rope=75 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=206 3d6c83a3
+7x11 q2 s0 | slots=121 27de9deb | storage=68 inv=77 quiver=74+2 rope=76 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=207 76bf2c49
+7x11 q3 s0 | slots=122 fce6a89f | storage=68 inv=78 quiver=74+3 rope=77 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=208 1d0a692b
+7x11 q4 s0 | slots=123 a846b023 | storage=68 inv=79 quiver=74+4 rope=78 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=209 681c94dc
+7x11 q5 s0 | slots=124 8dbbdd4f | storage=68 inv=80 quiver=74+5 rope=79 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=210 c3a14750
+7x11 q6 s0 | slots=125 528441ec | storage=68 inv=81 quiver=74+6 rope=80 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=211 5cbb1a04
+7x11 q7 s0 | slots=126 dbd85ed4 | storage=68 inv=82 quiver=74+7 rope=81 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=212 49c0f442
+7x11 q8 s0 | slots=127 561a40d7 | storage=68 inv=83 quiver=74+8 rope=82 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=213 99359f37
+7x11 q9 s0 | slots=128 98f02e2d | storage=68 inv=84 quiver=74+9 rope=83 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=214 f0901d91
+7x11 q10 s0 | slots=129 5b6f873d | storage=68 inv=85 quiver=74+10 rope=84 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=215 b2318924
+7x11 q11 s0 | slots=130 ac9363c2 | storage=68 inv=86 quiver=74+11 rope=85 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=216 c419c629
+7x11 q12 s0 | slots=131 4067fbcb | storage=68 inv=87 quiver=74+12 rope=86 | win=302,225,139,90,176 tanks=1,261,118 btn=5,109 tog=43,81 | bg=217 1568ed0a
+7x12 q0 s0 | slots=128 ef6f7de9 | storage=75 inv=82 quiver=- rope=81 | win=320,225,139,108,176 tanks=2,279,118 btn=5,109 tog=43,81 | bg=226 240be83b
+7x12 q1 s0 | slots=127 d2dc711 | storage=75 inv=83 quiver=81+1 rope=82 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=216 40a8c077
+7x12 q2 s0 | slots=128 a6d21d2 | storage=75 inv=84 quiver=81+2 rope=83 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=217 92a2aaf3
+7x12 q3 s0 | slots=129 3fe7de99 | storage=75 inv=85 quiver=81+3 rope=84 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=218 971c8a89
+7x12 q4 s0 | slots=130 e8f270c4 | storage=75 inv=86 quiver=81+4 rope=85 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=219 e3b185cb
+7x12 q5 s0 | slots=131 9d654c95 | storage=75 inv=87 quiver=81+5 rope=86 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=220 fd103aec
+7x12 q6 s0 | slots=132 dfa78833 | storage=75 inv=88 quiver=81+6 rope=87 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=221 7315dcd0
+7x12 q7 s0 | slots=133 7014c3b3 | storage=75 inv=89 quiver=81+7 rope=88 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=222 e777bd92
+7x12 q8 s0 | slots=134 b48ca44c | storage=75 inv=90 quiver=81+8 rope=89 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=223 89e5b7ec
+7x12 q9 s0 | slots=135 faf897 | storage=75 inv=91 quiver=81+9 rope=90 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=224 ec5776c3
+7x12 q10 s0 | slots=136 e763c8e9 | storage=75 inv=92 quiver=81+10 rope=91 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=225 386d1744
+7x12 q11 s0 | slots=137 d1191685 | storage=75 inv=93 quiver=81+11 rope=92 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=226 696ef585
+7x12 q12 s0 | slots=138 bfba62b5 | storage=75 inv=94 quiver=81+12 rope=93 | win=320,225,139,108,176 tanks=1,279,118 btn=5,109 tog=43,81 | bg=227 c1dff02
+8x8 q0 s0 | slots=108 40273571 | storage=55 inv=62 quiver=- rope=61 | win=248,243,157,36,176 tanks=2,207,136 btn=5,127 tog=43,99 | bg=210 5cfcf04c
+8x8 q1 s0 | slots=107 da257c06 | storage=55 inv=63 quiver=61+1 rope=62 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=199 b0f21036
+8x8 q2 s0 | slots=108 d4b0c83c | storage=55 inv=64 quiver=61+2 rope=63 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=200 24f36b20
+8x8 q3 s0 | slots=109 a65e6bce | storage=55 inv=65 quiver=61+3 rope=64 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=201 47c824eb
+8x8 q4 s0 | slots=110 7fdfee94 | storage=55 inv=66 quiver=61+4 rope=65 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=202 d541019b
+8x8 q5 s0 | slots=111 78c3fdf3 | storage=55 inv=67 quiver=61+5 rope=66 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=203 b40bba99
+8x8 q6 s0 | slots=112 81a04c3f | storage=55 inv=68 quiver=61+6 rope=67 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=204 ac6d95c7
+8x8 q7 s0 | slots=113 2343f4a | storage=55 inv=69 quiver=61+7 rope=68 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=205 b1e489dd
+8x8 q8 s0 | slots=114 6faf96bc | storage=55 inv=70 quiver=61+8 rope=69 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=206 f516e18
+8x8 q9 s0 | slots=115 7cb32e35 | storage=55 inv=71 quiver=61+9 rope=70 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=207 e771064d
+8x8 q10 s0 | slots=116 cea67a98 | storage=55 inv=72 quiver=61+10 rope=71 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=208 d6e2461
+8x8 q11 s0 | slots=117 abb79a7b | storage=55 inv=73 quiver=61+11 rope=72 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=209 fb50cc82
+8x8 q12 s0 | slots=118 c6675f9d | storage=55 inv=74 quiver=61+12 rope=73 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=210 1f92bc51
+8x8 q13 s0 | slots=119 6aa4a7c4 | storage=55 inv=75 quiver=61+13 rope=74 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=211 a3e3aac8
+8x8 q14 s0 | slots=120 d36ccea0 | storage=55 inv=76 quiver=61+14 rope=75 | win=248,243,157,36,176 tanks=1,207,136 btn=5,127 tog=43,99 | bg=212 7e6659d
+8x9 q0 s0 | slots=116 e4b25c48 | storage=63 inv=70 quiver=- rope=69 | win=266,243,157,54,176 tanks=2,225,136 btn=5,127 tog=43,99 | bg=223 732ed2a3
+8x9 q1 s0 | slots=115 b810e2ab | storage=63 inv=71 quiver=69+1 rope=70 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=212 d0845f8c
+8x9 q2 s0 | slots=116 e84a0d1b | storage=63 inv=72 quiver=69+2 rope=71 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=213 fa6b44cb
+8x9 q3 s0 | slots=117 831462fc | storage=63 inv=73 quiver=69+3 rope=72 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=214 bd33d46b
+8x9 q4 s0 | slots=118 f1287c92 | storage=63 inv=74 quiver=69+4 rope=73 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=215 fa172bf1
+8x9 q5 s0 | slots=119 6ce35c88 | storage=63 inv=75 quiver=69+5 rope=74 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=216 d2f6eb63
+8x9 q6 s0 | slots=120 4bb13f77 | storage=63 inv=76 quiver=69+6 rope=75 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=217 81c338c0
+8x9 q7 s0 | slots=121 d7d93ab8 | storage=63 inv=77 quiver=69+7 rope=76 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=218 b15c2c17
+8x9 q8 s0 | slots=122 78ffab33 | storage=63 inv=78 quiver=69+8 rope=77 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=219 d77494fe
+8x9 q9 s0 | slots=123 29e26ceb | storage=63 inv=79 quiver=69+9 rope=78 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=220 b4a5f542
+8x9 q10 s0 | slots=124 133bd394 | storage=63 inv=80 quiver=69+10 rope=79 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=221 dc571edc
+8x9 q11 s0 | slots=125 c8aa1864 | storage=63 inv=81 quiver=69+11 rope=80 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=222 8343716a
+8x9 q12 s0 | slots=126 279a0d32 | storage=63 inv=82 quiver=69+12 rope=81 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=223 abe79a57
+8x9 q13 s0 | slots=127 6c0d37f9 | storage=63 inv=83 quiver=69+13 rope=82 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=224 5dd6eba9
+8x9 q14 s0 | slots=128 c3d4032 | storage=63 inv=84 quiver=69+14 rope=83 | win=266,243,157,54,176 tanks=1,225,136 btn=5,127 tog=43,99 | bg=225 9ecefc7f
+8x10 q0 s0 | slots=124 43c2754a | storage=71 inv=78 quiver=- rope=77 | win=284,243,157,72,176 tanks=2,243,136 btn=5,127 tog=43,99 | bg=235 3abd36dd
+8x10 q1 s0 | slots=123 32a2e55 | storage=71 inv=79 quiver=77+1 rope=78 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=224 2508f01d
+8x10 q2 s0 | slots=124 b2f8ab90 | storage=71 inv=80 quiver=77+2 rope=79 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=225 5f72b7a2
+8x10 q3 s0 | slots=125 cfa998bb | storage=71 inv=81 quiver=77+3 rope=80 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=226 36344bbe
+8x10 q4 s0 | slots=126 26d9061c | storage=71 inv=82 quiver=77+4 rope=81 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=227 27978a5c
+8x10 q5 s0 | slots=127 d297edbe | storage=71 inv=83 quiver=77+5 rope=82 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=228 f7f2935e
+8x10 q6 s0 | slots=128 c6997369 | storage=71 inv=84 quiver=77+6 rope=83 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=229 2e33f29b
+8x10 q7 s0 | slots=129 c60ce41a | storage=71 inv=85 quiver=77+7 rope=84 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=230 98e167ac
+8x10 q8 s0 | slots=130 bb04b9d | storage=71 inv=86 quiver=77+8 rope=85 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=231 1f6bc5d3
+8x10 q9 s0 | slots=131 876b4367 | storage=71 inv=87 quiver=77+9 rope=86 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=232 356a0673
+8x10 q10 s0 | slots=132 c12729d9 | storage=71 inv=88 quiver=77+10 rope=87 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=233 1f823270
+8x10 q11 s0 | slots=133 4755b9a5 | storage=71 inv=89 quiver=77+11 rope=88 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=234 1f878f8e
+8x10 q12 s0 | slots=134 48870744 | storage=71 inv=90 quiver=77+12 rope=89 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=235 6c8722ff
+8x10 q13 s0 | slots=135 33433d63 | storage=71 inv=91 quiver=77+13 rope=90 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=236 955bf49b
+8x10 q14 s0 | slots=136 82e8dca1 | storage=71 inv=92 quiver=77+14 rope=91 | win=284,243,157,72,176 tanks=1,243,136 btn=5,127 tog=43,99 | bg=237 a38c91d8
+8x11 q0 s0 | slots=132 add4eb28 | storage=79 inv=86 quiver=- rope=85 | win=302,243,157,90,176 tanks=2,261,136 btn=5,127 tog=43,99 | bg=246 2c314853
+8x11 q1 s0 | slots=131 4f6e568c | storage=79 inv=87 quiver=85+1 rope=86 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=235 e8ed5628
+8x11 q2 s0 | slots=132 8815ab47 | storage=79 inv=88 quiver=85+2 rope=87 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=236 b298be12
+8x11 q3 s0 | slots=133 d92595ec | storage=79 inv=89 quiver=85+3 rope=88 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=237 4a6794f4
+8x11 q4 s0 | slots=134 dcd48864 | storage=79 inv=90 quiver=85+4 rope=89 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=238 7eaf2305
+8x11 q5 s0 | slots=135 b5b9cfc7 | storage=79 inv=91 quiver=85+5 rope=90 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=239 ba299535
+8x11 q6 s0 | slots=136 f38d3f24 | storage=79 inv=92 quiver=85+6 rope=91 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=240 29461714
+8x11 q7 s0 | slots=137 7bb2d9f5 | storage=79 inv=93 quiver=85+7 rope=92 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=241 2068195a
+8x11 q8 s0 | slots=138 17846658 | storage=79 inv=94 quiver=85+8 rope=93 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=242 d44e24af
+8x11 q9 s0 | slots=139 cb20dbb7 | storage=79 inv=95 quiver=85+9 rope=94 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=243 b565135a
+8x11 q10 s0 | slots=140 3ee82c04 | storage=79 inv=96 quiver=85+10 rope=95 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=244 960de299
+8x11 q11 s0 | slots=141 e714b8b3 | storage=79 inv=97 quiver=85+11 rope=96 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=245 9dd9fb88
+8x11 q12 s0 | slots=142 4a375896 | storage=79 inv=98 quiver=85+12 rope=97 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=246 f4c2f4e2
+8x11 q13 s0 | slots=143 76a76a73 | storage=79 inv=99 quiver=85+13 rope=98 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=247 bf9ffeda
+8x11 q14 s0 | slots=144 91f8ff97 | storage=79 inv=100 quiver=85+14 rope=99 | win=302,243,157,90,176 tanks=1,261,136 btn=5,127 tog=43,99 | bg=248 36a37dbc
+8x12 q0 s0 | slots=140 c211b8c8 | storage=87 inv=94 quiver=- rope=93 | win=320,243,157,108,176 tanks=2,279,136 btn=5,127 tog=43,99 | bg=258 a3b86d98
+8x12 q1 s0 | slots=139 dcd3bbfb | storage=87 inv=95 quiver=93+1 rope=94 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=247 3a2b7071
+8x12 q2 s0 | slots=140 ed10fa0a | storage=87 inv=96 quiver=93+2 rope=95 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=248 5e5726ef
+8x12 q3 s0 | slots=141 ba9d96e5 | storage=87 inv=97 quiver=93+3 rope=96 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=249 383969ea
+8x12 q4 s0 | slots=142 d8976934 | storage=87 inv=98 quiver=93+4 rope=97 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=250 6f634c8
+8x12 q5 s0 | slots=143 41bf79dd | storage=87 inv=99 quiver=93+5 rope=98 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=251 cb1bda7e
+8x12 q6 s0 | slots=144 e3ef0741 | storage=87 inv=100 quiver=93+6 rope=99 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=252 d9339393
+8x12 q7 s0 | slots=145 4ba9ebe0 | storage=87 inv=101 quiver=93+7 rope=100 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=253 7a8f6212
+8x12 q8 s0 | slots=146 b2a5009d | storage=87 inv=102 quiver=93+8 rope=101 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=254 fec213a3
+8x12 q9 s0 | slots=147 fa7bd318 | storage=87 inv=103 quiver=93+9 rope=102 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=255 3f3bfbb8
+8x12 q10 s0 | slots=148 c81ff2c | storage=87 inv=104 quiver=93+10 rope=103 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=256 3583ba16
+8x12 q11 s0 | slots=149 50525da9 | storage=87 inv=105 quiver=93+11 rope=104 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=257 d5c45fc3
+8x12 q12 s0 | slots=150 6c52b246 | storage=87 inv=106 quiver=93+12 rope=105 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=258 63845ac9
+8x12 q13 s0 | slots=151 462163ff | storage=87 inv=107 quiver=93+13 rope=106 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=259 3fdd6ba7
+8x12 q14 s0 | slots=152 6971e8b3 | storage=87 inv=108 quiver=93+14 rope=107 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=260 5402c862
+9x8 q0 s0 | slots=116 96c6bb37 | storage=63 inv=70 quiver=- rope=69 | win=248,261,175,36,176 tanks=2,207,154 btn=5,145 tog=43,117 | bg=220 3ca57c90
+9x8 q1 s0 | slots=115 cee65eb9 | storage=63 inv=71 quiver=69+1 rope=70 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=208 4e9567c3
+9x8 q2 s0 | slots=116 e5fca8f5 | storage=63 inv=72 quiver=69+2 rope=71 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=209 9ce7e796
+9x8 q3 s0 | slots=117 214495a6 | storage=63 inv=73 quiver=69+3 rope=72 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=210 50e08a02
+9x8 q4 s0 | slots=118 94d7bd09 | storage=63 inv=74 quiver=69+4 rope=73 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=211 33b86b15
+9x8 q5 s0 | slots=119 bfad2ae4 | storage=63 inv=75 quiver=69+5 rope=74 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=212 770de643
+9x8 q6 s0 | slots=120 30d60b7d | storage=63 inv=76 quiver=69+6 rope=75 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=213 f8d04899
+9x8 q7 s0 | slots=121 6a833e66 | storage=63 inv=77 quiver=69+7 rope=76 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=214 3b31c2cf
+9x8 q8 s0 | slots=122 26f096be | storage=63 inv=78 quiver=69+8 rope=77 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=215 b43cc53f
+9x8 q9 s0 | slots=123 21145b25 | storage=63 inv=79 quiver=69+9 rope=78 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=216 e36da4da
+9x8 q10 s0 | slots=124 d2f19ce | storage=63 inv=80 quiver=69+10 rope=79 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=217 1bbb4368
+9x8 q11 s0 | slots=125 bc88d683 | storage=63 inv=81 quiver=69+11 rope=80 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=218 cfac08f7
+9x8 q12 s0 | slots=126 5e60dbf2 | storage=63 inv=82 quiver=69+12 rope=81 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=219 e29534f
+9x8 q13 s0 | slots=127 89728126 | storage=63 inv=83 quiver=69+13 rope=82 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=220 60ebb634
+9x8 q14 s0 | slots=128 b1f4608b | storage=63 inv=84 quiver=69+14 rope=83 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=221 f4599f0a
+9x8 q15 s0 | slots=129 f6a29bb7 | storage=63 inv=85 quiver=69+15 rope=84 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=222 3d63e055
+9x8 q16 s0 | slots=130 a50ec624 | storage=63 inv=86 quiver=69+16 rope=85 | win=248,261,175,36,176 tanks=1,207,154 btn=5,145 tog=43,117 | bg=223 1af9fffd
+9x9 q0 s0 | slots=125 399e6f86 | storage=72 inv=79 quiver=- rope=78 | win=266,261,175,54,176 tanks=2,225,154 btn=5,145 tog=43,117 | bg=234 7638786d
+9x9 q1 s0 | slots=124 a8eb07d4 | storage=72 inv=80 quiver=78+1 rope=79 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=222 a95a5fe0
+9x9 q2 s0 | slots=125 50a0d3e | storage=72 inv=81 quiver=78+2 rope=80 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=223 4065f525
+9x9 q3 s0 | slots=126 83f8f40c | storage=72 inv=82 quiver=78+3 rope=81 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=224 eb3ec017
+9x9 q4 s0 | slots=127 970672fa | storage=72 inv=83 quiver=78+4 rope=82 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=225 3a096ed
+9x9 q5 s0 | slots=128 7e2ec9bf | storage=72 inv=84 quiver=78+5 rope=83 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=226 d3f237c
+9x9 q6 s0 | slots=129 352176e | storage=72 inv=85 quiver=78+6 rope=84 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=227 f1ea4445
+9x9 q7 s0 | slots=130 c7f0b0a | storage=72 inv=86 quiver=78+7 rope=85 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=228 80a2ca1a
+9x9 q8 s0 | slots=131 12d3a46c | storage=72 inv=87 quiver=78+8 rope=86 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=229 3f990fc6
+9x9 q9 s0 | slots=132 16baead9 | storage=72 inv=88 quiver=78+9 rope=87 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=230 1a067039
+9x9 q10 s0 | slots=133 c21842e | storage=72 inv=89 quiver=78+10 rope=88 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=231 f894ca27
+9x9 q11 s0 | slots=134 43c2beaf | storage=72 inv=90 quiver=78+11 rope=89 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=232 a7f41574
+9x9 q12 s0 | slots=135 37efc909 | storage=72 inv=91 quiver=78+12 rope=90 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=233 5e05257e
+9x9 q13 s0 | slots=136 109d4225 | storage=72 inv=92 quiver=78+13 rope=91 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=234 1ad24193
+9x9 q14 s0 | slots=137 393f8301 | storage=72 inv=93 quiver=78+14 rope=92 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=235 28e8f84c
+9x9 q15 s0 | slots=138 317b9d9f | storage=72 inv=94 quiver=78+15 rope=93 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=236 5a4a7dcf
+9x9 q16 s0 | slots=139 37753afe | storage=72 inv=95 quiver=78+16 rope=94 | win=266,261,175,54,176 tanks=1,225,154 btn=5,145 tog=43,117 | bg=237 dd198da3
+9x10 q0 s0 | slots=134 8bb6171c | storage=81 inv=88 quiver=- rope=87 | win=284,261,175,72,176 tanks=2,243,154 btn=5,145 tog=43,117 | bg=247 1821df96
+9x10 q1 s0 | slots=133 bced5ff1 | storage=81 inv=89 quiver=87+1 rope=88 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=235 808678db
+9x10 q2 s0 | slots=134 5909ff30 | storage=81 inv=90 quiver=87+2 rope=89 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=236 53139c53
+9x10 q3 s0 | slots=135 de5a682c | storage=81 inv=91 quiver=87+3 rope=90 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=237 4178bfcd
+9x10 q4 s0 | slots=136 1b88d1bd | storage=81 inv=92 quiver=87+4 rope=91 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=238 38e54c0d
+9x10 q5 s0 | slots=137 4cc2b60f | storage=81 inv=93 quiver=87+5 rope=92 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=239 f15a5c44
+9x10 q6 s0 | slots=138 7b2e72fb | storage=81 inv=94 quiver=87+6 rope=93 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=240 7ef8c657
+9x10 q7 s0 | slots=139 d0a1ef56 | storage=81 inv=95 quiver=87+7 rope=94 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=241 b123d205
+9x10 q8 s0 | slots=140 9d97b8f8 | storage=81 inv=96 quiver=87+8 rope=95 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=242 31cdf415
+9x10 q9 s0 | slots=141 64ba8878 | storage=81 inv=97 quiver=87+9 rope=96 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=243 845b77f1
+9x10 q10 s0 | slots=142 affc0383 | storage=81 inv=98 quiver=87+10 rope=97 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=244 49a1a9fa
+9x10 q11 s0 | slots=143 1cf46fca | storage=81 inv=99 quiver=87+11 rope=98 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=245 a6b57b25
+9x10 q12 s0 | slots=144 176c26a1 | storage=81 inv=100 quiver=87+12 rope=99 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=246 6b78d617
+9x10 q13 s0 | slots=145 918be877 | storage=81 inv=101 quiver=87+13 rope=100 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=247 e730ed43
+9x10 q14 s0 | slots=146 b4d99081 | storage=81 inv=102 quiver=87+14 rope=101 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=248 e1bef736
+9x10 q15 s0 | slots=147 7e336793 | storage=81 inv=103 quiver=87+15 rope=102 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=249 a820b713
+9x10 q16 s0 | slots=148 a14b63df | storage=81 inv=104 quiver=87+16 rope=103 | win=284,261,175,72,176 tanks=1,243,154 btn=5,145 tog=43,117 | bg=250 ff1aaf0b
+9x11 q0 s0 | slots=143 3f7de17 | storage=90 inv=97 quiver=- rope=96 | win=302,261,175,90,176 tanks=2,261,154 btn=5,145 tog=43,117 | bg=259 fbf4785e
+9x11 q1 s0 | slots=142 86e4c62 | storage=90 inv=98 quiver=96+1 rope=97 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=247 9da45bbe
+9x11 q2 s0 | slots=143 45b590a8 | storage=90 inv=99 quiver=96+2 rope=98 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=248 122e1b3b
+9x11 q3 s0 | slots=144 be59851a | storage=90 inv=100 quiver=96+3 rope=99 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=249 ce2560d9
+9x11 q4 s0 | slots=145 469239f4 | storage=90 inv=101 quiver=96+4 rope=100 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=250 f89ffbb6
+9x11 q5 s0 | slots=146 ac653334 | storage=90 inv=102 quiver=96+5 rope=101 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=251 337ed3f4
+9x11 q6 s0 | slots=147 676e1102 | storage=90 inv=103 quiver=96+6 rope=102 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=252 792e01f8
+9x11 q7 s0 | slots=148 b40a72ca | storage=90 inv=104 quiver=96+7 rope=103 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=253 ee121f35
+9x11 q8 s0 | slots=149 2fd826b7 | storage=90 inv=105 quiver=96+8 rope=104 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=254 a006b094
+9x11 q9 s0 | slots=150 65e0308e | storage=90 inv=106 quiver=96+9 rope=105 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=255 23771843
+9x11 q10 s0 | slots=151 bfa83dd0 | storage=90 inv=107 quiver=96+10 rope=106 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=256 16364dd
+9x11 q11 s0 | slots=152 8b1218cd | storage=90 inv=108 quiver=96+11 rope=107 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=257 b60dcd3
+9x11 q12 s0 | slots=153 7af2585b | storage=90 inv=109 quiver=96+12 rope=108 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=258 a911e7ed
+9x11 q13 s0 | slots=154 e0d436f0 | storage=90 inv=110 quiver=96+13 rope=109 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=259 dd257344
+9x11 q14 s0 | slots=155 211aac2a | storage=90 inv=111 quiver=96+14 rope=110 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=260 4564654a
+9x11 q15 s0 | slots=156 4278f0d3 | storage=90 inv=112 quiver=96+15 rope=111 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=261 d2ccd009
+9x11 q16 s0 | slots=157 d79a2344 | storage=90 inv=113 quiver=96+16 rope=112 | win=302,261,175,90,176 tanks=1,261,154 btn=5,145 tog=43,117 | bg=262 76c73841
+9x12 q0 s0 | slots=152 1543179d | storage=99 inv=106 quiver=- rope=105 | win=320,261,175,108,176 tanks=2,279,154 btn=5,145 tog=43,117 | bg=272 95931ed5
+9x12 q1 s0 | slots=151 31e814b1 | storage=99 inv=107 quiver=105+1 rope=106 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=260 6f9d108b
+9x12 q2 s0 | slots=152 a69dfe10 | storage=99 inv=108 quiver=105+2 rope=107 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=261 9eb62b45
+9x12 q3 s0 | slots=153 f840350d | storage=99 inv=109 quiver=105+3 rope=108 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=262 b52b17c2
+9x12 q4 s0 | slots=154 8a0cf661 | storage=99 inv=110 quiver=105+4 rope=109 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=263 27b9c2b4
+9x12 q5 s0 | slots=155 a483606d | storage=99 inv=111 quiver=105+5 rope=110 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=264 aefcec3d
+9x12 q6 s0 | slots=156 e1c666e7 | storage=99 inv=112 quiver=105+6 rope=111 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=265 63e6da82
+9x12 q7 s0 | slots=157 ab4e85fb | storage=99 inv=113 quiver=105+7 rope=112 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=266 6a2e48ad
+9x12 q8 s0 | slots=158 8a1c5541 | storage=99 inv=114 quiver=105+8 rope=113 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=267 3131a006
+9x12 q9 s0 | slots=159 80e7bb2 | storage=99 inv=115 quiver=105+9 rope=114 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=268 cbe5f542
+9x12 q10 s0 | slots=160 7ef0d909 | storage=99 inv=116 quiver=105+10 rope=115 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=269 b7cd7a7
+9x12 q11 s0 | slots=161 d8755ac4 | storage=99 inv=117 quiver=105+11 rope=116 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=270 cdbf4b15
+9x12 q12 s0 | slots=162 28352c6e | storage=99 inv=118 quiver=105+12 rope=117 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=271 6e82b47b
+9x12 q13 s0 | slots=163 61df8b66 | storage=99 inv=119 quiver=105+13 rope=118 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=272 fd753ac0
+9x12 q14 s0 | slots=164 25473035 | storage=99 inv=120 quiver=105+14 rope=119 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=273 ab9f35e5
+9x12 q15 s0 | slots=165 2f0e9684 | storage=99 inv=121 quiver=105+15 rope=120 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=274 809e405a
+9x12 q16 s0 | slots=166 56cb152b | storage=99 inv=122 quiver=105+16 rope=121 | win=320,261,175,108,176 tanks=1,279,154 btn=5,145 tog=43,117 | bg=275 cb9599ad
+10x8 q0 s0 | slots=124 ddb0956e | storage=71 inv=78 quiver=- rope=77 | win=248,279,193,36,176 tanks=2,207,172 btn=5,163 tog=43,135 | bg=228 669863c8
+10x8 q1 s0 | slots=123 d4ea4e08 | storage=71 inv=79 quiver=77+1 rope=78 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=216 682290fa
+10x8 q2 s0 | slots=124 f8a50c5a | storage=71 inv=80 quiver=77+2 rope=79 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=217 ea109cb8
+10x8 q3 s0 | slots=125 61809791 | storage=71 inv=81 quiver=77+3 rope=80 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=218 165e1569
+10x8 q4 s0 | slots=126 f6fbd5 | storage=71 inv=82 quiver=77+4 rope=81 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=219 f1725db
+10x8 q5 s0 | slots=127 3be09c6e | storage=71 inv=83 quiver=77+5 rope=82 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=220 d3954362
+10x8 q6 s0 | slots=128 5e38b954 | storage=71 inv=84 quiver=77+6 rope=83 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=221 481d2afc
+10x8 q7 s0 | slots=129 4e8080fb | storage=71 inv=85 quiver=77+7 rope=84 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=222 cdecffaf
+10x8 q8 s0 | slots=130 bc84a6ff | storage=71 inv=86 quiver=77+8 rope=85 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=223 735145a5
+10x8 q9 s0 | slots=131 b0d7de45 | storage=71 inv=87 quiver=77+9 rope=86 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=224 a4b79d60
+10x8 q10 s0 | slots=132 dc420156 | storage=71 inv=88 quiver=77+10 rope=87 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=225 6c47336b
+10x8 q11 s0 | slots=133 eaeb587b | storage=71 inv=89 quiver=77+11 rope=88 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=226 fe540ce7
+10x8 q12 s0 | slots=134 1c2ebf0c | storage=71 inv=90 quiver=77+12 rope=89 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=227 aa6eb301
+10x8 q13 s0 | slots=135 ac31eafd | storage=71 inv=91 quiver=77+13 rope=90 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=228 dad11465
+10x8 q14 s0 | slots=136 6c13672c | storage=71 inv=92 quiver=77+14 rope=91 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=229 d1047e27
+10x8 q15 s0 | slots=137 7d665e19 | storage=71 inv=93 quiver=77+15 rope=92 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=230 c893fd22
+10x8 q16 s0 | slots=138 3269844c | storage=71 inv=94 quiver=77+16 rope=93 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=231 b72d4e68
+10x8 q17 s0 | slots=139 88a185d5 | storage=71 inv=95 quiver=77+17 rope=94 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=232 2aa61fe
+10x8 q18 s0 | slots=140 4c91e078 | storage=71 inv=96 quiver=77+18 rope=95 | win=248,279,193,36,176 tanks=1,207,172 btn=5,163 tog=43,135 | bg=233 25cbd271
+10x9 q0 s0 | slots=134 d12890bf | storage=81 inv=88 quiver=- rope=87 | win=266,279,193,54,176 tanks=2,225,172 btn=5,163 tog=43,135 | bg=243 dc73b58e
+10x9 q1 s0 | slots=133 fe507dec | storage=81 inv=89 quiver=87+1 rope=88 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=231 249f5b84
+10x9 q2 s0 | slots=134 c6392dab | storage=81 inv=90 quiver=87+2 rope=89 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=232 10c655d7
+10x9 q3 s0 | slots=135 7589f45f | storage=81 inv=91 quiver=87+3 rope=90 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=233 251880e0
+10x9 q4 s0 | slots=136 41b51077 | storage=81 inv=92 quiver=87+4 rope=91 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=234 87e23f5a
+10x9 q5 s0 | slots=137 602e7131 | storage=81 inv=93 quiver=87+5 rope=92 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=235 137799ba
+10x9 q6 s0 | slots=138 1faf229a | storage=81 inv=94 quiver=87+6 rope=93 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=236 910337e3
+10x9 q7 s0 | slots=139 45bb926c | storage=81 inv=95 quiver=87+7 rope=94 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=237 868dfe68
+10x9 q8 s0 | slots=140 43967122 | storage=81 inv=96 quiver=87+8 rope=95 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=238 558b01f0
+10x9 q9 s0 | slots=141 1132ba89 | storage=81 inv=97 quiver=87+9 rope=96 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=239 d227396d
+10x9 q10 s0 | slots=142 b58bd20c | storage=81 inv=98 quiver=87+10 rope=97 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=240 24e095cc
+10x9 q11 s0 | slots=143 88f8a1c3 | storage=81 inv=99 quiver=87+11 rope=98 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=241 a86e5f4e
+10x9 q12 s0 | slots=144 de2d77bf | storage=81 inv=100 quiver=87+12 rope=99 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=242 8479a097
+10x9 q13 s0 | slots=145 d8c406e9 | storage=81 inv=101 quiver=87+13 rope=100 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=243 e4cea4fd
+10x9 q14 s0 | slots=146 eacb5cdb | storage=81 inv=102 quiver=87+14 rope=101 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=244 189378
+10x9 q15 s0 | slots=147 97dea92b | storage=81 inv=103 quiver=87+15 rope=102 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=245 f82b682c
+10x9 q16 s0 | slots=148 567a0e18 | storage=81 inv=104 quiver=87+16 rope=103 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=246 c70dd13
+10x9 q17 s0 | slots=149 1f4a1990 | storage=81 inv=105 quiver=87+17 rope=104 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=247 31951148
+10x9 q18 s0 | slots=150 d1ddaaf2 | storage=81 inv=106 quiver=87+18 rope=105 | win=266,279,193,54,176 tanks=1,225,172 btn=5,163 tog=43,135 | bg=248 4621987a
+10x10 q0 s0 | slots=144 64bc6a2c | storage=91 inv=98 quiver=- rope=97 | win=284,279,193,72,176 tanks=2,243,172 btn=5,163 tog=43,135 | bg=257 b7ce9171
+10x10 q1 s0 | slots=143 e1e629df | storage=91 inv=99 quiver=97+1 rope=98 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=245 80530a77
+10x10 q2 s0 | slots=144 275b4ea4 | storage=91 inv=100 quiver=97+2 rope=99 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=246 62dab7ef
+10x10 q3 s0 | slots=145 6ab5fe85 | storage=91 inv=101 quiver=97+3 rope=100 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=247 9f4b9629
+10x10 q4 s0 | slots=146 e2e755d7 | storage=91 inv=102 quiver=97+4 rope=101 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=248 aead2098
+10x10 q5 s0 | slots=147 f3ebb098 | storage=91 inv=103 quiver=97+5 rope=102 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=249 65bd48f1
+10x10 q6 s0 | slots=148 ba740ee | storage=91 inv=104 quiver=97+6 rope=103 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=250 ed01366b
+10x10 q7 s0 | slots=149 fe1d572d | storage=91 inv=105 quiver=97+7 rope=104 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=251 3b0eb808
+10x10 q8 s0 | slots=150 5c28444 | storage=91 inv=106 quiver=97+8 rope=105 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=252 dd887dd6
+10x10 q9 s0 | slots=151 ade83319 | storage=91 inv=107 quiver=97+9 rope=106 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=253 3c9f066b
+10x10 q10 s0 | slots=152 7134811a | storage=91 inv=108 quiver=97+10 rope=107 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=254 f1d6231c
+10x10 q11 s0 | slots=153 622f995e | storage=91 inv=109 quiver=97+11 rope=108 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=255 4faad150
+10x10 q12 s0 | slots=154 16b8902d | storage=91 inv=110 quiver=97+12 rope=109 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=256 dbb5c309
+10x10 q13 s0 | slots=155 36c26f9b | storage=91 inv=111 quiver=97+13 rope=110 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=257 13b89841
+10x10 q14 s0 | slots=156 17bc6bfd | storage=91 inv=112 quiver=97+14 rope=111 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=258 db241e85
+10x10 q15 s0 | slots=157 f95aec80 | storage=91 inv=113 quiver=97+15 rope=112 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=259 ea00cc71
+10x10 q16 s0 | slots=158 760550af | storage=91 inv=114 quiver=97+16 rope=113 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=260 844ff98f
+10x10 q17 s0 | slots=159 b5308176 | storage=91 inv=115 quiver=97+17 rope=114 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=261 15493349
+10x10 q18 s0 | slots=160 ddc0116f | storage=91 inv=116 quiver=97+18 rope=115 | win=284,279,193,72,176 tanks=1,243,172 btn=5,163 tog=43,135 | bg=262 21ff6dad
+10x11 q0 s0 | slots=154 fce28e5e | storage=101 inv=108 quiver=- rope=107 | win=302,279,193,90,176 tanks=2,261,172 btn=5,163 tog=43,135 | bg=270 4f04a530
+10x11 q1 s0 | slots=153 6de865f1 | storage=101 inv=109 quiver=107+1 rope=108 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=258 96805167
+10x11 q2 s0 | slots=154 fec7dcf4 | storage=101 inv=110 quiver=107+2 rope=109 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=259 874e3510
+10x11 q3 s0 | slots=155 b04583fd | storage=101 inv=111 quiver=107+3 rope=110 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=260 56689256
+10x11 q4 s0 | slots=156 baac5c3e | storage=101 inv=112 quiver=107+4 rope=111 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=261 67f61e8f
+10x11 q5 s0 | slots=157 d2433132 | storage=101 inv=113 quiver=107+5 rope=112 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=262 1a3c89c9
+10x11 q6 s0 | slots=158 d4d9de77 | storage=101 inv=114 quiver=107+6 rope=113 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=263 576f1074
+10x11 q7 s0 | slots=159 a0a7528f | storage=101 inv=115 quiver=107+7 rope=114 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=264 ae7b5780
+10x11 q8 s0 | slots=160 d676a210 | storage=101 inv=116 quiver=107+8 rope=115 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=265 2cb2c62b
+10x11 q9 s0 | slots=161 71f9abe0 | storage=101 inv=117 quiver=107+9 rope=116 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=266 e10754e6
+10x11 q10 s0 | slots=162 66f636df | storage=101 inv=118 quiver=107+10 rope=117 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=267 98629e83
+10x11 q11 s0 | slots=163 b86d17ee | storage=101 inv=119 quiver=107+11 rope=118 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=268 6beeaa52
+10x11 q12 s0 | slots=164 9203f4da | storage=101 inv=120 quiver=107+12 rope=119 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=269 ec62d598
+10x11 q13 s0 | slots=165 6dc0d392 | storage=101 inv=121 quiver=107+13 rope=120 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=270 3d8286a7
+10x11 q14 s0 | slots=166 3fc9094e | storage=101 inv=122 quiver=107+14 rope=121 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=271 6de4b6cf
+10x11 q15 s0 | slots=167 f67c9396 | storage=101 inv=123 quiver=107+15 rope=122 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=272 de10d437
+10x11 q16 s0 | slots=168 595c9995 | storage=101 inv=124 quiver=107+16 rope=123 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=273 f9744f0b
+10x11 q17 s0 | slots=169 2f99f785 | storage=101 inv=125 quiver=107+17 rope=124 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=274 78439723
+10x11 q18 s0 | slots=170 d5a4794a | storage=101 inv=126 quiver=107+18 rope=125 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=275 2a36ad87
+10x12 q0 s0 | slots=164 2f17ecb7 | storage=111 inv=118 quiver=- rope=117 | win=320,279,193,108,176 tanks=2,279,172 btn=5,163 tog=43,135 | bg=284 2516226d
+10x12 q1 s0 | slots=163 f6b3c686 | storage=111 inv=119 quiver=117+1 rope=118 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=272 c56bd562
+10x12 q2 s0 | slots=164 5b8fbde | storage=111 inv=120 quiver=117+2 rope=119 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=273 ca90aedd
+10x12 q3 s0 | slots=165 78cb2a0c | storage=111 inv=121 quiver=117+3 rope=120 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=274 27665620
+10x12 q4 s0 | slots=166 16a6d036 | storage=111 inv=122 quiver=117+4 rope=121 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=275 e5246d06
+10x12 q5 s0 | slots=167 6395ac8d | storage=111 inv=123 quiver=117+5 rope=122 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=276 474fa7c7
+10x12 q6 s0 | slots=168 6dab0b51 | storage=111 inv=124 quiver=117+6 rope=123 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=277 f86a9126
+10x12 q7 s0 | slots=169 ee497229 | storage=111 inv=125 quiver=117+7 rope=124 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=278 fbde5315
+10x12 q8 s0 | slots=170 f22220a9 | storage=111 inv=126 quiver=117+8 rope=125 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=279 afebbf50
+10x12 q9 s0 | slots=171 140a21bf | storage=111 inv=127 quiver=117+9 rope=126 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=280 32b4e1a1
+10x12 q10 s0 | slots=172 a969d961 | storage=111 inv=128 quiver=117+10 rope=127 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=281 1dea13e4
+10x12 q11 s0 | slots=173 2411c586 | storage=111 inv=129 quiver=117+11 rope=128 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=282 fbf519a4
+10x12 q12 s0 | slots=174 59fe450a | storage=111 inv=130 quiver=117+12 rope=129 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=283 38cf0191
+10x12 q13 s0 | slots=175 eafe0bff | storage=111 inv=131 quiver=117+13 rope=130 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=284 6b18d07e
+10x12 q14 s0 | slots=176 1a4f0b50 | storage=111 inv=132 quiver=117+14 rope=131 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=285 5bb40b61
+10x12 q15 s0 | slots=177 e08e03c4 | storage=111 inv=133 quiver=117+15 rope=132 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=286 75479d6e
+10x12 q16 s0 | slots=178 911d8b6e | storage=111 inv=134 quiver=117+16 rope=133 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=287 302980f6
+10x12 q17 s0 | slots=179 7d99968b | storage=111 inv=135 quiver=117+17 rope=134 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=288 9dd70b5f
+10x12 q18 s0 | slots=180 4a79f9ea | storage=111 inv=136 quiver=117+18 rope=135 | win=320,279,193,108,176 tanks=1,279,172 btn=5,163 tog=43,135 | bg=289 fa680f2a
+6x8 q0 s39 | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+6x8 q0 s47 | slots=100 f72a1b5a | storage=47 inv=54 quiver=- rope=53 | win=248,225,139,36,176 tanks=2,207,118 btn=5,109 tog=43,81 | bg=186 ecb4f213
+6x8 q4 s47 | slots=102 6323d322 | storage=47 inv=58 quiver=53+4 rope=57 | win=248,225,139,36,176 tanks=1,207,118 btn=5,109 tog=43,81 | bg=179 5cf442bd
+4x8 q0 s60 | slots=113 cd7f9b8e | storage=60 inv=67 quiver=- rope=66 | win=248,261,175,36,176 tanks=2,207,154 btn=5,145 tog=43,117 | bg=217 258eada6
+4x12 q3 s80 | slots=134 e276777 | storage=80 inv=90 quiver=86+3 rope=89 | win=320,243,157,108,176 tanks=1,279,136 btn=5,127 tog=43,99 | bg=242 966d8493
+10x12 q0 s111 | slots=164 2f17ecb7 | storage=111 inv=118 quiver=- rope=117 | win=320,279,193,108,176 tanks=2,279,172 btn=5,163 tog=43,135 | bg=284 2516226d
+8x10 q5 s100 | slots=156 f24ff50f | storage=100 inv=112 quiver=106+5 rope=111 | win=302,279,193,90,176 tanks=1,261,172 btn=5,163 tog=43,135 | bg=261 c15444fb
+Standard | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+Skeleton | slots=94 77f0af01 | storage=39 inv=50 quiver=45+4 rope=49 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=170 49437470
+LayoutTestBig | slots=107 3e07fc20 | storage=54 inv=61 quiver=- rope=60 | win=266,225,139,54,176 tanks=2,225,118 btn=5,109 tog=43,81 | bg=197 422f115f
+type Standard | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Cow | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Bat | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Black | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Blaze | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Carrot | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Coal | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Diamond | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Emerald | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Gold | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Iron | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type IronGolem | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Lapis | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Redstone | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Blue | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Bookshelf | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Brown | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Cactus | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Cake | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Chest | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Cookie | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Cyan | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Dragon | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Egg | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Electric | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Deluxe | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Enderman | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type End | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Chicken | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Ocelot | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Ghast | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Gray | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Green | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Haybale | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Horse | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Leather | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type LightBlue | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Glowstone | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type LightGray | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Lime | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Magenta | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type MagmaCube | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Melon | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type BrownMushroom | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type RedMushroom | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Mooshroom | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Nether | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Wither | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Obsidian | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Orange | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Overworld | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Pigman | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Pink | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Pig | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Pumpkin | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Purple | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Quartz | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Rainbow | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Red | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Sandstone | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Sheep | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Silverfish | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Squid | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Sunflower | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Creeper | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Skeleton | slots=94 77f0af01 | storage=39 inv=50 quiver=45+4 rope=49 | win=248,207,121,36,176 tanks=1,207,100 btn=5,91 tog=43,63 | bg=170 49437470
+type WitherSkeleton | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Slime | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Snow | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Spider | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Sponge | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Villager | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type White | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Wolf | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Yellow | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026
+type Zombie | slots=92 68d46620 | storage=39 inv=46 quiver=- rope=45 | win=248,207,121,36,176 tanks=2,207,100 btn=5,91 tog=43,63 | bg=176 9b48f026

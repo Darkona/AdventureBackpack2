@@ -124,4 +124,58 @@ class QuiverFeedRulesTest
         // A fully drawn bow (3 blocks per tick) and the default bolt (3) leave at 3.9
         assertEquals(3.9, 3.0 * QuiverFeedRules.speedFactor(0.30), 1e-9);
     }
+
+    @Test
+    void theSkeletonWearerFiresThirtyPercentMoreOften()
+    {
+        assertEquals(1.3, QuiverFeedRules.rateFactor(0.30), 1e-12);
+        assertEquals(1.0, QuiverFeedRules.rateFactor(0.0), 1e-12, "0 turns it off");
+        assertEquals(1.0, QuiverFeedRules.rateFactor(Double.NaN), 1e-12);
+        assertEquals(1.0 + QuiverFeedRules.MAX_RATE_BONUS, QuiverFeedRules.rateFactor(9), 1e-12);
+        assertEquals(3.0 / 1.3, QuiverFeedRules.exactInterval(3, 0.30), 1e-12);
+        assertEquals(3.0, QuiverFeedRules.exactInterval(3, 0.0), 1e-12);
+    }
+
+    @Test
+    void theCarryKeepsTheAverageInsteadOfRoundingThreeDownToTwo()
+    {
+        double exact = QuiverFeedRules.exactInterval(3, 0.30);
+        double carry = 0;
+        long t = 0;
+        int shots = 1300;
+        int twos = 0, threes = 0;
+        for (int i = 0; i < shots; i++)
+        {
+            int pause = QuiverFeedRules.ticksFor(carry, exact);
+            carry = QuiverFeedRules.carryAfter(carry, exact);
+            assertTrue(pause == 2 || pause == 3, "only 2 or 3 tick pauses, got " + pause);
+            if (pause == 2) twos++; else threes++;
+            t += pause;
+        }
+        // 1300 shots at 3 / 1.3 ticks each take 3000 ticks: 30 % more bolts than 1000 shots at 3 ticks
+        assertTrue(Math.abs(t - 3000) <= 1, "average pause 3 / 1.3, took " + t);
+        assertTrue(twos > threes, "mostly 2 tick pauses (" + twos + " vs " + threes + ")");
+    }
+
+    @Test
+    void withoutBonusThePaceIsUnchangedAndNeverBelowOneTick()
+    {
+        double carry = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            assertEquals(3, QuiverFeedRules.ticksFor(carry, 3.0));
+            carry = QuiverFeedRules.carryAfter(carry, 3.0);
+        }
+        double fast = QuiverFeedRules.exactInterval(1, 2.0);
+        carry = 0;
+        long t = 0;
+        for (int i = 0; i < 9; i++)
+        {
+            int pause = QuiverFeedRules.ticksFor(carry, fast);
+            carry = QuiverFeedRules.carryAfter(carry, fast);
+            assertEquals(1, pause, "one bolt a tick at most");
+            t += pause;
+        }
+        assertEquals(9, t);
+    }
 }

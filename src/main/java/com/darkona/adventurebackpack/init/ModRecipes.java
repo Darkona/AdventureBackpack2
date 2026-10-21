@@ -142,6 +142,41 @@ public class ModRecipes
                 'C', Items.leather_helmet,
                 'L', Items.leather
         );
+        GameRegistry.addRecipe(new ItemStack(ModItems.telescope),
+                "EI ",
+                "IDI",
+                " IG",
+                'E', Items.ender_pearl,
+                'I', Items.iron_ingot,
+                'D', Items.diamond,
+                'G', Blocks.glass
+        );
+
+        GameRegistry.addRecipe(new ItemStack(ModItems.rope, 4),
+                "SSS",
+                "S S",
+                "SS|",
+                'S', Items.string,
+                '|', Items.stick
+        );
+
+        GameRegistry.addRecipe(new ItemStack(ModItems.adventureJacket),
+                "SIS",
+                "LLL",
+                "LLL",
+                'S', Items.string,
+                'I', Items.iron_ingot,
+                'L', Items.leather
+        );
+
+        GameRegistry.addRecipe(new ItemStack(ModItems.adventurePants),
+                "SIS",
+                "L L",
+                "L L",
+                'S', Items.string,
+                'I', Items.iron_ingot,
+                'L', Items.leather
+        );
         if (ConfigHandler.PISTONBOOTS_ENABLED) GameRegistry.addRecipe(new ItemStack(ModItems.pistonBoots),
                 " B ",
                 "PSP",

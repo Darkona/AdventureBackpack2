@@ -5,6 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
+import com.darkona.adventurebackpack.common.layout.WidgetLayout;
+import com.darkona.adventurebackpack.common.layout.classic.ClassicArrangement;
+import com.darkona.adventurebackpack.inventory.widget.WidgetStore;
+import com.darkona.adventurebackpack.inventory.widget.classic.ClassicWidgetTypes;
+import com.darkona.adventurebackpack.inventory.widget.classic.QuiverNbt;
+import com.darkona.adventurebackpack.inventory.widget.classic.RopeWidget;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -136,5 +142,82 @@ class BackpackNbtTest
         assertFalse(saved.hasKey(BackpackNbt.LEGACY_EXTENDED));
         assertEquals(60, saved.getCompoundTag(BackpackNbt.EXTENDED).getInteger("milkTime"));
         assertEquals(39, saved.getInteger(BackpackNbt.STORAGE_SIZE));
+    }
+
+    private static WidgetLayout skeleton()
+    {
+        ClassicWidgetTypes.install();
+        return ClassicArrangement.arrange(6, 8, 39, 4);
+    }
+
+    @Test
+    void savingKeepsTheKeysItDoesNotKnow()
+    {
+        NBTTagCompound previous = new NBTTagCompound();
+        NBTTagList addon = new NBTTagList();
+        addon.appendTag(new NBTTagCompound());
+        previous.setTag("ABPW:addon:pouch", addon);
+        previous.setInteger("somethingNewer", 7);
+        previous.setTag(RopeWidget.KEY, new NBTTagList());
+        previous.setString("colorName", "Old");
+        NBTTagCompound fresh = new NBTTagCompound();
+        fresh.setString("colorName", "New");
+        WidgetStore.keepUnknown(previous, fresh, skeleton());
+        assertEquals(1, fresh.getTagList("ABPW:addon:pouch", 10).tagCount());
+        assertEquals(7, fresh.getInteger("somethingNewer"));
+        assertFalse(fresh.hasKey(RopeWidget.KEY), "a key the backpack removed on purpose stays removed");
+        assertEquals("New", fresh.getString("colorName"));
+    }
+
+    @Test
+    void aWidgetMissingFromTheLayoutKeepsItsOldList()
+    {
+        NBTTagCompound previous = new NBTTagCompound();
+        NBTTagList arrows = new NBTTagList();
+        arrows.appendTag(new NBTTagCompound());
+        previous.setTag(QuiverNbt.QUIVER, arrows);
+        previous.setByte(QuiverNbt.QUIVER_FILL, (byte) 2);
+        NBTTagCompound fresh = new NBTTagCompound();
+        WidgetStore.keepUnknown(previous, fresh, ClassicArrangement.arrange(6, 8, 39, 0));
+        assertEquals(1, fresh.getTagList(QuiverNbt.QUIVER, 10).tagCount());
+        assertEquals(2, fresh.getByte(QuiverNbt.QUIVER_FILL));
+    }
+
+    @Test
+    void ropeAndQuiverListsKeepTheirOldFormat()
+    {
+        WidgetLayout layout = skeleton();
+        Item item = new Item();
+        ItemStack[] inv = new ItemStack[layout.inventorySize()];
+        inv[49] = new ItemStack(item, 128);
+        inv[46] = new ItemStack(item, 9);
+        inv[39] = new ItemStack(item, 1);
+        NBTTagCompound data = new NBTTagCompound();
+        WidgetStore.write(data, layout, inv, null, 39);
+        NBTTagCompound rope = data.getTagList(RopeWidget.KEY, 10).getCompoundTagAt(0);
+        assertFalse(rope.hasKey("Slot"), "the rope entry never had a Slot byte");
+        assertEquals(128, rope.getInteger(RopeWidget.COUNT_KEY));
+        NBTTagCompound arrow = data.getTagList(QuiverNbt.QUIVER, 10).getCompoundTagAt(0);
+        assertEquals(1, arrow.getByte("Slot"));
+        assertEquals(1, data.getTagList(QuiverNbt.QUIVER, 10).tagCount());
+        NBTTagList items = data.getTagList(BackpackNbt.ITEMS, 10);
+        assertEquals(1, items.tagCount(), "quiver and rope never go to ABPItems");
+        assertEquals(39, items.getCompoundTagAt(0).getByte("Slot"));
+        assertEquals(39, data.getInteger(BackpackNbt.STORAGE_SIZE));
+
+        inv[49] = null;
+        WidgetStore.write(data, layout, inv, null, 39);
+        assertFalse(data.hasKey(RopeWidget.KEY), "an empty rope slot writes no list, as before");
+    }
+
+    @Test
+    void theReadKeysFollowTheWidgetsOfTheLayout()
+    {
+        java.util.List<String> keys = java.util.Arrays.asList(WidgetStore.readKeys(skeleton()));
+        assertTrue(keys.contains(QuiverNbt.QUIVER));
+        assertTrue(keys.contains(QuiverNbt.QUIVER_FILL));
+        assertTrue(keys.contains(RopeWidget.KEY));
+        assertTrue(keys.contains(BackpackNbt.ITEMS));
+        assertFalse(java.util.Arrays.asList(WidgetStore.readKeys(ClassicArrangement.arrange(6, 8, 39, 0))).contains(QuiverNbt.QUIVER));
     }
 }

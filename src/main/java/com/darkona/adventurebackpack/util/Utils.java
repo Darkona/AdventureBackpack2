@@ -164,24 +164,6 @@ public class Utils
         return null;
     }
 
-    public static ChunkCoordinates findBlock3D(World world, int x, int y, int z, Block block, int hRange, int vRange)
-    {
-        for (int i = (y - vRange); i <= (y + vRange); i++)
-        {
-            for (int j = (x - hRange); j <= (x + hRange); j++)
-            {
-                for (int k = (z - hRange); k <= (z + hRange); k++)
-                {
-                    if (world.getBlock(j, i, k) == block)
-                    {
-                        return new ChunkCoordinates(j, i, k);
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
     public static String capitalize(String s)
     {
         return s.substring(0, 1).toUpperCase().concat(s.substring(1));
@@ -249,55 +231,29 @@ public class Utils
                 || (block.isReplaceable(world, X, Y, Z) && !block.getMaterial().isLiquid());
     }
 
-    private static ChunkCoordinates checkCoordsForBackpack(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
+    private static boolean isBackpackSpot(IBlockAccess world, int X, int Y, int Z)
     {
-        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeSpace(world, X, Y, Z) && !areCoordinatesTheSame(origX, Y, origZ, X, Y, Z))
-        {
-            return new ChunkCoordinates(X, Y, Z);
-        }
-        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && isFreeSpace(world, X, Y, Z))
-        {
-            return new ChunkCoordinates(X, Y, Z);
-        }
-        return null;
+        return world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP, true) && isFreeSpace(world, X, Y, Z);
     }
 
-    private static ChunkCoordinates checkCoordsForPlayer(IBlockAccess world, int origX, int origZ, int X, int Y, int Z, boolean except)
+    private static boolean isPlayerSpot(IBlockAccess world, int X, int Y, int Z)
     {
-        if (except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X,Y+1,Z) && !areCoordinatesTheSame2D(origX, origZ, X, Z))
-        {
-            return new ChunkCoordinates(X, Y, Z);
-        }
-        if (!except && world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP,true) && world.isAirBlock(X, Y, Z)&& world.isAirBlock(X,Y+1,Z))
-        {
-            return new ChunkCoordinates(X, Y, Z);
-        }
-        return null;
+        return world.isSideSolid(X, Y - 1, Z, ForgeDirection.UP, true) && world.isAirBlock(X, Y, Z) && world.isAirBlock(X, Y + 1, Z);
     }
 
-    public static ChunkCoordinates getNearestEmptyChunkCoordinatesSpiral(final IBlockAccess world, final int origX, final int origZ, int X, final int Y, int Z, int radius, final boolean except, int steps, byte pass, final boolean type)
+    public static ChunkCoordinates getNearestEmptyChunkCoordinatesSpiral(final IBlockAccess world, final int X, final int Y, final int Z, int radius, int vertical, final boolean except, final boolean type)
     {
-        long found = SpiralSearch.find(X, Z, radius, new SpiralSearch.Cell()
+        long found = SpiralSearch.find(X, Y, Z, radius, vertical, new SpiralSearch.Cell()
         {
             @Override
-            public boolean accept(int x, int z)
+            public boolean accept(int x, int y, int z)
             {
-                return (type ? checkCoordsForPlayer(world, origX, origZ, x, Y, z, except)
-                        : checkCoordsForBackpack(world, origX, origZ, x, Y, z, except)) != null;
+                if (except && x == X && z == Z && (y == Y || y == Y + 1)) return false;
+                return type ? isPlayerSpot(world, x, y, z) : isBackpackSpot(world, x, y, z);
             }
         });
         return found == SpiralSearch.NONE ? null
-                : new ChunkCoordinates(SpiralSearch.unpackX(found), Y, SpiralSearch.unpackZ(found));
-    }
-
-    private static boolean areCoordinatesTheSame(int X1, int Y1, int Z1, int X2, int Y2, int Z2)
-    {
-        return (X1 == X2 && Y1 == Y2 && Z1 == Z2);
-    }
-
-    private static boolean areCoordinatesTheSame2D(int X1, int Z1, int X2, int Z2)
-    {
-        return (X1 == X2 &&  Z1 == Z2);
+                : new ChunkCoordinates(SpiralSearch.unpackX(found), SpiralSearch.unpackY(found), SpiralSearch.unpackZ(found));
     }
 
     public static boolean notNullAndInstanceOf(Object object, Class clazz)

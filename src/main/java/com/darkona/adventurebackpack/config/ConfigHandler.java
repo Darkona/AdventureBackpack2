@@ -8,7 +8,7 @@ import com.darkona.adventurebackpack.common.NightVisionRefresh;
 import com.darkona.adventurebackpack.common.QuiverRules;
 import com.darkona.adventurebackpack.common.ToolCycleFilter;
 import com.darkona.adventurebackpack.common.ToolCycleInput;
-import com.darkona.adventurebackpack.inventory.BackpackLayout;
+import com.darkona.adventurebackpack.common.layout.classic.ClassicArrangement;
 import com.darkona.adventurebackpack.reference.BackpackNames;
 import com.darkona.adventurebackpack.reference.ModInfo;
 import com.darkona.adventurebackpack.util.LogHelper;
@@ -214,6 +214,7 @@ public class ConfigHandler
 
     public static boolean SKELETON_ENABLED = true;
     public static double SKELETON_ARROW_SPEED_BONUS = 0.30;
+    public static double SKELETON_FIRE_RATE_BONUS = 0.30;
     public static boolean IRONGOLEM_ENABLED = true;
 
     public static boolean SPIDER_ENABLED = true;
@@ -299,12 +300,12 @@ public class ConfigHandler
     public static boolean COMPRESSOR_NEEDS_OPEN_AIR = true;
 
     public static int FLAMETHROWER_TANK_CAPACITY = 4000;
-    public static int FLAMETHROWER_FUEL_PER_BURST = 50;
-    public static int FLAMETHROWER_FIRE_INTERVAL_TICKS = 4;
-    public static double FLAMETHROWER_RANGE = 6.0;
-    public static double FLAMETHROWER_CONE_DEGREES = 25.0;
-    public static double FLAMETHROWER_DAMAGE = 2.0;
-    public static int FLAMETHROWER_FIRE_SECONDS = 5;
+    public static int FLAMETHROWER_FUEL_PER_BURST = 25;
+    public static int FLAMETHROWER_FIRE_INTERVAL_TICKS = 5;
+    public static double FLAMETHROWER_RANGE = 8.0;
+    public static double FLAMETHROWER_CONE_DEGREES = 30.0;
+    public static double FLAMETHROWER_DAMAGE = 4.0;
+    public static int FLAMETHROWER_FIRE_SECONDS = 10;
     public static boolean FLAMETHROWER_PVP = false;
     public static boolean FLAMETHROWER_IGNITES_BLOCKS = false;
     public static int FLAMETHROWER_PILOT_FUEL_PER_MINUTE = 0;
@@ -351,7 +352,6 @@ public class ConfigHandler
     public static int DISTILLERY_WATER_PER_SOURCE = 50;
 
     public static boolean SLEEPINGBAG_PLACEABLE = true;
-    public static boolean SLEEPINGBAG_SETS_SPAWN = true;
 
     public static int CROSSBOW_SHOTS_PER_MAGAZINE = 8;
     public static int MAGAZINE_LOAD_TICKS = 4;
@@ -377,9 +377,13 @@ public class ConfigHandler
     public static int GRAPPLE_CHARGES = 1;
     public static boolean GRAPPLE_NO_FALL_DAMAGE = true;
     public static boolean SNIPER_ENABLED = true;
-    public static double SNIPER_DAMAGE = 12.0;
-    public static float SNIPER_VELOCITY = 5.0f;
-    public static int SNIPER_SHOT_DELAY_TICKS = 30;
+    public static int SNIPER_FIRE_INTERVAL_TICKS = 48;
+    public static double SNIPER_SPEED_MULTIPLIER = 3.0;
+    public static double SNIPER_DAMAGE_MULTIPLIER = 6.0;
+    public static float SNIPER_GRAVITY = 0.025f;
+    public static float SNIPER_DRAG = 0.995f;
+    public static float SNIPER_DRUM_SPEED = 1.0f;
+    public static int SNIPER_PIERCING = 1;
     public static double SNIPER_STILL_TOLERANCE = 0.02;
     public static float SNIPER_ZOOM = 0.35f;
     public static boolean CROSSBOW_QUIVER_ENABLED = true;
@@ -410,6 +414,7 @@ public class ConfigHandler
     public static boolean TANKS_OVERLAY = true;
     public static int RENDER_SCUBA_BUBBLE_TICKS = 10;
     public static int RENDER_FLAMETHROWER_PARTICLES = 6;
+    public static double RENDER_FLAMETHROWER_VOLUME = 1.0;
 
     public static int TOOLTIP_WIDTH = 200;
     public static int KEY_GEAR = Keyboard.KEY_B;
@@ -496,7 +501,7 @@ public class ConfigHandler
         cfg.setCategoryComment(ROOT, "Adventure Backpack configuration. Change a value and restart the game; nothing needs recompiling.");
         cfg.setCategoryComment(ENABLED, "One switch per system. A disabled system stays registered (worlds and servers still load it) but it is hidden, has no recipe and does nothing.");
         cfg.setCategoryComment(BACKPACK, "The Adventure Backpack itself, worn or placed.");
-        cfg.setCategoryComment(BACKPACKS, "One category per backpack type, named after its colour in lower case (backpacks.standard, backpacks.cow...). enabled comes first; rows and columns are the size of its storage grid. The 3x3 crafting grid takes the bottom right corner of the grid, so a backpack has rows x columns - 9 storage slots: the classic 6 rows of 8 columns give 39. A backpack never loses slots: one that holds more than its type now gives keeps its size, and a smaller size only applies to new backpacks. The window is read when a backpack is opened or loaded, so no restart is needed, but set it the same on server and clients.");
+        cfg.setCategoryComment(BACKPACKS, "One category per backpack type, named after its colour in lower case (backpacks.standard, backpacks.cow...). enabled comes first; rows and columns are the size of its storage grid. The 3x3 crafting grid takes the bottom right corner of the grid, so a backpack has rows x columns - 9 storage slots: the classic 6 rows of 8 columns give 39. A backpack never loses slots: one that holds more than its type now gives keeps its size, and a smaller size only applies to new backpacks. The window is read when a backpack is opened or loaded, so no restart is needed; on a server, clients use the server's window.");
         for (String name : BackpackNames.backpackNames)
         {
             cfg.setCategoryComment(backpackCategory(name), "The " + name + " Backpack.");
@@ -522,7 +527,7 @@ public class ConfigHandler
         cfg.setCategoryComment(PLACEDGEAR, "Back gear placed on the ground as a block, like a backpack: right click a block's top with the Steam Jetpack, the Copter Pack, the Scuba Gear or the Flamethrower Pack in hand. Right click the placed gear to open its window; break it, or sneak + right click it with an empty hand, to pick it up (sneaking puts it on your back when the back slot is free). It keeps everything it holds. A placed gear does not run: the jetpack's boiler stays as it was (frozen), the copter's engine and the pilot flame are off. Pipes of other mods can fill it from any side: water into the jetpack, fuels of fuels.list into the copter and the flamethrower, air into the scuba; steam comes out of the jetpack.");
         cfg.setCategoryComment(CROSSBOW, "The Clockwork Crossbow: a repeating crossbow fed with reusable Crossbow Magazines. Hold right click to fire the magazine one bolt after another; when it is empty the next click puts in the first loaded magazine of the inventory (hotbar first) and the empty one comes back to the inventory (or drops at the feet when the inventory is full). Sneak + right click swaps a partly used magazine, which comes back with the charges it has left. Without a loaded magazine a click gives back the empty one. The Change State key (keys.state, V by default) changes the firing mode; the mode is kept on the crossbow. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_GRAPPLE, "Grappling hook mode of the crossbow. Right click fires a hook that catches the first solid block in range and pulls the player to it. Sneak or jump to let go; it also lets go on arrival, after maxPullTicks, or when the crossbow leaves the hand. The server decides everything; the client only moves its own player with the speed the server sent.");
-        cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one bolt with more damage and speed, no spread and a slower rate. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the magazine (an empty magazine still reloads by itself).");
+        cfg.setCategoryComment(CROSSBOW_SNIPER, "Sniper mode of the crossbow. Sneak on the ground and stand still to deploy the bipod: the view zooms in, and right click fires one slow, heavy shot: a fast bolt with no spread that falls and slows down less than an arrow, hits much harder and can go through creatures. Moving, jumping or standing up folds the bipod; folded, the crossbow fires its normal bolts. With the bipod down sneak + right click fires instead of swapping the magazine (an empty magazine still reloads by itself).");
         cfg.setCategoryComment(CROSSBOW_MAGAZINE, "The Crossbow Magazine (the old Bolt Cartridge): a reusable magazine. Right click it (hold the click) to load it with ammunition of crossbow.ammo.list from the inventory, one charge per click sound, until it is full. A magazine holds one kind of ammunition; an empty one takes any. Old cartridges without a charge count load as full magazines of arrows. Ticks: 20 per second.");
         cfg.setCategoryComment(CROSSBOW_AMMO, "What the Crossbow Magazine is loaded with. Bolts fired from a magazine of Crossbow Bolts hit harder than those from a magazine of arrows.");
         cfg.setCategoryComment(CROSSBOW_QUIVER, "Gatling mode: while the player wears a Skeleton Backpack with arrows or Crossbow Bolts in its quiver (enabled.quiver) and its abilities are on, the crossbow takes no magazine. Holding right click fires one item of the quiver per shot, without stopping, until the quiver runs out; then it fires the magazine inside and reloads from the inventory as usual. It fires the items of crossbow.ammo.list in that order (Crossbow Bolts before arrows by default). The grappling hook takes its charges from the quiver and the sniper (bipod down) fires single bolts from it at its own rate. The server decides every shot; the spent items leave the backpack at the end of the burst or every flushEveryShots shots.");
@@ -580,7 +585,7 @@ public class ConfigHandler
         SCUBA_ENABLED = bool(cfg, ENABLED, "scuba", true, "The Scuba Gear, its Air Tanks and Diving Mask, and the Air Compressor.");
         FLAMETHROWER_ENABLED = bool(cfg, ENABLED, "flamethrower", true, "The Flamethrower Pack, the Flamethrower nozzle and the Pyro Mask. When false they have no recipe, are hidden from the creative tab, and the nozzle does not fire. Set it the same on server and clients.");
         CAMPFIRE_ENABLED = bool(cfg, ENABLED, "campfire", true, "Cooking on the Campfire (see campfire.cooking). The campfire block, its recipe and the respawn point stay either way.");
-        QUIVER_ENABLED = bool(cfg, ENABLED, "quiver", true, "The quiver of the Skeleton Backpack (backpacks.skeleton.quiver): it takes the place of the right tank, so that backpack has one tank and a few slots that only take arrows and crossbow bolts. When false the Skeleton Backpack has its two tanks again; arrows already in the quiver are kept in the backpack and come back when it is turned on. Set it the same on server and clients.");
+        QUIVER_ENABLED = bool(cfg, ENABLED, "quiver", true, "The quiver of the Skeleton Backpack (backpacks.skeleton.quiver): it takes the place of the right tank, so that backpack has one tank and a few slots that only take arrows and crossbow bolts. When false the Skeleton Backpack has its two tanks again; arrows already in the quiver are kept in the backpack and come back when it is turned on. On a server, clients use the server's value.");
         FUELSTATION_ENABLED = bool(cfg, ENABLED, "fuelStation", true, "The Fuel Station block. When false it has no recipe, is hidden from the creative tab, and a placed one neither takes nor gives fuel (it can still be broken, and keeps its fuel).");
         DISTILLERY_ENABLED = bool(cfg, ENABLED, "distillery", true, "The Distillery block, which makes ethanol for the fuel users. When false it has no recipe, is hidden from the creative tab, and a placed one does nothing: no batches, no push, no fluid in or out (it can still be broken and drops its items). Set it the same on server and clients.");
         PLACEDGEAR_ENABLED = bool(cfg, ENABLED, "placedGear", true, "Placing the Steam Jetpack, the Copter Pack, the Scuba Gear and the Flamethrower Pack on the ground as a block (see placedgear for each one). When false they cannot be placed; gear already placed does nothing (no window, no fluid in or out) but can still be picked up with everything it holds. Set it the same on server and clients.");
@@ -608,8 +613,8 @@ public class ConfigHandler
         {
             String category = backpackCategory(name);
             boolean enabled = bool(cfg, category, "enabled", true, "The " + name + " Backpack. When false it has no crafting recipe and is hidden from the creative tab (and NEI); backpacks of this type that already exist keep working. Needs a restart for the recipe.");
-            int rows = integer(cfg, category, "rows", BackpackLayout.CLASSIC_ROWS, BackpackLayout.MIN_ROWS, BackpackLayout.MAX_ROWS, "Rows of the storage grid of this backpack's window. Set it the same on server and clients.");
-            int columns = integer(cfg, category, "columns", BackpackLayout.CLASSIC_COLUMNS, BackpackLayout.MIN_COLUMNS, BackpackLayout.MAX_COLUMNS, "Columns of the storage grid of this backpack's window. Set it the same on server and clients.");
+            int rows = integer(cfg, category, "rows", ClassicArrangement.CLASSIC_ROWS, ClassicArrangement.MIN_ROWS, ClassicArrangement.MAX_ROWS, "Rows of the storage grid of this backpack's window. On a server, clients use the server's value.");
+            int columns = integer(cfg, category, "columns", ClassicArrangement.CLASSIC_COLUMNS, ClassicArrangement.MIN_COLUMNS, ClassicArrangement.MAX_COLUMNS, "Columns of the storage grid of this backpack's window. On a server, clients use the server's value.");
             types.put(name, new int[]{enabled ? 1 : 0, rows, columns});
         }
         readQuiver(cfg);
@@ -619,7 +624,7 @@ public class ConfigHandler
 
     private static void readQuiver(Configuration cfg)
     {
-        QUIVER_SLOTS = integer(cfg, QUIVER, "slots", 4, 1, QUIVER_MAX_SLOTS, "Slots of the quiver, each holding one stack. They fill the column of the right tank, then the column of its bucket slots. Lowering it keeps the arrows of the slots that go away in the backpack (they come back when the slots do). Set it the same on server and clients.");
+        QUIVER_SLOTS = integer(cfg, QUIVER, "slots", 4, 1, QUIVER_MAX_SLOTS, "Slots of the quiver, each holding one stack. They fill the column of the right tank, then the column of its bucket slots. Lowering it keeps the arrows of the slots that go away in the backpack (they come back when the slots do). On a server, clients use the server's value.");
         order(QUIVER, "items");
         String[] items = cfg.getStringList("items", QUIVER, QUIVER_ITEMS_DEFAULT, "What the quiver slots take, one per line: item:modid:name (any damage value), item:modid:name:meta (that damage value only), ore:name (an Ore Dictionary name) or modid:name. The default is vanilla arrows and the Crossbow Bolts. Set it the same on server and clients.");
         QUIVER_FILTER = QuiverRules.Filter.parse(items);
@@ -643,13 +648,13 @@ public class ConfigHandler
     public static int backpackRows(String colorName)
     {
         int[] t = BACKPACK_TYPES.get(colorName);
-        return t == null ? BackpackLayout.CLASSIC_ROWS : t[1];
+        return t == null ? ClassicArrangement.CLASSIC_ROWS : t[1];
     }
 
     public static int backpackColumns(String colorName)
     {
         int[] t = BACKPACK_TYPES.get(colorName);
-        return t == null ? BackpackLayout.CLASSIC_COLUMNS : t[2];
+        return t == null ? ClassicArrangement.CLASSIC_COLUMNS : t[2];
     }
 
     private static void readAbilities(Configuration cfg)
@@ -752,6 +757,7 @@ public class ConfigHandler
         c = ABILITIES + ".skeleton";
         SKELETON_ENABLED = bool(cfg, c, "enabled", true, "Skeleton Backpack: bows take arrows from the backpack, quiver first, and arrows leave faster (arrowSpeedBonus).");
         SKELETON_ARROW_SPEED_BONUS = decimal(cfg, c, "arrowSpeedBonus", 0.30, 0.0, 2.0, "Extra speed of the arrows and Crossbow Bolts the wearer shoots, as a part of their normal speed (0.30 = 30 % faster). Arrows hurt in proportion to their speed, so they also hit about this much harder. 0 turns it off.");
+        SKELETON_FIRE_RATE_BONUS = decimal(cfg, c, "fireRateBonus", 0.30, 0.0, 2.0, "Extra fire rate of the crossbow in gatling mode (fed from the quiver), as a part of its normal rate (0.30 = 30 % more bolts a second: crossbow.quiver.fireIntervalTicks 3 becomes 3 / 1.3 = about 2.3 ticks, fired as a mix of 2 and 3 tick pauses that averages out). Magazines and the sniper mode keep their own pace. 0 turns it off.");
 
         c = ABILITIES + ".irongolem";
         IRONGOLEM_ENABLED = bool(cfg, c, "enabled", true, "Iron Golem Backpack: no fall damage.");
@@ -819,6 +825,22 @@ public class ConfigHandler
         jet.remove("maxRiseSpeed");
     }
 
+    static void migrateFlamethrowerBalance(Configuration cfg)
+    {
+        ConfigCategory flame = cfg.getCategory(FLAMETHROWER);
+        String[] keys = {"fuelPerBurst", "fireIntervalTicks", "range", "coneDegrees", "damage", "fireSeconds"};
+        double[] old = {20, 4, 6.0, 25.0, 2.0, 5};
+        boolean any = false;
+        for (int i = 0; i < keys.length; i++)
+        {
+            if (!flame.containsKey(keys[i])) continue;
+            if (flame.get(keys[i]).getDouble() != old[i]) return;
+            any = true;
+        }
+        if (!any) return;
+        for (String key : keys) flame.remove(key);
+    }
+
     static void migrateJetpackSteamCost(Configuration cfg)
     {
         ConfigCategory jet = cfg.getCategory(STEAMJETPACK);
@@ -877,16 +899,17 @@ public class ConfigHandler
     private static void readFlamethrower(Configuration cfg)
     {
         FLAMETHROWER_TANK_CAPACITY = integer(cfg, FLAMETHROWER, "tankCapacity", 4000, 500, 64000, "Capacity of each of the two fuel tanks of the pack, in millibuckets. Use the same value on server and clients.", true);
-        FLAMETHROWER_FUEL_PER_BURST = integer(cfg, FLAMETHROWER, "fuelPerBurst", 20, 0, 10000, "Millibuckets of fuel one burst burns, times the fuel's multiplier in fuels.list (oil 1.5 makes it 30). With the defaults two full tanks of fuel make 400 bursts, 80 seconds of continuous fire. 0 makes the fuel free.");
-        FLAMETHROWER_FIRE_INTERVAL_TICKS = integer(cfg, FLAMETHROWER, "fireIntervalTicks", 4, 1, 40, "Cooldown between two bursts while right click is held, in ticks. Each burst burns fuelPerBurst and deals its damage once.");
-        FLAMETHROWER_RANGE = decimal(cfg, FLAMETHROWER, "range", 6.0, 1.0, 16.0, "Reach of the flame in blocks, from the wearer's eyes.");
-        FLAMETHROWER_CONE_DEGREES = decimal(cfg, FLAMETHROWER, "coneDegrees", 25.0, 5.0, 90.0, "Opening of the cone of flame in degrees, around the direction the wearer looks.");
-        FLAMETHROWER_DAMAGE = decimal(cfg, FLAMETHROWER, "damage", 2.0, 0.0, 40.0, "Fire damage of one burst to each target in the cone (2 is one heart). Vanilla's half second of invulnerability after a hit means not every burst lands. Fire-immune mobs take none.");
-        FLAMETHROWER_FIRE_SECONDS = integer(cfg, FLAMETHROWER, "fireSeconds", 5, 0, 60, "Seconds every target in the cone keeps burning after a burst. 0 does not set targets on fire.");
+        migrateFlamethrowerBalance(cfg);
+        FLAMETHROWER_FUEL_PER_BURST = integer(cfg, FLAMETHROWER, "fuelPerBurst", 25, 0, 10000, "Millibuckets of fuel one burst burns, times the fuel's multiplier in fuels.list (oil 1.5 makes it 38). With the defaults the flame burns 100 millibuckets a second and two full tanks of fuel make 320 bursts, 80 seconds of continuous fire. 0 makes the fuel free.");
+        FLAMETHROWER_FIRE_INTERVAL_TICKS = integer(cfg, FLAMETHROWER, "fireIntervalTicks", 5, 1, 40, "Cooldown between two bursts while right click is held, in ticks. Each burst burns fuelPerBurst. A mob takes damage at most once every 10 ticks (vanilla's invulnerability after a hit), so 5 lands every second burst and 4 only every third.");
+        FLAMETHROWER_RANGE = decimal(cfg, FLAMETHROWER, "range", 8.0, 1.0, 16.0, "Reach of the flame in blocks, from the wearer's eyes.");
+        FLAMETHROWER_CONE_DEGREES = decimal(cfg, FLAMETHROWER, "coneDegrees", 30.0, 5.0, 90.0, "Opening of the cone of flame in degrees, around the direction the wearer looks.");
+        FLAMETHROWER_DAMAGE = decimal(cfg, FLAMETHROWER, "damage", 4.0, 0.0, 40.0, "Fire damage of one burst to each target in the cone (2 is one heart). A target takes it at most twice a second, so the default deals 8 a second while it stays in the cone, plus the burning afterwards. Fire-immune mobs take none.");
+        FLAMETHROWER_FIRE_SECONDS = integer(cfg, FLAMETHROWER, "fireSeconds", 10, 0, 60, "Seconds every target in the cone keeps burning after a burst; vanilla fire deals 1 damage a second, so the default adds 10 after the target leaves the flame. Water puts it out. 0 does not set targets on fire.");
         FLAMETHROWER_PVP = bool(cfg, FLAMETHROWER, "pvp", false, "Let the flame hurt and burn other players. Even when true, the server's pvp setting and scoreboard teams still apply. Animals the wearer owns are never hurt.");
         FLAMETHROWER_IGNITES_BLOCKS = bool(cfg, FLAMETHROWER, "ignitesBlocks", false, "Let each burst set fire to the side of the block it hits, like flint and steel. The fire is vanilla fire, so it spreads and burns as usual. It respects spawn protection, adventure mode and protection mods that cancel block placing.");
         FLAMETHROWER_PILOT_FUEL_PER_MINUTE = integer(cfg, FLAMETHROWER, "pilotFuelPerMinute", 0, 0, 6000, "Millibuckets of fuel the lit pilot burns per minute while the pack is worn, times the fuel's multiplier. 0 (the default) makes the pilot free.");
-        FLAMETHROWER_SOUND = bool(cfg, FLAMETHROWER, "sound", true, "Play the vanilla ignite sound when the pilot is lit (the server sends it) and the vanilla fire sound while the nozzle fires (each client plays it). Set it the same on server and clients.");
+        FLAMETHROWER_SOUND = bool(cfg, FLAMETHROWER, "sound", true, "Play the flamethrower's sounds on this client: the pilot lighting up, going out and running dry, a click when the nozzle is used with the pilot out, and the roar of the flame in a loop while the nozzle fires. Each client plays them for every player it sees, from the pack's state, without extra network traffic. The volume is render.flamethrowerVolume.");
     }
 
     private static void readInflatableBoat(Configuration cfg)
@@ -984,6 +1007,11 @@ public class ConfigHandler
         {
             if (crossbow.containsKey(gone)) crossbow.remove(gone);
         }
+        ConfigCategory sniper = cfg.getCategory(CROSSBOW_SNIPER);
+        for (String gone : new String[]{"boltDamage", "boltVelocity", "shotDelayTicks"})
+        {
+            if (sniper.containsKey(gone)) sniper.remove(gone);
+        }
         String elemental = CROSSBOW + ".elemental";
         if (cfg.hasCategory(elemental)) cfg.removeCategory(cfg.getCategory(elemental));
         migrateMagazineCapacity(cfg);
@@ -1011,11 +1039,15 @@ public class ConfigHandler
         cfg.getCategory(CROSSBOW_MAGAZINE).get("legacyRecipe").setRequiresMcRestart(true);
         order(CROSSBOW_AMMO, "list");
         CROSSBOW_AMMO_LIST = cfg.getStringList("list", CROSSBOW_AMMO, CROSSBOW_AMMO_DEFAULT, "Items a magazine can be loaded with, as modid:itemName (any damage value). When a magazine is empty the first ammunition found in the inventory (hotbar first) decides its kind. Names no loaded mod registers are ignored. Set it the same on server and clients.");
-        CROSSBOW_BOLT_DAMAGE_MULTIPLIER = decimal(cfg, CROSSBOW_AMMO, "boltDamageMultiplier", 1.5, 0.1, 10.0, "Damage of bolts fired from a magazine of Crossbow Bolts (adventurebackpack:bolt), as a multiple of crossbow.boltDamage and crossbow.sniper.boltDamage. Other ammunition does the base damage.");
+        CROSSBOW_BOLT_DAMAGE_MULTIPLIER = decimal(cfg, CROSSBOW_AMMO, "boltDamageMultiplier", 1.5, 0.1, 10.0, "Damage of bolts fired from a magazine or a quiver of Crossbow Bolts (adventurebackpack:bolt), as a multiple of the normal or sniper damage. Other ammunition does the base damage.");
         SNIPER_ENABLED = bool(cfg, CROSSBOW_SNIPER, "enabled", true, "The sniper mode. When false the mode is skipped and a crossbow left in it shoots normal bolts.");
-        SNIPER_DAMAGE = decimal(cfg, CROSSBOW_SNIPER, "boltDamage", 12.0, 0.0, 100.0, "Damage of a sniper bolt as it leaves the crossbow, in half hearts. It drops a little with distance as the bolt slows down.");
-        SNIPER_VELOCITY = (float) decimal(cfg, CROSSBOW_SNIPER, "boltVelocity", 5.0, 0.5, 8.0, "Speed of a sniper bolt in blocks per tick. Faster bolts fly flatter and further.");
-        SNIPER_SHOT_DELAY_TICKS = integer(cfg, CROSSBOW_SNIPER, "shotDelayTicks", 30, 4, 200, "Pause after a sniper shot. A held right click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4.");
+        SNIPER_FIRE_INTERVAL_TICKS = integer(cfg, CROSSBOW_SNIPER, "fireIntervalTicks", 48, 4, 400, "Ticks between two sniper shots with the bipod down, from a magazine or from the quiver (48 = one shot every 2.4 seconds). A held right click repeats every 4 ticks, so the real pause is this value rounded up to a multiple of 4.");
+        SNIPER_SPEED_MULTIPLIER = decimal(cfg, CROSSBOW_SNIPER, "speedMultiplier", 3.0, 0.5, 4.0, "Speed of a sniper bolt as a multiple of crossbow.boltVelocity (3.0 x 3 = 9 blocks a tick). Faster bolts fly flatter and further and hurt more at range, since a bolt loses damage as it slows down.");
+        SNIPER_DAMAGE_MULTIPLIER = decimal(cfg, CROSSBOW_SNIPER, "damageMultiplier", 6.0, 0.0, 25.0, "Damage of a sniper bolt as it leaves the crossbow, as a multiple of crossbow.boltDamage (4 x 6 = 24 half hearts, more than a zombie's health). Crossbow Bolts multiply it again by crossbow.ammo.boltDamageMultiplier.");
+        SNIPER_GRAVITY = (float) decimal(cfg, CROSSBOW_SNIPER, "gravity", 0.025, 0.0, 0.05, "How much a sniper bolt falls, in blocks per tick lost each tick. Arrows and normal bolts use 0.05; 0.025 drops half as fast.");
+        SNIPER_DRAG = (float) decimal(cfg, CROSSBOW_SNIPER, "drag", 0.995, 0.9, 1.0, "Part of its speed a sniper bolt keeps each tick in the air. Arrows and normal bolts keep 0.99; 1 never slows down. In water it slows down like an arrow.");
+        SNIPER_DRUM_SPEED = (float) decimal(cfg, CROSSBOW_SNIPER, "drumSpeed", 1.0, 0.25, 8.0, "Client only: how fast the drum turns to the next bolt after a sniper shot. 1 = the turn takes the whole pause between shots and ends when the crossbow can fire again, 2 = half of it.");
+        SNIPER_PIERCING = integer(cfg, CROSSBOW_SNIPER, "piercing", 1, 0, 10, "Creatures a sniper bolt goes through after the first one it hurts, keeping its speed. 0 = it stops in the first one, like other bolts.");
         SNIPER_STILL_TOLERANCE = decimal(cfg, CROSSBOW_SNIPER, "stillTolerance", 0.02, 0.001, 0.2, "Horizontal movement in blocks per tick under which the player counts as still (sneak walking is about 0.065).");
         SNIPER_ZOOM = (float) decimal(cfg, CROSSBOW_SNIPER, "zoom", 0.35, 0.1, 1.0, "Client only: field of view multiplier while the bipod is down. 1 = no zoom, 0.35 = about three times closer.");
         CROSSBOW_QUIVER_ENABLED = bool(cfg, CROSSBOW_QUIVER, "enabled", true, "The crossbow fires from the quiver of a worn Skeleton Backpack (gatling mode). When false it always uses magazines.");
@@ -1027,7 +1059,6 @@ public class ConfigHandler
     private static void readSleepingBag(Configuration cfg)
     {
         SLEEPINGBAG_PLACEABLE = bool(cfg, SLEEPINGBAG, "placeable", true, "Right click the top of a block with the Sleeping Bag item to lay it on the ground as a bed, without a backpack. Breaking it gives the item back; sneak + right click rolls it up into the inventory.");
-        SLEEPINGBAG_SETS_SPAWN = bool(cfg, SLEEPINGBAG, "setsSpawn", true, "Sleeping in a sleeping bag (placed on its own or from a backpack) moves the player's spawn point there, like a bed. When false the player keeps the spawn point they had.");
     }
 
     private static void readPistonBoots(Configuration cfg)
@@ -1059,6 +1090,7 @@ public class ConfigHandler
         STATUS_OVERLAY = bool(cfg, RENDER, "statusOverlay", true, "Show the player's potion effects on screen.");
         RENDER_SCUBA_BUBBLE_TICKS = integer(cfg, RENDER, "scubaBubbleTicks", 10, 1, 200, "Ticks between two puffs of bubbles from the mask of a player breathing from the Scuba Gear.");
         RENDER_FLAMETHROWER_PARTICLES = integer(cfg, RENDER, "flamethrowerParticles", 6, 0, 30, "Flame particles drawn along the cone for each burst of a Flamethrower (smoke comes with every second burst). 0 draws none.");
+        RENDER_FLAMETHROWER_VOLUME = decimal(cfg, RENDER, "flamethrowerVolume", 1.0, 0.0, 1.0, "Volume of the Flamethrower's sounds on this client, from 0.0 (silent) to 1.0. flamethrower.sound turns them off.");
         TANKS_OVERLAY = bool(cfg, RENDER, "wearableOverlay", true, "Show the overlays of the worn backpack, copter pack or jetpack on screen, and the fuel tank of the motorized boat the player rides.");
         RENDER_BOAT_SMOKE_TICKS = integer(cfg, RENDER, "boatSmokeTicks", 8, 0, 200, "The running motor of the motorized boat puffs smoke once every this many ticks. 0 = no smoke.");
         RENDER_QUIVER_ARROWS = bool(cfg, RENDER, "quiverArrows", true, "Draw arrows sticking out of the Skeleton Backpack's quiver (worn, placed and as an item): none when it is empty, more as it fills up (1 to 8, 9 to 32, more than 32 items).");

@@ -39,9 +39,8 @@ class ParticleBeatTest
     }
 
     @Test
-    void theSoundPlaysAboutOnceASecondAndThePilotEveryHalfSecond()
+    void thePilotFlickersEveryHalfSecond()
     {
-        assertEquals(3, count(60, t -> ParticleBeat.sound(t, 11)));
         assertEquals(6, count(60, t -> ParticleBeat.pilot(t, 11)));
     }
 

@@ -124,7 +124,7 @@ The limit, the taming chance, the item you tame and heal with, their health, how
 
 The Skeleton backpack carries a quiver in the place of its right tank. The quiver has 4 slots that only take arrows and Crossbow Bolts, and shift click puts arrows there before the storage. When you draw a bow while you wear the backpack, the arrow comes from the backpack, the quiver first. The quiver shows on the backpack: one arrow when it holds a few, three with up to 32, and five when it holds more.
 
-Arrows and Crossbow Bolts you shoot while you wear the backpack leave 30 % faster, from a bow or from the crossbow. They fly flatter and further, and because an arrow hurts in proportion to its speed, they also hit about 30 % harder. The Clockwork Crossbow fires straight from the quiver, without magazines, as long as the quiver holds arrows or bolts: see [Gatling mode](Crossbow#gatling-mode-the-skeleton-backpacks-quiver). The Gear On/Off key turns both off together with the bow's arrows from the backpack.
+Arrows and Crossbow Bolts you shoot while you wear the backpack leave 30 % faster, from a bow or from the crossbow. They fly flatter and further, and because an arrow hurts in proportion to its speed, they also hit about 30 % harder. The Clockwork Crossbow fires straight from the quiver, without magazines, as long as the quiver holds arrows or bolts, and 30 % faster than its usual gatling pace: see [Gatling mode](Crossbow#gatling-mode-the-skeleton-backpacks-quiver). The Gear On/Off key turns both off together with the bow's arrows from the backpack.
 
 The backpack has one tank. A Skeleton backpack from an older version keeps its fluid: what fits moves into the left tank, and the rest stays sealed in the right tank until you empty it with the hose.
 
@@ -140,7 +140,7 @@ A few types do something when placed:
 
 - Glowstone gives off light.
 - Redstone gives off a redstone signal.
-- Bookshelf counts as ten bookshelves for an enchanting table, when placed where a bookshelf would go.
+- Bookshelf counts as four bookshelves for an enchanting table, when placed where a bookshelf would go.
 - Cactus pricks anything that touches it, and fills with rain.
 - Melon fills with rain, with melon juice.
 

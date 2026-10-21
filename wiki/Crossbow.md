@@ -94,7 +94,7 @@ Right click and the crossbow shoots a hook with a rope. The hook flies straight,
 
 ## Sniper mode
 
-Sneak and stand still on the ground to put the bipod down. The view zooms in about three times. While the bipod is down, right click fires one bolt that is stronger and faster than a normal one and flies straight, without spread: 12 damage, six hearts, and about a second and a half until the next shot. From a magazine of Crossbow Bolts it does 18 damage, nine hearts.
+Sneak and stand still on the ground to put the bipod down. The view zooms in about three times. While the bipod is down, right click fires one slow, heavy shot. The bolt leaves three times faster than a normal one (9 blocks a tick), flies straight without spread, falls half as fast and barely slows down: it drops less than a block over 64 blocks and under three over 128. It does 24 damage, twelve hearts, more than a zombie can take, and keeps almost all of it at range (23 at 128 blocks). It goes through the first creature it hurts and can hit one more behind it. The drum turns slowly to the next bolt, and the crossbow is ready again when the turn ends, 2.4 seconds after the shot. From a magazine of Crossbow Bolts the shot does half as much again.
 
 The bipod folds when you move, jump, stop sneaking or ride something. Walking while sneaking is too fast for it. With the bipod folded, the sniper mode fires normal bolts, like repetition mode. With the bipod down, sneak + right click fires and does not swap the magazine. An empty magazine still reloads by itself.
 
@@ -102,7 +102,7 @@ The bipod folds when you move, jump, stop sneaking or ride something. Walking wh
 
 ## Gatling mode: the Skeleton backpack's quiver
 
-Wear a Skeleton backpack with arrows or Crossbow Bolts in its quiver, and the crossbow needs no magazine. Hold right click and it fires without stopping, one item of the quiver per bolt, a little faster than a magazine: between 6 and 7 bolts a second. It fires Crossbow Bolts first and arrows after them. The drum stays full and turns one chamber per bolt. When the quiver is empty, the crossbow fires the magazine inside it and then reloads from your inventory as usual. The magazine inside is not touched while the quiver feeds the crossbow.
+Wear a Skeleton backpack with arrows or Crossbow Bolts in its quiver, and the crossbow needs no magazine. Hold right click and it fires without stopping, one item of the quiver per bolt, faster than a magazine: about 8.7 bolts a second, 30 % more than its base pace of 6 to 7 (`abilities.skeleton.fireRateBonus`). The drum keeps up with every shot. It fires Crossbow Bolts first and arrows after them. The drum stays full and turns one chamber per bolt. When the quiver is empty, the crossbow fires the magazine inside it and then reloads from your inventory as usual. The magazine inside is not touched while the quiver feeds the crossbow.
 
 The other modes use the quiver too. The grappling hook takes its charge from the quiver, and the sniper mode with the bipod down fires its single strong bolts from the quiver at its own pace. With the bipod folded the sniper mode fires like the gatling mode. Sneak + right click still swaps the magazine.
 

@@ -3,6 +3,8 @@ package com.darkona.adventurebackpack.client.gui;
 import com.darkona.adventurebackpack.config.Keybindings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import com.darkona.adventurebackpack.client.gui.widget.BackpackButton;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
@@ -15,11 +17,8 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class GuiToggleButton
 {
-    private static final int BORDER = 0xFF373737;
-    private static final int ON = 0xFF3C9A3C;
-    private static final int ON_HOVER = 0xFF5CC85C;
-    private static final int OFF = 0xFF8A3030;
-    private static final int OFF_HOVER = 0xFFB05050;
+    private static final int ON = 0x1E7A1E;
+    private static final int OFF = 0x8A2020;
     private static final float LABEL_SCALE = 0.75F;
 
     private final int x;
@@ -32,12 +31,15 @@ public class GuiToggleButton
     private String labelOn = "";
     private String labelOff = "";
 
-    public GuiToggleButton(int x, int y, int w, int h, String titleKey)
+    public static final int WIDTH = 18;
+    public static final int HEIGHT = 12;
+
+    public GuiToggleButton(int x, int y, String titleKey)
     {
         this.x = x;
         this.y = y;
-        this.w = w;
-        this.h = h;
+        this.w = WIDTH;
+        this.h = HEIGHT;
         this.titleKey = titleKey;
     }
 
@@ -61,17 +63,18 @@ public class GuiToggleButton
         return x <= mouseX && mouseX < x + w && y <= mouseY && mouseY < y + h;
     }
 
-    public void draw(FontRenderer font, boolean on, boolean hover)
+    public void draw(Gui gui, Minecraft mc, boolean on, boolean hover)
     {
-        Gui.drawRect(x, y, x + w, y + h, BORDER);
-        Gui.drawRect(x + 1, y + 1, x + w - 1, y + h - 1, on ? (hover ? ON_HOVER : ON) : (hover ? OFF_HOVER : OFF));
+        BackpackButton.drawFace(gui, mc, x, y, h, hover, on);
+        FontRenderer font = mc.fontRenderer;
         String label = on ? labelOn : labelOff;
+        int shift = on ? 1 : 0;
         GL11.glPushMatrix();
         try
         {
-            GL11.glTranslatef(x + w / 2.0F, y + (h - 8 * LABEL_SCALE) / 2.0F, 0);
+            GL11.glTranslatef(x + w / 2.0F + shift, y + (h - 8 * LABEL_SCALE) / 2.0F + shift, 0);
             GL11.glScalef(LABEL_SCALE, LABEL_SCALE, 1);
-            font.drawString(label, -font.getStringWidth(label) / 2, 0, 0xFFFFFF, false);
+            font.drawString(label, -font.getStringWidth(label) / 2, 0, on ? ON : OFF, false);
         } finally
         {
             GL11.glPopMatrix();

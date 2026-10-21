@@ -31,6 +31,8 @@ public class ModNetwork
         registerMessage(PlayerActionPacket.class, PlayerActionPacket.ActionMessage.class);
         registerMessage(EquipUnequipBackWearablePacket.class, EquipUnequipBackWearablePacket.Message.class);
         registerMessage(CrossbowPacket.class, CrossbowPacket.Message.class);
+        registerMessage(LayoutSyncPacket.class, LayoutSyncPacket.Message.class);
+        registerMessage(StoragePacket.class, StoragePacket.Message.class);
     }
 
     @SuppressWarnings("unchecked")

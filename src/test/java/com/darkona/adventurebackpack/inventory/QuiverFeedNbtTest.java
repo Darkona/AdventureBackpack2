@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.inventory.widget.classic.QuiverNbt;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,7 +34,7 @@ class QuiverFeedNbtTest
         NBTTagCompound data = new NBTTagCompound();
         NBTTagList list = new NBTTagList();
         for (NBTTagCompound e : entries) list.appendTag(e);
-        data.setTag(BackpackNbt.QUIVER, list);
+        data.setTag(QuiverNbt.QUIVER, list);
         return data;
     }
 
@@ -47,11 +49,11 @@ class QuiverFeedNbtTest
         NBTTagCompound data = data(entry(0, ARROW, 40), entry(1, BOLT, 12), damaged, tagged, entry(5, BOLT, 64));
         int[] ids = {7, 7, 7, 7, 7, 7};
         int[] counts = {7, 7, 7, 7, 7, 7};
-        BackpackNbt.readQuiverCounts(data, 4, ids, counts);
+        QuiverNbt.readQuiverCounts(data, 4, ids, counts);
         assertArrayEquals(new int[]{ARROW, BOLT, 0, 0, 7, 7}, ids, "a tagged or damaged stack reads as empty");
         assertArrayEquals(new int[]{40, 12, 0, 0, 7, 7}, counts);
 
-        BackpackNbt.readQuiverCounts(null, 4, ids, counts);
+        QuiverNbt.readQuiverCounts(null, 4, ids, counts);
         assertArrayEquals(new int[]{0, 0, 0, 0, 7, 7}, counts, "no backpack data: an empty quiver");
     }
 
@@ -61,12 +63,12 @@ class QuiverFeedNbtTest
         NBTTagCompound data = data(entry(0, ARROW, 40), entry(1, BOLT, 3), entry(5, BOLT, 64));
         int[] ids = {ARROW, BOLT, 0, 0};
         int[] spent = {10, 3, 0, 0};
-        assertEquals(13, BackpackNbt.takeFromQuiver(data, 4, ids, spent));
+        assertEquals(13, QuiverNbt.takeFromQuiver(data, 4, ids, spent));
         int[] counts = new int[4];
-        BackpackNbt.readQuiverCounts(data, 4, ids, counts);
+        QuiverNbt.readQuiverCounts(data, 4, ids, counts);
         assertArrayEquals(new int[]{30, 0, 0, 0}, counts, "the emptied bolt slot left the list");
-        assertEquals(2, data.getTagList(BackpackNbt.QUIVER, 10).tagCount(), "the kept slot 5 stays untouched");
-        assertEquals(QuiverRules.level(30), data.getByte(BackpackNbt.QUIVER_FILL), "the kept stack does not count for the model");
+        assertEquals(2, data.getTagList(QuiverNbt.QUIVER, 10).tagCount(), "the kept slot 5 stays untouched");
+        assertEquals(QuiverRules.level(30), data.getByte(QuiverNbt.QUIVER_FILL), "the kept stack does not count for the model");
     }
 
     @Test
@@ -76,14 +78,14 @@ class QuiverFeedNbtTest
         NBTTagCompound data = data(entry(0, BOLT, 20), entry(1, ARROW, 2));
         int[] ids = {ARROW, ARROW};
         int[] spent = {5, 6};
-        assertEquals(2, BackpackNbt.takeFromQuiver(data, 2, ids, spent));
+        assertEquals(2, QuiverNbt.takeFromQuiver(data, 2, ids, spent));
         int[] newIds = new int[2];
         int[] counts = new int[2];
-        BackpackNbt.readQuiverCounts(data, 2, newIds, counts);
+        QuiverNbt.readQuiverCounts(data, 2, newIds, counts);
         assertArrayEquals(new int[]{BOLT, 0}, newIds);
         assertArrayEquals(new int[]{20, 0}, counts);
 
-        assertEquals(0, BackpackNbt.takeFromQuiver(new NBTTagCompound(), 2, ids, spent), "no quiver: nothing to take");
-        assertEquals(0, BackpackNbt.takeFromQuiver(null, 2, ids, spent));
+        assertEquals(0, QuiverNbt.takeFromQuiver(new NBTTagCompound(), 2, ids, spent), "no quiver: nothing to take");
+        assertEquals(0, QuiverNbt.takeFromQuiver(null, 2, ids, spent));
     }
 }

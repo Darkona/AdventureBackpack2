@@ -42,7 +42,7 @@ item.adventurebackpack:flamethrowerPack.name=Mochila Lança-chamas
 item.adventurebackpack:flamethrower.name=Lança-chamas
 
 ## Armor
-item.adventurebackpack:adventureSuit.name=Traje do Aventureiro
+item.adventurebackpack:adventureJacket.name=Traje do Aventureiro
 item.adventurebackpack:adventureHat.name=Fedora do Aventureiro
 item.adventurebackpack:pistonBoots.name=Botas de Pistão
 
@@ -162,8 +162,20 @@ adventurebackpack:gui.toggle.on=LIG
 adventurebackpack:gui.toggle.off=DES
 adventurebackpack:gui.toggle.stateOn=ligado
 adventurebackpack:gui.toggle.stateOff=desligado
-adventurebackpack:gui.toggle.hint=Clique ou aperte %s (Ligar/Desligar o Equipamento).
-adventurebackpack:gui.toggle.abilities=Habilidades da mochila: %s
-adventurebackpack:gui.toggle.jetpack=Fornalha (queima combustível e faz vapor): %s
+adventurebackpack:gui.toggle.hint=Clique ou aperte %s
+adventurebackpack:gui.toggle.abilities=Habilidades: %s
+adventurebackpack:gui.toggle.jetpack=Fornalha: %s
 adventurebackpack:gui.toggle.copter=Motor: %s
 adventurebackpack:gui.toggle.pilot=Chama piloto: %s
+item.adventurebackpack:telescope.name=Luneta
+item.adventurebackpack:adventurePants.name=Calça do aventureiro
+adventurebackpack:gui.quiver.slot=Flechas e virotes
+adventurebackpack:messages.spawn.campfire=Respawn point set at the campfire.
+item.adventurebackpack:rope.name=Corda
+tile.adventurebackpack:blockRope.name=Corda
+adventurebackpack:gui.lock.off=Travar espaços
+adventurebackpack:gui.lock.on=Clique num espaço
+adventurebackpack:gui.sort=Ordenar
+adventurebackpack:gui.button.bed=Saco de dormir
+adventurebackpack:gui.button.equip=Vestir
+adventurebackpack:gui.button.unequip=Tirar

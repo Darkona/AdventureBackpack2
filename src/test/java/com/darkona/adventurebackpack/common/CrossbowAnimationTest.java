@@ -332,4 +332,62 @@ class CrossbowAnimationTest {
         }
         assertEquals(CrossbowAnimation.firingChamber(ammo, CrossbowAnimation.feedCapacity(8)), 2);
     }
+
+    @Test
+    void drumTurnFollowsThePauseOfEachShot()
+    {
+        assertEquals(CrossbowLogic.RECOIL_TICKS, CrossbowAnimation.drumTurnTicks(4, false, 1F), EPS, "magazine shot: as before");
+        assertEquals(CrossbowLogic.RECOIL_TICKS, CrossbowAnimation.drumTurnTicks(12, false, 1F), EPS, "slow magazine: the usual quick turn");
+        assertEquals(3F, CrossbowAnimation.drumTurnTicks(3, false, 1F), EPS, "gatling: done by the next shot");
+        assertEquals(2F, CrossbowAnimation.drumTurnTicks(2, false, 1F), EPS, "gatling with the Skeleton bonus");
+        assertEquals(48F, CrossbowAnimation.drumTurnTicks(48, true, 1F), EPS, "sniper: the whole pause");
+        assertEquals(24F, CrossbowAnimation.drumTurnTicks(48, true, 2F), EPS, "sniper drumSpeed 2: half of it");
+        assertEquals(CrossbowLogic.RECOIL_TICKS, CrossbowAnimation.drumTurnTicks(0, true, 1F), EPS, "no pause known");
+    }
+
+    @Test
+    void drumTurnLeftRunsFromOneToZero()
+    {
+        assertEquals(1F, CrossbowAnimation.drumTurnLeft(100, 0F, 100, 48F), EPS);
+        assertEquals(0.5F, CrossbowAnimation.drumTurnLeft(124, 0F, 100, 48F), EPS);
+        assertEquals(0F, CrossbowAnimation.drumTurnLeft(148, 0F, 100, 48F), EPS);
+        assertEquals(0F, CrossbowAnimation.drumTurnLeft(100, 0F, 0, 48F), EPS, "never fired");
+        assertEquals(0F, CrossbowAnimation.drumTurnLeft(90, 0F, 100, 48F), EPS, "clock went back");
+        assertEquals(CrossbowAnimation.drumDegrees(1, CAP, 2F, -1F), CrossbowAnimation.drumAt(1, CAP, CrossbowAnimation.drumTurnLeft(102, 0F, 100, CrossbowLogic.RECOIL_TICKS), -1F), EPS, "same as the recoil turn");
+    }
+
+    @Test
+    void gatlingDrumNeverJumpsBetweenShots()
+    {
+        double exact = QuiverFeedRules.exactInterval(3, 0.30);
+        double carry = 0;
+        long lastShot = 1000;
+        int quiverShots = 1;
+        for (int i = 0; i < 40; i++)
+        {
+            int pause = QuiverFeedRules.ticksFor(carry, exact);
+            carry = QuiverFeedRules.carryAfter(carry, exact);
+            float turn = CrossbowAnimation.drumTurnTicks(pause, false, 1F);
+            int cap = CrossbowAnimation.feedCapacity(quiverShots);
+            float before = CrossbowAnimation.drumAt(CrossbowAnimation.feedAmmo(), cap, CrossbowAnimation.drumTurnLeft(lastShot + pause, 0F, lastShot, turn), -1F);
+            long next = lastShot + pause;
+            quiverShots++;
+            int nextCap = CrossbowAnimation.feedCapacity(quiverShots);
+            float after = CrossbowAnimation.drumAt(CrossbowAnimation.feedAmmo(), nextCap, CrossbowAnimation.drumTurnLeft(next, 0F, next, turn), -1F);
+            assertEquals(norm(before), norm(after), 0.01F, "no jump at shot " + i);
+            lastShot = next;
+        }
+    }
+
+    @Test
+    void sniperDrumTurnsSlowlyAcrossThePause()
+    {
+        float turn = CrossbowAnimation.drumTurnTicks(48, true, 1F);
+        float start = CrossbowAnimation.drumAt(5, CAP, CrossbowAnimation.drumTurnLeft(0 + 100, 0F, 100, turn), -1F);
+        float mid = CrossbowAnimation.drumAt(5, CAP, CrossbowAnimation.drumTurnLeft(124, 0F, 100, turn), -1F);
+        float end = CrossbowAnimation.drumAt(5, CAP, CrossbowAnimation.drumTurnLeft(148, 0F, 100, turn), -1F);
+        assertEquals(0F, start, EPS);
+        assertEquals(-30F, mid, EPS);
+        assertEquals(-60F, end, EPS);
+    }
 }

@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.common.layout.classic.ClassicSlots;
+
 import com.darkona.adventurebackpack.item.ItemSteamJetpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import com.darkona.adventurebackpack.config.ConfigHandler;
@@ -52,11 +54,11 @@ public class ServerActions
             if (!canCycleTool(Wearing.getWearingBackpack(player), current)) return;
             InventoryBackpack backpack = Wearing.getBackpackInv(player, true);
             backpack.openInventory();
-            ItemStack[] tools = {current, backpack.getStackInSlot(Constants.upperTool), backpack.getStackInSlot(Constants.lowerTool)};
+            ItemStack[] tools = {current, backpack.getStackInSlot(ClassicSlots.toolIndex(backpack.getLayout(), 0)), backpack.getStackInSlot(ClassicSlots.toolIndex(backpack.getLayout(), 1))};
             rotateTools(tools, direction);
             player.inventory.mainInventory[slot] = tools[0];
-            backpack.setInventorySlotContentsNoSave(Constants.upperTool, tools[1]);
-            backpack.setInventorySlotContentsNoSave(Constants.lowerTool, tools[2]);
+            backpack.setInventorySlotContentsNoSave(ClassicSlots.toolIndex(backpack.getLayout(), 0), tools[1]);
+            backpack.setInventorySlotContentsNoSave(ClassicSlots.toolIndex(backpack.getLayout(), 1), tools[2]);
             backpack.markDirty();
             player.inventory.markDirty();
         } catch (Exception oops)
@@ -84,7 +86,6 @@ public class ServerActions
         {
             inv.setOn(true);
             player.addChatComponentMessage(new ChatComponentTranslation("adventurebackpack:messages.flamethrower.on"));
-            if (ConfigHandler.FLAMETHROWER_SOUND) player.worldObj.playSoundAtEntity(player, "fire.ignite", 1.0F, 1.0F);
         }
         inv.markDirty();
     }

@@ -324,12 +324,12 @@ public class ModelClockworkCrossbow extends ModelBase
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-        render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, CrossbowAnimation.NEVER, -1F, false, CrossbowLogic.MODE_REPEATING, 0F, false);
+        render(f5, CrossbowAnimation.CHAMBERS, CrossbowAnimation.CHAMBERS, CrossbowAnimation.NEVER, 0F, -1F, false, CrossbowLogic.MODE_REPEATING, 0F, false);
     }
 
-    public void render(float scale, int ammo, int capacity, float sinceShot, float reloadProgress, boolean swapped, int mode, float bipodPose, boolean hookLoaded)
+    public void render(float scale, int ammo, int capacity, float sinceShot, float drumTurnLeft, float reloadProgress, boolean swapped, int mode, float bipodPose, boolean hookLoaded)
     {
-        float drumDegrees = CrossbowAnimation.drumDegrees(ammo, capacity, sinceShot, reloadProgress);
+        float drumDegrees = CrossbowAnimation.drumAt(ammo, capacity, drumTurnLeft, reloadProgress);
         drum.rotateAngleZ = drumDegrees * DEG;
         gear.rotateAngleX = drumDegrees * 2F * DEG;
         key.rotateAngleX = -drumDegrees * 2F * DEG;

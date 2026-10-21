@@ -64,6 +64,8 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
             capacity = CrossbowAnimation.feedCapacity(state.quiverShots);
         }
         int mode = ItemCrossbow.effectiveMode(state.mode);
+        float turnTicks = CrossbowAnimation.drumTurnTicks(state.readyAt - state.lastShot, mode == CrossbowLogic.MODE_SNIPER, ConfigHandler.SNIPER_DRUM_SPEED);
+        float drumLeft = CrossbowAnimation.drumTurnLeft(now, partialTicks, state.lastShot, turnTicks);
         EntityPlayer holder = (type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
                 && data.length > 1 && data[1] instanceof EntityPlayer ? (EntityPlayer) data[1] : null;
         float bipod = 0F;
@@ -103,7 +105,7 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
                 default:
                     return;
             }
-            model.render(MODEL_SCALE, ammo, capacity, sinceShot, reload, state.reloadSwap, mode, bipod, hookLoaded);
+            model.render(MODEL_SCALE, ammo, capacity, sinceShot, drumLeft, reload, state.reloadSwap, mode, bipod, hookLoaded);
         } finally
         {
             GL11.glColor4f(1F, 1F, 1F, 1F);
@@ -157,15 +159,13 @@ public class RendererItemClockworkCrossbow implements IItemRenderer
 
     private static void inventory()
     {
-        GL11.glRotatef(45F, 0F, 1F, 0F);
-        GL11.glRotatef(-210F, 1F, 0F, 0F);
-        GL11.glScalef(1F, 1F, -1F);
-        GL11.glRotatef(180F, 0F, 0F, 1F);
-        GL11.glRotatef(30F, 0F, 0F, 1F);
-        GL11.glRotatef(-70F, 0F, 1F, 0F);
-        GL11.glRotatef(20F, 1F, 0F, 0F);
-        GL11.glScalef(0.6F, 0.6F, 0.6F);
-        GL11.glTranslatef(0F, -2F * MODEL_SCALE, -2F * MODEL_SCALE);
+        float[] r = CrossbowAnimation.ICON_ROTATIONS;
+        for (int i = 0; i < r.length; i += 4)
+        {
+            GL11.glRotatef(r[i], r[i + 1], r[i + 2], r[i + 3]);
+        }
+        GL11.glScalef(CrossbowAnimation.ICON_SCALE, CrossbowAnimation.ICON_SCALE, CrossbowAnimation.ICON_SCALE);
+        GL11.glTranslatef(CrossbowAnimation.ICON_OFFSET_X * MODEL_SCALE, CrossbowAnimation.ICON_OFFSET_Y * MODEL_SCALE, CrossbowAnimation.ICON_OFFSET_Z * MODEL_SCALE);
     }
 
     private static void entity()

@@ -12,6 +12,7 @@ public class ModBlocks
     public static BlockAirCompressor blockAirCompressor = new BlockAirCompressor();
     public static BlockDistillery blockDistillery = new BlockDistillery();
     public static BlockGear blockGear = new BlockGear();
+    public static BlockRope blockRope = new BlockRope();
 
     public static void init()
     {
@@ -22,6 +23,7 @@ public class ModBlocks
         GameRegistry.registerBlock(blockAirCompressor, "blockAirCompressor");
         GameRegistry.registerBlock(blockDistillery, "blockDistillery");
         GameRegistry.registerBlock(blockGear, null, "blockGear");
+        GameRegistry.registerBlock(blockRope, null, "blockRope");
 
         GameRegistry.registerTileEntity(TileCampfire.class, "tileCampFire");
         GameRegistry.registerTileEntity(TileAdventureBackpack.class, "adventureBackpackTileEntity");

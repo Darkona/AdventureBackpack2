@@ -4,8 +4,6 @@ import com.darkona.adventurebackpack.common.QuiverRules;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
@@ -92,40 +90,5 @@ public final class Quiver
     public static int level(ItemStack[] inventory, int offset, int slots)
     {
         return slots <= 0 ? QuiverRules.LEVEL_EMPTY : QuiverRules.level(count(inventory, offset, slots));
-    }
-
-    public static boolean sealRightTank(FluidTank left, FluidTank right, boolean quiver)
-    {
-        if (!quiver)
-        {
-            right.setCapacity(ConfigHandler.BACKPACK_TANK_CAPACITY);
-            return false;
-        }
-        boolean movedAny = false;
-        FluidStack r = right.getFluid();
-        if (r != null && r.amount > 0)
-        {
-            FluidStack l = left.getFluid();
-            boolean leftEmpty = l == null || l.amount <= 0;
-            int moved = QuiverRules.movedToLeft(leftEmpty, !leftEmpty && l.isFluidEqual(r), leftEmpty ? 0 : l.amount, r.amount, left.getCapacity());
-            if (moved > 0)
-            {
-                if (leftEmpty)
-                {
-                    FluidStack into = r.copy();
-                    into.amount = moved;
-                    left.setFluid(into);
-                } else
-                {
-                    l.amount += moved;
-                }
-                r.amount -= moved;
-                if (r.amount <= 0) right.setFluid(null);
-                movedAny = true;
-            }
-        }
-        FluidStack rest = right.getFluid();
-        right.setCapacity(rest == null ? 0 : rest.amount);
-        return movedAny;
     }
 }

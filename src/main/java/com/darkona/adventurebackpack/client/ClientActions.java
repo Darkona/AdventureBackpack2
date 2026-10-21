@@ -2,6 +2,9 @@ package com.darkona.adventurebackpack.client;
 
 import com.darkona.adventurebackpack.client.audio.*;
 import com.darkona.adventurebackpack.common.BoatMotorSound;
+import com.darkona.adventurebackpack.common.FlamethrowerSound;
+import com.darkona.adventurebackpack.inventory.InventoryFlamethrowerPack;
+import com.darkona.adventurebackpack.playerProperties.BackpackProperty;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.entity.EntityInflatableBoat;
 import com.darkona.adventurebackpack.network.messages.EntityParticlePacket;
@@ -13,6 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 public class ClientActions
 {
@@ -99,5 +103,49 @@ public class ClientActions
         {
             boat.worldObj.playSound(boat.posX, boat.posY, boat.posZ, ModInfo.MOD_ID + ":boatmotorstop", volume, 1.0F, false);
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void flamethrowerSounds(EntityPlayer player, ItemStack pack)
+    {
+        boolean lit = InventoryFlamethrowerPack.isLit(pack);
+        boolean firing = lit && FlamethrowerLoopSound.isFiring(player);
+        int events = BackpackProperty.get(player).getFlameSound().update(player.ticksExisted, lit, firing);
+        if (events == 0) return;
+        float master = FlamethrowerSound.master(ConfigHandler.RENDER_FLAMETHROWER_VOLUME);
+        if (!FlamethrowerSound.audible(ConfigHandler.FLAMETHROWER_SOUND, master)) return;
+        if ((events & FlamethrowerSound.IGNITE) != 0)
+        {
+            playAt(player, FlamethrowerSound.IGNITE_SOUND, FlamethrowerSound.IGNITE_VOLUME * master, FlamethrowerSound.IGNITE_PITCH);
+        }
+        if ((events & FlamethrowerSound.PUT_OUT) != 0)
+        {
+            if (!InventoryFlamethrowerPack.hasFuel(pack))
+            {
+                playAt(player, FlamethrowerSound.NO_FUEL_SOUND, FlamethrowerSound.NO_FUEL_VOLUME * master, FlamethrowerSound.NO_FUEL_PITCH);
+            } else
+            {
+                playAt(player, FlamethrowerSound.PUT_OUT_SOUND, FlamethrowerSound.PUT_OUT_VOLUME * master, FlamethrowerSound.PUT_OUT_PITCH);
+            }
+        }
+        if ((events & FlamethrowerSound.FIRE_START) != 0)
+        {
+            playAt(player, FlamethrowerSound.FIRE_START_SOUND, FlamethrowerSound.FIRE_START_VOLUME * master, FlamethrowerSound.FIRE_START_PITCH);
+            FMLClientHandler.instance().getClient().getSoundHandler().playSound(new FlamethrowerLoopSound(player));
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void flamethrowerDryClick(EntityPlayer player)
+    {
+        float master = FlamethrowerSound.master(ConfigHandler.RENDER_FLAMETHROWER_VOLUME);
+        if (!FlamethrowerSound.audible(ConfigHandler.FLAMETHROWER_SOUND, master)) return;
+        playAt(player, FlamethrowerSound.DRY_SOUND, FlamethrowerSound.DRY_VOLUME * master, FlamethrowerSound.DRY_PITCH);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static void playAt(EntityPlayer player, String sound, float volume, float pitch)
+    {
+        player.worldObj.playSound(player.posX, player.posY + 1.0D, player.posZ, sound, volume, pitch, false);
     }
 }

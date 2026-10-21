@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.playerProperties;
 
+import com.darkona.adventurebackpack.common.FlamethrowerSound;
 import adventurebackpack.api.IInventoryTanks;
 import com.darkona.adventurebackpack.config.ConfigHandler;
 import com.darkona.adventurebackpack.init.ModNetwork;
@@ -24,7 +25,6 @@ public class BackpackProperty implements IExtendedEntityProperties
     private ItemStack wearable = null;
     private ChunkCoordinates campFire = null;
     private NBTTagCompound wearableData = new NBTTagCompound();
-    private boolean forceCampFire = false;
     private boolean abilitiesOff = false;
     private int dimension = 0;
     private boolean sentOnce = false;
@@ -32,13 +32,19 @@ public class BackpackProperty implements IExtendedEntityProperties
     private int lastChangeSyncTick = Integer.MIN_VALUE;
     private ChunkCoordinates sentCampFire = null;
     private int sentDimension = 0;
-    private boolean sentForceCampFire = false;
     private boolean sentAbilitiesOff = false;
     private NBTTagCompound sentObserverData = null;
     private long lastRelayTick = Long.MIN_VALUE / 2;
     private boolean copterClimbing = false;
     private boolean wearableInBauble = false;
     private QuiverFeed quiverFeed = null;
+    private FlamethrowerSound.State flameSound = null;
+
+    public FlamethrowerSound.State getFlameSound()
+    {
+        if (flameSound == null) flameSound = new FlamethrowerSound.State();
+        return flameSound;
+    }
 
     public QuiverFeed getQuiverFeed()
     {
@@ -105,7 +111,6 @@ public class BackpackProperty implements IExtendedEntityProperties
         sentWearable.take(wearable);
         sentCampFire = campFire == null ? null : new ChunkCoordinates(campFire);
         sentDimension = dimension;
-        sentForceCampFire = forceCampFire;
         sentAbilitiesOff = abilitiesOff;
         try
         {
@@ -126,7 +131,7 @@ public class BackpackProperty implements IExtendedEntityProperties
 
     private boolean sameAsSent()
     {
-        return sentOnce && forceCampFire == sentForceCampFire && abilitiesOff == sentAbilitiesOff && dimension == sentDimension
+        return sentOnce && abilitiesOff == sentAbilitiesOff && dimension == sentDimension
                 && (campFire == null ? sentCampFire == null : campFire.equals(sentCampFire))
                 && sentWearable.matches(wearable);
     }
@@ -197,7 +202,6 @@ public class BackpackProperty implements IExtendedEntityProperties
             compound.setInteger("campFireZ", campFire.posZ);
             compound.setInteger("campFireDim", dimension);
         }
-        compound.setBoolean("forceCampFire",forceCampFire);
         if (abilitiesOff) compound.setBoolean("abilitiesOff", true);
     }
 
@@ -209,7 +213,6 @@ public class BackpackProperty implements IExtendedEntityProperties
             setWearable( compound.hasKey("wearable") ? ItemStack.loadItemStackFromNBT(compound.getCompoundTag("wearable")) : null);
             setCampFire(compound.hasKey("campFireX") ? new ChunkCoordinates(compound.getInteger("campFireX"), compound.getInteger("campFireY"), compound.getInteger("campFireZ")) : null);
             dimension = compound.getInteger("campFireDim");
-            forceCampFire = compound.getBoolean("forceCampFire");
             abilitiesOff = compound.getBoolean("abilitiesOff");
         }
     }
@@ -291,16 +294,6 @@ public class BackpackProperty implements IExtendedEntityProperties
     public void setAbilitiesOff(boolean off)
     {
         abilitiesOff = off;
-    }
-
-    public boolean isForcedCampFire()
-    {
-        return forceCampFire;
-    }
-
-    public void setForceCampFire(boolean forceCampFire)
-    {
-        this.forceCampFire = forceCampFire;
     }
 
     public void executeWearableUpdateProtocol()

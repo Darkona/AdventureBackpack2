@@ -37,6 +37,13 @@ public class InventoryFlamethrowerPack implements IInventoryTanks
         return pack != null && pack.stackTagCompound != null && pack.stackTagCompound.getCompoundTag(TAG).getBoolean("on");
     }
 
+    public static boolean hasFuel(ItemStack pack)
+    {
+        if (pack == null || pack.stackTagCompound == null) return false;
+        NBTTagCompound data = pack.stackTagCompound.getCompoundTag(TAG);
+        return data.getCompoundTag("leftTank").getInteger("Amount") > 0 || data.getCompoundTag("rightTank").getInteger("Amount") > 0;
+    }
+
     public ItemStack getParentItemStack()
     {
         return containerStack;

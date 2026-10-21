@@ -1,5 +1,8 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.common.layout.classic.ClassicArrangement;
+import com.darkona.adventurebackpack.common.layout.classic.ClassicSlots;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -66,15 +69,15 @@ class QuiverSlotsTest
     {
         contents = new HashMap<Integer, ItemStack>();
         ContainerBackpack c = ContainerBackpackSlotsTest.build("Skeleton", contents);
-        assertTrue(c.layout.quiver() > 0, "the Skeleton has a quiver by default");
+        assertTrue(BackpackLayout.view(c).quiver() > 0, "the Skeleton has a quiver by default");
         return c;
     }
 
     private static boolean quiverHolds(ContainerBackpack c, Item item)
     {
-        for (int q = 0; q < c.layout.quiver(); q++)
+        for (int q = 0; q < BackpackLayout.view(c).quiver(); q++)
         {
-            ItemStack s = c.getSlot(c.layout.quiverStart() + q).getStack();
+            ItemStack s = c.getSlot(BackpackLayout.view(c).quiverStart() + q).getStack();
             if (s != null && s.getItem() == item) return true;
         }
         return false;
@@ -117,8 +120,8 @@ class QuiverSlotsTest
         // agrees; the click then calls onSlotChanged, which needs FML, so the slots of the real container are asked
         // directly.
         ContainerBackpack c = skeleton();
-        int q = c.layout.quiverStart();
-        for (int k = 0; k < c.layout.quiver(); k++)
+        int q = BackpackLayout.view(c).quiverStart();
+        for (int k = 0; k < BackpackLayout.view(c).quiver(); k++)
         {
             Slot slot = c.getSlot(q + k);
             assertFalse(slot.isItemValid(new ItemStack(stick, 5)));
@@ -132,10 +135,10 @@ class QuiverSlotsTest
     {
         ContainerBackpack c = skeleton();
         EntityPlayer player = c.player;
-        int q = c.layout.quiverStart();
+        int q = BackpackLayout.view(c).quiverStart();
         player.inventory.setItemStack(new ItemStack(stick, 8));
         c.slotClick(-999, 0, 5, player);
-        for (int k = 0; k < c.layout.quiver(); k++) c.slotClick(q + k, 1, 5, player);
+        for (int k = 0; k < BackpackLayout.view(c).quiver(); k++) c.slotClick(q + k, 1, 5, player);
         c.slotClick(-999, 2, 5, player);
         assertFalse(quiverHolds(c, stick));
         assertEquals(8, player.inventory.getItemStack().stackSize, "nothing left the cursor");
@@ -146,9 +149,9 @@ class QuiverSlotsTest
     {
         ContainerBackpack c = skeleton();
         EntityPlayer player = c.player;
-        int q = c.layout.quiverStart();
+        int q = BackpackLayout.view(c).quiverStart();
         player.inventory.mainInventory[0] = new ItemStack(stick, 3);
-        for (int k = 0; k < c.layout.quiver(); k++)
+        for (int k = 0; k < BackpackLayout.view(c).quiver(); k++)
         {
             c.slotClick(q + k, 0, 2, player);
             assertNull(c.getSlot(q + k).getStack());
@@ -193,10 +196,10 @@ class QuiverSlotsTest
     void theRealContainerShowsTheQuiverWithQuiverSlots() throws Exception
     {
         ContainerBackpack c = skeleton();
-        assertEquals(c.layout.quiver(), 4);
-        for (int k = 0; k < c.layout.quiver(); k++) assertNull(c.getSlot(c.layout.quiverStart() + k).getStack());
-        assertSame(SlotQuiver.class, c.getSlot(c.layout.quiverStart()).getClass(), "the quiver slots are SlotQuiver");
-        assertSame(SlotQuiver.class, c.getSlot(c.layout.quiverStart() + c.layout.quiver() - 1).getClass());
+        assertEquals(BackpackLayout.view(c).quiver(), 4);
+        for (int k = 0; k < BackpackLayout.view(c).quiver(); k++) assertNull(c.getSlot(BackpackLayout.view(c).quiverStart() + k).getStack());
+        assertSame(SlotQuiver.class, c.getSlot(BackpackLayout.view(c).quiverStart()).getClass(), "the quiver slots are SlotQuiver");
+        assertSame(SlotQuiver.class, c.getSlot(BackpackLayout.view(c).quiverStart() + BackpackLayout.view(c).quiver() - 1).getClass());
     }
 
     private static NBTTagCompound skeletonData()
@@ -220,7 +223,7 @@ class QuiverSlotsTest
         TileAdventureBackpack placed = new TileAdventureBackpack();
         placed.loadFromNBT(stack.stackTagCompound);
         int first = BackpackLayout.quiverIndex(worn.getStorageSize(), 0);
-        for (int q = 0; q < worn.getQuiverSlots(); q++)
+        for (int q = 0; q < ClassicSlots.quiverSlots(worn.getLayout()); q++)
         {
             assertTrue(worn.isItemValidForSlot(first + q, new ItemStack(arrow)));
             assertTrue(worn.isItemValidForSlot(first + q, new ItemStack(bolt)));
@@ -243,8 +246,8 @@ class QuiverSlotsTest
             @Override
             public boolean isItemValidForSlot(int slot, ItemStack s)
             {
-                if (slot == com.darkona.adventurebackpack.common.Constants.bucketInLeft
-                        || slot == com.darkona.adventurebackpack.common.Constants.bucketInRight) return false;
+                if (slot == ClassicArrangement.BUCKET_IN_LEFT
+                        || slot == ClassicArrangement.BUCKET_IN_RIGHT) return false;
                 return super.isItemValidForSlot(slot, s);
             }
         };
@@ -254,7 +257,7 @@ class QuiverSlotsTest
         ItemStack rest = null;
         for (int i = 0; i < 80; i++) rest = TileEntityHopper.func_145889_a(placed, new ItemStack(stick, 64), 0);
         assertNotNull(rest, "the backpack is full of sticks");
-        for (int q = 0; q < placed.getQuiverSlots(); q++) assertNull(placed.getStackInSlot(first + q));
+        for (int q = 0; q < ClassicSlots.quiverSlots(placed.getLayout()); q++) assertNull(placed.getStackInSlot(first + q));
 
         ItemStack left = TileEntityHopper.func_145889_a(placed, new ItemStack(arrow, 64), 0);
         assertNull(left, "arrows still fit: in the quiver");

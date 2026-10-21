@@ -27,4 +27,14 @@ public interface IApiProvider
 
     /** Adds a breathable fluid to the Scuba Gear's table; throws once the table froze. */
     void registerAirFluid(String fluidName);
+
+    default void registerWidget(BackpackWidget widget)
+    {
+        throw new UnsupportedOperationException("widgets are not supported by this provider");
+    }
+
+    default void registerWidgetSkin(String widgetId, BackpackWidgetSkin skin)
+    {
+        throw new UnsupportedOperationException("widget skins are not supported by this provider");
+    }
 }

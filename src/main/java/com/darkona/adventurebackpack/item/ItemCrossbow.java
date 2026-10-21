@@ -41,6 +41,7 @@ public class ItemCrossbow extends ItemAB
     public static final String TAG_QUIVER_SHOTS = "QuiverShots";
 
     private static final int EMPTY_MESSAGE_QUIET_TICKS = 20;
+    private static final double[] LOOK = new double[3];
 
     public ItemCrossbow()
     {
@@ -132,7 +133,7 @@ public class ItemCrossbow extends ItemAB
     {
         int pause = Math.max(ConfigHandler.CROSSBOW_SHOT_DELAY_TICKS, ConfigHandler.CROSSBOW_RELOAD_TICKS);
         pause = Math.max(pause, ConfigHandler.QUIVER_FIRE_INTERVAL_TICKS);
-        return Math.max(pause, Math.max(ConfigHandler.GRAPPLE_COOLDOWN_TICKS, ConfigHandler.SNIPER_SHOT_DELAY_TICKS));
+        return Math.max(pause, Math.max(ConfigHandler.GRAPPLE_COOLDOWN_TICKS, ConfigHandler.SNIPER_FIRE_INTERVAL_TICKS));
     }
 
     private static NBTTagCompound tag(ItemStack stack)
@@ -180,7 +181,7 @@ public class ItemCrossbow extends ItemAB
             String ammo = feed.take(1, creative);
             if (ammo == null) return false;
             spawnSniper(world, player, MagazineLogic.damageMultiplier(ammo, ConfigHandler.CROSSBOW_BOLT_DAMAGE_MULTIPLIER), creative);
-            spendFeed(stack, tag, player, now, ConfigHandler.SNIPER_SHOT_DELAY_TICKS, creative);
+            spendFeed(stack, tag, player, now, ConfigHandler.SNIPER_FIRE_INTERVAL_TICKS, creative);
             feed.writeBack();
             return true;
         }
@@ -189,11 +190,11 @@ public class ItemCrossbow extends ItemAB
         return true;
     }
 
-    public static void fireFromQuiver(ItemStack stack, EntityPlayer player, String ammo, long now)
+    public static void fireFromQuiver(ItemStack stack, EntityPlayer player, String ammo, long now, int pause)
     {
         boolean creative = player.capabilities.isCreativeMode;
         spawnBolt(player.worldObj, player, MagazineLogic.damageMultiplier(ammo, ConfigHandler.CROSSBOW_BOLT_DAMAGE_MULTIPLIER), creative);
-        spendFeed(stack, tag(stack), player, now, ConfigHandler.QUIVER_FIRE_INTERVAL_TICKS, creative);
+        spendFeed(stack, tag(stack), player, now, pause, creative);
     }
 
     private static void spendFeed(ItemStack stack, NBTTagCompound tag, EntityPlayer player, long now, int pause, boolean creative)
@@ -214,17 +215,17 @@ public class ItemCrossbow extends ItemAB
     private static void fireSniper(ItemStack stack, NBTTagCompound tag, World world, EntityPlayer player, int ammo, long now, boolean creative)
     {
         spawnSniper(world, player, ammoMultiplier(tag), creative);
-        spend(stack, tag, player, ammo, 1, now, ConfigHandler.SNIPER_SHOT_DELAY_TICKS, creative);
+        spend(stack, tag, player, ammo, 1, now, ConfigHandler.SNIPER_FIRE_INTERVAL_TICKS, creative);
     }
 
     private static void spawnSniper(World world, EntityPlayer player, double multiplier, boolean creative)
     {
-        float speed = ConfigHandler.SNIPER_VELOCITY;
+        float speed = (float) (ConfigHandler.CROSSBOW_BOLT_VELOCITY * ConfigHandler.SNIPER_SPEED_MULTIPLIER);
         EntityBolt bolt = new EntityBolt(world, player, speed);
-        double[] look = new double[3];
-        GrappleLogic.look(player.rotationYaw, player.rotationPitch, look);
-        bolt.setThrowableHeading(look[0], look[1], look[2], speed, 0F);
-        bolt.setDamage(CrossbowLogic.damageFactor(ConfigHandler.SNIPER_DAMAGE * multiplier, speed));
+        GrappleLogic.look(player.rotationYaw, player.rotationPitch, LOOK);
+        bolt.setThrowableHeading(LOOK[0], LOOK[1], LOOK[2], speed, 0F);
+        bolt.setFlight(ConfigHandler.SNIPER_DRAG, ConfigHandler.SNIPER_GRAVITY, ConfigHandler.SNIPER_PIERCING);
+        bolt.setDamage(CrossbowLogic.damageFactor(ConfigHandler.CROSSBOW_BOLT_DAMAGE * ConfigHandler.SNIPER_DAMAGE_MULTIPLIER * multiplier, speed));
         bolt.canBePickedUp = creative ? 2 : (ConfigHandler.CROSSBOW_BOLTS_RECOVERABLE ? 1 : 0);
         world.spawnEntityInWorld(bolt);
         world.playSoundAtEntity(player, "adventurebackpack:crossbowshot", 0.8F, 0.7F);

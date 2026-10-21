@@ -1,5 +1,6 @@
 package com.darkona.adventurebackpack.playerProperties;
 
+import com.darkona.adventurebackpack.common.layout.classic.ClassicArrangement;
 import com.darkona.adventurebackpack.common.Constants;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -51,14 +52,14 @@ class ObserverViewTest
     @Test
     void backpackKeepsOnlyTheToolsOfItsInventory()
     {
-        NBTTagCompound full = wornBackpack(0, 5, Constants.upperTool, Constants.lowerTool);
+        NBTTagCompound full = wornBackpack(0, 5, ClassicArrangement.UPPER_TOOL, ClassicArrangement.LOWER_TOOL);
         NBTTagCompound before = (NBTTagCompound) full.copy();
         NBTTagCompound view = ObserverView.wearable(full);
 
         NBTTagList kept = items(view);
         assertEquals(2, kept.tagCount());
-        assertEquals(Constants.upperTool, kept.getCompoundTagAt(0).getByte("Slot"));
-        assertEquals(Constants.lowerTool, kept.getCompoundTagAt(1).getByte("Slot"));
+        assertEquals(ClassicArrangement.UPPER_TOOL, kept.getCompoundTagAt(0).getByte("Slot"));
+        assertEquals(ClassicArrangement.LOWER_TOOL, kept.getCompoundTagAt(1).getByte("Slot"));
         NBTTagCompound bd = view.getCompoundTag("tag").getCompoundTag("backpackData");
         assertEquals("Pig", bd.getString("colorName"));
         assertEquals(4000, bd.getCompoundTag("leftTank").getInteger("Amount"));
@@ -70,10 +71,10 @@ class ObserverViewTest
     @Test
     void movingItemsInsideTheBackpackChangesNothingForThePlayersNear()
     {
-        NBTTagCompound a = ObserverView.wearable(wornBackpack(0, Constants.upperTool));
-        NBTTagCompound b = ObserverView.wearable(wornBackpack(7, 12, Constants.upperTool));
+        NBTTagCompound a = ObserverView.wearable(wornBackpack(0, ClassicArrangement.UPPER_TOOL));
+        NBTTagCompound b = ObserverView.wearable(wornBackpack(7, 12, ClassicArrangement.UPPER_TOOL));
         assertEquals(a, b);
-        NBTTagCompound c = ObserverView.wearable(wornBackpack(0, Constants.lowerTool));
+        NBTTagCompound c = ObserverView.wearable(wornBackpack(0, ClassicArrangement.LOWER_TOOL));
         assertNotEquals(a, c, "a tool on the model did change");
     }
 
@@ -122,7 +123,7 @@ class ObserverViewTest
         assertEquals(copter, ObserverView.wearable(copter));
 
         NBTTagCompound props = new NBTTagCompound();
-        props.setTag("wearable", wornBackpack(3, Constants.upperTool));
+        props.setTag("wearable", wornBackpack(3, ClassicArrangement.UPPER_TOOL));
         props.setBoolean("abilitiesOff", true);
         props.setBoolean("forceCampFire", false);
         NBTTagCompound view = ObserverView.properties(props);
@@ -139,7 +140,7 @@ class ObserverViewTest
     @Test
     void theQuiverReachesThePlayersNearAsItsFillLevelOnly()
     {
-        NBTTagCompound full = wornBackpack(Constants.upperTool);
+        NBTTagCompound full = wornBackpack(ClassicArrangement.UPPER_TOOL);
         NBTTagCompound bd = full.getCompoundTag("tag").getCompoundTag("backpackData");
         bd.setString("colorName", "Skeleton");
         NBTTagList quiver = new NBTTagList();

@@ -15,7 +15,7 @@ public class ModEntities
         EntityRegistry.registerModEntity(EntityInflatableBoat.class, "inflatableBoat", counter++, AdventureBackpack.instance, 64, 1, true);
 
         EntityRegistry.registerModEntity(EntityFriendlySpider.class, "rideableSpider", counter++, AdventureBackpack.instance, 64, 2, true);
-        EntityRegistry.registerModEntity(EntityBolt.class, "crossbowBolt", counter++, AdventureBackpack.instance, 64, 20, true);
+        EntityRegistry.registerModEntity(EntityBolt.class, "crossbowBolt", counter++, AdventureBackpack.instance, 64, 20, false);
         EntityRegistry.registerModEntity(EntityGrapple.class, "crossbowGrapple", counter++, AdventureBackpack.instance, 64, 4, true);
     }
 }

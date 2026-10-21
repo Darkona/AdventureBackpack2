@@ -1,5 +1,10 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.common.layout.WidgetLayout;
+import com.darkona.adventurebackpack.inventory.widget.WidgetInventory;
+import com.darkona.adventurebackpack.common.sort.SlotLocks;
+import com.darkona.adventurebackpack.inventory.widget.WidgetStore;
+import com.darkona.adventurebackpack.common.layout.StorageIndex;
 import com.darkona.adventurebackpack.util.FluidMigration;
 import com.darkona.adventurebackpack.block.BlockAdventureBackpack;
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
@@ -15,15 +20,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 public class InventoryBackpack implements IInventoryAdventureBackpack
 {
-    public ItemStack[] inventory = new ItemStack[Constants.inventorySize];
-    private int storage = BackpackLayout.LEGACY_STORAGE;
-    private int quiver;
-    private NBTTagList keptQuiver;
+    public ItemStack[] inventory = new ItemStack[StorageIndex.FIRST_EXTRA_STORAGE];
+    private int storage = StorageIndex.LEGACY_STORAGE;
+    private WidgetLayout layout;
+    private NBTTagList[] kept;
     private FluidTank leftTank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
     private FluidTank rightTank = new FluidTank(ConfigHandler.BACKPACK_TANK_CAPACITY);
 
@@ -42,6 +46,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     private int lastTime = 0;
     private boolean special = false;
     public NBTTagCompound extendedProperties = new NBTTagCompound();
+    private final SlotLocks locks = new SlotLocks();
 
     public InventoryBackpack(ItemStack backpack)
     {
@@ -49,8 +54,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         if(!backpack.hasTagCompound())
         {
             backpack.stackTagCompound = new NBTTagCompound();
-            storage = BackpackLayouts.storage(colorName, 0);
-            inventory = new ItemStack[BackpackLayout.inventorySize(storage)];
+            storage = WidgetLayouts.storage(colorName, 0);
+            layout = WidgetLayouts.widgets(colorName, storage);
+            inventory = new ItemStack[layout.inventorySize()];
             saveToNBT(backpack.stackTagCompound);
         }
         loadFromNBT(backpack.stackTagCompound);
@@ -81,9 +87,10 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     }
 
     @Override
-    public int getQuiverSlots()
+    public WidgetLayout getLayout()
     {
-        return quiver;
+        if (layout == null) layout = WidgetLayouts.widgets(colorName, storage);
+        return layout;
     }
 
     @Override
@@ -140,7 +147,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     {
         FluidMigration.readTank(leftTank, compound.getCompoundTag("leftTank"));
         FluidMigration.readTank(rightTank, compound.getCompoundTag("rightTank"));
-        Quiver.sealRightTank(leftTank, rightTank, quiver > 0);
+        HiddenTank.seal(leftTank, rightTank, WidgetInventory.showsTank(getLayout(), 1));
     }
 
     @Override
@@ -166,9 +173,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     {
         if (slot < 0 || slot >= inventory.length) return;
         inventory[slot] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        if (stack != null && stack.stackSize > limitFor(slot))
         {
-            stack.stackSize = this.getInventoryStackLimit();
+            stack.stackSize = limitFor(slot);
         }
         dirtyInventory();
     }
@@ -178,9 +185,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     {
         if (slot < 0 || slot >= inventory.length) return;
         inventory[slot] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        if (stack != null && stack.stackSize > limitFor(slot))
         {
-            stack.stackSize = this.getInventoryStackLimit();
+            stack.stackSize = limitFor(slot);
         }
     }
 
@@ -219,8 +226,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
 
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Constants.bucketInLeft) ||
-                InventoryActions.transferContainerTank(this, getRightTank(), Constants.bucketInRight);
+        return WidgetInventory.fillTanks(this, getLayout());
     }
 
     @Override
@@ -230,14 +236,14 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         {
             NBTTagCompound backpackData = compound.getCompoundTag("backpackData");
             colorName = backpackData.getString("colorName");
-            storage = BackpackLayouts.storage(colorName, BackpackNbt.savedStorage(backpackData));
-            quiver = BackpackLayouts.quiver(colorName);
-            inventory = BackpackNbt.readItems(backpackData, inventory, BackpackLayout.inventorySize(storage, quiver));
-            keptQuiver = BackpackNbt.readQuiver(backpackData, inventory, BackpackLayout.quiverIndex(storage, 0), quiver);
+            storage = WidgetLayouts.storage(colorName, BackpackNbt.savedStorage(backpackData));
+            layout = WidgetLayouts.widgets(colorName, storage);
+            kept = WidgetStore.keptFor(layout, kept);
+            inventory = WidgetStore.read(backpackData, layout, inventory, kept);
 
             FluidMigration.readTank(leftTank, backpackData.getCompoundTag("leftTank"));
             FluidMigration.readTank(rightTank, backpackData.getCompoundTag("rightTank"));
-            if (Quiver.sealRightTank(leftTank, rightTank, quiver > 0))
+            if (HiddenTank.seal(leftTank, rightTank, WidgetInventory.showsTank(layout, 1)))
             {
                 backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
                 backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
@@ -245,6 +251,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
             lastTime = backpackData.getInteger("lastTime");
             special = backpackData.getBoolean("special");
             extendedProperties = BackpackNbt.readExtended(backpackData);
+            BackpackNbt.readLocks(backpackData, locks);
         }
         if (compound == containerStack.stackTagCompound) rememberTags();
     }
@@ -253,14 +260,16 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     public void saveToNBT(NBTTagCompound compound)
     {
         NBTTagCompound backpackData = new NBTTagCompound();
-        writeItemsAndQuiver(backpackData);
+        writeContents(backpackData);
         backpackData.setString("colorName", colorName);
         backpackData.setInteger("lastTime", lastTime);
         backpackData.setBoolean("special", BackpackAbilities.hasAbility(colorName));
         BackpackNbt.writeExtended(backpackData, extendedProperties);
+        BackpackNbt.writeLocks(backpackData, locks);
         backpackData.setTag("rightTank", rightTank.writeToNBT(new NBTTagCompound()));
         backpackData.setTag("leftTank", leftTank.writeToNBT(new NBTTagCompound()));
 
+        WidgetStore.keepUnknown(compound.getCompoundTag("backpackData"), backpackData, getLayout());
         compound.setTag("backpackData",backpackData);
         if (compound == containerStack.stackTagCompound) rememberTags();
     }
@@ -275,11 +284,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-        if (slot == Constants.bucketInLeft || slot == Constants.bucketInRight || slot == Constants.bucketOutLeft || slot == Constants.bucketOutRight)
-        {
-            return inventory[slot];
-        }
-        return null;
+        return WidgetInventory.dropsOnClose(widgets(), slot) ? inventory[slot] : null;
     }
 
     @Override
@@ -324,6 +329,16 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         saveToNBT(containerStack.stackTagCompound);
     }
 
+    private int limitFor(int slot)
+    {
+        return WidgetInventory.limit(widgets(), slot, getInventoryStackLimit());
+    }
+
+    private WidgetLayout widgets()
+    {
+        return getLayout();
+    }
+
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
@@ -331,16 +346,7 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         {
             return false;
         }
-        if (slot == Constants.bucketInRight || slot == Constants.bucketInLeft)
-        {
-            return (quiver == 0 || slot == Constants.bucketInLeft) && FluidContainerRegistry.isContainer(stack);
-        }
-        if (slot >= BackpackLayout.quiverIndex(storage, 0))
-        {
-            return Quiver.accepts(stack);
-        }
-
-        return !(slot == Constants.upperTool || slot == Constants.lowerTool) || SlotTool.isValidTool(stack);
+        return WidgetInventory.accepts(widgets(), slot, stack);
     }
 
     @Override
@@ -377,21 +383,35 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         if (current) rememberTags();
     }
 
+    @Override
+    public SlotLocks getLocks()
+    {
+        return locks;
+    }
+
+    @Override
+    public void dirtyLocks()
+    {
+        boolean current = isCurrent();
+        BackpackNbt.writeLocks(containerStack.stackTagCompound.getCompoundTag("backpackData"), locks);
+        if (current) rememberTags();
+    }
+
     public void dirtyInventory()
     {
         boolean current = isCurrent();
         if(updateTankSlots()){
             dirtyTanks();
         }
-        writeItemsAndQuiver(containerStack.stackTagCompound.getCompoundTag("backpackData"));
+        writeContents(containerStack.stackTagCompound.getCompoundTag("backpackData"));
         if (current) rememberTags();
     }
 
-    private static final String[] READ_KEYS = {BackpackNbt.ITEMS, BackpackNbt.STORAGE_SIZE, BackpackNbt.QUIVER, BackpackNbt.QUIVER_FILL,
-            "colorName", "lastTime", "special", BackpackNbt.EXTENDED, BackpackNbt.LEGACY_EXTENDED, "leftTank", "rightTank"};
+    private WidgetLayout keysOf;
+    private String[] readKeys = BackpackNbt.CORE_KEYS;
     private NBTTagCompound tagRef;
     private NBTBase dataRef;
-    private final NBTBase[] keyRefs = new NBTBase[READ_KEYS.length];
+    private NBTBase[] keyRefs = new NBTBase[BackpackNbt.CORE_KEYS.length];
 
     public boolean isCurrent()
     {
@@ -401,9 +421,9 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         if (data != dataRef) return false;
         if (!(data instanceof NBTTagCompound)) return true;
         NBTTagCompound d = (NBTTagCompound) data;
-        for (int i = 0; i < READ_KEYS.length; i++)
+        for (int i = 0; i < readKeys.length; i++)
         {
-            if (d.getTag(READ_KEYS[i]) != keyRefs[i]) return false;
+            if (d.getTag(readKeys[i]) != keyRefs[i]) return false;
         }
         return true;
     }
@@ -420,34 +440,28 @@ public class InventoryBackpack implements IInventoryAdventureBackpack
         NBTBase data = tag == null ? null : tag.getTag("backpackData");
         dataRef = data;
         NBTTagCompound d = data instanceof NBTTagCompound ? (NBTTagCompound) data : null;
-        for (int i = 0; i < READ_KEYS.length; i++)
+        WidgetLayout l = getLayout();
+        if (l != keysOf)
         {
-            keyRefs[i] = d == null ? null : d.getTag(READ_KEYS[i]);
+            keysOf = l;
+            readKeys = WidgetStore.readKeys(l);
+            keyRefs = new NBTBase[readKeys.length];
+        }
+        for (int i = 0; i < readKeys.length; i++)
+        {
+            keyRefs[i] = d == null ? null : d.getTag(readKeys[i]);
         }
     }
 
-    private void writeItemsAndQuiver(NBTTagCompound backpackData)
+    private void writeContents(NBTTagCompound backpackData)
     {
-        int base = BackpackLayout.quiverIndex(storage, 0);
-        backpackData.setTag(BackpackNbt.ITEMS, BackpackNbt.writeItems(inventory, base));
-        backpackData.setInteger(BackpackNbt.STORAGE_SIZE, storage);
-        BackpackNbt.writeQuiver(backpackData, inventory, base, quiver, keptQuiver);
+        WidgetStore.write(backpackData, getLayout(), inventory, kept, storage);
     }
 
     @Override
     public void consumeInventoryItem(Item item)
     {
-        int base = BackpackLayout.quiverIndex(storage, 0);
-        for (int q = 0; q < quiver; q++)
-        {
-            ItemStack stack = inventory[base + q];
-            if (stack != null && stack.getItem() == item)
-            {
-                decrStackSize(base + q, 1);
-                return;
-            }
-        }
-        InventoryActions.consumeItemInInventory(this, item);
+        WidgetInventory.consume(this, widgets(), item);
     }
 
     public boolean hasBlock(Block block)

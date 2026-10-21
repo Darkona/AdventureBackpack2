@@ -2,22 +2,36 @@ package com.darkona.adventurebackpack.inventory;
 
 import adventurebackpack.api.IWearableContainer;
 import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
+import com.darkona.adventurebackpack.compat.bogosorter.BogoSorterCompat;
 import com.darkona.adventurebackpack.compat.invtweaks.BackpackSections;
-import com.darkona.adventurebackpack.item.ItemAdventureBackpack;
+import com.darkona.adventurebackpack.common.HandRefill;
+import com.darkona.adventurebackpack.common.layout.WidgetLayout;
+import com.darkona.adventurebackpack.common.sort.SlotLocks;
+import com.darkona.adventurebackpack.common.sort.StorageSorter;
+import com.darkona.adventurebackpack.inventory.widget.SlotHost;
+import com.darkona.adventurebackpack.inventory.widget.WidgetType;
+import com.darkona.adventurebackpack.inventory.widget.WidgetTypes;
 import com.darkona.adventurebackpack.util.Wearing;
 import invtweaks.api.container.ChestContainer;
 import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.inventory.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
 import java.util.Map;
 
 @ChestContainer(showButtons = false, rowSize = 8)
-public class ContainerBackpack extends Container implements IWearableContainer
+public class ContainerBackpack extends Container implements IWearableContainer, SlotHost
 {
+    public static final int LOCK_PROPERTY = 100;
+    public static final int ACTION_LOCK = 1;
+    public static final int ACTION_SORT = 2;
+    private static final int PENDING_LIMIT = 16;
+    private static final int SLOT_BITS = 16;
+    private static final int SLOT_MASK = (1 << SLOT_BITS) - 1;
     public IInventoryAdventureBackpack inventory;
     public static byte SOURCE_TILE = 0;
     public static byte SOURCE_WEARING = 1;
@@ -26,56 +40,63 @@ public class ContainerBackpack extends Container implements IWearableContainer
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
     public IInventory craftResult = new InventoryCraftResult();
     EntityPlayer player;
-    public final BackpackLayout layout;
+    public final WidgetLayout widgets;
+    private final int[] shiftOrder;
+    private final int mainFirst;
+    private final int mainEnd;
+    private final int hotbarFirst;
+    private final int hotbarEnd;
     private Map<?, ?> invTweaksSections;
+    private int invTweaksSectionsVersion = -1;
+    private final SlotLocks idleLocks = new SlotLocks();
+    private final int[] sentLocks = new int[SlotLocks.CHUNKS];
+    private final int[] pending = new int[PENDING_LIMIT];
+    private volatile int pendingCount;
 
     public ContainerBackpack(EntityPlayer player, IInventoryAdventureBackpack backpack, byte source)
     {
         this.player = player;
         inventory = backpack;
-        layout = BackpackLayouts.layout(backpack.getColorName(), backpack.getStorageSize());
-        makeSlots(player.inventory);
+        widgets = WidgetLayouts.widgets(backpack.getColorName(), backpack.getStorageSize());
+        shiftOrder = shiftOrder(widgets);
+        mainFirst = sectionBound(WidgetType.Section.PLAYER, false);
+        mainEnd = sectionBound(WidgetType.Section.PLAYER, true);
+        hotbarFirst = sectionBound(WidgetType.Section.HOTBAR, false);
+        hotbarEnd = sectionBound(WidgetType.Section.HOTBAR, true);
+        makeSlots();
         inventory.openInventory();
         this.source = source;
     }
 
-    public IInventoryAdventureBackpack getInventoryBackpack()
+    public IInventoryBackpack getInventoryBackpack()
+    {
+        return inventory instanceof IInventoryBackpack ? (IInventoryBackpack) inventory : null;
+    }
+
+    @Override
+    public net.minecraft.inventory.IInventory hostInventory()
     {
         return inventory;
     }
 
-    private void makeSlots(InventoryPlayer invPlayer)
+    @Override
+    public EntityPlayer getPlayer()
     {
-        BackpackLayout l = layout;
-        for (int k = 0; k < l.storage(); k++)
+        return player;
+    }
+
+    private void makeSlots()
+    {
+        WidgetLayout l = widgets;
+        for (int w = 0; w < l.count(); w++)
         {
-            addSlotToContainer(new SlotBackpack(inventory, BackpackLayout.inventoryIndex(k), l.storageX(k), l.storageY(k)));
-        }
-        addSlotToContainer(new SlotTool(inventory, BackpackLayout.UPPER_TOOL, l.toolX(), l.toolY(0)));
-        addSlotToContainer(new SlotTool(inventory, BackpackLayout.LOWER_TOOL, l.toolX(), l.toolY(1)));
-        for (int i = 0; i < l.bucketSlots(); i++)
-        {
-            addSlotToContainer(new SlotFluid(inventory, BackpackLayout.bucketIndex(i), l.bucketX(i), l.bucketY(i)));
-        }
-        for (int q = 0; q < l.quiver(); q++)
-        {
-            addSlotToContainer(new SlotQuiver(inventory, BackpackLayout.quiverIndex(l.storage(), q), l.quiverX(q), l.quiverY(q)));
-        }
-        for (int i = 0; i < 9; i++)
-        {
-            addSlotToContainer(new Slot(craftMatrix, i, l.craftX(i), l.craftY(i)));
-        }
-        addSlotToContainer(new SlotCrafting(invPlayer.player, craftMatrix, craftResult, 0, l.resultX(), l.resultY()));
-        for (int row = 0; row < 3; row++)
-        {
-            for (int col = 0; col < 9; col++)
+            WidgetType type = WidgetTypes.get(l.kind(w));
+            int first = l.slotFirst(w);
+            for (int n = 0; n < l.slots(w); n++)
             {
-                addSlotToContainer(new Slot(invPlayer, 9 + col + row * 9, l.playerX() + BackpackLayout.SLOT * col, l.playerY() + BackpackLayout.SLOT * row));
+                int s = first + n;
+                addSlotToContainer(type.createSlot(this, l, w, n, l.slotInv(s), l.slotX(s), l.slotY(s)));
             }
-        }
-        for (int col = 0; col < 9; col++)
-        {
-            addSlotToContainer(new Slot(invPlayer, col, l.playerX() + BackpackLayout.SLOT * col, l.hotbarY()));
         }
         this.onCraftMatrixChanged(craftMatrix);
     }
@@ -83,14 +104,150 @@ public class ContainerBackpack extends Container implements IWearableContainer
     @ChestContainer.RowSizeCallback
     public int invTweaksRowSize()
     {
-        return layout.columns();
+        return widgets.rowSize();
     }
 
     @ContainerSectionCallback
     public Map<?, ?> invTweaksSections()
     {
-        if (invTweaksSections == null) invTweaksSections = BackpackSections.of(this);
+        int version = locks().version();
+        if (invTweaksSections == null || version != invTweaksSectionsVersion)
+        {
+            invTweaksSections = BackpackSections.of(this);
+            invTweaksSectionsVersion = version;
+        }
         return invTweaksSections;
+    }
+
+    public SlotLocks locks()
+    {
+        SlotLocks locks = inventory.getLocks();
+        return locks == null ? idleLocks : locks;
+    }
+
+    public boolean isSortableSlot(int slot)
+    {
+        return slot >= 0 && slot < widgets.slotCount() && WidgetTypes.get(widgets.kind(widgets.slotWidget(slot))).sortable();
+    }
+
+    public boolean isLocked(int slot)
+    {
+        return isSortableSlot(slot) && locks().isLocked(widgets.slotInv(slot));
+    }
+
+    public boolean toggleLock(int slot)
+    {
+        if (!isSortableSlot(slot)) return false;
+        locks().toggle(widgets.slotInv(slot));
+        inventory.dirtyLocks();
+        BogoSorterCompat.locksChanged();
+        return true;
+    }
+
+    public boolean sortStorage()
+    {
+        WidgetLayout l = widgets;
+        int[] invs = new int[l.slotCount()];
+        int n = 0;
+        for (int w = 0; w < l.count(); w++)
+        {
+            if (!WidgetTypes.get(l.kind(w)).sortable()) continue;
+            for (int s = l.slotFirst(w); s < l.slotFirst(w) + l.slots(w); s++)
+            {
+                if (!isLocked(s)) invs[n++] = l.slotInv(s);
+            }
+        }
+        if (n == 0) return false;
+        StorageSorter.Entry[] entries = new StorageSorter.Entry[n];
+        ItemStack[] kinds = new ItemStack[n];
+        int kindCount = 0;
+        int count = 0;
+        for (int i = 0; i < n; i++)
+        {
+            ItemStack stack = inventory.getStackInSlot(invs[i]);
+            if (stack == null) continue;
+            int group = -1;
+            for (int k = 0; k < kindCount && group < 0; k++)
+            {
+                if (HandRefill.sameKind(kinds[k], stack)) group = k;
+            }
+            if (group < 0)
+            {
+                kinds[kindCount] = stack;
+                group = kindCount++;
+            }
+            Item item = stack.getItem();
+            CreativeTabs tab = item.getCreativeTab();
+            entries[count++] = new StorageSorter.Entry(group, tab == null ? StorageSorter.NO_CATEGORY : tab.getTabIndex(),
+                    stack.getDisplayName(), Item.getIdFromItem(item), stack.getItemDamage(), stack.stackSize,
+                    Math.min(stack.getMaxStackSize(), inventory.getInventoryStackLimit()), stack);
+        }
+        StorageSorter.Plan plan = StorageSorter.arrange(java.util.Arrays.copyOf(entries, count), n);
+        if (plan == null) return false;
+        for (int i = 0; i < n; i++)
+        {
+            ItemStack put = null;
+            if (plan.count[i] > 0)
+            {
+                put = ((ItemStack) plan.source[i]).copy();
+                put.stackSize = plan.count[i];
+            }
+            inventory.setInventorySlotContentsNoSave(invs[i], put);
+        }
+        inventory.markDirty();
+        return true;
+    }
+
+    public void request(int action, int slot)
+    {
+        synchronized (pending)
+        {
+            if (pendingCount >= PENDING_LIMIT) return;
+            pending[pendingCount] = action << SLOT_BITS | slot & SLOT_MASK;
+            pendingCount++;
+        }
+    }
+
+    private void runPending()
+    {
+        if (pendingCount == 0 || player.worldObj.isRemote) return;
+        while (true)
+        {
+            int next;
+            synchronized (pending)
+            {
+                if (pendingCount == 0) return;
+                next = pending[0];
+                System.arraycopy(pending, 1, pending, 0, pendingCount - 1);
+                pendingCount--;
+            }
+            if (!canInteractWith(player)) continue;
+            int action = next >>> SLOT_BITS;
+            if (action == ACTION_LOCK) toggleLock(next & SLOT_MASK);
+            else if (action == ACTION_SORT) sortStorage();
+        }
+    }
+
+    private void syncLocks()
+    {
+        SlotLocks locks = locks();
+        for (int i = 0; i < SlotLocks.CHUNKS; i++)
+        {
+            int value = locks.chunk(i);
+            if (value == sentLocks[i]) continue;
+            sentLocks[i] = value;
+            for (int c = 0; c < crafters.size(); c++) ((ICrafting) crafters.get(c)).sendProgressBarUpdate(this, LOCK_PROPERTY + i, value);
+        }
+    }
+
+    @Override
+    public void updateProgressBar(int id, int value)
+    {
+        if (id < LOCK_PROPERTY || id >= LOCK_PROPERTY + SlotLocks.CHUNKS) return;
+        SlotLocks locks = locks();
+        int version = locks.version();
+        locks.setChunk(id - LOCK_PROPERTY, value);
+        if (locks.version() != version) BogoSorterCompat.locksChanged();
     }
 
     @Override
@@ -219,17 +376,126 @@ public class ContainerBackpack extends Container implements IWearableContainer
         return false;
     }
 
-    private boolean mergeIntoPlayer(ItemStack stack)
+    private boolean mergeLimited(ItemStack stack, int minSlot, int maxSlot, int limit)
     {
-        int hot = layout.hotbarStart();
-        int main = layout.playerStart();
-        boolean changesMade = stackOnto(stack, hot, hot + 9);
-        changesMade |= stackOnto(stack, main, main + 27);
-        if (stack.stackSize > 0)
+        boolean changesMade = false;
+        for (int pass = 0; pass < 2 && stack.stackSize > 0; pass++)
         {
-            changesMade |= fillEmpty(stack, hot, hot + 9) || fillEmpty(stack, main, main + 27);
+            for (int i = minSlot; stack.stackSize > 0 && i < maxSlot; i++)
+            {
+                Slot slot = (Slot) inventorySlots.get(i);
+                ItemStack stored = slot.getStack();
+                int cap = Math.min(limit, slot.getSlotStackLimit());
+                if (pass == 0 && stored != null && HandRefill.sameKind(stack, stored))
+                {
+                    int moved = Math.min(stack.stackSize, cap - stored.stackSize);
+                    if (moved <= 0) continue;
+                    stored.stackSize += moved;
+                    slot.onSlotChanged();
+                    stack.stackSize -= moved;
+                    changesMade = true;
+                } else if (pass == 1 && stored == null)
+                {
+                    int moved = Math.min(stack.stackSize, cap);
+                    ItemStack put = stack.copy();
+                    put.stackSize = moved;
+                    slot.putStack(put);
+                    stack.stackSize -= moved;
+                    changesMade |= moved > 0;
+                }
+            }
         }
         return changesMade;
+    }
+
+    private boolean mergeIntoWidget(ItemStack stack, int widget)
+    {
+        WidgetLayout l = widgets;
+        WidgetType type = WidgetTypes.get(l.kind(widget));
+        boolean changesMade = false;
+        int first = l.slotFirst(widget);
+        for (int n = 0; n < l.slots(widget) && stack.stackSize > 0; n++)
+        {
+            if (!type.shiftTarget(l, widget, n)) continue;
+            if (type.stackLimit() > WidgetType.DEFAULT_LIMIT) changesMade |= mergeLimited(stack, first + n, first + n + 1, type.stackLimit());
+            else changesMade |= mergeItemStack(stack, first + n, first + n + 1, false);
+        }
+        return changesMade;
+    }
+
+    int firstShiftWidget(ItemStack stack)
+    {
+        for (int i = 0; i < shiftOrder.length; i++)
+        {
+            if (WidgetTypes.get(widgets.kind(shiftOrder[i])).accepts(stack)) return shiftOrder[i];
+        }
+        return WidgetLayout.NONE;
+    }
+
+    private boolean mergeIntoBackpack(ItemStack stack)
+    {
+        WidgetLayout l = widgets;
+        for (int i = 0; i < shiftOrder.length; i++)
+        {
+            int w = shiftOrder[i];
+            if (WidgetTypes.get(l.kind(w)).accepts(stack) && mergeIntoWidget(stack, w)) return true;
+        }
+        for (int w = 0; w < l.count(); w++)
+        {
+            WidgetType type = WidgetTypes.get(l.kind(w));
+            if (type.section() == WidgetType.Section.CHEST && type.accepts(stack)
+                    && mergeItemStack(stack, l.slotFirst(w), l.slotFirst(w) + l.slots(w), false)) return true;
+        }
+        return false;
+    }
+
+    private boolean mergeIntoPlayer(ItemStack stack)
+    {
+        boolean changesMade = stackOnto(stack, hotbarFirst, hotbarEnd);
+        changesMade |= stackOnto(stack, mainFirst, mainEnd);
+        if (stack.stackSize > 0)
+        {
+            changesMade |= fillEmpty(stack, hotbarFirst, hotbarEnd) || fillEmpty(stack, mainFirst, mainEnd);
+        }
+        return changesMade;
+    }
+
+    private boolean isPlayerSlot(int slot)
+    {
+        return slot >= mainFirst && slot < mainEnd || slot >= hotbarFirst && slot < hotbarEnd;
+    }
+
+    private static int[] shiftOrder(WidgetLayout l)
+    {
+        int n = 0;
+        int[] order = new int[l.count()];
+        for (int w = 0; w < l.count(); w++)
+        {
+            if (WidgetTypes.get(l.kind(w)).shiftPriority() != WidgetType.NO_SHIFT) order[n++] = w;
+        }
+        for (int i = 1; i < n; i++)
+        {
+            int w = order[i];
+            int p = WidgetTypes.get(l.kind(w)).shiftPriority();
+            int j = i - 1;
+            while (j >= 0 && WidgetTypes.get(l.kind(order[j])).shiftPriority() > p)
+            {
+                order[j + 1] = order[j];
+                j--;
+            }
+            order[j + 1] = w;
+        }
+        return java.util.Arrays.copyOf(order, n);
+    }
+
+    private int sectionBound(WidgetType.Section section, boolean end)
+    {
+        WidgetLayout l = widgets;
+        for (int w = 0; w < l.count(); w++)
+        {
+            if (WidgetTypes.get(l.kind(w)).section() == section) return end ? l.slotFirst(w) + l.slots(w) : l.slotFirst(w);
+        }
+        return 0;
     }
 
     @Override
@@ -246,57 +512,11 @@ public class ContainerBackpack extends Container implements IWearableContainer
         ItemStack result = null;
         if (slot != null && slot.getHasStack())
         {
-            BackpackLayout l = layout;
-            int storageEnd = l.storage();
             ItemStack stack = slot.getStack();
             result = stack.copy();
-            if (i < l.playerStart())
+            if (isPlayerSlot(i) ? !mergeIntoBackpack(stack) : !mergeIntoPlayer(stack))
             {
-                if (!mergeIntoPlayer(stack))
-                {
-                    return null;
-                }
-            } else
-            {
-                if (l.quiver() > 0 && Quiver.accepts(stack))
-                {
-                    if (!mergeItemStack(stack, l.quiverStart(), l.quiverStart() + l.quiver(), false))
-                    {
-                        if (!mergeItemStack(stack, 0, storageEnd, false))
-                        {
-                            return null;
-                        }
-                    }
-                } else if (SlotTool.isValidTool(stack))
-                {
-                    if (!mergeItemStack(stack, l.toolStart(), l.toolStart() + 2, false))
-                    {
-                        if (!mergeItemStack(stack, 0, storageEnd, false))
-                        {
-                            return null;
-                        }
-                    }
-                } else if (SlotFluid.valid(stack))
-                {
-                    int bucketInLeft = l.bucketStart();
-                    int bucketInRight = l.bucketStart() + 2;
-                    if (!mergeItemStack(stack, bucketInLeft, bucketInLeft + 1, false))
-                    {
-                        if (l.tanks() < 2 || !mergeItemStack(stack, bucketInRight, bucketInRight + 1, false))
-                        {
-                            if (!mergeItemStack(stack, 0, storageEnd, false))
-                            {
-                                return null;
-                            }
-                        }
-                    }
-                } else if (!(stack.getItem() instanceof ItemAdventureBackpack))
-                {
-                    if (!mergeItemStack(stack, 0, storageEnd, false))
-                    {
-                        return null;
-                    }
-                }
+                return null;
             }
             if (stack.stackSize == 0)
             {
@@ -319,6 +539,8 @@ public class ContainerBackpack extends Container implements IWearableContainer
     public void detectAndSendChanges()
     {
         refresh();
+        runPending();
+        syncLocks();
         super.detectAndSendChanges();
     }
 

@@ -7,7 +7,8 @@ import com.darkona.adventurebackpack.common.IInventoryAdventureBackpack;
 import com.darkona.adventurebackpack.common.QuiverRules;
 import com.darkona.adventurebackpack.common.RenderInfo;
 import com.darkona.adventurebackpack.config.ConfigHandler;
-import com.darkona.adventurebackpack.inventory.BackpackLayout;
+import com.darkona.adventurebackpack.common.layout.WidgetLayout;
+import com.darkona.adventurebackpack.common.layout.classic.ClassicSlots;
 import com.darkona.adventurebackpack.inventory.Quiver;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -261,12 +262,12 @@ public class ModelBackpackBlock extends ModelBase
     {
         FluidTank tankLeft = backpack.getLeftTank();
         FluidTank tankRight = backpack.getRightTank();
-        int quiverSlots = backpack.getQuiverSlots();
-        int level = Quiver.level(backpack.getInventory(), BackpackLayout.quiverIndex(backpack.getStorageSize(), 0), quiverSlots);
+        WidgetLayout layout = backpack.getLayout();
+        int level = Quiver.level(backpack.getInventory(), ClassicSlots.quiverStart(layout), ClassicSlots.quiverSlots(layout));
         render(entity, f, f1, f2, f3, f4, scale, backpack.isSBDeployed(), backpack.getColorName(),
                 tankLeft == null ? null : tankLeft.getFluid(), tankLeft == null ? 1 : tankLeft.getCapacity(),
                 tankRight == null ? null : tankRight.getFluid(), tankRight == null ? 1 : tankRight.getCapacity(),
-                quiverSlots > 0, level);
+                ClassicSlots.quiverSlots(layout) > 0, level);
     }
 
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float scale, RenderInfo info)

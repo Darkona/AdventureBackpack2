@@ -40,6 +40,17 @@ public final class CrossbowAnimation
 
     public static final int FLETCH_COLOR = 0xD8D8D8;
 
+    public static final float[] ICON_ROTATIONS = {
+            45F, 0F, 1F, 0F,
+            -30F, 1F, 0F, 0F,
+            -45F, 0F, 0F, 1F,
+            90F, 1F, 0F, 0F,
+            25F, 0F, 0F, 1F};
+    public static final float ICON_SCALE = 0.75F;
+    public static final float ICON_OFFSET_X = 0.4F;
+    public static final float ICON_OFFSET_Y = -0.2F;
+    public static final float ICON_OFFSET_Z = -1F;
+
     private CrossbowAnimation() {}
 
     public static float sinceShot(long now, float partialTick, long lastShot)
@@ -63,11 +74,34 @@ public final class CrossbowAnimation
 
     public static float drumDegrees(int ammo, int capacity, float sinceShot, float reloadProgress)
     {
+        return drumAt(ammo, capacity, recoil(sinceShot), reloadProgress);
+    }
+
+    public static float drumAt(int ammo, int capacity, float turnLeft, float reloadProgress)
+    {
         if (reloadProgress >= 0F && reloadProgress < 1F) return -360F * (1F - reloadProgress);
         int shots = shotsFired(ammo, capacity);
         float step = shots % CHAMBERS;
-        if (shots > 0) step -= recoil(sinceShot);
+        if (shots > 0) step -= turnLeft;
         return -step * STEP_DEGREES;
+    }
+
+    public static float drumTurnTicks(long pause, boolean sniperShot, float drumSpeed)
+    {
+        if (pause <= 0) return CrossbowLogic.RECOIL_TICKS;
+        if (pause <= CrossbowLogic.RECOIL_TICKS) return pause;
+        if (!sniperShot) return CrossbowLogic.RECOIL_TICKS;
+        float ticks = drumSpeed > 0F ? pause / drumSpeed : pause;
+        return ticks < 1F ? 1F : ticks;
+    }
+
+    public static float drumTurnLeft(long now, float partialTick, long lastShot, float turnTicks)
+    {
+        if (lastShot <= 0 || turnTicks <= 0F) return 0F;
+        long since = now - lastShot;
+        if (since < 0) return 0F;
+        float t = since + partialTick;
+        return t >= turnTicks ? 0F : 1F - t / turnTicks;
     }
 
     public static boolean chamberLoaded(int chamber, int ammo, int capacity)

@@ -4,6 +4,7 @@ public final class QuiverFeedRules
 {
     public static final int NOT_AMMO = -1;
     public static final double MAX_SPEED_BONUS = 2.0;
+    public static final double MAX_RATE_BONUS = 2.0;
 
     private QuiverFeedRules() {}
 
@@ -68,5 +69,28 @@ public final class QuiverFeedRules
     {
         if (!(bonus > 0)) return 1.0;
         return 1.0 + (bonus > MAX_SPEED_BONUS ? MAX_SPEED_BONUS : bonus);
+    }
+
+    public static double rateFactor(double bonus)
+    {
+        if (!(bonus > 0)) return 1.0;
+        return 1.0 + (bonus > MAX_RATE_BONUS ? MAX_RATE_BONUS : bonus);
+    }
+
+    public static double exactInterval(int baseTicks, double bonus)
+    {
+        return (baseTicks < 1 ? 1 : baseTicks) / rateFactor(bonus);
+    }
+
+    public static int ticksFor(double carry, double exact)
+    {
+        int whole = (int) (carry + exact);
+        return whole < 1 ? 1 : whole;
+    }
+
+    public static double carryAfter(double carry, double exact)
+    {
+        double left = carry + exact - ticksFor(carry, exact);
+        return left > 0 ? left : 0;
     }
 }

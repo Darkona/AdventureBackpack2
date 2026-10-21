@@ -17,7 +17,12 @@ public class SlotBackpack extends SlotAdventureBackpack
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return (!(stack.getItem() instanceof ItemAdventureBackpack) && !(stack.getItem() == Item.getItemFromBlock(ModBlocks.blockBackpack)));
+        return valid(stack);
+    }
+
+    public static boolean valid(ItemStack stack)
+    {
+        return !(stack.getItem() instanceof ItemAdventureBackpack) && !(stack.getItem() == Item.getItemFromBlock(ModBlocks.blockBackpack));
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.darkona.adventurebackpack.block.BlockGear;
 import adventurebackpack.api.IFuelPack;
 import adventurebackpack.api.IBackWearableItem;
 import com.darkona.adventurebackpack.block.BlockStation;
+import com.darkona.adventurebackpack.client.ClientActions;
 import com.darkona.adventurebackpack.common.FlamethrowerLogic;
 import com.darkona.adventurebackpack.common.ParticleBeat;
 import com.darkona.adventurebackpack.common.StationTransfer;
@@ -107,6 +108,7 @@ public class ItemFlamethrowerPack extends ItemAB implements IBackWearableItem, I
     {
         if (world.isRemote)
         {
+            if (isUsable()) ClientActions.flamethrowerSounds(player, stack);
             if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemFlamethrower)) return;
             if (!ParticleBeat.pilot(world.getTotalWorldTime(), player.getEntityId())) return;
             if (isUsable() && InventoryFlamethrowerPack.isLit(stack)) pilotFlame(world, player);

@@ -55,7 +55,7 @@ public abstract class GuiWithTanks extends GuiContainer
 
     protected void drawToggle(int mouseX, int mouseY)
     {
-        if (toggle != null) toggle.draw(fontRendererObj, isToggleOn(), toggle.inButton(this, mouseX, mouseY));
+        if (toggle != null) toggle.draw(this, mc, isToggleOn(), toggle.inButton(this, mouseX, mouseY));
     }
 
     protected boolean clickToggle(int mouseX, int mouseY)

@@ -1,5 +1,8 @@
 package com.darkona.adventurebackpack.common;
 
+import com.darkona.adventurebackpack.common.layout.WidgetLayout;
+import com.darkona.adventurebackpack.common.sort.SlotLocks;
+
 import com.darkona.adventurebackpack.block.TileAdventureBackpack;
 import adventurebackpack.api.IInventoryTanks;
 import net.minecraft.item.Item;
@@ -17,7 +20,7 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
 
     int getStorageSize();
 
-    int getQuiverSlots();
+    WidgetLayout getLayout();
 
     public TileAdventureBackpack getTile();
 
@@ -48,4 +51,8 @@ public interface IInventoryAdventureBackpack extends IInventoryTanks
     public void dirtyTime();
 
     public void dirtyExtended();
+
+    SlotLocks getLocks();
+
+    void dirtyLocks();
 }

@@ -1,5 +1,7 @@
 package com.darkona.adventurebackpack.inventory;
 
+import com.darkona.adventurebackpack.inventory.widget.classic.QuiverNbt;
+
 import com.darkona.adventurebackpack.common.AbilityToggle;
 import com.darkona.adventurebackpack.common.CrossbowLogic;
 import com.darkona.adventurebackpack.common.QuiverFeedRules;
@@ -27,6 +29,7 @@ public final class QuiverFeed
     private int burstMode;
     private long heldUntil;
     private long nextShotAt;
+    private double carry;
     private int sinceFlush;
 
     public static QuiverFeed of(EntityPlayer player)
@@ -69,8 +72,8 @@ public final class QuiverFeed
     {
         backpack = worn;
         NBTTagCompound data = worn.hasTagCompound() ? worn.getTagCompound().getCompoundTag("backpackData") : null;
-        slots = data == null ? 0 : Math.min(BackpackLayouts.quiver(data.getString("colorName")), ConfigHandler.QUIVER_MAX_SLOTS);
-        BackpackNbt.readQuiverCounts(data, slots, ids, left);
+        slots = data == null ? 0 : Math.min(WidgetLayouts.quiver(data.getString("colorName")), ConfigHandler.QUIVER_MAX_SLOTS);
+        QuiverNbt.readQuiverCounts(data, slots, ids, left);
         for (int q = 0; q < slots; q++)
         {
             spent[q] = 0;
@@ -105,6 +108,7 @@ public final class QuiverFeed
         crossbow = held;
         burstMode = mode;
         nextShotAt = firstShotAt;
+        carry = 0;
     }
 
     public boolean isBursting()
@@ -131,8 +135,11 @@ public final class QuiverFeed
             finish(player);
             return;
         }
-        ItemCrossbow.fireFromQuiver(crossbow, player, ammo, now);
-        nextShotAt = now + ConfigHandler.QUIVER_FIRE_INTERVAL_TICKS;
+        double exact = QuiverFeedRules.exactInterval(ConfigHandler.QUIVER_FIRE_INTERVAL_TICKS, ConfigHandler.SKELETON_ENABLED ? ConfigHandler.SKELETON_FIRE_RATE_BONUS : 0);
+        int pause = QuiverFeedRules.ticksFor(carry, exact);
+        carry = QuiverFeedRules.carryAfter(carry, exact);
+        ItemCrossbow.fireFromQuiver(crossbow, player, ammo, now, pause);
+        nextShotAt = now + pause;
         if (crossbow.stackSize <= 0 || usable() <= 0)
         {
             finish(player);
@@ -157,7 +164,7 @@ public final class QuiverFeed
             return;
         }
         NBTTagCompound data = backpack.hasTagCompound() ? backpack.getTagCompound().getCompoundTag("backpackData") : null;
-        BackpackNbt.takeFromQuiver(data, slots, ids, spent);
+        QuiverNbt.takeFromQuiver(data, slots, ids, spent);
         for (int q = 0; q < slots; q++) spent[q] = 0;
         sinceFlush = 0;
     }
